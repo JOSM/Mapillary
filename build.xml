@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+** This is a template build file for a JOSM  plugin.
+**
+** Maintaining versions
+** ====================
+** See README.template
+**
+** Usage
+** =====
+** Call "ant help" to get possible build targets.
+**
+-->
+<project name="Mapillary" default="dist" basedir=".">
+
+    <!-- enter the SVN commit message -->
+    <property name="commit.message" value="Commit message"/>
+    <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
+    <property name="plugin.main.version" value="7777"/>
+
+    <!-- Configure these properties (replace "..." accordingly).
+
+
+
+         See http://josm.openstreetmap.de/wiki/DevelopersGuide/DevelopingPlugins
+    -->
+    <property name="plugin.author" value="Polyglot - HolgerMappt"/>
+    <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
+    <property name="plugin.description" value="Enables user to work with pictures hosted at mapillary.com"/>
+    <property name="plugin.icon" value="images/icon24.png"/>
+    <!-- <property name="plugin.link" value="..."/>-->
+    <!--<property name="plugin.early" value="..."/>-->
+    <!--<property name="plugin.requires" value="..."/>-->
+    <!--<property name="plugin.stage" value="..."/>-->
+    
+	<property name="josm" location="../../core/dist/josm-latest.jar"/>
+	<property name="plugin.dist.dir" value="../../dist"/>
+	
+    <!-- ** include targets that all plugins have in common ** -->
+    <import file="../build-common.xml"/>
+  
+</project>
