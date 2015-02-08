@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openstreetmap.josm.plugins.sumoconvert;
+package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -17,16 +17,16 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 
 /**
- * @author ignacio_palermo
+ * @author Polyglot
  *
  */
-public class SumoExportAction extends JosmAction {
+public class MapillaryAction extends JosmAction {
 	
-	public SumoExportAction(){
-        super(tr("OSM Export"), "images/dialogs/logo-sumo.png",
-        tr("Export traffic data to SUMO network file."),
-        Shortcut.registerShortcut("menu:sumoexport", tr("Menu: {0}", tr("SUMO Export")),
-        KeyEvent.VK_G, Shortcut.ALT_CTRL), false);
+	public MapillaryAction(){
+        super(tr("Mapillary"), "images/icon24.png",
+        tr("Create Mapillary layer."),
+        Shortcut.registerShortcut("menu:Mapillary", tr("Menu: {0}", tr("Mapillary")),
+        KeyEvent.VK_M, Shortcut.ALT_CTRL), false);
     }
 
 	/* (non-Javadoc)
@@ -34,14 +34,14 @@ public class SumoExportAction extends JosmAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		SumoExportDialog dialog = new SumoExportDialog();
+		MapillaryDialog dialog = new MapillaryDialog();
         JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         JDialog dlg = pane.createDialog(Main.parent, tr("Export"));
         dialog.setOptionPane(pane);
         dlg.setVisible(true);
         if(((Integer)pane.getValue()) == JOptionPane.OK_OPTION){
-            ExportTask task = new ExportTask();
-            Main.worker.execute(task);
+            // MapillaryTask task = new MapillaryTask();
+            // Main.worker.execute(task);
         }
         dlg.dispose();
 	}

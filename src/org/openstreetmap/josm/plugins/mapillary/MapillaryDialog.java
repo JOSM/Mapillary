@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openstreetmap.josm.plugins.sumoconvert;
+package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -27,17 +27,17 @@ import org.openstreetmap.josm.Main;
 
 /**
  * Main export dialog
- * @author ignacio_palermo
+ * @author Polyglot
  *
  */
-public class SumoExportDialog extends JPanel {
+public class MapillaryDialog extends JPanel {
 	// the JOptionPane that contains this dialog. required for the closeDialog() method.
     private JOptionPane optionPane;
     private JCheckBox delete;
     private JComboBox portCombo;
     
 
-    public SumoExportDialog() {
+    public MapillaryDialog() {
         GridBagConstraints c = new GridBagConstraints();
         JButton refreshBtn, configBtn;
 
@@ -87,7 +87,7 @@ public class SumoExportDialog extends JPanel {
                     }catch(Exception ex){
                         JOptionPane.showMessageDialog(Main.parent, tr("Connection Error.") + " " + ex.toString());
                     }
-                    System.out.println("configureing the device finised");
+                    System.out.println("configuring the device finished");
                 }
             });
         configBtn.setToolTipText(tr("configure the connected DG100"));
