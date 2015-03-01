@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.openstreetmap.josm.plugins.mapillary;
 
@@ -9,19 +9,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 
 import org.openstreetmap.josm.Main;
 
@@ -35,7 +29,7 @@ public class MapillaryDialog extends JPanel {
     private JOptionPane optionPane;
     private JCheckBox delete;
     private JComboBox portCombo;
-    
+
 
     public MapillaryDialog() {
         GridBagConstraints c = new GridBagConstraints();
@@ -44,7 +38,7 @@ public class MapillaryDialog extends JPanel {
         setLayout(new GridBagLayout());
 
         portCombo = new JComboBox();
-        
+
         refreshPorts();
         c.insets = new Insets(4,4,4,4);
         c.gridwidth = 1;
@@ -62,7 +56,8 @@ public class MapillaryDialog extends JPanel {
 
         refreshBtn = new JButton(tr("Refresh"));
         refreshBtn.addActionListener(new ActionListener(){
-                public void actionPerformed(java.awt.event.ActionEvent e){
+                @Override
+				public void actionPerformed(java.awt.event.ActionEvent e){
                     refreshPorts();
                 }
             });
@@ -76,13 +71,14 @@ public class MapillaryDialog extends JPanel {
 
         configBtn = new JButton(tr("Configure"));
         configBtn.addActionListener(new ActionListener(){
-                public void actionPerformed(java.awt.event.ActionEvent e){
-                    System.out.println("configureing the device");
+                @Override
+				public void actionPerformed(java.awt.event.ActionEvent e){
+                    System.out.println("configuring the device");
                     try{
 
-                       
-                       
-                      
+
+
+
 
                     }catch(Exception ex){
                         JOptionPane.showMessageDialog(Main.parent, tr("Connection Error.") + " " + ex.toString());
