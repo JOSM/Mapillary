@@ -14,11 +14,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MapillaryData {
 	public volatile static MapillaryData INSTANCE;
-	
+
 	private final List<MapillaryImage> images;
 	private MapillaryImage selectedImage = null;
 	private List<MapillaryImage> multiSelectedImages;
-
 
 	public MapillaryData() {
 		images = new CopyOnWriteArrayList<>();
@@ -168,13 +167,19 @@ public class MapillaryData {
 			Main.map.mapView.repaint();
 		}
 	}
-	
+
+	/**
+	 * Adds a MapillaryImage object to the list of selected images, (when ctrl +
+	 * click)
+	 * 
+	 * @param image The MapillaryImage object to be added.
+	 */
 	public void addMultiSelectedImage(MapillaryImage image) {
 		this.multiSelectedImages.add(image);
 		Main.map.mapView.repaint();
 	}
-	
-	public List<MapillaryImage> getMultiSelectedImages(){
+
+	public List<MapillaryImage> getMultiSelectedImages() {
 		return multiSelectedImages;
 	}
 }

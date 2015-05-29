@@ -34,7 +34,8 @@ import javax.swing.JPanel;
  * @author nokutu
  *
  */
-public class MapillaryToggleDialog extends ToggleDialog implements ICachedLoaderListener{
+public class MapillaryToggleDialog extends ToggleDialog implements
+		ICachedLoaderListener {
 
 	public static MapillaryToggleDialog INSTANCE;
 
@@ -64,7 +65,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements ICachedLoader
 		}
 		return INSTANCE;
 	}
-	
+
 	public static void deleteInstance() {
 		INSTANCE = null;
 	}
@@ -98,19 +99,14 @@ public class MapillaryToggleDialog extends ToggleDialog implements ICachedLoader
 				try {
 					prev = JCSCacheManager.getCache("mapillary");
 					HashMap<String, String> headers = new HashMap<>();
-					MapillaryCache cache = new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000, headers);
+					MapillaryCache cache = new MapillaryCache(image.getKey(),
+							MapillaryCache.Type.FULL_IMAGE, prev, 200000,
+							200000, headers);
 					cache.submit(MapillaryToggleDialog.getInstance(), false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (Exception e) {
-					System.out.println("Hello");
 				}
-				/*if (image.getImage() != null) {
-					showImage();
-				} else if (image.getThumbnail() != null) {
-					showThumbnail();
-				}*/
 			} else
 				showDefault();
 		}
@@ -155,20 +151,27 @@ public class MapillaryToggleDialog extends ToggleDialog implements ICachedLoader
 	@Override
 	public void loadingFinished(CacheEntry data,
 			CacheEntryAttributes attributes, LoadResult result) {
-		System.out.println("Listener");
-		try {
-			BufferedImage img = ImageIO.read(new ByteArrayInputStream(data.getContent()));
-			this.remove(active);
-			JLabel label = new JLabel("", new ImageIcon(img), JLabel.CENTER);
-			active = label;
-			this.add(active);
-			this.updateUI();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateImage();
+				}
+			});
+		} else {
+			try {
+				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
+						.getContent()));
+				this.remove(active);
+				JLabel label = new JLabel("", new ImageIcon(img), JLabel.CENTER);
+				active = label;
+				this.add(active);
+				this.updateUI();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-			
-		
-		
+
 	}
 }

@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
@@ -60,7 +59,6 @@ public class MapillaryImage {
 		return this.key;
 	}
 
-
 	/**
 	 * Sets the MapillarySequence object which contains the MapillaryImage.
 	 * 
@@ -70,7 +68,6 @@ public class MapillaryImage {
 	public void setSequence(MapillarySequence sequence) {
 		this.sequence = sequence;
 	}
-
 
 	public MapillarySequence getSequence() {
 		return this.sequence;
