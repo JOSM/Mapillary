@@ -172,6 +172,5 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				e.printStackTrace();
 			}
 		}
-
 	}
 }
