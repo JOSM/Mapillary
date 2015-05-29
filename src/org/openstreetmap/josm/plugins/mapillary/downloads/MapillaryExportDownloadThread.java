@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
 
 import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -19,6 +21,8 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+
+//import com.sun.imageio.plugins.png.PNGMetadata;
 
 public class MapillaryExportDownloadThread implements Runnable,
 		ICachedLoaderListener {
@@ -38,6 +42,8 @@ public class MapillaryExportDownloadThread implements Runnable,
 
 	@Override
 	public void run() {
+	    ImageWriter writer = ImageIO.getImageWritersByFormatName("png").next();
+	    //IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, writeParam);
 		try {
 			CacheAccess<String, BufferedImageCacheEntry> prev = JCSCacheManager
 					.getCache("mapillary");

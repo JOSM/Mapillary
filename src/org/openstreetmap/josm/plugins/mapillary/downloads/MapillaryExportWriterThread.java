@@ -34,8 +34,8 @@ public class MapillaryExportWriterThread implements Runnable {
 		for (int i = 0; i < amount; i++) {
 			try {
 				img = queue.take();
-				outputfile = new File(path + "/" + i + ".png");
-				ImageIO.write(img, "png", outputfile);
+				outputfile = new File(path + "/" + i + ".jpg");
+				ImageIO.write(img, "jpg", outputfile);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
