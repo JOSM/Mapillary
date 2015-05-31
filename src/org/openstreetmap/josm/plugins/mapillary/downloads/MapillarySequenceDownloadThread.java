@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.io.InputStreamReader;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.Json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,32 +45,34 @@ public class MapillarySequenceDownloadThread implements Runnable {
 			BufferedReader br;
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
-			String jsonLine = "";
-			while (br.ready()) {
-				jsonLine += br.readLine();
-			}
-			JSONObject jsonall = new JSONObject(jsonLine);
+			/*
+			 * String jsonLine = ""; while (br.ready()) { jsonLine +=
+			 * br.readLine(); }
+			 */
+			JsonObject jsonall = Json.createReader(br).readObject();
 
 			if (!jsonall.getBoolean("more") && !ex.isShutdown()) {
 				ex.shutdownNow();
 			}
-			JSONArray jsonseq = jsonall.getJSONArray("ss");
-			for (int i = 0; i < jsonseq.length(); i++) {
-				JSONObject jsonobj = jsonseq.getJSONObject(i);
-				JSONArray cas = jsonobj.getJSONArray("cas");
-				JSONArray coords = jsonobj.getJSONArray("coords");
-				JSONArray keys = jsonobj.getJSONArray("keys");
+			JsonArray jsonseq = jsonall.getJsonArray("ss");
+			for (int i = 0; i < jsonseq.size(); i++) {
+				JsonObject jsonobj = jsonseq.getJsonObject(i);
+				JsonArray cas = jsonobj.getJsonArray("cas");
+				JsonArray coords = jsonobj.getJsonArray("coords");
+				JsonArray keys = jsonobj.getJsonArray("keys");
 				ArrayList<MapillaryImage> images = new ArrayList<>();
-				for (int j = 0; j < cas.length(); j++) {
+				for (int j = 0; j < cas.size(); j++) {
 					try {
-						images.add(new MapillaryImage(keys.getString(j), coords
-								.getJSONArray(j).getDouble(1), coords
-								.getJSONArray(j).getDouble(0), cas.getDouble(j)));
+						images.add(new MapillaryImage(keys.getString(j),
+								coords.getJsonArray(j).getJsonNumber(1)
+										.doubleValue(), coords.getJsonArray(j)
+										.getJsonNumber(0).doubleValue(), cas
+										.getJsonNumber(j).doubleValue()));
 					} catch (Exception e) {
 						// Mapillary service bug here
-						//System.out.println(cas.length());
-						//System.out.println(coords.length());
-						//System.out.println(keys.length());
+						// System.out.println(cas.length());
+						// System.out.println(coords.length());
+						// System.out.println(keys.length());
 						System.out.println(e);
 					}
 				}
@@ -78,7 +80,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				int first = -1;
 				int last = -1;
 				int pos = 0;
-				
+
 				// Here it gets only those images which are in the downloaded
 				// area.
 				for (MapillaryImage img : images) {
@@ -103,7 +105,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				data.addWithoutUpdate(finalImages);
 				sequence.add(finalImages);
 			}
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			return;
 		}
 		return;

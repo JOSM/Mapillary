@@ -1,7 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.util.concurrent.ThreadPoolExecutor;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -33,17 +32,6 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	}
 
 	public void run() {
-		/*
-		 * ThreadPoolExecutor ex = new ThreadPoolExecutor(30, 35, 25,
-		 * TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
-		 * ArrayList<JSONArray> ret = new ArrayList<JSONArray>(); int page = 0;
-		 * while (!ex.isShutdown()) { ex.execute(new
-		 * MapillarySquareDownloadThread(ex, this.data, urlImages + "&page=" +
-		 * page + "&limit=25")); try { if (ex.getQueue().peek() != null)
-		 * Thread.sleep(1000); } catch(Exception e){ System.out.println(e); }
-		 * page++; }
-		 */
-		System.out.println(tr("INFORMATION: GET") + urlSequences);
 		fullfillSequences();
 		return;
 	}

@@ -4,8 +4,9 @@ import java.io.BufferedReader;
 import java.net.URL;
 import java.io.InputStreamReader;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.Json;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -30,23 +31,24 @@ public class MapillarySquareDownloadThread implements Runnable {
 			BufferedReader br;
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
-			String jsonLine = "";
+			/*String jsonLine = "";
 			while (br.ready()) {
 				jsonLine += br.readLine();
-			}
-			JSONObject jsonobj = new JSONObject(jsonLine);
+			}*/
+			JsonObject jsonobj = Json.createReader(br).readObject();
 			if (!jsonobj.getBoolean("more")) {
 				ex.shutdownNow();
 			}
-			JSONArray jsonarr = jsonobj.getJSONArray("ims");
+			JsonArray jsonarr = jsonobj.getJsonArray("ims");
 			ArrayList<MapillaryImage> images = new ArrayList<>();
-			JSONObject image;
-			for (int i = 0; i < jsonarr.length(); i++) {
+			JsonObject image;
+			for (int i = 0; i < jsonarr.size(); i++) {
 				try {
-					image = jsonarr.getJSONObject(i);
+					image = jsonarr.getJsonObject(i);
 					images.add(new MapillaryImage(image.getString("key"), image
-							.getDouble("lat"), image.getDouble("lon"), image
-							.getDouble("ca")));
+							.getJsonNumber("lat")
+							.doubleValue(), image.getJsonNumber("lon").doubleValue(), image
+							.getJsonNumber("ca").doubleValue()));
 				} catch (Exception e) {
 					System.out.println(e);
 				}
