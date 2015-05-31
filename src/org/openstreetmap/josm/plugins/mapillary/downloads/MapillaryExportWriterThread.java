@@ -11,7 +11,12 @@ import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
-
+/**
+ * Writes the images from the queue in the HD.
+ * 
+ * @author nokutu
+ * @see MapillaryExportManager
+ */
 public class MapillaryExportWriterThread implements Runnable {
 
 	private String path;
@@ -19,9 +24,11 @@ public class MapillaryExportWriterThread implements Runnable {
 	private ArrayBlockingQueue<MapillaryImage> queueImages;
 	private int amount;
 	private ProgressMonitor monitor;
-	
+
 	public MapillaryExportWriterThread(String path,
-			ArrayBlockingQueue<BufferedImage> queue,ArrayBlockingQueue<MapillaryImage> queueImages, int amount, ProgressMonitor monitor) {
+			ArrayBlockingQueue<BufferedImage> queue,
+			ArrayBlockingQueue<MapillaryImage> queueImages, int amount,
+			ProgressMonitor monitor) {
 		this.path = path;
 		this.queue = queue;
 		this.queueImages = queueImages;
@@ -50,7 +57,7 @@ public class MapillaryExportWriterThread implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / amount);
 			monitor.setCustomText("Downloaded " + (i + 1) + "/" + amount);
 		}

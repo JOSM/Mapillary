@@ -7,6 +7,7 @@ import java.util.List;
  * Class that stores a sequence of MapillaryImage objects.
  * 
  * @author nokutu
+ * @see MapillaryImage
  *
  */
 public class MapillarySequence {

@@ -19,6 +19,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Database class for all the MapillaryImage objects.
  * 
  * @author nokutu
+ * @see MapillaryImage
+ * @see MapillarySequence
  *
  */
 public class MapillaryData implements ICachedLoaderListener {
@@ -177,14 +179,26 @@ public class MapillaryData implements ICachedLoaderListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (image.next() != null)
+			if (image.next() != null) {
 				new MapillaryCache(image.next().getKey(),
-						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
+						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
 						new HashMap<String, String>()).submit(this, false);
-			if (image.previous() != null)
+				if (image.next().next() != null)
+					new MapillaryCache(image.next().next().getKey(),
+							MapillaryCache.Type.THUMBNAIL, prev, 200000,
+							200000, new HashMap<String, String>()).submit(this,
+							false);
+			}
+			if (image.previous() != null) {
 				new MapillaryCache(image.previous().getKey(),
-						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
+						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
 						new HashMap<String, String>()).submit(this, false);
+				if (image.previous().previous() != null)
+					new MapillaryCache(image.previous().previous().getKey(),
+							MapillaryCache.Type.THUMBNAIL, prev, 200000,
+							200000, new HashMap<String, String>()).submit(this,
+							false);
+			}
 		}
 		if (Main.map != null) {
 			Main.map.mapView.repaint();

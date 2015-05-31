@@ -45,6 +45,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	public MapillaryImageDisplay mapillaryImageDisplay;
 
+	private MapillaryCache imageCache;
+	private MapillaryCache thumbnailCache;
+
 	final JPanel buttons;
 
 	public MapillaryToggleDialog() {
@@ -89,11 +92,21 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (this.image != null) {
 				CacheAccess<String, BufferedImageCacheEntry> prev;
 				try {
+					this.mapillaryImageDisplay.setImage(null);
 					prev = JCSCacheManager.getCache("mapillary");
-					MapillaryCache cache = new MapillaryCache(image.getKey(),
+					if (thumbnailCache != null)
+						thumbnailCache.cancelOutstandingTasks();
+					thumbnailCache = new MapillaryCache(image.getKey(),
+							MapillaryCache.Type.THUMBNAIL, prev, 200000,
+							200000, new HashMap<String, String>());
+					thumbnailCache.submit(this, false);
+					
+					if (imageCache != null)
+						imageCache.cancelOutstandingTasks();
+					imageCache = new MapillaryCache(image.getKey(),
 							MapillaryCache.Type.FULL_IMAGE, prev, 200000,
 							200000, new HashMap<String, String>());
-					cache.submit(this, false);
+					imageCache.submit(this, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -180,11 +193,16 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					updateImage();
 				}
 			});
-		} else {
+		} else if (data != null){
 			try {
 				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
 						.getContent()));
-				mapillaryImageDisplay.setImage(img);
+				if (this.mapillaryImageDisplay.getImage() == null)
+					mapillaryImageDisplay.setImage(img);
+				else if (img.getHeight() > this.mapillaryImageDisplay
+						.getImage().getHeight()) {
+					mapillaryImageDisplay.setImage(img);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -19,8 +19,13 @@ import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
-
-
+/**
+ * This is the thread that downloads one of the images that are going to be
+ * exported and writes them in a {@link ArrayBlockQueue}.
+ * 
+ * @author nokutu
+ * @see MapillaryExportManager
+ */
 public class MapillaryExportDownloadThread implements Runnable,
 		ICachedLoaderListener {
 
@@ -32,7 +37,8 @@ public class MapillaryExportDownloadThread implements Runnable,
 	MapillaryImage image;
 
 	public MapillaryExportDownloadThread(MapillaryImage image,
-			ArrayBlockingQueue<BufferedImage> queue, ArrayBlockingQueue<MapillaryImage> queueImages) {
+			ArrayBlockingQueue<BufferedImage> queue,
+			ArrayBlockingQueue<MapillaryImage> queueImages) {
 		url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
 				+ "/thumb-2048.jpg";
 		this.queue = queue;
@@ -63,7 +69,7 @@ public class MapillaryExportDownloadThread implements Runnable,
 		try {
 			queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
 			queueImages.put(image);
-			
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,7 +77,5 @@ public class MapillaryExportDownloadThread implements Runnable,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

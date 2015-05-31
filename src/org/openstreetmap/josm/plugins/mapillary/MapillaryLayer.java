@@ -42,11 +42,12 @@ import java.util.ArrayList;
 public class MapillaryLayer extends AbstractModifiableLayer implements
 		MouseListener, DataSetListener, EditLayerChangeListener {
 
+	public static Boolean INSTANCED = false;
+	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
+	
 	private final MapillaryData mapillaryData;
 	private List<Bounds> bounds;
 	private MapillaryToggleDialog tgd;
-	public static Boolean INSTANCED = false;
-	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
 	public MapillaryLayer() {
 		super(tr("Mapillary Images"));

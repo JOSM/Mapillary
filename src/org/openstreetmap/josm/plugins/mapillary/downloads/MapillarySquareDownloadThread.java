@@ -14,6 +14,12 @@ import java.util.concurrent.ExecutorService;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
+/**
+ * This thread downloads one of the images in a given area.
+ * 
+ * @author nokutu
+ * @see MapillarySqueareDownloadManagerThread
+ */
 public class MapillarySquareDownloadThread implements Runnable {
 	String url;
 	MapillaryData data;
@@ -31,10 +37,10 @@ public class MapillarySquareDownloadThread implements Runnable {
 			BufferedReader br;
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
-			/*String jsonLine = "";
-			while (br.ready()) {
-				jsonLine += br.readLine();
-			}*/
+			/*
+			 * String jsonLine = ""; while (br.ready()) { jsonLine +=
+			 * br.readLine(); }
+			 */
 			JsonObject jsonobj = Json.createReader(br).readObject();
 			if (!jsonobj.getBoolean("more")) {
 				ex.shutdownNow();
@@ -46,8 +52,8 @@ public class MapillarySquareDownloadThread implements Runnable {
 				try {
 					image = jsonarr.getJsonObject(i);
 					images.add(new MapillaryImage(image.getString("key"), image
-							.getJsonNumber("lat")
-							.doubleValue(), image.getJsonNumber("lon").doubleValue(), image
+							.getJsonNumber("lat").doubleValue(), image
+							.getJsonNumber("lon").doubleValue(), image
 							.getJsonNumber("ca").doubleValue()));
 				} catch (Exception e) {
 					System.out.println(e);

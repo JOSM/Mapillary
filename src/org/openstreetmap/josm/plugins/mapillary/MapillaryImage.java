@@ -6,7 +6,8 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * A MapillaryImage object represents each of the images stored in Mapillary.
  * 
  * @author nokutu
- *
+ * @see MapillarySequence
+ * @see MapillaryData
  */
 public class MapillaryImage {
 	private String key;

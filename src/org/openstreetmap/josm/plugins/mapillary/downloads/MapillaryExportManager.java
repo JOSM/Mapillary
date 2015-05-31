@@ -13,11 +13,22 @@ import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.xml.sax.SAXException;
 
+/**
+ * Export main thread. Exportation works by creating a
+ * {@link MapillaryWriterThread} and several
+ * {@link MapillaryExportDownloadThread}. The second ones download every single
+ * image that is going to be exported and stores them in an
+ * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
+ * the selected folder. Each image will be named by its key.
+ * 
+ * @author nokutu
+ *
+ */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
 	ArrayBlockingQueue<BufferedImage> queue;
 	ArrayBlockingQueue<MapillaryImage> queueImages;
-	
+
 	List<MapillaryImage> images;
 	String path;
 
@@ -42,14 +53,15 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	@Override
 	protected void realRun() throws SAXException, IOException,
 			OsmTransferException {
-		Thread writer = new Thread(new MapillaryExportWriterThread(path, queue, queueImages,
-				images.size(), this.getProgressMonitor()));
+		Thread writer = new Thread(new MapillaryExportWriterThread(path, queue,
+				queueImages, images.size(), this.getProgressMonitor()));
 		writer.start();
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
 		for (MapillaryImage image : images) {
 			try {
-				ex.execute(new MapillaryExportDownloadThread(image, queue, queueImages));
+				ex.execute(new MapillaryExportDownloadThread(image, queue,
+						queueImages));
 			} catch (Exception e) {
 				System.out.println("Exception");
 			}

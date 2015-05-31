@@ -31,7 +31,7 @@ public class MapillaryImageDisplay extends JComponent {
 	private static final int ZOOM_BUTTON = 1;
 
 	/** The image currently displayed */
-	private transient Image image = null;
+	private transient BufferedImage image = null;
 
 	/**
 	 * The rectangle (in image coordinates) of the image that is visible. This
@@ -318,6 +318,10 @@ public class MapillaryImageDisplay extends JComponent {
 						image.getHeight(null));
 		}
 		repaint();
+	}
+	
+	public BufferedImage getImage() {
+		return this.image;
 	}
 
 	public void paintComponent(Graphics g) {

@@ -19,11 +19,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
 /**
- * This Class downloads all the pictures in a given sequence and creates the
- * needed MapillaryImage and MapillarySequence objects
+ * This thread downloads all the pictures in a given sequence and creates the
+ * needed MapillaryImage and MapillarySequence objects. It just stores the ones
+ * in the given area.
  * 
  * @author nokutu
- *
+ * @see MapillarySquareDownloadManagarThread
  */
 public class MapillarySequenceDownloadThread implements Runnable {
 

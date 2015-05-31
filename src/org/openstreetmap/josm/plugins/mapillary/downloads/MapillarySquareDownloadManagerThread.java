@@ -13,7 +13,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
  * requested images is quite big.
  * 
  * @author nokutu
- *
+ * 
+ * @see MapillaryDownloader
  */
 public class MapillarySquareDownloadManagerThread implements Runnable {
 

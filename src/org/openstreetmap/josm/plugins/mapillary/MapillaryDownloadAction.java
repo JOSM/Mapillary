@@ -26,7 +26,7 @@ public class MapillaryDownloadAction extends JosmAction {
 		super(tr("Mapillary"), "icon16.png",
 				tr("Create Mapillary layer."), Shortcut.registerShortcut(
 						"menu:Mapillary", tr("Menu: {0}", tr("Mapillary")),
-						KeyEvent.VK_M, Shortcut.ALT_SHIFT), false);
+						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false);
 	}
 
 	/*
@@ -43,15 +43,19 @@ public class MapillaryDownloadAction extends JosmAction {
 		}
 		for (Layer layer : Main.map.mapView.getAllLayers()) {
 			if (layer instanceof MapillaryLayer) {
-				System.out.println("Tuturu");
 				this.layer = (MapillaryLayer) layer;
 			}
 		}
 
 		if (this.layer == null)
 			layer = new MapillaryLayer();
-		else
+		else {
 			this.layer.download();
+			if (Main.map.mapView.getActiveLayer() != layer)
+				Main.map.mapView.setActiveLayer(layer);
+			else
+				Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
+		}
 	}
 
 }
