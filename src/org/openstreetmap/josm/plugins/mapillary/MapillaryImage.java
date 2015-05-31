@@ -11,18 +11,8 @@ import org.openstreetmap.josm.data.coor.LatLon;
 public class MapillaryImage {
 	private String key;
 	private LatLon latLon;
-
-	/**
-	 * 0 means north.
-	 */
 	private Double ca;
 	private boolean isModified = false;
-
-	/**
-	 * Used to prevent old running threads from setting images in an object
-	 * which are no longer needed.
-	 */
-
 	public MapillarySequence sequence;
 
 	/**
@@ -43,18 +33,38 @@ public class MapillaryImage {
 		this.ca = ca;
 	}
 
+	/**
+	 * Returns whether the object has been modified or not.
+	 * 
+	 * @return true if the object has been modified; false otherwise.
+	 */
 	public boolean isModified() {
 		return this.isModified;
 	}
 
+	/**
+	 * Returns a LatLon object containing the coordintes of the object.
+	 * 
+	 * @return The LatLon object with the position of the object.
+	 */
 	public LatLon getLatLon() {
 		return latLon;
 	}
 
+	/**
+	 * Returns the direction towards the image has been taken.
+	 * 
+	 * @return The direction of the image (0 means north and goes clockwise).
+	 */
 	public Double getCa() {
 		return ca;
 	}
 
+	/**
+	 * Returns the unique identifier of the object.
+	 * 
+	 * @return A String containing the unique identifier of the object.
+	 */
 	public String getKey() {
 		return this.key;
 	}
@@ -69,6 +79,11 @@ public class MapillaryImage {
 		this.sequence = sequence;
 	}
 
+	/**
+	 * Returns the sequence which contains this image.
+	 * 
+	 * @return The MapillarySequence object that contains this MapillaryImage.
+	 */
 	public MapillarySequence getSequence() {
 		return this.sequence;
 	}

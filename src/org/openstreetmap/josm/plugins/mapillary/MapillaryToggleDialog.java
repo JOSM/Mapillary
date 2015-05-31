@@ -102,14 +102,30 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Sets a new MapillaryImage to be shown.
+	 * 
+	 * @param image
+	 */
 	public synchronized void setImage(MapillaryImage image) {
 		this.image = image;
 	}
 
+	/**
+	 * Returns the MapillaryImage objects which is being shown.
+	 * 
+	 * @return
+	 */
 	public synchronized MapillaryImage getImage() {
 		return this.image;
 	}
 
+	/**
+	 * Action class form the next image button.
+	 * 
+	 * @author Jorge
+	 *
+	 */
 	class nextPictureAction extends AbstractAction {
 		public nextPictureAction() {
 			putValue(NAME, tr("Next picture"));
@@ -127,6 +143,12 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Action class for the previous image button.
+	 * 
+	 * @author Jorge
+	 *
+	 */
 	class previousPictureAction extends AbstractAction {
 		public previousPictureAction() {
 			putValue(NAME, tr("Previous picture"));
@@ -144,6 +166,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * When the pictures are returned from the cache, they are set in the
+	 * {@link MapillaryImageDisplay} object.
+	 */
 	@Override
 	public void loadingFinished(CacheEntry data,
 			CacheEntryAttributes attributes, LoadResult result) {
@@ -156,13 +182,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			});
 		} else {
 			try {
-				/*
-				 * BufferedImage img = ImageIO.read(new
-				 * ByteArrayInputStream(data .getContent()));
-				 * this.remove(active); JLabel label = new JLabel("", new
-				 * ImageIcon(img), JLabel.CENTER); active = label;
-				 * this.add(active); this.updateUI();
-				 */
 				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
 						.getContent()));
 				mapillaryImageDisplay.setImage(img);

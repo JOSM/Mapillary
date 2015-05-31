@@ -55,6 +55,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		init();
 	}
 
+	/**
+	 * Initializes the Layer.
+	 */
 	private void init() {
 		INSTANCED = true;
 		try {
@@ -80,6 +83,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		download();
 	}
 
+	/**
+	 * Downloads all images of the area covered by the OSM data.
+	 */
 	protected void download() {
 		for (Bounds bounds : Main.map.mapView.getEditLayer().data
 				.getDataSourceBounds()) {
@@ -91,13 +97,22 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		}
 	}
 
+	/**
+	 * Returs the MapillaryData object, which acts as the database of the Layer.
+	 * 
+	 * @return
+	 */
 	public MapillaryData getMapillaryData() {
 		return mapillaryData;
 	}
 
+	/**
+	 * Method invoqued when the layer is destroyed.
+	 */
 	@Override
 	public void destroy() {
-		MapillaryToggleDialog.getInstance().mapillaryImageDisplay.setImage(null);
+		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
+				.setImage(null);
 		INSTANCED = false;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
 		MapillaryData.deleteInstance();
@@ -107,6 +122,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		super.destroy();
 	}
 
+	/**
+	 * Returns true any of the images from the database has been modified.
+	 */
 	@Override
 	public boolean isModified() {
 		for (MapillaryImage image : mapillaryData.getImages()) {
@@ -117,6 +135,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		return false;
 	}
 
+	/**
+	 * Paints the database in the map.
+	 */
 	@Override
 	public void paint(Graphics2D g, MapView mv, Bounds box) {
 		synchronized (this) {
@@ -149,7 +170,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	@Override
 	public boolean isMergable(Layer other) {
-		return other instanceof MapillaryLayer;
+		return false;
 	}
 
 	@Override

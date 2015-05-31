@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
- * This is the main class for the mapillary plugin.
+ * This is the main class of the Mapillary plugin.
  * 
  * @author nokutu
  *
@@ -47,6 +47,9 @@ public class MapillaryPlugin extends Plugin {
 	public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
 		if (oldFrame == null && newFrame != null) { // map frame added
 			MapillaryToggleDialog.deleteInstance ();
+		}
+		if (oldFrame != null && newFrame == null) { // map frame added
+			System.out.println("Mapframe destroyed");
 		}
 	}
 	

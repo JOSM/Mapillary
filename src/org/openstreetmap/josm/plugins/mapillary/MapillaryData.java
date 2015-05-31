@@ -151,7 +151,8 @@ public class MapillaryData implements ICachedLoaderListener {
 
 	/**
 	 * Selects a new image and then starts a new MapillaryImageDownloadThread
-	 * thread in order to download its surrounding thumbnails and images.
+	 * thread in order to download its surrounding thumbnails and images. If the
+	 * user does ctrl+click, this isn't triggered.
 	 * 
 	 * @param image
 	 *            The MapillaryImage which is going to be selected
@@ -202,14 +203,24 @@ public class MapillaryData implements ICachedLoaderListener {
 		Main.map.mapView.repaint();
 	}
 
+	/**
+	 * Returns a list containing all MapillaryImage objects selected with ctrl +
+	 * click
+	 * 
+	 * @return
+	 */
 	public List<MapillaryImage> getMultiSelectedImages() {
 		return multiSelectedImages;
 	}
 
+	/**
+	 * This is empty because it is used just to make sure that certain images
+	 * have already been downloaded.
+	 */
 	@Override
 	public void loadingFinished(CacheEntry data,
 			CacheEntryAttributes attributes, LoadResult result) {
 		// DO NOTHING
-		
+
 	}
 }

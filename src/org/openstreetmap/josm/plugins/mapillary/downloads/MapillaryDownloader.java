@@ -26,16 +26,6 @@ public class MapillaryDownloader {
 		this.data = data;
 	}
 
-	/*
-	 * public List<MapillaryImage> getImagesAround(LatLon latLon, double
-	 * distance) { String u rl = BASE_URL; url += "search/im/close/";
-	 * Hashtable<String, Double> hash = new Hashtable<String, Double>();
-	 * hash.put("lat", latLon.lat()); hash.put("lon", latLon.lon());
-	 * hash.put("distance", distance); url += buildParameters(hash); try {
-	 * return parseImages(parseUrl(url)); } catch (Exception e) { return null; }
-	 * }
-	 */
-
 	/**
 	 * Gets all the images in a square. It downloads all the images of all the
 	 * sequences that pass through the given rectangle.
