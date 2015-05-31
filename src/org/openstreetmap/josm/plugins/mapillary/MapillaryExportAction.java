@@ -24,8 +24,8 @@ public class MapillaryExportAction extends JosmAction {
 	MapillaryExportDialog dialog;
 
 	public MapillaryExportAction() {
-		super(tr("Export images"), "icon24.png", tr("Export images."),
-				null, false);
+		super(tr("Export images"), "icon24.png", tr("Export images."), null,
+				false);
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class MapillaryExportAction extends JosmAction {
 	 * Exports the given images from the database
 	 */
 	public void export(List<MapillaryImage> images) {
-		Main.worker.submit(new MapillaryExportManager(tr("Downloading..."),
-				images, dialog.chooser.getSelectedFile().toString()));
+		new Thread(new MapillaryExportManager(tr("Downloading..."), images,
+				dialog.chooser.getSelectedFile().toString())).start();
 	}
 
 }

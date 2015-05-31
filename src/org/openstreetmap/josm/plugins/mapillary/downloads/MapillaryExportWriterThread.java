@@ -9,19 +9,22 @@ import javax.imageio.ImageIO;
 
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 
 public class MapillaryExportWriterThread implements Runnable {
 
 	private String path;
 	private ArrayBlockingQueue<BufferedImage> queue;
+	private ArrayBlockingQueue<MapillaryImage> queueImages;
 	private int amount;
 	private ProgressMonitor monitor;
 	
 	public MapillaryExportWriterThread(String path,
-			ArrayBlockingQueue<BufferedImage> queue, int amount, ProgressMonitor monitor) {
+			ArrayBlockingQueue<BufferedImage> queue,ArrayBlockingQueue<MapillaryImage> queueImages, int amount, ProgressMonitor monitor) {
 		this.path = path;
 		this.queue = queue;
+		this.queueImages = queueImages;
 		this.amount = amount;
 		this.monitor = monitor;
 	}
@@ -29,13 +32,17 @@ public class MapillaryExportWriterThread implements Runnable {
 	@Override
 	public void run() {
 		monitor.setCustomText("Downloaded 0/" + amount);
-		File outputfile;
+		File outputfile = null;
 		BufferedImage img;
+		MapillaryImage mimg = null;
+		String finalPath = "";
 		for (int i = 0; i < amount; i++) {
 			try {
 				img = queue.take();
-				outputfile = new File(path + "/" + i + ".jpg");
-				ImageIO.write(img, "jpg", outputfile);
+				mimg = queueImages.take();
+				finalPath = path + "/" + mimg.getKey() + ".jpeg";
+				outputfile = new File(finalPath);
+				ImageIO.write(img, "jpeg", outputfile);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -43,6 +50,7 @@ public class MapillaryExportWriterThread implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / amount);
 			monitor.setCustomText("Downloaded " + (i + 1) + "/" + amount);
 		}

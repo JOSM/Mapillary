@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
@@ -19,11 +20,8 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.tools.ImageProvider;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -39,19 +37,21 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	public static MapillaryToggleDialog INSTANCE;
 
-	public volatile JLabel active;
 	public volatile MapillaryImage image;
 
 	final SideButton nextButton = new SideButton(new nextPictureAction());
 	final SideButton previousButton = new SideButton(
 			new previousPictureAction());
 
+	public MapillaryImageDisplay mapillaryImageDisplay;
+
 	final JPanel buttons;
 
 	public MapillaryToggleDialog() {
 		super(tr("Mapillary image"), "mapillary", tr("Open Mapillary window"),
 				null, 200);
-		showDefault();
+		mapillaryImageDisplay = new MapillaryImageDisplay();
+		this.add(mapillaryImageDisplay);
 		buttons = new JPanel();
 		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
 		buttons.add(previousButton);
@@ -70,17 +70,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		INSTANCE = null;
 	}
 
-	public void showDefault() {
-		if (active != null)
-			this.remove(active);
-		JLabel label = new JLabel("", new ImageProvider(
-				"mapillary_icon_960.png").setWidth(100).setHeight(100).get(),
-				JLabel.CENTER);
-		active = label;
-		this.add(active);
-		this.updateUI();
-	}
-
+	/**
+	 * Downloads the image of the selected MapillaryImage and sets in the
+	 * MapillaryImageDisplay object.
+	 */
 	public synchronized void updateImage() {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -91,24 +84,21 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			});
 		} else {
 			if (MapillaryLayer.INSTANCED == false) {
-				showDefault();
 				return;
 			}
 			if (this.image != null) {
 				CacheAccess<String, BufferedImageCacheEntry> prev;
 				try {
 					prev = JCSCacheManager.getCache("mapillary");
-					HashMap<String, String> headers = new HashMap<>();
 					MapillaryCache cache = new MapillaryCache(image.getKey(),
 							MapillaryCache.Type.FULL_IMAGE, prev, 200000,
-							200000, headers);
-					cache.submit(MapillaryToggleDialog.getInstance(), false);
+							200000, new HashMap<String, String>());
+					cache.submit(this, false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else
-				showDefault();
+			}
 		}
 	}
 
@@ -129,8 +119,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (MapillaryToggleDialog.getInstance().getImage() != null)
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectNext();
+				Main.map.mapView.zoomTo(MapillaryData.getInstance()
+						.getSelectedImage().getLatLon());
+			}
 		}
 	}
 
@@ -143,8 +136,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (MapillaryToggleDialog.getInstance().getImage() != null)
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
+				Main.map.mapView.zoomTo(MapillaryData.getInstance()
+						.getSelectedImage().getLatLon());
+			}
 		}
 	}
 
@@ -160,13 +156,16 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			});
 		} else {
 			try {
+				/*
+				 * BufferedImage img = ImageIO.read(new
+				 * ByteArrayInputStream(data .getContent()));
+				 * this.remove(active); JLabel label = new JLabel("", new
+				 * ImageIcon(img), JLabel.CENTER); active = label;
+				 * this.add(active); this.updateUI();
+				 */
 				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
 						.getContent()));
-				this.remove(active);
-				JLabel label = new JLabel("", new ImageIcon(img), JLabel.CENTER);
-				active = label;
-				this.add(active);
-				this.updateUI();
+				mapillaryImageDisplay.setImage(img);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

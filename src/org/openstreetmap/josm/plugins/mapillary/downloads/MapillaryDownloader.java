@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -57,8 +58,8 @@ public class MapillaryDownloader {
 		url1 += buildParameters(hash);
 		url2 += buildParameters(hash);
 		try {
-			new Thread(new MapillarySquareDownloadManagerThread(this.data,
-					url1, url2, new Bounds(minLatLon, maxLatLon))).start();
+			Main.worker.submit(new MapillarySquareDownloadManagerThread(this.data,
+					url1, url2, new Bounds(minLatLon, maxLatLon)));
 		} catch (Exception e) {
 		}
 	}

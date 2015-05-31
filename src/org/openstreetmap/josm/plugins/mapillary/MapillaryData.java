@@ -1,8 +1,17 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
+import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -12,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author nokutu
  *
  */
-public class MapillaryData {
+public class MapillaryData implements ICachedLoaderListener {
 	public volatile static MapillaryData INSTANCE;
 
 	private final List<MapillaryImage> images;
@@ -124,9 +133,8 @@ public class MapillaryData {
 		if (getSelectedImage() == null)
 			return;
 		if (getSelectedImage().getSequence() == null)
-			throw new IllegalStateException();
-		if (getSelectedImage().next() != null)
-			setSelectedImage(getSelectedImage().next());
+			return;
+		setSelectedImage(getSelectedImage().next());
 	}
 
 	/**
@@ -138,8 +146,7 @@ public class MapillaryData {
 			return;
 		if (getSelectedImage().getSequence() == null)
 			throw new IllegalStateException();
-		if (getSelectedImage().previous() != null)
-			setSelectedImage(getSelectedImage().previous());
+		setSelectedImage(getSelectedImage().previous());
 	}
 
 	/**
@@ -162,6 +169,21 @@ public class MapillaryData {
 		if (image != null) {
 			MapillaryToggleDialog.getInstance().setImage(selectedImage);
 			MapillaryToggleDialog.getInstance().updateImage();
+			CacheAccess<String, BufferedImageCacheEntry> prev = null;
+			try {
+				prev = JCSCacheManager.getCache("mapillary");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (image.next() != null)
+				new MapillaryCache(image.next().getKey(),
+						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
+						new HashMap<String, String>()).submit(this, false);
+			if (image.previous() != null)
+				new MapillaryCache(image.previous().getKey(),
+						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
+						new HashMap<String, String>()).submit(this, false);
 		}
 		if (Main.map != null) {
 			Main.map.mapView.repaint();
@@ -172,7 +194,8 @@ public class MapillaryData {
 	 * Adds a MapillaryImage object to the list of selected images, (when ctrl +
 	 * click)
 	 * 
-	 * @param image The MapillaryImage object to be added.
+	 * @param image
+	 *            The MapillaryImage object to be added.
 	 */
 	public void addMultiSelectedImage(MapillaryImage image) {
 		this.multiSelectedImages.add(image);
@@ -181,5 +204,12 @@ public class MapillaryData {
 
 	public List<MapillaryImage> getMultiSelectedImages() {
 		return multiSelectedImages;
+	}
+
+	@Override
+	public void loadingFinished(CacheEntry data,
+			CacheEntryAttributes attributes, LoadResult result) {
+		// DO NOTHING
+		
 	}
 }

@@ -97,10 +97,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	@Override
 	public void destroy() {
-		tgd.showDefault();
+		MapillaryToggleDialog.getInstance().mapillaryImageDisplay.setImage(null);
 		INSTANCED = false;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
 		MapillaryData.deleteInstance();
+		Main.map.mapView.removeMouseListener(this);
+		MapView.removeEditLayerChangeListener(this);
+		Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
 		super.destroy();
 	}
 
