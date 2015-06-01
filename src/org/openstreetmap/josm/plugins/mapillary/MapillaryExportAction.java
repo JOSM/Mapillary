@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryExportManager;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * Action that launches a MapillaryExportDialog.
@@ -24,8 +25,8 @@ public class MapillaryExportAction extends JosmAction {
 	MapillaryExportDialog dialog;
 
 	public MapillaryExportAction() {
-		super(tr("Export images"), "icon24.png", tr("Export images."), null,
-				false);
+		super(tr("Export images"), new ImageProvider("icon24.png"),
+				tr("Export images."), null, false, "mapillaryExport", false);
 	}
 
 	@Override

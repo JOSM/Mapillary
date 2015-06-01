@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -23,10 +24,10 @@ public class MapillaryDownloadAction extends JosmAction {
 	MapillaryLayer layer;
 
 	public MapillaryDownloadAction() {
-		super(tr("Mapillary"), "icon16.png",
+		super(tr("Mapillary"), new ImageProvider("icon24.png"),
 				tr("Create Mapillary layer."), Shortcut.registerShortcut(
 						"menu:Mapillary", tr("Menu: {0}", tr("Mapillary")),
-						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false);
+						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false, "mapillaryDownload", false);
 	}
 
 	/*
@@ -50,7 +51,6 @@ public class MapillaryDownloadAction extends JosmAction {
 		if (this.layer == null)
 			layer = new MapillaryLayer();
 		else {
-			this.layer.download();
 			if (Main.map.mapView.getActiveLayer() != layer)
 				Main.map.mapView.setActiveLayer(layer);
 			else

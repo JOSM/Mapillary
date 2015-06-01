@@ -18,11 +18,14 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin {
 
-	public static final ImageIcon ICON = new ImageProvider("icon24.png").get();
+	public static final ImageIcon ICON24 = new ImageProvider("icon24.png")
+			.get();
 	public static final ImageIcon ICON16 = new ImageProvider("icon16.png")
 			.get();
-	public static final ImageIcon ICON16SELECTED = new ImageProvider(
-			"icon16selected.png").get();
+	public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
+			.get();
+	public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
+			"mapiconselected.png").get();
 	public static final int ICON_SIZE = 24;
 
 	MapillaryDownloadAction downloadAction;
@@ -31,16 +34,19 @@ public class MapillaryPlugin extends Plugin {
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
 
+	public static String DIR;
+
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 
-		DOWNLOAD_MENU = MainMenu
-				.add(Main.main.menu.imageryMenu, downloadAction, false);
+		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
+				downloadAction, false);
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
 		EXPORT_MENU.setEnabled(false);
+		MapillaryPlugin.DIR = this.getPluginDir();
 
 	}
 

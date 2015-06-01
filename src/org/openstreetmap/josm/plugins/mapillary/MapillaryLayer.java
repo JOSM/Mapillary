@@ -29,9 +29,13 @@ import org.openstreetmap.josm.data.osm.event.DataSetListener;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -45,6 +49,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MouseListener, DataSetListener, EditLayerChangeListener {
 
 	public static Boolean INSTANCED = false;
+	public static MapillaryLayer INSTANCE;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 	public static MapillaryImage BLUE;
 	public static MapillaryImage RED;
@@ -65,6 +70,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	 */
 	private void init() {
 		INSTANCED = true;
+		MapillaryLayer.INSTANCE = this;
 		try {
 			CACHE = JCSCacheManager.getCache("Mapillary");
 		} catch (IOException e) {
@@ -86,6 +92,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		download();
+	}
+
+	public static MapillaryLayer getInstance() {
+		if (MapillaryLayer.INSTANCE == null)
+			MapillaryLayer.INSTANCE = new MapillaryLayer();
+		return MapillaryLayer.INSTANCE;
 	}
 
 	/**
@@ -119,11 +131,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
 				.setImage(null);
 		INSTANCED = false;
+		MapillaryLayer.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
 		MapillaryData.deleteInstance();
 		Main.map.mapView.removeMouseListener(this);
 		MapView.removeEditLayerChangeListener(this);
-		Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
+		if (Main.map.mapView.getEditLayer() != null)
+			Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
 		super.destroy();
 	}
 
@@ -147,8 +161,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void paint(Graphics2D g, MapView mv, Bounds box) {
 		synchronized (this) {
 			// Draw colored lines
-			this.BLUE = null;
-			this.RED = null; 
+			MapillaryLayer.BLUE = null;
+			MapillaryLayer.RED = null;
 			MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
 			MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
 			if (mapillaryData.getSelectedImage() != null) {
@@ -156,20 +170,22 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				Point selected = mv.getPoint(mapillaryData.getSelectedImage()
 						.getLatLon());
 				if (closestImages[0] != null) {
-					this.BLUE = closestImages[0];
+					MapillaryLayer.BLUE = closestImages[0];
 					g.setColor(Color.BLUE);
 					g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
 							mv.getPoint(closestImages[0].getLatLon()).y,
 							selected.x, selected.y);
-					MapillaryToggleDialog.getInstance().blueButton.setEnabled(true);
+					MapillaryToggleDialog.getInstance().blueButton
+							.setEnabled(true);
 				}
 				if (closestImages[1] != null) {
-					this.RED = closestImages[1];
+					MapillaryLayer.RED = closestImages[1];
 					g.setColor(Color.RED);
 					g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
 							mv.getPoint(closestImages[1].getLatLon()).y,
 							selected.x, selected.y);
-					MapillaryToggleDialog.getInstance().redButton.setEnabled(true);
+					MapillaryToggleDialog.getInstance().redButton
+							.setEnabled(true);
 				}
 			}
 			g.setColor(Color.WHITE);
@@ -184,13 +200,24 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				}
 				ImageIcon icon;
 				if (!mapillaryData.getMultiSelectedImages().contains(image))
-					icon = MapillaryPlugin.ICON16;
+					icon = MapillaryPlugin.MAP_ICON;
 				else
-					icon = MapillaryPlugin.ICON16SELECTED;
+					icon = MapillaryPlugin.MAP_ICON_SELECTED;
+				Image imagetemp = icon.getImage();
+				BufferedImage bi = (BufferedImage) imagetemp;
 				int width = icon.getIconWidth();
 				int height = icon.getIconHeight();
-				g.drawImage(icon.getImage(), p.x - (width / 2), p.y
-						- (height / 2), Main.map.mapView);
+				
+				// Rotate the image
+				double rotationRequired = Math.toRadians(image.getCa());
+				double locationX = width / 2;
+				double locationY = height / 2;
+				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+				
+				g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
+						Main.map.mapView);
+				
 			}
 		}
 	}
@@ -325,10 +352,30 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
 	}
 
-	// DataSetListener
-
+	/**
+	 * When more data is downloaded, a delayed update is thrown, in order to
+	 * wait for the data bounds to be set.
+	 * 
+	 * @param event
+	 */
 	@Override
 	public void dataChanged(DataChangedEvent event) {
+		Main.worker.submit(new delayedDownload());
+	}
+
+	private class delayedDownload extends Thread {
+
+		@Override
+		public void run() {
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			MapillaryLayer.getInstance().download();
+		}
+
 	}
 
 	@Override
