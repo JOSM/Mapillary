@@ -38,7 +38,8 @@ public class MapillaryExportAction extends JosmAction {
 		dlg.setVisible(true);
 
 		if (pane.getValue() != null
-				&& (int) pane.getValue() == JOptionPane.OK_OPTION) {
+				&& (int) pane.getValue() == JOptionPane.OK_OPTION
+				&& dialog.chooser != null) {
 			if (dialog.group.isSelected(dialog.all.getModel())) {
 				export(MapillaryData.getInstance().getImages());
 			} else if (dialog.group.isSelected(dialog.sequence.getModel())) {
