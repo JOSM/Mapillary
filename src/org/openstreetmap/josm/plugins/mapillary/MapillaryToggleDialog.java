@@ -54,7 +54,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	final JPanel buttons;
 
 	public MapillaryToggleDialog() {
-		super(tr("Mapillary image"), "mapillary", tr("Open Mapillary window"),
+		super(tr("Mapillary image"), "mapillary.png", tr("Open Mapillary window"),
 				null, 200);
 		mapillaryImageDisplay = new MapillaryImageDisplay();
 		this.add(mapillaryImageDisplay);

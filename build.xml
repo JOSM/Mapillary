@@ -23,7 +23,7 @@
 
          See http://josm.openstreetmap.de/wiki/DevelopersGuide/DevelopingPlugins
     -->
-    <property name="plugin.author" value="Nokutu - Polyglot - HolgerMappt"/>
+    <property name="plugin.author" value="Nokutu"/>
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
     <property name="plugin.description" value="Enables user to work with pictures hosted at mapillary.com"/>
     <property name="plugin.icon" value="images/icon24.png"/>
