@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class MapillarySequence {
 	private final List<MapillaryImage> images;
+	private String timestamp;
 
 	public MapillarySequence() {
 		this.images = new ArrayList<>();
@@ -28,6 +29,14 @@ public class MapillarySequence {
 	 */
 	public List<MapillaryImage> getImages() {
 		return this.images;
+	}
+	
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+	
+	public String getTimestamp() {
+		return this.timestamp;
 	}
 
 	/**

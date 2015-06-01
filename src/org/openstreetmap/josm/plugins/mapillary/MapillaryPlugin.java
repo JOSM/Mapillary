@@ -36,8 +36,8 @@ public class MapillaryPlugin extends Plugin {
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 
-		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
-				downloadAction, false, 0);
+		DOWNLOAD_MENU = MainMenu
+				.add(Main.main.menu.imageryMenu, downloadAction, false);
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
 		EXPORT_MENU.setEnabled(false);

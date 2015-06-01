@@ -13,6 +13,7 @@ import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
@@ -26,6 +27,7 @@ import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListener;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -44,7 +46,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	public static Boolean INSTANCED = false;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
-	
+	public static MapillaryImage BLUE;
+	public static MapillaryImage RED;
+
 	private final MapillaryData mapillaryData;
 	private List<Bounds> bounds;
 	private MapillaryToggleDialog tgd;
@@ -142,6 +146,33 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	@Override
 	public void paint(Graphics2D g, MapView mv, Bounds box) {
 		synchronized (this) {
+			// Draw colored lines
+			this.BLUE = null;
+			this.RED = null; 
+			MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
+			MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
+			if (mapillaryData.getSelectedImage() != null) {
+				MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
+				Point selected = mv.getPoint(mapillaryData.getSelectedImage()
+						.getLatLon());
+				if (closestImages[0] != null) {
+					this.BLUE = closestImages[0];
+					g.setColor(Color.BLUE);
+					g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
+							mv.getPoint(closestImages[0].getLatLon()).y,
+							selected.x, selected.y);
+					MapillaryToggleDialog.getInstance().blueButton.setEnabled(true);
+				}
+				if (closestImages[1] != null) {
+					this.RED = closestImages[1];
+					g.setColor(Color.RED);
+					g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
+							mv.getPoint(closestImages[1].getLatLon()).y,
+							selected.x, selected.y);
+					MapillaryToggleDialog.getInstance().redButton.setEnabled(true);
+				}
+			}
+			g.setColor(Color.WHITE);
 			for (MapillaryImage image : mapillaryData.getImages()) {
 				Point p = mv.getPoint(image.getLatLon());
 				Point nextp;
@@ -187,6 +218,34 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		actions.add(LayerListDialog.getInstance().createDeleteLayerAction());
 		actions.add(new LayerListPopup.InfoAction(this));
 		return actions.toArray(new Action[actions.size()]);
+	}
+
+	private MapillaryImage[] getClosestImagesFromDifferentSequences() {
+		MapillaryImage[] ret = new MapillaryImage[2];
+		double[] distances = { 100, 100 };
+		LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
+		double maxJumpDistance = 100;
+		for (MapillaryImage image : mapillaryData.getImages()) {
+			if (image.getLatLon().greatCircleDistance(selectedCoords) < maxJumpDistance
+					&& mapillaryData.getSelectedImage().getSequence() != image
+							.getSequence()) {
+				if ((ret[0] == null && ret[1] == null)
+						|| (image.getLatLon().greatCircleDistance(
+								selectedCoords) < distances[0] && (ret[1] == null || image
+								.getSequence() != ret[1].getSequence()))) {
+					ret[0] = image;
+					distances[0] = image.getLatLon().greatCircleDistance(
+							selectedCoords);
+				} else if ((ret[1] == null || image.getLatLon()
+						.greatCircleDistance(selectedCoords) < distances[1])
+						&& image.getSequence() != ret[0].getSequence()) {
+					ret[1] = image;
+					distances[1] = image.getLatLon().greatCircleDistance(
+							selectedCoords);
+				}
+			}
+		}
+		return ret;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,6 +43,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	final SideButton nextButton = new SideButton(new nextPictureAction());
 	final SideButton previousButton = new SideButton(
 			new previousPictureAction());
+	final SideButton redButton = new SideButton(new redAction());
+	final SideButton blueButton = new SideButton(new blueAction());
 
 	public MapillaryImageDisplay mapillaryImageDisplay;
 
@@ -57,8 +60,15 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		this.add(mapillaryImageDisplay);
 		buttons = new JPanel();
 		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+		blueButton.setBackground(Color.BLUE);
+		redButton.setBackground(Color.RED);
+		blueButton.setForeground(Color.WHITE);
+		redButton.setForeground(Color.WHITE);
+		buttons.add(blueButton);
 		buttons.add(previousButton);
-		buttons.add(nextButton);
+		buttons.add(nextButton);		
+		buttons.add(redButton);
+		
 		this.add(buttons, BorderLayout.SOUTH);
 	}
 
@@ -173,6 +183,44 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
+				Main.map.mapView.zoomTo(MapillaryData.getInstance()
+						.getSelectedImage().getLatLon());
+			}
+		}
+	}
+	
+	class redAction extends AbstractAction {
+		public redAction() {
+			putValue(NAME, "Red");
+			putValue(SHORT_DESCRIPTION,
+					tr("Shows the previous picture in the sequence"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().setSelectedImage(MapillaryLayer.RED);
+				MapillaryToggleDialog.getInstance().setImage(MapillaryLayer.RED);
+				MapillaryToggleDialog.getInstance().updateImage();
+				Main.map.mapView.zoomTo(MapillaryData.getInstance()
+						.getSelectedImage().getLatLon());
+			}
+		}
+	}
+	
+	class blueAction extends AbstractAction {
+		public blueAction() {
+			putValue(NAME, "Blue");
+			putValue(SHORT_DESCRIPTION,
+					tr("Shows the previous picture in the sequence"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().setSelectedImage(MapillaryLayer.BLUE);
+				MapillaryToggleDialog.getInstance().setImage(MapillaryLayer.BLUE);
+				MapillaryToggleDialog.getInstance().updateImage();
 				Main.map.mapView.zoomTo(MapillaryData.getInstance()
 						.getSelectedImage().getLatLon());
 			}

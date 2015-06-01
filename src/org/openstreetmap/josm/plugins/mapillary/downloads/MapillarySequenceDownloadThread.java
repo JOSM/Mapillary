@@ -78,6 +78,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					}
 				}
 				MapillarySequence sequence = new MapillarySequence();
+				//sequence.setTimestamp(jsonobj.getString("created_at"));
 				int first = -1;
 				int last = -1;
 				int pos = 0;
