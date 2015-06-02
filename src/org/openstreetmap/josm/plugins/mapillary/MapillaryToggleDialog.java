@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.commons.jcs.access.CacheAccess;
@@ -54,22 +55,26 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	final JPanel buttons;
 
 	public MapillaryToggleDialog() {
-		super(tr("Mapillary image"), "mapillary.png", tr("Open Mapillary window"),
-				null, 200);
+		super(tr("Mapillary image"), "mapillary.png",
+				tr("Open Mapillary window"), null, 200);
 		mapillaryImageDisplay = new MapillaryImageDisplay();
 		this.add(mapillaryImageDisplay);
 		buttons = new JPanel();
 		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
-		blueButton.setBackground(Color.BLUE);
-		redButton.setBackground(Color.RED);
-		blueButton.setForeground(Color.WHITE);
-		redButton.setForeground(Color.WHITE);
+		blueButton.setForeground(Color.BLUE);
+		redButton.setForeground(Color.RED);
 		buttons.add(blueButton);
 		buttons.add(previousButton);
-		buttons.add(nextButton);		
+		buttons.add(nextButton);
 		buttons.add(redButton);
-		
+
 		this.add(buttons, BorderLayout.SOUTH);
+
+		createLayout(
+				mapillaryImageDisplay,
+				true,
+				Arrays.asList(new SideButton[] { blueButton, previousButton,
+						nextButton, redButton }));
 	}
 
 	public static MapillaryToggleDialog getInstance() {
@@ -110,7 +115,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							MapillaryCache.Type.THUMBNAIL, prev, 200000,
 							200000, new HashMap<String, String>());
 					thumbnailCache.submit(this, false);
-					
+
 					if (imageCache != null)
 						imageCache.cancelOutstandingTasks();
 					imageCache = new MapillaryCache(image.getKey(),
@@ -188,7 +193,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			}
 		}
 	}
-	
+
 	class redAction extends AbstractAction {
 		public redAction() {
 			putValue(NAME, "Jump to red");
@@ -199,15 +204,17 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
-				MapillaryData.getInstance().setSelectedImage(MapillaryLayer.RED);
-				MapillaryToggleDialog.getInstance().setImage(MapillaryLayer.RED);
+				MapillaryData.getInstance()
+						.setSelectedImage(MapillaryLayer.RED);
+				MapillaryToggleDialog.getInstance()
+						.setImage(MapillaryLayer.RED);
 				MapillaryToggleDialog.getInstance().updateImage();
 				Main.map.mapView.zoomTo(MapillaryData.getInstance()
 						.getSelectedImage().getLatLon());
 			}
 		}
 	}
-	
+
 	class blueAction extends AbstractAction {
 		public blueAction() {
 			putValue(NAME, "Jump to blue");
@@ -218,8 +225,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
-				MapillaryData.getInstance().setSelectedImage(MapillaryLayer.BLUE);
-				MapillaryToggleDialog.getInstance().setImage(MapillaryLayer.BLUE);
+				MapillaryData.getInstance().setSelectedImage(
+						MapillaryLayer.BLUE);
+				MapillaryToggleDialog.getInstance().setImage(
+						MapillaryLayer.BLUE);
 				MapillaryToggleDialog.getInstance().updateImage();
 				Main.map.mapView.zoomTo(MapillaryData.getInstance()
 						.getSelectedImage().getLatLon());
@@ -241,7 +250,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					updateImage();
 				}
 			});
-		} else if (data != null){
+		} else if (data != null) {
 			try {
 				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
 						.getContent()));

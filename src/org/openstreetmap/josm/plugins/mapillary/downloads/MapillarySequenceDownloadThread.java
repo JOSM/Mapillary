@@ -64,7 +64,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 										.getJsonNumber(0).doubleValue(), cas
 										.getJsonNumber(j).doubleValue()));
 					} catch (Exception e) {
-						System.out.println(e);
+						Main.error(e);
 					}
 				}
 				MapillarySequence sequence = new MapillarySequence();
