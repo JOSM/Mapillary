@@ -105,6 +105,13 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				return;
 			}
 			if (this.image != null) {
+				this.nextButton.setEnabled(true);
+				this.previousButton.setEnabled(true);
+				if (this.image.next() == null)
+					this.nextButton.setEnabled(false);
+				if (this.image.previous() == null)
+					this.previousButton.setEnabled(false);
+					
 				CacheAccess<String, BufferedImageCacheEntry> prev;
 				try {
 					this.mapillaryImageDisplay.setImage(null);
@@ -165,8 +172,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectNext();
-				Main.map.mapView.zoomTo(MapillaryData.getInstance()
-						.getSelectedImage().getLatLon());
+				if (MapillaryData.getInstance()
+						.getSelectedImage() != null)
+					Main.map.mapView.zoomTo(MapillaryData.getInstance()
+							.getSelectedImage().getLatLon());
 			}
 		}
 	}
@@ -188,8 +197,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
-				Main.map.mapView.zoomTo(MapillaryData.getInstance()
-						.getSelectedImage().getLatLon());
+				if (MapillaryData.getInstance()
+						.getSelectedImage() != null)
+					Main.map.mapView.zoomTo(MapillaryData.getInstance()
+							.getSelectedImage().getLatLon());
 			}
 		}
 	}

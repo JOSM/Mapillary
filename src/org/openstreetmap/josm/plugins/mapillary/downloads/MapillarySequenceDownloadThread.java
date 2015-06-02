@@ -33,7 +33,8 @@ public class MapillarySequenceDownloadThread implements Runnable {
 	private ExecutorService ex;
 	private Bounds bounds;
 
-	public MapillarySequenceDownloadThread(ExecutorService ex, String url, Bounds bounds) {
+	public MapillarySequenceDownloadThread(ExecutorService ex, String url,
+			Bounds bounds) {
 		this.url = url;
 		this.ex = ex;
 		this.bounds = bounds;
@@ -50,6 +51,9 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				ex.shutdownNow();
 			}
 			JsonArray jsonseq = jsonall.getJsonArray("ss");
+			// At the moment there is a bug with some sequences at Mapillay API,
+			// so if they are worng he use this variable to skip them.
+			boolean isSequenceWrong = false;
 			for (int i = 0; i < jsonseq.size(); i++) {
 				JsonObject jsonobj = jsonseq.getJsonObject(i);
 				JsonArray cas = jsonobj.getJsonArray("cas");
@@ -63,10 +67,15 @@ public class MapillarySequenceDownloadThread implements Runnable {
 										.doubleValue(), coords.getJsonArray(j)
 										.getJsonNumber(0).doubleValue(), cas
 										.getJsonNumber(j).doubleValue()));
+					} catch (IndexOutOfBoundsException e) {
+						Main.error(e);
+						isSequenceWrong = true;
 					} catch (Exception e) {
 						Main.error(e);
 					}
 				}
+				if (isSequenceWrong)
+					break;
 				MapillarySequence sequence = new MapillarySequence();
 				int first = -1;
 				int last = -1;
