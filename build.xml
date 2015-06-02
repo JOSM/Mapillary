@@ -29,7 +29,7 @@
     <property name="plugin.icon" value="images/icon24.png"/>
     <!-- <property name="plugin.link" value="..."/>-->
     <!--<property name="plugin.early" value="..."/>-->
-    <!--<property name="plugin.requires" value="commons-imagery"/>-->
+    <!--<property name="plugin.requires" value="commons-imaging"/>-->
     <!--<property name="plugin.stage" value="..."/>-->
     
 	<property name="josm" location="../../core/dist/josm-custom.jar"/>

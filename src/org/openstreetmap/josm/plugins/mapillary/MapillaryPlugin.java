@@ -36,7 +36,9 @@ public class MapillaryPlugin extends Plugin {
 
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
-		Main.logLevel = 1;
+		synchronized (this) {
+			Main.logLevel = 1;
+		}
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 

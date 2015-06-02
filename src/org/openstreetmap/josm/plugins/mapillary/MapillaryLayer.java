@@ -48,6 +48,8 @@ import java.util.ArrayList;
 public class MapillaryLayer extends AbstractModifiableLayer implements
 		MouseListener, DataSetListener, EditLayerChangeListener {
 
+	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
+	
 	public static Boolean INSTANCED = false;
 	public static MapillaryLayer INSTANCE;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -248,11 +250,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	private MapillaryImage[] getClosestImagesFromDifferentSequences() {
 		MapillaryImage[] ret = new MapillaryImage[2];
-		double[] distances = { 100, 100 };
+		double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE, SEQUENCE_MAX_JUMP_DISTANCE };
 		LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
-		double maxJumpDistance = 100;
 		for (MapillaryImage image : mapillaryData.getImages()) {
-			if (image.getLatLon().greatCircleDistance(selectedCoords) < maxJumpDistance
+			if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
 					&& mapillaryData.getSelectedImage().getSequence() != image
 							.getSequence()) {
 				if ((ret[0] == null && ret[1] == null)

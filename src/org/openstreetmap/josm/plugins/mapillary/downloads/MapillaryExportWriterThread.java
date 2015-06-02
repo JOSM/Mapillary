@@ -24,7 +24,7 @@ import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 /**
- * Writes the images from the queue in the HD.
+ * Writes the images from the queue in the file system.
  * 
  * @author nokutu
  * @see MapillaryExportManager

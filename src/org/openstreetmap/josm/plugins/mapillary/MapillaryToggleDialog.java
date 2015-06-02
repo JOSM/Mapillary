@@ -104,35 +104,34 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (MapillaryLayer.INSTANCED == false) {
 				return;
 			}
-			if (this.image != null) {
-				this.nextButton.setEnabled(true);
-				this.previousButton.setEnabled(true);
-				if (this.image.next() == null)
-					this.nextButton.setEnabled(false);
-				if (this.image.previous() == null)
-					this.previousButton.setEnabled(false);
-					
-				CacheAccess<String, BufferedImageCacheEntry> prev;
-				try {
-					this.mapillaryImageDisplay.setImage(null);
-					prev = JCSCacheManager.getCache("mapillary");
-					if (thumbnailCache != null)
-						thumbnailCache.cancelOutstandingTasks();
-					thumbnailCache = new MapillaryCache(image.getKey(),
-							MapillaryCache.Type.THUMBNAIL, prev, 200000,
-							200000, new HashMap<String, String>());
-					thumbnailCache.submit(this, false);
+			if (this.image == null)
+				return;
+			this.nextButton.setEnabled(true);
+			this.previousButton.setEnabled(true);
+			if (this.image.next() == null)
+				this.nextButton.setEnabled(false);
+			if (this.image.previous() == null)
+				this.previousButton.setEnabled(false);
 
-					if (imageCache != null)
-						imageCache.cancelOutstandingTasks();
-					imageCache = new MapillaryCache(image.getKey(),
-							MapillaryCache.Type.FULL_IMAGE, prev, 200000,
-							200000, new HashMap<String, String>());
-					imageCache.submit(this, false);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			CacheAccess<String, BufferedImageCacheEntry> prev;
+			try {
+				this.mapillaryImageDisplay.setImage(null);
+				prev = JCSCacheManager.getCache("mapillary");
+				if (thumbnailCache != null)
+					thumbnailCache.cancelOutstandingTasks();
+				thumbnailCache = new MapillaryCache(image.getKey(),
+						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
+						new HashMap<String, String>());
+				thumbnailCache.submit(this, false);
+
+				if (imageCache != null)
+					imageCache.cancelOutstandingTasks();
+				imageCache = new MapillaryCache(image.getKey(),
+						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
+						new HashMap<String, String>());
+				imageCache.submit(this, false);
+			} catch (IOException e) {
+				Main.error(e);
 			}
 		}
 	}
@@ -172,8 +171,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectNext();
-				if (MapillaryData.getInstance()
-						.getSelectedImage() != null)
+				if (MapillaryData.getInstance().getSelectedImage() != null)
 					Main.map.mapView.zoomTo(MapillaryData.getInstance()
 							.getSelectedImage().getLatLon());
 			}
@@ -197,8 +195,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
-				if (MapillaryData.getInstance()
-						.getSelectedImage() != null)
+				if (MapillaryData.getInstance().getSelectedImage() != null)
 					Main.map.mapView.zoomTo(MapillaryData.getInstance()
 							.getSelectedImage().getLatLon());
 			}
