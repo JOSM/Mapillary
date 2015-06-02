@@ -38,6 +38,7 @@ public class MapillaryExportAction extends JosmAction {
 		dlg.setMinimumSize(new Dimension(400, 150));
 		dlg.setVisible(true);
 
+		// Checks if the inputs are correct and starts the export process.
 		if (pane.getValue() != null
 				&& (int) pane.getValue() == JOptionPane.OK_OPTION
 				&& dialog.chooser != null) {
@@ -50,15 +51,14 @@ public class MapillaryExportAction extends JosmAction {
 				export(MapillaryData.getInstance().getMultiSelectedImages());
 			}
 		}
-
 		dlg.dispose();
 	}
 
 	/**
-	 * Exports the given images from the database
+	 * Exports the given images from the database.
 	 */
 	public void export(List<MapillaryImage> images) {
-		new Thread(new MapillaryExportManager(tr("Downloading..."), images,
+		new Thread(new MapillaryExportManager(images,
 				dialog.chooser.getSelectedFile().toString())).start();
 	}
 

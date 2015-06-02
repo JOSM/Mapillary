@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.OsmTransferException;
@@ -32,11 +34,9 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	List<MapillaryImage> images;
 	String path;
 
-	public MapillaryExportManager(String title, List<MapillaryImage> images,
-			String path) {
-		super(title,
-				new PleaseWaitProgressMonitor("Exporting Mapillary Images"),
-				true);
+	public MapillaryExportManager(List<MapillaryImage> images, String path) {
+		super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
+				"Exporting Mapillary Images"), true);
 		queue = new ArrayBlockingQueue<>(10);
 		queueImages = new ArrayBlockingQueue<>(10);
 
@@ -47,15 +47,15 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	@Override
 	protected void cancel() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void realRun() throws SAXException, IOException,
 			OsmTransferException {
+		// Starts a writer thread in order to write the pictures on the disk.
 		Thread writer = new Thread(new MapillaryExportWriterThread(path, queue,
 				queueImages, images.size(), this.getProgressMonitor()));
-		writer.start();
+		Main.worker.submit(writer);
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
 		for (MapillaryImage image : images) {
@@ -63,18 +63,21 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 				ex.execute(new MapillaryExportDownloadThread(image, queue,
 						queueImages));
 			} catch (Exception e) {
-				System.out.println("Exception");
+				Main.error(e);
 			}
 			try {
+				// If the queue is full, waits for it to have more space
+				// available before executing anything else.
 				while (ex.getQueue().remainingCapacity() == 0)
 					Thread.sleep(100);
 			} catch (Exception e) {
-				System.out.println(e);
+				Main.error(e);
 			}
 		}
 		try {
 			writer.join();
 		} catch (Exception e) {
+			Main.error(e);
 		}
 
 	}
@@ -82,7 +85,5 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	@Override
 	protected void finish() {
 		// TODO Auto-generated method stub
-
 	}
-
 }

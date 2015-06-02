@@ -11,6 +11,7 @@ import javax.json.Json;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
@@ -21,14 +22,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  * @see MapillarySqueareDownloadManagerThread
  */
 public class MapillarySquareDownloadThread implements Runnable {
-	String url;
-	MapillaryData data;
-	ExecutorService ex;
+	private final String url;
+	private final ExecutorService ex;
 
 	public MapillarySquareDownloadThread(ExecutorService ex,
 			MapillaryData data, String url) {
 		this.ex = ex;
-		this.data = data;
 		this.url = url;
 	}
 
@@ -37,10 +36,6 @@ public class MapillarySquareDownloadThread implements Runnable {
 			BufferedReader br;
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
-			/*
-			 * String jsonLine = ""; while (br.ready()) { jsonLine +=
-			 * br.readLine(); }
-			 */
 			JsonObject jsonobj = Json.createReader(br).readObject();
 			if (!jsonobj.getBoolean("more")) {
 				ex.shutdownNow();
@@ -56,13 +51,12 @@ public class MapillarySquareDownloadThread implements Runnable {
 							.getJsonNumber("lon").doubleValue(), image
 							.getJsonNumber("ca").doubleValue()));
 				} catch (Exception e) {
-					System.out.println(e);
+					Main.error(e);
 				}
 			}
-			data.add(images);
-			return;
+			MapillaryData.getInstance().add(images);
 		} catch (Exception e) {
-			return;
+			Main.error(e);
 		}
 	}
 }

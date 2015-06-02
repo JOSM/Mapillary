@@ -23,7 +23,8 @@ import javax.swing.JComponent;
  * included in a {@link MapillaryToggleDialog} object.
  * 
  * @author Jorge
- *
+ * @see ImageDisplay
+ * @see MapillaryToggleDialog
  */
 public class MapillaryImageDisplay extends JComponent {
 
@@ -309,6 +310,11 @@ public class MapillaryImageDisplay extends JComponent {
 		addMouseMotionListener(mouseListener);
 	}
 
+	/**
+	 * Sets a new picture to be displayed.
+	 * 
+	 * @param image
+	 */
 	public void setImage(BufferedImage image) {
 		synchronized (this) {
 			this.image = image;
@@ -319,11 +325,19 @@ public class MapillaryImageDisplay extends JComponent {
 		}
 		repaint();
 	}
-	
+
+	/**
+	 * Returns the picture that is being displayerd
+	 * 
+	 * @return
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
 
+	/**
+	 * Paints the visible part of the picture.
+	 */
 	public void paintComponent(Graphics g) {
 		Image image;
 		Rectangle visibleRect;

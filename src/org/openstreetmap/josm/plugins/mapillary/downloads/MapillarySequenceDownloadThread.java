@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -28,14 +29,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  */
 public class MapillarySequenceDownloadThread implements Runnable {
 
-	private MapillaryData data;
 	private String url;
 	private ExecutorService ex;
 	private Bounds bounds;
 
-	public MapillarySequenceDownloadThread(ExecutorService ex,
-			MapillaryData data, String url, Bounds bounds) {
-		this.data = data;
+	public MapillarySequenceDownloadThread(ExecutorService ex, String url, Bounds bounds) {
 		this.url = url;
 		this.ex = ex;
 		this.bounds = bounds;
@@ -46,10 +44,6 @@ public class MapillarySequenceDownloadThread implements Runnable {
 			BufferedReader br;
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
-			/*
-			 * String jsonLine = ""; while (br.ready()) { jsonLine +=
-			 * br.readLine(); }
-			 */
 			JsonObject jsonall = Json.createReader(br).readObject();
 
 			if (!jsonall.getBoolean("more") && !ex.isShutdown()) {
@@ -70,15 +64,10 @@ public class MapillarySequenceDownloadThread implements Runnable {
 										.getJsonNumber(0).doubleValue(), cas
 										.getJsonNumber(j).doubleValue()));
 					} catch (Exception e) {
-						// Mapillary service bug here
-						// System.out.println(cas.length());
-						// System.out.println(coords.length());
-						// System.out.println(keys.length());
 						System.out.println(e);
 					}
 				}
 				MapillarySequence sequence = new MapillarySequence();
-				//sequence.setTimestamp(jsonobj.getString("created_at"));
 				int first = -1;
 				int last = -1;
 				int pos = 0;
@@ -104,12 +93,11 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				for (MapillaryImage img : finalImages) {
 					img.setSequence(sequence);
 				}
-				data.addWithoutUpdate(finalImages);
+				MapillaryData.getInstance().addWithoutUpdate(finalImages);
 				sequence.add(finalImages);
 			}
 		} catch (IOException e) {
-			return;
+			Main.error(e);
 		}
-		return;
 	}
 }

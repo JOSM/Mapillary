@@ -48,6 +48,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		group.add(all);
 		group.add(sequence);
 		group.add(selected);
+		// Some options are disabled depending on the circumstances
 		if (MapillaryData.getInstance().getSelectedImage() == null
 				|| MapillaryData.getInstance().getSelectedImage().getSequence() == null) {
 			sequence.setEnabled(false);
@@ -59,6 +60,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		choose = new JButton(tr("Explore"));
 		choose.addActionListener(this);
 
+		// All options belong to the same jpanel so the are in line.
 		JPanel jpanel = new JPanel();
 		jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
 		jpanel.add(all);

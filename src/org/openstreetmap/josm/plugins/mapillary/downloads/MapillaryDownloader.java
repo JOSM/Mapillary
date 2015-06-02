@@ -1,7 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 
@@ -20,10 +19,8 @@ public class MapillaryDownloader {
 
 	private String[] parameters = { "lat", "lon", "distance", "limit",
 			"min_lat", "min_lon", "max_lat", "max_lon" };
-	private MapillaryData data;
 
-	public MapillaryDownloader(MapillaryData data) {
-		this.data = data;
+	public MapillaryDownloader() {
 	}
 
 	/**
@@ -48,18 +45,17 @@ public class MapillaryDownloader {
 		url1 += buildParameters(hash);
 		url2 += buildParameters(hash);
 		try {
-			Main.worker.submit(new MapillarySquareDownloadManagerThread(this.data,
-					url1, url2, new Bounds(minLatLon, maxLatLon)));
+			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, new Bounds(minLatLon, maxLatLon)));
 		} catch (Exception e) {
+			Main.error(e);
 		}
 	}
 
 	private String buildParameters(ConcurrentHashMap<String, Double> hash) {
 		String ret = "?client_id=" + CLIENT_ID;
-		for (int i = 0; i < parameters.length; i++) {
+		for (int i = 0; i < parameters.length; i++)
 			if (hash.get(parameters[i]) != null)
 				ret += "&" + parameters[i] + "=" + hash.get(parameters[i]);
-		}
 		return ret;
 	}
 }

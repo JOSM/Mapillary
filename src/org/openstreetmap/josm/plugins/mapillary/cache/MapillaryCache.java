@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.jcs.access.behavior.ICacheAccess;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 
@@ -35,8 +36,7 @@ public class MapillaryCache extends
 				this.key += ".THUMBNAIL";
 			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		}
 	}
 
@@ -65,7 +65,6 @@ public class MapillaryCache extends
 
 	// @Override
 	protected boolean handleNotFound() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

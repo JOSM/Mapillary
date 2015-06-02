@@ -27,12 +27,13 @@ public class MapillaryData implements ICachedLoaderListener {
 	public volatile static MapillaryData INSTANCE;
 
 	private final List<MapillaryImage> images;
-	private MapillaryImage selectedImage = null;
-	private List<MapillaryImage> multiSelectedImages;
+	private MapillaryImage selectedImage;
+	private final List<MapillaryImage> multiSelectedImages;
 
 	public MapillaryData() {
 		images = new CopyOnWriteArrayList<>();
 		multiSelectedImages = new ArrayList<>();
+		selectedImage = null;
 	}
 
 	public static MapillaryData getInstance() {
@@ -40,14 +41,6 @@ public class MapillaryData implements ICachedLoaderListener {
 			INSTANCE = new MapillaryData();
 		}
 		return INSTANCE;
-	}
-
-	public static void deleteInstance() {
-		INSTANCE = null;
-	}
-
-	public MapillaryData(List<MapillaryImage> images) {
-		this.images = images;
 	}
 
 	/**
@@ -153,17 +146,11 @@ public class MapillaryData implements ICachedLoaderListener {
 
 	/**
 	 * Selects a new image and then starts a new MapillaryImageDownloadThread
-	 * thread in order to download its surrounding thumbnails and images. If the
+	 * thread in order to download its surrounding thumbnails. If the
 	 * user does ctrl+click, this isn't triggered.
 	 * 
 	 * @param image
 	 *            The MapillaryImage which is going to be selected
-	 * @param clearThumbnail
-	 *            Whether if the old selected MapillaryImage's thumbnail should
-	 *            be deleted or not.
-	 * @param clearImageWhether
-	 *            if the old selected MapillaryImage's full resolution image
-	 *            should be deleted or not.
 	 */
 	public void setSelectedImage(MapillaryImage image) {
 		selectedImage = image;
@@ -235,6 +222,5 @@ public class MapillaryData implements ICachedLoaderListener {
 	public void loadingFinished(CacheEntry data,
 			CacheEntryAttributes attributes, LoadResult result) {
 		// DO NOTHING
-
 	}
 }

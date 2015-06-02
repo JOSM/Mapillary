@@ -28,16 +28,15 @@ public class MapillaryPlugin extends Plugin {
 			"mapiconselected.png").get();
 	public static final int ICON_SIZE = 24;
 
-	MapillaryDownloadAction downloadAction;
-	MapillaryExportAction exportAction;
+	private final MapillaryDownloadAction downloadAction;
+	private final MapillaryExportAction exportAction;
 
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
 
-	public static String DIR;
-
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
+		Main.logLevel = 1;
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 
@@ -46,8 +45,6 @@ public class MapillaryPlugin extends Plugin {
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
 		EXPORT_MENU.setEnabled(false);
-		MapillaryPlugin.DIR = this.getPluginDir();
-
 	}
 
 	/**

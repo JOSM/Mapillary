@@ -10,6 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
@@ -55,11 +56,9 @@ public class MapillaryExportDownloadThread implements Runnable,
 					prev, 200000, 200000, new HashMap<String, String>())
 					.submit(this, false);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		} catch (IOException e) {
-			// TODO -generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		}
 	}
 
@@ -71,11 +70,9 @@ public class MapillaryExportDownloadThread implements Runnable,
 			queueImages.put(image);
 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		}
 	}
 }

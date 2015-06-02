@@ -21,6 +21,7 @@ import org.apache.sanselan.formats.tiff.fieldtypes.FieldType;
 import org.apache.sanselan.formats.tiff.write.TiffOutputDirectory;
 import org.apache.sanselan.formats.tiff.write.TiffOutputField;
 import org.apache.sanselan.formats.tiff.write.TiffOutputSet;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -33,11 +34,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  */
 public class MapillaryExportWriterThread implements Runnable {
 
-	private String path;
-	private ArrayBlockingQueue<BufferedImage> queue;
-	private ArrayBlockingQueue<MapillaryImage> queueImages;
-	private int amount;
-	private ProgressMonitor monitor;
+	private final String path;
+	private final ArrayBlockingQueue<BufferedImage> queue;
+	private final ArrayBlockingQueue<MapillaryImage> queueImages;
+	private final int amount;
+	private final ProgressMonitor monitor;
 
 	public MapillaryExportWriterThread(String path,
 			ArrayBlockingQueue<BufferedImage> queue,
@@ -62,8 +63,9 @@ public class MapillaryExportWriterThread implements Runnable {
 				img = queue.take();
 				mimg = queueImages.take();
 				finalPath = path + "/" + mimg.getKey();
+				// Creates a temporal file that is going to be deleted after
+				// writing the EXIF tags.
 				tempFile = new File(finalPath + ".tmp");
-
 				ImageIO.write(img, "jpg", tempFile);
 
 				// Write EXIF tags
@@ -71,17 +73,20 @@ public class MapillaryExportWriterThread implements Runnable {
 				TiffOutputDirectory exifDirectory = outputSet
 						.getOrCreateGPSDirectory();
 				FieldType fieldType = TiffFieldTypeConstants.FIELD_TYPE_RATIONAL;
-				TiffOutputField directionref = TiffOutputField.create(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF, outputSet.byteOrder, "T");
+				TiffOutputField directionref = TiffOutputField.create(
+						GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
+						outputSet.byteOrder, "T");
 				exifDirectory.add(directionref);
-				TiffOutputField direction = TiffOutputField.create(
-						new TagInfo("GPS Img Direction", 17, fieldType , 1, TiffDirectoryConstants.EXIF_DIRECTORY_GPS), outputSet.byteOrder, mimg.getCa());
+				TiffOutputField direction = TiffOutputField.create(new TagInfo(
+						"GPS Img Direction", 17, fieldType, 1,
+						TiffDirectoryConstants.EXIF_DIRECTORY_GPS),
+						outputSet.byteOrder, mimg.getCa());
 				exifDirectory.add(direction);
 				try {
 					outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg
 							.getLatLon().lat());
 				} catch (ImageWriteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Main.error(e);
 				}
 				OutputStream os = new BufferedOutputStream(
 						new FileOutputStream(finalPath + ".jpg"));
@@ -89,21 +94,17 @@ public class MapillaryExportWriterThread implements Runnable {
 						outputSet);
 				tempFile.delete();
 				os.close();
-
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} catch (InterruptedException e) {
+				Main.error(e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			} catch (ImageReadException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			} catch (ImageWriteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			}
 
+			// Increases the progress bar.
 			monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / amount);
 			monitor.setCustomText("Downloaded " + (i + 1) + "/" + amount);
 		}

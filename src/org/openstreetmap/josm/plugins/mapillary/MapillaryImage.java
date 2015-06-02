@@ -14,7 +14,7 @@ public class MapillaryImage {
 	private LatLon latLon;
 	private Double ca;
 	private boolean isModified = false;
-	public MapillarySequence sequence;
+	private MapillarySequence sequence;
 
 	/**
 	 * Main contructor of the class MapillaryImage

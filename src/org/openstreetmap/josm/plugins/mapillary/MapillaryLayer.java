@@ -74,8 +74,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		try {
 			CACHE = JCSCacheManager.getCache("Mapillary");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		}
 		if (Main.map != null && Main.map.mapView != null) {
 			Main.map.mapView.addMouseListener(this);
@@ -94,7 +93,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		download();
 	}
 
-	public static MapillaryLayer getInstance() {
+	public synchronized static MapillaryLayer getInstance() {
 		if (MapillaryLayer.INSTANCE == null)
 			MapillaryLayer.INSTANCE = new MapillaryLayer();
 		return MapillaryLayer.INSTANCE;
@@ -108,14 +107,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				.getDataSourceBounds()) {
 			if (!this.bounds.contains(bounds)) {
 				this.bounds.add(bounds);
-				new MapillaryDownloader(mapillaryData).getImages(
-						bounds.getMin(), bounds.getMax());
+				new MapillaryDownloader().getImages(bounds.getMin(),
+						bounds.getMax());
 			}
 		}
 	}
 
 	/**
-	 * Returs the MapillaryData object, which acts as the database of the Layer.
+	 * Returns the MapillaryData object, which acts as the database of the
+	 * Layer.
 	 * 
 	 * @return
 	 */
@@ -124,7 +124,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	}
 
 	/**
-	 * Method invoqued when the layer is destroyed.
+	 * Method invoked when the layer is destroyed.
 	 */
 	@Override
 	public void destroy() {
@@ -133,7 +133,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		INSTANCED = false;
 		MapillaryLayer.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
-		MapillaryData.deleteInstance();
+		MapillaryData.INSTANCE = null;
 		Main.map.mapView.removeMouseListener(this);
 		MapView.removeEditLayerChangeListener(this);
 		if (Main.map.mapView.getEditLayer() != null)
@@ -146,11 +146,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	 */
 	@Override
 	public boolean isModified() {
-		for (MapillaryImage image : mapillaryData.getImages()) {
-			if (image.isModified()) {
+		for (MapillaryImage image : mapillaryData.getImages())
+			if (image.isModified())
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -207,17 +205,18 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				BufferedImage bi = (BufferedImage) imagetemp;
 				int width = icon.getIconWidth();
 				int height = icon.getIconHeight();
-				
+
 				// Rotate the image
 				double rotationRequired = Math.toRadians(image.getCa());
 				double locationX = width / 2;
 				double locationY = height / 2;
-				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-				
-				g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
-						Main.map.mapView);
-				
+				AffineTransform tx = AffineTransform.getRotateInstance(
+						rotationRequired, locationX, locationY);
+				AffineTransformOp op = new AffineTransformOp(tx,
+						AffineTransformOp.TYPE_BILINEAR);
+
+				g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y
+						- (height / 2), Main.map.mapView);
 			}
 		}
 	}
@@ -277,20 +276,16 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() != MouseEvent.BUTTON1) {
+		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
-		}
-		if (Main.map.mapView.getActiveLayer() != this) {
+		if (Main.map.mapView.getActiveLayer() != this)
 			return;
-		}
 		Point clickPoint = e.getPoint();
 		double snapDistance = 10;
 		double minDistance = Double.MAX_VALUE;
 		MapillaryImage closest = null;
 		for (MapillaryImage image : mapillaryData.getImages()) {
 			Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());
-			// move the note point to the center of the icon where users are
-			// most likely to click when selecting
 			imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
 			double dist = clickPoint.distanceSq(imagePoint);
 			if (minDistance > dist
@@ -370,8 +365,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			try {
 				sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			}
 			MapillaryLayer.getInstance().download();
 		}
