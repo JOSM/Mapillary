@@ -55,7 +55,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 		// Starts a writer thread in order to write the pictures on the disk.
 		Thread writer = new Thread(new MapillaryExportWriterThread(path, queue,
 				queueImages, images.size(), this.getProgressMonitor()));
-		Main.worker.submit(writer);
+		writer.start();
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
 		for (MapillaryImage image : images) {

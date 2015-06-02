@@ -45,6 +45,7 @@ public class MapillaryDownloader {
 		url1 += buildParameters(hash);
 		url2 += buildParameters(hash);
 		try {
+			Main.info("MapillaryPlugin GET " + url2);
 			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, new Bounds(minLatLon, maxLatLon)));
 		} catch (Exception e) {
 			Main.error(e);

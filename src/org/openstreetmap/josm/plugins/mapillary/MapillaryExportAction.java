@@ -58,8 +58,8 @@ public class MapillaryExportAction extends JosmAction {
 	 * Exports the given images from the database.
 	 */
 	public void export(List<MapillaryImage> images) {
-		new Thread(new MapillaryExportManager(images,
-				dialog.chooser.getSelectedFile().toString())).start();
+		Main.worker.submit(new Thread(new MapillaryExportManager(images,
+				dialog.chooser.getSelectedFile().toString())));
 	}
 
 }
