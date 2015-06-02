@@ -29,13 +29,25 @@
     <property name="plugin.icon" value="images/icon24.png"/>
     <!-- <property name="plugin.link" value="..."/>-->
     <!--<property name="plugin.early" value="..."/>-->
-    <!--<property name="plugin.requires" value="..."/>-->
+    <!--<property name="plugin.requires" value="commons-imagery"/>-->
     <!--<property name="plugin.stage" value="..."/>-->
     
 	<property name="josm" location="../../core/dist/josm-custom.jar"/>
 	<property name="plugin.dist.dir" value="../../dist"/>
 	
     <!-- ** include targets that all plugins have in common ** -->
+    
     <import file="../build-common.xml"/>
-  
+    
+    <target name="compile" depends="init">
+		<echo message="compiling sources for  ${plugin.jar} ... "/>
+		<javac srcdir="src:../commons-imaging/src" classpath="${josm}" debug="true" destdir="${plugin.build.dir}" includeantruntime="false">
+            <classpath>
+                <pathelement location="${josm}"/>
+                
+            </classpath>
+			<compilerarg value="-Xlint:deprecation"/>
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+	</target>
 </project>
