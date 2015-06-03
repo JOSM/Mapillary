@@ -15,14 +15,7 @@
 
     <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
     <property name="plugin.main.version" value="7777"/>
-    <property name="plugin.version" value="0.8.1"/>
-
-    <!-- Configure these properties (replace "..." accordingly).
-
-
-
-         See http://josm.openstreetmap.de/wiki/DevelopersGuide/DevelopingPlugins
-    -->
+    <property name="plugin.version" value="0.8.2"/>
     <property name="plugin.author" value="nokutu &lt;nokutu@openmailbox.org&gt;"/>
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
     <property name="plugin.description" value="Enables user to work with pictures hosted at mapillary.com"/>
@@ -39,15 +32,7 @@
     
     <import file="../build-common.xml"/>
     
-    <target name="compile" depends="init">
-		<echo message="compiling sources for  ${plugin.jar} ... "/>
-		<javac srcdir="src:../commons-imaging/src" classpath="${josm}" debug="true" destdir="${plugin.build.dir}" includeantruntime="false">
-            <classpath>
-                <pathelement location="${josm}"/>
-                
-            </classpath>
-			<compilerarg value="-Xlint:deprecation"/>
-			<compilerarg value="-Xlint:unchecked"/>
-		</javac>
-	</target>
+    <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
+        <include name="commons-imaging.jar"/>
+    </fileset>
 </project>
