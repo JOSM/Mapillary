@@ -68,7 +68,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 										.getJsonNumber(0).doubleValue(), cas
 										.getJsonNumber(j).doubleValue()));
 					} catch (IndexOutOfBoundsException e) {
-						Main.error(e);
+						Main.warn("Mapillary bug at " + url);
 						isSequenceWrong = true;
 					} catch (Exception e) {
 						Main.error(e);
@@ -76,7 +76,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				}
 				if (isSequenceWrong)
 					break;
-				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"));
+				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at").intValue());
 				for (MapillaryImage mimage : MapillaryData.getInstance().getImages())
 					if (mimage.getSequence().getKey() == sequence.getKey())
 						break;

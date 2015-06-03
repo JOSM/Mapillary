@@ -4,6 +4,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -45,8 +46,11 @@ public class MapillaryExportAction extends JosmAction {
 			if (dialog.group.isSelected(dialog.all.getModel())) {
 				export(MapillaryData.getInstance().getImages());
 			} else if (dialog.group.isSelected(dialog.sequence.getModel())) {
-				export(MapillaryData.getInstance().getSelectedImage()
-						.getSequence().getImages());
+				ArrayList<MapillaryImage> images = new ArrayList<>();
+				for (MapillaryImage image : MapillaryData.getInstance().getMultiSelectedImages())
+					if (!images.contains(image))
+						images.addAll(image.getSequence().getImages());
+				export(images);
 			} else if (dialog.group.isSelected(dialog.selected.getModel())) {
 				export(MapillaryData.getInstance().getMultiSelectedImages());
 			}

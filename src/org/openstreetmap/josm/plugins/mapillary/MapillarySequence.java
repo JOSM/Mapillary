@@ -12,12 +12,13 @@ import java.util.List;
  */
 public class MapillarySequence {
 	private final List<MapillaryImage> images;
-	private String timestamp;
 	private final String key;
+	private final int created_at;
 
-	public MapillarySequence(String key) {
+	public MapillarySequence(String key, int created_at) {
 		this.images = new ArrayList<>();
 		this.key = key;
+		this.created_at = created_at;
 	}
 
 
@@ -30,12 +31,9 @@ public class MapillarySequence {
 		return this.images;
 	}
 	
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-	
-	public String getTimestamp() {
-		return this.timestamp;
+
+	public int getCreatedAt() {
+		return created_at;
 	}
 
 	/**
