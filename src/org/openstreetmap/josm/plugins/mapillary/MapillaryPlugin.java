@@ -32,7 +32,7 @@ public class MapillaryPlugin extends Plugin {
 	public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
 			"mapiconselected.png").get();
 	public static final int ICON_SIZE = 24;
-	
+
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
 	private final MapillaryDownloadAction downloadAction;
@@ -55,7 +55,8 @@ public class MapillaryPlugin extends Plugin {
 				false, 14);
 		EXPORT_MENU.setEnabled(false);
 		try {
-			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
+			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
+					this.getPluginDir() + "/cache/");
 		} catch (IOException e) {
 			Main.error(e);
 		}
@@ -69,7 +70,7 @@ public class MapillaryPlugin extends Plugin {
 		if (oldFrame == null && newFrame != null) { // map frame added
 		}
 		if (oldFrame != null && newFrame == null) { // map frame destroyed
-			MapillaryToggleDialog.deleteInstance();
+			MapillaryToggleDialog.destroyInstance();
 		}
 	}
 

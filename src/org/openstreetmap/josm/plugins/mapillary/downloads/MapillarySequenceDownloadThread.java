@@ -76,7 +76,10 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				}
 				if (isSequenceWrong)
 					break;
-				MapillarySequence sequence = new MapillarySequence();
+				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"));
+				for (MapillaryImage mimage : MapillaryData.getInstance().getImages())
+					if (mimage.getSequence().getKey() == sequence.getKey())
+						break;
 				int first = -1;
 				int last = -1;
 				int pos = 0;

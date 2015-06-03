@@ -81,7 +81,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		return INSTANCE;
 	}
 
-	public static void deleteInstance() {
+	public static void destroyInstance() {
 		INSTANCE = null;
 	}
 

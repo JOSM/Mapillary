@@ -93,6 +93,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		download();
+		Main.map.mapView.setActiveLayer(this);
 	}
 
 	public synchronized static MapillaryLayer getInstance() {

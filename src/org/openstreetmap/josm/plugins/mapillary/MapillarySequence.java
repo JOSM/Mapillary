@@ -13,14 +13,13 @@ import java.util.List;
 public class MapillarySequence {
 	private final List<MapillaryImage> images;
 	private String timestamp;
+	private final String key;
 
-	public MapillarySequence() {
+	public MapillarySequence(String key) {
 		this.images = new ArrayList<>();
+		this.key = key;
 	}
 
-	public MapillarySequence(List<MapillaryImage> images) {
-		this.images = images;
-	}
 
 	/**
 	 * Returns all MapillaryImages objects contained by this object.
@@ -46,6 +45,10 @@ public class MapillarySequence {
 	 */
 	public synchronized void add(MapillaryImage image) {
 		this.images.add(image);
+	}
+	
+	public String getKey() {
+		return this.key;
 	}
 
 	/**
@@ -113,5 +116,9 @@ public class MapillarySequence {
 			throw new IllegalArgumentException();
 		return Math.abs(this.images.indexOf(image1)
 				- this.images.indexOf(image2));
+	}
+	
+	public boolean equals(MapillarySequence sequence) {
+		return this.getKey() == sequence.getKey();
 	}
 }
