@@ -15,6 +15,7 @@
 
     <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
     <property name="plugin.main.version" value="8433"/>
+    <property name="plugin.canloadatruntime" value="true"/>
     <property name="plugin.version" value="0.8.2"/>
     <property name="plugin.author" value="nokutu &lt;nokutu@openmailbox.org&gt;"/>
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
