@@ -109,7 +109,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				sequence.add(finalImages);
 			}
 		} catch (IOException e) {
-			Main.error(e);
+			Main.error("Error reading the url " + url + " might be a Mapillary problem.");
 		}
 	}
 }
