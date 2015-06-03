@@ -11,6 +11,7 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MapFrame;
+import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -73,5 +74,10 @@ public class MapillaryPlugin extends Plugin {
 
 	public static void setMenuEnabled(JMenuItem menu, boolean value) {
 		menu.setEnabled(value);
+	}
+	
+	@Override
+	public PreferenceSetting getPreferenceSetting() {
+		return new MapillaryPreferenceSetting();
 	}
 }
