@@ -1,17 +1,12 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -146,8 +141,8 @@ public class MapillaryData implements ICachedLoaderListener {
 
 	/**
 	 * Selects a new image and then starts a new MapillaryImageDownloadThread
-	 * thread in order to download its surrounding thumbnails. If the
-	 * user does ctrl+click, this isn't triggered.
+	 * thread in order to download its surrounding thumbnails. If the user does
+	 * ctrl+click, this isn't triggered.
 	 * 
 	 * @param image
 	 *            The MapillaryImage which is going to be selected
@@ -159,32 +154,23 @@ public class MapillaryData implements ICachedLoaderListener {
 		if (image != null) {
 			MapillaryToggleDialog.getInstance().setImage(selectedImage);
 			MapillaryToggleDialog.getInstance().updateImage();
-			CacheAccess<String, BufferedImageCacheEntry> prev = null;
-			try {
-				prev = JCSCacheManager.getCache("mapillary");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			if (image.next() != null) {
 				new MapillaryCache(image.next().getKey(),
-						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
-						new HashMap<String, String>()).submit(this, false);
+						MapillaryCache.Type.THUMBNAIL).submit(
+						this, false);
 				if (image.next().next() != null)
 					new MapillaryCache(image.next().next().getKey(),
-							MapillaryCache.Type.THUMBNAIL, prev, 200000,
-							200000, new HashMap<String, String>()).submit(this,
-							false);
+							MapillaryCache.Type.THUMBNAIL)
+							.submit(this, false);
 			}
 			if (image.previous() != null) {
 				new MapillaryCache(image.previous().getKey(),
-						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
-						new HashMap<String, String>()).submit(this, false);
+						MapillaryCache.Type.THUMBNAIL).submit(
+						this, false);
 				if (image.previous().previous() != null)
 					new MapillaryCache(image.previous().previous().getKey(),
-							MapillaryCache.Type.THUMBNAIL, prev, 200000,
-							200000, new HashMap<String, String>()).submit(this,
-							false);
+							MapillaryCache.Type.THUMBNAIL)
+							.submit(this, false);
 			}
 		}
 		if (Main.map != null) {

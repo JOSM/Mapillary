@@ -10,11 +10,8 @@ import java.awt.FlowLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -113,22 +110,19 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (this.image.previous() == null)
 				this.previousButton.setEnabled(false);
 
-			CacheAccess<String, BufferedImageCacheEntry> prev;
 			try {
 				this.mapillaryImageDisplay.setImage(null);
-				prev = JCSCacheManager.getCache("mapillary");
+				MapillaryPlugin.CACHE = JCSCacheManager.getCache("mapillary");
 				if (thumbnailCache != null)
 					thumbnailCache.cancelOutstandingTasks();
 				thumbnailCache = new MapillaryCache(image.getKey(),
-						MapillaryCache.Type.THUMBNAIL, prev, 200000, 200000,
-						new HashMap<String, String>());
+						MapillaryCache.Type.THUMBNAIL);
 				thumbnailCache.submit(this, false);
 
 				if (imageCache != null)
 					imageCache.cancelOutstandingTasks();
 				imageCache = new MapillaryCache(image.getKey(),
-						MapillaryCache.Type.FULL_IMAGE, prev, 200000, 200000,
-						new HashMap<String, String>());
+						MapillaryCache.Type.FULL_IMAGE);
 				imageCache.submit(this, false);
 			} catch (IOException e) {
 				Main.error(e);

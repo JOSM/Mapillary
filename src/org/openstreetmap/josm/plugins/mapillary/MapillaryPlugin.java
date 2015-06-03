@@ -1,8 +1,13 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.IOException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 
+import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MapFrame;
@@ -27,6 +32,8 @@ public class MapillaryPlugin extends Plugin {
 	public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
 			"mapiconselected.png").get();
 	public static final int ICON_SIZE = 24;
+	
+	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
 	private final MapillaryDownloadAction downloadAction;
 	private final MapillaryExportAction exportAction;
@@ -47,6 +54,11 @@ public class MapillaryPlugin extends Plugin {
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
 		EXPORT_MENU.setEnabled(false);
+		try {
+			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
+		} catch (IOException e) {
+			Main.error(e);
+		}
 	}
 
 	/**

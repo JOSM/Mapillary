@@ -3,19 +3,14 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
@@ -49,17 +44,9 @@ public class MapillaryExportDownloadThread implements Runnable,
 
 	@Override
 	public void run() {
-		try {
-			CacheAccess<String, BufferedImageCacheEntry> prev = JCSCacheManager
-					.getCache("mapillary");
-			new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE,
-					prev, 200000, 200000, new HashMap<String, String>())
-					.submit(this, false);
-		} catch (MalformedURLException e) {
-			Main.error(e);
-		} catch (IOException e) {
-			Main.error(e);
-		}
+		new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(this,
+				false);
+
 	}
 
 	@Override

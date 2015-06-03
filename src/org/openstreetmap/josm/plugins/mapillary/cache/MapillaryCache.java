@@ -2,12 +2,12 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
+import java.util.HashMap;
 
-import org.apache.commons.jcs.access.behavior.ICacheAccess;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 public class MapillaryCache extends
 		JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
@@ -19,10 +19,8 @@ public class MapillaryCache extends
 		FULL_IMAGE, THUMBNAIL
 	}
 
-	public MapillaryCache(String key, Type type,
-			ICacheAccess<String, BufferedImageCacheEntry> cache,
-			int connectTimeout, int readTimeout, Map<String, String> headers) {
-		super(cache, connectTimeout, readTimeout, headers);
+	public MapillaryCache(String key, Type type) {
+		super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap<String, String>());
 		this.key = key;
 		try {
 			if (type == Type.FULL_IMAGE) {
