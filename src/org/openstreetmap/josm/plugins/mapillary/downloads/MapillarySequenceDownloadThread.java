@@ -48,7 +48,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 			JsonObject jsonall = Json.createReader(br).readObject();
 
 			if (!jsonall.getBoolean("more") && !ex.isShutdown()) {
-				ex.shutdownNow();
+				ex.shutdown();
 			}
 			JsonArray jsonseq = jsonall.getJsonArray("ss");
 			// At the moment there is a bug with some sequences at Mapillay API,

@@ -35,7 +35,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	}
 
 	public void downloadSequences() {
-		ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
+		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
 		int page = 0;
 		while (!ex.isShutdown()) {

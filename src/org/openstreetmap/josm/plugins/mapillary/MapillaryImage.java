@@ -94,8 +94,11 @@ public class MapillaryImage {
 				+ this.latLon.lon() + ";ca=" + this.ca + "]";
 	}
 
-	public Boolean equals(MapillaryImage image) {
-		return this.key.equals(image.getKey());
+	@Override
+	public boolean equals(Object image) {
+		if (image instanceof MapillaryImage)
+			return this.key.equals(((MapillaryImage) image).getKey());
+		return false;
 	}
 
 	/**
