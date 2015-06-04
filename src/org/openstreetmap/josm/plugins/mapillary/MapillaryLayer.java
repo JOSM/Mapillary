@@ -32,8 +32,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -42,12 +44,13 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 
 import java.util.List;
 import java.util.ArrayList;
 
 public class MapillaryLayer extends AbstractModifiableLayer implements
-		MouseListener, DataSetListener, EditLayerChangeListener {
+		DataSetListener, EditLayerChangeListener {
 
 	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
 
@@ -60,6 +63,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	private final MapillaryData mapillaryData;
 	private List<Bounds> bounds;
 	private MapillaryToggleDialog tgd;
+
+	private MouseAdapter mouseAdapter;
 
 	public MapillaryLayer() {
 		super(tr("Mapillary Images"));
@@ -74,13 +79,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	private void init() {
 		INSTANCED = true;
 		MapillaryLayer.INSTANCE = this;
+		startMouseAdapter();
 		try {
 			CACHE = JCSCacheManager.getCache("Mapillary");
 		} catch (IOException e) {
 			Main.error(e);
 		}
 		if (Main.map != null && Main.map.mapView != null) {
-			Main.map.mapView.addMouseListener(this);
+			Main.map.mapView.addMouseListener(mouseAdapter);
+			Main.map.mapView.addMouseMotionListener(mouseAdapter);
 			Main.map.mapView.addLayer(this);
 			MapView.addEditLayerChangeListener(this, false);
 			Main.map.mapView.getEditLayer().data.addDataSetListener(this);
@@ -95,6 +102,64 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		download();
 		Main.map.mapView.setActiveLayer(this);
+	}
+
+	public void startMouseAdapter() {
+		mouseAdapter = new MouseAdapter() {
+
+			private Point start;
+			private int lastButton;
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				lastButton = e.getButton();
+				if (e.getButton() != MouseEvent.BUTTON1)
+					return;
+				if (Main.map.mapView.getActiveLayer() != MapillaryLayer
+						.getInstance())
+					return;
+				Point clickPoint = e.getPoint();
+				double snapDistance = 10;
+				double minDistance = Double.MAX_VALUE;
+				MapillaryImage closest = null;
+				for (MapillaryImage image : mapillaryData.getImages()) {
+					Point imagePoint = Main.map.mapView.getPoint(image
+							.getLatLon());
+					imagePoint
+							.setLocation(imagePoint.getX(), imagePoint.getY());
+					double dist = clickPoint.distanceSq(imagePoint);
+					if (minDistance > dist
+							&& clickPoint.distance(imagePoint) < snapDistance) {
+						minDistance = dist;
+						closest = image;
+					}
+				}
+				start = e.getPoint();
+				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
+					mapillaryData.addMultiSelectedImage(closest);
+				else
+					mapillaryData.setSelectedImage(closest);
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (MapillaryData.getInstance().getSelectedImage() != null) {
+					if (lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
+						MapillaryData
+								.getInstance()
+								.getSelectedImage()
+								.move(Main.map.mapView.getLatLon(e.getX(),
+										e.getY()));
+						Main.map.repaint();
+					} else if (lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
+						MapillaryData
+						.getInstance()
+						.getSelectedImage().turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))));
+						Main.map.repaint();
+					}
+				}
+			}
+		};
 	}
 
 	public synchronized static MapillaryLayer getInstance() {
@@ -138,7 +203,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryLayer.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
 		MapillaryData.INSTANCE = null;
-		Main.map.mapView.removeMouseListener(this);
+		Main.map.mapView.removeMouseListener(mouseAdapter);
 		MapView.removeEditLayerChangeListener(this);
 		if (Main.map.mapView.getEditLayer() != null)
 			Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
@@ -286,32 +351,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() != MouseEvent.BUTTON1)
-			return;
-		if (Main.map.mapView.getActiveLayer() != this)
-			return;
-		Point clickPoint = e.getPoint();
-		double snapDistance = 10;
-		double minDistance = Double.MAX_VALUE;
-		MapillaryImage closest = null;
-		for (MapillaryImage image : mapillaryData.getImages()) {
-			Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());
-			imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
-			double dist = clickPoint.distanceSq(imagePoint);
-			if (minDistance > dist
-					&& clickPoint.distance(imagePoint) < snapDistance) {
-				minDistance = dist;
-				closest = image;
-			}
-		}
-		if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
-			mapillaryData.addMultiSelectedImage(closest);
-		else
-			mapillaryData.setSelectedImage(closest);
-	}
-
-	@Override
 	public Object getInfoComponent() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(tr("Mapillary layer"));
@@ -330,27 +369,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	private int size() {
 		return mapillaryData.getImages().size();
-	}
-
-	// MouseListener
-	@Override
-	public void visitBoundingBox(BoundingXYVisitor v) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
 	}
 
 	// EditDataLayerChanged
@@ -409,5 +427,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	@Override
 	public void otherDatasetChange(AbstractDatasetChangedEvent event) {
+	}
+
+	@Override
+	public void visitBoundingBox(BoundingXYVisitor v) {
 	}
 }

@@ -10,11 +10,14 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @see MapillaryData
  */
 public class MapillaryImage {
-	private String key;
-	private LatLon latLon;
-	private Double ca;
-	private boolean isModified = false;
+	private final String key;
+	private final LatLon latLon;
+	private final double ca;
 	private MapillarySequence sequence;
+	
+	private boolean isModified = false;
+	private LatLon tempLatLon;
+	private double tempCa;
 
 	/**
 	 * Main contructor of the class MapillaryImage
@@ -31,7 +34,9 @@ public class MapillaryImage {
 	public MapillaryImage(String key, double lat, double lon, double ca) {
 		this.key = key;
 		this.latLon = new LatLon(lat, lon);
+		this.tempLatLon = new LatLon(lat, lon);
 		this.ca = ca;
+		this.tempCa = ca;
 	}
 
 	/**
@@ -49,7 +54,26 @@ public class MapillaryImage {
 	 * @return The LatLon object with the position of the object.
 	 */
 	public LatLon getLatLon() {
-		return latLon;
+		return tempLatLon;
+	}
+	
+	/**
+	 * Moves the image temporally to another position
+	 * 
+	 * @param pos
+	 */
+	public void move(LatLon pos) {
+		this.tempLatLon = pos;
+		this.isModified = true;
+	}
+	
+	/**
+	 * Turns the image direction.
+	 * @param ca
+	 */
+	public void turn(double ca) {
+		this.tempCa = ca;
+		this.isModified = true;
 	}
 
 	/**
@@ -58,7 +82,7 @@ public class MapillaryImage {
 	 * @return The direction of the image (0 means north and goes clockwise).
 	 */
 	public Double getCa() {
-		return ca;
+		return tempCa;
 	}
 
 	/**
