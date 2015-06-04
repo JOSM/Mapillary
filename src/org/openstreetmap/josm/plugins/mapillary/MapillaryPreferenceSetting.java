@@ -5,13 +5,14 @@ import java.awt.FlowLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 
 public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
-	private JCheckBox reverseButtons;
+	private JCheckBox reverseButtons = new JCheckBox("Reverse buttons position when displaying images.");;
 	
 	@Override
 	public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -22,7 +23,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 	public void addGui(PreferenceTabbedPane gui) {
 		// TODO Auto-generated method stub
 		JPanel panel = new JPanel();
-		reverseButtons = new JCheckBox("Reverse buttons position when displaying images.");
+		
+		reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
+		
 		panel.add(reverseButtons);
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
@@ -30,8 +33,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
 	@Override
 	public boolean ok() {
-		// TODO Auto-generated method stub
-		return false;
+        boolean mod = false;
+        Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
+        return mod;
 	}
 
 	@Override

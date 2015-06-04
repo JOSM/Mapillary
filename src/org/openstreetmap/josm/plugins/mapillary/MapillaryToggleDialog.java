@@ -6,10 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -21,6 +25,9 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -44,34 +51,33 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	final SideButton redButton = new SideButton(new redAction());
 	final SideButton blueButton = new SideButton(new blueAction());
 
+	private JPanel buttonsPanel;
+	private JPanel top;
+
 	public MapillaryImageDisplay mapillaryImageDisplay;
 
 	private MapillaryCache imageCache;
 	private MapillaryCache thumbnailCache;
 
-	final JPanel buttons;
-
 	public MapillaryToggleDialog() {
 		super(tr("Mapillary image"), "mapillary.png",
 				tr("Open Mapillary window"), null, 200);
 		mapillaryImageDisplay = new MapillaryImageDisplay();
-		this.add(mapillaryImageDisplay);
-		buttons = new JPanel();
-		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+		// this.add(mapillaryImageDisplay);
 		blueButton.setForeground(Color.BLUE);
 		redButton.setForeground(Color.RED);
-		buttons.add(blueButton);
-		buttons.add(previousButton);
-		buttons.add(nextButton);
-		buttons.add(redButton);
 
-		this.add(buttons, BorderLayout.SOUTH);
+		this.setLayout(new BorderLayout());
+		top = new JPanel();
+		top.setLayout(new BorderLayout());
+		top.add(titleBar, BorderLayout.NORTH);
 
 		createLayout(
 				mapillaryImageDisplay,
-				true,
 				Arrays.asList(new SideButton[] { blueButton, previousButton,
-						nextButton, redButton }));
+						nextButton, redButton }),
+				Main.pref.getBoolean("mapillary.reverse-buttons"));
 	}
 
 	public static MapillaryToggleDialog getInstance() {
@@ -267,5 +273,25 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void createLayout(Component data, List<SideButton> buttons,
+			boolean reverse) {
+		add(data, BorderLayout.CENTER);
+		if (!buttons.isEmpty() && buttons.get(0) != null) {
+			buttonsPanel = new JPanel(new GridLayout(1, 1));
+			final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
+					"dialog.align.left", false) ? new FlowLayout(
+					FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
+			buttonsPanel.add(buttonRowPanel);
+			for (SideButton button : buttons) {
+				buttonRowPanel.add(button);
+			}
+			if (reverse)
+				top.add(buttonsPanel, BorderLayout.SOUTH);
+			else
+				add(buttonsPanel, BorderLayout.SOUTH);
+		}
+		add(top, BorderLayout.NORTH);
 	}
 }

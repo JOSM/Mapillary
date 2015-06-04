@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -49,7 +50,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MouseListener, DataSetListener, EditLayerChangeListener {
 
 	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
-	
+
 	public static Boolean INSTANCED = false;
 	public static MapillaryLayer INSTANCE;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -251,7 +252,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	private MapillaryImage[] getClosestImagesFromDifferentSequences() {
 		MapillaryImage[] ret = new MapillaryImage[2];
-		double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE, SEQUENCE_MAX_JUMP_DISTANCE };
+		double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,
+				SEQUENCE_MAX_JUMP_DISTANCE };
 		LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
 		for (MapillaryImage image : mapillaryData.getImages()) {
 			if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
@@ -273,6 +275,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				}
 			}
 		}
+		// Predownloads the thumbnails
+		if (ret[0] != null)
+			new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL)
+					.submit(MapillaryData.getInstance(), false);
+		if (ret[1] != null)
+			new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL)
+					.submit(MapillaryData.getInstance(), false);
 		return ret;
 	}
 
