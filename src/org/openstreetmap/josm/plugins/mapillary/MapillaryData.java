@@ -156,21 +156,17 @@ public class MapillaryData implements ICachedLoaderListener {
 			MapillaryToggleDialog.getInstance().updateImage();
 			if (image.next() != null) {
 				new MapillaryCache(image.next().getKey(),
-						MapillaryCache.Type.THUMBNAIL).submit(
-						this, false);
+						MapillaryCache.Type.THUMBNAIL).submit(this, false);
 				if (image.next().next() != null)
 					new MapillaryCache(image.next().next().getKey(),
-							MapillaryCache.Type.THUMBNAIL)
-							.submit(this, false);
+							MapillaryCache.Type.THUMBNAIL).submit(this, false);
 			}
 			if (image.previous() != null) {
 				new MapillaryCache(image.previous().getKey(),
-						MapillaryCache.Type.THUMBNAIL).submit(
-						this, false);
+						MapillaryCache.Type.THUMBNAIL).submit(this, false);
 				if (image.previous().previous() != null)
 					new MapillaryCache(image.previous().previous().getKey(),
-							MapillaryCache.Type.THUMBNAIL)
-							.submit(this, false);
+							MapillaryCache.Type.THUMBNAIL).submit(this, false);
 			}
 		}
 		if (Main.map != null) {
@@ -186,7 +182,10 @@ public class MapillaryData implements ICachedLoaderListener {
 	 *            The MapillaryImage object to be added.
 	 */
 	public void addMultiSelectedImage(MapillaryImage image) {
-		this.multiSelectedImages.add(image);
+		if (this.getSelectedImage() != null)
+			this.multiSelectedImages.add(image);
+		else
+			this.setSelectedImage(image);
 		Main.map.mapView.repaint();
 	}
 

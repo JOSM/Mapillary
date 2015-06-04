@@ -135,6 +135,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 					}
 				}
 				start = e.getPoint();
+				if (mapillaryData.getMultiSelectedImages().contains(closest))
+					return;
 				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
 					mapillaryData.addMultiSelectedImage(closest);
 				else
@@ -145,18 +147,34 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			public void mouseDragged(MouseEvent e) {
 				if (MapillaryData.getInstance().getSelectedImage() != null) {
 					if (lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
-						MapillaryData
-								.getInstance()
-								.getSelectedImage()
-								.move(Main.map.mapView.getLatLon(e.getX(),
-										e.getY()));
+						LatLon to = Main.map.mapView.getLatLon(e.getX(),
+								e.getY());
+						LatLon from = Main.map.mapView.getLatLon(start.getX(),
+								start.getY());
+						for (MapillaryImage img : MapillaryData.getInstance()
+								.getMultiSelectedImages()) {
+							img.move(to.getX() - from.getX(),
+									to.getY() - from.getY());
+						}
 						Main.map.repaint();
-					} else if (lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
-						MapillaryData
-						.getInstance()
-						.getSelectedImage().turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))));
+					} else if (lastButton == MouseEvent.BUTTON1
+							&& e.isShiftDown()) {
+						for (MapillaryImage img : MapillaryData.getInstance()
+								.getMultiSelectedImages()) {
+							img.turn(Math.toDegrees(Math.atan2(
+									(e.getX() - start.x), -(e.getY() - start.y))));
+						}
 						Main.map.repaint();
 					}
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				for (MapillaryImage img : MapillaryData.getInstance()
+						.getMultiSelectedImages()) {
+					if (img != null)
+						img.stopMoving();
 				}
 			}
 		};

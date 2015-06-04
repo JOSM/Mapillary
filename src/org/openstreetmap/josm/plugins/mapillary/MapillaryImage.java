@@ -10,13 +10,24 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @see MapillaryData
  */
 public class MapillaryImage {
+	/** Unique identifier of the object */
 	private final String key;
+	/** Postion of the picture */
 	private final LatLon latLon;
+	/** Direction of the picture */
 	private final double ca;
+	/** Sequence of pictures containing this */
 	private MapillarySequence sequence;
-	
+
 	private boolean isModified = false;
+	/** Temporal position of the picture until it is uplaoded */
 	private LatLon tempLatLon;
+	/**
+	 * When the object is being dragged in the map, the temporal position is
+	 * stored here
+	 */
+	private LatLon movingLatLon;
+	/** Temporal direction of the picture until it is uplaoded */
 	private double tempCa;
 
 	/**
@@ -35,6 +46,7 @@ public class MapillaryImage {
 		this.key = key;
 		this.latLon = new LatLon(lat, lon);
 		this.tempLatLon = new LatLon(lat, lon);
+		this.movingLatLon = new LatLon(lat, lon);
 		this.ca = ca;
 		this.tempCa = ca;
 	}
@@ -54,26 +66,36 @@ public class MapillaryImage {
 	 * @return The LatLon object with the position of the object.
 	 */
 	public LatLon getLatLon() {
-		return tempLatLon;
+		return movingLatLon;
 	}
-	
+
 	/**
 	 * Moves the image temporally to another position
 	 * 
 	 * @param pos
 	 */
-	public void move(LatLon pos) {
-		this.tempLatLon = pos;
+	public void move(double x, double y) {
+		this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
+				this.tempLatLon.getX() + x);
 		this.isModified = true;
 	}
-	
+
 	/**
 	 * Turns the image direction.
+	 * 
 	 * @param ca
 	 */
 	public void turn(double ca) {
 		this.tempCa = ca;
 		this.isModified = true;
+	}
+
+	/**
+	 * Called when the mouse button is released, meaning that the picture has
+	 * stopped being dragged.
+	 */
+	public void stopMoving() {
+		this.tempLatLon = this.movingLatLon;
 	}
 
 	/**
