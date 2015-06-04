@@ -9,7 +9,7 @@
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
     <property name="plugin.description" value="Enables user to work with pictures hosted at mapillary.com"/>
     <property name="plugin.icon" value="images/icon24.png"/>
-    <!-- <property name="plugin.link" value="..."/>-->
+    <property name="plugin.link" value="https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary"/>
     <!--<property name="plugin.early" value="..."/>-->
     <property name="plugin.requires" value="commons-imaging"/>
     <!--<property name="plugin.stage" value="..."/>-->

@@ -29,6 +29,11 @@ public class MapillaryImage {
 	private LatLon movingLatLon;
 	/** Temporal direction of the picture until it is uplaoded */
 	private double tempCa;
+	/**
+	 * When the object direction is being moved in the map, the temporal
+	 * direction is stored here
+	 */
+	private double movingCa;
 
 	/**
 	 * Main contructor of the class MapillaryImage
@@ -45,10 +50,11 @@ public class MapillaryImage {
 	public MapillaryImage(String key, double lat, double lon, double ca) {
 		this.key = key;
 		this.latLon = new LatLon(lat, lon);
-		this.tempLatLon = new LatLon(lat, lon);
-		this.movingLatLon = new LatLon(lat, lon);
+		this.tempLatLon = this.latLon;
+		this.movingLatLon = this.latLon;
 		this.ca = ca;
 		this.tempCa = ca;
+		this.movingCa = ca;
 	}
 
 	/**
@@ -86,7 +92,7 @@ public class MapillaryImage {
 	 * @param ca
 	 */
 	public void turn(double ca) {
-		this.tempCa = ca;
+		this.movingCa = this.tempCa + ca;
 		this.isModified = true;
 	}
 
@@ -96,6 +102,7 @@ public class MapillaryImage {
 	 */
 	public void stopMoving() {
 		this.tempLatLon = this.movingLatLon;
+		this.tempCa = this.movingCa;
 	}
 
 	/**
@@ -103,7 +110,15 @@ public class MapillaryImage {
 	 * 
 	 * @return The direction of the image (0 means north and goes clockwise).
 	 */
-	public Double getCa() {
+	public double getCa() {
+		return movingCa;
+	}
+
+	/**
+	 * Returns the last fixed direction of the object.
+	 * @return
+	 */
+	public double getTempCa() {
 		return tempCa;
 	}
 
@@ -145,6 +160,11 @@ public class MapillaryImage {
 		if (image instanceof MapillaryImage)
 			return this.key.equals(((MapillaryImage) image).getKey());
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
 	}
 
 	/**

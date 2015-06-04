@@ -78,7 +78,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					break;
 				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at").intValue());
 				for (MapillaryImage mimage : MapillaryData.getInstance().getImages())
-					if (mimage.getSequence().getKey() == sequence.getKey())
+					if (mimage.getSequence().getKey().equals(sequence.getKey()))
 						break;
 				int first = -1;
 				int last = -1;

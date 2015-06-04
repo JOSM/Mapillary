@@ -116,7 +116,15 @@ public class MapillarySequence {
 				- this.images.indexOf(image2));
 	}
 	
-	public boolean equals(MapillarySequence sequence) {
-		return this.getKey() == sequence.getKey();
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof MapillarySequence)
+			return this.getKey().equals(((MapillarySequence) obj).getKey());
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
 	}
 }

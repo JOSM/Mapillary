@@ -12,7 +12,6 @@ import java.awt.GridLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.openstreetmap.josm.Main;
@@ -25,9 +24,6 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;

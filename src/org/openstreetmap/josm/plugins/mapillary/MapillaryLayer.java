@@ -34,8 +34,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -44,7 +42,6 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.SwingUtilities;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -109,6 +106,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 			private Point start;
 			private int lastButton;
+			private MapillaryImage closest;
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -118,7 +116,23 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				if (Main.map.mapView.getActiveLayer() != MapillaryLayer
 						.getInstance())
 					return;
-				Point clickPoint = e.getPoint();
+				if (e.getClickCount() == 2 && mapillaryData.getSelectedImage() != null) {
+					for (MapillaryImage img : mapillaryData.getSelectedImage().getSequence().getImages()) {
+						mapillaryData.addMultiSelectedImage(img);
+					}
+				}
+				MapillaryImage closest = getClosest(e.getPoint());
+				this.start = e.getPoint();
+				this.closest = closest;
+				if (mapillaryData.getMultiSelectedImages().contains(closest))
+					return;
+				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
+					mapillaryData.addMultiSelectedImage(closest);
+				else
+					mapillaryData.setSelectedImage(closest);
+			}
+			
+			private MapillaryImage getClosest(Point clickPoint){
 				double snapDistance = 10;
 				double minDistance = Double.MAX_VALUE;
 				MapillaryImage closest = null;
@@ -134,13 +148,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						closest = image;
 					}
 				}
-				start = e.getPoint();
-				if (mapillaryData.getMultiSelectedImages().contains(closest))
-					return;
-				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
-					mapillaryData.addMultiSelectedImage(closest);
-				else
-					mapillaryData.setSelectedImage(closest);
+				return closest;				
 			}
 
 			@Override
@@ -159,10 +167,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						Main.map.repaint();
 					} else if (lastButton == MouseEvent.BUTTON1
 							&& e.isShiftDown()) {
+						this.closest.turn(Math.toDegrees(Math.atan2(
+									(e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
 						for (MapillaryImage img : MapillaryData.getInstance()
 								.getMultiSelectedImages()) {
 							img.turn(Math.toDegrees(Math.atan2(
-									(e.getX() - start.x), -(e.getY() - start.y))));
+									(e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
 						}
 						Main.map.repaint();
 					}
