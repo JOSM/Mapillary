@@ -275,6 +275,13 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Creates the layout of the dialog.
+	 * 
+	 * @param data The content of the dialog
+	 * @param buttons The buttons where you can click
+	 * @param reverse {@code true} if the buttons should go at the top; {@code false} otherwise.
+	 */
 	public void createLayout(Component data, List<SideButton> buttons,
 			boolean reverse) {
 		add(data, BorderLayout.CENTER);
