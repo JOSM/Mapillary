@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,6 +18,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -44,6 +47,8 @@ public class MapillaryImageDisplay extends JComponent {
 	 * coordinates)
 	 */
 	private Rectangle selectedRect = null;
+	
+	private JLabel hyperlink;
 
 	private class ImgDisplayMouseListener implements MouseListener,
 			MouseWheelListener, MouseMotionListener {
@@ -308,6 +313,10 @@ public class MapillaryImageDisplay extends JComponent {
 		addMouseListener(mouseListener);
 		addMouseWheelListener(mouseListener);
 		addMouseMotionListener(mouseListener);
+		this.setLayout(new BorderLayout());
+		hyperlink = new JLabel("Prueba", SwingConstants.RIGHT);
+		hyperlink.setForeground(Color.BLUE);
+		this.add(hyperlink, BorderLayout.SOUTH);
 	}
 
 	/**
