@@ -4,6 +4,9 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
+import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
+import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -57,7 +60,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public static MapillaryImage BLUE;
 	public static MapillaryImage RED;
 
-	private final MapillaryData mapillaryData;
+	private final MapillaryData mapillaryData = MapillaryData.getInstance();
+	private final MapillaryRecord record = MapillaryRecord.getInstance();
+
 	private List<Bounds> bounds;
 	private MapillaryToggleDialog tgd;
 
@@ -65,7 +70,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	public MapillaryLayer() {
 		super(tr("Mapillary Images"));
-		mapillaryData = MapillaryData.getInstance();
 		bounds = new ArrayList<>();
 		init();
 	}
@@ -116,23 +120,26 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				if (Main.map.mapView.getActiveLayer() != MapillaryLayer
 						.getInstance())
 					return;
-				if (e.getClickCount() == 2 && mapillaryData.getSelectedImage() != null) {
-					for (MapillaryImage img : mapillaryData.getSelectedImage().getSequence().getImages()) {
+				MapillaryImage closest = getClosest(e.getPoint());
+				if (e.getClickCount() == 2
+						&& mapillaryData.getSelectedImage() != null
+						&& closest != null) {
+					for (MapillaryImage img : closest.getSequence().getImages()) {
 						mapillaryData.addMultiSelectedImage(img);
 					}
 				}
-				MapillaryImage closest = getClosest(e.getPoint());
 				this.start = e.getPoint();
 				this.closest = closest;
 				if (mapillaryData.getMultiSelectedImages().contains(closest))
 					return;
-				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK))
+				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK)
+						&& closest != null)
 					mapillaryData.addMultiSelectedImage(closest);
 				else
 					mapillaryData.setSelectedImage(closest);
 			}
-			
-			private MapillaryImage getClosest(Point clickPoint){
+
+			private MapillaryImage getClosest(Point clickPoint) {
 				double snapDistance = 10;
 				double minDistance = Double.MAX_VALUE;
 				MapillaryImage closest = null;
@@ -148,11 +155,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						closest = image;
 					}
 				}
-				return closest;				
+				return closest;
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
+				if (Main.map.mapView.getActiveLayer() != MapillaryLayer
+						.getInstance())
+					return;
 				if (MapillaryData.getInstance().getSelectedImage() != null) {
 					if (lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
 						LatLon to = Main.map.mapView.getLatLon(e.getX(),
@@ -168,11 +178,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 					} else if (lastButton == MouseEvent.BUTTON1
 							&& e.isShiftDown()) {
 						this.closest.turn(Math.toDegrees(Math.atan2(
-									(e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
+								(e.getX() - start.x), -(e.getY() - start.y)))
+								- closest.getTempCa());
 						for (MapillaryImage img : MapillaryData.getInstance()
 								.getMultiSelectedImages()) {
 							img.turn(Math.toDegrees(Math.atan2(
-									(e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
+									(e.getX() - start.x), -(e.getY() - start.y)))
+									- closest.getTempCa());
 						}
 						Main.map.repaint();
 					}
@@ -181,7 +193,24 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				for (MapillaryImage img : MapillaryData.getInstance()
+				if (mapillaryData.getSelectedImage() == null)
+					return;
+				if (mapillaryData.getSelectedImage().getTempCa() != mapillaryData
+						.getSelectedImage().getCa()) {
+					double from = mapillaryData.getSelectedImage().getTempCa();
+					double to = mapillaryData.getSelectedImage().getCa();
+					record.addCommand(new CommandTurnImage(mapillaryData
+							.getMultiSelectedImages(), to - from));
+				} else if (mapillaryData.getSelectedImage().getTempLatLon() != mapillaryData
+						.getSelectedImage().getLatLon()) {
+					LatLon from = mapillaryData.getSelectedImage()
+							.getTempLatLon();
+					LatLon to = mapillaryData.getSelectedImage().getLatLon();
+					record.addCommand(new CommandMoveImage(mapillaryData
+							.getMultiSelectedImages(), to.getX() - from.getX(),
+							to.getY() - from.getY()));
+				}
+				for (MapillaryImage img : mapillaryData
 						.getMultiSelectedImages()) {
 					if (img != null)
 						img.stopMoving();

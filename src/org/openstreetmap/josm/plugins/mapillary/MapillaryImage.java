@@ -13,7 +13,7 @@ public class MapillaryImage {
 	/** Unique identifier of the object */
 	private final String key;
 	/** Postion of the picture */
-	private final LatLon latLon;
+	public final LatLon latLon;
 	/** Direction of the picture */
 	private final double ca;
 	/** Sequence of pictures containing this */
@@ -21,12 +21,12 @@ public class MapillaryImage {
 
 	private boolean isModified = false;
 	/** Temporal position of the picture until it is uplaoded */
-	private LatLon tempLatLon;
+	public LatLon tempLatLon;
 	/**
 	 * When the object is being dragged in the map, the temporal position is
 	 * stored here
 	 */
-	private LatLon movingLatLon;
+	public LatLon movingLatLon;
 	/** Temporal direction of the picture until it is uplaoded */
 	private double tempCa;
 	/**
@@ -73,6 +73,10 @@ public class MapillaryImage {
 	 */
 	public LatLon getLatLon() {
 		return movingLatLon;
+	}
+	
+	public LatLon getTempLatLon() {
+		return tempLatLon;
 	}
 
 	/**

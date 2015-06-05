@@ -27,7 +27,8 @@ public class MapillaryDownloadAction extends JosmAction {
 		super(tr("Mapillary"), new ImageProvider("icon24.png"),
 				tr("Create Mapillary layer."), Shortcut.registerShortcut(
 						"menu:Mapillary", tr("Menu: {0}", tr("Mapillary")),
-						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false, "mapillaryDownload", false);
+						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false,
+				"mapillaryDownload", false);
 	}
 
 	/*
@@ -39,7 +40,8 @@ public class MapillaryDownloadAction extends JosmAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.layer = null;
-		if (Main.map == null) {
+		if (Main.map == null || Main.map.mapView == null
+				|| Main.map.mapView.getEditLayer() == null) {
 			return;
 		}
 		for (Layer layer : Main.map.mapView.getAllLayers()) {
@@ -54,7 +56,8 @@ public class MapillaryDownloadAction extends JosmAction {
 			if (Main.map.mapView.getActiveLayer() != layer)
 				Main.map.mapView.setActiveLayer(layer);
 			else
-				Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
+				Main.map.mapView
+						.setActiveLayer(Main.map.mapView.getEditLayer());
 		}
 	}
 

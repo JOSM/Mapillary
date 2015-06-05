@@ -9,8 +9,11 @@ import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MapFrame;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
@@ -22,7 +25,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  *
  */
-public class MapillaryPlugin extends Plugin {
+public class MapillaryPlugin extends Plugin implements EditLayerChangeListener{
 
 	public static final ImageIcon ICON24 = new ImageProvider("icon24.png")
 			.get();
@@ -52,6 +55,9 @@ public class MapillaryPlugin extends Plugin {
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
 		EXPORT_MENU.setEnabled(false);
+		DOWNLOAD_MENU.setEnabled(false);
+		
+		MapView.addEditLayerChangeListener(this);
 		try {
 			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
 					this.getPluginDir() + "/cache/");
@@ -79,5 +85,13 @@ public class MapillaryPlugin extends Plugin {
 	@Override
 	public PreferenceSetting getPreferenceSetting() {
 		return new MapillaryPreferenceSetting();
+	}
+
+	@Override
+	public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
+		if (oldLayer == null && newLayer != null)
+			DOWNLOAD_MENU.setEnabled(true);		
+		else if (oldLayer != null && newLayer == null)
+			DOWNLOAD_MENU.setEnabled(false);
 	}
 }
