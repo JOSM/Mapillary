@@ -199,9 +199,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	class redAction extends AbstractAction {
 		public redAction() {
-			putValue(NAME, "Jump to red");
+			putValue(NAME, tr("Jump to red"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Shows the previous picture in the sequence"));
+					tr("Jumps to the picture at the other side of the red line"));
 		}
 
 		@Override
@@ -220,9 +220,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	class blueAction extends AbstractAction {
 		public blueAction() {
-			putValue(NAME, "Jump to blue");
+			putValue(NAME, tr("Jump to blue"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Shows the previous picture in the sequence"));
+					tr("Jumps to the picture at the other side of the blue line"));
 		}
 
 		@Override

@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.FlowLayout;
 
 import javax.swing.JCheckBox;
@@ -12,7 +13,7 @@ import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 
 public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
-	private JCheckBox reverseButtons = new JCheckBox("Reverse buttons position when displaying images.");;
+	private JCheckBox reverseButtons = new JCheckBox(tr("Reverse buttons position when displaying images."));;
 	
 	@Override
 	public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {

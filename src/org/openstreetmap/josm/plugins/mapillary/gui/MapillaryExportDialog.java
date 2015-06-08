@@ -58,7 +58,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
 			selected.setEnabled(false);
 		}
-		path = new JLabel("Select a folder");
+		path = new JLabel(tr("Select a folder"));
 		choose = new JButton(tr("Explore"));
 		choose.addActionListener(this);
 
@@ -86,7 +86,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File(System
 				.getProperty("user.home")));
-		chooser.setDialogTitle("Select a directory");
+		chooser.setDialogTitle(tr("Select a directory"));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
 

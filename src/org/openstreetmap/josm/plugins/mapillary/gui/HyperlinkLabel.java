@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,17 +20,15 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	/**
 	 * The normal text set by the user.
 	 */
-
 	private String text;
 
 	private URL url;
 
 	/**
-	 * Creates a new LinkLabel with the given text.
+	 * Creates a new HyperlinlLabel.
 	 */
-
 	public HyperlinkLabel() {
-		super("View in website", SwingUtilities.RIGHT);
+		super(tr("View in website"), SwingUtilities.RIGHT);
 		this.addActionListener(this);
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -39,7 +38,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	/**
 	 * Sets the text of the label.
 	 */
-
 	public void setText(String text) {
 		super.setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 		this.text = text;

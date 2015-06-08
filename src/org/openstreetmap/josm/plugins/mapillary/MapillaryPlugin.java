@@ -19,6 +19,7 @@ import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
+import org.openstreetmap.josm.plugins.mapillary.actions.*;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
