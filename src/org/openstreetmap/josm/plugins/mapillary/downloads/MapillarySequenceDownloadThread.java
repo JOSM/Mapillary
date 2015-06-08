@@ -52,7 +52,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 			}
 			JsonArray jsonseq = jsonall.getJsonArray("ss");
 			// At the moment there is a bug with some sequences at Mapillay API,
-			// so if they are worng he use this variable to skip them.
+			// so if they are wrong he use this variable to skip them.
 			boolean isSequenceWrong = false;
 			for (int i = 0; i < jsonseq.size(); i++) {
 				JsonObject jsonobj = jsonseq.getJsonObject(i);

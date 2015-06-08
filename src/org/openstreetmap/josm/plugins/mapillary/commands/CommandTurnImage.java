@@ -6,6 +6,12 @@ import java.util.List;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
+/**
+ * Command created when a image's direction is changed.
+ * 
+ * @author nokutu
+ *
+ */
 public class CommandTurnImage extends MapillaryCommand {
 	private List<MapillaryImage> images;
 	private double ca;
@@ -14,7 +20,6 @@ public class CommandTurnImage extends MapillaryCommand {
 		this.images = new ArrayList<>(images);
 		this.ca = ca;
 	}
-
 
 	@Override
 	public void undo() {

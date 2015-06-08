@@ -18,8 +18,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.JPanel;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -47,8 +46,8 @@ public class MapillaryImageDisplay extends JComponent {
 	 * coordinates)
 	 */
 	private Rectangle selectedRect = null;
-	
-	private JLabel hyperlink;
+
+	public HyperlinkLabel hyperlink;
 
 	private class ImgDisplayMouseListener implements MouseListener,
 			MouseWheelListener, MouseMotionListener {
@@ -314,9 +313,13 @@ public class MapillaryImageDisplay extends JComponent {
 		addMouseWheelListener(mouseListener);
 		addMouseMotionListener(mouseListener);
 		this.setLayout(new BorderLayout());
-		hyperlink = new JLabel("Prueba", SwingConstants.RIGHT);
-		hyperlink.setForeground(Color.BLUE);
-		this.add(hyperlink, BorderLayout.SOUTH);
+		JPanel southPanel = new JPanel();
+		southPanel.setLayout(new BorderLayout());
+		hyperlink = new HyperlinkLabel();
+		southPanel.add(hyperlink, BorderLayout.EAST);
+		southPanel.setOpaque(false);
+
+		add(southPanel, BorderLayout.SOUTH);
 	}
 
 	/**

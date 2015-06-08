@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-commons-imaging"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JOSM-commons-imaging"/>
+	<classpathentry exported="true" kind="lib" path="/home/nokutu/josm/dist/commons-imaging.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
