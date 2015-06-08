@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -33,7 +35,11 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	public void run() {
 		Main.map.statusLine.setHelpText("Downloading images from Mapillary");
 		downloadSequences();
-		Main.map.statusLine.setHelpText("Total images: " + MapillaryData.getInstance().getImages().size());
+		if (MapillaryData.getInstance().getImages().size() > 0)
+			Main.map.statusLine.setHelpText(tr("Total images: ")
+					+ MapillaryData.getInstance().getImages().size());
+		else
+			Main.map.statusLine.setHelpText(tr("No images found"));
 	}
 
 	public void downloadSequences() {

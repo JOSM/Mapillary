@@ -20,6 +20,7 @@ import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -41,7 +42,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	public static MapillaryToggleDialog INSTANCE;
 
-	public volatile MapillaryImage image;
+	public volatile MapillaryAbstractImage image;
 
 	final SideButton nextButton = new SideButton(new nextPictureAction());
 	final SideButton previousButton = new SideButton(
@@ -107,27 +108,29 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			}
 			if (this.image == null)
 				return;
-			this.nextButton.setEnabled(true);
-			this.previousButton.setEnabled(true);
-			if (this.image.next() == null)
-				this.nextButton.setEnabled(false);
-			if (this.image.previous() == null)
-				this.previousButton.setEnabled(false);
+			if (image instanceof MapillaryImage) {
+				this.nextButton.setEnabled(true);
+				this.previousButton.setEnabled(true);
+				MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+				if (mapillaryImage.next() == null)
+					this.nextButton.setEnabled(false);
+				if (mapillaryImage.previous() == null)
+					this.previousButton.setEnabled(false);
 
-			mapillaryImageDisplay.hyperlink.setURL(image.getKey());
-			this.mapillaryImageDisplay.setImage(null);
-			if (thumbnailCache != null)
-				thumbnailCache.cancelOutstandingTasks();
-			thumbnailCache = new MapillaryCache(image.getKey(),
-					MapillaryCache.Type.THUMBNAIL);
-			thumbnailCache.submit(this, false);
+				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+				this.mapillaryImageDisplay.setImage(null);
+				if (thumbnailCache != null)
+					thumbnailCache.cancelOutstandingTasks();
+				thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
+						MapillaryCache.Type.THUMBNAIL);
+				thumbnailCache.submit(this, false);
 
-			if (imageCache != null)
-				imageCache.cancelOutstandingTasks();
-			imageCache = new MapillaryCache(image.getKey(),
-					MapillaryCache.Type.FULL_IMAGE);
-			imageCache.submit(this, false);
-
+				if (imageCache != null)
+					imageCache.cancelOutstandingTasks();
+				imageCache = new MapillaryCache(mapillaryImage.getKey(),
+						MapillaryCache.Type.FULL_IMAGE);
+				imageCache.submit(this, false);
+			}
 		}
 	}
 
@@ -136,7 +139,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	 * 
 	 * @param image
 	 */
-	public synchronized void setImage(MapillaryImage image) {
+	public synchronized void setImage(MapillaryAbstractImage image) {
 		this.image = image;
 	}
 
@@ -145,7 +148,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	 * 
 	 * @return
 	 */
-	public synchronized MapillaryImage getImage() {
+	public synchronized MapillaryAbstractImage getImage() {
 		return this.image;
 	}
 
@@ -200,7 +203,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	class redAction extends AbstractAction {
 		public redAction() {
 			putValue(NAME, tr("Jump to red"));
-			putValue(SHORT_DESCRIPTION,
+			putValue(
+					SHORT_DESCRIPTION,
 					tr("Jumps to the picture at the other side of the red line"));
 		}
 
@@ -221,7 +225,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	class blueAction extends AbstractAction {
 		public blueAction() {
 			putValue(NAME, tr("Jump to blue"));
-			putValue(SHORT_DESCRIPTION,
+			putValue(
+					SHORT_DESCRIPTION,
 					tr("Jumps to the picture at the other side of the blue line"));
 		}
 

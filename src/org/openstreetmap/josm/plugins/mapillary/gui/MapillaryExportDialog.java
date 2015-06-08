@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 /**
  * GUI for exporting images.
@@ -52,7 +53,8 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		group.add(selected);
 		// Some options are disabled depending on the circumstances
 		if (MapillaryData.getInstance().getSelectedImage() == null
-				|| MapillaryData.getInstance().getSelectedImage().getSequence() == null) {
+				|| (MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
+						.getInstance().getSelectedImage()).getSequence() == null)) {
 			sequence.setEnabled(false);
 		}
 		if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {

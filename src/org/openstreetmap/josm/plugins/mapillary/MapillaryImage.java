@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
@@ -9,31 +8,11 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @see MapillarySequence
  * @see MapillaryData
  */
-public class MapillaryImage {
+public class MapillaryImage extends MapillaryAbstractImage {
 	/** Unique identifier of the object */
 	private final String key;
-	/** Postion of the picture */
-	public final LatLon latLon;
-	/** Direction of the picture */
-	private final double ca;
 	/** Sequence of pictures containing this */
 	private MapillarySequence sequence;
-
-	private boolean isModified = false;
-	/** Temporal position of the picture until it is uplaoded */
-	public LatLon tempLatLon;
-	/**
-	 * When the object is being dragged in the map, the temporal position is
-	 * stored here
-	 */
-	public LatLon movingLatLon;
-	/** Temporal direction of the picture until it is uplaoded */
-	private double tempCa;
-	/**
-	 * When the object direction is being moved in the map, the temporal
-	 * direction is stored here
-	 */
-	private double movingCa;
 
 	/**
 	 * Main contructor of the class MapillaryImage
@@ -48,82 +27,8 @@ public class MapillaryImage {
 	 *            The direction of the images in degrees, meaning 0 north.
 	 */
 	public MapillaryImage(String key, double lat, double lon, double ca) {
+		super(lat, lon, ca);
 		this.key = key;
-		this.latLon = new LatLon(lat, lon);
-		this.tempLatLon = this.latLon;
-		this.movingLatLon = this.latLon;
-		this.ca = ca;
-		this.tempCa = ca;
-		this.movingCa = ca;
-	}
-
-	/**
-	 * Returns whether the object has been modified or not.
-	 * 
-	 * @return true if the object has been modified; false otherwise.
-	 */
-	public boolean isModified() {
-		return this.isModified;
-	}
-
-	/**
-	 * Returns a LatLon object containing the coordintes of the object.
-	 * 
-	 * @return The LatLon object with the position of the object.
-	 */
-	public LatLon getLatLon() {
-		return movingLatLon;
-	}
-	
-	public LatLon getTempLatLon() {
-		return tempLatLon;
-	}
-
-	/**
-	 * Moves the image temporally to another position
-	 * 
-	 * @param pos
-	 */
-	public void move(double x, double y) {
-		this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
-				this.tempLatLon.getX() + x);
-		this.isModified = true;
-	}
-
-	/**
-	 * Turns the image direction.
-	 * 
-	 * @param ca
-	 */
-	public void turn(double ca) {
-		this.movingCa = this.tempCa + ca;
-		this.isModified = true;
-	}
-
-	/**
-	 * Called when the mouse button is released, meaning that the picture has
-	 * stopped being dragged.
-	 */
-	public void stopMoving() {
-		this.tempLatLon = this.movingLatLon;
-		this.tempCa = this.movingCa;
-	}
-
-	/**
-	 * Returns the direction towards the image has been taken.
-	 * 
-	 * @return The direction of the image (0 means north and goes clockwise).
-	 */
-	public double getCa() {
-		return movingCa;
-	}
-
-	/**
-	 * Returns the last fixed direction of the object.
-	 * @return
-	 */
-	public double getTempCa() {
-		return tempCa;
 	}
 
 	/**

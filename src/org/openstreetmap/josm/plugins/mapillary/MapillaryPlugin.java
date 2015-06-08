@@ -28,7 +28,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  *
  */
-public class MapillaryPlugin extends Plugin implements EditLayerChangeListener{
+public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 
 	public static final ImageIcon ICON24 = new ImageProvider("icon24.png")
 			.get();
@@ -38,28 +38,37 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener{
 			.get();
 	public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
 			"mapiconselected.png").get();
+	public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
+			"mapiconimported.png").get();
 	public static final int ICON_SIZE = 24;
 
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
 	private final MapillaryDownloadAction downloadAction;
 	private final MapillaryExportAction exportAction;
+	private final MapillaryImportAction importAction;
 
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
+	public static JMenuItem IMPORT_MENU;
 
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
+		importAction = new MapillaryImportAction();
 
 		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
 				downloadAction, false);
 		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
 				false, 14);
+		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
+				false, 14);
+
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);
-		
+		IMPORT_MENU.setEnabled(false);
+
 		MapView.addEditLayerChangeListener(this);
 		try {
 			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
@@ -84,7 +93,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener{
 	public static void setMenuEnabled(JMenuItem menu, boolean value) {
 		menu.setEnabled(value);
 	}
-	
+
 	@Override
 	public PreferenceSetting getPreferenceSetting() {
 		return new MapillaryPreferenceSetting();
@@ -92,9 +101,12 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener{
 
 	@Override
 	public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-		if (oldLayer == null && newLayer != null)
-			DOWNLOAD_MENU.setEnabled(true);		
-		else if (oldLayer != null && newLayer == null)
+		if (oldLayer == null && newLayer != null) {
+			DOWNLOAD_MENU.setEnabled(true);
+			IMPORT_MENU.setEnabled(true);
+		} else if (oldLayer != null && newLayer == null) {
 			DOWNLOAD_MENU.setEnabled(false);
+			IMPORT_MENU.setEnabled(false);
+		}
 	}
 }

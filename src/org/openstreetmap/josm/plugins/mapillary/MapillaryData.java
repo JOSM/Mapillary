@@ -22,9 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MapillaryData implements ICachedLoaderListener {
 	public volatile static MapillaryData INSTANCE;
 
-	private final List<MapillaryImage> images;
-	private MapillaryImage selectedImage;
-	private final List<MapillaryImage> multiSelectedImages;
+	private final List<MapillaryAbstractImage> images;
+	private MapillaryAbstractImage selectedImage;
+	private final List<MapillaryAbstractImage> multiSelectedImages;
 
 	public MapillaryData() {
 		images = new CopyOnWriteArrayList<>();
@@ -45,8 +45,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param images
 	 *            The set of images to be added.
 	 */
-	public synchronized void add(List<MapillaryImage> images) {
-		for (MapillaryImage image : images) {
+	public synchronized void add(List<MapillaryAbstractImage> images) {
+		for (MapillaryAbstractImage image : images) {
 			add(image);
 		}
 	}
@@ -57,7 +57,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param image
 	 *            The image to be added.
 	 */
-	public synchronized void add(MapillaryImage image) {
+	public synchronized void add(MapillaryAbstractImage image) {
 		if (!images.contains(image)) {
 			this.images.add(image);
 		}
@@ -71,8 +71,9 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param images
 	 *            The set of images to be added.
 	 */
-	public synchronized void addWithoutUpdate(List<MapillaryImage> images) {
-		for (MapillaryImage image : images) {
+	public synchronized void addWithoutUpdate(
+			List<MapillaryAbstractImage> images) {
+		for (MapillaryAbstractImage image : images) {
 			addWithoutUpdate(image);
 		}
 	}
@@ -84,7 +85,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param image
 	 *            The image to be added.
 	 */
-	public synchronized void addWithoutUpdate(MapillaryImage image) {
+	public synchronized void addWithoutUpdate(MapillaryAbstractImage image) {
 		if (!images.contains(image)) {
 			this.images.add(image);
 		}
@@ -102,7 +103,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * 
 	 * @return A List object containing all images.
 	 */
-	public List<MapillaryImage> getImages() {
+	public List<MapillaryAbstractImage> getImages() {
 		return images;
 	}
 
@@ -111,7 +112,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * 
 	 * @return The selected MapillaryImage object.
 	 */
-	public MapillaryImage getSelectedImage() {
+	public MapillaryAbstractImage getSelectedImage() {
 		return selectedImage;
 	}
 
@@ -121,11 +122,13 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * nothing.
 	 */
 	public void selectNext() {
-		if (getSelectedImage() == null)
-			return;
-		if (getSelectedImage().getSequence() == null)
-			return;
-		setSelectedImage(getSelectedImage().next());
+		if (getSelectedImage() instanceof MapillaryImage) {
+			if (getSelectedImage() == null)
+				return;
+			if (((MapillaryImage) getSelectedImage()).getSequence() == null)
+				return;
+			setSelectedImage(((MapillaryImage) getSelectedImage()).next());
+		}
 	}
 
 	/**
@@ -133,11 +136,13 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * previous MapillaryImage is selected. In case there is none, does nothing.
 	 */
 	public void selectPrevious() {
-		if (getSelectedImage() == null)
-			return;
-		if (getSelectedImage().getSequence() == null)
-			throw new IllegalStateException();
-		setSelectedImage(getSelectedImage().previous());
+		if (getSelectedImage() instanceof MapillaryImage) {
+			if (getSelectedImage() == null)
+				return;
+			if (((MapillaryImage) getSelectedImage()).getSequence() == null)
+				throw new IllegalStateException();
+			setSelectedImage(((MapillaryImage) getSelectedImage()).previous());
+		}
 	}
 
 	/**
@@ -148,26 +153,31 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param image
 	 *            The MapillaryImage which is going to be selected
 	 */
-	public void setSelectedImage(MapillaryImage image) {
+	public void setSelectedImage(MapillaryAbstractImage image) {
 		selectedImage = image;
 		multiSelectedImages.clear();
 		multiSelectedImages.add(image);
 		if (image != null) {
 			MapillaryToggleDialog.getInstance().setImage(selectedImage);
 			MapillaryToggleDialog.getInstance().updateImage();
-			if (image.next() != null) {
-				new MapillaryCache(image.next().getKey(),
-						MapillaryCache.Type.THUMBNAIL).submit(this, false);
-				if (image.next().next() != null)
-					new MapillaryCache(image.next().next().getKey(),
+			if (image instanceof MapillaryImage) {
+				MapillaryImage mapillaryImage = (MapillaryImage) image;
+				if (mapillaryImage.next() != null) {
+					new MapillaryCache(mapillaryImage.next().getKey(),
 							MapillaryCache.Type.THUMBNAIL).submit(this, false);
-			}
-			if (image.previous() != null) {
-				new MapillaryCache(image.previous().getKey(),
-						MapillaryCache.Type.THUMBNAIL).submit(this, false);
-				if (image.previous().previous() != null)
-					new MapillaryCache(image.previous().previous().getKey(),
+					if (mapillaryImage.next().next() != null)
+						new MapillaryCache(mapillaryImage.next().next()
+								.getKey(), MapillaryCache.Type.THUMBNAIL)
+								.submit(this, false);
+				}
+				if (mapillaryImage.previous() != null) {
+					new MapillaryCache(mapillaryImage.previous().getKey(),
 							MapillaryCache.Type.THUMBNAIL).submit(this, false);
+					if (mapillaryImage.previous().previous() != null)
+						new MapillaryCache(mapillaryImage.previous().previous()
+								.getKey(), MapillaryCache.Type.THUMBNAIL)
+								.submit(this, false);
+				}
 			}
 		}
 		if (Main.map != null) {
@@ -182,7 +192,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param image
 	 *            The MapillaryImage object to be added.
 	 */
-	public void addMultiSelectedImage(MapillaryImage image) {
+	public void addMultiSelectedImage(MapillaryAbstractImage image) {
 		if (!this.multiSelectedImages.contains(image)) {
 			if (this.getSelectedImage() != null)
 				this.multiSelectedImages.add(image);
@@ -197,8 +207,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * 
 	 * @param images
 	 */
-	public void addMultiSelectedImage(List<MapillaryImage> images) {
-		for (MapillaryImage image : images)
+	public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
+		for (MapillaryAbstractImage image : images)
 			if (!this.multiSelectedImages.contains(image)) {
 				if (this.getSelectedImage() != null)
 					this.multiSelectedImages.add(image);
@@ -214,7 +224,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * 
 	 * @return
 	 */
-	public List<MapillaryImage> getMultiSelectedImages() {
+	public List<MapillaryAbstractImage> getMultiSelectedImages() {
 		return multiSelectedImages;
 	}
 

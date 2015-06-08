@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.OsmTransferException;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.xml.sax.SAXException;
 
@@ -29,12 +31,12 @@ import org.xml.sax.SAXException;
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
 	ArrayBlockingQueue<BufferedImage> queue;
-	ArrayBlockingQueue<MapillaryImage> queueImages;
+	ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
-	List<MapillaryImage> images;
+	List<MapillaryAbstractImage> images;
 	String path;
 
-	public MapillaryExportManager(List<MapillaryImage> images, String path) {
+	public MapillaryExportManager(List<MapillaryAbstractImage> images, String path) {
 		super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
 				"Exporting Mapillary Images"), true);
 		queue = new ArrayBlockingQueue<>(10);
@@ -58,20 +60,25 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 		writer.start();
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
-		for (MapillaryImage image : images) {
-			try {
-				ex.execute(new MapillaryExportDownloadThread(image, queue,
-						queueImages));
-			} catch (Exception e) {
-				Main.error(e);
+		for (MapillaryAbstractImage image : images) {
+			if (image instanceof MapillaryImage) {
+				try {
+					ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image, queue,
+							queueImages));
+				} catch (Exception e) {
+					Main.error(e);
+				}
+				try {
+					// If the queue is full, waits for it to have more space
+					// available before executing anything else.
+					while (ex.getQueue().remainingCapacity() == 0)
+						Thread.sleep(100);
+				} catch (Exception e) {
+					Main.error(e);
+				}
 			}
-			try {
-				// If the queue is full, waits for it to have more space
-				// available before executing anything else.
-				while (ex.getQueue().remainingCapacity() == 0)
-					Thread.sleep(100);
-			} catch (Exception e) {
-				Main.error(e);
+			else {
+				//TODO
 			}
 		}
 		try {

@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -77,8 +78,9 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				if (isSequenceWrong)
 					break;
 				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at").intValue());
-				for (MapillaryImage mimage : MapillaryData.getInstance().getImages())
-					if (mimage.getSequence().getKey().equals(sequence.getKey()))
+				for (MapillaryAbstractImage mimage : MapillaryData.getInstance().getImages())
+					if (mimage instanceof MapillaryImage
+							&& ((MapillaryImage) mimage).getSequence().getKey().equals(sequence.getKey()))
 						break;
 				int first = -1;
 				int last = -1;
@@ -86,7 +88,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 
 				// Here it gets only those images which are in the downloaded
 				// area.
-				for (MapillaryImage img : images) {
+				for (MapillaryAbstractImage img : images) {
 					if (first == -1 && bounds.contains(img.getLatLon()))
 						first = pos;
 					else if (first != -1 && last == -1
@@ -105,7 +107,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				for (MapillaryImage img : finalImages) {
 					img.setSequence(sequence);
 				}
-				MapillaryData.getInstance().addWithoutUpdate(finalImages);
+				MapillaryData.getInstance().addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(finalImages));
 				sequence.add(finalImages);
 			}
 		} catch (IOException e) {

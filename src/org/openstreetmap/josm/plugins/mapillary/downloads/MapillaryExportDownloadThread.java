@@ -12,6 +12,7 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
@@ -27,14 +28,14 @@ public class MapillaryExportDownloadThread implements Runnable,
 
 	String url;
 	ArrayBlockingQueue<BufferedImage> queue;
-	ArrayBlockingQueue<MapillaryImage> queueImages;
+	ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
 	ProgressMonitor monitor;
 	MapillaryImage image;
 
 	public MapillaryExportDownloadThread(MapillaryImage image,
 			ArrayBlockingQueue<BufferedImage> queue,
-			ArrayBlockingQueue<MapillaryImage> queueImages) {
+			ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
 		url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
 				+ "/thumb-2048.jpg";
 		this.queue = queue;

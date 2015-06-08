@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
@@ -41,7 +42,7 @@ public class MapillarySquareDownloadThread implements Runnable {
 				ex.shutdownNow();
 			}
 			JsonArray jsonarr = jsonobj.getJsonArray("ims");
-			ArrayList<MapillaryImage> images = new ArrayList<>();
+			ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
 			JsonObject image;
 			for (int i = 0; i < jsonarr.size(); i++) {
 				try {
