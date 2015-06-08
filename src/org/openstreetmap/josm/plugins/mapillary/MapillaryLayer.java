@@ -13,6 +13,7 @@ import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
+import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -50,7 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MapillaryLayer extends AbstractModifiableLayer implements
-		DataSetListener, EditLayerChangeListener {
+		DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
 	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
 
@@ -91,6 +92,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			Main.map.mapView.addMouseMotionListener(mouseAdapter);
 			Main.map.mapView.addLayer(this);
 			MapView.addEditLayerChangeListener(this, false);
+			MapView.addLayerChangeListener(this);
 			Main.map.mapView.getEditLayer().data.addDataSetListener(this);
 			if (tgd == null) {
 				if (MapillaryToggleDialog.INSTANCE == null) {
@@ -111,6 +113,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			private Point start;
 			private int lastButton;
 			private MapillaryImage closest;
+			private MapillaryImage lastClicked;
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -129,13 +132,32 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 					}
 				}
 				this.start = e.getPoint();
+				this.lastClicked = this.closest;
 				this.closest = closest;
 				if (mapillaryData.getMultiSelectedImages().contains(closest))
 					return;
 				if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK)
 						&& closest != null)
 					mapillaryData.addMultiSelectedImage(closest);
-				else
+				else if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.SHIFT_MASK)) {
+					if (this.closest != null
+							&& this.lastClicked != null
+							&& this.closest.getSequence() == this.lastClicked
+									.getSequence()) {
+						int i = this.closest.getSequence().getImages()
+								.indexOf(this.closest);
+						int j = this.lastClicked.getSequence().getImages()
+								.indexOf(this.lastClicked);
+						if (i < j)
+							mapillaryData.addMultiSelectedImage(this.closest
+									.getSequence().getImages()
+									.subList(i, j + 1));
+						else
+							mapillaryData.addMultiSelectedImage(this.closest
+									.getSequence().getImages()
+									.subList(j, i + 1));
+					}
+				} else
 					mapillaryData.setSelectedImage(closest);
 			}
 
@@ -488,5 +510,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	@Override
 	public void visitBoundingBox(BoundingXYVisitor v) {
+	}
+
+	@Override
+	public void activeLayerChange(Layer oldLayer, Layer newLayer) {
+		if (newLayer == this)
+			Main.map.statusLine.setHelpText("Total images: "
+					+ MapillaryData.getInstance().getImages().size());
+	}
+
+	@Override
+	public void layerAdded(Layer newLayer) {
+	}
+
+	@Override
+	public void layerRemoved(Layer oldLayer) {
 	}
 }

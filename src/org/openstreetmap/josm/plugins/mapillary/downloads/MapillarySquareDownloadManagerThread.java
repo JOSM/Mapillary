@@ -6,7 +6,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 
 /**
@@ -18,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
  * 
  * @see MapillaryDownloader
  */
-public class MapillarySquareDownloadManagerThread extends PleaseWaitRunnable {
+public class MapillarySquareDownloadManagerThread implements Runnable {
 
 	@SuppressWarnings("unused")
 	private final String urlImages;
@@ -26,15 +25,15 @@ public class MapillarySquareDownloadManagerThread extends PleaseWaitRunnable {
 	private final Bounds bounds;
 
 	public MapillarySquareDownloadManagerThread(String urlImages, String urlSequences, Bounds bounds) {
-		super("Mapillary plugin");
 		this.urlImages = urlImages;
 		this.urlSequences = urlSequences;
 		this.bounds = bounds;
 	}
 
-	public void realRun() {
-		this.getProgressMonitor().indeterminateSubTask("Downloading images");
+	public void run() {
+		Main.map.statusLine.setHelpText("Downloading images from Mapillary");
 		downloadSequences();
+		Main.map.statusLine.setHelpText("Total images: " + MapillaryData.getInstance().getImages().size());
 	}
 
 	public void downloadSequences() {
@@ -59,17 +58,5 @@ public class MapillarySquareDownloadManagerThread extends PleaseWaitRunnable {
 			Main.error(e);
 		}
 		MapillaryData.getInstance().dataUpdated();
-	}
-
-	@Override
-	protected void cancel() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void finish() {
-		// TODO Auto-generated method stub
-		
 	}
 }

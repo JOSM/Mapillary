@@ -190,6 +190,17 @@ public class MapillaryData implements ICachedLoaderListener {
 		}
 		Main.map.mapView.repaint();
 	}
+	
+	public void addMultiSelectedImage(List<MapillaryImage> images) {
+		for (MapillaryImage image : images)
+			if (!this.multiSelectedImages.contains(image)) {
+				if (this.getSelectedImage() != null)
+					this.multiSelectedImages.add(image);
+				else
+					this.setSelectedImage(image);
+		}
+		Main.map.mapView.repaint();
+	}
 
 	/**
 	 * Returns a list containing all MapillaryImage objects selected with ctrl +
