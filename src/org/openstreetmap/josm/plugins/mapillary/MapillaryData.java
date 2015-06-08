@@ -5,6 +5,7 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +191,12 @@ public class MapillaryData implements ICachedLoaderListener {
 		}
 		Main.map.mapView.repaint();
 	}
-	
+
+	/**
+	 * Adds a set of MapillaryImage objects to the list of selected images.
+	 * 
+	 * @param images
+	 */
 	public void addMultiSelectedImage(List<MapillaryImage> images) {
 		for (MapillaryImage image : images)
 			if (!this.multiSelectedImages.contains(image)) {
@@ -198,7 +204,7 @@ public class MapillaryData implements ICachedLoaderListener {
 					this.multiSelectedImages.add(image);
 				else
 					this.setSelectedImage(image);
-		}
+			}
 		Main.map.mapView.repaint();
 	}
 

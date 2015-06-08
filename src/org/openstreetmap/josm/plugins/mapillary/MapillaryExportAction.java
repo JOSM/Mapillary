@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryExportManager;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**

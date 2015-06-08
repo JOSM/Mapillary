@@ -8,6 +8,7 @@ import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
