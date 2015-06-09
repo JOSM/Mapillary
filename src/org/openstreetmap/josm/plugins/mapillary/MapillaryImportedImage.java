@@ -15,13 +15,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 		this.file = file;
 	}
 	
-	public BufferedImage getImage() {
-		try {
-			return ImageIO.read(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	public BufferedImage getImage() throws IOException {
+		return ImageIO.read(file);
 	}
 }

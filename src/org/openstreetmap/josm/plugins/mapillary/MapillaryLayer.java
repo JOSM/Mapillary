@@ -114,8 +114,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 			private Point start;
 			private int lastButton;
-			private MapillaryImage closest;
-			private MapillaryImage lastClicked;
+			private MapillaryAbstractImage closest;
+			private MapillaryAbstractImage lastClicked;
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -126,7 +126,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						.getInstance())
 					return;
 				MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
-				if (closestTemp instanceof MapillaryImage || closestTemp == null) {
+				if (closestTemp instanceof MapillaryImage
+						|| closestTemp == null) {
 					MapillaryImage closest = (MapillaryImage) closestTemp;
 					if (e.getClickCount() == 2
 							&& mapillaryData.getSelectedImage() != null
@@ -145,29 +146,44 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 					if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK)
 							&& closest != null)
 						mapillaryData.addMultiSelectedImage(closest);
-					else if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.SHIFT_MASK)) {
+					else if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.SHIFT_MASK)
+							&& this.closest instanceof MapillaryImage
+							&& this.lastClicked instanceof MapillaryImage) {
 						if (this.closest != null
 								&& this.lastClicked != null
-								&& this.closest.getSequence() == this.lastClicked
+								&& ((MapillaryImage) this.closest).getSequence() == ((MapillaryImage) this.lastClicked)
 										.getSequence()) {
-							int i = this.closest.getSequence().getImages()
+							int i = ((MapillaryImage) this.closest).getSequence().getImages()
 									.indexOf(this.closest);
-							int j = this.lastClicked.getSequence().getImages()
+							int j = ((MapillaryImage) this.lastClicked).getSequence().getImages()
 									.indexOf(this.lastClicked);
 							if (i < j)
 								mapillaryData
 										.addMultiSelectedImage(new ArrayList<MapillaryAbstractImage>(
-												this.closest.getSequence()
+												((MapillaryImage) this.closest).getSequence()
 														.getImages()
 														.subList(i, j + 1)));
 							else
 								mapillaryData
 										.addMultiSelectedImage(new ArrayList<MapillaryAbstractImage>(
-												this.closest.getSequence()
+												((MapillaryImage) this.closest).getSequence()
 														.getImages()
 														.subList(j, i + 1)));
 						}
 					} else
+						mapillaryData.setSelectedImage(closest);
+				} else if (closestTemp instanceof MapillaryImportedImage) {
+					MapillaryImportedImage closest = (MapillaryImportedImage) closestTemp;
+					this.start = e.getPoint();
+					this.lastClicked = this.closest;
+					this.closest = closest;
+					if (mapillaryData.getMultiSelectedImages()
+							.contains(closest))
+						return;
+					if (e.getModifiers() == (MouseEvent.BUTTON1_MASK | MouseEvent.CTRL_MASK)
+							&& closest != null)
+						mapillaryData.addMultiSelectedImage(closest);
+					else
 						mapillaryData.setSelectedImage(closest);
 				}
 			}
@@ -442,7 +458,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				SEQUENCE_MAX_JUMP_DISTANCE };
 		LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
 		for (MapillaryAbstractImage imagePrev : mapillaryData.getImages()) {
-			if (!(imagePrev instanceof MapillaryImage))
+			if (!(imagePrev instanceof MapillaryImportedImage))
 				continue;
 			MapillaryImage image = (MapillaryImage) imagePrev;
 			if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
@@ -521,7 +537,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			}
 			MapillaryLayer.getInstance().download();
 		}
-
 	}
 
 	@Override
