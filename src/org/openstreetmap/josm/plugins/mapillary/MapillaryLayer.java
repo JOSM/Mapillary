@@ -299,7 +299,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				SEQUENCE_MAX_JUMP_DISTANCE };
 		LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
 		for (MapillaryAbstractImage imagePrev : mapillaryData.getImages()) {
-			if (!(imagePrev instanceof MapillaryImportedImage))
+			if (!(imagePrev instanceof MapillaryImage))
 				continue;
 			MapillaryImage image = (MapillaryImage) imagePrev;
 			if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE

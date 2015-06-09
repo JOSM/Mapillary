@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,15 +14,13 @@ import java.net.URL;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.Main;
+
 import java.awt.Desktop;
 
 public class HyperlinkLabel extends JLabel implements ActionListener {
 
-	/**
-	 * The normal text set by the user.
-	 */
 	private String text;
-
 	private URL url;
 
 	/**
@@ -43,19 +42,26 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 		this.text = text;
 	}
 
+	/**
+	 * Sets a new URL, just pass the key of the image or null if there is none.
+	 * 
+	 * @param key
+	 */
 	public void setURL(String key) {
+		if (key == null) {
+			this.url = null;
+			return;
+		}
 		try {
 			this.url = new URL("http://www.mapillary.com/map/im/" + key);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.error(e);
 		}
 	}
 
 	/**
 	 * Returns the text set by the user.
 	 */
-
 	public String getNormalText() {
 		return text;
 	}
@@ -63,7 +69,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	/**
 	 * Processes mouse events and responds to clicks.
 	 */
-
 	protected void processMouseEvent(MouseEvent evt) {
 		super.processMouseEvent(evt);
 		if (evt.getID() == MouseEvent.MOUSE_CLICKED)
@@ -75,7 +80,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	 * Adds an ActionListener to the list of listeners receiving notifications
 	 * when the label is clicked.
 	 */
-
 	public void addActionListener(ActionListener listener) {
 		listenerList.add(ActionListener.class, listener);
 	}
@@ -84,7 +88,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	 * Removes the given ActionListener from the list of listeners receiving
 	 * notifications when the label is clicked.
 	 */
-
 	public void removeActionListener(ActionListener listener) {
 		listenerList.remove(ActionListener.class, listener);
 	}
@@ -92,7 +95,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 	/**
 	 * Fires an ActionEvent to all interested listeners.
 	 */
-
 	protected void fireActionPerformed(ActionEvent evt) {
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = 0; i < listeners.length; i += 2) {

@@ -1,6 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.InputStreamReader;
 
@@ -34,13 +36,11 @@ public class MapillarySquareDownloadThread implements Runnable {
 
 	public void run() {
 		try {
-			BufferedReader br;
-			br = new BufferedReader(new InputStreamReader(
+			BufferedReader br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
 			JsonObject jsonobj = Json.createReader(br).readObject();
-			if (!jsonobj.getBoolean("more")) {
+			if (!jsonobj.getBoolean("more"))
 				ex.shutdownNow();
-			}
 			JsonArray jsonarr = jsonobj.getJsonArray("ims");
 			ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
 			JsonObject image;
@@ -56,7 +56,9 @@ public class MapillarySquareDownloadThread implements Runnable {
 				}
 			}
 			MapillaryData.getInstance().add(images);
-		} catch (Exception e) {
+		} catch (MalformedURLException e) {
+			Main.error(e);
+		} catch (IOException e) {
 			Main.error(e);
 		}
 	}

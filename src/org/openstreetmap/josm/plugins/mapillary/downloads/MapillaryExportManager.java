@@ -15,6 +15,7 @@ import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.xml.sax.SAXException;
 
 /**
@@ -36,7 +37,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	List<MapillaryAbstractImage> images;
 	String path;
 
-	public MapillaryExportManager(List<MapillaryAbstractImage> images, String path) {
+	public MapillaryExportManager(List<MapillaryAbstractImage> images,
+			String path) {
 		super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
 				"Exporting Mapillary Images"), true);
 		queue = new ArrayBlockingQueue<>(10);
@@ -63,27 +65,31 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 		for (MapillaryAbstractImage image : images) {
 			if (image instanceof MapillaryImage) {
 				try {
-					ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image, queue,
-							queueImages));
+					ex.execute(new MapillaryExportDownloadThread(
+							(MapillaryImage) image, queue, queueImages));
 				} catch (Exception e) {
 					Main.error(e);
 				}
+			} else if (image instanceof MapillaryImportedImage) {
 				try {
-					// If the queue is full, waits for it to have more space
-					// available before executing anything else.
-					while (ex.getQueue().remainingCapacity() == 0)
-						Thread.sleep(100);
-				} catch (Exception e) {
+					queue.put(((MapillaryImportedImage) image).getImage());
+					queueImages.put((MapillaryImportedImage) image);
+				} catch (InterruptedException e) {
 					Main.error(e);
 				}
 			}
-			else {
-				//TODO
+			try {
+				// If the queue is full, waits for it to have more space
+				// available before executing anything else.
+				while (ex.getQueue().remainingCapacity() == 0)
+					Thread.sleep(100);
+			} catch (Exception e) {
+				Main.error(e);
 			}
 		}
 		try {
 			writer.join();
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			Main.error(e);
 		}
 

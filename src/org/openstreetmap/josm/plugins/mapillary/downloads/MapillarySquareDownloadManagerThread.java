@@ -26,7 +26,8 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	private final String urlSequences;
 	private final Bounds bounds;
 
-	public MapillarySquareDownloadManagerThread(String urlImages, String urlSequences, Bounds bounds) {
+	public MapillarySquareDownloadManagerThread(String urlImages,
+			String urlSequences, Bounds bounds) {
 		this.urlImages = urlImages;
 		this.urlSequences = urlSequences;
 		this.bounds = bounds;
@@ -34,7 +35,11 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 
 	public void run() {
 		Main.map.statusLine.setHelpText("Downloading images from Mapillary");
-		downloadSequences();
+		try {
+			downloadSequences();
+		} catch (InterruptedException e) {
+			Main.error(e);
+		}
 		if (MapillaryData.getInstance().getImages().size() > 0)
 			Main.map.statusLine.setHelpText(tr("Total images: ")
 					+ MapillaryData.getInstance().getImages().size());
@@ -42,27 +47,18 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 			Main.map.statusLine.setHelpText(tr("No images found"));
 	}
 
-	public void downloadSequences() {
+	public void downloadSequences() throws InterruptedException {
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
 		int page = 0;
 		while (!ex.isShutdown()) {
-			ex.execute(new MapillarySequenceDownloadThread(ex,
-					urlSequences + "&page=" + page + "&limit=1", bounds));
-			try {
-				while (ex.getQueue().remainingCapacity() == 0)
-					Thread.sleep(100);
-			} catch (Exception e) {
-				Main.error(e);
-			}
+			ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
+					+ "&page=" + page + "&limit=1", bounds));
+			while (ex.getQueue().remainingCapacity() == 0)
+				Thread.sleep(100);
 			page++;
 		}
-		try {
-			while (!ex.awaitTermination(15, TimeUnit.SECONDS)) {
-			}
-		} catch (Exception e) {
-			Main.error(e);
-		}
+		ex.awaitTermination(15, TimeUnit.SECONDS);
 		MapillaryData.getInstance().dataUpdated();
 	}
 }

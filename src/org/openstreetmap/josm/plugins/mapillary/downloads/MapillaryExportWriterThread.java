@@ -90,11 +90,9 @@ public class MapillaryExportWriterThread implements Runnable {
 			} catch (IOException e) {
 				Main.error(e);
 			} catch (ImageWriteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			} catch (ImageReadException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.error(e);
 			}
 
 			// Increases the progress bar.
@@ -102,5 +100,4 @@ public class MapillaryExportWriterThread implements Runnable {
 			monitor.setCustomText("Downloaded " + (i + 1) + "/" + amount);
 		}
 	}
-
 }

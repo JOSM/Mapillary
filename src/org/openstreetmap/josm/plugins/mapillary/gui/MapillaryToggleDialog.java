@@ -64,7 +64,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				tr("Open Mapillary window"), null, 200);
 		mapillaryImageDisplay = new MapillaryImageDisplay();
 
-		// this.add(mapillaryImageDisplay);
 		blueButton.setForeground(Color.BLUE);
 		redButton.setForeground(Color.RED);
 
@@ -81,9 +80,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	}
 
 	public static MapillaryToggleDialog getInstance() {
-		if (INSTANCE == null) {
+		if (INSTANCE == null)
 			INSTANCE = new MapillaryToggleDialog();
-		}
 		return INSTANCE;
 	}
 
@@ -141,6 +139,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				} catch (IOException e) {
 					Main.error(e);
 				}
+				mapillaryImageDisplay.hyperlink.setURL(null);
 			}
 		}
 	}
@@ -280,7 +279,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					mapillaryImageDisplay.setImage(img);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Main.error(e);
 			}
 		}
 	}
@@ -305,9 +304,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					"dialog.align.left", false) ? new FlowLayout(
 					FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
 			buttonsPanel.add(buttonRowPanel);
-			for (SideButton button : buttons) {
+			for (SideButton button : buttons)
 				buttonRowPanel.add(button);
-			}
 			if (reverse)
 				top.add(buttonsPanel, BorderLayout.SOUTH);
 			else

@@ -41,6 +41,7 @@ public class MapillaryImageDisplay extends JComponent {
 	 * rectangle is calculated each time the zoom is modified
 	 */
 	private Rectangle visibleRect = null;
+
 	/**
 	 * When a selection is done, the rectangle of the selection (in image
 	 * coordinates)

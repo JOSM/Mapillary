@@ -30,6 +30,8 @@ public class MapillaryImportAction extends JosmAction {
 
 	public JFileChooser chooser;
 
+	private int noTagsPics = 0;
+
 	public MapillaryImportAction() {
 		super(tr("Import pictures"), new ImageProvider("icon24.png"),
 				tr("Import local pictures"), Shortcut.registerShortcut(
@@ -68,8 +70,8 @@ public class MapillaryImportAction extends JosmAction {
 						} catch (IOException ex) {
 							Main.error(ex);
 						}
-					}
-					else if (file.getPath().substring(file.getPath().length() - 4)
+					} else if (file.getPath()
+							.substring(file.getPath().length() - 4)
 							.equals(".png")) {
 						readPNG(file);
 					}
@@ -96,13 +98,13 @@ public class MapillaryImportAction extends JosmAction {
 			double latValue = 0;
 			double lonValue = 0;
 			double caValue = 0;
-			if (lat.getValue() instanceof RationalNumber[])
+			if (lat != null && lat.getValue() instanceof RationalNumber[])
 				latValue = DegMinSecToDouble((RationalNumber[]) lat.getValue(),
 						lat_ref.getValue().toString());
-			if (lon.getValue() instanceof RationalNumber[])
+			if (lon != null && lon.getValue() instanceof RationalNumber[])
 				lonValue = DegMinSecToDouble((RationalNumber[]) lon.getValue(),
 						lon_ref.getValue().toString());
-			if (ca.getValue() instanceof RationalNumber)
+			if (ca != null && ca.getValue() instanceof RationalNumber)
 				caValue = ((RationalNumber) ca.getValue()).doubleValue();
 			if (lat_ref.getValue().toString().equals("S"))
 				latValue = -latValue;
@@ -113,21 +115,27 @@ public class MapillaryImportAction extends JosmAction {
 						new MapillaryImportedImage(latValue, lonValue, caValue,
 								file));
 			} else {
-				LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
-						Main.map.mapView.getCenter());
-				MapillaryData.getInstance().add(
-						new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-								file));
+				readNoTags(file);
 			}
 		}
 	}
-	
-	private void readPNG(File file) {
+
+	private void readNoTags(File file) {
+		double HORIZONTAL_DISTANCE = 0.0001;
+		double horDev;
+		if (noTagsPics % 2 == 0)
+			horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
+		else
+			horDev = -HORIZONTAL_DISTANCE * (noTagsPics + 1) / 2;
 		LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
 				Main.map.mapView.getCenter());
 		MapillaryData.getInstance().add(
-				new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-						file));
+				new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file));
+		noTagsPics++;
+	}
+
+	private void readPNG(File file) {
+		readNoTags(file);
 	}
 
 	private double DegMinSecToDouble(RationalNumber[] degMinSec, String ref) {

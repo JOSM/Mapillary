@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
  * 
@@ -86,5 +85,17 @@ public class MapillaryImage extends MapillaryAbstractImage {
 		if (this.getSequence() == null)
 			return null;
 		return this.getSequence().previous(this);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof MapillaryImage)
+			return this.key.equals(((MapillaryImage) object).getKey());
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
 	}
 }

@@ -27,13 +27,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 public class MapillaryExportDialog extends JPanel implements ActionListener {
 
 	protected JOptionPane optionPane;
-	// Button to export all downloaded images.
+	/** Button to export all downloaded images. */
 	public JRadioButton all;
-	// Button to export all images in the sequence of the selected
-	// MapillaryImage.
+	/**
+	 * Button to export all images in the sequence of the selected
+	 * MapillaryImage.
+	 */
 	public JRadioButton sequence;
-	// Button to export all images belonging to the selected MapillaryImage
-	// objects.
+	/**
+	 * Button to export all images belonging to the selected MapillaryImage
+	 * objects.
+	 */
 	public JRadioButton selected;
 	public ButtonGroup group;
 	protected JButton choose;
@@ -77,7 +81,6 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		add(jpanel);
 		add(path);
 		add(choose);
-
 	}
 
 	/**
@@ -97,5 +100,4 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 			this.updateUI();
 		}
 	}
-
 }

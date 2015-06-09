@@ -21,7 +21,6 @@ public class MapillarySequence {
 		this.created_at = created_at;
 	}
 
-
 	/**
 	 * Returns all MapillaryImages objects contained by this object.
 	 * 
@@ -30,7 +29,6 @@ public class MapillarySequence {
 	public List<MapillaryImage> getImages() {
 		return this.images;
 	}
-	
 
 	public int getCreatedAt() {
 		return created_at;
@@ -44,7 +42,7 @@ public class MapillarySequence {
 	public synchronized void add(MapillaryImage image) {
 		this.images.add(image);
 	}
-	
+
 	public String getKey() {
 		return this.key;
 	}
@@ -55,9 +53,8 @@ public class MapillarySequence {
 	 * @param images
 	 */
 	public synchronized void add(List<MapillaryImage> images) {
-		for (MapillaryImage image : images) {
+		for (MapillaryImage image : images)
 			add(image);
-		}
 	}
 
 	/**
@@ -79,9 +76,9 @@ public class MapillarySequence {
 		if (!images.contains(image))
 			throw new IllegalArgumentException();
 		int i = images.indexOf(image);
-		if (i == images.size() - 1) {
+		if (i == images.size() - 1)
 			return null;
-		} else
+		else
 			return images.get(i + 1);
 	}
 
@@ -95,9 +92,9 @@ public class MapillarySequence {
 		if (!images.contains(image))
 			throw new IllegalArgumentException();
 		int i = images.indexOf(image);
-		if (i == 0) {
+		if (i == 0)
 			return null;
-		} else
+		else
 			return images.get(i - 1);
 	}
 
@@ -115,14 +112,14 @@ public class MapillarySequence {
 		return Math.abs(this.images.indexOf(image1)
 				- this.images.indexOf(image2));
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof MapillarySequence)
 			return this.getKey().equals(((MapillarySequence) obj).getKey());
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.key.hashCode();

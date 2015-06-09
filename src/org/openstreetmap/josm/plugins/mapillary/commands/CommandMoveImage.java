@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.commands;
 
+import static org.openstreetmap.josm.tools.I18n.trn;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,5 +40,9 @@ public class CommandMoveImage extends MapillaryCommand {
 			image.stopMoving();
 		}
 		Main.map.repaint();
+	}
+	
+	public String toString() {
+		return trn("Moved {0} node", "Moved {0} nodes", images.size(), images.size());
 	}
 }

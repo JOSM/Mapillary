@@ -48,9 +48,8 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					new URL(url).openStream()));
 			JsonObject jsonall = Json.createReader(br).readObject();
 
-			if (!jsonall.getBoolean("more") && !ex.isShutdown()) {
+			if (!jsonall.getBoolean("more") && !ex.isShutdown())
 				ex.shutdown();
-			}
 			JsonArray jsonseq = jsonall.getJsonArray("ss");
 			// At the moment there is a bug with some sequences at Mapillay API,
 			// so if they are wrong he use this variable to skip them.
@@ -71,16 +70,18 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					} catch (IndexOutOfBoundsException e) {
 						Main.warn("Mapillary bug at " + url);
 						isSequenceWrong = true;
-					} catch (Exception e) {
-						Main.error(e);
 					}
 				}
 				if (isSequenceWrong)
 					break;
-				MapillarySequence sequence = new MapillarySequence(jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at").intValue());
-				for (MapillaryAbstractImage mimage : MapillaryData.getInstance().getImages())
+				MapillarySequence sequence = new MapillarySequence(
+						jsonobj.getString("key"), jsonobj.getJsonNumber(
+								"captured_at").intValue());
+				for (MapillaryAbstractImage mimage : MapillaryData
+						.getInstance().getImages())
 					if (mimage instanceof MapillaryImage
-							&& ((MapillaryImage) mimage).getSequence().getKey().equals(sequence.getKey()))
+							&& ((MapillaryImage) mimage).getSequence().getKey()
+									.equals(sequence.getKey()))
 						break;
 				int first = -1;
 				int last = -1;
@@ -107,11 +108,13 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				for (MapillaryImage img : finalImages) {
 					img.setSequence(sequence);
 				}
-				MapillaryData.getInstance().addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(finalImages));
+				MapillaryData.getInstance().addWithoutUpdate(
+						new ArrayList<MapillaryAbstractImage>(finalImages));
 				sequence.add(finalImages);
 			}
 		} catch (IOException e) {
-			Main.error("Error reading the url " + url + " might be a Mapillary problem.");
+			Main.error("Error reading the url " + url
+					+ " might be a Mapillary problem.");
 		}
 	}
 }

@@ -22,7 +22,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
 	@Override
 	public void addGui(PreferenceTabbedPane gui) {
-		// TODO Auto-generated method stub
 		JPanel panel = new JPanel();
 		
 		reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
@@ -41,7 +40,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
 	@Override
 	public boolean isExpert() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
