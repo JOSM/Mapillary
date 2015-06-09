@@ -102,5 +102,16 @@ public abstract class MapillaryAbstractImage {
 	public double getTempCa() {
 		return tempCa;
 	}
-
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof MapillaryAbstractImage)
+			return this.getLatLon().equalsEpsilon(((MapillaryAbstractImage) object).getLatLon());
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getLatLon().hashCode();
+	}
 }

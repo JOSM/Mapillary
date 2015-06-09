@@ -23,6 +23,7 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
@@ -130,6 +131,16 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				imageCache = new MapillaryCache(mapillaryImage.getKey(),
 						MapillaryCache.Type.FULL_IMAGE);
 				imageCache.submit(this, false);
+			}
+			else if (image instanceof MapillaryImportedImage) {
+				this.nextButton.setEnabled(false);
+				this.previousButton.setEnabled(false);
+				MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
+				try {
+					mapillaryImageDisplay.setImage(mapillaryImage.getImage());
+				} catch (IOException e) {
+					Main.error(e);
+				}
 			}
 		}
 	}

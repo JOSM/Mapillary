@@ -64,18 +64,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
 				+ this.latLon.lon() + ";ca=" + this.ca + "]";
 	}
 
-	@Override
-	public boolean equals(Object image) {
-		if (image instanceof MapillaryImage)
-			return this.key.equals(((MapillaryImage) image).getKey());
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return this.key.hashCode();
-	}
-
 	/**
 	 * If the MapillaryImage belongs to a MapillarySequence, returns the next
 	 * MapillarySequence in it.

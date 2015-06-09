@@ -19,6 +19,7 @@ import org.apache.commons.imaging.formats.tiff.TiffField;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -62,13 +63,15 @@ public class MapillaryImportAction extends JosmAction {
 									.equals(".jpeg")) {
 						try {
 							readJPG(file);
-						} catch (ImageReadException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+						} catch (ImageReadException ex) {
+							Main.error(ex);
+						} catch (IOException ex) {
+							Main.error(ex);
 						}
+					}
+					else if (file.getPath().substring(file.getPath().length() - 4)
+							.equals(".png")) {
+						readPNG(file);
 					}
 				}
 			}
@@ -109,8 +112,22 @@ public class MapillaryImportAction extends JosmAction {
 				MapillaryData.getInstance().add(
 						new MapillaryImportedImage(latValue, lonValue, caValue,
 								file));
+			} else {
+				LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
+						Main.map.mapView.getCenter());
+				MapillaryData.getInstance().add(
+						new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
+								file));
 			}
 		}
+	}
+	
+	private void readPNG(File file) {
+		LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
+				Main.map.mapView.getCenter());
+		MapillaryData.getInstance().add(
+				new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
+						file));
 	}
 
 	private double DegMinSecToDouble(RationalNumber[] degMinSec, String ref) {
