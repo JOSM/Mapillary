@@ -15,7 +15,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  *
  */
 public class CommandTurnImage extends MapillaryCommand {
-	private List<MapillaryAbstractImage> images;
 	private double ca;
 
 	public CommandTurnImage(List<MapillaryAbstractImage> images, double ca) {
@@ -29,6 +28,7 @@ public class CommandTurnImage extends MapillaryCommand {
 			image.turn(-ca);
 			image.stopMoving();
 		}
+		checkModified();
 		Main.map.repaint();
 	}
 
@@ -38,10 +38,19 @@ public class CommandTurnImage extends MapillaryCommand {
 			image.turn(ca);
 			image.stopMoving();
 		}
+		checkModified();
 		Main.map.repaint();
 	}
 
 	public String toString() {
-		return trn("Turned {0} node", "Moved {0} nodes", images.size(), images.size());
+		return trn("Turned {0} node", "Turned {0} nodes", this.images.size(),
+				this.images.size());
+	}
+
+	@Override
+	public void sum(MapillaryCommand command) {
+		if (command instanceof CommandTurnImage) {
+			this.ca += ((CommandTurnImage) command).ca;
+		}
 	}
 }

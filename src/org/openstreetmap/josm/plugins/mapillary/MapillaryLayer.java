@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -61,7 +62,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	private final MapillaryData mapillaryData = MapillaryData.getInstance();
 
 	private List<Bounds> bounds;
-	private MapillaryToggleDialog tgd;
+
+	private MapillaryToggleDialog mtd;
+	private MapillaryHistoryDialog mhd;
 
 	private MouseAdapter mouseAdapter;
 
@@ -90,12 +93,19 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			MapView.addEditLayerChangeListener(this, false);
 			MapView.addLayerChangeListener(this);
 			Main.map.mapView.getEditLayer().data.addDataSetListener(this);
-			if (tgd == null) {
+			if (mtd == null) {
 				if (MapillaryToggleDialog.INSTANCE == null) {
-					tgd = MapillaryToggleDialog.getInstance();
-					Main.map.addToggleDialog(tgd, false);
+					mtd = MapillaryToggleDialog.getInstance();
+					Main.map.addToggleDialog(mtd, false);
 				} else
-					tgd = MapillaryToggleDialog.getInstance();
+					mtd = MapillaryToggleDialog.getInstance();
+			}
+			if (mhd == null) {
+				if (MapillaryHistoryDialog.INSTANCE == null) {
+					mhd = MapillaryHistoryDialog.getInstance();
+					Main.map.addToggleDialog(mhd, false);
+				} else
+					mhd = MapillaryHistoryDialog.getInstance();
 			}
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
@@ -108,7 +118,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		mouseAdapter = new MapillaryMouseAdapter();
 	}
 
-			
 	public synchronized static MapillaryLayer getInstance() {
 		if (MapillaryLayer.INSTANCE == null)
 			MapillaryLayer.INSTANCE = new MapillaryLayer();

@@ -7,8 +7,8 @@ public abstract class MapillaryAbstractImage {
 	/** Postion of the picture */
 	public final LatLon latLon;
 	/** Direction of the picture */
-	protected final double ca;
-	private boolean isModified = false;
+	public final double ca;
+	public boolean isModified = false;
 	/** Temporal position of the picture until it is uplaoded */
 	public LatLon tempLatLon;
 	/**
@@ -17,7 +17,7 @@ public abstract class MapillaryAbstractImage {
 	 */
 	public LatLon movingLatLon;
 	/** Temporal direction of the picture until it is uplaoded */
-	protected double tempCa;
+	public double tempCa;
 	/**
 	 * When the object direction is being moved in the map, the temporal
 	 * direction is stored here
