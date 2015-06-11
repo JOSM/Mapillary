@@ -40,6 +40,8 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 			"mapiconselected.png").get();
 	public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
 			"mapiconimported.png").get();
+	public static final ImageIcon MAP_SIGNAL = new ImageProvider("signal.png")
+			.get();
 	public static final int ICON_SIZE = 24;
 
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;

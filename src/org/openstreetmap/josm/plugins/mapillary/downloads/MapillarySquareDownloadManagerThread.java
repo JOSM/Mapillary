@@ -21,15 +21,16 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
  */
 public class MapillarySquareDownloadManagerThread implements Runnable {
 
-	@SuppressWarnings("unused")
 	private final String urlImages;
 	private final String urlSequences;
+	private final String urlSignals;
 	private final Bounds bounds;
 
 	public MapillarySquareDownloadManagerThread(String urlImages,
-			String urlSequences, Bounds bounds) {
+			String urlSequences, String urlSignals, Bounds bounds) {
 		this.urlImages = urlImages;
 		this.urlSequences = urlSequences;
+		this.urlSignals = urlSignals;
 		this.bounds = bounds;
 	}
 
@@ -37,6 +38,8 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		Main.map.statusLine.setHelpText("Downloading images from Mapillary");
 		try {
 			downloadSequences();
+			completeImages();
+			downloadSignals();
 		} catch (InterruptedException e) {
 			Main.error(e);
 		}
@@ -45,9 +48,10 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 					+ MapillaryData.getInstance().getImages().size());
 		else
 			Main.map.statusLine.setHelpText(tr("No images found"));
+		MapillaryData.getInstance().dataUpdated();
 	}
 
-	public void downloadSequences() throws InterruptedException {
+	private void downloadSequences() throws InterruptedException {
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
 		int page = 0;
@@ -60,5 +64,33 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		}
 		ex.awaitTermination(15, TimeUnit.SECONDS);
 		MapillaryData.getInstance().dataUpdated();
+	}
+
+	private void completeImages() throws InterruptedException {
+		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
+				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+		int page = 0;
+		while (!ex.isShutdown()) {
+			ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages
+					+ "&page=" + page + "&limit=20"));
+			while (ex.getQueue().remainingCapacity() == 0)
+				Thread.sleep(100);
+			page++;
+		}
+		ex.awaitTermination(15, TimeUnit.SECONDS);
+	}
+
+	private void downloadSignals() throws InterruptedException {
+		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
+				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+		int page = 0;
+		while (!ex.isShutdown()) {
+			ex.execute(new MapillarySignalDownloaderThread(ex, urlSignals
+					+ "&page=" + page + "&limit=20"));
+			while (ex.getQueue().remainingCapacity() == 0)
+				Thread.sleep(100);
+			page++;
+		}
+		ex.awaitTermination(15, TimeUnit.SECONDS);
 	}
 }

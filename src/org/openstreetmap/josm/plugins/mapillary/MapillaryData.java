@@ -155,6 +155,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	 */
 	public void setSelectedImage(MapillaryAbstractImage image) {
 		selectedImage = image;
+		if (image instanceof MapillaryImage)
+			System.out.println(((MapillaryImage) image).getLocation());
 		multiSelectedImages.clear();
 		multiSelectedImages.add(image);
 		if (image != null) {

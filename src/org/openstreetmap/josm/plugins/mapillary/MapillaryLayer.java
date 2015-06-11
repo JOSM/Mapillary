@@ -245,6 +245,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 					g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y
 							- (height / 2), Main.map.mapView);
+					if (!image.getSignals().isEmpty()) {
+						g.drawImage(MapillaryPlugin.MAP_SIGNAL.getImage(), p.x
+								+ width / 2, p.y - height / 2,
+								Main.map.mapView);
+					}
 				} else if (imageAbs instanceof MapillaryImportedImage) {
 					MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
 					ImageIcon icon;

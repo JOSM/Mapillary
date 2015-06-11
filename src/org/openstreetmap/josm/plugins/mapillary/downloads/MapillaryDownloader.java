@@ -35,8 +35,10 @@ public class MapillaryDownloader {
 	public void getImages(LatLon minLatLon, LatLon maxLatLon) {
 		String url1 = BASE_URL;
 		String url2 = BASE_URL;
+		String url3 = BASE_URL;
 		url1 += "search/im/";
 		url2 += "search/s/";
+		url3 += "search/im/or";
 		ConcurrentHashMap<String, Double> hash = new ConcurrentHashMap<>();
 		hash.put("min_lat", minLatLon.lat());
 		hash.put("min_lon", minLatLon.lon());
@@ -44,9 +46,11 @@ public class MapillaryDownloader {
 		hash.put("max_lon", maxLatLon.lon());
 		url1 += buildParameters(hash);
 		url2 += buildParameters(hash);
+		url3 += buildParameters(hash);
+		
 		try {
 			Main.info("MapillaryPlugin GET " + url2);
-			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, new Bounds(minLatLon, maxLatLon)));
+			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, url3, new Bounds(minLatLon, maxLatLon)));
 		} catch (Exception e) {
 			Main.error(e);
 		}

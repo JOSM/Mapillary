@@ -1,5 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
  * 
@@ -12,6 +15,19 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	private final String key;
 	/** Sequence of pictures containing this */
 	private MapillarySequence sequence;
+
+	private int capturedAt;
+	private String user;
+	private List<String> signals;
+	private String location;
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
 	/**
 	 * Main contructor of the class MapillaryImage
@@ -28,6 +44,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	public MapillaryImage(String key, double lat, double lon, double ca) {
 		super(lat, lon, ca);
 		this.key = key;
+		this.signals = new ArrayList<>();
 	}
 
 	/**
@@ -37,6 +54,30 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	 */
 	public String getKey() {
 		return this.key;
+	}
+	
+	public void addSignal(String signal) {
+		signals.add(signal);
+	}
+	
+	public List<String> getSignals() {
+		return signals;
+	}
+
+	public void setCapturedAt(int capturedAt) {
+		this.capturedAt = capturedAt;
+	}
+
+	public int getCapturedAt() {
+		return capturedAt;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getUser() {
+		return user;
 	}
 
 	/**

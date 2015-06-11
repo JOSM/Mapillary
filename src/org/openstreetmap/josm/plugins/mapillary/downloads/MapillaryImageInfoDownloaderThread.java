@@ -10,7 +10,6 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.Json;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
 import org.openstreetmap.josm.Main;
@@ -24,12 +23,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  * @author nokutu
  * @see MapillarySqueareDownloadManagerThread
  */
-public class MapillarySquareDownloadThread implements Runnable {
+public class MapillaryImageInfoDownloaderThread implements Runnable {
 	private final String url;
 	private final ExecutorService ex;
 
-	public MapillarySquareDownloadThread(ExecutorService ex,
-			MapillaryData data, String url) {
+	public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url) {
 		this.ex = ex;
 		this.url = url;
 	}
@@ -42,20 +40,23 @@ public class MapillarySquareDownloadThread implements Runnable {
 			if (!jsonobj.getBoolean("more"))
 				ex.shutdownNow();
 			JsonArray jsonarr = jsonobj.getJsonArray("ims");
-			ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
-			JsonObject image;
+			JsonObject data;
 			for (int i = 0; i < jsonarr.size(); i++) {
-				try {
-					image = jsonarr.getJsonObject(i);
-					images.add(new MapillaryImage(image.getString("key"), image
-							.getJsonNumber("lat").doubleValue(), image
-							.getJsonNumber("lon").doubleValue(), image
-							.getJsonNumber("ca").doubleValue()));
-				} catch (Exception e) {
-					Main.error(e);
+				data = jsonarr.getJsonObject(i);
+				String key = data.getString("key");
+				for (MapillaryAbstractImage image : MapillaryData.getInstance()
+						.getImages()) {
+					if (image instanceof MapillaryImage) {
+						if (((MapillaryImage) image).getKey().equals(key)) {
+							((MapillaryImage) image).setUser(data
+									.getString("user"));
+							((MapillaryImage) image).setCapturedAt(data
+									.getJsonNumber("captured_at").intValue());
+							((MapillaryImage) image).setLocation(data.getString("location"));
+						}
+					}
 				}
 			}
-			MapillaryData.getInstance().add(images);
 		} catch (MalformedURLException e) {
 			Main.error(e);
 		} catch (IOException e) {
