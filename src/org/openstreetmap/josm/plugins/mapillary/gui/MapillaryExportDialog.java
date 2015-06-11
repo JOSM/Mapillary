@@ -39,6 +39,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 	 * objects.
 	 */
 	public JRadioButton selected;
+	public JRadioButton rewrite;
 	public ButtonGroup group;
 	protected JButton choose;
 	protected JLabel path;
@@ -52,13 +53,15 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		all = new JRadioButton(tr("Export all images"));
 		sequence = new JRadioButton(tr("Export selected sequence"));
 		selected = new JRadioButton(tr("Export selected images"));
+		rewrite = new JRadioButton(tr("Rewrite imported images"));
 		group.add(all);
 		group.add(sequence);
 		group.add(selected);
+		group.add(rewrite);
 		// Some options are disabled depending on the circumstances
 		if (MapillaryData.getInstance().getSelectedImage() == null
-				|| (MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
-						.getInstance().getSelectedImage()).getSequence() == null)) {
+				|| !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
+						.getInstance().getSelectedImage()).getSequence() != null)) {
 			sequence.setEnabled(false);
 		}
 		if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
@@ -74,6 +77,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 		jpanel.add(all);
 		jpanel.add(sequence);
 		jpanel.add(selected);
+		jpanel.add(rewrite);
 		jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		path.setAlignmentX(Component.CENTER_ALIGNMENT);
 		choose.setAlignmentX(Component.CENTER_ALIGNMENT);

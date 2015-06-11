@@ -16,6 +16,7 @@ import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryExportManager;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -65,6 +66,15 @@ public class MapillaryExportAction extends JosmAction {
 				export(images);
 			} else if (dialog.group.isSelected(dialog.selected.getModel())) {
 				export(MapillaryData.getInstance().getMultiSelectedImages());
+			} else if (dialog.group.isSelected(dialog.rewrite.getModel())) {
+				ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
+				for (MapillaryAbstractImage image : MapillaryData.getInstance().getMultiSelectedImages())
+					if (image instanceof MapillaryImportedImage) {
+						images.addAll(((MapillaryImage) image).getSequence().getImages());
+					}
+					else
+						images.add(image);
+				export(images);
 			}
 		}
 		dlg.dispose();

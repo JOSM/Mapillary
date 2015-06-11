@@ -30,7 +30,6 @@ public class MapillarySignalDownloaderThread implements Runnable {
 	public void run() {
 		BufferedReader br;
 		try {
-			System.out.println(url);
 			br = new BufferedReader(new InputStreamReader(
 					new URL(url).openStream()));
 			JsonObject jsonobj = Json.createReader(br).readObject();
