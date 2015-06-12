@@ -39,6 +39,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		try {
 			downloadSequences();
 			completeImages();
+			Main.map.statusLine.setHelpText("Downloading signals information");
 			downloadSignals();
 		} catch (InterruptedException e) {
 			Main.error(e);

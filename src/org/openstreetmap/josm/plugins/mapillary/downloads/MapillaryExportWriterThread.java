@@ -22,6 +22,7 @@ import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 
 /**
  * Writes the images from the queue in the file system.
@@ -59,7 +60,11 @@ public class MapillaryExportWriterThread implements Runnable {
 			try {
 				img = queue.take();
 				mimg = queueImages.take();
-				if (mimg instanceof MapillaryImage)
+				if (path == null && mimg instanceof MapillaryImportedImage) {
+					String path = ((MapillaryImportedImage) mimg).getFile().getPath();
+					finalPath = path.substring(0, path.lastIndexOf('.'));
+				}
+				else if (mimg instanceof MapillaryImage)
 					finalPath = path + "/" + ((MapillaryImage) mimg).getKey();
 				else
 					finalPath = path + "/" + i;

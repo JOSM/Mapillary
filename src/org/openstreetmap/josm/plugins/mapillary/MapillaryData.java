@@ -5,7 +5,6 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	private final List<MapillaryAbstractImage> images;
 	private MapillaryAbstractImage selectedImage;
 	private final List<MapillaryAbstractImage> multiSelectedImages;
+	
+	private List<MapillaryDataListener> listeners= new ArrayList<>();
 
 	public MapillaryData() {
 		images = new CopyOnWriteArrayList<>();
@@ -62,6 +63,14 @@ public class MapillaryData implements ICachedLoaderListener {
 			this.images.add(image);
 		}
 		dataUpdated();
+	}
+	
+	public void addListener(MapillaryDataListener lis) {
+		listeners.add(lis);
+	}
+	
+	public void removeListener(MapillaryDataListener lis) {
+		listeners.remove(lis);
 	}
 
 	/**
@@ -155,13 +164,9 @@ public class MapillaryData implements ICachedLoaderListener {
 	 */
 	public void setSelectedImage(MapillaryAbstractImage image) {
 		selectedImage = image;
-		if (image instanceof MapillaryImage)
-			System.out.println(((MapillaryImage) image).getLocation());
 		multiSelectedImages.clear();
 		multiSelectedImages.add(image);
 		if (image != null) {
-			MapillaryToggleDialog.getInstance().setImage(selectedImage);
-			MapillaryToggleDialog.getInstance().updateImage();
 			if (image instanceof MapillaryImage) {
 				MapillaryImage mapillaryImage = (MapillaryImage) image;
 				if (mapillaryImage.next() != null) {
@@ -185,6 +190,14 @@ public class MapillaryData implements ICachedLoaderListener {
 		if (Main.map != null) {
 			Main.map.mapView.repaint();
 		}
+		fireSelectedImageChanged();
+	}
+	
+	private void fireSelectedImageChanged() {
+		if (listeners.isEmpty())
+			return;
+		for (MapillaryDataListener lis : listeners)
+			lis.selectedImageChanged();
 	}
 
 	/**

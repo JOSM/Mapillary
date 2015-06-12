@@ -49,16 +49,19 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 	private final MapillaryDownloadAction downloadAction;
 	private final MapillaryExportAction exportAction;
 	private final MapillaryImportAction importAction;
+	private final MapillarySignalAction signalAction;
 
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
 	public static JMenuItem IMPORT_MENU;
+	public static JMenuItem SIGNAL_MENU;
 
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 		importAction = new MapillaryImportAction();
+		signalAction = new MapillarySignalAction();
 
 		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
 				downloadAction, false);
@@ -66,10 +69,13 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 				false, 14);
 		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
 				false, 14);
+		SIGNAL_MENU = MainMenu.add(Main.main.menu.dataMenu, signalAction,
+				false);
 
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);
 		IMPORT_MENU.setEnabled(false);
+		SIGNAL_MENU.setEnabled(false);
 
 		MapView.addEditLayerChangeListener(this);
 		try {

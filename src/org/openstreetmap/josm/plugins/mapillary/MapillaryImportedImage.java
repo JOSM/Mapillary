@@ -18,6 +18,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 	public BufferedImage getImage() throws IOException {
 		return ImageIO.read(file);
 	}
+	
+	public File getFile() {
+		return file;
+	}
 
 	@Override
 	public boolean equals(Object object) {

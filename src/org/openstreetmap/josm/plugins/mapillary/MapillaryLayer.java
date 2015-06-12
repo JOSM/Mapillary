@@ -53,7 +53,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
 
-	public static Boolean INSTANCED = false;
 	public static MapillaryLayer INSTANCE;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 	public static MapillaryImage BLUE;
@@ -78,7 +77,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	 * Initializes the Layer.
 	 */
 	private void init() {
-		INSTANCED = true;
 		MapillaryLayer.INSTANCE = this;
 		startMouseAdapter();
 		try {
@@ -109,6 +107,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			}
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
+		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, true);
 		download();
 		Main.map.mapView.setActiveLayer(this);
 		Main.map.repaint();
@@ -155,9 +154,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void destroy() {
 		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
 				.setImage(null);
-		INSTANCED = false;
 		MapillaryLayer.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
+		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, false);
 		MapillaryData.INSTANCE = null;
 		Main.map.mapView.removeMouseListener(mouseAdapter);
 		Main.map.mapView.removeMouseMotionListener(mouseAdapter);

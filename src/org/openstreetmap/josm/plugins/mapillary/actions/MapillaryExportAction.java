@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,15 +67,17 @@ public class MapillaryExportAction extends JosmAction {
 				export(images);
 			} else if (dialog.group.isSelected(dialog.selected.getModel())) {
 				export(MapillaryData.getInstance().getMultiSelectedImages());
-			} else if (dialog.group.isSelected(dialog.rewrite.getModel())) {
-				ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
-				for (MapillaryAbstractImage image : MapillaryData.getInstance().getMultiSelectedImages())
-					if (image instanceof MapillaryImportedImage) {
-						images.addAll(((MapillaryImage) image).getSequence().getImages());
-					}
-					else
-						images.add(image);
-				export(images);
+			} 
+		 } else if (dialog.group.isSelected(dialog.rewrite.getModel())) {
+			ArrayList<MapillaryImportedImage> images = new ArrayList<>();
+			for (MapillaryAbstractImage image : MapillaryData.getInstance().getImages())
+				if (image instanceof MapillaryImportedImage) {
+					images.add(((MapillaryImportedImage) image));
+				}
+			try {
+				Main.worker.submit(new Thread(new MapillaryExportManager(images)));
+			} catch (IOException e1) {
+				Main.error(e1);
 			}
 		}
 		dlg.dispose();

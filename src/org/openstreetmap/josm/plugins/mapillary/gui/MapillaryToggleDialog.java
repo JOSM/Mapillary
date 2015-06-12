@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,10 +23,12 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -39,17 +42,29 @@ import javax.swing.JPanel;
  *
  */
 public class MapillaryToggleDialog extends ToggleDialog implements
-		ICachedLoaderListener {
+		ICachedLoaderListener, MapillaryDataListener {
 
 	public static MapillaryToggleDialog INSTANCE;
 
 	public volatile MapillaryAbstractImage image;
 
-	final SideButton nextButton = new SideButton(new nextPictureAction());
-	final SideButton previousButton = new SideButton(
+	public final SideButton nextButton = new SideButton(new nextPictureAction());
+	public final SideButton previousButton = new SideButton(
 			new previousPictureAction());
 	public final SideButton redButton = new SideButton(new redAction());
 	public final SideButton blueButton = new SideButton(new blueAction());
+	private List<SideButton> normalMode;
+
+	public final SideButton nextSignalButton = new SideButton(
+			new NextSignalAction());
+	public final SideButton previousSignalButton = new SideButton(
+			new PreviousSignalAction());
+	private List<SideButton> signalMode;
+	// TODO change to enum
+	private int mode;
+
+	public final static int NORMAL_MODE = 0;
+	public final static int SIGNAL_MODE = 0;
 
 	private JPanel buttonsPanel;
 	private JPanel top;
@@ -61,21 +76,28 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	public MapillaryToggleDialog() {
 		super(tr("Mapillary image"), "mapillary.png",
-				tr("Open Mapillary window"), null, 200);
+				tr("Open Mapillary window"), Shortcut.registerShortcut(
+						tr("Mapillary dialog"),
+						tr("Open Mapillary main dialog"), KeyEvent.VK_M,
+						Shortcut.NONE), 200);
+		MapillaryData.getInstance().addListener(this);
+
 		mapillaryImageDisplay = new MapillaryImageDisplay();
 
 		blueButton.setForeground(Color.BLUE);
 		redButton.setForeground(Color.RED);
 
+		normalMode = Arrays.asList(new SideButton[] { blueButton,
+				previousButton, nextButton, redButton });
+		signalMode = Arrays.asList(new SideButton[] { previousSignalButton,
+				nextSignalButton });
+
+		mode = NORMAL_MODE;
 		this.setLayout(new BorderLayout());
 		top = new JPanel();
 		top.setLayout(new BorderLayout());
 		top.add(titleBar, BorderLayout.NORTH);
-
-		createLayout(
-				mapillaryImageDisplay,
-				Arrays.asList(new SideButton[] { blueButton, previousButton,
-						nextButton, redButton }),
+		createLayout(mapillaryImageDisplay, normalMode,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
 	}
 
@@ -87,6 +109,24 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 	public static void destroyInstance() {
 		INSTANCE = null;
+	}
+
+	public void switchMode() {
+		this.removeAll();
+		List<SideButton> list = null;
+		if (mode == NORMAL_MODE) {
+			list = signalMode;
+			mode = SIGNAL_MODE;
+		} else if (mode == SIGNAL_MODE) {
+			list = normalMode;
+			mode = NORMAL_MODE;
+		}
+		this.setLayout(new BorderLayout());
+		top = new JPanel();
+		top.setLayout(new BorderLayout());
+		top.add(titleBar, BorderLayout.NORTH);
+		createLayout(mapillaryImageDisplay, list,
+				Main.pref.getBoolean("mapillary.reverse-buttons"));
 	}
 
 	/**
@@ -102,19 +142,49 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				}
 			});
 		} else {
-			if (MapillaryLayer.INSTANCED == false) {
+			if (MapillaryLayer.INSTANCE == null) {
 				return;
 			}
 			if (this.image == null)
 				return;
 			if (image instanceof MapillaryImage) {
-				this.nextButton.setEnabled(true);
-				this.previousButton.setEnabled(true);
 				MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-				if (mapillaryImage.next() == null)
-					this.nextButton.setEnabled(false);
-				if (mapillaryImage.previous() == null)
-					this.previousButton.setEnabled(false);
+				if (mode == NORMAL_MODE) {
+					this.nextButton.setEnabled(true);
+					this.previousButton.setEnabled(true);
+					if (mapillaryImage.next() == null)
+						this.nextButton.setEnabled(false);
+					if (mapillaryImage.previous() == null)
+						this.previousButton.setEnabled(false);
+				} else if (mode == SIGNAL_MODE) {
+					previousSignalButton.setEnabled(true);
+					nextSignalButton.setEnabled(true);
+					int i = MapillaryData
+							.getInstance()
+							.getImages()
+							.indexOf(
+									MapillaryData.getInstance()
+											.getSelectedImage());
+					int first = -1;
+					int last = -1;
+					int c = 0;
+					for (MapillaryAbstractImage img : MapillaryData
+							.getInstance().getImages()) {
+						if (img instanceof MapillaryImage)
+							if (!((MapillaryImage) img).getSignals().isEmpty()) {
+								if (first == -1)
+									first = c;
+								last = c;
+							}
+						c++;
+					}
+					if (first >= i) {
+						previousSignalButton.setEnabled(false);
+					}
+					if (last <= i) {
+						nextSignalButton.setEnabled(false);
+					}
+				}
 
 				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
 				this.mapillaryImageDisplay.setImage(null);
@@ -129,8 +199,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				imageCache = new MapillaryCache(mapillaryImage.getKey(),
 						MapillaryCache.Type.FULL_IMAGE);
 				imageCache.submit(this, false);
-			}
-			else if (image instanceof MapillaryImportedImage) {
+			} else if (image instanceof MapillaryImportedImage) {
 				this.nextButton.setEnabled(false);
 				this.previousButton.setEnabled(false);
 				MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
@@ -312,5 +381,66 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				add(buttonsPanel, BorderLayout.SOUTH);
 		}
 		add(top, BorderLayout.NORTH);
+	}
+
+	@Override
+	public void selectedImageChanged() {
+		setImage(MapillaryData.getInstance().getSelectedImage());
+		updateImage();
+	}
+
+	class NextSignalAction extends AbstractAction {
+		public NextSignalAction() {
+			putValue(NAME, tr("Next Signal"));
+			putValue(SHORT_DESCRIPTION,
+					tr("Jumps to the next picture that contains a siganl"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				int i = MapillaryData
+						.getInstance()
+						.getImages()
+						.indexOf(MapillaryData.getInstance().getSelectedImage());
+				for (int j = i + 1; j < MapillaryData.getInstance().getImages()
+						.size(); j++) {
+					MapillaryAbstractImage img = MapillaryData.getInstance()
+							.getImages().get(j);
+					if (img instanceof MapillaryImage)
+						if (!((MapillaryImage) img).getSignals().isEmpty()) {
+							MapillaryData.getInstance().setSelectedImage(img);
+							return;
+						}
+				}
+			}
+		}
+	}
+
+	class PreviousSignalAction extends AbstractAction {
+		public PreviousSignalAction() {
+			putValue(NAME, tr("Previous Signal"));
+			putValue(SHORT_DESCRIPTION,
+					tr("Jumps to the previous picture that contains a siganl"));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				int i = MapillaryData
+						.getInstance()
+						.getImages()
+						.indexOf(MapillaryData.getInstance().getSelectedImage());
+				for (int j = i - 1; j >= 0; j--) {
+					MapillaryAbstractImage img = MapillaryData.getInstance()
+							.getImages().get(j);
+					if (img instanceof MapillaryImage)
+						if (!((MapillaryImage) img).getSignals().isEmpty()) {
+							MapillaryData.getInstance().setSelectedImage(img);
+							return;
+						}
+				}
+			}
+		}
 	}
 }

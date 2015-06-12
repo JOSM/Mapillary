@@ -47,8 +47,8 @@ public class MapillarySignalDownloaderThread implements Runnable {
 					JsonObject data = rects.getJsonObject(j);
 					for (MapillaryAbstractImage image : MapillaryData
 							.getInstance().getImages()) {
-						if (((MapillaryImage) image).getKey().equals(key)) {
-							if (image instanceof MapillaryImage) {
+						if (image instanceof MapillaryImage) {
+							if (((MapillaryImage) image).getKey().equals(key)) {
 								if (((MapillaryImage) image).getKey().equals(
 										key)) {
 									((MapillaryImage) image).addSignal(data
