@@ -24,8 +24,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	private final List<MapillaryAbstractImage> images;
 	private MapillaryAbstractImage selectedImage;
 	private final List<MapillaryAbstractImage> multiSelectedImages;
-	
-	private List<MapillaryDataListener> listeners= new ArrayList<>();
+
+	private List<MapillaryDataListener> listeners = new ArrayList<>();
 
 	public MapillaryData() {
 		images = new CopyOnWriteArrayList<>();
@@ -64,11 +64,11 @@ public class MapillaryData implements ICachedLoaderListener {
 		}
 		dataUpdated();
 	}
-	
+
 	public void addListener(MapillaryDataListener lis) {
 		listeners.add(lis);
 	}
-	
+
 	public void removeListener(MapillaryDataListener lis) {
 		listeners.remove(lis);
 	}
@@ -136,7 +136,7 @@ public class MapillaryData implements ICachedLoaderListener {
 				return;
 			if (((MapillaryImage) getSelectedImage()).getSequence() == null)
 				return;
-			setSelectedImage(((MapillaryImage) getSelectedImage()).next());
+			setSelectedImage(((MapillaryImage) getSelectedImage()).next(), true);
 		}
 	}
 
@@ -150,7 +150,8 @@ public class MapillaryData implements ICachedLoaderListener {
 				return;
 			if (((MapillaryImage) getSelectedImage()).getSequence() == null)
 				throw new IllegalStateException();
-			setSelectedImage(((MapillaryImage) getSelectedImage()).previous());
+			setSelectedImage(((MapillaryImage) getSelectedImage()).previous(),
+					true);
 		}
 	}
 
@@ -163,6 +164,19 @@ public class MapillaryData implements ICachedLoaderListener {
 	 *            The MapillaryImage which is going to be selected
 	 */
 	public void setSelectedImage(MapillaryAbstractImage image) {
+		setSelectedImage(image, false);
+	}
+
+	/**
+	 * Selects a new image and then starts a new MapillaryImageDownloadThread
+	 * thread in order to download its surrounding thumbnails. If the user does
+	 * ctrl+click, this isn't triggered. You can choose wheter to center the
+	 * view on the new image or not.
+	 * 
+	 * @param image
+	 * @param zoom
+	 */
+	public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
 		selectedImage = image;
 		multiSelectedImages.clear();
 		multiSelectedImages.add(image);
@@ -187,12 +201,15 @@ public class MapillaryData implements ICachedLoaderListener {
 				}
 			}
 		}
+		if (zoom)
+			Main.map.mapView.zoomTo(MapillaryData.getInstance()
+					.getSelectedImage().getLatLon());
 		if (Main.map != null) {
 			Main.map.mapView.repaint();
 		}
 		fireSelectedImageChanged();
 	}
-	
+
 	private void fireSelectedImageChanged() {
 		if (listeners.isEmpty())
 			return;

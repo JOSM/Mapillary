@@ -10,6 +10,13 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
+/**
+ * Switches the window mode from normal to signal and viceversa.
+ * 
+ * @author nokutu
+ * @see MapillaryToggleDialog
+ *
+ */
 public class MapillarySignalAction extends JosmAction {
 
 	public MapillarySignalAction() {
@@ -19,6 +26,7 @@ public class MapillarySignalAction extends JosmAction {
 						KeyEvent.VK_M, Shortcut.NONE), false,
 				"mapillarySignal", false);
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		MapillaryToggleDialog.getInstance().switchMode();

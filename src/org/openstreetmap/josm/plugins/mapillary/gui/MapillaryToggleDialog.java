@@ -64,7 +64,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	private int mode;
 
 	public final static int NORMAL_MODE = 0;
-	public final static int SIGNAL_MODE = 0;
+	public final static int SIGNAL_MODE = 1;
 
 	private JPanel buttonsPanel;
 	private JPanel top;
@@ -111,6 +111,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		INSTANCE = null;
 	}
 
+	/**
+	 * Switches from one mode to the other one.
+	 */
 	public void switchMode() {
 		this.removeAll();
 		List<SideButton> list = null;
@@ -121,12 +124,12 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			list = normalMode;
 			mode = NORMAL_MODE;
 		}
-		this.setLayout(new BorderLayout());
 		top = new JPanel();
 		top.setLayout(new BorderLayout());
 		top.add(titleBar, BorderLayout.NORTH);
 		createLayout(mapillaryImageDisplay, list,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
+		updateImage();
 	}
 
 	/**
@@ -231,11 +234,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		return this.image;
 	}
 
-	private void centerAtSelected() {
-		Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
-				.getLatLon());
-	}
-
 	/**
 	 * Action class form the next image button.
 	 * 
@@ -253,8 +251,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectNext();
-				if (MapillaryData.getInstance().getSelectedImage() != null)
-					centerAtSelected();
 			}
 		}
 	}
@@ -276,8 +272,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
-				if (MapillaryData.getInstance().getSelectedImage() != null)
-					centerAtSelected();
 			}
 		}
 	}
@@ -293,12 +287,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
-				MapillaryData.getInstance()
-						.setSelectedImage(MapillaryLayer.RED);
-				MapillaryToggleDialog.getInstance()
-						.setImage(MapillaryLayer.RED);
-				MapillaryToggleDialog.getInstance().updateImage();
-				centerAtSelected();
+				MapillaryData.getInstance().setSelectedImage(
+						MapillaryLayer.RED, true);
 			}
 		}
 	}
@@ -315,11 +305,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		public void actionPerformed(ActionEvent e) {
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().setSelectedImage(
-						MapillaryLayer.BLUE);
-				MapillaryToggleDialog.getInstance().setImage(
-						MapillaryLayer.BLUE);
-				MapillaryToggleDialog.getInstance().updateImage();
-				centerAtSelected();
+						MapillaryLayer.BLUE, true);
 			}
 		}
 	}
@@ -410,11 +396,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							.getImages().get(j);
 					if (img instanceof MapillaryImage)
 						if (!((MapillaryImage) img).getSignals().isEmpty()) {
-							MapillaryData.getInstance().setSelectedImage(img);
+							MapillaryData.getInstance().setSelectedImage(img,
+									true);
 							return;
 						}
 				}
-				centerAtSelected();
 			}
 		}
 	}
@@ -438,11 +424,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							.getImages().get(j);
 					if (img instanceof MapillaryImage)
 						if (!((MapillaryImage) img).getSignals().isEmpty()) {
-							MapillaryData.getInstance().setSelectedImage(img);
+							MapillaryData.getInstance().setSelectedImage(img,
+									true);
 							return;
 						}
 				}
-				centerAtSelected();
 			}
 		}
 	}
