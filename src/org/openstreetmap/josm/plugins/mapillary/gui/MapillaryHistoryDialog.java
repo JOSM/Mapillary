@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecordListener;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -47,7 +49,10 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
 	public MapillaryHistoryDialog() {
 		super(tr("Mapillary history"), "mapillaryhistory.png",
-				tr("Open Mapillary history dialog"), null, 200);
+				tr("Open Mapillary history dialog"),  Shortcut.registerShortcut(
+						tr("Mapillary history"),
+						tr("Open Mapillary history dialog"), KeyEvent.VK_M,
+						Shortcut.NONE), 200);
 
 		MapillaryRecord.getInstance().addListener(this);
 

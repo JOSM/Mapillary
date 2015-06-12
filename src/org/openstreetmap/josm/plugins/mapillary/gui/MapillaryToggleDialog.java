@@ -60,7 +60,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	public final SideButton previousSignalButton = new SideButton(
 			new PreviousSignalAction());
 	private List<SideButton> signalMode;
-	// TODO change to enum
+
 	private int mode;
 
 	public final static int NORMAL_MODE = 0;
@@ -231,6 +231,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		return this.image;
 	}
 
+	private void centerAtSelected() {
+		Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
+				.getLatLon());
+	}
+
 	/**
 	 * Action class form the next image button.
 	 * 
@@ -249,8 +254,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectNext();
 				if (MapillaryData.getInstance().getSelectedImage() != null)
-					Main.map.mapView.zoomTo(MapillaryData.getInstance()
-							.getSelectedImage().getLatLon());
+					centerAtSelected();
 			}
 		}
 	}
@@ -273,8 +277,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (MapillaryToggleDialog.getInstance().getImage() != null) {
 				MapillaryData.getInstance().selectPrevious();
 				if (MapillaryData.getInstance().getSelectedImage() != null)
-					Main.map.mapView.zoomTo(MapillaryData.getInstance()
-							.getSelectedImage().getLatLon());
+					centerAtSelected();
 			}
 		}
 	}
@@ -295,8 +298,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				MapillaryToggleDialog.getInstance()
 						.setImage(MapillaryLayer.RED);
 				MapillaryToggleDialog.getInstance().updateImage();
-				Main.map.mapView.zoomTo(MapillaryData.getInstance()
-						.getSelectedImage().getLatLon());
+				centerAtSelected();
 			}
 		}
 	}
@@ -317,8 +319,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				MapillaryToggleDialog.getInstance().setImage(
 						MapillaryLayer.BLUE);
 				MapillaryToggleDialog.getInstance().updateImage();
-				Main.map.mapView.zoomTo(MapillaryData.getInstance()
-						.getSelectedImage().getLatLon());
+				centerAtSelected();
 			}
 		}
 	}
@@ -413,6 +414,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							return;
 						}
 				}
+				centerAtSelected();
 			}
 		}
 	}
@@ -440,6 +442,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							return;
 						}
 				}
+				centerAtSelected();
 			}
 		}
 	}
