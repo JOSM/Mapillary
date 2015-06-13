@@ -68,6 +68,7 @@ public class MapillaryExportAction extends JosmAction {
 			} else if (dialog.group.isSelected(dialog.selected.getModel())) {
 				export(MapillaryData.getInstance().getMultiSelectedImages());
 			} 
+		// This option ignores the selected directory.
 		 } else if (dialog.group.isSelected(dialog.rewrite.getModel())) {
 			ArrayList<MapillaryImportedImage> images = new ArrayList<>();
 			for (MapillaryAbstractImage image : MapillaryData.getInstance().getImages())

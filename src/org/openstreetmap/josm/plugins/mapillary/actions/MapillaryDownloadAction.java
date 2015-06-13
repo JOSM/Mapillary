@@ -32,24 +32,15 @@ public class MapillaryDownloadAction extends JosmAction {
 				"mapillaryDownload", false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.layer = null;
 		if (Main.map == null || Main.map.mapView == null
-				|| Main.map.mapView.getEditLayer() == null) {
+				|| Main.map.mapView.getEditLayer() == null)
 			return;
-		}
-		for (Layer layer : Main.map.mapView.getAllLayers()) {
-			if (layer instanceof MapillaryLayer) {
+		for (Layer layer : Main.map.mapView.getAllLayers())
+			if (layer instanceof MapillaryLayer)
 				this.layer = (MapillaryLayer) layer;
-			}
-		}
 
 		if (this.layer == null)
 			layer = new MapillaryLayer();

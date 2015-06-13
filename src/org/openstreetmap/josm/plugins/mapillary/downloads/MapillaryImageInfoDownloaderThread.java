@@ -38,7 +38,7 @@ public class MapillaryImageInfoDownloaderThread implements Runnable {
 					new URL(url).openStream()));
 			JsonObject jsonobj = Json.createReader(br).readObject();
 			if (!jsonobj.getBoolean("more"))
-				ex.shutdownNow();
+				ex.shutdown();
 			JsonArray jsonarr = jsonobj.getJsonArray("ims");
 			JsonObject data;
 			for (int i = 0; i < jsonarr.size(); i++) {
@@ -52,7 +52,8 @@ public class MapillaryImageInfoDownloaderThread implements Runnable {
 									.getString("user"));
 							((MapillaryImage) image).setCapturedAt(data
 									.getJsonNumber("captured_at").intValue());
-							((MapillaryImage) image).setLocation(data.getString("location"));
+							((MapillaryImage) image).setLocation(data
+									.getString("location"));
 						}
 					}
 				}

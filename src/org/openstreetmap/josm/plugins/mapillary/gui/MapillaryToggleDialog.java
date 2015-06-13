@@ -44,6 +44,9 @@ import javax.swing.JPanel;
 public class MapillaryToggleDialog extends ToggleDialog implements
 		ICachedLoaderListener, MapillaryDataListener {
 
+	public final static int NORMAL_MODE = 0;
+	public final static int SIGNAL_MODE = 1;
+
 	public static MapillaryToggleDialog INSTANCE;
 
 	public volatile MapillaryAbstractImage image;
@@ -62,9 +65,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	private List<SideButton> signalMode;
 
 	private int mode;
-
-	public final static int NORMAL_MODE = 0;
-	public final static int SIGNAL_MODE = 1;
 
 	private JPanel buttonsPanel;
 	private JPanel top;
@@ -181,12 +181,10 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 							}
 						c++;
 					}
-					if (first >= i) {
+					if (first >= i)
 						previousSignalButton.setEnabled(false);
-					}
-					if (last <= i) {
+					if (last <= i)
 						nextSignalButton.setEnabled(false);
-					}
 				}
 
 				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
@@ -276,6 +274,12 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Action class to jump to the image following the red line.
+	 * 
+	 * @author nokutu
+	 *
+	 */
 	class redAction extends AbstractAction {
 		public redAction() {
 			putValue(NAME, tr("Jump to red"));
@@ -293,6 +297,12 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Action class to jump to the image following the blue line.
+	 * 
+	 * @author nokutu
+	 *
+	 */
 	class blueAction extends AbstractAction {
 		public blueAction() {
 			putValue(NAME, tr("Jump to blue"));
@@ -376,11 +386,17 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		updateImage();
 	}
 
+	/**
+	 * Action class to jump to the next picture containing a signal.
+	 * 
+	 * @author nokutu
+	 *
+	 */
 	class NextSignalAction extends AbstractAction {
 		public NextSignalAction() {
 			putValue(NAME, tr("Next Signal"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Jumps to the next picture that contains a siganl"));
+					tr("Jumps to the next picture that contains a signal"));
 		}
 
 		@Override
@@ -405,11 +421,17 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		}
 	}
 
+	/**
+	 * Action class to jump to the previous picture containing a signal.
+	 * 
+	 * @author nokutu
+	 *
+	 */
 	class PreviousSignalAction extends AbstractAction {
 		public PreviousSignalAction() {
 			putValue(NAME, tr("Previous Signal"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Jumps to the previous picture that contains a siganl"));
+					tr("Jumps to the previous picture that contains a signal"));
 		}
 
 		@Override

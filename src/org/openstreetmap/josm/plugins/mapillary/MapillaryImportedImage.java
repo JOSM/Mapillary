@@ -8,6 +8,9 @@ import javax.imageio.ImageIO;
 
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
+	/**
+	 * The picture file.
+	 */
 	protected File file;
 
 	public MapillaryImportedImage(double lat, double lon, double ca, File file) {
@@ -15,6 +18,12 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 		this.file = file;
 	}
 
+	/**
+	 * Returns the pictures of the file.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public BufferedImage getImage() throws IOException {
 		return ImageIO.read(file);
 	}
