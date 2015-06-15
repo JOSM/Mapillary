@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	/** Sequence of pictures containing this */
 	private MapillarySequence sequence;
 
-	private int capturedAt;
+	private long capturedAt;
 	private String user;
 	private List<String> signals;
 	private String location;
@@ -64,11 +66,11 @@ public class MapillaryImage extends MapillaryAbstractImage {
 		return signals;
 	}
 
-	public void setCapturedAt(int capturedAt) {
+	public void setCapturedAt(long capturedAt) {
 		this.capturedAt = capturedAt;
 	}
 
-	public int getCapturedAt() {
+	public long getCapturedAt() {
 		return capturedAt;
 	}
 
@@ -126,6 +128,13 @@ public class MapillaryImage extends MapillaryAbstractImage {
 		if (this.getSequence() == null)
 			return null;
 		return this.getSequence().previous(this);
+	}
+	
+	public String getDate() {
+		Date date = new Date(getCapturedAt());
+
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss");
+		return formatter.format(date);
 	}
 
 	@Override

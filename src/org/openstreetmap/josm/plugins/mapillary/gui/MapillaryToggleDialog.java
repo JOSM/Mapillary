@@ -47,6 +47,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	public final static int NORMAL_MODE = 0;
 	public final static int SIGNAL_MODE = 1;
 
+	public final static String BASE_TITLE = "Mapillary picture";
+
 	public static MapillaryToggleDialog INSTANCE;
 
 	public volatile MapillaryAbstractImage image;
@@ -75,9 +77,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	private MapillaryCache thumbnailCache;
 
 	public MapillaryToggleDialog() {
-		super(tr("Mapillary image"), "mapillary.png",
-				tr("Open Mapillary window"), Shortcut.registerShortcut(
-						tr("Mapillary dialog"),
+		super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
+				Shortcut.registerShortcut(tr("Mapillary dialog"),
 						tr("Open Mapillary main dialog"), KeyEvent.VK_M,
 						Shortcut.NONE), 200);
 		MapillaryData.getInstance().addListener(this);
@@ -129,6 +130,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		top.add(titleBar, BorderLayout.NORTH);
 		createLayout(mapillaryImageDisplay, list,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
+		disableAllButtons();
 		updateImage();
 	}
 
@@ -148,10 +150,20 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			if (MapillaryLayer.INSTANCE == null) {
 				return;
 			}
-			if (this.image == null)
+			if (this.image == null) {
+				mapillaryImageDisplay.setImage(null);
+				titleBar.setTitle(BASE_TITLE);
+				disableAllButtons();
 				return;
+			}
 			if (image instanceof MapillaryImage) {
 				MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+				String title = BASE_TITLE;
+				if (mapillaryImage.getUser() != null)
+					title += " -- " + mapillaryImage.getUser();
+				if (mapillaryImage.getCapturedAt() != 0)
+					title += " -- " + mapillaryImage.getDate();
+				titleBar.setTitle(title);
 				if (mode == NORMAL_MODE) {
 					this.nextButton.setEnabled(true);
 					this.previousButton.setEnabled(true);
@@ -212,6 +224,15 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				mapillaryImageDisplay.hyperlink.setURL(null);
 			}
 		}
+	}
+
+	private void disableAllButtons() {
+		nextButton.setEnabled(false);
+		previousButton.setEnabled(false);
+		blueButton.setEnabled(false);
+		redButton.setEnabled(false);
+		nextSignalButton.setEnabled(false);
+		previousSignalButton.setEnabled(false);
 	}
 
 	/**
@@ -381,7 +402,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	}
 
 	@Override
-	public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+	public void selectedImageChanged(MapillaryAbstractImage oldImage,
+			MapillaryAbstractImage newImage) {
 		setImage(MapillaryData.getInstance().getSelectedImage());
 		updateImage();
 	}
