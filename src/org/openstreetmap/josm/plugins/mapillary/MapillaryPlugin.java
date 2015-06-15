@@ -75,7 +75,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 		SIGNAL_MENU = MainMenu.add(Main.main.menu.dataMenu, signalAction,
 				false);
 		ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction,
-				false);
+				false, 15);
 
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);

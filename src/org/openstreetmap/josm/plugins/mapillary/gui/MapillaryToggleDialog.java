@@ -94,12 +94,14 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				nextSignalButton });
 
 		mode = NORMAL_MODE;
-		this.setLayout(new BorderLayout());
-		top = new JPanel();
-		top.setLayout(new BorderLayout());
-		top.add(titleBar, BorderLayout.NORTH);
+		/*
+		 * this.setLayout(new BorderLayout()); top = new JPanel();
+		 * top.setLayout(new BorderLayout()); top.add(titleBar,
+		 * BorderLayout.NORTH);
+		 */
 		createLayout(mapillaryImageDisplay, normalMode,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
+		disableAllButtons();
 	}
 
 	public static MapillaryToggleDialog getInstance() {
@@ -152,13 +154,14 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			}
 			if (this.image == null) {
 				mapillaryImageDisplay.setImage(null);
-				titleBar.setTitle(BASE_TITLE);
+				titleBar.setTitle(tr(BASE_TITLE));
 				disableAllButtons();
 				return;
 			}
 			if (image instanceof MapillaryImage) {
+				mapillaryImageDisplay.hyperlink.setVisible(true);
 				MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-				String title = BASE_TITLE;
+				String title = tr(BASE_TITLE);
 				if (mapillaryImage.getUser() != null)
 					title += " -- " + mapillaryImage.getUser();
 				if (mapillaryImage.getCapturedAt() != 0)
@@ -213,6 +216,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 						MapillaryCache.Type.FULL_IMAGE);
 				imageCache.submit(this, false);
 			} else if (image instanceof MapillaryImportedImage) {
+				mapillaryImageDisplay.hyperlink.setVisible(false);
 				this.nextButton.setEnabled(false);
 				this.previousButton.setEnabled(false);
 				MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
@@ -233,6 +237,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		redButton.setEnabled(false);
 		nextSignalButton.setEnabled(false);
 		previousSignalButton.setEnabled(false);
+		mapillaryImageDisplay.hyperlink.setVisible(false);
 	}
 
 	/**
@@ -384,21 +389,23 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	 */
 	public void createLayout(Component data, List<SideButton> buttons,
 			boolean reverse) {
-		add(data, BorderLayout.CENTER);
-		if (!buttons.isEmpty() && buttons.get(0) != null) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(data, BorderLayout.CENTER);
+		if (reverse) {
 			buttonsPanel = new JPanel(new GridLayout(1, 1));
-			final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
-					"dialog.align.left", false) ? new FlowLayout(
-					FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
-			buttonsPanel.add(buttonRowPanel);
-			for (SideButton button : buttons)
-				buttonRowPanel.add(button);
-			if (reverse)
-				top.add(buttonsPanel, BorderLayout.SOUTH);
-			else
-				add(buttonsPanel, BorderLayout.SOUTH);
-		}
-		add(top, BorderLayout.NORTH);
+			if (!buttons.isEmpty() && buttons.get(0) != null) {
+				final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
+						"dialog.align.left", false) ? new FlowLayout(
+						FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
+				buttonsPanel.add(buttonRowPanel);
+				for (SideButton button : buttons)
+					buttonRowPanel.add(button);
+			}
+			panel.add(buttonsPanel, BorderLayout.NORTH);
+			createLayout(panel, true, null);
+		} else
+			createLayout(panel, true, buttons);
 	}
 
 	@Override
