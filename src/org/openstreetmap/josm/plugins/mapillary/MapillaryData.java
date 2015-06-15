@@ -177,6 +177,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	 * @param zoom
 	 */
 	public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
+		MapillaryAbstractImage oldImage = selectedImage;
 		selectedImage = image;
 		multiSelectedImages.clear();
 		multiSelectedImages.add(image);
@@ -207,14 +208,14 @@ public class MapillaryData implements ICachedLoaderListener {
 		if (Main.map != null) {
 			Main.map.mapView.repaint();
 		}
-		fireSelectedImageChanged();
+		fireSelectedImageChanged(oldImage, selectedImage);
 	}
 
-	private void fireSelectedImageChanged() {
+	private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
 		if (listeners.isEmpty())
 			return;
 		for (MapillaryDataListener lis : listeners)
-			lis.selectedImageChanged();
+			lis.selectedImageChanged(oldImage, newImage);
 	}
 
 	/**

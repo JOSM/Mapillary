@@ -39,6 +39,7 @@ public class MapillaryImportAction extends JosmAction {
 						tr("Import pictures into Mapillary layer"),
 						KeyEvent.VK_M, Shortcut.NONE), false,
 				"mapillaryImport", false);
+		this.setEnabled(false);
 	}
 
 	@Override

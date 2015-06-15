@@ -381,7 +381,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	}
 
 	@Override
-	public void selectedImageChanged() {
+	public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
 		setImage(MapillaryData.getInstance().getSelectedImage());
 		updateImage();
 	}

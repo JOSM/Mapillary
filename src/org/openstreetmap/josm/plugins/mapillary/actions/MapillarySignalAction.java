@@ -22,9 +22,10 @@ public class MapillarySignalAction extends JosmAction {
 	public MapillarySignalAction() {
 		super(tr("Switch signal mode"), new ImageProvider("icon24signal.png"),
 				tr("Switch signal mode"), Shortcut.registerShortcut(
-						"Mapillary signal", tr("Switch signal mode on/off"),
+						"Mapillary signal", tr("Switch Mapillary plugin's signal mode on/off"),
 						KeyEvent.VK_M, Shortcut.NONE), false,
 				"mapillarySignal", false);
+		this.setEnabled(false);
 	}
 
 	@Override

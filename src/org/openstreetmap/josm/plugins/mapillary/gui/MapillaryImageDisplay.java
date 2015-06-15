@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 public class MapillaryImageDisplay extends JComponent {
 
 	private static final int DRAG_BUTTON = 3;
+	private static final int OPTION_BUTTON = 2;
 	private static final int ZOOM_BUTTON = 1;
 
 	/** The image currently displayed */
@@ -137,7 +138,23 @@ public class MapillaryImageDisplay extends JComponent {
 			}
 			if (image == null)
 				return;
-			if (e.getButton() != DRAG_BUTTON)
+			if (e.getButton() == OPTION_BUTTON) {
+				if (!MapillaryImageDisplay.this.visibleRect
+						.equals(new Rectangle(0, 0, image.getWidth(null), image
+								.getHeight(null))))
+					// Zooms to 1:1
+					MapillaryImageDisplay.this.visibleRect = new Rectangle(0,
+							0, image.getWidth(null), image.getHeight(null));
+				else
+					// Zooms to best fit.
+					MapillaryImageDisplay.this.visibleRect = new Rectangle(
+							0,
+							(image.getHeight(null) - (image.getWidth(null) * getHeight())
+									/ getWidth()) / 2, image.getWidth(null),
+							(image.getWidth(null) * getHeight()) / getWidth());
+				MapillaryImageDisplay.this.repaint();
+				return;
+			} else if (e.getButton() != DRAG_BUTTON)
 				return;
 			// Calculate the translation to set the clicked point the center of
 			// the view.

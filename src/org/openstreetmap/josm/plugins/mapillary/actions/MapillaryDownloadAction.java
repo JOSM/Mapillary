@@ -30,21 +30,20 @@ public class MapillaryDownloadAction extends JosmAction {
 						"Mapillary", tr("Start Mapillary layer"),
 						KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false,
 				"mapillaryDownload", false);
+		this.setEnabled(false);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.layer = null;
-		if (Main.map == null || Main.map.mapView == null
-				|| Main.map.mapView.getEditLayer() == null)
-			return;
 		for (Layer layer : Main.map.mapView.getAllLayers())
 			if (layer instanceof MapillaryLayer)
 				this.layer = (MapillaryLayer) layer;
 
-		if (this.layer == null)
+		if (this.layer == null) {
 			layer = new MapillaryLayer();
-		else {
+			layer.download();
+		} else {
 			if (Main.map.mapView.getActiveLayer() != layer)
 				Main.map.mapView.setActiveLayer(layer);
 			else
@@ -52,5 +51,4 @@ public class MapillaryDownloadAction extends JosmAction {
 						.setActiveLayer(Main.map.mapView.getEditLayer());
 		}
 	}
-
 }

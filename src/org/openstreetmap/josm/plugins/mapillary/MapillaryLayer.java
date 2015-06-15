@@ -108,7 +108,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, true);
-		download();
 		Main.map.mapView.setActiveLayer(this);
 		Main.map.repaint();
 	}
@@ -126,7 +125,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	/**
 	 * Downloads all images of the area covered by the OSM data.
 	 */
-	protected void download() {
+	public void download() {
 		for (Bounds bounds : Main.map.mapView.getEditLayer().data
 				.getDataSourceBounds()) {
 			if (!this.bounds.contains(bounds)) {
@@ -155,9 +154,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
 				.setImage(null);
 		MapillaryLayer.INSTANCE = null;
+		MapillaryData.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, false);
-		MapillaryData.INSTANCE = null;
+		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
 		Main.map.mapView.removeMouseListener(mouseAdapter);
 		Main.map.mapView.removeMouseMotionListener(mouseAdapter);
 		MapView.removeEditLayerChangeListener(this);

@@ -38,6 +38,7 @@ public class MapillaryExportAction extends JosmAction {
 				tr("Export pictures"), Shortcut.registerShortcut(
 						"Export Mapillary", tr("Export Mapillary pictures"),
 						KeyEvent.VK_M, Shortcut.NONE), false, "mapillaryExport", false);
+		this.setEnabled(false);
 	}
 
 	@Override
