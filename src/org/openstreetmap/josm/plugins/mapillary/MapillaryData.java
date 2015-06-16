@@ -23,6 +23,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
 	private final List<MapillaryAbstractImage> images;
 	private MapillaryAbstractImage selectedImage;
+	private MapillaryAbstractImage hoveredImage;
 	private final List<MapillaryAbstractImage> multiSelectedImages;
 
 	private List<MapillaryDataListener> listeners = new ArrayList<>();
@@ -85,6 +86,24 @@ public class MapillaryData implements ICachedLoaderListener {
 		for (MapillaryAbstractImage image : images) {
 			addWithoutUpdate(image);
 		}
+	}
+
+	/**
+	 * Sets the image under the mouse cursor.
+	 * 
+	 * @param image
+	 */
+	public void setHoveredImage(MapillaryAbstractImage image) {
+		hoveredImage = image;
+	}
+
+	/**
+	 * Returns the image under the mouse cursor.
+	 * 
+	 * @return
+	 */
+	public MapillaryAbstractImage getHoveredImage() {
+		return hoveredImage;
 	}
 
 	/**
@@ -211,7 +230,8 @@ public class MapillaryData implements ICachedLoaderListener {
 		fireSelectedImageChanged(oldImage, selectedImage);
 	}
 
-	private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+	private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
+			MapillaryAbstractImage newImage) {
 		if (listeners.isEmpty())
 			return;
 		for (MapillaryDataListener lis : listeners)

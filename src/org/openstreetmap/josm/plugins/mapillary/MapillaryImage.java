@@ -15,7 +15,7 @@ import java.util.List;
 public class MapillaryImage extends MapillaryAbstractImage {
 	/** Unique identifier of the object */
 	private final String key;
-	/** Sequence of pictures containing this */
+	/** Sequence of pictures containing this object*/
 	private MapillarySequence sequence;
 
 	private long capturedAt;

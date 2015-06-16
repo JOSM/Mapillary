@@ -228,25 +228,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						icon = MapillaryPlugin.MAP_ICON;
 					else
 						icon = MapillaryPlugin.MAP_ICON_SELECTED;
-					Image imagetemp = icon.getImage();
-					BufferedImage bi = (BufferedImage) imagetemp;
-					int width = icon.getIconWidth();
-					int height = icon.getIconHeight();
-
-					// Rotate the image
-					double rotationRequired = Math.toRadians(image.getCa());
-					double locationX = width / 2;
-					double locationY = height / 2;
-					AffineTransform tx = AffineTransform.getRotateInstance(
-							rotationRequired, locationX, locationY);
-					AffineTransformOp op = new AffineTransformOp(tx,
-							AffineTransformOp.TYPE_BILINEAR);
-
-					g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y
-							- (height / 2), Main.map.mapView);
+					draw(g, image, icon, p);
 					if (!image.getSignals().isEmpty()) {
 						g.drawImage(MapillaryPlugin.MAP_SIGNAL.getImage(), p.x
-								+ width / 2, p.y - height / 2,
+								+ icon.getIconWidth() / 2,
+								p.y - icon.getIconHeight() / 2,
 								Main.map.mapView);
 					}
 				} else if (imageAbs instanceof MapillaryImportedImage) {
@@ -256,25 +242,46 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 						icon = MapillaryPlugin.MAP_ICON_IMPORTED;
 					else
 						icon = MapillaryPlugin.MAP_ICON_SELECTED;
-					Image imagetemp = icon.getImage();
-					BufferedImage bi = (BufferedImage) imagetemp;
-					int width = icon.getIconWidth();
-					int height = icon.getIconHeight();
-
-					// Rotate the image
-					double rotationRequired = Math.toRadians(image.getCa());
-					double locationX = width / 2;
-					double locationY = height / 2;
-					AffineTransform tx = AffineTransform.getRotateInstance(
-							rotationRequired, locationX, locationY);
-					AffineTransformOp op = new AffineTransformOp(tx,
-							AffineTransformOp.TYPE_BILINEAR);
-
-					g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y
-							- (height / 2), Main.map.mapView);
+					draw(g, image, icon, p);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Draws the given icon of an image. Also checks if the mouse is over the
+	 * image.
+	 * 
+	 * @param g
+	 * @param image
+	 * @param icon
+	 * @param p
+	 */
+	private void draw(Graphics2D g, MapillaryAbstractImage image,
+			ImageIcon icon, Point p) {
+		draw(g, icon, p, image.getCa());
+		if (MapillaryData.getInstance().getHoveredImage() == image) {
+			draw(g, MapillaryPlugin.MAP_ICON_HOVER, p, image.getCa());
+		}
+	}
+
+	private void draw(Graphics2D g, ImageIcon icon, Point p, double ca) {
+		Image imagetemp = icon.getImage();
+		BufferedImage bi = (BufferedImage) imagetemp;
+		int width = icon.getIconWidth();
+		int height = icon.getIconHeight();
+
+		// Rotate the image
+		double rotationRequired = Math.toRadians(ca);
+		double locationX = width / 2;
+		double locationY = height / 2;
+		AffineTransform tx = AffineTransform.getRotateInstance(
+				rotationRequired, locationX, locationY);
+		AffineTransformOp op = new AffineTransformOp(tx,
+				AffineTransformOp.TYPE_BILINEAR);
+
+		g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
+				Main.map.mapView);
 	}
 
 	@Override
