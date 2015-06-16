@@ -42,7 +42,8 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 			"mapiconimported.png").get();
 	public static final ImageIcon MAP_SIGNAL = new ImageProvider("signal.png")
 			.get();
-	public static final ImageIcon MAP_ICON_HOVER = new ImageProvider("hover.png").get();
+	public static final ImageIcon MAP_ICON_HOVER = new ImageProvider(
+			"hover.png").get();
 	public static final int ICON_SIZE = 24;
 
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -73,10 +74,10 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 				false, 14);
 		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
 				false, 14);
-		SIGNAL_MENU = MainMenu.add(Main.main.menu.dataMenu, signalAction,
-				false);
-		ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction,
-				false, 15);
+		SIGNAL_MENU = MainMenu
+				.add(Main.main.menu.dataMenu, signalAction, false);
+		ZOOM_MENU = MainMenu
+				.add(Main.main.menu.viewMenu, zoomAction, false, 15);
 
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);

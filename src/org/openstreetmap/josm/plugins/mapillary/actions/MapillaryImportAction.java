@@ -26,10 +26,19 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
+/**
+ * Imports a set of picture files into JOSM. They must be in jpg or png format.
+ * 
+ * @author nokutu
+ *
+ */
 public class MapillaryImportAction extends JosmAction {
 
 	public JFileChooser chooser;
 
+	/**
+	 * Amount of pictures without the proper EXIF tags.
+	 */
 	private int noTagsPics = 0;
 
 	public MapillaryImportAction() {
@@ -82,6 +91,14 @@ public class MapillaryImportAction extends JosmAction {
 		MapillaryLayer.getInstance();
 	}
 
+	/**
+	 * Reads a jpg pictures that contains the needed GPS information (position
+	 * and direction) and creates a new icon in that position.
+	 * 
+	 * @param file
+	 * @throws ImageReadException
+	 * @throws IOException
+	 */
 	public void readJPG(File file) throws ImageReadException, IOException {
 		final ImageMetadata metadata = Imaging.getMetadata(file);
 		if (metadata instanceof JpegImageMetadata) {
@@ -121,6 +138,12 @@ public class MapillaryImportAction extends JosmAction {
 		}
 	}
 
+	/**
+	 * Reads a image file that doesn't contain the needed GPS information. And
+	 * creates a new icon in the middle of the map.
+	 * 
+	 * @param file
+	 */
 	private void readNoTags(File file) {
 		double HORIZONTAL_DISTANCE = 0.0001;
 		double horDev;
@@ -131,7 +154,8 @@ public class MapillaryImportAction extends JosmAction {
 		LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
 				Main.map.mapView.getCenter());
 		MapillaryData.getInstance().add(
-				new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file));
+				new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
+						file));
 		noTagsPics++;
 	}
 

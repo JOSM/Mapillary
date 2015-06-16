@@ -179,7 +179,8 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
-
+		// TODO check if it is possible to do this while the OSM data layer is
+		// selected.
 		if (Main.map.mapView.getActiveLayer() instanceof MapillaryLayer
 				&& MapillaryData.getInstance().getHoveredImage() != closestTemp
 				&& closestTemp != null) {

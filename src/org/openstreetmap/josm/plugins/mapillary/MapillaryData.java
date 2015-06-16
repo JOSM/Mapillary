@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Database class for all the MapillaryImage objects.
  * 
  * @author nokutu
- * @see MapillaryImage
+ * @see MapillaryAbstractImage
  * @see MapillarySequence
  *
  */
