@@ -40,22 +40,36 @@ public class MapillarySignalDownloaderThread implements Runnable {
 			for (int i = 0; i < jsonarr.size(); i++) {
 				JsonArray rects = jsonarr.getJsonObject(i)
 						.getJsonArray("rects");
-				if (rects == null)
-					return;
+				JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(
+						"rectversions");
 				String key = jsonarr.getJsonObject(i).getString("key");
-				for (int j = 0; j < rects.size(); j++) {
-					JsonObject data = rects.getJsonObject(j);
-					for (MapillaryAbstractImage image : MapillaryData
-							.getInstance().getImages()) {
-						if (image instanceof MapillaryImage) {
-							if (((MapillaryImage) image).getKey().equals(key)) {
-								if (((MapillaryImage) image).getKey().equals(
-										key)) {
+				if (rectversions != null) {
+					for (int j = 0; j < rectversions.size(); j++) {
+						rects = rectversions.getJsonObject(j).getJsonArray("rects");
+						for (int k = 0; k < rects.size(); k++) {
+							JsonObject data = rects.getJsonObject(j);
+							for (MapillaryAbstractImage image : MapillaryData
+									.getInstance().getImages())
+								if (image instanceof MapillaryImage
+										&& ((MapillaryImage) image).getKey()
+												.equals(key))
 									((MapillaryImage) image).addSignal(data
 											.getString("type"));
-								}
-							}
 						}
+					}
+				}
+
+				// Just one signal on the picture
+				else if (rects != null) {
+					for (int j = 0; j < rects.size(); j++) {
+						JsonObject data = rects.getJsonObject(j);
+						for (MapillaryAbstractImage image : MapillaryData
+								.getInstance().getImages())
+							if (image instanceof MapillaryImage
+									&& ((MapillaryImage) image).getKey()
+											.equals(key))
+								((MapillaryImage) image).addSignal(data
+										.getString("type"));
 					}
 				}
 			}

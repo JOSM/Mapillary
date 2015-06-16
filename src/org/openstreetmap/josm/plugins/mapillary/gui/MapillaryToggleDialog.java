@@ -360,7 +360,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					updateImage();
 				}
 			});
-		} else if (data != null) {
+		} else if (data != null && result == LoadResult.SUCCESS) {
 			try {
 				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
 						.getContent()));
