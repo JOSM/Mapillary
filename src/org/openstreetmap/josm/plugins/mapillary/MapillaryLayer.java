@@ -19,6 +19,7 @@ import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
@@ -66,6 +67,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	private MapillaryHistoryDialog mhd;
 
 	private MouseAdapter mouseAdapter;
+	
+    int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
+    private int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
 
 	public MapillaryLayer() {
 		super(tr("Mapillary Images"));
@@ -247,6 +251,26 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			}
 		}
 	}
+	
+	/**
+	 * Draws the highlight of the icon.
+	 * @param g
+	 * @param p
+	 * @param size
+	 */
+    private void drawPointHighlight(Graphics2D g, Point p, int size) {
+    	Color oldColor = g.getColor();
+        Color highlightColor = PaintColors.HIGHLIGHT.get();
+        Color highlightColorTransparent = new Color(highlightColor.getRed(), highlightColor.getGreen(), highlightColor.getBlue(), 100);
+        g.setColor(highlightColorTransparent);
+        int s = size + highlightPointRadius;
+        while(s >= size) {
+            int r = (int) Math.floor(s/2d);
+            g.fillRoundRect(p.x-r, p.y-r, s, s, r, r);
+            s -= highlightStep;
+        }
+        g.setColor(oldColor);
+    }
 
 	/**
 	 * Draws the given icon of an image. Also checks if the mouse is over the
@@ -259,20 +283,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	 */
 	private void draw(Graphics2D g, MapillaryAbstractImage image,
 			ImageIcon icon, Point p) {
-		draw(g, icon, p, image.getCa());
-		if (MapillaryData.getInstance().getHoveredImage() == image) {
-			draw(g, MapillaryPlugin.MAP_ICON_HOVER, p, image.getCa());
-		}
-	}
-
-	private void draw(Graphics2D g, ImageIcon icon, Point p, double ca) {
 		Image imagetemp = icon.getImage();
 		BufferedImage bi = (BufferedImage) imagetemp;
 		int width = icon.getIconWidth();
 		int height = icon.getIconHeight();
 
 		// Rotate the image
-		double rotationRequired = Math.toRadians(ca);
+		double rotationRequired = Math.toRadians(image.getCa());
 		double locationX = width / 2;
 		double locationY = height / 2;
 		AffineTransform tx = AffineTransform.getRotateInstance(
@@ -282,7 +299,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 		g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
 				Main.map.mapView);
+		if (MapillaryData.getInstance().getHoveredImage() == image) {
+			drawPointHighlight(g, p, 16);
+		}
 	}
+
 
 	@Override
 	public Icon getIcon() {

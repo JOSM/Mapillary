@@ -69,7 +69,6 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	private int mode;
 
 	private JPanel buttonsPanel;
-	private JPanel top;
 
 	public MapillaryImageDisplay mapillaryImageDisplay;
 
@@ -127,9 +126,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			list = normalMode;
 			mode = NORMAL_MODE;
 		}
-		top = new JPanel();
-		top.setLayout(new BorderLayout());
-		top.add(titleBar, BorderLayout.NORTH);
+		
 		createLayout(mapillaryImageDisplay, list,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
 		disableAllButtons();
@@ -203,6 +200,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				}
 
 				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+				// Downloads the thumbnail.
 				this.mapillaryImageDisplay.setImage(null);
 				if (thumbnailCache != null)
 					thumbnailCache.cancelOutstandingTasks();
@@ -210,6 +208,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 						MapillaryCache.Type.THUMBNAIL);
 				thumbnailCache.submit(this, false);
 
+				// Downloads the full resolution image.
 				if (imageCache != null)
 					imageCache.cancelOutstandingTasks();
 				imageCache = new MapillaryCache(mapillaryImage.getKey(),
@@ -389,6 +388,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	 */
 	public void createLayout(Component data, List<SideButton> buttons,
 			boolean reverse) {
+		this.removeAll();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(data, BorderLayout.CENTER);
@@ -406,6 +406,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 			createLayout(panel, true, null);
 		} else
 			createLayout(panel, true, buttons);
+		this.add(titleBar, BorderLayout.NORTH);
 	}
 
 	@Override

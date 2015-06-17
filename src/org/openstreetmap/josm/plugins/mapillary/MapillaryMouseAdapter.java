@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
@@ -26,6 +28,8 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 	private MapillaryData mapillaryData;
 	private MapillaryRecord record;
 
+	private boolean nothingHighlighted;
+
 	public MapillaryMouseAdapter() {
 		mapillaryData = MapillaryData.getInstance();
 		record = MapillaryRecord.getInstance();
@@ -36,9 +40,14 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 		lastButton = e.getButton();
 		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
-		if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
-			return;
 		MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
+		if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closestTemp != null) {
+			this.lastClicked = this.closest;
+			MapillaryData.getInstance().setSelectedImage(closestTemp);
+			return;
+		} else if (Main.map.mapView.getActiveLayer() != MapillaryLayer
+				.getInstance())
+			return;
 		if (closestTemp instanceof MapillaryImage || closestTemp == null) {
 			MapillaryImage closest = (MapillaryImage) closestTemp;
 			// Doube click
@@ -179,22 +188,39 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
+
+		if (closestTemp != null
+				&& Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+				&& Main.map.mapModeSelect.getValue("active") == Boolean.TRUE) {
+			Main.map.mapModeSelect.exitMode();
+		} else if (closestTemp == null
+				&& Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+				&& Main.map.mapModeSelect.getValue("active") == Boolean.FALSE) {
+			Main.map.mapModeSelect.enterMode();
+			nothingHighlighted = false;
+		} else if (Main.map.mapModeSelect.getValue("active") == Boolean.FALSE
+				&& !nothingHighlighted) {
+			for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data
+					.allPrimitives()) {
+				primivitive.setHighlighted(false);
+			}
+			nothingHighlighted = true;
+		}
+
 		// TODO check if it is possible to do this while the OSM data layer is
 		// selected.
-		if (Main.map.mapView.getActiveLayer() instanceof MapillaryLayer
-				&& MapillaryData.getInstance().getHoveredImage() != closestTemp
+		if (MapillaryData.getInstance().getHoveredImage() != closestTemp
 				&& closestTemp != null) {
 			MapillaryData.getInstance().setHoveredImage(closestTemp);
 			MapillaryToggleDialog.getInstance().setImage(closestTemp);
-			MapillaryData.getInstance().dataUpdated();
 			MapillaryToggleDialog.getInstance().updateImage();
 		} else if (MapillaryData.getInstance().getHoveredImage() != closestTemp
 				&& closestTemp == null) {
 			MapillaryData.getInstance().setHoveredImage(null);
 			MapillaryToggleDialog.getInstance().setImage(
 					MapillaryData.getInstance().getSelectedImage());
-			MapillaryData.getInstance().dataUpdated();
 			MapillaryToggleDialog.getInstance().updateImage();
 		}
+		MapillaryData.getInstance().dataUpdated();
 	}
 }

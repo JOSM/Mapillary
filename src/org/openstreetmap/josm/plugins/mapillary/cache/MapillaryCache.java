@@ -65,8 +65,4 @@ public class MapillaryCache extends
 	protected boolean handleNotFound() {
 		return false;
 	}
-	
-	public void cancelOutstandingTasks() {
-		// TODO
-	}
 }
