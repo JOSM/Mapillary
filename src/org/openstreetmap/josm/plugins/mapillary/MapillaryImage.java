@@ -20,7 +20,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
 	private long capturedAt;
 	private String user;
-	private List<String> signals;
+	private List<String> signs;
 	private String location;
 
 	public String getLocation() {
@@ -46,7 +46,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	public MapillaryImage(String key, double lat, double lon, double ca) {
 		super(lat, lon, ca);
 		this.key = key;
-		this.signals = new ArrayList<>();
+		this.signs = new ArrayList<>();
 	}
 
 	/**
@@ -58,12 +58,12 @@ public class MapillaryImage extends MapillaryAbstractImage {
 		return this.key;
 	}
 	
-	public void addSignal(String signal) {
-		signals.add(signal);
+	public void addSign(String sign) {
+		signs.add(sign);
 	}
 	
-	public List<String> getSignals() {
-		return signals;
+	public List<String> getSigns() {
+		return signs;
 	}
 
 	public void setCapturedAt(long capturedAt) {

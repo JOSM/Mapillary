@@ -111,7 +111,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			}
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
-		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, true);
+		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGN_MENU, true);
 		Main.map.mapView.setActiveLayer(this);
 		Main.map.repaint();
 	}
@@ -160,7 +160,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryLayer.INSTANCE = null;
 		MapillaryData.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
-		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGNAL_MENU, false);
+		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGN_MENU, false);
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
 		Main.map.mapView.removeMouseListener(mouseAdapter);
 		Main.map.mapView.removeMouseMotionListener(mouseAdapter);
@@ -233,8 +233,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 					else
 						icon = MapillaryPlugin.MAP_ICON_SELECTED;
 					draw(g, image, icon, p);
-					if (!image.getSignals().isEmpty()) {
-						g.drawImage(MapillaryPlugin.MAP_SIGNAL.getImage(), p.x
+					if (!image.getSigns().isEmpty()) {
+						g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(), p.x
 								+ icon.getIconWidth() / 2,
 								p.y - icon.getIconHeight() / 2,
 								Main.map.mapView);

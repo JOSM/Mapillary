@@ -40,7 +40,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 			"mapiconselected.png").get();
 	public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
 			"mapiconimported.png").get();
-	public static final ImageIcon MAP_SIGNAL = new ImageProvider("signal.png")
+	public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png")
 			.get();
 	public static final int ICON_SIZE = 24;
 
@@ -49,13 +49,13 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 	private final MapillaryDownloadAction downloadAction;
 	private final MapillaryExportAction exportAction;
 	private final MapillaryImportAction importAction;
-	private final MapillarySignalAction signalAction;
+	private final MapillarySignAction signAction;
 	private final MapillaryZoomAction zoomAction;
 
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
 	public static JMenuItem IMPORT_MENU;
-	public static JMenuItem SIGNAL_MENU;
+	public static JMenuItem SIGN_MENU;
 	public static JMenuItem ZOOM_MENU;
 
 	public MapillaryPlugin(PluginInformation info) {
@@ -63,7 +63,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 		downloadAction = new MapillaryDownloadAction();
 		exportAction = new MapillaryExportAction();
 		importAction = new MapillaryImportAction();
-		signalAction = new MapillarySignalAction();
+		signAction = new MapillarySignAction();
 		zoomAction = new MapillaryZoomAction();
 
 		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
@@ -72,15 +72,15 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 				false, 14);
 		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
 				false, 14);
-		SIGNAL_MENU = MainMenu
-				.add(Main.main.menu.dataMenu, signalAction, false);
+		SIGN_MENU = MainMenu
+				.add(Main.main.menu.dataMenu, signAction, false);
 		ZOOM_MENU = MainMenu
 				.add(Main.main.menu.viewMenu, zoomAction, false, 15);
 
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);
 		IMPORT_MENU.setEnabled(false);
-		SIGNAL_MENU.setEnabled(false);
+		SIGN_MENU.setEnabled(false);
 		ZOOM_MENU.setEnabled(false);
 
 		MapView.addEditLayerChangeListener(this);

@@ -23,14 +23,14 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 
 	private final String urlImages;
 	private final String urlSequences;
-	private final String urlSignals;
+	private final String urlSigns;
 	private final Bounds bounds;
 
 	public MapillarySquareDownloadManagerThread(String urlImages,
-			String urlSequences, String urlSignals, Bounds bounds) {
+			String urlSequences, String urlSigns, Bounds bounds) {
 		this.urlImages = urlImages;
 		this.urlSequences = urlSequences;
-		this.urlSignals = urlSignals;
+		this.urlSigns = urlSigns;
 		this.bounds = bounds;
 	}
 
@@ -39,8 +39,8 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		try {
 			downloadSequences();
 			completeImages();
-			Main.map.statusLine.setHelpText("Downloading signals information");
-			downloadSignals();
+			Main.map.statusLine.setHelpText("Downloading signs information");
+			downloadSigns();
 		} catch (InterruptedException e) {
 			Main.error(e);
 		}
@@ -81,12 +81,12 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		ex.awaitTermination(15, TimeUnit.SECONDS);
 	}
 
-	private void downloadSignals() throws InterruptedException {
+	private void downloadSigns() throws InterruptedException {
 		ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25,
 				TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
 		int page = 0;
 		while (!ex.isShutdown()) {
-			ex.execute(new MapillarySignalDownloaderThread(ex, urlSignals
+			ex.execute(new MapillarySignDownloaderThread(ex, urlSigns
 					+ "&page=" + page + "&limit=20"));
 			while (ex.getQueue().remainingCapacity() == 0)
 				Thread.sleep(100);

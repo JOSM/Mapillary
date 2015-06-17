@@ -16,12 +16,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
-public class MapillarySignalDownloaderThread implements Runnable {
+public class MapillarySignDownloaderThread implements Runnable {
 
 	private final String url;
 	private final ExecutorService ex;
 
-	public MapillarySignalDownloaderThread(ExecutorService ex, String url) {
+	public MapillarySignDownloaderThread(ExecutorService ex, String url) {
 		this.ex = ex;
 		this.url = url;
 	}
@@ -53,13 +53,13 @@ public class MapillarySignalDownloaderThread implements Runnable {
 								if (image instanceof MapillaryImage
 										&& ((MapillaryImage) image).getKey()
 												.equals(key))
-									((MapillaryImage) image).addSignal(data
+									((MapillaryImage) image).addSign(data
 											.getString("type"));
 						}
 					}
 				}
 
-				// Just one signal on the picture
+				// Just one sign on the picture
 				else if (rects != null) {
 					for (int j = 0; j < rects.size(); j++) {
 						JsonObject data = rects.getJsonObject(j);
@@ -68,7 +68,7 @@ public class MapillarySignalDownloaderThread implements Runnable {
 							if (image instanceof MapillaryImage
 									&& ((MapillaryImage) image).getKey()
 											.equals(key))
-								((MapillaryImage) image).addSignal(data
+								((MapillaryImage) image).addSign(data
 										.getString("type"));
 					}
 				}

@@ -11,20 +11,20 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Switches the window mode from normal to signal and viceversa.
+ * Switches the window mode from normal to sign and viceversa.
  * 
  * @author nokutu
  * @see MapillaryToggleDialog
  *
  */
-public class MapillarySignalAction extends JosmAction {
+public class MapillarySignAction extends JosmAction {
 
-	public MapillarySignalAction() {
-		super(tr("Switch signal mode"), new ImageProvider("icon24signal.png"),
-				tr("Switch signal mode"), Shortcut.registerShortcut(
-						"Mapillary signal", tr("Switch Mapillary plugin's signal mode on/off"),
+	public MapillarySignAction() {
+		super(tr("Switch sign/normal mode"), new ImageProvider("icon24sign.png"),
+				tr("Switch sign/normal mode"), Shortcut.registerShortcut(
+						"Mapillary sign", tr("Switch Mapillary plugin's sign mode on/off"),
 						KeyEvent.VK_M, Shortcut.NONE), false,
-				"mapillarySignal", false);
+				"mapillarySign", false);
 		this.setEnabled(false);
 	}
 

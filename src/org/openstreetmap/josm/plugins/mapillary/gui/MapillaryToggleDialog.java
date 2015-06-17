@@ -45,7 +45,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		ICachedLoaderListener, MapillaryDataListener {
 
 	public final static int NORMAL_MODE = 0;
-	public final static int SIGNAL_MODE = 1;
+	public final static int SIGN_MODE = 1;
 
 	public final static String BASE_TITLE = "Mapillary picture";
 
@@ -60,11 +60,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	public final SideButton blueButton = new SideButton(new blueAction());
 	private List<SideButton> normalMode;
 
-	public final SideButton nextSignalButton = new SideButton(
-			new NextSignalAction());
-	public final SideButton previousSignalButton = new SideButton(
-			new PreviousSignalAction());
-	private List<SideButton> signalMode;
+	public final SideButton nextSignButton = new SideButton(
+			new NextSignAction());
+	public final SideButton previousSignButton = new SideButton(
+			new PreviousSignAction());
+	private List<SideButton> signMode;
 
 	private int mode;
 
@@ -89,15 +89,11 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
 		normalMode = Arrays.asList(new SideButton[] { blueButton,
 				previousButton, nextButton, redButton });
-		signalMode = Arrays.asList(new SideButton[] { previousSignalButton,
-				nextSignalButton });
+		signMode = Arrays.asList(new SideButton[] { previousSignButton,
+				nextSignButton });
 
 		mode = NORMAL_MODE;
-		/*
-		 * this.setLayout(new BorderLayout()); top = new JPanel();
-		 * top.setLayout(new BorderLayout()); top.add(titleBar,
-		 * BorderLayout.NORTH);
-		 */
+		
 		createLayout(mapillaryImageDisplay, normalMode,
 				Main.pref.getBoolean("mapillary.reverse-buttons"));
 		disableAllButtons();
@@ -120,9 +116,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		this.removeAll();
 		List<SideButton> list = null;
 		if (mode == NORMAL_MODE) {
-			list = signalMode;
-			mode = SIGNAL_MODE;
-		} else if (mode == SIGNAL_MODE) {
+			list = signMode;
+			mode = SIGN_MODE;
+		} else if (mode == SIGN_MODE) {
 			list = normalMode;
 			mode = NORMAL_MODE;
 		}
@@ -171,9 +167,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 						this.nextButton.setEnabled(false);
 					if (mapillaryImage.previous() == null)
 						this.previousButton.setEnabled(false);
-				} else if (mode == SIGNAL_MODE) {
-					previousSignalButton.setEnabled(true);
-					nextSignalButton.setEnabled(true);
+				} else if (mode == SIGN_MODE) {
+					previousSignButton.setEnabled(true);
+					nextSignButton.setEnabled(true);
 					int i = MapillaryData
 							.getInstance()
 							.getImages()
@@ -186,7 +182,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					for (MapillaryAbstractImage img : MapillaryData
 							.getInstance().getImages()) {
 						if (img instanceof MapillaryImage)
-							if (!((MapillaryImage) img).getSignals().isEmpty()) {
+							if (!((MapillaryImage) img).getSigns().isEmpty()) {
 								if (first == -1)
 									first = c;
 								last = c;
@@ -194,9 +190,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 						c++;
 					}
 					if (first >= i)
-						previousSignalButton.setEnabled(false);
+						previousSignButton.setEnabled(false);
 					if (last <= i)
-						nextSignalButton.setEnabled(false);
+						nextSignButton.setEnabled(false);
 				}
 
 				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
@@ -234,8 +230,8 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 		previousButton.setEnabled(false);
 		blueButton.setEnabled(false);
 		redButton.setEnabled(false);
-		nextSignalButton.setEnabled(false);
-		previousSignalButton.setEnabled(false);
+		nextSignButton.setEnabled(false);
+		previousSignButton.setEnabled(false);
 		mapillaryImageDisplay.hyperlink.setVisible(false);
 	}
 
@@ -417,16 +413,16 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	}
 
 	/**
-	 * Action class to jump to the next picture containing a signal.
+	 * Action class to jump to the next picture containing a sign.
 	 * 
 	 * @author nokutu
 	 *
 	 */
-	class NextSignalAction extends AbstractAction {
-		public NextSignalAction() {
-			putValue(NAME, tr("Next Signal"));
+	class NextSignAction extends AbstractAction {
+		public NextSignAction() {
+			putValue(NAME, tr("Next Sign"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Jumps to the next picture that contains a signal"));
+					tr("Jumps to the next picture that contains a sign"));
 		}
 
 		@Override
@@ -441,7 +437,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					MapillaryAbstractImage img = MapillaryData.getInstance()
 							.getImages().get(j);
 					if (img instanceof MapillaryImage)
-						if (!((MapillaryImage) img).getSignals().isEmpty()) {
+						if (!((MapillaryImage) img).getSigns().isEmpty()) {
 							MapillaryData.getInstance().setSelectedImage(img,
 									true);
 							return;
@@ -452,16 +448,16 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	}
 
 	/**
-	 * Action class to jump to the previous picture containing a signal.
+	 * Action class to jump to the previous picture containing a sign.
 	 * 
 	 * @author nokutu
 	 *
 	 */
-	class PreviousSignalAction extends AbstractAction {
-		public PreviousSignalAction() {
-			putValue(NAME, tr("Previous Signal"));
+	class PreviousSignAction extends AbstractAction {
+		public PreviousSignAction() {
+			putValue(NAME, tr("Previous Sign"));
 			putValue(SHORT_DESCRIPTION,
-					tr("Jumps to the previous picture that contains a signal"));
+					tr("Jumps to the previous picture that contains a sign"));
 		}
 
 		@Override
@@ -475,7 +471,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 					MapillaryAbstractImage img = MapillaryData.getInstance()
 							.getImages().get(j);
 					if (img instanceof MapillaryImage)
-						if (!((MapillaryImage) img).getSignals().isEmpty()) {
+						if (!((MapillaryImage) img).getSigns().isEmpty()) {
 							MapillaryData.getInstance().setSelectedImage(img,
 									true);
 							return;
