@@ -6,7 +6,6 @@ import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -66,8 +65,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     public List<Bounds> bounds;
 
-    private MapillaryToggleDialog mtd;
-    private MapillaryHistoryDialog mhd;
 
     private MouseAdapter mouseAdapter;
 
@@ -100,20 +97,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
             MapView.addEditLayerChangeListener(this, false);
             MapView.addLayerChangeListener(this);
             Main.map.mapView.getEditLayer().data.addDataSetListener(this);
-            if (mtd == null) {
-                if (MapillaryToggleDialog.INSTANCE == null) {
-                    mtd = MapillaryToggleDialog.getInstance();
-                    Main.map.addToggleDialog(mtd, false);
-                } else
-                    mtd = MapillaryToggleDialog.getInstance();
-            }
-            if (mhd == null) {
-                if (MapillaryHistoryDialog.INSTANCE == null) {
-                    mhd = MapillaryHistoryDialog.getInstance();
-                    Main.map.addToggleDialog(mhd, false);
-                } else
-                    mhd = MapillaryHistoryDialog.getInstance();
-            }
         }
         MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
         MapillaryPlugin.setMenuEnabled(MapillaryPlugin.SIGN_MENU, true);

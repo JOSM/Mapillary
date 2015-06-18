@@ -2,6 +2,8 @@ package org.openstreetmap.josm.plugins.mapillary.commands;
 
 import java.util.ArrayList;
 
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+
 /**
  * History record system in order to let you undo commands
  * 
@@ -44,13 +46,20 @@ public class MapillaryRecord {
      */
     public void addCommand(MapillaryCommand command) {
         // Checks if it is a continuation of last command
-        if (position != -1
-                && commandList.get(position).images.equals(command.images)
-                && commandList.get(position).getClass() == command.getClass()) {
-            commandList.get(position).sum(command);
-            fireRecordChanged();
-            return;
+        if (position != -1) {
+            boolean equalSets = true;
+            for (MapillaryAbstractImage img : commandList.get(position).images)
+                if (!command.images.contains(img))
+                    equalSets = false;
+            if (equalSets
+                    && commandList.get(position).getClass() == command
+                            .getClass()) {
+                commandList.get(position).sum(command);
+                fireRecordChanged();
+                return;
+            }
         }
+        // Adds the command to the las position of the list.
         commandList.add(position + 1, command);
         position++;
         while (commandList.size() > position + 1) {
