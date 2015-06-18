@@ -26,82 +26,82 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  */
 public class MapillaryExportDialog extends JPanel implements ActionListener {
 
-	protected JOptionPane optionPane;
-	/** Button to export all downloaded images. */
-	public JRadioButton all;
-	/**
-	 * Button to export all images in the sequence of the selected
-	 * MapillaryImage.
-	 */
-	public JRadioButton sequence;
-	/**
-	 * Button to export all images belonging to the selected MapillaryImage
-	 * objects.
-	 */
-	public JRadioButton selected;
-	public JRadioButton rewrite;
-	public ButtonGroup group;
-	protected JButton choose;
-	protected JLabel path;
-	public JFileChooser chooser;
-	protected String exportDirectory;
+    protected JOptionPane optionPane;
+    /** Button to export all downloaded images. */
+    public JRadioButton all;
+    /**
+     * Button to export all images in the sequence of the selected
+     * MapillaryImage.
+     */
+    public JRadioButton sequence;
+    /**
+     * Button to export all images belonging to the selected MapillaryImage
+     * objects.
+     */
+    public JRadioButton selected;
+    public JRadioButton rewrite;
+    public ButtonGroup group;
+    protected JButton choose;
+    protected JLabel path;
+    public JFileChooser chooser;
+    protected String exportDirectory;
 
-	public MapillaryExportDialog() {
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+    public MapillaryExportDialog() {
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
-		group = new ButtonGroup();
-		all = new JRadioButton(tr("Export all images"));
-		sequence = new JRadioButton(tr("Export selected sequence"));
-		selected = new JRadioButton(tr("Export selected images"));
-		rewrite = new JRadioButton(tr("Rewrite imported images"));
-		group.add(all);
-		group.add(sequence);
-		group.add(selected);
-		group.add(rewrite);
-		// Some options are disabled depending on the circumstances
-		if (MapillaryData.getInstance().getSelectedImage() == null
-				|| !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
-						.getInstance().getSelectedImage()).getSequence() != null)) {
-			sequence.setEnabled(false);
-		}
-		if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
-			selected.setEnabled(false);
-		}
-		path = new JLabel(tr("Select a folder"));
-		choose = new JButton(tr("Explore"));
-		choose.addActionListener(this);
+        group = new ButtonGroup();
+        all = new JRadioButton(tr("Export all images"));
+        sequence = new JRadioButton(tr("Export selected sequence"));
+        selected = new JRadioButton(tr("Export selected images"));
+        rewrite = new JRadioButton(tr("Rewrite imported images"));
+        group.add(all);
+        group.add(sequence);
+        group.add(selected);
+        group.add(rewrite);
+        // Some options are disabled depending on the circumstances
+        if (MapillaryData.getInstance().getSelectedImage() == null
+                || !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
+                        .getInstance().getSelectedImage()).getSequence() != null)) {
+            sequence.setEnabled(false);
+        }
+        if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
+            selected.setEnabled(false);
+        }
+        path = new JLabel(tr("Select a folder"));
+        choose = new JButton(tr("Explore"));
+        choose.addActionListener(this);
 
-		// All options belong to the same jpanel so the are in line.
-		JPanel jpanel = new JPanel();
-		jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
-		jpanel.add(all);
-		jpanel.add(sequence);
-		jpanel.add(selected);
-		jpanel.add(rewrite);
-		jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		path.setAlignmentX(Component.CENTER_ALIGNMENT);
-		choose.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // All options belong to the same jpanel so the are in line.
+        JPanel jpanel = new JPanel();
+        jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
+        jpanel.add(all);
+        jpanel.add(sequence);
+        jpanel.add(selected);
+        jpanel.add(rewrite);
+        jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        path.setAlignmentX(Component.CENTER_ALIGNMENT);
+        choose.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		add(jpanel);
-		add(path);
-		add(choose);
-	}
+        add(jpanel);
+        add(path);
+        add(choose);
+    }
 
-	/**
-	 * Creates the folder choser GUI.
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new java.io.File(System
-				.getProperty("user.home")));
-		chooser.setDialogTitle(tr("Select a directory"));
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setAcceptAllFileFilterUsed(false);
+    /**
+     * Creates the folder choser GUI.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File(System
+                .getProperty("user.home")));
+        chooser.setDialogTitle(tr("Select a directory"));
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
 
-		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			path.setText(chooser.getSelectedFile().toString());
-			this.updateUI();
-		}
-	}
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            path.setText(chooser.getSelectedFile().toString());
+            this.updateUI();
+        }
+    }
 }

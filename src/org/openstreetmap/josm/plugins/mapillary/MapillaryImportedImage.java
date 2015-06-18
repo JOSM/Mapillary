@@ -8,42 +8,43 @@ import javax.imageio.ImageIO;
 
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
-	/**
-	 * The picture file.
-	 */
-	protected File file;
-	public final String datetimeOriginal;
+    /**
+     * The picture file.
+     */
+    protected File file;
+    public final String datetimeOriginal;
 
-	public MapillaryImportedImage(double lat, double lon, double ca, File file, String datetimeOriginal) {
-		super(lat, lon, ca);
-		this.file = file;
-		System.out.println(datetimeOriginal);
-		this.datetimeOriginal = datetimeOriginal;
-	}
+    public MapillaryImportedImage(double lat, double lon, double ca, File file,
+            String datetimeOriginal) {
+        super(lat, lon, ca);
+        this.file = file;
+        System.out.println(datetimeOriginal);
+        this.datetimeOriginal = datetimeOriginal;
+    }
 
-	/**
-	 * Returns the pictures of the file.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public BufferedImage getImage() throws IOException {
-		return ImageIO.read(file);
-	}
-	
-	public File getFile() {
-		return file;
-	}
+    /**
+     * Returns the pictures of the file.
+     * 
+     * @return
+     * @throws IOException
+     */
+    public BufferedImage getImage() throws IOException {
+        return ImageIO.read(file);
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof MapillaryImportedImage)
-			return this.file.equals(((MapillaryImportedImage) object).file);
-		return false;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.file.hashCode();
-	}
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof MapillaryImportedImage)
+            return this.file.equals(((MapillaryImportedImage) object).file);
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.file.hashCode();
+    }
 }

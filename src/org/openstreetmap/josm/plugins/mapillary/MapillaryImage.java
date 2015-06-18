@@ -13,143 +13,160 @@ import java.util.List;
  * @see MapillaryData
  */
 public class MapillaryImage extends MapillaryAbstractImage {
-	/** Unique identifier of the object */
-	private final String key;
-	/** Sequence of pictures containing this object*/
-	private MapillarySequence sequence;
+    /** Unique identifier of the object */
+    private final String key;
+    /** Sequence of pictures containing this object */
+    private MapillarySequence sequence;
 
-	private long capturedAt;
-	private String user;
-	private List<String> signs;
-	private String location;
+    /** Epoch time when the image was taken. */
+    private long capturedAt;
+    /** The user that made the image */
+    private String user;
+    /** Set of traffic signs in the image */
+    private List<String> signs;
+    private String location;
 
-	public String getLocation() {
-		return location;
-	}
+    public String getLocation() {
+        return location;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-	/**
-	 * Main contructor of the class MapillaryImage
-	 * 
-	 * @param key
-	 *            The unique identifier of the image.
-	 * @param lat
-	 *            The latitude where it is positioned.
-	 * @param lon
-	 *            The longitude where it is positioned.
-	 * @param ca
-	 *            The direction of the images in degrees, meaning 0 north.
-	 */
-	public MapillaryImage(String key, double lat, double lon, double ca) {
-		super(lat, lon, ca);
-		this.key = key;
-		this.signs = new ArrayList<>();
-	}
+    /**
+     * Main contructor of the class MapillaryImage
+     * 
+     * @param key
+     *            The unique identifier of the image.
+     * @param lat
+     *            The latitude where it is positioned.
+     * @param lon
+     *            The longitude where it is positioned.
+     * @param ca
+     *            The direction of the images in degrees, meaning 0 north.
+     */
+    public MapillaryImage(String key, double lat, double lon, double ca) {
+        super(lat, lon, ca);
+        this.key = key;
+        this.signs = new ArrayList<>();
+    }
 
-	/**
-	 * Returns the unique identifier of the object.
-	 * 
-	 * @return A String containing the unique identifier of the object.
-	 */
-	public String getKey() {
-		return this.key;
-	}
-	
-	public void addSign(String sign) {
-		signs.add(sign);
-	}
-	
-	public List<String> getSigns() {
-		return signs;
-	}
+    /**
+     * Returns the unique identifier of the object.
+     * 
+     * @return A String containing the unique identifier of the object.
+     */
+    public String getKey() {
+        return this.key;
+    }
 
-	public void setCapturedAt(long capturedAt) {
-		this.capturedAt = capturedAt;
-	}
+    /**
+     * Adds a new sign to the set of signs.
+     * 
+     * @param sign
+     */
+    public void addSign(String sign) {
+        signs.add(sign);
+    }
 
-	public long getCapturedAt() {
-		return capturedAt;
-	}
+    public List<String> getSigns() {
+        return signs;
+    }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public void setCapturedAt(long capturedAt) {
+        this.capturedAt = capturedAt;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public long getCapturedAt() {
+        return capturedAt;
+    }
 
-	/**
-	 * Sets the MapillarySequence object which contains the MapillaryImage.
-	 * 
-	 * @param sequence
-	 *            The MapillarySequence that contains the MapillaryImage.
-	 */
-	public void setSequence(MapillarySequence sequence) {
-		this.sequence = sequence;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	/**
-	 * Returns the sequence which contains this image.
-	 * 
-	 * @return The MapillarySequence object that contains this MapillaryImage.
-	 */
-	public MapillarySequence getSequence() {
-		return this.sequence;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public String toString() {
-		return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
-				+ this.latLon.lon() + ";ca=" + this.ca + "]";
-	}
+    /**
+     * Sets the MapillarySequence object which contains the MapillaryImage.
+     * 
+     * @param sequence
+     *            The MapillarySequence that contains the MapillaryImage.
+     */
+    public void setSequence(MapillarySequence sequence) {
+        this.sequence = sequence;
+    }
 
-	/**
-	 * If the MapillaryImage belongs to a MapillarySequence, returns the next
-	 * MapillarySequence in it.
-	 * 
-	 * @return The following MapillaryImage, or null if there is none.
-	 */
-	public MapillaryImage next() {
-		if (this.getSequence() == null)
-			return null;
-		return this.getSequence().next(this);
-	}
+    /**
+     * Returns the sequence which contains this image.
+     * 
+     * @return The MapillarySequence object that contains this MapillaryImage.
+     */
+    public MapillarySequence getSequence() {
+        return this.sequence;
+    }
 
-	/**
-	 * If the MapillaryImage belongs to a MapillarySequence, returns the
-	 * previous MapillarySequence in it.
-	 * 
-	 * @return The previous MapillaryImage, or null if there is none.
-	 */
-	public MapillaryImage previous() {
-		if (this.getSequence() == null)
-			return null;
-		return this.getSequence().previous(this);
-	}
-	
-	public String getDate() {
-		return getDate("dd/MM/yyyy - hh:mm:ss");
-	}
-	
-	public String getDate(String format) {
-		Date date = new Date(getCapturedAt());
+    public String toString() {
+        return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
+                + this.latLon.lon() + ";ca=" + this.ca + "]";
+    }
 
-		SimpleDateFormat formatter = new SimpleDateFormat(format);
-		return formatter.format(date);
-	}
+    /**
+     * If the MapillaryImage belongs to a MapillarySequence, returns the next
+     * MapillarySequence in it.
+     * 
+     * @return The following MapillaryImage, or null if there is none.
+     */
+    public MapillaryImage next() {
+        if (this.getSequence() == null)
+            return null;
+        return this.getSequence().next(this);
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof MapillaryImage)
-			return this.key.equals(((MapillaryImage) object).getKey());
-		return false;
-	}
+    /**
+     * If the MapillaryImage belongs to a MapillarySequence, returns the
+     * previous MapillarySequence in it.
+     * 
+     * @return The previous MapillaryImage, or null if there is none.
+     */
+    public MapillaryImage previous() {
+        if (this.getSequence() == null)
+            return null;
+        return this.getSequence().previous(this);
+    }
 
-	@Override
-	public int hashCode() {
-		return this.key.hashCode();
-	}
+    /**
+     * Returns the date the picture was taken in DMY format.
+     * @return
+     */
+    public String getDate() {
+        return getDate("dd/MM/yyyy - hh:mm:ss");
+    }
+
+    /**
+     * Returns the date the picture was taken in the given format.
+     * @param format
+     * @return
+     */
+    public String getDate(String format) {
+        Date date = new Date(getCapturedAt());
+
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof MapillaryImage)
+            return this.key.equals(((MapillaryImage) object).getKey());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.key.hashCode();
+    }
 }

@@ -13,39 +13,42 @@ import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 
 public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
-	private JCheckBox reverseButtons = new JCheckBox(tr("Reverse buttons position when displaying images."));
-	private JCheckBox downloadMode = new JCheckBox(tr("Download images manually"));
+    private JCheckBox reverseButtons = new JCheckBox(
+            tr("Reverse buttons position when displaying images."));
+    private JCheckBox downloadMode = new JCheckBox(
+            tr("Download images manually"));
 
-	
-	@Override
-	public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
-		return gui.getDisplayPreference();
-	}
+    @Override
+    public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
+        return gui.getDisplayPreference();
+    }
 
-	@Override
-	public void addGui(PreferenceTabbedPane gui) {
-		JPanel panel = new JPanel();
-		
-		reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
-		downloadMode.setSelected(Main.pref.getBoolean("mapillary.download-manually"));
-		
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(reverseButtons);
-		panel.add(downloadMode);
+    @Override
+    public void addGui(PreferenceTabbedPane gui) {
+        JPanel panel = new JPanel();
+
+        reverseButtons.setSelected(Main.pref
+                .getBoolean("mapillary.reverse-buttons"));
+        downloadMode.setSelected(Main.pref
+                .getBoolean("mapillary.download-manually"));
+
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(reverseButtons);
+        panel.add(downloadMode);
         gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
-	}
+    }
 
-	@Override
-	public boolean ok() {
+    @Override
+    public boolean ok() {
         boolean mod = false;
         Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
         Main.pref.put("mapillary.download-manually", downloadMode.isSelected());
         return mod;
-	}
+    }
 
-	@Override
-	public boolean isExpert() {
-		return false;
-	}
+    @Override
+    public boolean isExpert() {
+        return false;
+    }
 
 }

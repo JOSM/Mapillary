@@ -24,44 +24,44 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  * @see MapillarySqueareDownloadManagerThread
  */
 public class MapillaryImageInfoDownloaderThread implements Runnable {
-	private final String url;
-	private final ExecutorService ex;
+    private final String url;
+    private final ExecutorService ex;
 
-	public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url) {
-		this.ex = ex;
-		this.url = url;
-	}
+    public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url) {
+        this.ex = ex;
+        this.url = url;
+    }
 
-	public void run() {
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					new URL(url).openStream()));
-			JsonObject jsonobj = Json.createReader(br).readObject();
-			if (!jsonobj.getBoolean("more"))
-				ex.shutdown();
-			JsonArray jsonarr = jsonobj.getJsonArray("ims");
-			JsonObject data;
-			for (int i = 0; i < jsonarr.size(); i++) {
-				data = jsonarr.getJsonObject(i);
-				String key = data.getString("key");
-				for (MapillaryAbstractImage image : MapillaryData.getInstance()
-						.getImages()) {
-					if (image instanceof MapillaryImage) {
-						if (((MapillaryImage) image).getKey().equals(key)) {
-							((MapillaryImage) image).setUser(data
-									.getString("user"));
-							((MapillaryImage) image).setCapturedAt(data
-									.getJsonNumber("captured_at").longValue());
-							((MapillaryImage) image).setLocation(data
-									.getString("location"));
-						}
-					}
-				}
-			}
-		} catch (MalformedURLException e) {
-			Main.error(e);
-		} catch (IOException e) {
-			Main.error(e);
-		}
-	}
+    public void run() {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new URL(url).openStream()));
+            JsonObject jsonobj = Json.createReader(br).readObject();
+            if (!jsonobj.getBoolean("more"))
+                ex.shutdown();
+            JsonArray jsonarr = jsonobj.getJsonArray("ims");
+            JsonObject data;
+            for (int i = 0; i < jsonarr.size(); i++) {
+                data = jsonarr.getJsonObject(i);
+                String key = data.getString("key");
+                for (MapillaryAbstractImage image : MapillaryData.getInstance()
+                        .getImages()) {
+                    if (image instanceof MapillaryImage) {
+                        if (((MapillaryImage) image).getKey().equals(key)) {
+                            ((MapillaryImage) image).setUser(data
+                                    .getString("user"));
+                            ((MapillaryImage) image).setCapturedAt(data
+                                    .getJsonNumber("captured_at").longValue());
+                            ((MapillaryImage) image).setLocation(data
+                                    .getString("location"));
+                        }
+                    }
+                }
+            }
+        } catch (MalformedURLException e) {
+            Main.error(e);
+        } catch (IOException e) {
+            Main.error(e);
+        }
+    }
 }

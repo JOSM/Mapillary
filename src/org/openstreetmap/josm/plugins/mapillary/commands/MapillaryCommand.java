@@ -11,26 +11,26 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  *
  */
 public abstract class MapillaryCommand {
-	protected List<MapillaryAbstractImage> images;
+    protected List<MapillaryAbstractImage> images;
 
-	public abstract void undo();
+    public abstract void undo();
 
-	public abstract void redo();
+    public abstract void redo();
 
-	/**
-	 * If two equal commands are applied consecutively to the same set of
-	 * images, they are summed in order to reduce them to just one command.
-	 * 
-	 * @param command
-	 */
-	public abstract void sum(MapillaryCommand command);
+    /**
+     * If two equal commands are applied consecutively to the same set of
+     * images, they are summed in order to reduce them to just one command.
+     * 
+     * @param command
+     */
+    public abstract void sum(MapillaryCommand command);
 
-	/**
-	 * Checks if the image has been modified, compairing with its original
-	 * values.
-	 */
-	public void checkModified() {
-		for (MapillaryAbstractImage image : images)
-			image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);
-	}
+    /**
+     * Checks if the image has been modified, compairing with its original
+     * values.
+     */
+    public void checkModified() {
+        for (MapillaryAbstractImage image : images)
+            image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);
+    }
 }

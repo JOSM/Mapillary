@@ -15,44 +15,46 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  *
  */
 public class CommandMoveImage extends MapillaryCommand {
-	private double x;
-	private double y;
+    private double x;
+    private double y;
 
-	public CommandMoveImage(List<MapillaryAbstractImage> images, double x, double y) {
-		this.images = new ArrayList<>(images);
-		this.x = x;
-		this.y = y;
-	}
+    public CommandMoveImage(List<MapillaryAbstractImage> images, double x,
+            double y) {
+        this.images = new ArrayList<>(images);
+        this.x = x;
+        this.y = y;
+    }
 
-	@Override
-	public void undo() {
-		for (MapillaryAbstractImage image : images) {
-			image.move(-x, -y);
-			image.stopMoving();
-		}
-		checkModified();
-		Main.map.repaint();
-	}
+    @Override
+    public void undo() {
+        for (MapillaryAbstractImage image : images) {
+            image.move(-x, -y);
+            image.stopMoving();
+        }
+        checkModified();
+        Main.map.repaint();
+    }
 
-	@Override
-	public void redo() {
-		for (MapillaryAbstractImage image : images) {
-			image.move(x, y);
-			image.stopMoving();
-		}
-		checkModified();
-		Main.map.repaint();
-	}
-	
-	public String toString() {
-		return trn("Moved {0} node", "Moved {0} nodes", images.size(), images.size());
-	}
-	
-	@Override
-	public void sum(MapillaryCommand command) {
-		if (command instanceof CommandMoveImage) {
-			this.x += ((CommandMoveImage) command).x;
-			this.y += ((CommandMoveImage) command).y;
-		}
-	}
+    @Override
+    public void redo() {
+        for (MapillaryAbstractImage image : images) {
+            image.move(x, y);
+            image.stopMoving();
+        }
+        checkModified();
+        Main.map.repaint();
+    }
+
+    public String toString() {
+        return trn("Moved {0} node", "Moved {0} nodes", images.size(),
+                images.size());
+    }
+
+    @Override
+    public void sum(MapillaryCommand command) {
+        if (command instanceof CommandMoveImage) {
+            this.x += ((CommandMoveImage) command).x;
+            this.y += ((CommandMoveImage) command).y;
+        }
+    }
 }
