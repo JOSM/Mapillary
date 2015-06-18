@@ -362,6 +362,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         return actions.toArray(new Action[actions.size()]);
     }
 
+    /**
+     * Returns the 2 closest images belonging to a different sequence.
+     * 
+     * @return
+     */
     private MapillaryImage[] getClosestImagesFromDifferentSequences() {
         if (!(mapillaryData.getSelectedImage() instanceof MapillaryImage))
             return new MapillaryImage[2];
