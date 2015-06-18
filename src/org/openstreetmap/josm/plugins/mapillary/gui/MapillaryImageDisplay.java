@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import org.openstreetmap.josm.Main;
+
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
  * included in a {@link MapillaryToggleDialog} object.
@@ -30,9 +32,9 @@ import javax.swing.JPanel;
  */
 public class MapillaryImageDisplay extends JComponent {
 
-	private static final int DRAG_BUTTON = 3;
-	private static final int OPTION_BUTTON = 2;
-	private static final int ZOOM_BUTTON = 1;
+	private static final int DRAG_BUTTON = Main.pref.getInteger("mapillary.picture-drag-button", 3);
+	private static final int OPTION_BUTTON = Main.pref.getInteger("mapillary.picture-option-button", 2);
+	private static final int ZOOM_BUTTON = Main.pref.getInteger("mapillary.picture-zoom-button", 1);
 
 	/** The image currently displayed */
 	private transient BufferedImage image = null;

@@ -13,9 +13,9 @@ import java.util.List;
 public class MapillarySequence {
 	private final List<MapillaryImage> images;
 	private final String key;
-	private final int created_at;
+	private final long created_at;
 
-	public MapillarySequence(String key, int created_at) {
+	public MapillarySequence(String key, long created_at) {
 		this.images = new ArrayList<>();
 		this.key = key;
 		this.created_at = created_at;
@@ -30,7 +30,7 @@ public class MapillarySequence {
 		return this.images;
 	}
 
-	public int getCreatedAt() {
+	public long getCreatedAt() {
 		return created_at;
 	}
 

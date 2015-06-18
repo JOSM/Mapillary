@@ -47,13 +47,18 @@ public class MapillaryDownloader {
 		url1 += buildParameters(hash);
 		url2 += buildParameters(hash);
 		url3 += buildParameters(hash);
+		System.out.println(url2);
 		
 		try {
 			Main.info("MapillaryPlugin GET " + url2);
-			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, url3, new Bounds(minLatLon, maxLatLon)));
+			Main.worker.submit(new MapillarySquareDownloadManagerThread(url1, url2, url3));
 		} catch (Exception e) {
 			Main.error(e);
 		}
+	}
+	
+	public void getImages(Bounds bounds) {
+		getImages(bounds.getMin(), bounds.getMax());
 	}
 
 	private String buildParameters(ConcurrentHashMap<String, Double> hash) {

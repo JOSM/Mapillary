@@ -34,6 +34,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	ArrayBlockingQueue<BufferedImage> queue;
 	ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
+	final int amount;
 	List<MapillaryAbstractImage> images;
 	String path;
 
@@ -45,6 +46,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 		queueImages = new ArrayBlockingQueue<>(10);
 
 		this.images = images;
+		amount = images.size();
 		this.path = path;
 	}
 	
@@ -62,6 +64,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 			queue.add(image.getImage());
 			queueImages.add(image);
 		}
+		amount = images.size();		
 	}
 
 	@Override
@@ -72,10 +75,9 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 	@Override
 	protected void realRun() throws SAXException, IOException,
 			OsmTransferException {
-		
 		// Starts a writer thread in order to write the pictures on the disk.
 		Thread writer = new Thread(new MapillaryExportWriterThread(path, queue,
-				queueImages, queue.size(), this.getProgressMonitor()));
+				queueImages, amount, this.getProgressMonitor()));
 		writer.start();
 		if (path == null) {
 			try {

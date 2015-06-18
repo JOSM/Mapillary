@@ -18,6 +18,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
 /**
@@ -32,13 +33,12 @@ public class MapillarySequenceDownloadThread implements Runnable {
 
 	private String url;
 	private ExecutorService ex;
-	private Bounds bounds;
+	private List<Bounds> bounds;
 
-	public MapillarySequenceDownloadThread(ExecutorService ex, String url,
-			Bounds bounds) {
+	public MapillarySequenceDownloadThread(ExecutorService ex, String url) {
 		this.url = url;
 		this.ex = ex;
-		this.bounds = bounds;
+		this.bounds = MapillaryLayer.getInstance().bounds;
 	}
 
 	public void run() {
@@ -76,13 +76,8 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					break;
 				MapillarySequence sequence = new MapillarySequence(
 						jsonobj.getString("key"), jsonobj.getJsonNumber(
-								"captured_at").intValue());
-				for (MapillaryAbstractImage mimage : MapillaryData
-						.getInstance().getImages())
-					if (mimage instanceof MapillaryImage
-							&& ((MapillaryImage) mimage).getSequence().getKey()
-									.equals(sequence.getKey()))
-						break;
+								"captured_at").longValue());
+								
 				int first = -1;
 				int last = -1;
 				int pos = 0;
@@ -90,12 +85,12 @@ public class MapillarySequenceDownloadThread implements Runnable {
 				// Here it gets only those images which are in the downloaded
 				// area.
 				for (MapillaryAbstractImage img : images) {
-					if (first == -1 && bounds.contains(img.getLatLon()))
+					if (first == -1 && isInside(img))
 						first = pos;
 					else if (first != -1 && last == -1
-							&& !bounds.contains(img.getLatLon()))
+							&& !isInside(img))
 						last = pos;
-					else if (last != -1 && bounds.contains(img.getLatLon()))
+					else if (last != -1 && isInside(img))
 						last = -1;
 					pos++;
 				}
@@ -106,6 +101,7 @@ public class MapillarySequenceDownloadThread implements Runnable {
 					continue;
 				List<MapillaryImage> finalImages = images.subList(first, last);
 				for (MapillaryImage img : finalImages) {
+					MapillaryData.getInstance().getImages().remove(img);
 					img.setSequence(sequence);
 				}
 				MapillaryData.getInstance().addWithoutUpdate(
@@ -116,5 +112,13 @@ public class MapillarySequenceDownloadThread implements Runnable {
 			Main.error("Error reading the url " + url
 					+ " might be a Mapillary problem.");
 		}
+	}
+	
+	private boolean isInside(MapillaryAbstractImage image) {
+		for (int i = 0; i < bounds.size(); i++) {
+			if (bounds.get(i).contains(image.getLatLon()))
+				return true;
+		}
+		return false;
 	}
 }

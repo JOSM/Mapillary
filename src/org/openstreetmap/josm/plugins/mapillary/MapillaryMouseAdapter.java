@@ -41,7 +41,8 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 		if (e.getButton() != MouseEvent.BUTTON1)
 			return;
 		MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
-		if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closestTemp != null) {
+		if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+				&& closestTemp != null) {
 			this.lastClicked = this.closest;
 			MapillaryData.getInstance().setSelectedImage(closestTemp);
 			return;
@@ -133,6 +134,13 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 	public void mouseDragged(MouseEvent e) {
 		if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
 			return;
+
+		if (!Main.pref.getBoolean("mapillary.developer"))
+			for (MapillaryAbstractImage img : MapillaryData.getInstance()
+					.getMultiSelectedImages()) {
+				if (img instanceof MapillaryImage)
+					return;
+			}
 		if (MapillaryData.getInstance().getSelectedImage() != null) {
 			if (lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
 				LatLon to = Main.map.mapView.getLatLon(e.getX(), e.getY());
@@ -140,6 +148,7 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 						start.getY());
 				for (MapillaryAbstractImage img : MapillaryData.getInstance()
 						.getMultiSelectedImages()) {
+
 					img.move(to.getX() - from.getX(), to.getY() - from.getY());
 				}
 				Main.map.repaint();

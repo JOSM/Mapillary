@@ -51,12 +51,14 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 	private final MapillaryImportAction importAction;
 	private final MapillarySignAction signAction;
 	private final MapillaryZoomAction zoomAction;
+	private final MapillaryDownloadViewAction downloadViewAction;
 
 	public static JMenuItem DOWNLOAD_MENU;
 	public static JMenuItem EXPORT_MENU;
 	public static JMenuItem IMPORT_MENU;
 	public static JMenuItem SIGN_MENU;
 	public static JMenuItem ZOOM_MENU;
+	public static JMenuItem DOWNLOAD_VIEW_MENU;
 
 	public MapillaryPlugin(PluginInformation info) {
 		super(info);
@@ -65,6 +67,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 		importAction = new MapillaryImportAction();
 		signAction = new MapillarySignAction();
 		zoomAction = new MapillaryZoomAction();
+		downloadViewAction = new MapillaryDownloadViewAction();
 
 		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
 				downloadAction, false);
@@ -72,16 +75,18 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 				false, 14);
 		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
 				false, 14);
-		SIGN_MENU = MainMenu
-				.add(Main.main.menu.dataMenu, signAction, false);
+		SIGN_MENU = MainMenu.add(Main.main.menu.dataMenu, signAction, false);
 		ZOOM_MENU = MainMenu
 				.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-
+		DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
+				downloadViewAction, false, 14);
+		
 		EXPORT_MENU.setEnabled(false);
 		DOWNLOAD_MENU.setEnabled(false);
 		IMPORT_MENU.setEnabled(false);
 		SIGN_MENU.setEnabled(false);
 		ZOOM_MENU.setEnabled(false);
+		DOWNLOAD_VIEW_MENU.setEnabled(false);
 
 		MapView.addEditLayerChangeListener(this);
 		try {
@@ -118,9 +123,11 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 		if (oldLayer == null && newLayer != null) {
 			DOWNLOAD_MENU.setEnabled(true);
 			IMPORT_MENU.setEnabled(true);
+			DOWNLOAD_VIEW_MENU.setEnabled(true);
 		} else if (oldLayer != null && newLayer == null) {
 			DOWNLOAD_MENU.setEnabled(false);
 			IMPORT_MENU.setEnabled(false);
+			DOWNLOAD_VIEW_MENU.setEnabled(false);
 		}
 	}
 }

@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 
 /**
@@ -24,22 +23,21 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	private final String urlImages;
 	private final String urlSequences;
 	private final String urlSigns;
-	private final Bounds bounds;
 
 	public MapillarySquareDownloadManagerThread(String urlImages,
-			String urlSequences, String urlSigns, Bounds bounds) {
+			String urlSequences, String urlSigns) {
 		this.urlImages = urlImages;
 		this.urlSequences = urlSequences;
 		this.urlSigns = urlSigns;
-		this.bounds = bounds;
 	}
 
 	public void run() {
 		Main.map.statusLine.setHelpText("Downloading images from Mapillary");
 		try {
 			downloadSequences();
+			Main.map.statusLine.setHelpText("Downloading image's information");
 			completeImages();
-			Main.map.statusLine.setHelpText("Downloading signs information");
+			Main.map.statusLine.setHelpText("Downloading signs");
 			downloadSigns();
 		} catch (InterruptedException e) {
 			Main.error(e);
@@ -58,7 +56,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 		int page = 0;
 		while (!ex.isShutdown()) {
 			ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
-					+ "&page=" + page + "&limit=1", bounds));
+					+ "&page=" + page + "&limit=1"));
 			while (ex.getQueue().remainingCapacity() == 0)
 				Thread.sleep(100);
 			page++;

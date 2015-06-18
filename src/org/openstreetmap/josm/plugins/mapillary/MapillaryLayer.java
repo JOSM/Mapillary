@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -52,7 +54,8 @@ import java.util.ArrayList;
 public class MapillaryLayer extends AbstractModifiableLayer implements
 		DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
-	public final static int SEQUENCE_MAX_JUMP_DISTANCE = 100;
+	public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
+			"mapillary.sequence-max-jump-distance", 100);
 
 	public static MapillaryLayer INSTANCE;
 	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -61,15 +64,17 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
 	private final MapillaryData mapillaryData = MapillaryData.getInstance();
 
-	private List<Bounds> bounds;
+	public List<Bounds> bounds;
 
 	private MapillaryToggleDialog mtd;
 	private MapillaryHistoryDialog mhd;
 
 	private MouseAdapter mouseAdapter;
-	
-    int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
-    private int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
+
+	int highlightPointRadius = Main.pref.getInteger(
+			"mappaint.highlight.radius", 7);
+	private int highlightStep = Main.pref.getInteger("mappaint.highlight.step",
+			4);
 
 	public MapillaryLayer() {
 		super(tr("Mapillary Images"));
@@ -127,9 +132,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	}
 
 	/**
-	 * Downloads all images of the area covered by the OSM data.
+	 * Downloads all images of the area covered by the OSM data. This is only
+	 * just for automatic download.
 	 */
 	public void download() {
+		checkBigAreas();
+		if (Main.pref.getBoolean("mapillary.download-manually"))
+			return;
 		for (Bounds bounds : Main.map.mapView.getEditLayer().data
 				.getDataSourceBounds()) {
 			if (!this.bounds.contains(bounds)) {
@@ -137,6 +146,21 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				new MapillaryDownloader().getImages(bounds.getMin(),
 						bounds.getMax());
 			}
+		}
+	}
+
+	private void checkBigAreas() {
+		double area = 0;
+		for (Bounds bounds : Main.map.mapView.getEditLayer().data
+				.getDataSourceBounds()) {
+			area += bounds.getArea();
+		}
+		if (area > MapillaryDownloadViewAction.MAX_AREA) {
+			Main.pref.put("mapillary.download-manually", true);
+			JOptionPane
+					.showMessageDialog(
+							Main.parent,
+							tr("The downloaded OSM area is too big. Download mode has been change to manual. You can change this back to automatic in preferences settings."));
 		}
 	}
 
@@ -157,6 +181,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void destroy() {
 		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
 				.setImage(null);
+		MapillaryData.getInstance().getImages().clear();
 		MapillaryLayer.INSTANCE = null;
 		MapillaryData.INSTANCE = null;
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
@@ -251,26 +276,28 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			}
 		}
 	}
-	
+
 	/**
 	 * Draws the highlight of the icon.
+	 * 
 	 * @param g
 	 * @param p
 	 * @param size
 	 */
-    private void drawPointHighlight(Graphics2D g, Point p, int size) {
-    	Color oldColor = g.getColor();
-        Color highlightColor = PaintColors.HIGHLIGHT.get();
-        Color highlightColorTransparent = new Color(highlightColor.getRed(), highlightColor.getGreen(), highlightColor.getBlue(), 100);
-        g.setColor(highlightColorTransparent);
-        int s = size + highlightPointRadius;
-        while(s >= size) {
-            int r = (int) Math.floor(s/2d);
-            g.fillRoundRect(p.x-r, p.y-r, s, s, r, r);
-            s -= highlightStep;
-        }
-        g.setColor(oldColor);
-    }
+	private void drawPointHighlight(Graphics2D g, Point p, int size) {
+		Color oldColor = g.getColor();
+		Color highlightColor = PaintColors.HIGHLIGHT.get();
+		Color highlightColorTransparent = new Color(highlightColor.getRed(),
+				highlightColor.getGreen(), highlightColor.getBlue(), 100);
+		g.setColor(highlightColorTransparent);
+		int s = size + highlightPointRadius;
+		while (s >= size) {
+			int r = (int) Math.floor(s / 2d);
+			g.fillRoundRect(p.x - r, p.y - r, s, s, r, r);
+			s -= highlightStep;
+		}
+		g.setColor(oldColor);
+	}
 
 	/**
 	 * Draws the given icon of an image. Also checks if the mouse is over the
@@ -304,7 +331,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		}
 	}
 
-
 	@Override
 	public Icon getIcon() {
 		return MapillaryPlugin.ICON16;
@@ -318,7 +344,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	@Override
 	public void mergeFrom(Layer from) {
 		throw new UnsupportedOperationException(
-				"Notes layer does not support merging yet");
+				"This layer does not support merging yet");
 	}
 
 	@Override
@@ -457,12 +483,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void activeLayerChange(Layer oldLayer, Layer newLayer) {
 		if (newLayer == this) {
 			if (MapillaryData.getInstance().getImages().size() > 0)
-				Main.map.statusLine.setHelpText(tr("Total images: ")
-						+ MapillaryData.getInstance().getImages().size());
+				Main.map.statusLine.setHelpText(tr("Total images: {0}",
+						MapillaryData.getInstance().getImages().size()));
 			else
 				Main.map.statusLine.setHelpText(tr("No images found"));
 		}
-
 	}
 
 	@Override

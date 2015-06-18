@@ -131,9 +131,13 @@ public class MapillaryImage extends MapillaryAbstractImage {
 	}
 	
 	public String getDate() {
+		return getDate("dd/MM/yyyy - hh:mm:ss");
+	}
+	
+	public String getDate(String format) {
 		Date date = new Date(getCapturedAt());
 
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		return formatter.format(date);
 	}
 

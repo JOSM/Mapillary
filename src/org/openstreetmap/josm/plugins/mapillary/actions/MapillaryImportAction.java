@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,6 +18,7 @@ import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
@@ -113,6 +116,12 @@ public class MapillaryImportAction extends JosmAction {
 					.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
 			final TiffField ca = jpegMetadata
 					.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+			final TiffField datetimeOriginal = jpegMetadata
+					.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+			if (lat_ref == null || lat == null || lon == null
+					|| lon_ref == null) {
+				readNoTags(file);
+			}
 			double latValue = 0;
 			double lonValue = 0;
 			double caValue = 0;
@@ -128,13 +137,14 @@ public class MapillaryImportAction extends JosmAction {
 				latValue = -latValue;
 			if (lon_ref.getValue().toString().equals("W"))
 				lonValue = -lonValue;
-			if (latValue != 0 && lonValue != 0) {
+			if (datetimeOriginal != null)
 				MapillaryData.getInstance().add(
 						new MapillaryImportedImage(latValue, lonValue, caValue,
-								file));
-			} else {
-				readNoTags(file);
-			}
+								file, datetimeOriginal.getStringValue()));
+			else
+				MapillaryData.getInstance().add(
+						new MapillaryImportedImage(latValue, lonValue, caValue,
+								file, currentDate()));
 		}
 	}
 
@@ -155,7 +165,7 @@ public class MapillaryImportAction extends JosmAction {
 				Main.map.mapView.getCenter());
 		MapillaryData.getInstance().add(
 				new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
-						file));
+						file, currentDate()));
 		noTagsPics++;
 	}
 
@@ -169,5 +179,13 @@ public class MapillaryImportAction extends JosmAction {
 		RationalNumber sec = degMinSec[2];
 		return deg.doubleValue() + min.doubleValue() / 60 + sec.doubleValue()
 				/ 3600;
+	}
+	
+	private String currentDate() {
+		   Calendar cal = Calendar.getInstance();
+
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			return formatter.format(cal);
+	
 	}
 }

@@ -14,6 +14,7 @@ import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
@@ -61,10 +62,10 @@ public class MapillaryExportWriterThread implements Runnable {
 				img = queue.take();
 				mimg = queueImages.take();
 				if (path == null && mimg instanceof MapillaryImportedImage) {
-					String path = ((MapillaryImportedImage) mimg).getFile().getPath();
+					String path = ((MapillaryImportedImage) mimg).getFile()
+							.getPath();
 					finalPath = path.substring(0, path.lastIndexOf('.'));
-				}
-				else if (mimg instanceof MapillaryImage)
+				} else if (mimg instanceof MapillaryImage)
 					finalPath = path + "/" + ((MapillaryImage) mimg).getKey();
 				else
 					finalPath = path + "/" + i;
@@ -75,13 +76,21 @@ public class MapillaryExportWriterThread implements Runnable {
 
 				// Write EXIF tags
 				TiffOutputSet outputSet = new TiffOutputSet();
-				TiffOutputDirectory exifDirectory = outputSet
-						.getOrCreateGPSDirectory();
+				TiffOutputDirectory exifDirectory = outputSet.getOrCreateExifDirectory();
 				exifDirectory
 						.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
 								GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 				exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
 						RationalNumber.valueOf(mimg.getCa()));
+				if (mimg instanceof MapillaryImportedImage) {
+					exifDirectory.add(
+							ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
+							((MapillaryImportedImage) mimg).datetimeOriginal);
+				}
+				else if (mimg instanceof MapillaryImage) 
+					exifDirectory.add(
+							ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
+							((MapillaryImage) mimg).getDate("yyyy/MM/dd hh/mm/ss"));
 				outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg
 						.getLatLon().lat());
 				OutputStream os = new BufferedOutputStream(

@@ -12,10 +12,13 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 	 * The picture file.
 	 */
 	protected File file;
+	public final String datetimeOriginal;
 
-	public MapillaryImportedImage(double lat, double lon, double ca, File file) {
+	public MapillaryImportedImage(double lat, double lon, double ca, File file, String datetimeOriginal) {
 		super(lat, lon, ca);
 		this.file = file;
+		System.out.println(datetimeOriginal);
+		this.datetimeOriginal = datetimeOriginal;
 	}
 
 	/**
