@@ -206,6 +206,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
             MapillaryLayer.RED = null;
             MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
             MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
+            
+            // Sets blue and red lines and enables/disables the buttons
             if (mapillaryData.getSelectedImage() != null) {
                 MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
                 Point selected = mv.getPoint(mapillaryData.getSelectedImage()
@@ -231,16 +233,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
             }
             g.setColor(Color.WHITE);
             for (MapillaryAbstractImage imageAbs : mapillaryData.getImages()) {
+                if (!imageAbs.isVisible())
+                    continue;
                 Point p = mv.getPoint(imageAbs.getLatLon());
                 if (imageAbs instanceof MapillaryImage) {
                     MapillaryImage image = (MapillaryImage) imageAbs;
                     Point nextp;
+                    // Draw sequence line
                     if (image.getSequence() != null
-                            && image.getSequence().next(image) != null) {
+                            && image.next() != null && image.next().isVisible()) {
                         nextp = mv.getPoint(image.getSequence().next(image)
                                 .getLatLon());
                         g.drawLine(p.x, p.y, nextp.x, nextp.y);
                     }
+                    
                     ImageIcon icon;
                     if (!mapillaryData.getMultiSelectedImages().contains(image))
                         icon = MapillaryPlugin.MAP_ICON;
@@ -361,6 +367,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
         for (MapillaryAbstractImage imagePrev : mapillaryData.getImages()) {
             if (!(imagePrev instanceof MapillaryImage))
+                continue;
+            if (!imagePrev.isVisible())
                 continue;
             MapillaryImage image = (MapillaryImage) imagePrev;
             if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE

@@ -86,7 +86,7 @@ public class MapillaryExportWriterThread implements Runnable {
                 if (mimg instanceof MapillaryImportedImage) {
                     exifDirectory.add(
                             ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-                            ((MapillaryImportedImage) mimg).datetimeOriginal);
+                            ((MapillaryImportedImage) mimg).getDate("yyyy/MM/dd hh:mm:ss"));
                 } else if (mimg instanceof MapillaryImage)
                     exifDirectory.add(
                             ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,

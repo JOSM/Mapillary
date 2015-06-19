@@ -64,6 +64,7 @@ public class MapillaryData implements ICachedLoaderListener {
             this.images.add(image);
         }
         dataUpdated();
+        fireImagesAdded();
     }
 
     public void addListener(MapillaryDataListener lis) {
@@ -117,6 +118,7 @@ public class MapillaryData implements ICachedLoaderListener {
         if (!images.contains(image)) {
             this.images.add(image);
         }
+        fireImagesAdded();
     }
 
     /**
@@ -142,6 +144,13 @@ public class MapillaryData implements ICachedLoaderListener {
      */
     public MapillaryAbstractImage getSelectedImage() {
         return selectedImage;
+    }
+
+    private void fireImagesAdded() {
+        if (listeners.isEmpty())
+            return;
+        for (MapillaryDataListener lis : listeners)
+            lis.imagesAdded();
     }
 
     /**

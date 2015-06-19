@@ -17,6 +17,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
@@ -106,9 +107,12 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
         if (oldFrame == null && newFrame != null) { // map frame added
             Main.map.addToggleDialog(MapillaryToggleDialog.getInstance(), false);
             Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
+            Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
         }
         if (oldFrame != null && newFrame == null) { // map frame destroyed
             MapillaryToggleDialog.destroyInstance();
+            MapillaryHistoryDialog.destroyInstance();
+            MapillaryFilterDialog.destroyInstance();
         }
     }
 

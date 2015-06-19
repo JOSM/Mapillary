@@ -208,7 +208,8 @@ public class MapillaryMouseAdapter extends MouseAdapter {
             Main.map.mapModeSelect.enterMode();
             nothingHighlighted = false;
         } else if (Main.map.mapModeSelect.getValue("active") == Boolean.FALSE
-                && !nothingHighlighted) {
+                && !nothingHighlighted && Main.map.mapView != null
+                && Main.map.mapView.getEditLayer().data != null) {
             for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data
                     .allPrimitives()) {
                 primivitive.setHighlighted(false);

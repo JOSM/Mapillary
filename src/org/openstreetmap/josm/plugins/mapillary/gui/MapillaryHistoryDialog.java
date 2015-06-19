@@ -169,4 +169,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
             return this;
         }
     }
+
+    public static void destroyInstance() {
+        MapillaryHistoryDialog.INSTANCE = null;
+    }
 }

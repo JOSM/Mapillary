@@ -1,7 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
     private MapillarySequence sequence;
 
     /** Epoch time when the image was taken. */
-    private long capturedAt;
     /** The user that made the image */
     private String user;
     /** Set of traffic signs in the image */
@@ -72,14 +69,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
     public List<String> getSigns() {
         return signs;
-    }
-
-    public void setCapturedAt(long capturedAt) {
-        this.capturedAt = capturedAt;
-    }
-
-    public long getCapturedAt() {
-        return capturedAt;
     }
 
     public void setUser(String user) {
@@ -136,26 +125,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
         if (this.getSequence() == null)
             return null;
         return this.getSequence().previous(this);
-    }
-
-    /**
-     * Returns the date the picture was taken in DMY format.
-     * @return
-     */
-    public String getDate() {
-        return getDate("dd/MM/yyyy - hh:mm:ss");
-    }
-
-    /**
-     * Returns the date the picture was taken in the given format.
-     * @param format
-     * @return
-     */
-    public String getDate(String format) {
-        Date date = new Date(getCapturedAt());
-
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        return formatter.format(date);
     }
 
     @Override

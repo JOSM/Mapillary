@@ -1,5 +1,11 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
@@ -10,6 +16,8 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public abstract class MapillaryAbstractImage {
+
+    private long capturedAt;
 
     /** Postion of the picture */
     public final LatLon latLon;
@@ -30,6 +38,7 @@ public abstract class MapillaryAbstractImage {
      * direction is stored here
      */
     protected double movingCa;
+    private boolean visible;
 
     public MapillaryAbstractImage(double lat, double lon, double ca) {
         this.latLon = new LatLon(lat, lon);
@@ -38,6 +47,7 @@ public abstract class MapillaryAbstractImage {
         this.ca = ca;
         this.tempCa = ca;
         this.movingCa = ca;
+        this.visible = true;
     }
 
     /**
@@ -57,6 +67,14 @@ public abstract class MapillaryAbstractImage {
      */
     public LatLon getLatLon() {
         return movingLatLon;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     /**
@@ -114,5 +132,52 @@ public abstract class MapillaryAbstractImage {
      */
     public double getTempCa() {
         return tempCa;
+    }
+
+    /**
+     * Returns the date the picture was taken in DMY format.
+     * 
+     * @return
+     */
+    public String getDate() {
+        return getDate("dd/MM/yyyy - hh:mm:ss");
+    }
+
+    public void setCapturedAt(long capturedAt) {
+        this.capturedAt = capturedAt;
+    }
+
+    public long getCapturedAt() {
+        return capturedAt;
+    }
+
+    /**
+     * Returns the date the picture was taken in the given format.
+     * 
+     * @param format
+     * @return
+     */
+    public String getDate(String format) {
+        Date date = new Date(getCapturedAt());
+
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
+    }
+    
+    public long getEpoch(String date, String format) {
+        
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        try {
+            Date dateTime = (Date) formatter.parse(date);
+            return dateTime.getTime();        
+        } catch (ParseException e) {
+            Main.error(e);
+        }
+        return currentTime();
+    }
+    
+    private long currentTime() {
+        Calendar cal = Calendar.getInstance();
+        return cal.getTimeInMillis();
     }
 }

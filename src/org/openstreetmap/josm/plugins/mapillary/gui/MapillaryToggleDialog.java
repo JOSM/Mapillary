@@ -163,9 +163,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
                 if (mode == NORMAL_MODE) {
                     this.nextButton.setEnabled(true);
                     this.previousButton.setEnabled(true);
-                    if (mapillaryImage.next() == null)
+                    if (mapillaryImage.next() == null || !mapillaryImage.next().isVisible())
                         this.nextButton.setEnabled(false);
-                    if (mapillaryImage.previous() == null)
+                    if (mapillaryImage.previous() == null || !mapillaryImage.previous().isVisible())
                         this.previousButton.setEnabled(false);
                 } else if (mode == SIGN_MODE) {
                     previousSignButton.setEnabled(true);
@@ -479,5 +479,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
                 }
             }
         }
+    }
+
+    @Override
+    public void imagesAdded() {
     }
 }
