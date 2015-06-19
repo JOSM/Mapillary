@@ -52,8 +52,6 @@ public class MapillaryImageInfoDownloaderThread implements Runnable {
                                     .getString("user"));
                             ((MapillaryImage) image).setCapturedAt(data
                                     .getJsonNumber("captured_at").longValue());
-                            ((MapillaryImage) image).setLocation(data
-                                    .getString("location"));
                         }
                     }
                 }

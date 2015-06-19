@@ -147,7 +147,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
             }
             if (this.image == null) {
                 mapillaryImageDisplay.setImage(null);
-                titleBar.setTitle(tr(BASE_TITLE));
+                setTitle(tr(BASE_TITLE));
                 disableAllButtons();
                 return;
             }
@@ -159,7 +159,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
                     title += " -- " + mapillaryImage.getUser();
                 if (mapillaryImage.getCapturedAt() != 0)
                     title += " -- " + mapillaryImage.getDate();
-                titleBar.setTitle(title);
+                setTitle(title);
                 if (mode == NORMAL_MODE) {
                     this.nextButton.setEnabled(true);
                     this.previousButton.setEnabled(true);
