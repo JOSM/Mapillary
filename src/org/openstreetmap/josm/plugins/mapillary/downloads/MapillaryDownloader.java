@@ -47,7 +47,6 @@ public class MapillaryDownloader {
         url1 += buildParameters(hash);
         url2 += buildParameters(hash);
         url3 += buildParameters(hash);
-        System.out.println(url2);
 
         try {
             Main.info("MapillaryPlugin GET " + url2);

@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -13,10 +14,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -65,7 +69,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
         imported = new JCheckBox("Imported images");
         downloaded = new JCheckBox(new downloadCheckBoxAction());
-        onlySigns = new JCheckBox("Only images with signs");
+        onlySigns = new JCheckBox(new OnlySignsAction());
 
         signChooser = new JButton(new SignChooserAction());
         JPanel signChooserPanel = new JPanel();
@@ -220,6 +224,17 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             MapillaryFilterDialog.getInstance().reset();
         }
     }
+    
+    private class OnlySignsAction extends AbstractAction {
+        public OnlySignsAction() {
+            putValue(NAME, tr("Only images with signs"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            signChooser.setEnabled(onlySigns.isSelected());
+        }
+    }
 
     private class SignChooserAction extends AbstractAction {
         public SignChooserAction() {
@@ -228,7 +243,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
+            JPanel dialog = MapillaryFilterChooseSigns.getInstance();
+            JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION);
+            JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
+            dlg.setMinimumSize(new Dimension(400, 150));
+            dlg.setVisible(true);
             MapillaryFilterDialog.getInstance().refresh();
+            dlg.dispose();
+
         }
     }
 

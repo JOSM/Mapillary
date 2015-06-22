@@ -140,7 +140,18 @@ public abstract class MapillaryAbstractImage {
      * @return
      */
     public String getDate() {
-        return getDate("dd/MM/yyyy - hh:mm:ss");
+        String format = "";
+        if (Main.pref.getBoolean("iso.dates"))
+            format += "yyyy-MM-dd";
+        else
+            format += "dd/MM/yyyy";
+        if (Main.pref.getBoolean("mapillary.display-hour")){
+            if (Main.pref.getBoolean("mapillary.format-24"))
+                format += " - HH:mm:ss";
+            else
+                format += " - h:mm:ss a";
+        }
+        return getDate(format);
     }
 
     public void setCapturedAt(long capturedAt) {

@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.FlowLayout;
 
 import javax.swing.JCheckBox;
@@ -17,6 +18,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
             tr("Reverse buttons position when displaying images."));
     private JCheckBox downloadMode = new JCheckBox(
             tr("Download images manually"));
+    private JCheckBox displayHour = new JCheckBox(tr("Display hour when the picture was taken"));
+    private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
 
     @Override
     public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -31,10 +34,14 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
                 .getBoolean("mapillary.reverse-buttons"));
         downloadMode.setSelected(Main.pref
                 .getBoolean("mapillary.download-manually"));
+        displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
+        format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
 
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(reverseButtons);
         panel.add(downloadMode);
+        panel.add(displayHour);
+        panel.add(format24);
         gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
     }
 
@@ -43,6 +50,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         boolean mod = false;
         Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
         Main.pref.put("mapillary.download-manually", downloadMode.isSelected());
+        Main.pref.put("mapillary.display-hour", displayHour.isSelected());
+        Main.pref.put("mapillary.format-24", format24.isSelected());
         return mod;
     }
 
