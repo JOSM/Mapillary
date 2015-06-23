@@ -155,7 +155,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * If the selected MapillaryImage is part of a MapillarySequence then the
-     * following MapillaryImage is selected. In case there is none, does
+     * following visible MapillaryImage is selected. In case there is none, does
      * nothing.
      */
     public void selectNext() {
@@ -164,13 +164,22 @@ public class MapillaryData implements ICachedLoaderListener {
                 return;
             if (((MapillaryImage) getSelectedImage()).getSequence() == null)
                 return;
-            setSelectedImage(((MapillaryImage) getSelectedImage()).next(), true);
+            if (selectedImage instanceof MapillaryImage && ((MapillaryImage) selectedImage).getSequence() != null) {
+				MapillaryImage tempImage = (MapillaryImage) selectedImage;
+				while (tempImage.next() != null) {
+					tempImage = tempImage.next();
+					if (tempImage.isVisible()) {
+			            setSelectedImage(tempImage, true);
+						break;
+					}
+				}
+			}
         }
     }
 
     /**
      * If the selected MapillaryImage is part of a MapillarySequence then the
-     * previous MapillaryImage is selected. In case there is none, does nothing.
+     * previous visible MapillaryImage is selected. In case there is none, does nothing.
      */
     public void selectPrevious() {
         if (getSelectedImage() instanceof MapillaryImage) {
@@ -178,8 +187,16 @@ public class MapillaryData implements ICachedLoaderListener {
                 return;
             if (((MapillaryImage) getSelectedImage()).getSequence() == null)
                 throw new IllegalStateException();
-            setSelectedImage(((MapillaryImage) getSelectedImage()).previous(),
-                    true);
+            if (selectedImage instanceof MapillaryImage && ((MapillaryImage) selectedImage).getSequence() != null) {
+				MapillaryImage tempImage = (MapillaryImage) selectedImage;
+				while (tempImage.previous() != null) {
+					tempImage = tempImage.previous();
+					if (tempImage.isVisible()) {
+			            setSelectedImage(tempImage, true);
+						break;
+					}
+				}
+			}
         }
     }
 

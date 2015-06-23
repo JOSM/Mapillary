@@ -14,15 +14,22 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class MapillaryFilterChooseSigns extends JPanel implements
         ActionListener {
 
-    private final JCheckBox maxspeed = new JCheckBox();
-    private final JCheckBox stop = new JCheckBox();
-    private final JCheckBox giveWay = new JCheckBox();
-    private final JCheckBox roundabout = new JCheckBox();
-    private final JCheckBox access = new JCheckBox();
+    public final JCheckBox maxspeed = new JCheckBox();
+    public final JCheckBox stop = new JCheckBox();
+    public final JCheckBox giveWay = new JCheckBox();
+    public final JCheckBox roundabout = new JCheckBox();
+    public final JCheckBox access = new JCheckBox();
 
     private static MapillaryFilterChooseSigns INSTANCE;
 
     public MapillaryFilterChooseSigns() {
+    	maxspeed.setSelected(true);
+    	stop.setSelected(true);
+    	giveWay.setSelected(true);
+    	roundabout.setSelected(true);
+    	access.setSelected(true);
+
+    	
         // Max speed sign
         JPanel maxspeedPanel = new JPanel();
         JLabel maxspeedLabel = new JLabel(tr("Speed limit"));

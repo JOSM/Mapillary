@@ -124,14 +124,29 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 				if (mapillaryImage.getCapturedAt() != 0)
 					title += " -- " + mapillaryImage.getDate();
 				setTitle(title);
-				this.nextButton.setEnabled(true);
-				this.previousButton.setEnabled(true);
-				if (mapillaryImage.next() == null
-						|| !mapillaryImage.next().isVisible())
-					this.nextButton.setEnabled(false);
-				if (mapillaryImage.previous() == null
-						|| !mapillaryImage.previous().isVisible())
-					this.previousButton.setEnabled(false);
+				this.nextButton.setEnabled(false);
+				this.previousButton.setEnabled(false);
+				// Enables/disables next/previous buttons
+				if (((MapillaryImage) image).getSequence() != null) {
+					MapillaryImage tempImage = (MapillaryImage) image;
+					while (tempImage.next() != null) {
+						tempImage = tempImage.next();
+						if (tempImage.isVisible()) {
+							this.nextButton.setEnabled(true);
+							break;
+						}
+					}
+				}
+				if (((MapillaryImage) image).getSequence() != null) {
+					MapillaryImage tempImage = (MapillaryImage) image;
+					while (tempImage.previous() != null) {
+						tempImage = tempImage.previous();
+						if (tempImage.isVisible()) {
+							this.previousButton.setEnabled(true);
+							break;
+						}
+					}
+				}
 
 				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
 				// Downloads the thumbnail.

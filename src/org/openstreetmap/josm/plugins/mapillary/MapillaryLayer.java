@@ -311,13 +311,19 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 				Point p = mv.getPoint(imageAbs.getLatLon());
 				if (imageAbs instanceof MapillaryImage) {
 					MapillaryImage image = (MapillaryImage) imageAbs;
-					Point nextp;
+					Point nextp = null;
 					// Draw sequence line
-					if (image.getSequence() != null && image.next() != null
-							&& image.next().isVisible()) {
-						nextp = mv.getPoint(image.getSequence().next(image)
-								.getLatLon());
-						g.drawLine(p.x, p.y, nextp.x, nextp.y);
+					if (image.getSequence() != null) {
+						MapillaryImage tempImage = image;
+						while (tempImage.next() != null) {
+							tempImage = tempImage.next();
+							if (tempImage.isVisible()) {
+								nextp = mv.getPoint(tempImage.getLatLon());
+								break;
+							}
+						}
+						if (nextp != null)
+							g.drawLine(p.x, p.y, nextp.x, nextp.y);
 					}
 
 					ImageIcon icon;
