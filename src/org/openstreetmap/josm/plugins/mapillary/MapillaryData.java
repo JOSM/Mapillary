@@ -233,9 +233,8 @@ public class MapillaryData implements ICachedLoaderListener {
         if (zoom)
             Main.map.mapView.zoomTo(MapillaryData.getInstance()
                     .getSelectedImage().getLatLon());
-        if (Main.map != null) {
+        if (Main.map != null)
             Main.map.mapView.repaint();
-        }
         fireSelectedImageChanged(oldImage, selectedImage);
     }
 
@@ -298,5 +297,14 @@ public class MapillaryData implements ICachedLoaderListener {
     public void loadingFinished(CacheEntry data,
             CacheEntryAttributes attributes, LoadResult result) {
         // DO NOTHING
+    }
+
+    /**
+     * Returns the amount of images contained by this object.
+     * 
+     * @return
+     */
+    public int size() {
+        return images.size();
     }
 }

@@ -224,7 +224,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             MapillaryFilterDialog.getInstance().reset();
         }
     }
-    
+
     private class OnlySignsAction extends AbstractAction {
         public OnlySignsAction() {
             putValue(NAME, tr("Only images with signs"));
@@ -236,6 +236,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         }
     }
 
+    /**
+     * Opens a new window where you can specifically filter signs.
+     * 
+     * @author nokutu
+     *
+     */
     private class SignChooserAction extends AbstractAction {
         public SignChooserAction() {
             putValue(NAME, tr("Choose signs"));
@@ -244,18 +250,17 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         @Override
         public void actionPerformed(ActionEvent arg0) {
             JPanel dialog = MapillaryFilterChooseSigns.getInstance();
-            JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION);
+            JOptionPane pane = new JOptionPane(dialog,
+                    JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
             JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
             dlg.setMinimumSize(new Dimension(400, 150));
             dlg.setVisible(true);
             MapillaryFilterDialog.getInstance().refresh();
             dlg.dispose();
-
         }
     }
 
     public static void destroyInstance() {
-        MapillaryFilterDialog.INSTANCE = null;        
+        MapillaryFilterDialog.INSTANCE = null;
     }
 }

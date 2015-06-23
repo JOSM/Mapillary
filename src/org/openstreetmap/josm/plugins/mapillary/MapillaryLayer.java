@@ -6,6 +6,7 @@ import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -61,14 +62,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     public static MapillaryImage BLUE;
     public static MapillaryImage RED;
 
-    private final MapillaryData mapillaryData = MapillaryData.getInstance();
+    private final MapillaryData data = MapillaryData.getInstance();
 
     public List<Bounds> bounds;
 
 
     private MouseAdapter mouseAdapter;
 
-    int highlightPointRadius = Main.pref.getInteger(
+    private int highlightPointRadius = Main.pref.getInteger(
             "mappaint.highlight.radius", 7);
     private int highlightStep = Main.pref.getInteger("mappaint.highlight.step",
             4);
@@ -104,7 +105,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         Main.map.repaint();
     }
 
-    public void startMouseAdapter() {
+    private void startMouseAdapter() {
         mouseAdapter = new MapillaryMouseAdapter();
     }
 
@@ -160,7 +161,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      * @return
      */
     public MapillaryData getMapillaryData() {
-        return mapillaryData;
+        return data;
     }
 
     /**
@@ -170,7 +171,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     public void destroy() {
         MapillaryToggleDialog.getInstance().mapillaryImageDisplay
                 .setImage(null);
-        MapillaryData.getInstance().getImages().clear();
+        data.getImages().clear();
         MapillaryLayer.INSTANCE = null;
         MapillaryData.INSTANCE = null;
         MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
@@ -189,10 +190,18 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      */
     @Override
     public boolean isModified() {
-        for (MapillaryAbstractImage image : mapillaryData.getImages())
+        for (MapillaryAbstractImage image : data.getImages())
             if (image.isModified())
                 return true;
         return false;
+    }
+    
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        for (MapillaryAbstractImage img : data.getImages())
+            img.setVisible(visible);
+        MapillaryFilterDialog.getInstance().refresh();
     }
 
     /**
@@ -208,9 +217,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
             MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
             
             // Sets blue and red lines and enables/disables the buttons
-            if (mapillaryData.getSelectedImage() != null) {
+            if (data.getSelectedImage() != null) {
                 MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
-                Point selected = mv.getPoint(mapillaryData.getSelectedImage()
+                Point selected = mv.getPoint(data.getSelectedImage()
                         .getLatLon());
                 if (closestImages[0] != null) {
                     MapillaryLayer.BLUE = closestImages[0];
@@ -232,7 +241,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 }
             }
             g.setColor(Color.WHITE);
-            for (MapillaryAbstractImage imageAbs : mapillaryData.getImages()) {
+            for (MapillaryAbstractImage imageAbs : data.getImages()) {
                 if (!imageAbs.isVisible())
                     continue;
                 Point p = mv.getPoint(imageAbs.getLatLon());
@@ -246,9 +255,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                                 .getLatLon());
                         g.drawLine(p.x, p.y, nextp.x, nextp.y);
                     }
-                    
+
                     ImageIcon icon;
-                    if (!mapillaryData.getMultiSelectedImages().contains(image))
+                    if (!data.getMultiSelectedImages().contains(image))
                         icon = MapillaryPlugin.MAP_ICON;
                     else
                         icon = MapillaryPlugin.MAP_ICON_SELECTED;
@@ -262,7 +271,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 } else if (imageAbs instanceof MapillaryImportedImage) {
                     MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
                     ImageIcon icon;
-                    if (!mapillaryData.getMultiSelectedImages().contains(image))
+                    if (!data.getMultiSelectedImages().contains(image))
                         icon = MapillaryPlugin.MAP_ICON_IMPORTED;
                     else
                         icon = MapillaryPlugin.MAP_ICON_SELECTED;
@@ -321,7 +330,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
         g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
                 Main.map.mapView);
-        if (MapillaryData.getInstance().getHoveredImage() == image) {
+        if (data.getHoveredImage() == image) {
             drawPointHighlight(g, p, 16);
         }
     }
@@ -357,15 +366,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      * @return
      */
     private MapillaryImage[] getClosestImagesFromDifferentSequences() {
-        if (!(mapillaryData.getSelectedImage() instanceof MapillaryImage))
+        if (!(data.getSelectedImage() instanceof MapillaryImage))
             return new MapillaryImage[2];
-        MapillaryImage selected = (MapillaryImage) mapillaryData
+        MapillaryImage selected = (MapillaryImage) data
                 .getSelectedImage();
         MapillaryImage[] ret = new MapillaryImage[2];
         double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,
                 SEQUENCE_MAX_JUMP_DISTANCE };
-        LatLon selectedCoords = mapillaryData.getSelectedImage().getLatLon();
-        for (MapillaryAbstractImage imagePrev : mapillaryData.getImages()) {
+        LatLon selectedCoords = data.getSelectedImage().getLatLon();
+        for (MapillaryAbstractImage imagePrev : data.getImages()) {
             if (!(imagePrev instanceof MapillaryImage))
                 continue;
             if (!imagePrev.isVisible())
@@ -392,10 +401,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         // Predownloads the thumbnails
         if (ret[0] != null)
             new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL)
-                    .submit(MapillaryData.getInstance(), false);
+                    .submit(data, false);
         if (ret[1] != null)
             new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL)
-                    .submit(MapillaryData.getInstance(), false);
+                    .submit(data, false);
         return ret;
     }
 
@@ -406,18 +415,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         sb.append("\n");
         sb.append(tr("Total images:"));
         sb.append(" ");
-        sb.append(this.size());
+        sb.append(data.size());
         sb.append("\n");
         return sb.toString();
     }
 
     @Override
     public String getToolTipText() {
-        return this.size() + " " + tr("images");
-    }
-
-    private int size() {
-        return mapillaryData.getImages().size();
+        return data.size() + " " + tr("images");
     }
 
     // EditDataLayerChanged
@@ -484,9 +489,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     @Override
     public void activeLayerChange(Layer oldLayer, Layer newLayer) {
         if (newLayer == this) {
-            if (MapillaryData.getInstance().getImages().size() > 0)
+            if (data.size() > 0)
                 Main.map.statusLine.setHelpText(tr("Total images: {0}",
-                        MapillaryData.getInstance().getImages().size()));
+                        data.size()));
             else
                 Main.map.statusLine.setHelpText(tr("No images found"));
         }

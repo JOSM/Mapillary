@@ -128,13 +128,13 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
     @Override
     public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
         if (oldLayer == null && newLayer != null) {
-            DOWNLOAD_MENU.setEnabled(true);
-            IMPORT_MENU.setEnabled(true);
-            DOWNLOAD_VIEW_MENU.setEnabled(true);
+            setMenuEnabled(DOWNLOAD_MENU, true);
+            setMenuEnabled(IMPORT_MENU, true);
+            setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
         } else if (oldLayer != null && newLayer == null) {
-            DOWNLOAD_MENU.setEnabled(false);
-            IMPORT_MENU.setEnabled(false);
-            DOWNLOAD_VIEW_MENU.setEnabled(false);
+            setMenuEnabled(DOWNLOAD_MENU, false);
+            setMenuEnabled(IMPORT_MENU, false);
+            setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
         }
     }
 }

@@ -44,5 +44,4 @@ public class MapillaryDownloadAction extends JosmAction {
                         .setActiveLayer(Main.map.mapView.getEditLayer());
         }
     }
-
 }
