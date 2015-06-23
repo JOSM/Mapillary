@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -145,11 +146,11 @@ public abstract class MapillaryAbstractImage {
             format += "yyyy-MM-dd";
         else
             format += "dd/MM/yyyy";
-        if (Main.pref.getBoolean("mapillary.display-hour")){
+        if (Main.pref.getBoolean("mapillary.display-hour", true)){
             if (Main.pref.getBoolean("mapillary.format-24"))
-                format += " - HH:mm:ss";
+                format += " - HH:mm:ss (z)";
             else
-                format += " - h:mm:ss a";
+                format += " - h:mm:ss a (z)";
         }
         return getDate(format);
     }
@@ -172,6 +173,7 @@ public abstract class MapillaryAbstractImage {
         Date date = new Date(getCapturedAt());
 
         SimpleDateFormat formatter = new SimpleDateFormat(format);
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatter.format(date);
     }
     
