@@ -78,27 +78,16 @@ public class MapillarySequenceDownloadThread implements Runnable {
                         jsonobj.getString("key"), jsonobj.getJsonNumber(
                                 "captured_at").longValue());
 
-                int first = -1;
-                int last = -1;
-                int pos = 0;
+               
 
+                List<MapillaryImage> finalImages = new ArrayList<>(images);
                 // Here it gets only those images which are in the downloaded
                 // area.
                 for (MapillaryAbstractImage img : images) {
-                    if (first == -1 && isInside(img))
-                        first = pos;
-                    else if (first != -1 && last == -1 && !isInside(img))
-                        last = pos;
-                    else if (last != -1 && isInside(img))
-                        last = -1;
-                    pos++;
+                    if (!isInside(img))
+                    	finalImages.remove(img);
                 }
-                if (last == -1) {
-                    last = pos;
-                }
-                if (first == -1)
-                    continue;
-                List<MapillaryImage> finalImages = images.subList(first, last);
+                
                 for (MapillaryImage img : finalImages) {
                     MapillaryData.getInstance().getImages().remove(img);
                     img.setSequence(sequence);

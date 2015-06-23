@@ -11,6 +11,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
@@ -50,6 +51,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         boolean mod = false;
         Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
         Main.pref.put("mapillary.download-manually", downloadMode.isSelected());
+        MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, downloadMode.isSelected());
+        
         Main.pref.put("mapillary.display-hour", displayHour.isSelected());
         Main.pref.put("mapillary.format-24", format24.isSelected());
         return mod;

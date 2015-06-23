@@ -42,446 +42,313 @@ import javax.swing.JPanel;
  *
  */
 public class MapillaryToggleDialog extends ToggleDialog implements
-        ICachedLoaderListener, MapillaryDataListener {
+		ICachedLoaderListener, MapillaryDataListener {
 
-    public final static int NORMAL_MODE = 0;
-    public final static int SIGN_MODE = 1;
+	public final static String BASE_TITLE = "Mapillary picture";
 
-    public final static String BASE_TITLE = "Mapillary picture";
+	public static MapillaryToggleDialog INSTANCE;
 
-    public static MapillaryToggleDialog INSTANCE;
+	public volatile MapillaryAbstractImage image;
 
-    public volatile MapillaryAbstractImage image;
+	public final SideButton nextButton = new SideButton(new nextPictureAction());
+	public final SideButton previousButton = new SideButton(
+			new previousPictureAction());
+	public final SideButton redButton = new SideButton(new redAction());
+	public final SideButton blueButton = new SideButton(new blueAction());
 
-    public final SideButton nextButton = new SideButton(new nextPictureAction());
-    public final SideButton previousButton = new SideButton(
-            new previousPictureAction());
-    public final SideButton redButton = new SideButton(new redAction());
-    public final SideButton blueButton = new SideButton(new blueAction());
-    private List<SideButton> normalMode;
+	private JPanel buttonsPanel;
 
-    public final SideButton nextSignButton = new SideButton(
-            new NextSignAction());
-    public final SideButton previousSignButton = new SideButton(
-            new PreviousSignAction());
-    private List<SideButton> signMode;
+	public MapillaryImageDisplay mapillaryImageDisplay;
 
-    private int mode;
+	private MapillaryCache imageCache;
+	private MapillaryCache thumbnailCache;
 
-    private JPanel buttonsPanel;
+	public MapillaryToggleDialog() {
+		super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
+				Shortcut.registerShortcut(tr("Mapillary dialog"),
+						tr("Open Mapillary main dialog"), KeyEvent.VK_M,
+						Shortcut.NONE), 200);
+		MapillaryData.getInstance().addListener(this);
 
-    public MapillaryImageDisplay mapillaryImageDisplay;
+		mapillaryImageDisplay = new MapillaryImageDisplay();
 
-    private MapillaryCache imageCache;
-    private MapillaryCache thumbnailCache;
+		blueButton.setForeground(Color.BLUE);
+		redButton.setForeground(Color.RED);
 
-    public MapillaryToggleDialog() {
-        super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
-                Shortcut.registerShortcut(tr("Mapillary dialog"),
-                        tr("Open Mapillary main dialog"), KeyEvent.VK_M,
-                        Shortcut.NONE), 200);
-        MapillaryData.getInstance().addListener(this);
+		createLayout(
+				mapillaryImageDisplay,
+				Arrays.asList(new SideButton[] { blueButton, previousButton,
+						nextButton, redButton }),
+				Main.pref.getBoolean("mapillary.reverse-buttons"));
+		disableAllButtons();
+	}
 
-        mapillaryImageDisplay = new MapillaryImageDisplay();
+	public static MapillaryToggleDialog getInstance() {
+		if (INSTANCE == null)
+			INSTANCE = new MapillaryToggleDialog();
+		return INSTANCE;
+	}
 
-        blueButton.setForeground(Color.BLUE);
-        redButton.setForeground(Color.RED);
+	public static void destroyInstance() {
+		INSTANCE = null;
+	}
 
-        normalMode = Arrays.asList(new SideButton[] { blueButton,
-                previousButton, nextButton, redButton });
-        signMode = Arrays.asList(new SideButton[] { previousSignButton,
-                nextSignButton });
+	/**
+	 * Downloads the image of the selected MapillaryImage and sets in the
+	 * MapillaryImageDisplay object.
+	 */
+	public synchronized void updateImage() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateImage();
+				}
+			});
+		} else {
+			if (MapillaryLayer.INSTANCE == null) {
+				return;
+			}
+			if (this.image == null) {
+				mapillaryImageDisplay.setImage(null);
+				setTitle(tr(BASE_TITLE));
+				disableAllButtons();
+				return;
+			}
+			if (image instanceof MapillaryImage) {
+				mapillaryImageDisplay.hyperlink.setVisible(true);
+				MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+				String title = tr(BASE_TITLE);
+				if (mapillaryImage.getUser() != null)
+					title += " -- " + mapillaryImage.getUser();
+				if (mapillaryImage.getCapturedAt() != 0)
+					title += " -- " + mapillaryImage.getDate();
+				setTitle(title);
+				this.nextButton.setEnabled(true);
+				this.previousButton.setEnabled(true);
+				if (mapillaryImage.next() == null
+						|| !mapillaryImage.next().isVisible())
+					this.nextButton.setEnabled(false);
+				if (mapillaryImage.previous() == null
+						|| !mapillaryImage.previous().isVisible())
+					this.previousButton.setEnabled(false);
 
-        mode = NORMAL_MODE;
+				mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+				// Downloads the thumbnail.
+				this.mapillaryImageDisplay.setImage(null);
+				if (thumbnailCache != null)
+					thumbnailCache.cancelOutstandingTasks();
+				thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
+						MapillaryCache.Type.THUMBNAIL);
+				thumbnailCache.submit(this, false);
 
-        createLayout(mapillaryImageDisplay, normalMode,
-                Main.pref.getBoolean("mapillary.reverse-buttons"));
-        disableAllButtons();
-    }
+				// Downloads the full resolution image.
+				if (imageCache != null)
+					imageCache.cancelOutstandingTasks();
+				imageCache = new MapillaryCache(mapillaryImage.getKey(),
+						MapillaryCache.Type.FULL_IMAGE);
+				imageCache.submit(this, false);
+			} else if (image instanceof MapillaryImportedImage) {
+				mapillaryImageDisplay.hyperlink.setVisible(false);
+				this.nextButton.setEnabled(false);
+				this.previousButton.setEnabled(false);
+				MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
+				try {
+					mapillaryImageDisplay.setImage(mapillaryImage.getImage());
+				} catch (IOException e) {
+					Main.error(e);
+				}
+				mapillaryImageDisplay.hyperlink.setURL(null);
+			}
+		}
+	}
 
-    public static MapillaryToggleDialog getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new MapillaryToggleDialog();
-        return INSTANCE;
-    }
+	private void disableAllButtons() {
+		nextButton.setEnabled(false);
+		previousButton.setEnabled(false);
+		blueButton.setEnabled(false);
+		redButton.setEnabled(false);
+		mapillaryImageDisplay.hyperlink.setVisible(false);
+	}
 
-    public static void destroyInstance() {
-        INSTANCE = null;
-    }
+	/**
+	 * Sets a new MapillaryImage to be shown.
+	 * 
+	 * @param image
+	 */
+	public synchronized void setImage(MapillaryAbstractImage image) {
+		this.image = image;
+	}
 
-    /**
-     * Switches from one mode to the other one.
-     */
-    public void switchMode() {
-        this.removeAll();
-        List<SideButton> list = null;
-        if (mode == NORMAL_MODE) {
-            list = signMode;
-            mode = SIGN_MODE;
-        } else if (mode == SIGN_MODE) {
-            list = normalMode;
-            mode = NORMAL_MODE;
-        }
+	/**
+	 * Returns the MapillaryImage objects which is being shown.
+	 * 
+	 * @return
+	 */
+	public synchronized MapillaryAbstractImage getImage() {
+		return this.image;
+	}
 
-        createLayout(mapillaryImageDisplay, list,
-                Main.pref.getBoolean("mapillary.reverse-buttons"));
-        disableAllButtons();
-        updateImage();
-    }
+	/**
+	 * Action class form the next image button.
+	 * 
+	 * @author Jorge
+	 *
+	 */
+	class nextPictureAction extends AbstractAction {
+		public nextPictureAction() {
+			putValue(NAME, tr("Next picture"));
+			putValue(SHORT_DESCRIPTION,
+					tr("Shows the next picture in the sequence"));
+		}
 
-    /**
-     * Downloads the image of the selected MapillaryImage and sets in the
-     * MapillaryImageDisplay object.
-     */
-    public synchronized void updateImage() {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    updateImage();
-                }
-            });
-        } else {
-            if (MapillaryLayer.INSTANCE == null) {
-                return;
-            }
-            if (this.image == null) {
-                mapillaryImageDisplay.setImage(null);
-                setTitle(tr(BASE_TITLE));
-                disableAllButtons();
-                return;
-            }
-            if (image instanceof MapillaryImage) {
-                mapillaryImageDisplay.hyperlink.setVisible(true);
-                MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-                String title = tr(BASE_TITLE);
-                if (mapillaryImage.getUser() != null)
-                    title += " -- " + mapillaryImage.getUser();
-                if (mapillaryImage.getCapturedAt() != 0)
-                    title += " -- " + mapillaryImage.getDate();
-                setTitle(title);
-                if (mode == NORMAL_MODE) {
-                    this.nextButton.setEnabled(true);
-                    this.previousButton.setEnabled(true);
-                    if (mapillaryImage.next() == null || !mapillaryImage.next().isVisible())
-                        this.nextButton.setEnabled(false);
-                    if (mapillaryImage.previous() == null || !mapillaryImage.previous().isVisible())
-                        this.previousButton.setEnabled(false);
-                } else if (mode == SIGN_MODE) {
-                    previousSignButton.setEnabled(true);
-                    nextSignButton.setEnabled(true);
-                    int i = MapillaryData
-                            .getInstance()
-                            .getImages()
-                            .indexOf(
-                                    MapillaryData.getInstance()
-                                            .getSelectedImage());
-                    int first = -1;
-                    int last = -1;
-                    int c = 0;
-                    for (MapillaryAbstractImage img : MapillaryData
-                            .getInstance().getImages()) {
-                        if (img instanceof MapillaryImage)
-                            if (!((MapillaryImage) img).getSigns().isEmpty()) {
-                                if (first == -1)
-                                    first = c;
-                                last = c;
-                            }
-                        c++;
-                    }
-                    if (first >= i)
-                        previousSignButton.setEnabled(false);
-                    if (last <= i)
-                        nextSignButton.setEnabled(false);
-                }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().selectNext();
+			}
+		}
+	}
 
-                mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
-                // Downloads the thumbnail.
-                this.mapillaryImageDisplay.setImage(null);
-                if (thumbnailCache != null)
-                    thumbnailCache.cancelOutstandingTasks();
-                thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
-                        MapillaryCache.Type.THUMBNAIL);
-                thumbnailCache.submit(this, false);
+	/**
+	 * Action class for the previous image button.
+	 * 
+	 * @author Jorge
+	 *
+	 */
+	class previousPictureAction extends AbstractAction {
+		public previousPictureAction() {
+			putValue(NAME, tr("Previous picture"));
+			putValue(SHORT_DESCRIPTION,
+					tr("Shows the previous picture in the sequence"));
+		}
 
-                // Downloads the full resolution image.
-                if (imageCache != null)
-                    imageCache.cancelOutstandingTasks();
-                imageCache = new MapillaryCache(mapillaryImage.getKey(),
-                        MapillaryCache.Type.FULL_IMAGE);
-                imageCache.submit(this, false);
-            } else if (image instanceof MapillaryImportedImage) {
-                mapillaryImageDisplay.hyperlink.setVisible(false);
-                this.nextButton.setEnabled(false);
-                this.previousButton.setEnabled(false);
-                MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
-                try {
-                    mapillaryImageDisplay.setImage(mapillaryImage.getImage());
-                } catch (IOException e) {
-                    Main.error(e);
-                }
-                mapillaryImageDisplay.hyperlink.setURL(null);
-            }
-        }
-    }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().selectPrevious();
+			}
+		}
+	}
 
-    private void disableAllButtons() {
-        nextButton.setEnabled(false);
-        previousButton.setEnabled(false);
-        blueButton.setEnabled(false);
-        redButton.setEnabled(false);
-        nextSignButton.setEnabled(false);
-        previousSignButton.setEnabled(false);
-        mapillaryImageDisplay.hyperlink.setVisible(false);
-    }
+	/**
+	 * Action class to jump to the image following the red line.
+	 * 
+	 * @author nokutu
+	 *
+	 */
+	class redAction extends AbstractAction {
+		public redAction() {
+			putValue(NAME, tr("Jump to red"));
+			putValue(
+					SHORT_DESCRIPTION,
+					tr("Jumps to the picture at the other side of the red line"));
+		}
 
-    /**
-     * Sets a new MapillaryImage to be shown.
-     * 
-     * @param image
-     */
-    public synchronized void setImage(MapillaryAbstractImage image) {
-        this.image = image;
-    }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().setSelectedImage(
+						MapillaryLayer.RED, true);
+			}
+		}
+	}
 
-    /**
-     * Returns the MapillaryImage objects which is being shown.
-     * 
-     * @return
-     */
-    public synchronized MapillaryAbstractImage getImage() {
-        return this.image;
-    }
+	/**
+	 * Action class to jump to the image following the blue line.
+	 * 
+	 * @author nokutu
+	 *
+	 */
+	class blueAction extends AbstractAction {
+		public blueAction() {
+			putValue(NAME, tr("Jump to blue"));
+			putValue(
+					SHORT_DESCRIPTION,
+					tr("Jumps to the picture at the other side of the blue line"));
+		}
 
-    /**
-     * Action class form the next image button.
-     * 
-     * @author Jorge
-     *
-     */
-    class nextPictureAction extends AbstractAction {
-        public nextPictureAction() {
-            putValue(NAME, tr("Next picture"));
-            putValue(SHORT_DESCRIPTION,
-                    tr("Shows the next picture in the sequence"));
-        }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (MapillaryToggleDialog.getInstance().getImage() != null) {
+				MapillaryData.getInstance().setSelectedImage(
+						MapillaryLayer.BLUE, true);
+			}
+		}
+	}
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                MapillaryData.getInstance().selectNext();
-            }
-        }
-    }
+	/**
+	 * When the pictures are returned from the cache, they are set in the
+	 * {@link MapillaryImageDisplay} object.
+	 */
+	@Override
+	public void loadingFinished(CacheEntry data,
+			CacheEntryAttributes attributes, LoadResult result) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateImage();
+				}
+			});
+		} else if (data != null && result == LoadResult.SUCCESS) {
+			try {
+				BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
+						.getContent()));
+				if (this.mapillaryImageDisplay.getImage() == null)
+					mapillaryImageDisplay.setImage(img);
+				else if (img.getHeight() > this.mapillaryImageDisplay
+						.getImage().getHeight()) {
+					mapillaryImageDisplay.setImage(img);
+				}
+			} catch (IOException e) {
+				Main.error(e);
+			}
+		}
+	}
 
-    /**
-     * Action class for the previous image button.
-     * 
-     * @author Jorge
-     *
-     */
-    class previousPictureAction extends AbstractAction {
-        public previousPictureAction() {
-            putValue(NAME, tr("Previous picture"));
-            putValue(SHORT_DESCRIPTION,
-                    tr("Shows the previous picture in the sequence"));
-        }
+	/**
+	 * Creates the layout of the dialog.
+	 * 
+	 * @param data
+	 *            The content of the dialog
+	 * @param buttons
+	 *            The buttons where you can click
+	 * @param reverse
+	 *            {@code true} if the buttons should go at the top;
+	 *            {@code false} otherwise.
+	 */
+	public void createLayout(Component data, List<SideButton> buttons,
+			boolean reverse) {
+		this.removeAll();
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(data, BorderLayout.CENTER);
+		if (reverse) {
+			buttonsPanel = new JPanel(new GridLayout(1, 1));
+			if (!buttons.isEmpty() && buttons.get(0) != null) {
+				final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
+						"dialog.align.left", false) ? new FlowLayout(
+						FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
+				buttonsPanel.add(buttonRowPanel);
+				for (SideButton button : buttons)
+					buttonRowPanel.add(button);
+			}
+			panel.add(buttonsPanel, BorderLayout.NORTH);
+			createLayout(panel, true, null);
+		} else
+			createLayout(panel, true, buttons);
+		this.add(titleBar, BorderLayout.NORTH);
+	}
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                MapillaryData.getInstance().selectPrevious();
-            }
-        }
-    }
+	@Override
+	public void selectedImageChanged(MapillaryAbstractImage oldImage,
+			MapillaryAbstractImage newImage) {
+		setImage(MapillaryData.getInstance().getSelectedImage());
+		updateImage();
+	}
 
-    /**
-     * Action class to jump to the image following the red line.
-     * 
-     * @author nokutu
-     *
-     */
-    class redAction extends AbstractAction {
-        public redAction() {
-            putValue(NAME, tr("Jump to red"));
-            putValue(
-                    SHORT_DESCRIPTION,
-                    tr("Jumps to the picture at the other side of the red line"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                MapillaryData.getInstance().setSelectedImage(
-                        MapillaryLayer.RED, true);
-            }
-        }
-    }
-
-    /**
-     * Action class to jump to the image following the blue line.
-     * 
-     * @author nokutu
-     *
-     */
-    class blueAction extends AbstractAction {
-        public blueAction() {
-            putValue(NAME, tr("Jump to blue"));
-            putValue(
-                    SHORT_DESCRIPTION,
-                    tr("Jumps to the picture at the other side of the blue line"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                MapillaryData.getInstance().setSelectedImage(
-                        MapillaryLayer.BLUE, true);
-            }
-        }
-    }
-
-    /**
-     * When the pictures are returned from the cache, they are set in the
-     * {@link MapillaryImageDisplay} object.
-     */
-    @Override
-    public void loadingFinished(CacheEntry data,
-            CacheEntryAttributes attributes, LoadResult result) {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    updateImage();
-                }
-            });
-        } else if (data != null && result == LoadResult.SUCCESS) {
-            try {
-                BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
-                        .getContent()));
-                if (this.mapillaryImageDisplay.getImage() == null)
-                    mapillaryImageDisplay.setImage(img);
-                else if (img.getHeight() > this.mapillaryImageDisplay
-                        .getImage().getHeight()) {
-                    mapillaryImageDisplay.setImage(img);
-                }
-            } catch (IOException e) {
-                Main.error(e);
-            }
-        }
-    }
-
-    /**
-     * Creates the layout of the dialog.
-     * 
-     * @param data
-     *            The content of the dialog
-     * @param buttons
-     *            The buttons where you can click
-     * @param reverse
-     *            {@code true} if the buttons should go at the top;
-     *            {@code false} otherwise.
-     */
-    public void createLayout(Component data, List<SideButton> buttons,
-            boolean reverse) {
-        this.removeAll();
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(data, BorderLayout.CENTER);
-        if (reverse) {
-            buttonsPanel = new JPanel(new GridLayout(1, 1));
-            if (!buttons.isEmpty() && buttons.get(0) != null) {
-                final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
-                        "dialog.align.left", false) ? new FlowLayout(
-                        FlowLayout.LEFT) : new GridLayout(1, buttons.size()));
-                buttonsPanel.add(buttonRowPanel);
-                for (SideButton button : buttons)
-                    buttonRowPanel.add(button);
-            }
-            panel.add(buttonsPanel, BorderLayout.NORTH);
-            createLayout(panel, true, null);
-        } else
-            createLayout(panel, true, buttons);
-        this.add(titleBar, BorderLayout.NORTH);
-    }
-
-    @Override
-    public void selectedImageChanged(MapillaryAbstractImage oldImage,
-            MapillaryAbstractImage newImage) {
-        setImage(MapillaryData.getInstance().getSelectedImage());
-        updateImage();
-    }
-
-    /**
-     * Action class to jump to the next picture containing a sign.
-     * 
-     * @author nokutu
-     *
-     */
-    class NextSignAction extends AbstractAction {
-        public NextSignAction() {
-            putValue(NAME, tr("Next Sign"));
-            putValue(SHORT_DESCRIPTION,
-                    tr("Jumps to the next picture that contains a sign"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                int i = MapillaryData
-                        .getInstance()
-                        .getImages()
-                        .indexOf(MapillaryData.getInstance().getSelectedImage());
-                for (int j = i + 1; j < MapillaryData.getInstance().getImages()
-                        .size(); j++) {
-                    MapillaryAbstractImage img = MapillaryData.getInstance()
-                            .getImages().get(j);
-                    if (img instanceof MapillaryImage)
-                        if (!((MapillaryImage) img).getSigns().isEmpty()) {
-                            MapillaryData.getInstance().setSelectedImage(img,
-                                    true);
-                            return;
-                        }
-                }
-            }
-        }
-    }
-
-    /**
-     * Action class to jump to the previous picture containing a sign.
-     * 
-     * @author nokutu
-     *
-     */
-    class PreviousSignAction extends AbstractAction {
-        public PreviousSignAction() {
-            putValue(NAME, tr("Previous Sign"));
-            putValue(SHORT_DESCRIPTION,
-                    tr("Jumps to the previous picture that contains a sign"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
-                int i = MapillaryData
-                        .getInstance()
-                        .getImages()
-                        .indexOf(MapillaryData.getInstance().getSelectedImage());
-                for (int j = i - 1; j >= 0; j--) {
-                    MapillaryAbstractImage img = MapillaryData.getInstance()
-                            .getImages().get(j);
-                    if (img instanceof MapillaryImage)
-                        if (!((MapillaryImage) img).getSigns().isEmpty()) {
-                            MapillaryData.getInstance().setSelectedImage(img,
-                                    true);
-                            return;
-                        }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void imagesAdded() {
-    }
+	@Override
+	public void imagesAdded() {
+	}
 }
