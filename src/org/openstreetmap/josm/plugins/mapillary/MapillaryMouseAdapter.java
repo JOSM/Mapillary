@@ -124,7 +124,7 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 			imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
 			double dist = clickPoint.distanceSq(imagePoint);
 			if (minDistance > dist
-					&& clickPoint.distance(imagePoint) < snapDistance) {
+					&& clickPoint.distance(imagePoint) < snapDistance && image.isVisible()) {
 				minDistance = dist;
 				closest = image;
 			}
@@ -207,20 +207,17 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 				&& !imageHighlighted) {
 			Main.map.mapMode.putValue("active", Boolean.FALSE);
 			imageHighlighted = true;
-			System.out.println("1");
 
 		} else if (closestTemp == null
 				&& Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
 				&& imageHighlighted && nothingHighlighted) {
 			nothingHighlighted = false;
 			Main.map.mapMode.putValue("active", Boolean.TRUE);
-			System.out.println("2");
 
 		} else if (imageHighlighted && !nothingHighlighted
 				&& Main.map.mapView != null
 				&& Main.map.mapView.getEditLayer().data != null
 				&& Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {
-			System.out.println("3");
 
 			for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data
 					.allPrimitives()) {
@@ -230,8 +227,6 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 			nothingHighlighted = true;
 		}
 
-		// TODO check if it is possible to do this while the OSM data layer is
-		// selected.
 		if (MapillaryData.getInstance().getHoveredImage() != closestTemp
 				&& closestTemp != null) {
 			MapillaryData.getInstance().setHoveredImage(closestTemp);

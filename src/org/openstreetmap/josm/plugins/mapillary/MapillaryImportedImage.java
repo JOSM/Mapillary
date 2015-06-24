@@ -18,7 +18,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
             String datetimeOriginal) {
         super(lat, lon, ca);
         this.file = file;
-        System.out.println(datetimeOriginal);
         this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy/MM/dd hh:mm:ss");
     }
 

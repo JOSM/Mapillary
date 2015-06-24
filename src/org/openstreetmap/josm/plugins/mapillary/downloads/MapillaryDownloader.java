@@ -49,7 +49,7 @@ public class MapillaryDownloader {
         url3 += buildParameters(hash);
 
         try {
-            Main.info("MapillaryPlugin GET " + url2);
+            Main.info("GET " + url2 + " (Mapillary plugin)");
             Main.worker.submit(new MapillarySquareDownloadManagerThread(url1,
                     url2, url3));
         } catch (Exception e) {

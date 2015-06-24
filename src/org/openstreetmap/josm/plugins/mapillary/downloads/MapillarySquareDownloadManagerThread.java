@@ -8,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 
 /**
  * This Class is needed to create an indeterminate amount of downloads, because
@@ -48,6 +49,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
         else
             Main.map.statusLine.setHelpText(tr("No images found"));
         MapillaryData.getInstance().dataUpdated();
+        MapillaryFilterDialog.getInstance().refresh();
     }
 
     private void downloadSequences() throws InterruptedException {

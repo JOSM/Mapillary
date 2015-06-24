@@ -50,7 +50,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 	private final JPanel panel = new JPanel(new GridLayout(ROWS, COLUMNS));
 
 	private final JCheckBox imported = new JCheckBox("Imported images");
-	private final JCheckBox downloaded = new JCheckBox(new downloadCheckBoxAction());
+	private final JCheckBox downloaded = new JCheckBox(
+			new downloadCheckBoxAction());
 	private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
 	private final JComboBox<String> time;
 	private final JTextField user;
@@ -62,6 +63,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 	public final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
 			.getInstance();
 
+	private final String[] SIGN_TAGS = { "prohibitory_speed_limit",
+			"priority_stop", "other_give_way", "mandatory_roundabout",
+			"other_no_entry", "danger_intersection", "mandatory_go",
+			"mandatory_keep" };
+	private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxspeed,
+			signFilter.stop, signFilter.giveWay, signFilter.roundabout,
+			signFilter.access, signFilter.intersection, signFilter.direction,
+			signFilter.direction };
+
 	public MapillaryFilterDialog() {
 		super(tr("Mapillary filter"), "mapillaryfilter.png",
 				tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
@@ -69,7 +79,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 						tr("Open Mapillary filter dialog"), KeyEvent.VK_M,
 						Shortcut.NONE), 200);
 
- 
 		signChooser.setEnabled(false);
 		JPanel signChooserPanel = new JPanel();
 		signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -187,26 +196,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 	}
 
 	private boolean checkSigns(MapillaryImage img) {
-		// TODO move strings into an arraylist
-		if (checkSign(img, signFilter.maxspeed, "prohibitory_speed_limit"))
-			return true;
-		
-		if (checkSign(img, signFilter.stop, "priority_stop"))
-			return true;
-		
-		if (checkSign(img, signFilter.giveWay, "other_give_way"))
-			return true;
-		
-		if (checkSign(img, signFilter.roundabout, "mandatory_roundabout"))
-			return true;
-		
-		if (checkSign(img, signFilter.access, "other_no_entry"))
-			return true;
-
+		for (int i = 0; i < SIGN_TAGS.length; i++) {
+			if (checkSign(img, SIGN_CHECKBOXES[i], SIGN_TAGS[i]))
+				return true;
+		}
 		return false;
 	}
-	
-	private boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String singString) {
+
+	private boolean checkSign(MapillaryImage img, JCheckBox signCheckBox,
+			String singString) {
 		boolean contains = false;
 		for (String sign : img.getSigns()) {
 			if (sign.contains(singString))

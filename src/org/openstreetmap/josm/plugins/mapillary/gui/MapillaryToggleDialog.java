@@ -297,13 +297,13 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 	 * {@link MapillaryImageDisplay} object.
 	 */
 	@Override
-	public void loadingFinished(CacheEntry data,
-			CacheEntryAttributes attributes, LoadResult result) {
+	public void loadingFinished(final CacheEntry data,
+			final CacheEntryAttributes attributes, final LoadResult result) {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					updateImage();
+					loadingFinished(data, attributes, result);
 				}
 			});
 		} else if (data != null && result == LoadResult.SUCCESS) {

@@ -19,6 +19,8 @@ public class MapillaryFilterChooseSigns extends JPanel implements
     public final JCheckBox giveWay = new JCheckBox();
     public final JCheckBox roundabout = new JCheckBox();
     public final JCheckBox access = new JCheckBox();
+    public final JCheckBox intersection = new JCheckBox();
+    public final JCheckBox direction = new JCheckBox();
 
     private static MapillaryFilterChooseSigns INSTANCE;
 
@@ -28,6 +30,8 @@ public class MapillaryFilterChooseSigns extends JPanel implements
     	giveWay.setSelected(true);
     	roundabout.setSelected(true);
     	access.setSelected(true);
+    	intersection.setSelected(true);
+    	direction.setSelected(true);
 
     	
         // Max speed sign
@@ -72,10 +76,28 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel noEntryPanel = new JPanel();
         JLabel noEntryLabel = new JLabel(tr("No entry"));
         noEntryLabel.setIcon(new ImageProvider(
-                "styles/standard/vehicle/restriction/access.png").get());
+                "no_entry.png").get());
         noEntryPanel.add(noEntryLabel);
         noEntryPanel.add(access);
         this.add(noEntryPanel);
+        
+        // Danger intersection
+        JPanel intersectionPanel = new JPanel();
+        JLabel intersectionLabel = new JLabel(tr("Intersection danger"));
+        intersectionLabel.setIcon(new ImageProvider(
+                "intersection_danger.png").get());
+        intersectionPanel.add(intersectionLabel);
+        intersectionPanel.add(intersection);
+        this.add(intersectionPanel);
+        
+        // Mandatory direction
+        JPanel directionPanel = new JPanel();
+        JLabel directionLabel = new JLabel(tr("Mandatory direction (any)"));
+        directionLabel.setIcon(new ImageProvider(
+                "/home/nokutu/josm/core/images/styles/standard/vehicle/restriction/turn_restrictions/only_straight_on.png").get());
+        directionPanel.add(directionLabel);
+        directionPanel.add(direction);
+        this.add(directionPanel);
     }
 
     public static MapillaryFilterChooseSigns getInstance() {
