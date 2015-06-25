@@ -109,7 +109,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		Main.map.mapView.setActiveLayer(this);
 		createHatchTexture();
-		Main.map.repaint();
+		data.dataUpdated();
 	}
 
 	private void startMouseAdapter() {

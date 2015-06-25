@@ -1,6 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.sql.Date;
+import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,7 +10,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
- * Abstract supperclass for all image objects. At the moment there is just 2,
+ * Abstract superclass for all image objects. At the moment there is just 2,
  * {@code MapillaryImportedImage} and {@code MapillaryImage}.
  * 
  * @author nokutu
@@ -20,7 +20,7 @@ public abstract class MapillaryAbstractImage {
 
     private long capturedAt;
 
-    /** Postion of the picture */
+    /** Position of the picture */
     public final LatLon latLon;
     /** Direction of the picture */
     public final double ca;

@@ -38,7 +38,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel maxspeedPanel = new JPanel();
         JLabel maxspeedLabel = new JLabel(tr("Speed limit"));
         maxspeedLabel.setIcon(new ImageProvider(
-                "styles/standard/vehicle/restriction/speed.png").get());
+                "signs/speed.png").get());
         maxspeedPanel.add(maxspeedLabel);
         maxspeedPanel.add(maxspeed);
         this.add(maxspeedPanel);
@@ -47,7 +47,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel stopPanel = new JPanel();
         JLabel stopLabel = new JLabel(tr("Stop"));
         stopLabel.setIcon(new ImageProvider(
-                "styles/standard/vehicle/restriction/stop.png").get());
+                "signs/stop.png").get());
         stopPanel.add(stopLabel);
         stopPanel.add(stop);
         this.add(stopPanel);
@@ -56,7 +56,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel giveWayPanel = new JPanel();
         JLabel giveWayLabel = new JLabel(tr("Give way"));
         giveWayLabel.setIcon(new ImageProvider(
-                "styles/standard/vehicle/restriction/right_of_way.png").get());
+                "signs/right_of_way.png").get());
         giveWayPanel.add(giveWayLabel);
         giveWayPanel.add(giveWay);
         this.add(giveWayPanel);
@@ -65,7 +65,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel roundaboutPanel = new JPanel();
         JLabel roundaboutLabel = new JLabel(tr("Give way"));
         roundaboutLabel.setIcon(new ImageProvider(
-                "styles/standard/vehicle/restriction/roundabout_right.png")
+                "signs/roundabout_right.png")
                 .get());
         roundaboutPanel.add(roundaboutLabel);
         roundaboutPanel.add(roundabout);
@@ -76,7 +76,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel noEntryPanel = new JPanel();
         JLabel noEntryLabel = new JLabel(tr("No entry"));
         noEntryLabel.setIcon(new ImageProvider(
-                "no_entry.png").get());
+                "signs/no_entry.png").get());
         noEntryPanel.add(noEntryLabel);
         noEntryPanel.add(access);
         this.add(noEntryPanel);
@@ -85,7 +85,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel intersectionPanel = new JPanel();
         JLabel intersectionLabel = new JLabel(tr("Intersection danger"));
         intersectionLabel.setIcon(new ImageProvider(
-                "intersection_danger.png").get());
+                "signs/intersection_danger.png").get());
         intersectionPanel.add(intersectionLabel);
         intersectionPanel.add(intersection);
         this.add(intersectionPanel);
@@ -94,7 +94,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
         JPanel directionPanel = new JPanel();
         JLabel directionLabel = new JLabel(tr("Mandatory direction (any)"));
         directionLabel.setIcon(new ImageProvider(
-                "/home/nokutu/josm/core/images/styles/standard/vehicle/restriction/turn_restrictions/only_straight_on.png").get());
+                "signs/only_straight_on.png").get());
         directionPanel.add(directionLabel);
         directionPanel.add(direction);
         this.add(directionPanel);

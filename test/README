@@ -1,0 +1,9 @@
+
+This directory includes the test resources for the turnrestictions plugin.
+
+
+unit/            test sources (Unit tests, functional tests)
+
+config/          configuration files for running tests
+
+data/            test data

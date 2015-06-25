@@ -49,16 +49,16 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
 	private final JPanel panel = new JPanel(new GridLayout(ROWS, COLUMNS));
 
-	private final JCheckBox imported = new JCheckBox("Imported images");
-	private final JCheckBox downloaded = new JCheckBox(
+	public final JCheckBox imported = new JCheckBox("Imported images");
+	public final JCheckBox downloaded = new JCheckBox(
 			new downloadCheckBoxAction());
-	private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
-	private final JComboBox<String> time;
-	private final JTextField user;
+	public final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
+	public final JComboBox<String> time;
+	public final JTextField user;
 
-	private final SideButton updateButton = new SideButton(new UpdateAction());
-	private final SideButton resetButton = new SideButton(new ResetAction());
-	private final JButton signChooser = new JButton(new SignChooserAction());
+	public final SideButton updateButton = new SideButton(new UpdateAction());
+	public final SideButton resetButton = new SideButton(new ResetAction());
+	public final JButton signChooser = new JButton(new SignChooserAction());
 
 	public final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
 			.getInstance();

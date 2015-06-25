@@ -3,6 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
@@ -13,6 +15,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
      */
     protected File file;
     public final long datetimeOriginal;
+    
+    public MapillaryImportedImage(double lat, double lon, double ca, File file) {
+    	this(lat, lon, ca, file, currentDate());
+    }
 
     public MapillaryImportedImage(double lat, double lon, double ca, File file,
             String datetimeOriginal) {
@@ -45,5 +51,13 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     @Override
     public int hashCode() {
         return this.file.hashCode();
+    }
+    
+    private static String currentDate() {
+        Calendar cal = Calendar.getInstance();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        return formatter.format(cal.getTime());
+
     }
 }
