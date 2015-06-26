@@ -28,8 +28,8 @@ public class MapillaryZoomAction extends JosmAction implements
                 tr("Zoom to selected image"), Shortcut.registerShortcut(
                         "Zoom Mapillary",
                         tr("Zoom to the currently selected Mapillary image"),
-                        KeyEvent.VK_M, Shortcut.NONE), false, "mapillaryZoom",
-                false);
+                        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
+                "mapillaryZoom", false);
         MapillaryData.getInstance().addListener(this);
         this.setEnabled(false);
     }
@@ -52,6 +52,6 @@ public class MapillaryZoomAction extends JosmAction implements
     }
 
     @Override
-    public void imagesAdded() {        
+    public void imagesAdded() {
     }
 }

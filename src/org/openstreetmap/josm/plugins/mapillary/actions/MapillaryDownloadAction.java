@@ -26,7 +26,7 @@ public class MapillaryDownloadAction extends JosmAction {
         super(tr("Mapillary"), new ImageProvider("icon24.png"),
                 tr("Create Mapillary layer"), Shortcut.registerShortcut(
                         "Mapillary", tr("Start Mapillary layer"),
-                        KeyEvent.VK_M, Shortcut.ALT_CTRL_SHIFT), false,
+                        KeyEvent.VK_COMMA, Shortcut.SHIFT), false,
                 "mapillaryDownload", false);
         this.setEnabled(false);
     }

@@ -25,8 +25,8 @@ public class MapillaryDownloadViewAction extends JosmAction {
                 tr("Download Mapillary images in current view"),
                 Shortcut.registerShortcut("Mapillary area",
                         tr("Download Mapillary images in current view"),
-                        KeyEvent.VK_M, Shortcut.NONE), false, "mapillaryArea",
-                false);
+                        KeyEvent.VK_PERIOD, Shortcut.SHIFT), false,
+                "mapillaryArea", false);
         this.setEnabled(false);
     }
 

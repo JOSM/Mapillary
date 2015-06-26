@@ -5,8 +5,6 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,8 +128,6 @@ public class MapillaryData implements ICachedLoaderListener {
 	public synchronized void dataUpdated() {
 		if (!TEST_MODE)
 			Main.map.mapView.repaint();
-		MapillaryFilterDialog.getInstance().refresh();
-		MapillaryToggleDialog.getInstance().updateImage();
 	}
 
 	/**
@@ -176,7 +172,7 @@ public class MapillaryData implements ICachedLoaderListener {
 				while (tempImage.next() != null) {
 					tempImage = tempImage.next();
 					if (tempImage.isVisible()) {
-						setSelectedImage(tempImage, true);
+						setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
 						break;
 					}
 				}
@@ -201,7 +197,7 @@ public class MapillaryData implements ICachedLoaderListener {
 				while (tempImage.previous() != null) {
 					tempImage = tempImage.previous();
 					if (tempImage.isVisible()) {
-						setSelectedImage(tempImage, true);
+                        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
 						break;
 					}
 				}

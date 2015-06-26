@@ -21,6 +21,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
             tr("Download images manually"));
     private JCheckBox displayHour = new JCheckBox(tr("Display hour when the picture was taken"));
     private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
+    private JCheckBox moveTo = new JCheckBox(tr("Move to picture's location with next/previous buttons"));
 
     @Override
     public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -37,12 +38,14 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
                 .getBoolean("mapillary.download-manually"));
         displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
         format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
+        moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
 
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(reverseButtons);
         panel.add(downloadMode);
         panel.add(displayHour);
         panel.add(format24);
+        panel.add(moveTo);
         gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
     }
 
@@ -55,6 +58,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         
         Main.pref.put("mapillary.display-hour", displayHour.isSelected());
         Main.pref.put("mapillary.format-24", format24.isSelected());
+        Main.pref.put("mapillary.move-to-picture", moveTo.isSelected());
         return mod;
     }
 

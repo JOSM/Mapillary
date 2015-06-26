@@ -107,7 +107,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			Main.map.mapView.getEditLayer().data.addDataSetListener(this);
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
-		Main.map.mapView.setActiveLayer(this);
+		if (!MapillaryToggleDialog.getInstance().isShowing())
+		    MapillaryToggleDialog.getInstance().getButton().doClick();
 		createHatchTexture();
 		data.dataUpdated();
 	}
@@ -178,6 +179,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public void destroy() {
 		MapillaryToggleDialog.getInstance().mapillaryImageDisplay
 				.setImage(null);
+		MapillaryToggleDialog.getInstance().updateImage();
 		data.getImages().clear();
 		MapillaryLayer.INSTANCE = null;
 		MapillaryData.INSTANCE = null;

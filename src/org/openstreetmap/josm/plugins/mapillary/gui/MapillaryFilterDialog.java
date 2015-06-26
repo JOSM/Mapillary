@@ -192,7 +192,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 				}
 			}
 		}
-		MapillaryData.getInstance().dataUpdated();
+		Main.map.repaint();
 	}
 
 	private boolean checkSigns(MapillaryImage img) {
