@@ -5,6 +5,8 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +130,8 @@ public class MapillaryData implements ICachedLoaderListener {
 	public synchronized void dataUpdated() {
 		if (!TEST_MODE)
 			Main.map.mapView.repaint();
+		MapillaryFilterDialog.getInstance().refresh();
+		MapillaryToggleDialog.getInstance().updateImage();
 	}
 
 	/**
