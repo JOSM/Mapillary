@@ -172,7 +172,8 @@ public class MapillaryData implements ICachedLoaderListener {
 				while (tempImage.next() != null) {
 					tempImage = tempImage.next();
 					if (tempImage.isVisible()) {
-						setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+						setSelectedImage(tempImage, Main.pref.getBoolean(
+								"mapillary.move-to-picture", true));
 						break;
 					}
 				}
@@ -197,7 +198,8 @@ public class MapillaryData implements ICachedLoaderListener {
 				while (tempImage.previous() != null) {
 					tempImage = tempImage.previous();
 					if (tempImage.isVisible()) {
-                        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+						setSelectedImage(tempImage, Main.pref.getBoolean(
+								"mapillary.move-to-picture", true));
 						break;
 					}
 				}
@@ -220,7 +222,7 @@ public class MapillaryData implements ICachedLoaderListener {
 	/**
 	 * Selects a new image and then starts a new MapillaryImageDownloadThread
 	 * thread in order to download its surrounding thumbnails. If the user does
-	 * ctrl+click, this isn't triggered. You can choose wheter to center the
+	 * ctrl+click, this isn't triggered. You can choose whether to center the
 	 * view on the new image or not.
 	 * 
 	 * @param image

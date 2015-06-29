@@ -23,6 +23,10 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 	public final JCheckBox intersection = new JCheckBox();
 	public final JCheckBox direction = new JCheckBox();
 	public final JCheckBox uneven = new JCheckBox();
+	public final JCheckBox noParking = new JCheckBox();
+	public final JCheckBox noOvertaking = new JCheckBox();
+	public final JCheckBox crossing = new JCheckBox();
+	public final JCheckBox noTurn = new JCheckBox();
 
 	private static MapillaryFilterChooseSigns INSTANCE;
 
@@ -35,6 +39,10 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 		intersection.setSelected(true);
 		direction.setSelected(true);
 		uneven.setSelected(true);
+		noParking.setSelected(true);
+		noOvertaking.setSelected(true);
+		crossing.setSelected(true);
+		noTurn.setSelected(true);
 
 		// Max speed sign
 		JPanel maxspeedPanel = new JPanel();
@@ -95,6 +103,14 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 		directionPanel.add(direction);
 		this.add(directionPanel);
 
+		// No turn
+		JPanel noTurnPanel = new JPanel();
+		JLabel noTurnLabel = new JLabel(tr("No turn"));
+		noTurnLabel.setIcon(new ImageProvider("signs/no_turn.png").get());
+		noTurnPanel.add(noTurnLabel);
+		noTurnPanel.add(noTurn);
+		this.add(noTurnPanel);
+
 		// Uneven road
 		JPanel unevenPanel = new JPanel();
 		JLabel unevenLabel = new JLabel(tr("Uneven road"));
@@ -102,6 +118,31 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 		unevenPanel.add(unevenLabel);
 		unevenPanel.add(uneven);
 		this.add(unevenPanel);
+
+		// No parking
+		JPanel noParkingPanel = new JPanel();
+		JLabel noParkingLabel = new JLabel(tr("No parking"));
+		noParkingLabel.setIcon(new ImageProvider("signs/no_parking.png").get());
+		noParkingPanel.add(noParkingLabel);
+		noParkingPanel.add(noParking);
+		this.add(noParkingPanel);
+
+		// No overtaking
+		JPanel noOvertakingPanel = new JPanel();
+		JLabel noOvertakingLabel = new JLabel(tr("No overtaking"));
+		noOvertakingLabel.setIcon(new ImageProvider("signs/no_overtaking.png")
+				.get());
+		noOvertakingPanel.add(noOvertakingLabel);
+		noOvertakingPanel.add(noOvertaking);
+		this.add(noOvertakingPanel);
+
+		// Pedestrian crossing
+		JPanel crossingPanel = new JPanel();
+		JLabel crossingLabel = new JLabel(tr("Pedestrian crossing"));
+		crossingLabel.setIcon(new ImageProvider("signs/crossing.png").get());
+		crossingPanel.add(crossingLabel);
+		crossingPanel.add(crossing);
+		this.add(crossingPanel);
 
 		this.setPreferredSize(new Dimension(600, 150));
 	}

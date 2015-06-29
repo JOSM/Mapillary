@@ -2,7 +2,6 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -65,13 +64,19 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
 	private final String[] SIGN_TAGS = { "prohibitory_speed_limit",
 			"priority_stop", "other_give_way", "mandatory_roundabout",
-			"other_no_entry", "danger_intersection", "mandatory_go",
-			"mandatory_keep", "danger_priority_next_intersection",
-			"danger_uneven_road" };
+			"other_no_entry", "prohibitory_no_traffic_both_ways",
+			"danger_intersection", "mandatory_go", "mandatory_keep",
+			"danger_priority_next_intersection", "danger_uneven_road",
+			"prohibitory_no_parking", "prohibitory_on_overtaking",
+			"danger_pedestrian_crossing", "prohibitory_no_u_turn",
+			"prohibitory_noturn" };
 	private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxspeed,
 			signFilter.stop, signFilter.giveWay, signFilter.roundabout,
-			signFilter.access, signFilter.intersection, signFilter.direction,
-			signFilter.direction, signFilter.intersection, signFilter.uneven };
+			signFilter.access, signFilter.access, signFilter.intersection,
+			signFilter.direction, signFilter.direction,
+			signFilter.intersection, signFilter.uneven, signFilter.noParking,
+			signFilter.noOvertaking, signFilter.crossing, signFilter.noTurn,
+			signFilter.noTurn };
 
 	public MapillaryFilterDialog() {
 		super(tr("Mapillary filter"), "mapillaryfilter.png",
