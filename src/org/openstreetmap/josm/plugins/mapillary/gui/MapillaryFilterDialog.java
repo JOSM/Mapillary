@@ -66,11 +66,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 	private final String[] SIGN_TAGS = { "prohibitory_speed_limit",
 			"priority_stop", "other_give_way", "mandatory_roundabout",
 			"other_no_entry", "danger_intersection", "mandatory_go",
-			"mandatory_keep" };
+			"mandatory_keep", "danger_priority_next_intersection",
+			"danger_uneven_road" };
 	private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxspeed,
 			signFilter.stop, signFilter.giveWay, signFilter.roundabout,
 			signFilter.access, signFilter.intersection, signFilter.direction,
-			signFilter.direction };
+			signFilter.direction, signFilter.intersection, signFilter.uneven };
 
 	public MapillaryFilterDialog() {
 		super(tr("Mapillary filter"), "mapillaryfilter.png",
@@ -84,15 +85,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 		signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		signChooserPanel.add(signChooser);
 
-		JPanel comboPanel = new JPanel();
-		comboPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		comboPanel.add(new JLabel("From"));
+		JPanel fromPanel = new JPanel();
+		fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		fromPanel.add(new JLabel("From"));
 		time = new JComboBox<>(TIME_LIST);
-		comboPanel.add(time);
+		fromPanel.add(time);
 
 		JPanel userSearchPanel = new JPanel();
 		userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		user = new JTextField(15);
+		user = new JTextField(10);
 		user.addActionListener(new UpdateAction());
 		userSearchPanel.add(new JLabel("User"));
 		userSearchPanel.add(user);
@@ -103,7 +104,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 		panel.add(downloaded);
 		panel.add(imported);
 		panel.add(onlySigns);
-		panel.add(comboPanel);
+		panel.add(fromPanel);
 		panel.add(userSearchPanel);
 		panel.add(signChooserPanel);
 
@@ -282,7 +283,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 			JOptionPane pane = new JOptionPane(dialog,
 					JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 			JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
-			dlg.setMinimumSize(new Dimension(400, 150));
 			dlg.setVisible(true);
 			if ((int) pane.getValue() == JOptionPane.OK_OPTION)
 				MapillaryFilterDialog.getInstance().refresh();

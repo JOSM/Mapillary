@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,6 +22,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 	public final JCheckBox access = new JCheckBox();
 	public final JCheckBox intersection = new JCheckBox();
 	public final JCheckBox direction = new JCheckBox();
+	public final JCheckBox uneven = new JCheckBox();
 
 	private static MapillaryFilterChooseSigns INSTANCE;
 
@@ -32,6 +34,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 		access.setSelected(true);
 		intersection.setSelected(true);
 		direction.setSelected(true);
+		uneven.setSelected(true);
 
 		// Max speed sign
 		JPanel maxspeedPanel = new JPanel();
@@ -91,6 +94,16 @@ public class MapillaryFilterChooseSigns extends JPanel implements
 		directionPanel.add(directionLabel);
 		directionPanel.add(direction);
 		this.add(directionPanel);
+
+		// Uneven road
+		JPanel unevenPanel = new JPanel();
+		JLabel unevenLabel = new JLabel(tr("Uneven road"));
+		unevenLabel.setIcon(new ImageProvider("signs/uneaven.png").get());
+		unevenPanel.add(unevenLabel);
+		unevenPanel.add(uneven);
+		this.add(unevenPanel);
+
+		this.setPreferredSize(new Dimension(600, 150));
 	}
 
 	public static MapillaryFilterChooseSigns getInstance() {
