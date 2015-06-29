@@ -43,7 +43,7 @@ public class CommandTurnImage extends MapillaryCommand {
     }
 
     public String toString() {
-        return trn("Turned {0} node", "Turned {0} nodes", this.images.size(),
+        return trn("Turned {0} image", "Turned {0} images", this.images.size(),
                 this.images.size());
     }
 

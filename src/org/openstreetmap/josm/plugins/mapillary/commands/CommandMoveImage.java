@@ -46,7 +46,7 @@ public class CommandMoveImage extends MapillaryCommand {
     }
 
     public String toString() {
-        return trn("Moved {0} node", "Moved {0} nodes", images.size(),
+        return trn("Moved {0} image", "Moved {0} images", images.size(),
                 images.size());
     }
 

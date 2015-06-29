@@ -69,6 +69,7 @@ public class MapillaryImportAction extends JosmAction {
                 if (file.isDirectory()) {
 
                 } else {
+                	MapillaryLayer.getInstance();
                     if (file.getPath().substring(file.getPath().length() - 4)
                             .equals(".jpg")
                             || file.getPath()
@@ -157,7 +158,7 @@ public class MapillaryImportAction extends JosmAction {
         if (noTagsPics % 2 == 0)
             horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
         else
-            horDev = -HORIZONTAL_DISTANCE * (noTagsPics + 1) / 2;
+            horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
         LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
                 Main.map.mapView.getCenter());
         MapillaryData.getInstance().add(
