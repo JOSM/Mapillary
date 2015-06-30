@@ -24,7 +24,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
             String datetimeOriginal) {
         super(lat, lon, ca);
         this.file = file;
-        this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy/MM/dd hh:mm:ss");
+        this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
     }
 
     /**
@@ -56,7 +56,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     private static String currentDate() {
         Calendar cal = Calendar.getInstance();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
         return formatter.format(cal.getTime());
 
     }

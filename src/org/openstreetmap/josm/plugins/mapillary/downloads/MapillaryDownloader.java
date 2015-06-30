@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,7 +52,7 @@ public class MapillaryDownloader {
         try {
             Main.info("GET " + url2 + " (Mapillary plugin)");
             Main.worker.submit(new MapillarySquareDownloadManagerThread(url1,
-                    url2, url3));
+                    url2, url3, MapillaryLayer.getInstance()));
         } catch (Exception e) {
             Main.error(e);
         }

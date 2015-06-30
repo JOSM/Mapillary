@@ -119,6 +119,7 @@ public class MapillaryImportAction extends JosmAction {
             if (lat_ref == null || lat == null || lon == null
                     || lon_ref == null) {
                 readNoTags(file);
+                return;
             }
             double latValue = 0;
             double lonValue = 0;

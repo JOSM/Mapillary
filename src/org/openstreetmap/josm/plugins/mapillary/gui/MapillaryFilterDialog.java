@@ -143,7 +143,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 		refresh();
 	}
 
-	public void refresh() {
+	public synchronized void refresh() {
 		boolean imported = this.imported.isSelected();
 		boolean downloaded = this.downloaded.isSelected();
 		boolean onlySigns = this.onlySigns.isSelected();

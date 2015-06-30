@@ -68,7 +68,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	public static MapillaryImage BLUE;
 	public static MapillaryImage RED;
 
-	private final MapillaryData data = MapillaryData.getInstance();
+	public final MapillaryData data = MapillaryData.getInstance();
 
 	public ArrayList<Bounds> bounds;
 
@@ -104,11 +104,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 			Main.map.mapView.addLayer(this);
 			MapView.addEditLayerChangeListener(this, false);
 			MapView.addLayerChangeListener(this);
-			Main.map.mapView.getEditLayer().data.addDataSetListener(this);
+			if (Main.map.mapView.getEditLayer() != null)
+				Main.map.mapView.getEditLayer().data.addDataSetListener(this);
 		}
 		MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
 		if (!MapillaryToggleDialog.getInstance().isShowing())
-		    MapillaryToggleDialog.getInstance().getButton().doClick();
+			MapillaryToggleDialog.getInstance().getButton().doClick();
 		createHatchTexture();
 		data.dataUpdated();
 	}
@@ -499,6 +500,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	// EditDataLayerChanged
 	@Override
 	public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
+		if (oldLayer == null && newLayer != null) {
+			newLayer.data.addDataSetListener(this);
+
+		} else if (oldLayer != null && newLayer == null) {
+			oldLayer.data.removeDataSetListener(this);
+		}
 	}
 
 	/**
