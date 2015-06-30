@@ -17,7 +17,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryDownloadViewAction extends JosmAction {
 
     public static double MAX_AREA = Main.pref.getDouble(
-            "mapillary.max-download-area", 0.025);
+            "mapillary.max-download-area", 0.020);
 
     public MapillaryDownloadViewAction() {
         super(tr("Download Mapillary images in current view"),
