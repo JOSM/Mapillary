@@ -69,7 +69,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
         super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
                 Shortcut.registerShortcut(tr("Mapillary dialog"),
                         tr("Open Mapillary main dialog"), KeyEvent.VK_M,
-                        Shortcut.NONE), 200);
+                        Shortcut.NONE), 200, false, MapillaryPreferenceSetting.class);
         MapillaryData.getInstance().addListener(this);
         addShortcuts();
         mapillaryImageDisplay = new MapillaryImageDisplay();
@@ -145,9 +145,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
                 if (mapillaryImage.getCapturedAt() != 0)
                     title += " -- " + mapillaryImage.getDate();
                 setTitle(title);
+                // Enables/disables next/previous buttons
                 this.nextButton.setEnabled(false);
                 this.previousButton.setEnabled(false);
-                // Enables/disables next/previous buttons
                 if (((MapillaryImage) image).getSequence() != null) {
                     MapillaryImage tempImage = (MapillaryImage) image;
                     while (tempImage.next() != null) {

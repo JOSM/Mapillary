@@ -13,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
 
 /**
  * This Class is needed to create an indeterminate amount of downloads, because
- * the Mapillary API has a param page which is needed when the amount of
+ * the Mapillary API has a paramameter called page which is needed when the amount of
  * requested images is quite big.
  * 
  * @author nokutu
@@ -27,7 +27,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 	private final String urlSigns;
 	private final MapillaryLayer layer;
 	public boolean imagesAdded = false;
-
+	
 	public MapillarySquareDownloadManagerThread(String urlImages,
 			String urlSequences, String urlSigns, MapillaryLayer layer) {
 		this.urlImages = urlImages;

@@ -254,102 +254,96 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 	 * Paints the database in the map.
 	 */
 	@Override
-	public void paint(Graphics2D g, MapView mv, Bounds box) {
-		synchronized (this) {
-			if (Main.map.mapView.getActiveLayer() == this) {
-				Rectangle b = mv.getBounds();
-				// on some platforms viewport bounds seem to be offset from the
-				// left,
-				// over-grow it just to be sure
-				b.grow(100, 100);
-				Area a = new Area(b);
-				// now successively subtract downloaded areas
-				for (Bounds bounds : this.bounds) {
-					Point p1 = mv.getPoint(bounds.getMin());
-					Point p2 = mv.getPoint(bounds.getMax());
-					Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(
-							p1.y, p2.y), Math.abs(p2.x - p1.x), Math.abs(p2.y
-							- p1.y));
-					a.subtract(new Area(r));
-				}
-				// paint remainder
-				g.setPaint(hatched);
-				g.fill(a);
+	public synchronized void paint(Graphics2D g, MapView mv, Bounds box) {
+		if (Main.map.mapView.getActiveLayer() == this) {
+			Rectangle b = mv.getBounds();
+			// on some platforms viewport bounds seem to be offset from the
+			// left,
+			// over-grow it just to be sure
+			b.grow(100, 100);
+			Area a = new Area(b);
+			// now successively subtract downloaded areas
+			for (Bounds bounds : this.bounds) {
+				Point p1 = mv.getPoint(bounds.getMin());
+				Point p2 = mv.getPoint(bounds.getMax());
+				Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(
+						p1.y, p2.y), Math.abs(p2.x - p1.x), Math.abs(p2.y
+						- p1.y));
+				a.subtract(new Area(r));
 			}
+			// paint remainder
+			g.setPaint(hatched);
+			g.fill(a);
+		}
 
-			// Draw colored lines
-			MapillaryLayer.BLUE = null;
-			MapillaryLayer.RED = null;
-			MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
-			MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
+		// Draw colored lines
+		MapillaryLayer.BLUE = null;
+		MapillaryLayer.RED = null;
+		MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
+		MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
 
-			// Sets blue and red lines and enables/disables the buttons
-			if (data.getSelectedImage() != null) {
-				MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
-				Point selected = mv.getPoint(data.getSelectedImage()
-						.getLatLon());
-				if (closestImages[0] != null) {
-					MapillaryLayer.BLUE = closestImages[0];
-					g.setColor(Color.BLUE);
-					g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
-							mv.getPoint(closestImages[0].getLatLon()).y,
-							selected.x, selected.y);
-					MapillaryToggleDialog.getInstance().blueButton
-							.setEnabled(true);
-				}
-				if (closestImages[1] != null) {
-					MapillaryLayer.RED = closestImages[1];
-					g.setColor(Color.RED);
-					g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
-							mv.getPoint(closestImages[1].getLatLon()).y,
-							selected.x, selected.y);
-					MapillaryToggleDialog.getInstance().redButton
-							.setEnabled(true);
-				}
+		// Sets blue and red lines and enables/disables the buttons
+		if (data.getSelectedImage() != null) {
+			MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
+			Point selected = mv.getPoint(data.getSelectedImage().getLatLon());
+			if (closestImages[0] != null) {
+				MapillaryLayer.BLUE = closestImages[0];
+				g.setColor(Color.BLUE);
+				g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
+						mv.getPoint(closestImages[0].getLatLon()).y,
+						selected.x, selected.y);
+				MapillaryToggleDialog.getInstance().blueButton.setEnabled(true);
 			}
-			g.setColor(Color.WHITE);
-			for (MapillaryAbstractImage imageAbs : data.getImages()) {
-				if (!imageAbs.isVisible())
-					continue;
-				Point p = mv.getPoint(imageAbs.getLatLon());
-				if (imageAbs instanceof MapillaryImage) {
-					MapillaryImage image = (MapillaryImage) imageAbs;
-					Point nextp = null;
-					// Draw sequence line
-					if (image.getSequence() != null) {
-						MapillaryImage tempImage = image;
-						while (tempImage.next() != null) {
-							tempImage = tempImage.next();
-							if (tempImage.isVisible()) {
-								nextp = mv.getPoint(tempImage.getLatLon());
-								break;
-							}
+			if (closestImages[1] != null) {
+				MapillaryLayer.RED = closestImages[1];
+				g.setColor(Color.RED);
+				g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
+						mv.getPoint(closestImages[1].getLatLon()).y,
+						selected.x, selected.y);
+				MapillaryToggleDialog.getInstance().redButton.setEnabled(true);
+			}
+		}
+		g.setColor(Color.WHITE);
+		for (MapillaryAbstractImage imageAbs : data.getImages()) {
+			if (!imageAbs.isVisible())
+				continue;
+			Point p = mv.getPoint(imageAbs.getLatLon());
+			if (imageAbs instanceof MapillaryImage) {
+				MapillaryImage image = (MapillaryImage) imageAbs;
+				Point nextp = null;
+				// Draw sequence line
+				if (image.getSequence() != null) {
+					MapillaryImage tempImage = image;
+					while (tempImage.next() != null) {
+						tempImage = tempImage.next();
+						if (tempImage.isVisible()) {
+							nextp = mv.getPoint(tempImage.getLatLon());
+							break;
 						}
-						if (nextp != null)
-							g.drawLine(p.x, p.y, nextp.x, nextp.y);
 					}
-
-					ImageIcon icon;
-					if (!data.getMultiSelectedImages().contains(image))
-						icon = MapillaryPlugin.MAP_ICON;
-					else
-						icon = MapillaryPlugin.MAP_ICON_SELECTED;
-					draw(g, image, icon, p);
-					if (!image.getSigns().isEmpty()) {
-						g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(), p.x
-								+ icon.getIconWidth() / 2,
-								p.y - icon.getIconHeight() / 2,
-								Main.map.mapView);
-					}
-				} else if (imageAbs instanceof MapillaryImportedImage) {
-					MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
-					ImageIcon icon;
-					if (!data.getMultiSelectedImages().contains(image))
-						icon = MapillaryPlugin.MAP_ICON_IMPORTED;
-					else
-						icon = MapillaryPlugin.MAP_ICON_SELECTED;
-					draw(g, image, icon, p);
+					if (nextp != null)
+						g.drawLine(p.x, p.y, nextp.x, nextp.y);
 				}
+
+				ImageIcon icon;
+				if (!data.getMultiSelectedImages().contains(image))
+					icon = MapillaryPlugin.MAP_ICON;
+				else
+					icon = MapillaryPlugin.MAP_ICON_SELECTED;
+				draw(g, image, icon, p);
+				if (!image.getSigns().isEmpty()) {
+					g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),
+							p.x + icon.getIconWidth() / 2,
+							p.y - icon.getIconHeight() / 2, Main.map.mapView);
+				}
+			} else if (imageAbs instanceof MapillaryImportedImage) {
+				MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
+				ImageIcon icon;
+				if (!data.getMultiSelectedImages().contains(image))
+					icon = MapillaryPlugin.MAP_ICON_IMPORTED;
+				else
+					icon = MapillaryPlugin.MAP_ICON_SELECTED;
+				draw(g, image, icon, p);
 			}
 		}
 	}
