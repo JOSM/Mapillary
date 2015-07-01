@@ -44,6 +44,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 				Main.map.statusLine
 						.setHelpText("Downloading image's information");
 				completeImages();
+				MapillaryToggleDialog.getInstance().updateTitle();
 				Main.map.statusLine.setHelpText("Downloading signs");
 				downloadSigns();
 			}
