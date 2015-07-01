@@ -10,60 +10,60 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 public class MapillaryCache extends
-		JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
+        JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
 
-	private volatile URL url;
-	private volatile String key;
+    private volatile URL url;
+    private volatile String key;
 
-	public static enum Type {
-		FULL_IMAGE, THUMBNAIL
-	}
+    public static enum Type {
+        FULL_IMAGE, THUMBNAIL
+    }
 
-	public MapillaryCache(String key, Type type) {
-		super(MapillaryPlugin.CACHE, 50000, 50000,
-				new HashMap<String, String>());
-		this.key = key;
-		try {
-			if (type == Type.FULL_IMAGE) {
-				url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-						+ "/thumb-2048.jpg");
-				this.key += ".FULL_IMAGE";
+    public MapillaryCache(String key, Type type) {
+        super(MapillaryPlugin.CACHE, 50000, 50000,
+                new HashMap<String, String>());
+        this.key = key;
+        try {
+            if (type == Type.FULL_IMAGE) {
+                url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+                        + "/thumb-2048.jpg");
+                this.key += ".FULL_IMAGE";
 
-			} else if (type == Type.THUMBNAIL) {
-				url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-						+ "/thumb-320.jpg");
-				this.key += ".THUMBNAIL";
-			}
-		} catch (MalformedURLException e) {
-			Main.error(e);
-		}
-	}
+            } else if (type == Type.THUMBNAIL) {
+                url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+                        + "/thumb-320.jpg");
+                this.key += ".THUMBNAIL";
+            }
+        } catch (MalformedURLException e) {
+            Main.error(e);
+        }
+    }
 
-	@Override
-	public String getCacheKey() {
-		return key;
-	}
+    @Override
+    public String getCacheKey() {
+        return key;
+    }
 
-	@Override
-	public URL getUrl() {
-		return url;
-	}
+    @Override
+    public URL getUrl() {
+        return url;
+    }
 
-	@Override
-	protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
-		return new BufferedImageCacheEntry(content);
-	}
+    @Override
+    protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
+        return new BufferedImageCacheEntry(content);
+    }
 
-	@Override
-	protected boolean isObjectLoadable() {
-		if (cacheData == null)
-			return false;
-		byte[] content = cacheData.getContent();
-		return content != null && content.length > 0;
-	}
+    @Override
+    protected boolean isObjectLoadable() {
+        if (cacheData == null)
+            return false;
+        byte[] content = cacheData.getContent();
+        return content != null && content.length > 0;
+    }
 
-	// @Override
-	protected boolean handleNotFound() {
-		return false;
-	}
+    // @Override
+    protected boolean handleNotFound() {
+        return false;
+    }
 }

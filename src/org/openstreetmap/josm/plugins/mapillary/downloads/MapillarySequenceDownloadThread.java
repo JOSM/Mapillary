@@ -89,8 +89,10 @@ public class MapillarySequenceDownloadThread implements Runnable {
                 }
 
                 boolean imagesAdded = false;
+                MapillaryImage.lock.lock();
                 for (MapillaryImage img : finalImages) {
                     if (layer.data.getImages().contains(img)) {
+                        sequence.add(img);
                         ((MapillaryImage) layer.data.getImages().get(
                                 layer.data.getImages().indexOf(img)))
                                 .setSequence(sequence);
@@ -98,13 +100,13 @@ public class MapillarySequenceDownloadThread implements Runnable {
                                 finalImages.indexOf(img),
                                 (MapillaryImage) layer.data.getImages().get(
                                         layer.data.getImages().indexOf(img)));
-                        sequence.add(img);
                     } else {
                         img.setSequence(sequence);
                         imagesAdded = true;
                         sequence.add(img);
                     }
                 }
+                MapillaryImage.lock.unlock();
                 manager.imagesAdded = imagesAdded;
                 layer.data
                         .addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(

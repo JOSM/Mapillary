@@ -15,16 +15,17 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
      */
     protected File file;
     public final long datetimeOriginal;
-    
+
     public MapillaryImportedImage(double lat, double lon, double ca, File file) {
-    	this(lat, lon, ca, file, currentDate());
+        this(lat, lon, ca, file, currentDate());
     }
 
     public MapillaryImportedImage(double lat, double lon, double ca, File file,
             String datetimeOriginal) {
         super(lat, lon, ca);
         this.file = file;
-        this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
+        this.datetimeOriginal = getEpoch(datetimeOriginal,
+                "yyyy:MM:dd hh:mm:ss");
     }
 
     /**
@@ -52,7 +53,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     public int hashCode() {
         return this.file.hashCode();
     }
-    
+
     private static String currentDate() {
         Calendar cal = Calendar.getInstance();
 

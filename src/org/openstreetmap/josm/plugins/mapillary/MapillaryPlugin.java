@@ -32,107 +32,107 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 
-	public static final ImageIcon ICON24 = new ImageProvider("icon24.png")
-			.get();
-	public static final ImageIcon ICON16 = new ImageProvider("icon16.png")
-			.get();
-	public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
-			.get();
-	public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
-			"mapiconselected.png").get();
-	public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
-			"mapiconimported.png").get();
-	public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png")
-			.get();
-	public static final int ICON_SIZE = 24;
+    public static final ImageIcon ICON24 = new ImageProvider("icon24.png")
+            .get();
+    public static final ImageIcon ICON16 = new ImageProvider("icon16.png")
+            .get();
+    public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
+            .get();
+    public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
+            "mapiconselected.png").get();
+    public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
+            "mapiconimported.png").get();
+    public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png")
+            .get();
+    public static final int ICON_SIZE = 24;
 
-	public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
+    public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
-	private final MapillaryDownloadAction downloadAction;
-	private final MapillaryExportAction exportAction;
-	private final MapillaryImportAction importAction;
-	private final MapillaryZoomAction zoomAction;
-	private final MapillaryDownloadViewAction downloadViewAction;
+    private final MapillaryDownloadAction downloadAction;
+    private final MapillaryExportAction exportAction;
+    private final MapillaryImportAction importAction;
+    private final MapillaryZoomAction zoomAction;
+    private final MapillaryDownloadViewAction downloadViewAction;
 
-	public static JMenuItem DOWNLOAD_MENU;
-	public static JMenuItem EXPORT_MENU;
-	public static JMenuItem IMPORT_MENU;
-	public static JMenuItem ZOOM_MENU;
-	public static JMenuItem DOWNLOAD_VIEW_MENU;
+    public static JMenuItem DOWNLOAD_MENU;
+    public static JMenuItem EXPORT_MENU;
+    public static JMenuItem IMPORT_MENU;
+    public static JMenuItem ZOOM_MENU;
+    public static JMenuItem DOWNLOAD_VIEW_MENU;
 
-	public MapillaryPlugin(PluginInformation info) {
-		super(info);
-		downloadAction = new MapillaryDownloadAction();
-		exportAction = new MapillaryExportAction();
-		importAction = new MapillaryImportAction();
-		zoomAction = new MapillaryZoomAction();
-		downloadViewAction = new MapillaryDownloadViewAction();
+    public MapillaryPlugin(PluginInformation info) {
+        super(info);
+        downloadAction = new MapillaryDownloadAction();
+        exportAction = new MapillaryExportAction();
+        importAction = new MapillaryImportAction();
+        zoomAction = new MapillaryZoomAction();
+        downloadViewAction = new MapillaryDownloadViewAction();
 
-		DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
-				downloadAction, false);
-		EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
-				false, 14);
-		IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
-				false, 14);
-		ZOOM_MENU = MainMenu
-				.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-		DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
-				downloadViewAction, false, 14);
+        DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
+                downloadAction, false);
+        EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
+                false, 14);
+        IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
+                false, 14);
+        ZOOM_MENU = MainMenu
+                .add(Main.main.menu.viewMenu, zoomAction, false, 15);
+        DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
+                downloadViewAction, false, 14);
 
-		EXPORT_MENU.setEnabled(false);
-		DOWNLOAD_MENU.setEnabled(false);
-		IMPORT_MENU.setEnabled(false);
-		ZOOM_MENU.setEnabled(false);
-		DOWNLOAD_VIEW_MENU.setEnabled(false);
+        EXPORT_MENU.setEnabled(false);
+        DOWNLOAD_MENU.setEnabled(false);
+        IMPORT_MENU.setEnabled(false);
+        ZOOM_MENU.setEnabled(false);
+        DOWNLOAD_VIEW_MENU.setEnabled(false);
 
-		MapView.addEditLayerChangeListener(this);
-		try {
-			CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
-					this.getPluginDir() + "/cache/");
-		} catch (IOException e) {
-			Main.error(e);
-		}
-	}
+        MapView.addEditLayerChangeListener(this);
+        try {
+            CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
+                    this.getPluginDir() + "/cache/");
+        } catch (IOException e) {
+            Main.error(e);
+        }
+    }
 
-	/**
-	 * Called when the JOSM map frame is created or destroyed.
-	 */
-	@Override
-	public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
-		if (oldFrame == null && newFrame != null) { // map frame added
-			Main.map.addToggleDialog(MapillaryToggleDialog.getInstance(), false);
-			Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(),
-					false);
-			Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-			setMenuEnabled(DOWNLOAD_MENU, true);
-			if (Main.pref.getBoolean("mapillary.download-manually"))
-				setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
-			setMenuEnabled(IMPORT_MENU, true);
-		}
-		if (oldFrame != null && newFrame == null) { // map frame destroyed
-			MapillaryToggleDialog.destroyInstance();
-			MapillaryHistoryDialog.destroyInstance();
-			MapillaryFilterDialog.destroyInstance();
-			setMenuEnabled(DOWNLOAD_MENU, false);
-			setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
-			setMenuEnabled(IMPORT_MENU, false);
-		}
-	}
+    /**
+     * Called when the JOSM map frame is created or destroyed.
+     */
+    @Override
+    public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
+        if (oldFrame == null && newFrame != null) { // map frame added
+            Main.map.addToggleDialog(MapillaryToggleDialog.getInstance(), false);
+            Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(),
+                    false);
+            Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
+            setMenuEnabled(DOWNLOAD_MENU, true);
+            if (Main.pref.getBoolean("mapillary.download-manually"))
+                setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
+            setMenuEnabled(IMPORT_MENU, true);
+        }
+        if (oldFrame != null && newFrame == null) { // map frame destroyed
+            MapillaryToggleDialog.destroyInstance();
+            MapillaryHistoryDialog.destroyInstance();
+            MapillaryFilterDialog.destroyInstance();
+            setMenuEnabled(DOWNLOAD_MENU, false);
+            setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
+            setMenuEnabled(IMPORT_MENU, false);
+        }
+    }
 
-	public static void setMenuEnabled(JMenuItem menu, boolean value) {
-		menu.setEnabled(value);
-		menu.getAction().setEnabled(value);
-	}
+    public static void setMenuEnabled(JMenuItem menu, boolean value) {
+        menu.setEnabled(value);
+        menu.getAction().setEnabled(value);
+    }
 
-	@Override
-	public PreferenceSetting getPreferenceSetting() {
-		return new MapillaryPreferenceSetting();
-	}
+    @Override
+    public PreferenceSetting getPreferenceSetting() {
+        return new MapillaryPreferenceSetting();
+    }
 
-	@Override
-	public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-		if (oldLayer == null && newLayer != null) {
-		} else if (oldLayer != null && newLayer == null) {
-		}
-	}
+    @Override
+    public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
+        if (oldLayer == null && newLayer != null) {
+        } else if (oldLayer != null && newLayer == null) {
+        }
+    }
 }

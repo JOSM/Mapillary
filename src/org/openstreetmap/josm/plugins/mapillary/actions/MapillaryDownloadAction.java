@@ -22,27 +22,27 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryDownloadAction extends JosmAction {
 
-	public MapillaryDownloadAction() {
-		super(tr("Mapillary"), new ImageProvider("icon24.png"),
-				tr("Create Mapillary layer"), Shortcut.registerShortcut(
-						"Mapillary", tr("Start Mapillary layer"),
-						KeyEvent.VK_COMMA, Shortcut.SHIFT), false,
-				"mapillaryDownload", false);
-		this.setEnabled(false);
-	}
+    public MapillaryDownloadAction() {
+        super(tr("Mapillary"), new ImageProvider("icon24.png"),
+                tr("Create Mapillary layer"), Shortcut.registerShortcut(
+                        "Mapillary", tr("Start Mapillary layer"),
+                        KeyEvent.VK_COMMA, Shortcut.SHIFT), false,
+                "mapillaryDownload", false);
+        this.setEnabled(false);
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (MapillaryLayer.INSTANCE == null) {
-			if (Main.map.mapView.getEditLayer() != null)
-				MapillaryLayer.getInstance().download();
-		} else {
-			if (Main.map.mapView.getActiveLayer() != MapillaryLayer
-					.getInstance())
-				Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
-			else
-				Main.map.mapView
-						.setActiveLayer(Main.map.mapView.getEditLayer());
-		}
-	}
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        if (MapillaryLayer.INSTANCE == null) {
+            if (Main.map.mapView.getEditLayer() != null)
+                MapillaryLayer.getInstance().download();
+        } else {
+            if (Main.map.mapView.getActiveLayer() != MapillaryLayer
+                    .getInstance())
+                Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
+            else
+                Main.map.mapView
+                        .setActiveLayer(Main.map.mapView.getEditLayer());
+        }
+    }
 }

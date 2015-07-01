@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -17,6 +19,8 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public abstract class MapillaryAbstractImage {
+    
+    public static Lock lock = new ReentrantLock();
 
     private long capturedAt;
 
@@ -146,7 +150,7 @@ public abstract class MapillaryAbstractImage {
             format += "yyyy-MM-dd";
         else
             format += "dd/MM/yyyy";
-        if (Main.pref.getBoolean("mapillary.display-hour", true)){
+        if (Main.pref.getBoolean("mapillary.display-hour", true)) {
             if (Main.pref.getBoolean("mapillary.format-24"))
                 format += " - HH:mm:ss (z)";
             else
@@ -176,19 +180,19 @@ public abstract class MapillaryAbstractImage {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatter.format(date);
     }
-    
+
     public long getEpoch(String date, String format) {
-        
+
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         try {
             Date dateTime = (Date) formatter.parse(date);
-            return dateTime.getTime();        
+            return dateTime.getTime();
         } catch (ParseException e) {
             Main.error(e);
         }
         return currentTime();
     }
-    
+
     private long currentTime() {
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();

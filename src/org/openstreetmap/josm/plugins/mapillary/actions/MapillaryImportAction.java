@@ -69,7 +69,7 @@ public class MapillaryImportAction extends JosmAction {
                 if (file.isDirectory()) {
 
                 } else {
-                	MapillaryLayer.getInstance();
+                    MapillaryLayer.getInstance();
                     if (file.getPath().substring(file.getPath().length() - 4)
                             .equals(".jpg")
                             || file.getPath()
