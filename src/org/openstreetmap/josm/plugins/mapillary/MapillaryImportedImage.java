@@ -38,6 +38,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
         return ImageIO.read(file);
     }
 
+    /**
+     * Returns the File object where the picture is located.
+     * @return The File object where the picture is located.
+     */
     public File getFile() {
         return file;
     }

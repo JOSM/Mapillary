@@ -24,11 +24,11 @@ import org.openstreetmap.josm.Main;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
- * included in a {@link MapillaryToggleDialog} object.
+ * included in a {@link MapillaryMainDialog} object.
  * 
  * @author Jorge
  * @see MapillaryImageDisplay
- * @see MapillaryToggleDialog
+ * @see MapillaryMainDialog
  */
 public class MapillaryImageDisplay extends JComponent {
 

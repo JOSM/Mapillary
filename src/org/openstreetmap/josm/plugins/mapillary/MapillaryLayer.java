@@ -8,7 +8,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAct
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
@@ -109,8 +109,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 Main.map.mapView.getEditLayer().data.addDataSetListener(this);
         }
         MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
-        if (!MapillaryToggleDialog.getInstance().isShowing())
-            MapillaryToggleDialog.getInstance().getButton().doClick();
+        if (!MapillaryMainDialog.getInstance().isShowing())
+            MapillaryMainDialog.getInstance().getButton().doClick();
         createHatchTexture();
         data.dataUpdated();
     }
@@ -177,8 +177,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      */
     @Override
     public void destroy() {
-        MapillaryToggleDialog.getInstance().setImage(null);
-        MapillaryToggleDialog.getInstance().updateImage();
+        MapillaryMainDialog.getInstance().setImage(null);
+        MapillaryMainDialog.getInstance().updateImage();
         data.getImages().clear();
         MapillaryLayer.INSTANCE = null;
         MapillaryData.INSTANCE = null;
@@ -277,8 +277,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         // Draw colored lines
         MapillaryLayer.BLUE = null;
         MapillaryLayer.RED = null;
-        MapillaryToggleDialog.getInstance().blueButton.setEnabled(false);
-        MapillaryToggleDialog.getInstance().redButton.setEnabled(false);
+        MapillaryMainDialog.getInstance().blueButton.setEnabled(false);
+        MapillaryMainDialog.getInstance().redButton.setEnabled(false);
 
         // Sets blue and red lines and enables/disables the buttons
         if (data.getSelectedImage() != null) {
@@ -290,7 +290,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
                         mv.getPoint(closestImages[0].getLatLon()).y,
                         selected.x, selected.y);
-                MapillaryToggleDialog.getInstance().blueButton.setEnabled(true);
+                MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
             }
             if (closestImages[1] != null) {
                 MapillaryLayer.RED = closestImages[1];
@@ -298,7 +298,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
                         mv.getPoint(closestImages[1].getLatLon()).y,
                         selected.x, selected.y);
-                MapillaryToggleDialog.getInstance().redButton.setEnabled(true);
+                MapillaryMainDialog.getInstance().redButton.setEnabled(true);
             }
         }
         g.setColor(Color.WHITE);

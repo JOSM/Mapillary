@@ -20,7 +20,7 @@ import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.actions.*;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -100,7 +100,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
     @Override
     public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
         if (oldFrame == null && newFrame != null) { // map frame added
-            Main.map.addToggleDialog(MapillaryToggleDialog.getInstance(), false);
+            Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
             Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(),
                     false);
             Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
@@ -110,7 +110,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
             setMenuEnabled(IMPORT_MENU, true);
         }
         if (oldFrame != null && newFrame == null) { // map frame destroyed
-            MapillaryToggleDialog.destroyInstance();
+            MapillaryMainDialog.destroyInstance();
             MapillaryHistoryDialog.destroyInstance();
             MapillaryFilterDialog.destroyInstance();
             setMenuEnabled(DOWNLOAD_MENU, false);

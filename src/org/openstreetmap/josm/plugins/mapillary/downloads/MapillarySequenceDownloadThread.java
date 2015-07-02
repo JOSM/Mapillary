@@ -119,10 +119,9 @@ public class MapillarySequenceDownloadThread extends Thread {
     }
 
     private boolean isInside(MapillaryAbstractImage image) {
-        for (int i = 0; i < bounds.size(); i++) {
+        for (int i = 0; i < bounds.size(); i++)
             if (bounds.get(i).contains(image.getLatLon()))
                 return true;
-        }
         return false;
     }
 }

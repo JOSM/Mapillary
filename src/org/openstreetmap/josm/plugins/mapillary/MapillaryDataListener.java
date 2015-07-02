@@ -2,6 +2,9 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 public interface MapillaryDataListener {
 
+    /**
+     * Fired when any image is added to the database.
+     */
     public void imagesAdded();
 
     /**

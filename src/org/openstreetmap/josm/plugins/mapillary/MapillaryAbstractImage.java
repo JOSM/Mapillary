@@ -22,8 +22,8 @@ public abstract class MapillaryAbstractImage {
 
     public static Lock lock = new ReentrantLock();
 
+    /** The time the image was captured, in Epoch format */
     private long capturedAt;
-
     /** Position of the picture */
     public final LatLon latLon;
     /** Direction of the picture */
@@ -77,7 +77,7 @@ public abstract class MapillaryAbstractImage {
     /**
      * Returns whether the image is visible on the map or not.
      * 
-     * @return
+     * @return True if the image is visible; false otherwise.
      */
     public boolean isVisible() {
         return visible;
@@ -90,7 +90,7 @@ public abstract class MapillaryAbstractImage {
     /**
      * Returns the last fixed coordinates of the object.
      * 
-     * @return
+     * @return A LatLon object containing.
      */
     public LatLon getTempLatLon() {
         return tempLatLon;
@@ -100,7 +100,9 @@ public abstract class MapillaryAbstractImage {
      * Moves the image temporally to another position
      * 
      * @param x
+     *            The movement of the image in longitude units.
      * @param y
+     *            The movement of the image in latitude units.
      */
     public void move(double x, double y) {
         this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
@@ -112,6 +114,7 @@ public abstract class MapillaryAbstractImage {
      * Turns the image direction.
      * 
      * @param ca
+     *            The angle the image is moving.
      */
     public void turn(double ca) {
         this.movingCa = this.tempCa + ca;
@@ -139,7 +142,7 @@ public abstract class MapillaryAbstractImage {
     /**
      * Returns the last fixed direction of the object.
      * 
-     * @return
+     * @return The last fixed direction of the object. 0 means north.
      */
     public double getTempCa() {
         return tempCa;
@@ -148,7 +151,7 @@ public abstract class MapillaryAbstractImage {
     /**
      * Returns the date the picture was taken in DMY format.
      * 
-     * @return
+     * @return A String object containing the date when the picture was taken.
      */
     public String getDate() {
         String format = "";
@@ -191,8 +194,10 @@ public abstract class MapillaryAbstractImage {
      * Parses a string with a given format and returns the Epoch time.
      * 
      * @param date
+     *            The string containing the date.
      * @param format
-     * @return
+     *            The format of the date.
+     * @return The date in Epoch format.
      */
     public long getEpoch(String date, String format) {
 
@@ -209,7 +214,7 @@ public abstract class MapillaryAbstractImage {
     /**
      * Returns current time in Epoch format
      * 
-     * @return
+     * @return The current date in Epoch format.
      */
     private long currentTime() {
         Calendar cal = Calendar.getInstance();

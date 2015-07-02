@@ -12,7 +12,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
@@ -230,15 +230,15 @@ public class MapillaryMouseAdapter extends MouseAdapter {
 
         if (MapillaryData.getInstance().getHoveredImage() != closestTemp
                 && closestTemp != null) {
-            MapillaryData.getInstance().setHoveredImage(closestTemp);
-            MapillaryToggleDialog.getInstance().setImage(closestTemp);
-            MapillaryToggleDialog.getInstance().updateImage();
+            MapillaryData.getInstance().setHighlightedImage(closestTemp);
+            MapillaryMainDialog.getInstance().setImage(closestTemp);
+            MapillaryMainDialog.getInstance().updateImage();
         } else if (MapillaryData.getInstance().getHoveredImage() != closestTemp
                 && closestTemp == null) {
-            MapillaryData.getInstance().setHoveredImage(null);
-            MapillaryToggleDialog.getInstance().setImage(
+            MapillaryData.getInstance().setHighlightedImage(null);
+            MapillaryMainDialog.getInstance().setImage(
                     MapillaryData.getInstance().getSelectedImage());
-            MapillaryToggleDialog.getInstance().updateImage();
+            MapillaryMainDialog.getInstance().updateImage();
         }
         MapillaryData.getInstance().dataUpdated();
     }

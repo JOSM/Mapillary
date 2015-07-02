@@ -16,7 +16,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
     /** Sequence of pictures containing this object */
     private MapillarySequence sequence;
 
-    /** Epoch time when the image was taken. */
     /** The user that made the image */
     private String user;
     /** Set of traffic signs in the image */
@@ -62,15 +61,25 @@ public class MapillaryImage extends MapillaryAbstractImage {
      * Adds a new sign to the set of signs.
      * 
      * @param sign
+     *            A String that identifies the type of sign.
      */
     public void addSign(String sign) {
         signs.add(sign);
     }
 
+    /**
+     * Returns a List containing the signs assigned to this image.
+     * 
+     * @return A List object containing the signs assigned to this image.
+     */
     public List<String> getSigns() {
         return signs;
     }
 
+    /**
+     * Sets the username of the person who took the image.
+     * @param user A String containing the username of the person who took the image.
+     */
     public void setUser(String user) {
         this.user = user;
     }

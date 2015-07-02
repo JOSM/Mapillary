@@ -43,12 +43,12 @@ import javax.swing.JPanel;
  * @author nokutu
  *
  */
-public class MapillaryToggleDialog extends ToggleDialog implements
+public class MapillaryMainDialog extends ToggleDialog implements
         ICachedLoaderListener, MapillaryDataListener {
 
     public final static String BASE_TITLE = "Mapillary picture";
 
-    public static MapillaryToggleDialog INSTANCE;
+    public static MapillaryMainDialog INSTANCE;
 
     public volatile MapillaryAbstractImage image;
 
@@ -65,7 +65,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
     private MapillaryCache imageCache;
     private MapillaryCache thumbnailCache;
 
-    public MapillaryToggleDialog() {
+    public MapillaryMainDialog() {
         super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
                 Shortcut.registerShortcut(tr("Mapillary dialog"),
                         tr("Open Mapillary main dialog"), KeyEvent.VK_M,
@@ -106,9 +106,9 @@ public class MapillaryToggleDialog extends ToggleDialog implements
         redButton.getActionMap().put("red", new redAction());
     }
 
-    public static MapillaryToggleDialog getInstance() {
+    public static MapillaryMainDialog getInstance() {
         if (INSTANCE == null)
-            INSTANCE = new MapillaryToggleDialog();
+            INSTANCE = new MapillaryMainDialog();
         return INSTANCE;
     }
 
@@ -258,7 +258,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
+            if (MapillaryMainDialog.getInstance().getImage() != null) {
                 MapillaryData.getInstance().selectNext();
             }
         }
@@ -279,7 +279,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
+            if (MapillaryMainDialog.getInstance().getImage() != null) {
                 MapillaryData.getInstance().selectPrevious();
             }
         }
@@ -301,7 +301,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
+            if (MapillaryMainDialog.getInstance().getImage() != null) {
                 MapillaryData.getInstance().setSelectedImage(
                         MapillaryLayer.RED, true);
             }
@@ -324,7 +324,7 @@ public class MapillaryToggleDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (MapillaryToggleDialog.getInstance().getImage() != null) {
+            if (MapillaryMainDialog.getInstance().getImage() != null) {
                 MapillaryData.getInstance().setSelectedImage(
                         MapillaryLayer.BLUE, true);
             }

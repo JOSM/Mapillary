@@ -92,18 +92,19 @@ public class MapillaryData implements ICachedLoaderListener {
     }
 
     /**
-     * Sets the image under the mouse cursor.
+     * Highlights the image under the cursor.
      * 
      * @param image
+     *            The image under the cursor.
      */
-    public void setHoveredImage(MapillaryAbstractImage image) {
+    public void setHighlightedImage(MapillaryAbstractImage image) {
         highlightedImage = image;
     }
 
     /**
      * Returns the image under the mouse cursor.
      * 
-     * @return
+     * @return The image under the mouse cursor.
      */
     public MapillaryAbstractImage getHoveredImage() {
         return highlightedImage;
@@ -209,9 +210,10 @@ public class MapillaryData implements ICachedLoaderListener {
     }
 
     /**
-     * Selects a new image and then starts a new MapillaryImageDownloadThread
-     * thread in order to download its surrounding thumbnails. If the user does
-     * ctrl+click, this isn't triggered.
+     * Selects a new image and then starts a new
+     * {@link MapillaryImageDownloadThread} thread in order to download its
+     * surrounding thumbnails. If the user does ctrl+click, this isn't
+     * triggered.
      * 
      * @param image
      *            The MapillaryImage which is going to be selected
@@ -221,13 +223,17 @@ public class MapillaryData implements ICachedLoaderListener {
     }
 
     /**
-     * Selects a new image and then starts a new MapillaryImageDownloadThread
-     * thread in order to download its surrounding thumbnails. If the user does
-     * ctrl+click, this isn't triggered. You can choose whether to center the
-     * view on the new image or not.
+     * Selects a new image and then starts a new
+     * {@link MapillaryImageDownloadThread} thread in order to download its
+     * surrounding thumbnails. If the user does ctrl+click, this isn't
+     * triggered. You can choose whether to center the view on the new image or
+     * not.
      * 
      * @param image
+     *            The {@link MapillaryImage} which is going to be selected.
      * @param zoom
+     *            True if the view must be centered on the image; false
+     *            otherwise.
      */
     public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
         MapillaryAbstractImage oldImage = selectedImage;
@@ -290,9 +296,11 @@ public class MapillaryData implements ICachedLoaderListener {
     }
 
     /**
-     * Adds a set of MapillaryImage objects to the list of selected images.
+     * Adds a set of {@code MapillaryAbstractImage} objects to the list of
+     * selected images.
      * 
      * @param images
+     *            A List object containing the set of images to be added.
      */
     public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
         for (MapillaryAbstractImage image : images)
@@ -306,10 +314,10 @@ public class MapillaryData implements ICachedLoaderListener {
     }
 
     /**
-     * Returns a list containing all MapillaryImage objects selected with ctrl +
-     * click
+     * Returns a List containing all {@code MapillaryAbstractImage} objects
+     * selected with ctrl + click
      * 
-     * @return
+     * @return A List object containing all the images selected.
      */
     public List<MapillaryAbstractImage> getMultiSelectedImages() {
         return multiSelectedImages;
@@ -328,7 +336,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Returns the amount of images contained by this object.
      * 
-     * @return
+     * @return The amount of images in stored.
      */
     public int size() {
         return images.size();
