@@ -16,7 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
-public class MapillarySignDownloaderThread implements Runnable {
+public class MapillarySignDownloaderThread extends Thread {
 
     private final String url;
     private final ExecutorService ex;

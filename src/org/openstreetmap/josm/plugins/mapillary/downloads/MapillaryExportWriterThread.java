@@ -31,7 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
  * @author nokutu
  * @see MapillaryExportManager
  */
-public class MapillaryExportWriterThread implements Runnable {
+public class MapillaryExportWriterThread extends Thread {
 
     private final String path;
     private final ArrayBlockingQueue<BufferedImage> queue;
@@ -102,7 +102,8 @@ public class MapillaryExportWriterThread implements Runnable {
                 tempFile.delete();
                 os.close();
             } catch (InterruptedException e) {
-                Main.error(e);
+                Main.info("Mapillary export cancelled");
+                return;
             } catch (IOException e) {
                 Main.error(e);
             } catch (ImageWriteException e) {

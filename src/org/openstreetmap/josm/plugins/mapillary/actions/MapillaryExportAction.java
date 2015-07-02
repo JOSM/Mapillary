@@ -24,7 +24,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Action that launches a MapillaryExportDialog.
+ * Action that launches a MapillaryExportDialog and lets you export the images.
  * 
  * @author nokutu
  *

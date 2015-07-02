@@ -14,6 +14,12 @@ import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
+/**
+ * If in manual mode, downloads all the images in the current view.
+ * 
+ * @author nokutu
+ *
+ */
 public class MapillaryDownloadViewAction extends JosmAction {
 
     public static double MAX_AREA = Main.pref.getDouble(
@@ -32,7 +38,6 @@ public class MapillaryDownloadViewAction extends JosmAction {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        MapillaryLayer.getInstance();
         MapillaryLayer.getInstance().bounds.add(Main.map.mapView
                 .getRealBounds());
         if (Main.map.mapView.getRealBounds().getArea() <= MAX_AREA) {
@@ -40,7 +45,7 @@ public class MapillaryDownloadViewAction extends JosmAction {
                     .getRealBounds());
         } else {
             JOptionPane.showMessageDialog(Main.parent,
-                    tr("This area too big to be downloaded"));
+                    tr("This area is too big to be downloaded"));
         }
     }
 }

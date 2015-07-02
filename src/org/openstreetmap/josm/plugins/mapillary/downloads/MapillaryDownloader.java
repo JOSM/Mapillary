@@ -10,7 +10,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * Class that concentrates all the ways of downloading of the plugin.
+ * Class that concentrates all the ways of downloading of the plugin. All the
+ * download petitions will be managed one by one.
  * 
  * @author nokutu
  *
@@ -61,6 +62,11 @@ public class MapillaryDownloader {
         }
     }
 
+    /**
+     * Gets the images within the given bounds.
+     * 
+     * @param bounds
+     */
     public void getImages(Bounds bounds) {
         getImages(bounds.getMin(), bounds.getMax());
     }

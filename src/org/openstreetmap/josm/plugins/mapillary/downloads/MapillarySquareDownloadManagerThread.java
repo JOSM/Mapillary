@@ -20,7 +20,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryToggleDialog;
  * 
  * @see MapillaryDownloader
  */
-public class MapillarySquareDownloadManagerThread implements Runnable {
+public class MapillarySquareDownloadManagerThread extends Thread {
 
     private final String urlImages;
     private final String urlSequences;

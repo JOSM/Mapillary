@@ -21,9 +21,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * This thread downloads one of the images in a given area.
  * 
  * @author nokutu
- * @see MapillarySqueareDownloadManagerThread
+ * @see MapillarySquareDownloadManagerThread
  */
-public class MapillaryImageInfoDownloaderThread implements Runnable {
+public class MapillaryImageInfoDownloaderThread extends Thread {
     private final String url;
     private final ExecutorService ex;
     private final MapillaryLayer layer;

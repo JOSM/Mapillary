@@ -19,7 +19,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public abstract class MapillaryAbstractImage {
-    
+
     public static Lock lock = new ReentrantLock();
 
     private long capturedAt;
@@ -29,14 +29,14 @@ public abstract class MapillaryAbstractImage {
     /** Direction of the picture */
     public final double ca;
     public boolean isModified = false;
-    /** Temporal position of the picture until it is uplaoded */
+    /** Temporal position of the picture until it is uploaded */
     public LatLon tempLatLon;
     /**
      * When the object is being dragged in the map, the temporal position is
      * stored here
      */
     public LatLon movingLatLon;
-    /** Temporal direction of the picture until it is uplaoded */
+    /** Temporal direction of the picture until it is uploaded */
     public double tempCa;
     /**
      * When the object direction is being moved in the map, the temporal
@@ -74,6 +74,11 @@ public abstract class MapillaryAbstractImage {
         return movingLatLon;
     }
 
+    /**
+     * Returns whether the image is visible on the map or not.
+     * 
+     * @return
+     */
     public boolean isVisible() {
         return visible;
     }
@@ -83,7 +88,7 @@ public abstract class MapillaryAbstractImage {
     }
 
     /**
-     * Returns the last fixed coorditanes of the object.
+     * Returns the last fixed coordinates of the object.
      * 
      * @return
      */
@@ -94,7 +99,8 @@ public abstract class MapillaryAbstractImage {
     /**
      * Moves the image temporally to another position
      * 
-     * @param pos
+     * @param x
+     * @param y
      */
     public void move(double x, double y) {
         this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
@@ -181,6 +187,13 @@ public abstract class MapillaryAbstractImage {
         return formatter.format(date);
     }
 
+    /**
+     * Parses a string with a given format and returns the Epoch time.
+     * 
+     * @param date
+     * @param format
+     * @return
+     */
     public long getEpoch(String date, String format) {
 
         SimpleDateFormat formatter = new SimpleDateFormat(format);
@@ -193,6 +206,11 @@ public abstract class MapillaryAbstractImage {
         return currentTime();
     }
 
+    /**
+     * Returns current time in Epoch format
+     * 
+     * @return
+     */
     private long currentTime() {
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();

@@ -27,7 +27,7 @@ import org.openstreetmap.josm.Main;
  * included in a {@link MapillaryToggleDialog} object.
  * 
  * @author Jorge
- * @see ImageDisplay
+ * @see MapillaryImageDisplay
  * @see MapillaryToggleDialog
  */
 public class MapillaryImageDisplay extends JComponent {

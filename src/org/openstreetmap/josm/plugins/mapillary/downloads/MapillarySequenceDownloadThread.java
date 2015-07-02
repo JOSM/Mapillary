@@ -26,9 +26,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * in the given area.
  * 
  * @author nokutu
- * @see MapillarySquareDownloadManagarThread
+ * @see MapillarySquareDownloadManagerThread
  */
-public class MapillarySequenceDownloadThread implements Runnable {
+public class MapillarySequenceDownloadThread extends Thread {
 
     private final String url;
     private final ExecutorService ex;

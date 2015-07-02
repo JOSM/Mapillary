@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
- * History record system in order to let you undo commands
+ * History record system in order to let the user undo and redo commands
  * 
  * @author nokutu
  *

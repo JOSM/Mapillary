@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Export main thread. Exportation works by creating a
- * {@link MapillaryWriterThread} and several
+ * {@link MapillaryExportWriterThread} and several
  * {@link MapillaryExportDownloadThread}. The second ones download every single
  * image that is going to be exported and stores them in an
  * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
@@ -37,6 +37,9 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
     final int amount;
     List<MapillaryAbstractImage> images;
     String path;
+    
+    private Thread writer;
+    private ThreadPoolExecutor ex;
 
     public MapillaryExportManager(List<MapillaryAbstractImage> images,
             String path) {
@@ -71,15 +74,16 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 
     @Override
     protected void cancel() {
-        // TODO Auto-generated method stub
+        writer.interrupt();
+        ex.shutdown();
     }
 
     @Override
     protected void realRun() throws SAXException, IOException,
             OsmTransferException {
         // Starts a writer thread in order to write the pictures on the disk.
-        Thread writer = new Thread(new MapillaryExportWriterThread(path, queue,
-                queueImages, amount, this.getProgressMonitor()));
+        writer = new MapillaryExportWriterThread(path, queue,
+                queueImages, amount, this.getProgressMonitor());
         writer.start();
         if (path == null) {
             try {
@@ -89,7 +93,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
             }
             return;
         }
-        ThreadPoolExecutor ex = new ThreadPoolExecutor(20, 35, 25,
+        ex = new ThreadPoolExecutor(20, 35, 25,
                 TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
         for (MapillaryAbstractImage image : images) {
             if (image instanceof MapillaryImage) {

@@ -29,6 +29,14 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * Toggle dialog that shows you the latest commands done and allows the user to
+ * revert them.
+ * 
+ * @see MapillaryRecord
+ * @author nokutu
+ *
+ */
 public class MapillaryHistoryDialog extends ToggleDialog implements
         MapillaryRecordListener {
 

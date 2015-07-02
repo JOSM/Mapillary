@@ -63,6 +63,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
             "mapillary.sequence-max-jump-distance", 100);
 
+    private boolean TEMP_MANUAL = false;
+
     public static MapillaryLayer INSTANCE;
     public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
     public static MapillaryImage BLUE;
@@ -81,7 +83,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     private volatile TexturePaint hatched;
 
-    public MapillaryLayer() {
+    private MapillaryLayer() {
         super(tr("Mapillary Images"));
         bounds = new ArrayList<>();
         init();
@@ -91,8 +93,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      * Initializes the Layer.
      */
     private void init() {
-        MapillaryLayer.INSTANCE = this;
-        startMouseAdapter();
+        mouseAdapter = new MapillaryMouseAdapter();
         try {
             CACHE = JCSCacheManager.getCache("Mapillary");
         } catch (IOException e) {
@@ -114,10 +115,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         data.dataUpdated();
     }
 
-    private void startMouseAdapter() {
-        mouseAdapter = new MapillaryMouseAdapter();
-    }
-
     public synchronized static MapillaryLayer getInstance() {
         if (MapillaryLayer.INSTANCE == null)
             MapillaryLayer.INSTANCE = new MapillaryLayer();
@@ -129,8 +126,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      * just for automatic download.
      */
     public void download() {
-        checkBigAreas();
-        if (Main.pref.getBoolean("mapillary.download-manually"))
+        checkAreaTooBig();
+        if (Main.pref.getBoolean("mapillary.download-manually") || TEMP_MANUAL)
             return;
         for (Bounds bounds : Main.map.mapView.getEditLayer().data
                 .getDataSourceBounds()) {
@@ -148,18 +145,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
      * program too much. To solve this the automatic is stopped, an alert is
      * shown and you will have to download areas manually.
      */
-    private void checkBigAreas() {
+    private void checkAreaTooBig() {
         double area = 0;
         for (Bounds bounds : Main.map.mapView.getEditLayer().data
                 .getDataSourceBounds()) {
             area += bounds.getArea();
         }
         if (area > MapillaryDownloadViewAction.MAX_AREA) {
-            Main.pref.put("mapillary.download-manually", true);
+            TEMP_MANUAL = true;
+            MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU,
+                    true);
             JOptionPane
                     .showMessageDialog(
                             Main.parent,
-                            tr("The downloaded OSM area is too big. Download mode has been change to manual. You can change this back to automatic in preferences settings."));
+                            tr("The downloaded OSM area is too big. Download mode has been changed to manual until the layer is restarted."));
         }
     }
 

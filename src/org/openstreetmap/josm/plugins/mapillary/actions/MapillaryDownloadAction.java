@@ -15,7 +15,8 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Action that triggers the plugin.
+ * Action that triggers the plugin. If in automatic mode, it will automatically
+ * download the images in the areas where there is OSM data.
  * 
  * @author nokutu
  *

@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -15,8 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 
 /**
  * GUI for exporting images.
@@ -48,12 +51,17 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
     public MapillaryExportDialog() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
+        
+        RewriteButtonAction action = new RewriteButtonAction(this);
         group = new ButtonGroup();
-        all = new JRadioButton(tr("Export all images"));
-        sequence = new JRadioButton(tr("Export selected sequence"));
-        selected = new JRadioButton(tr("Export selected images"));
-        rewrite = new JRadioButton(tr("Rewrite imported images"));
+        all = new JRadioButton(action);
+        all.setText(tr("Export all images"));
+        sequence = new JRadioButton(action);
+        sequence.setText(tr("Export selected sequence"));
+        selected = new JRadioButton(action);
+        selected.setText(tr("Export selected images"));
+        rewrite = new JRadioButton(action);
+        rewrite.setText(tr("Rewrite imported images"));
         group.add(all);
         group.add(sequence);
         group.add(selected);
@@ -67,6 +75,11 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
         if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
             selected.setEnabled(false);
         }
+        rewrite.setEnabled(false);
+        for (MapillaryAbstractImage img : MapillaryData.getInstance().getImages())
+            if (img instanceof MapillaryImportedImage)
+                rewrite.setEnabled(true);
+        
         path = new JLabel(tr("Select a folder"));
         choose = new JButton(tr("Explore"));
         choose.addActionListener(this);
@@ -103,5 +116,29 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
             path.setText(chooser.getSelectedFile().toString());
             this.updateUI();
         }
+    }
+    
+    public class RewriteButtonAction extends AbstractAction {
+
+        private String lastPath;
+        private MapillaryExportDialog dlg;
+        
+        public RewriteButtonAction(MapillaryExportDialog dlg) {
+            this.dlg = dlg;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+           choose.setEnabled(!rewrite.isSelected());
+           if (rewrite.isSelected()) {
+               lastPath = dlg.path.getText();
+               dlg.path.setText(" ");
+           } 
+           else if (lastPath != null){
+               dlg.path.setText(lastPath);
+           }
+           
+        }
+        
     }
 }

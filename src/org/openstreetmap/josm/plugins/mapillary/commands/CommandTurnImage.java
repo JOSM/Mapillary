@@ -9,7 +9,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
- * Command created when a image's direction is changed.
+ * Command created when an image's direction is changed.
  * 
  * @author nokutu
  *

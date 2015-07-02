@@ -18,12 +18,12 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 /**
  * This is the thread that downloads one of the images that are going to be
- * exported and writes them in a {@link ArrayBlockQueue}.
+ * exported and writes them in a {@link ArrayBlockingQueue}.
  * 
  * @author nokutu
  * @see MapillaryExportManager
  */
-public class MapillaryExportDownloadThread implements Runnable,
+public class MapillaryExportDownloadThread extends Thread implements
         ICachedLoaderListener {
 
     String url;
@@ -47,7 +47,6 @@ public class MapillaryExportDownloadThread implements Runnable,
     public void run() {
         new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE)
                 .submit(this, false);
-
     }
 
     @Override
