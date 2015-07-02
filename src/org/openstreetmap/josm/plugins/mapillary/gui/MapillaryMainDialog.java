@@ -213,6 +213,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
         this.image = image;
     }
 
+    /**
+     * Updates the title of the dialog.
+     */
     public synchronized void updateTitle() {
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable() {

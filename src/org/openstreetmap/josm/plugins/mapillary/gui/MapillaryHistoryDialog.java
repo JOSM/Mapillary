@@ -30,10 +30,11 @@ import org.openstreetmap.josm.tools.Shortcut;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * Toggle dialog that shows you the latest commands done and allows the user to
+ * Toggle dialog that shows you the latest {@link MapillaryCommand} done and allows the user to
  * revert them.
  * 
  * @see MapillaryRecord
+ * @see MapillaryCommand
  * @author nokutu
  *
  */

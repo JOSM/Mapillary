@@ -33,6 +33,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * ToggleDialog that lets you filter the images that are being shown.
  * 
  * @author nokutu
+ * @see MapillaryFilterChooseSigns
  *
  */
 public class MapillaryFilterDialog extends ToggleDialog implements
@@ -62,6 +63,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     public final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
             .getInstance();
 
+    /** The list of sign names */
     private final String[] SIGN_TAGS = { "prohibitory_speed_limit",
             "priority_stop", "other_give_way", "mandatory_roundabout",
             "other_no_entry", "prohibitory_no_traffic_both_ways",
@@ -70,6 +72,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             "prohibitory_no_parking", "prohibitory_on_overtaking",
             "danger_pedestrian_crossing", "prohibitory_no_u_turn",
             "prohibitory_noturn" };
+    /** The the {@link JCheckBox} where the respective tag should be searched */
     private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxspeed,
             signFilter.stop, signFilter.giveWay, signFilter.roundabout,
             signFilter.access, signFilter.access, signFilter.intersection,
@@ -133,6 +136,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             MapillaryAbstractImage newImage) {
     }
 
+    /**
+     * Resets the dialog to its default state.
+     */
     public void reset() {
         imported.setSelected(true);
         downloaded.setSelected(true);
@@ -143,6 +149,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         refresh();
     }
 
+    /**
+     * Applies the selected filter.
+     */
     public synchronized void refresh() {
         boolean imported = this.imported.isSelected();
         boolean downloaded = this.downloaded.isSelected();
@@ -201,6 +210,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         Main.map.repaint();
     }
 
+    /**
+     * Checks if the image fulfills the sign conditions.
+     * 
+     * @param img
+     *            The {@link MapillaryAbstractImage} object that is going to be
+     *            checked.
+     * @return {@code true} if it fulfills the conditions; {@code false}
+     *         otherwise.
+     */
     private boolean checkSigns(MapillaryImage img) {
         for (int i = 0; i < SIGN_TAGS.length; i++) {
             if (checkSign(img, SIGN_CHECKBOXES[i], SIGN_TAGS[i]))

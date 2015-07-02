@@ -477,6 +477,9 @@ public class MapillaryImageDisplay extends JComponent {
         return new Rectangle(x + compRect.x, y + compRect.y, w, h);
     }
 
+    /**
+     * Zooms to 1:1 and, if it is already in 1:1, to best fit.
+     */
     public void zoomBestFitOrOne() {
         Image image;
         Rectangle visibleRect;
