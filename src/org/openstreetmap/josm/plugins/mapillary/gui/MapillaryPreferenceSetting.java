@@ -3,8 +3,13 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.Main;
@@ -50,6 +55,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         panel.add(displayHour);
         panel.add(format24);
         panel.add(moveTo);
+        JButton oauth = new JButton(new OAuthAction());
+        oauth.setText("Login");
+        panel.add(oauth);
         gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
     }
 
@@ -72,4 +80,48 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         return false;
     }
 
+    public class OAuthAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            JButton login = new JButton();
+            JButton cancel = new JButton();
+            JOptionPane pane = new JOptionPane(new MapillaryOAuthUI(),
+                    JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION,
+                    null, new JButton[] { login, cancel });
+            login.setAction(new LoginAction(pane));
+            cancel.setAction(new CancelAction(pane));
+            JDialog dlg = pane.createDialog(Main.parent, tr("Login"));
+            dlg.setVisible(true);
+            dlg.dispose();
+        }
+    }
+
+    private class LoginAction extends AbstractAction {
+        private JOptionPane pane;
+
+        public LoginAction(JOptionPane pane) {
+            putValue(NAME, tr("Login"));
+            this.pane = pane;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pane.setValue(JOptionPane.OK_OPTION);
+        }
+    }
+    
+    private class CancelAction extends AbstractAction {
+        private JOptionPane pane;
+
+        public CancelAction(JOptionPane pane) {
+            putValue(NAME, tr("Cancel"));
+            this.pane = pane;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pane.setValue(JOptionPane.CANCEL_OPTION);
+        }
+    }
 }
