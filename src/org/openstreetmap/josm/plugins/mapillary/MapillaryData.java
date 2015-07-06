@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Database class for all the MapillaryImage objects.
- * 
+ *
  * @author nokutu
  * @see MapillaryAbstractImage
  * @see MapillarySequence
@@ -45,7 +45,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Adds a set of MapillaryImages to the object, and then repaints mapView.
-     * 
+     *
      * @param images
      *            The set of images to be added.
      */
@@ -57,7 +57,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Adds an MapillaryImage to the object, and then repaints mapView.
-     * 
+     *
      * @param image
      *            The image to be added.
      */
@@ -80,7 +80,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Adds a set of MapillaryImages to the object, but doesn't repaint mapView.
      * This is needed for concurrency.
-     * 
+     *
      * @param images
      *            The set of images to be added.
      */
@@ -93,7 +93,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Highlights the image under the cursor.
-     * 
+     *
      * @param image
      *            The image under the cursor.
      */
@@ -103,7 +103,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Returns the image under the mouse cursor.
-     * 
+     *
      * @return The image under the mouse cursor.
      */
     public MapillaryAbstractImage getHoveredImage() {
@@ -113,7 +113,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
      * needed for concurrency.
-     * 
+     *
      * @param image
      *            The image to be added.
      */
@@ -134,7 +134,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Returns a List containing all images.
-     * 
+     *
      * @return A List object containing all images.
      */
     public List<MapillaryAbstractImage> getImages() {
@@ -143,7 +143,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Returns the MapillaryImage object that is currently selected.
-     * 
+     *
      * @return The selected MapillaryImage object.
      */
     public MapillaryAbstractImage getSelectedImage() {
@@ -214,7 +214,7 @@ public class MapillaryData implements ICachedLoaderListener {
      * {@link MapillaryImageDownloadThread} thread in order to download its
      * surrounding thumbnails. If the user does ctrl+click, this isn't
      * triggered.
-     * 
+     *
      * @param image
      *            The MapillaryImage which is going to be selected
      */
@@ -228,7 +228,7 @@ public class MapillaryData implements ICachedLoaderListener {
      * surrounding thumbnails. If the user does ctrl+click, this isn't
      * triggered. You can choose whether to center the view on the new image or
      * not.
-     * 
+     *
      * @param image
      *            The {@link MapillaryImage} which is going to be selected.
      * @param zoom
@@ -281,7 +281,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Adds a MapillaryImage object to the list of selected images, (when ctrl +
      * click)
-     * 
+     *
      * @param image
      *            The MapillaryImage object to be added.
      */
@@ -298,7 +298,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Adds a set of {@code MapillaryAbstractImage} objects to the list of
      * selected images.
-     * 
+     *
      * @param images
      *            A List object containing the set of images to be added.
      */
@@ -316,7 +316,7 @@ public class MapillaryData implements ICachedLoaderListener {
     /**
      * Returns a List containing all {@code MapillaryAbstractImage} objects
      * selected with ctrl + click
-     * 
+     *
      * @return A List object containing all the images selected.
      */
     public List<MapillaryAbstractImage> getMultiSelectedImages() {
@@ -335,7 +335,7 @@ public class MapillaryData implements ICachedLoaderListener {
 
     /**
      * Returns the amount of images contained by this object.
-     * 
+     *
      * @return The amount of images in stored.
      */
     public int size() {

@@ -19,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * This thread downloads one of the images in a given area.
- * 
+ *
  * @author nokutu
  * @see MapillarySquareDownloadManagerThread
  */
@@ -38,7 +38,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
     public void run() {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(
-                    new URL(url).openStream()));
+                    new URL(url).openStream(), "UTF-8"));
             JsonObject jsonobj = Json.createReader(br).readObject();
             if (!jsonobj.getBoolean("more"))
                 ex.shutdown();

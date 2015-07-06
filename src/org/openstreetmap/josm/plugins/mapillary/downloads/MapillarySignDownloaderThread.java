@@ -34,7 +34,7 @@ public class MapillarySignDownloaderThread extends Thread {
         BufferedReader br;
         try {
             br = new BufferedReader(new InputStreamReader(
-                    new URL(url).openStream()));
+                    new URL(url).openStream(), "UTF-8"));
             JsonObject jsonobj = Json.createReader(br).readObject();
             if (!jsonobj.getBoolean("more")) {
                 ex.shutdown();

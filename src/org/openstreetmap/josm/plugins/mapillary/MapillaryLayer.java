@@ -165,7 +165,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     /**
      * Returns the MapillaryData object, which acts as the database of the
      * Layer.
-     * 
+     *
      * @return
      */
     public MapillaryData getMapillaryData() {
@@ -213,7 +213,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     /**
      * Replies background color for downloaded areas.
-     * 
+     *
      * @return background color for downloaded areas. Black by default
      */
     private Color getBackgroundColor() {
@@ -222,7 +222,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     /**
      * Replies background color for non-downloaded areas.
-     * 
+     *
      * @return background color for non-downloaded areas. Yellow by default
      */
     private Color getOutsideColor() {
@@ -348,7 +348,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     /**
      * Draws the highlight of the icon.
-     * 
+     *
      * @param g
      * @param p
      * @param size
@@ -371,7 +371,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     /**
      * Draws the given icon of an image. Also checks if the mouse is over the
      * image.
-     * 
+     *
      * @param g
      * @param image
      * @param icon
@@ -427,7 +427,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     /**
      * Returns the 2 closest images belonging to a different sequence.
-     * 
+     *
      * @return
      */
     private MapillaryImage[] getClosestImagesFromDifferentSequences() {
@@ -503,7 +503,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     /**
      * When more data is downloaded, a delayed update is thrown, in order to
      * wait for the data bounds to be set.
-     * 
+     *
      * @param event
      */
     @Override

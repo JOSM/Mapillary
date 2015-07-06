@@ -16,13 +16,13 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * If in manual mode, downloads all the images in the current view.
- * 
+ *
  * @author nokutu
  *
  */
 public class MapillaryDownloadViewAction extends JosmAction {
 
-    public static double MAX_AREA = Main.pref.getDouble(
+    public static final double MAX_AREA = Main.pref.getDouble(
             "mapillary.max-download-area", 0.020);
 
     public MapillaryDownloadViewAction() {

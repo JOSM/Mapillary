@@ -24,7 +24,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * This thread downloads all the pictures in a given sequence and creates the
  * needed MapillaryImage and MapillarySequence objects. It just stores the ones
  * in the given area.
- * 
+ *
  * @author nokutu
  * @see MapillarySquareDownloadManagerThread
  */
@@ -49,7 +49,7 @@ public class MapillarySequenceDownloadThread extends Thread {
         try {
             BufferedReader br;
             br = new BufferedReader(new InputStreamReader(
-                    new URL(url).openStream()));
+                    new URL(url).openStream(), "UTF-8"));
             JsonObject jsonall = Json.createReader(br).readObject();
 
             if (!jsonall.getBoolean("more") && !ex.isShutdown())
