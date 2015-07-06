@@ -67,9 +67,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         int page = 0;
         while (!ex.isShutdown()) {
             ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
-                    + "&page=" + page + "&limit=1", layer, this));
+                    + "&page=" + page + "&limit=10", layer, this));
             while (ex.getQueue().remainingCapacity() == 0)
-                Thread.sleep(100);
+                Thread.sleep(500);
             page++;
         }
         ex.awaitTermination(15, TimeUnit.SECONDS);

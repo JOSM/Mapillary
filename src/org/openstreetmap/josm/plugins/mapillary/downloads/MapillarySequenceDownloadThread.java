@@ -107,7 +107,9 @@ public class MapillarySequenceDownloadThread extends Thread {
                     }
                 }
                 MapillaryImage.lock.unlock();
-                manager.imagesAdded = imagesAdded;
+                if (manager != null) {
+                	manager.imagesAdded = imagesAdded;
+                }
                 layer.data
                         .addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(
                                 finalImages));
