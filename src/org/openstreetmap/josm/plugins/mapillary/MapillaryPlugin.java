@@ -68,16 +68,18 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
         zoomAction = new MapillaryZoomAction();
         downloadViewAction = new MapillaryDownloadViewAction();
 
-        DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
-                downloadAction, false);
-        EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
-                false, 14);
-        IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
-                false, 14);
-        ZOOM_MENU = MainMenu
-                .add(Main.main.menu.viewMenu, zoomAction, false, 15);
-        DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
-                downloadViewAction, false, 14);
+        if (Main.main != null) { // important for headless mode
+            DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
+                    downloadAction, false);
+            EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction,
+                    false, 14);
+            IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction,
+                    false, 14);
+            ZOOM_MENU = MainMenu
+                    .add(Main.main.menu.viewMenu, zoomAction, false, 15);
+            DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
+                    downloadViewAction, false, 14);
+        }
 
         EXPORT_MENU.setEnabled(false);
         DOWNLOAD_MENU.setEnabled(false);

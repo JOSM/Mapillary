@@ -108,9 +108,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
             if (Main.map.mapView.getEditLayer() != null)
                 Main.map.mapView.getEditLayer().data.addDataSetListener(this);
         }
-        MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
-        if (!MapillaryMainDialog.getInstance().isShowing())
-            MapillaryMainDialog.getInstance().getButton().doClick();
+        if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in headless mode
+            MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
+            if (!MapillaryMainDialog.getInstance().isShowing())
+                MapillaryMainDialog.getInstance().getButton().doClick();
+        }
+
         createHatchTexture();
         data.dataUpdated();
     }

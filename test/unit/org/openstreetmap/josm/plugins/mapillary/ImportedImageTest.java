@@ -1,13 +1,11 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class ImportTest {
+public class ImportedImageTest {
 
 	@Before
 	public void setUp() {
@@ -17,9 +15,8 @@ public class ImportTest {
 	
 
     @Test(expected=IllegalArgumentException.class)
-    public void test() throws IOException {
+    public void testNullFile() throws IOException {
         MapillaryImportedImage img = new MapillaryImportedImage(0,0,0, null);
         img.getImage();
     }
-
 }
