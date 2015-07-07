@@ -7,12 +7,10 @@ import org.junit.Test;
 
 public class ImportedImageTest {
 
-	@Before
-	public void setUp() {
-		MapillaryData.TEST_MODE = true;
-
-	}
-	
+    @Before
+    public void setUp() {
+        MapillaryData.TEST_MODE = true;
+    }
 
     @Test(expected=IllegalArgumentException.class)
     public void testNullFile() throws IOException {

@@ -30,10 +30,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
     /**
      * Returns the pictures of the file.
-     * 
-     * @return An BufferedImage object containing the pictures.
+     *
+     * @return A BufferedImage object containing the pictures.
      * @throws IOException
-     * @throws IllegalArgumentException if file is currently set to null 
+     * @throws IllegalArgumentException if file is currently set to null
      */
     public BufferedImage getImage() throws IOException {
         return ImageIO.read(file);
