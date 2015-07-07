@@ -19,24 +19,24 @@ import org.scribe.oauth.OAuthService;
  */
 public class MapillaryOAuthUI extends JPanel {
 
-    private static final Token EMPTY_TOKEN = null;
+  private static final Token EMPTY_TOKEN = null;
 
-    public MapillaryOAuthUI() {
-        Scanner in = new Scanner(System.in);
-        OAuthService service = new ServiceBuilder()
-                .provider(MapillaryOAuthApi.class)
-                .apiKey("NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm")
-                .apiSecret("Secret").build();
-        String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
-        this.add(new JLabel("Login"));
-        System.out.println("Fetching the Authorization URL...");
-        System.out.println("Got the Authorization URL!");
-        System.out.println("Now go and authorize Scribe here:");
-        System.out.println(authorizationUrl);
-        System.out.println("And paste the authorization code here");
-        System.out.print(">>");
-        Verifier verifier = new Verifier(in.nextLine());
-        System.out.println();
-    }
+  public MapillaryOAuthUI() {
+    Scanner in = new Scanner(System.in);
+    OAuthService service = new ServiceBuilder()
+        .provider(MapillaryOAuthApi.class)
+        .apiKey("NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm")
+        .apiSecret("Secret").build();
+    String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
+    this.add(new JLabel("Login"));
+    System.out.println("Fetching the Authorization URL...");
+    System.out.println("Got the Authorization URL!");
+    System.out.println("Now go and authorize Scribe here:");
+    System.out.println(authorizationUrl);
+    System.out.println("And paste the authorization code here");
+    System.out.print(">>");
+    Verifier verifier = new Verifier(in.nextLine());
+    System.out.println();
+  }
 
 }

@@ -24,45 +24,44 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @see MapillarySquareDownloadManagerThread
  */
 public class MapillaryImageInfoDownloaderThread extends Thread {
-    private final String url;
-    private final ExecutorService ex;
-    private final MapillaryLayer layer;
+  private final String url;
+  private final ExecutorService ex;
+  private final MapillaryLayer layer;
 
-    public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url,
-            MapillaryLayer layer) {
-        this.ex = ex;
-        this.url = url;
-        this.layer = layer;
-    }
+  public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url,
+      MapillaryLayer layer) {
+    this.ex = ex;
+    this.url = url;
+    this.layer = layer;
+  }
 
-    public void run() {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    new URL(url).openStream(), "UTF-8"));
-            JsonObject jsonobj = Json.createReader(br).readObject();
-            if (!jsonobj.getBoolean("more"))
-                ex.shutdown();
-            JsonArray jsonarr = jsonobj.getJsonArray("ims");
-            JsonObject data;
-            for (int i = 0; i < jsonarr.size(); i++) {
-                data = jsonarr.getJsonObject(i);
-                String key = data.getString("key");
-                for (MapillaryAbstractImage image : layer.data.getImages()) {
-                    if (image instanceof MapillaryImage) {
-                        if (((MapillaryImage) image).getKey().equals(key)
-                                && ((MapillaryImage) image).getUser() == null) {
-                            ((MapillaryImage) image).setUser(data
-                                    .getString("user"));
-                            ((MapillaryImage) image).setCapturedAt(data
-                                    .getJsonNumber("captured_at").longValue());
-                        }
-                    }
-                }
+  public void run() {
+    try {
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+          new URL(url).openStream(), "UTF-8"));
+      JsonObject jsonobj = Json.createReader(br).readObject();
+      if (!jsonobj.getBoolean("more"))
+        ex.shutdown();
+      JsonArray jsonarr = jsonobj.getJsonArray("ims");
+      JsonObject data;
+      for (int i = 0; i < jsonarr.size(); i++) {
+        data = jsonarr.getJsonObject(i);
+        String key = data.getString("key");
+        for (MapillaryAbstractImage image : layer.data.getImages()) {
+          if (image instanceof MapillaryImage) {
+            if (((MapillaryImage) image).getKey().equals(key)
+                && ((MapillaryImage) image).getUser() == null) {
+              ((MapillaryImage) image).setUser(data.getString("user"));
+              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(
+                  "captured_at").longValue());
             }
-        } catch (MalformedURLException e) {
-            Main.error(e);
-        } catch (IOException e) {
-            Main.error(e);
+          }
         }
+      }
+    } catch (MalformedURLException e) {
+      Main.error(e);
+    } catch (IOException e) {
+      Main.error(e);
     }
+  }
 }

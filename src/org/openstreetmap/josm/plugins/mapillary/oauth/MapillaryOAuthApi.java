@@ -12,18 +12,18 @@ import org.scribe.model.Verb;
  */
 public class MapillaryOAuthApi extends DefaultApi20 {
 
-    @Override
-    public String getAccessTokenEndpoint() {
-        return "https://a.mapillary.com/v2/oauth/token";
-    }
+  @Override
+  public String getAccessTokenEndpoint() {
+    return "https://a.mapillary.com/v2/oauth/token";
+  }
 
-    @Override
-    public String getAuthorizationUrl(OAuthConfig config) {
-        return "http://www.mapillary.io/connect?client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&redirect_uri=https:%2F%2Fjosm.openstreetmap.de%2F&response_type=token&scope=upload";
-    }
+  @Override
+  public String getAuthorizationUrl(OAuthConfig config) {
+    return "http://www.mapillary.io/connect?client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&redirect_uri=https:%2F%2Fjosm.openstreetmap.de%2F&response_type=token&scope=upload";
+  }
 
-    @Override
-    public Verb getAccessTokenVerb() {
-        return Verb.POST;
-    }
+  @Override
+  public Verb getAccessTokenVerb() {
+    return Verb.POST;
+  }
 }

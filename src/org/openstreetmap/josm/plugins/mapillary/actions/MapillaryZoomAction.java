@@ -21,37 +21,37 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  */
 public class MapillaryZoomAction extends JosmAction implements
-        MapillaryDataListener {
+    MapillaryDataListener {
 
-    public MapillaryZoomAction() {
-        super(tr("Zoom to selected image"), new ImageProvider("icon24.png"),
-                tr("Zoom to selected image"), Shortcut.registerShortcut(
-                        "Zoom Mapillary",
-                        tr("Zoom to the currently selected Mapillary image"),
-                        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
-                "mapillaryZoom", false);
-        MapillaryData.getInstance().addListener(this);
-        this.setEnabled(false);
-    }
+  public MapillaryZoomAction() {
+    super(tr("Zoom to selected image"), new ImageProvider("icon24.png"),
+        tr("Zoom to selected image"), Shortcut.registerShortcut(
+            "Zoom Mapillary",
+            tr("Zoom to the currently selected Mapillary image"),
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryZoom",
+        false);
+    MapillaryData.getInstance().addListener(this);
+    this.setEnabled(false);
+  }
 
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-        if (MapillaryData.getInstance().getSelectedImage() == null)
-            throw new IllegalStateException();
-        Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
-                .getLatLon());
-    }
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+    if (MapillaryData.getInstance().getSelectedImage() == null)
+      throw new IllegalStateException();
+    Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
+        .getLatLon());
+  }
 
-    @Override
-    public void selectedImageChanged(MapillaryAbstractImage oldImage,
-            MapillaryAbstractImage newImage) {
-        if (oldImage == null && newImage != null)
-            MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);
-        else if (oldImage != null && newImage == null)
-            MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
-    }
+  @Override
+  public void selectedImageChanged(MapillaryAbstractImage oldImage,
+      MapillaryAbstractImage newImage) {
+    if (oldImage == null && newImage != null)
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);
+    else if (oldImage != null && newImage == null)
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
+  }
 
-    @Override
-    public void imagesAdded() {
-    }
+  @Override
+  public void imagesAdded() {
+  }
 }

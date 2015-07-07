@@ -24,42 +24,42 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
  * @see MapillaryExportManager
  */
 public class MapillaryExportDownloadThread extends Thread implements
-        ICachedLoaderListener {
+    ICachedLoaderListener {
 
-    String url;
-    ArrayBlockingQueue<BufferedImage> queue;
-    ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  String url;
+  ArrayBlockingQueue<BufferedImage> queue;
+  ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
-    ProgressMonitor monitor;
-    MapillaryImage image;
+  ProgressMonitor monitor;
+  MapillaryImage image;
 
-    public MapillaryExportDownloadThread(MapillaryImage image,
-            ArrayBlockingQueue<BufferedImage> queue,
-            ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
-        url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
-                + "/thumb-2048.jpg";
-        this.queue = queue;
-        this.image = image;
-        this.queueImages = queueImages;
+  public MapillaryExportDownloadThread(MapillaryImage image,
+      ArrayBlockingQueue<BufferedImage> queue,
+      ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
+    url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
+        + "/thumb-2048.jpg";
+    this.queue = queue;
+    this.image = image;
+    this.queueImages = queueImages;
+  }
+
+  @Override
+  public void run() {
+    new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
+        this, false);
+  }
+
+  @Override
+  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
+      LoadResult result) {
+    try {
+      queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+      queueImages.put(image);
+
+    } catch (InterruptedException e) {
+      Main.error(e);
+    } catch (IOException e) {
+      Main.error(e);
     }
-
-    @Override
-    public void run() {
-        new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE)
-                .submit(this, false);
-    }
-
-    @Override
-    public void loadingFinished(CacheEntry data,
-            CacheEntryAttributes attributes, LoadResult result) {
-        try {
-            queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
-            queueImages.put(image);
-
-        } catch (InterruptedException e) {
-            Main.error(e);
-        } catch (IOException e) {
-            Main.error(e);
-        }
-    }
+  }
 }
