@@ -37,6 +37,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   /**
    * Sets the text of the label.
    */
+  @Override
   public void setText(String text) {
     super
         .setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -45,7 +46,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
   /**
    * Sets a new URL, just pass the key of the image or null if there is none.
-   * 
+   *
    * @param key
    */
   public void setURL(String key) {
@@ -70,6 +71,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   /**
    * Processes mouse events and responds to clicks.
    */
+  @Override
   protected void processMouseEvent(MouseEvent evt) {
     super.processMouseEvent(evt);
     if (evt.getID() == MouseEvent.MOUSE_CLICKED)

@@ -15,9 +15,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  * This Class is needed to create an indeterminate amount of downloads, because
  * the Mapillary API has a parameter called page which is needed when the amount
  * of requested images is quite big.
- * 
+ *
  * @author nokutu
- * 
+ *
  * @see MapillaryDownloader
  */
 public class MapillarySquareDownloadManagerThread extends Thread {
@@ -28,14 +28,15 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final MapillaryLayer layer;
   public boolean imagesAdded = false;
 
-  public MapillarySquareDownloadManagerThread(String urlImages,
-      String urlSequences, String urlSigns, MapillaryLayer layer) {
+  public MapillarySquareDownloadManagerThread(String urlImages, String urlSequences, String urlSigns,
+      MapillaryLayer layer) {
     this.urlImages = urlImages;
     this.urlSequences = urlSequences;
     this.urlSigns = urlSigns;
     this.layer = layer;
   }
 
+  @Override
   public void run() {
     Main.map.statusLine.setHelpText("Downloading images from Mapillary");
     try {
@@ -51,8 +52,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       Main.error(e);
     }
     if (layer.data.getImages().size() > 0)
-      Main.map.statusLine.setHelpText(tr("Total images: ")
-          + layer.data.getImages().size());
+      Main.map.statusLine.setHelpText(tr("Total images: ") + layer.data.getImages().size());
     else
       Main.map.statusLine.setHelpText(tr("No images found"));
     layer.data.dataUpdated();
@@ -61,12 +61,10 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void downloadSequences() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
-          + "&page=" + page + "&limit=10", layer, this));
+      ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences + "&page=" + page + "&limit=10", layer, this));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
@@ -76,12 +74,10 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void completeImages() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages
-          + "&page=" + page + "&limit=20", layer));
+      ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
@@ -90,12 +86,10 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void downloadSigns() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySignDownloaderThread(ex, urlSigns + "&page="
-          + page + "&limit=20", layer));
+      ex.execute(new MapillarySignDownloaderThread(ex, urlSigns + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;

@@ -10,7 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
  * Command created when an image's position is changed.
- * 
+ *
  * @author nokutu
  *
  */
@@ -45,6 +45,7 @@ public class CommandMoveImage extends MapillaryCommand {
     Main.map.repaint();
   }
 
+  @Override
   public String toString() {
     return trn("Moved {0} image", "Moved {0} images", images.size(),
         images.size());

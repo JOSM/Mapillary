@@ -13,7 +13,7 @@ import org.scribe.oauth.OAuthService;
 
 /**
  * JPanel used to get the OAuth tokens from Mapillary.
- * 
+ *
  * @author nokutu
  *
  */
@@ -36,6 +36,7 @@ public class MapillaryOAuthUI extends JPanel {
     System.out.println("And paste the authorization code here");
     System.out.print(">>");
     Verifier verifier = new Verifier(in.nextLine());
+    in.close();
     System.out.println();
   }
 

@@ -202,7 +202,7 @@ public abstract class MapillaryAbstractImage {
 
     SimpleDateFormat formatter = new SimpleDateFormat(format);
     try {
-      Date dateTime = (Date) formatter.parse(date);
+      Date dateTime = formatter.parse(date);
       return dateTime.getTime();
     } catch (ParseException e) {
       Main.error(e);

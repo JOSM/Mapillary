@@ -45,6 +45,7 @@ public class MapillarySequenceDownloadThread extends Thread {
     this.manager = manager;
   }
 
+  @Override
   public void run() {
     try {
       BufferedReader br;

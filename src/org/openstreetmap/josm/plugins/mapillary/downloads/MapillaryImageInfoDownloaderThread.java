@@ -35,6 +35,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
     this.layer = layer;
   }
 
+  @Override
   public void run() {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(

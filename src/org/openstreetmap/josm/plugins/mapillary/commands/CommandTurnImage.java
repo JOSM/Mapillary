@@ -10,7 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
  * Command created when an image's direction is changed.
- * 
+ *
  * @author nokutu
  *
  */
@@ -42,6 +42,7 @@ public class CommandTurnImage extends MapillaryCommand {
     Main.map.repaint();
   }
 
+  @Override
   public String toString() {
     return trn("Turned {0} image", "Turned {0} images", this.images.size(),
         this.images.size());

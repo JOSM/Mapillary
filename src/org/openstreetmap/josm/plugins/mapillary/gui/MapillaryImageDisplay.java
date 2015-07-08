@@ -25,7 +25,7 @@ import org.openstreetmap.josm.Main;
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
  * included in a {@link MapillaryMainDialog} object.
- * 
+ *
  * @author Jorge
  * @see MapillaryImageDisplay
  * @see MapillaryMainDialog
@@ -340,7 +340,7 @@ public class MapillaryImageDisplay extends JComponent {
 
   /**
    * Sets a new picture to be displayed.
-   * 
+   *
    * @param image
    */
   public void setImage(BufferedImage image) {
@@ -356,7 +356,7 @@ public class MapillaryImageDisplay extends JComponent {
 
   /**
    * Returns the picture that is being displayerd
-   * 
+   *
    * @return
    */
   public BufferedImage getImage() {
@@ -366,6 +366,7 @@ public class MapillaryImageDisplay extends JComponent {
   /**
    * Paints the visible part of the picture.
    */
+  @Override
   public void paintComponent(Graphics g) {
     Image image;
     Rectangle visibleRect;

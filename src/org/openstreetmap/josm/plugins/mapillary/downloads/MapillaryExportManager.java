@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
  * image that is going to be exported and stores them in an
  * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
  * the selected folder. Each image will be named by its key.
- * 
+ *
  * @author nokutu
  *
  */
@@ -54,7 +54,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 
   /**
    * Constructor used to rewrite imported images.
-   * 
+   *
    * @param images
    * @throws IOException
    */
@@ -105,7 +105,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       } else if (image instanceof MapillaryImportedImage) {
         try {
           queue.put(((MapillaryImportedImage) image).getImage());
-          queueImages.put((MapillaryImportedImage) image);
+          queueImages.put(image);
         } catch (InterruptedException e) {
           Main.error(e);
         }

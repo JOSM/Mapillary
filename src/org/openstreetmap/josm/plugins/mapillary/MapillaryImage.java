@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
- * 
+ *
  * @author nokutu
  * @see MapillarySequence
  * @see MapillaryData
@@ -32,7 +32,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Main contructor of the class MapillaryImage
-   * 
+   *
    * @param key
    *          The unique identifier of the image.
    * @param lat
@@ -50,7 +50,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Returns the unique identifier of the object.
-   * 
+   *
    * @return A String containing the unique identifier of the object.
    */
   public String getKey() {
@@ -59,7 +59,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Adds a new sign to the set of signs.
-   * 
+   *
    * @param sign
    *          A String that identifies the type of sign.
    */
@@ -69,7 +69,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Returns a List containing the signs assigned to this image.
-   * 
+   *
    * @return A List object containing the signs assigned to this image.
    */
   public List<String> getSigns() {
@@ -78,7 +78,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Sets the username of the person who took the image.
-   * 
+   *
    * @param user
    *          A String containing the username of the person who took the image.
    */
@@ -92,7 +92,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Sets the MapillarySequence object which contains the MapillaryImage.
-   * 
+   *
    * @param sequence
    *          The MapillarySequence that contains the MapillaryImage.
    */
@@ -102,13 +102,14 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   /**
    * Returns the sequence which contains this image.
-   * 
+   *
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
     return this.sequence;
   }
 
+  @Override
   public String toString() {
     return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
         + this.latLon.lon() + ";ca=" + this.ca + "]";
@@ -117,7 +118,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the next
    * MapillarySequence in it.
-   * 
+   *
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryImage next() {
@@ -131,7 +132,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the previous
    * MapillarySequence in it.
-   * 
+   *
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryImage previous() {
