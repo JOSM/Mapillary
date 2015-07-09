@@ -203,7 +203,7 @@ public abstract class MapillaryAbstractImage {
 
     SimpleDateFormat formatter = new SimpleDateFormat(format);
     try {
-      Date dateTime = (Date) formatter.parse(date);
+      Date dateTime = formatter.parse(date);
       return dateTime.getTime();
     } catch (ParseException e) {
       Main.error(e);
@@ -223,7 +223,7 @@ public abstract class MapillaryAbstractImage {
 
   /**
    * Sets the MapillarySequence object which contains the MapillaryImage.
-   * 
+   *
    * @param sequence
    *          The MapillarySequence that contains the MapillaryImage.
    */
@@ -233,7 +233,7 @@ public abstract class MapillaryAbstractImage {
 
   /**
    * Returns the sequence which contains this image.
-   * 
+   *
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
@@ -243,7 +243,7 @@ public abstract class MapillaryAbstractImage {
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the next
    * MapillarySequence in it.
-   * 
+   *
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
@@ -257,7 +257,7 @@ public abstract class MapillaryAbstractImage {
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the previous
    * MapillarySequence in it.
-   * 
+   *
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {

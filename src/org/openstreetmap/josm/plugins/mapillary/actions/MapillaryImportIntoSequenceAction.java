@@ -103,18 +103,12 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       double latValue = 0;
       double lonValue = 0;
       double caValue = 0;
-      if (lat != null && lat.getValue() instanceof RationalNumber[])
-        latValue = MapillaryImportAction.DegMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue()
-            .toString());
-      if (lon != null && lon.getValue() instanceof RationalNumber[])
-        lonValue = MapillaryImportAction.DegMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue()
-            .toString());
+      if (lat.getValue() instanceof RationalNumber[])
+        latValue = MapillaryImportAction.degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+      if (lon.getValue() instanceof RationalNumber[])
+        lonValue = MapillaryImportAction.degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
-      if (lat_ref.getValue().toString().equals("S"))
-        latValue = -latValue;
-      if (lon_ref.getValue().toString().equals("W"))
-        lonValue = -lonValue;
 
       MapillaryImportedImage image = new MapillaryImportedImage(latValue, lonValue, caValue, file,
           datetimeOriginal.getStringValue());

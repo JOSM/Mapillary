@@ -108,19 +108,15 @@ public class MapillaryImportAction extends JosmAction {
       double latValue = 0;
       double lonValue = 0;
       double caValue = 0;
-      if (lat != null && lat.getValue() instanceof RationalNumber[])
-        latValue = DegMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
-      if (lon != null && lon.getValue() instanceof RationalNumber[])
-        lonValue = DegMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
+      if (lat.getValue() instanceof RationalNumber[])
+        latValue = degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+      if (lon.getValue() instanceof RationalNumber[])
+        lonValue = degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
-      if (lat_ref.getValue().toString().equals("S"))
-        latValue = -latValue;
-      if (lon_ref.getValue().toString().equals("W"))
-        lonValue = -lonValue;
       if (datetimeOriginal != null)
-        MapillaryData.getInstance().add(
-            new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue()));
+        MapillaryData.getInstance()
+            .add(new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue()));
       else
         MapillaryData.getInstance().add(new MapillaryImportedImage(latValue, lonValue, caValue, file));
     }
@@ -148,10 +144,43 @@ public class MapillaryImportAction extends JosmAction {
     readNoTags(file);
   }
 
-  public static double DegMinSecToDouble(RationalNumber[] degMinSec, String ref) {
-    RationalNumber deg = degMinSec[0];
-    RationalNumber min = degMinSec[1];
-    RationalNumber sec = degMinSec[2];
-    return deg.doubleValue() + min.doubleValue() / 60 + sec.doubleValue() / 3600;
+  /**
+   * Calculates the decimal degree-value from a degree value given in degrees-minutes-seconds-format
+   *
+   * @param degMinSec an array of length 3, the values in there are (in this order) degrees, minutes and seconds
+   * @param ref the latitude or longitude reference determining if the given value is:
+   *        <ul>
+   *        <li>north ({@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
+   *        south ({@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of the equator</li>
+   *        <li>east ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
+   *        west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}) of the equator</li>
+   *        </ul>
+   * @return the decimal degree-value for the given input, negative when west of 0-meridian or south of equator,
+   *         positive otherwise
+   * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is not one of the
+   *         values mentioned above
+   */ // TODO: Maybe move into a separate utility class?
+  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
+    if (degMinSec == null || degMinSec.length != 3) { throw new IllegalArgumentException(); }
+    switch (ref) {
+    case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
+    case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
+    case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
+    case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
+      break;
+    default:
+      throw new IllegalArgumentException();
+    }
+
+    double result = degMinSec[0].doubleValue(); // degrees
+    result += degMinSec[1].doubleValue() / 60; // minutes
+    result += degMinSec[2].doubleValue() / 3600; // seconds
+
+    if (ref == GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH
+        || ref == GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST) {
+      result *= -1;
+    }
+
+    return result;
   }
 }
