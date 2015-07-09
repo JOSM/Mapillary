@@ -9,6 +9,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
@@ -74,7 +75,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   public ArrayList<Bounds> bounds;
 
-  private MouseAdapter mouseAdapter;
+  private MouseAdapter mode;
 
   private int highlightPointRadius = Main.pref.getInteger(
       "mappaint.highlight.radius", 7);
@@ -93,15 +94,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    mouseAdapter = new MapillaryMouseAdapter();
+    mode = new SelectMode();
     try {
       CACHE = JCSCacheManager.getCache("Mapillary");
     } catch (IOException e) {
       Main.error(e);
     }
     if (Main.map != null && Main.map.mapView != null) {
-      Main.map.mapView.addMouseListener(mouseAdapter);
-      Main.map.mapView.addMouseMotionListener(mouseAdapter);
+      Main.map.mapView.addMouseListener(mode);
+      Main.map.mapView.addMouseMotionListener(mode);
       Main.map.mapView.addLayer(this);
       MapView.addEditLayerChangeListener(this, false);
       MapView.addLayerChangeListener(this);
@@ -117,6 +118,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     createHatchTexture();
     data.dataUpdated();
+  }
+  
+  public void setMode(MouseAdapter mode) {
+    Main.map.mapView.removeMouseListener(this.mode);
+    Main.map.mapView.removeMouseMotionListener(this.mode);
+    this.mode = mode;
+    Main.map.mapView.addMouseListener(mode);
+    Main.map.mapView.addMouseMotionListener(mode);
   }
 
   public synchronized static MapillaryLayer getInstance() {
@@ -185,8 +194,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryData.INSTANCE = null;
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
-    Main.map.mapView.removeMouseListener(mouseAdapter);
-    Main.map.mapView.removeMouseMotionListener(mouseAdapter);
+    Main.map.mapView.removeMouseListener(mode);
+    Main.map.mapView.removeMouseMotionListener(mode);
     MapView.removeEditLayerChangeListener(this);
     if (Main.map.mapView.getEditLayer() != null)
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
