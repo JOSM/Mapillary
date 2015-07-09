@@ -9,6 +9,8 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
+import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -43,7 +45,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
-import java.awt.event.MouseAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.AffineTransformOp;
@@ -58,11 +59,11 @@ import javax.swing.JOptionPane;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MapillaryLayer extends AbstractModifiableLayer implements
-    DataSetListener, EditLayerChangeListener, LayerChangeListener {
+public class MapillaryLayer extends AbstractModifiableLayer implements DataSetListener, EditLayerChangeListener,
+    LayerChangeListener {
 
-  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
-      "mapillary.sequence-max-jump-distance", 100);
+  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref
+      .getInteger("mapillary.sequence-max-jump-distance", 100);
 
   private boolean TEMP_MANUAL = false;
 
@@ -75,12 +76,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   public ArrayList<Bounds> bounds;
 
-  private MouseAdapter mode;
+  public AbstractMode mode;
 
-  private int highlightPointRadius = Main.pref.getInteger(
-      "mappaint.highlight.radius", 7);
-  private int highlightStep = Main.pref
-      .getInteger("mappaint.highlight.step", 4);
+  private int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
+  private int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
 
   private volatile TexturePaint hatched;
 
@@ -119,8 +118,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     createHatchTexture();
     data.dataUpdated();
   }
-  
-  public void setMode(MouseAdapter mode) {
+
+  public void setMode(AbstractMode mode) {
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
     this.mode = mode;
@@ -142,8 +141,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     checkAreaTooBig();
     if (Main.pref.getBoolean("mapillary.download-manually") || TEMP_MANUAL)
       return;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
-        .getDataSourceBounds()) {
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
       if (!this.bounds.contains(bounds)) {
         this.bounds.add(bounds);
         new MapillaryDownloader().getImages(bounds.getMin(), bounds.getMax());
@@ -159,8 +157,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private void checkAreaTooBig() {
     double area = 0;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
-        .getDataSourceBounds()) {
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
       area += bounds.getArea();
     }
     if (area > MapillaryDownloadViewAction.MAX_AREA) {
@@ -271,8 +268,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       for (Bounds bounds : this.bounds) {
         Point p1 = mv.getPoint(bounds.getMin());
         Point p2 = mv.getPoint(bounds.getMax());
-        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),
-            Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));
+        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y), Math.abs(p2.x - p1.x), Math.abs(p2.y
+            - p1.y));
         a.subtract(new Area(r));
       }
       // paint remainder
@@ -293,15 +290,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (closestImages[0] != null) {
         MapillaryLayer.BLUE = closestImages[0];
         g.setColor(Color.BLUE);
-        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
-            mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);
+        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x, mv.getPoint(closestImages[0].getLatLon()).y,
+            selected.x, selected.y);
         MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
       }
       if (closestImages[1] != null) {
         MapillaryLayer.RED = closestImages[1];
         g.setColor(Color.RED);
-        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
-            mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);
+        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x, mv.getPoint(closestImages[1].getLatLon()).y,
+            selected.x, selected.y);
         MapillaryMainDialog.getInstance().redButton.setEnabled(true);
       }
     }
@@ -310,7 +307,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (!imageAbs.isVisible())
         continue;
       Point p = mv.getPoint(imageAbs.getLatLon());
-      
+
       Point nextp = null;
       // Draw sequence line
       if (imageAbs.getSequence() != null) {
@@ -325,7 +322,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         if (nextp != null)
           g.drawLine(p.x, p.y, nextp.x, nextp.y);
       }
-      
+
       if (imageAbs instanceof MapillaryImage) {
         MapillaryImage image = (MapillaryImage) imageAbs;
         ImageIcon icon;
@@ -335,9 +332,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
           icon = MapillaryPlugin.MAP_ICON_SELECTED;
         draw(g, image, icon, p);
         if (!image.getSigns().isEmpty()) {
-          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),
-              p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight() / 2,
-              Main.map.mapView);
+          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(), p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight()
+              / 2, Main.map.mapView);
         }
       } else if (imageAbs instanceof MapillaryImportedImage) {
         MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
@@ -348,6 +344,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
           icon = MapillaryPlugin.MAP_ICON_SELECTED;
         draw(g, image, icon, p);
       }
+    }
+    if (mode instanceof JoinMode) {
+      mode.paint(g, mv, box);
     }
   }
 
@@ -361,8 +360,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
     Color oldColor = g.getColor();
     Color highlightColor = PaintColors.HIGHLIGHT.get();
-    Color highlightColorTransparent = new Color(highlightColor.getRed(),
-        highlightColor.getGreen(), highlightColor.getBlue(), 100);
+    Color highlightColorTransparent = new Color(highlightColor.getRed(), highlightColor.getGreen(),
+        highlightColor.getBlue(), 100);
     g.setColor(highlightColorTransparent);
     int s = size + highlightPointRadius;
     while (s >= size) {
@@ -382,8 +381,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @param icon
    * @param p
    */
-  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon,
-      Point p) {
+  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
     Image imagetemp = icon.getImage();
     BufferedImage bi = (BufferedImage) imagetemp;
     int width = icon.getIconWidth();
@@ -393,14 +391,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     double rotationRequired = Math.toRadians(image.getCa());
     double locationX = width / 2;
     double locationY = height / 2;
-    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired,
-        locationX, locationY);
-    AffineTransformOp op = new AffineTransformOp(tx,
-        AffineTransformOp.TYPE_BILINEAR);
+    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
-        Main.map.mapView);
-    if (data.getHoveredImage() == image) {
+    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2), Main.map.mapView);
+    if (data.getHighlighted() == image) {
       drawPointHighlight(g, p, 16);
     }
   }
@@ -417,8 +412,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void mergeFrom(Layer from) {
-    throw new UnsupportedOperationException(
-        "This layer does not support merging yet");
+    throw new UnsupportedOperationException("This layer does not support merging yet");
   }
 
   @Override
@@ -440,8 +434,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       return new MapillaryImage[2];
     MapillaryImage selected = (MapillaryImage) data.getSelectedImage();
     MapillaryImage[] ret = new MapillaryImage[2];
-    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,
-        SEQUENCE_MAX_JUMP_DISTANCE };
+    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE, SEQUENCE_MAX_JUMP_DISTANCE };
     LatLon selectedCoords = data.getSelectedImage().getLatLon();
     for (MapillaryAbstractImage imagePrev : data.getImages()) {
       if (!(imagePrev instanceof MapillaryImage))
@@ -456,8 +449,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
                 .getSequence() != ret[1].getSequence()))) {
           ret[0] = image;
           distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);
-        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(
-            selectedCoords) < distances[1])
+        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(selectedCoords) < distances[1])
             && image.getSequence() != ret[0].getSequence()) {
           ret[1] = image;
           distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);
@@ -466,11 +458,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     }
     // Predownloads the thumbnails
     if (ret[0] != null)
-      new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL)
-          .submit(data, false);
+      new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL).submit(data, false);
     if (ret[1] != null)
-      new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL)
-          .submit(data, false);
+      new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL).submit(data, false);
     return ret;
   }
 
@@ -565,7 +555,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         Main.map.statusLine.setHelpText(tr("Total images: {0}", data.size()));
       else
         Main.map.statusLine.setHelpText(tr("No images found"));
-    }
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);
+    } else
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);
   }
 
   @Override

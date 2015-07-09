@@ -9,11 +9,8 @@ import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
-import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MapFrame;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
@@ -26,11 +23,11 @@ import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * This is the main class of the Mapillary plugin.
- * 
+ *
  * @author nokutu
  *
  */
-public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
+public class MapillaryPlugin extends Plugin {
 
   public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
   public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
@@ -48,6 +45,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
   private final MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
+  private final MapillaryJoinAction joinAction;
 
   public static JMenuItem DOWNLOAD_MENU;
   public static JMenuItem EXPORT_MENU;
@@ -55,6 +53,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
   public static JMenuItem ZOOM_MENU;
   public static JMenuItem DOWNLOAD_VIEW_MENU;
   public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
+  public static JMenuItem JOIN_MENU;
 
   public MapillaryPlugin(PluginInformation info) {
     super(info);
@@ -64,6 +63,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
     zoomAction = new MapillaryZoomAction();
     downloadViewAction = new MapillaryDownloadViewAction();
     importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
+    joinAction = new MapillaryJoinAction();
 
     if (Main.main != null) { // important for headless mode
       DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
@@ -72,6 +72,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
       ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
       DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
+      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
     }
 
     EXPORT_MENU.setEnabled(false);
@@ -80,8 +81,8 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
     IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);
     ZOOM_MENU.setEnabled(false);
     DOWNLOAD_VIEW_MENU.setEnabled(false);
+    JOIN_MENU.setEnabled(false);
 
-    MapView.addEditLayerChangeListener(this);
     try {
       CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
     } catch (IOException e) {
@@ -123,12 +124,5 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
   @Override
   public PreferenceSetting getPreferenceSetting() {
     return new MapillaryPreferenceSetting();
-  }
-
-  @Override
-  public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-    if (oldLayer == null && newLayer != null) {
-    } else if (oldLayer != null && newLayer == null) {
-    }
   }
 }

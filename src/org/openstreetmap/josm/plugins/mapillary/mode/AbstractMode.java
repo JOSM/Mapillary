@@ -1,15 +1,18 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 
 public abstract class AbstractMode extends MouseAdapter {
 
-  protected MapillaryData data;
+  protected MapillaryData data = MapillaryData.getInstance();
 
   public AbstractMode() {
     super();
@@ -30,5 +33,8 @@ public abstract class AbstractMode extends MouseAdapter {
     }
     return closest;
   }
+
+  public abstract void paint(Graphics2D g, MapView mv, Bounds box);
+
 
 }

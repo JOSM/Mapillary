@@ -105,7 +105,7 @@ public class MapillaryData implements ICachedLoaderListener {
    *
    * @return The image under the mouse cursor.
    */
-  public MapillaryAbstractImage getHoveredImage() {
+  public MapillaryAbstractImage getHighlighted() {
     return highlightedImage;
   }
 

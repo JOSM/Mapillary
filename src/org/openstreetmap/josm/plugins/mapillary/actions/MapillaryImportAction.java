@@ -61,6 +61,7 @@ public class MapillaryImportAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
+        MapillaryLayer.getInstance();
         if (file.isDirectory()) {
           // TODO import directory
         } else {

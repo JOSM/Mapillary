@@ -1,12 +1,15 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
@@ -20,7 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
- * 
+ *
  * @author nokutu
  *
  */
@@ -177,15 +180,19 @@ public class SelectMode extends AbstractMode {
       nothingHighlighted = true;
     }
 
-    if (MapillaryData.getInstance().getHoveredImage() != closestTemp && closestTemp != null) {
+    if (MapillaryData.getInstance().getHighlighted() != closestTemp && closestTemp != null) {
       MapillaryData.getInstance().setHighlightedImage(closestTemp);
       MapillaryMainDialog.getInstance().setImage(closestTemp);
       MapillaryMainDialog.getInstance().updateImage();
-    } else if (MapillaryData.getInstance().getHoveredImage() != closestTemp && closestTemp == null) {
+    } else if (MapillaryData.getInstance().getHighlighted() != closestTemp && closestTemp == null) {
       MapillaryData.getInstance().setHighlightedImage(null);
       MapillaryMainDialog.getInstance().setImage(MapillaryData.getInstance().getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();
     }
     MapillaryData.getInstance().dataUpdated();
+  }
+
+  @Override
+  public void paint(Graphics2D g, MapView mv, Bounds box) {
   }
 }
