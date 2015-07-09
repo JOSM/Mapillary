@@ -136,33 +136,33 @@ public class MapillaryMainDialog extends ToggleDialog implements
         disableAllButtons();
         return;
       }
+      // Enables/disables next/previous buttons
+      this.nextButton.setEnabled(false);
+      this.previousButton.setEnabled(false);
+      if (image.getSequence() != null) {
+        MapillaryAbstractImage tempImage = image;
+        while (tempImage.next() != null) {
+          tempImage = tempImage.next();
+          if (tempImage.isVisible()) {
+            this.nextButton.setEnabled(true);
+            break;
+          }
+        }
+      }
+      if (image.getSequence() != null) {
+        MapillaryAbstractImage tempImage = image;
+        while (tempImage.previous() != null) {
+          tempImage = tempImage.previous();
+          if (tempImage.isVisible()) {
+            this.previousButton.setEnabled(true);
+            break;
+          }
+        }
+      }
       if (image instanceof MapillaryImage) {
         mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         updateTitle();
-        // Enables/disables next/previous buttons
-        this.nextButton.setEnabled(false);
-        this.previousButton.setEnabled(false);
-        if (((MapillaryImage) image).getSequence() != null) {
-          MapillaryAbstractImage tempImage = image;
-          while (tempImage.next() != null) {
-            tempImage = tempImage.next();
-            if (tempImage.isVisible()) {
-              this.nextButton.setEnabled(true);
-              break;
-            }
-          }
-        }
-        if (((MapillaryImage) image).getSequence() != null) {
-          MapillaryAbstractImage tempImage = image;
-          while (tempImage.previous() != null) {
-            tempImage = tempImage.previous();
-            if (tempImage.isVisible()) {
-              this.previousButton.setEnabled(true);
-              break;
-            }
-          }
-        }
 
         mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
         // Downloads the thumbnail.
@@ -181,8 +181,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
         imageCache.submit(this, false);
       } else if (image instanceof MapillaryImportedImage) {
         mapillaryImageDisplay.hyperlink.setVisible(false);
-        this.nextButton.setEnabled(false);
-        this.previousButton.setEnabled(false);
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           mapillaryImageDisplay.setImage(mapillaryImage.getImage());

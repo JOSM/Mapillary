@@ -123,8 +123,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
     this.mode = mode;
+    Main.map.mapView.setNewCursor(mode.cursor, this);
     Main.map.mapView.addMouseListener(mode);
     Main.map.mapView.addMouseMotionListener(mode);
+    updateHelpText();
   }
 
   public synchronized static MapillaryLayer getInstance() {
@@ -551,10 +553,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   @Override
   public void activeLayerChange(Layer oldLayer, Layer newLayer) {
     if (newLayer == this) {
-      if (data.size() > 0)
-        Main.map.statusLine.setHelpText(tr("Total images: {0}", data.size()));
-      else
-        Main.map.statusLine.setHelpText(tr("No images found"));
+      updateHelpText();
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);
     } else
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);
@@ -566,5 +565,16 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
 
   @Override
   public void layerRemoved(Layer oldLayer) {
+  }
+  
+  public void updateHelpText() {
+    String ret = "";
+    if (data.size() > 0)
+      ret += tr("Total images: {0}", data.size());
+    else
+      ret += tr("No images found");
+    ret += " -- " + tr(mode.toString());
+    
+     Main.map.statusLine.setHelpText(ret);
   }
 }

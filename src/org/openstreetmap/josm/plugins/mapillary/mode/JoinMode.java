@@ -1,9 +1,11 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -17,17 +19,21 @@ public class JoinMode extends AbstractMode {
 
   public MapillaryImportedImage lastClick;
   public MouseEvent lastPos;
+  
+  public JoinMode() {
+    cursor = Cursor.CROSSHAIR_CURSOR;
+  }
 
   @Override
   public void mousePressed(MouseEvent e) {
     if (data.getHighlighted() == null)
       return;
     if (lastClick == null && data.getHighlighted() instanceof MapillaryImportedImage) {
-      if (data.getHighlighted().previous() == null || data.getHighlighted().next() == null)
-        lastClick = (MapillaryImportedImage) data.getHighlighted();
+      lastClick = (MapillaryImportedImage) data.getHighlighted();
     } else if (lastClick != null && data.getHighlighted() instanceof MapillaryImportedImage) {
-      if ((data.getHighlighted().previous() == null && lastClick.next() == null)
-          || (data.getHighlighted().next() == null && lastClick.previous() == null)) {
+      if (((data.getHighlighted().previous() == null && lastClick.next() == null) || (data.getHighlighted().next() == null && lastClick
+          .previous() == null))
+          && (data.getHighlighted().getSequence() != lastClick.getSequence() || lastClick.getSequence() == null)) {
         join(lastClick, (MapillaryImportedImage) data.getHighlighted());
       } else if (lastClick.next() == data.getHighlighted() || lastClick.previous() == data.getHighlighted())
         unjoin(lastClick, (MapillaryImportedImage) data.getHighlighted());
@@ -80,6 +86,32 @@ public class JoinMode extends AbstractMode {
   }
 
   private void unjoin(MapillaryImportedImage img1, MapillaryImportedImage img2) {
-    // TODO
+    if (img1.next() != img2) {
+      MapillaryImportedImage temp = img1;
+      img1 = img2;
+      img2 = temp;
+    }
+
+    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(img1.getSequence().getImages()
+        .subList(0, img1.getSequence().getImages().indexOf(img2)));
+    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(img1.getSequence().getImages()
+        .subList(img1.getSequence().getImages().indexOf(img2), img1.getSequence().getImages().size()));
+
+    MapillarySequence seq1 = new MapillarySequence();
+    MapillarySequence seq2 = new MapillarySequence();
+
+    for (MapillaryAbstractImage img : firstHalf) {
+      img.setSequence(seq1);
+      seq1.add(img);
+    }
+    for (MapillaryAbstractImage img : secondHalf) {
+      img.setSequence(seq2);
+      seq2.add(img);
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return "Join mode";
   }
 }

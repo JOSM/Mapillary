@@ -195,4 +195,9 @@ public class SelectMode extends AbstractMode {
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
   }
+  
+  @Override
+  public String toString() {
+    return "Select mode";
+  }
 }

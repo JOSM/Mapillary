@@ -38,33 +38,32 @@ public class MapillarySquareDownloadManagerThread extends Thread {
 
   @Override
   public void run() {
-    Main.map.statusLine.setHelpText("Downloading images from Mapillary");
+    Main.map.statusLine.setHelpText(tr("Downloading images from Mapillary"));
     try {
       downloadSequences();
       if (imagesAdded) {
-        Main.map.statusLine.setHelpText("Downloading image's information");
+        Main.map.statusLine.setHelpText(tr("Downloading image's information"));
         completeImages();
         MapillaryMainDialog.getInstance().updateTitle();
-        Main.map.statusLine.setHelpText("Downloading signs");
+        Main.map.statusLine.setHelpText(tr("Downloading signs"));
         downloadSigns();
       }
     } catch (InterruptedException e) {
       Main.error(e);
     }
-    if (layer.data.getImages().size() > 0)
-      Main.map.statusLine.setHelpText(tr("Total images: ") + layer.data.getImages().size());
-    else
-      Main.map.statusLine.setHelpText(tr("No images found"));
+    layer.updateHelpText();
     layer.data.dataUpdated();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();
   }
 
   private void downloadSequences() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences + "&page=" + page + "&limit=10", layer, this));
+      ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
+          + "&page=" + page + "&limit=10", layer, this));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
@@ -74,10 +73,12 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void completeImages() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages + "&page=" + page + "&limit=20", layer));
+      ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages
+          + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
@@ -86,10 +87,12 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void downloadSigns() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySignDownloaderThread(ex, urlSigns + "&page=" + page + "&limit=20", layer));
+      ex.execute(new MapillarySignDownloaderThread(ex, urlSigns + "&page="
+          + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;

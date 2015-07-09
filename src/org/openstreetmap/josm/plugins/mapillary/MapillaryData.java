@@ -162,22 +162,16 @@ public class MapillaryData implements ICachedLoaderListener {
    * nothing.
    */
   public void selectNext() {
-    if (getSelectedImage() instanceof MapillaryImage) {
-      if (getSelectedImage() == null)
-        return;
-      if (((MapillaryImage) getSelectedImage()).getSequence() == null)
-        return;
-      if (selectedImage instanceof MapillaryImage
-          && ((MapillaryImage) selectedImage).getSequence() != null) {
-        MapillaryAbstractImage tempImage = selectedImage;
-        while (tempImage.next() != null) {
-          tempImage = tempImage.next();
-          if (tempImage.isVisible()) {
-            setSelectedImage(tempImage,
-                Main.pref.getBoolean("mapillary.move-to-picture", true));
-            break;
-          }
-        }
+    if (getSelectedImage() == null)
+      return;
+    if (getSelectedImage().getSequence() == null)
+      return;
+    MapillaryAbstractImage tempImage = selectedImage;
+    while (tempImage.next() != null) {
+      tempImage = tempImage.next();
+      if (tempImage.isVisible()) {
+        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+        break;
       }
     }
   }
@@ -188,22 +182,16 @@ public class MapillaryData implements ICachedLoaderListener {
    * nothing.
    */
   public void selectPrevious() {
-    if (getSelectedImage() instanceof MapillaryImage) {
-      if (getSelectedImage() == null)
-        return;
-      if (((MapillaryImage) getSelectedImage()).getSequence() == null)
-        throw new IllegalStateException();
-      if (selectedImage instanceof MapillaryImage
-          && ((MapillaryImage) selectedImage).getSequence() != null) {
-        MapillaryAbstractImage tempImage = selectedImage;
-        while (tempImage.previous() != null) {
-          tempImage = tempImage.previous();
-          if (tempImage.isVisible()) {
-            setSelectedImage(tempImage,
-                Main.pref.getBoolean("mapillary.move-to-picture", true));
-            break;
-          }
-        }
+    if (getSelectedImage() == null)
+      return;
+    if (getSelectedImage().getSequence() == null)
+      throw new IllegalStateException();
+    MapillaryAbstractImage tempImage = selectedImage;
+    while (tempImage.previous() != null) {
+      tempImage = tempImage.previous();
+      if (tempImage.isVisible()) {
+        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+        break;
       }
     }
   }
@@ -241,15 +229,15 @@ public class MapillaryData implements ICachedLoaderListener {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Donwloadins thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
-          new MapillaryCache(((MapillaryImage) mapillaryImage.next()).getKey(),
-              MapillaryCache.Type.THUMBNAIL).submit(this, false);
+          new MapillaryCache(((MapillaryImage) mapillaryImage.next()).getKey(), MapillaryCache.Type.THUMBNAIL).submit(
+              this, false);
           if (mapillaryImage.next().next() != null)
-            new MapillaryCache(((MapillaryImage) mapillaryImage.next().next()).getKey(),
-                MapillaryCache.Type.THUMBNAIL).submit(this, false);
+            new MapillaryCache(((MapillaryImage) mapillaryImage.next().next()).getKey(), MapillaryCache.Type.THUMBNAIL)
+                .submit(this, false);
         }
         if (mapillaryImage.previous() != null) {
-          new MapillaryCache(((MapillaryImage) mapillaryImage.previous()).getKey(),
-              MapillaryCache.Type.THUMBNAIL).submit(this, false);
+          new MapillaryCache(((MapillaryImage) mapillaryImage.previous()).getKey(), MapillaryCache.Type.THUMBNAIL)
+              .submit(this, false);
           if (mapillaryImage.previous().previous() != null)
             new MapillaryCache(((MapillaryImage) mapillaryImage.previous().previous()).getKey(),
                 MapillaryCache.Type.THUMBNAIL).submit(this, false);
@@ -257,15 +245,13 @@ public class MapillaryData implements ICachedLoaderListener {
       }
     }
     if (zoom)
-      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
-          .getLatLon());
+      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage().getLatLon());
     if (Main.map != null)
       Main.map.mapView.repaint();
     fireSelectedImageChanged(oldImage, selectedImage);
   }
 
-  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
+  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (listeners.isEmpty())
       return;
     for (MapillaryDataListener lis : listeners)
@@ -322,8 +308,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * already been downloaded.
    */
   @Override
-  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
-      LoadResult result) {
+  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
     // DO NOTHING
   }
 

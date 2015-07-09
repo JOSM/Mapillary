@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 public abstract class AbstractMode extends MouseAdapter {
 
   protected MapillaryData data = MapillaryData.getInstance();
+  
+  public int cursor = Cursor.DEFAULT_CURSOR;
 
   public AbstractMode() {
     super();
