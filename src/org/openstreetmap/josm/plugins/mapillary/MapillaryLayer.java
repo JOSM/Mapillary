@@ -301,23 +301,24 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (!imageAbs.isVisible())
         continue;
       Point p = mv.getPoint(imageAbs.getLatLon());
+      
+      Point nextp = null;
+      // Draw sequence line
+      if (imageAbs.getSequence() != null) {
+        MapillaryAbstractImage tempImage = imageAbs.next();
+        while (tempImage != null) {
+          if (tempImage.isVisible()) {
+            nextp = mv.getPoint(tempImage.getLatLon());
+            break;
+          }
+          tempImage = tempImage.next();
+        }
+        if (nextp != null)
+          g.drawLine(p.x, p.y, nextp.x, nextp.y);
+      }
+      
       if (imageAbs instanceof MapillaryImage) {
         MapillaryImage image = (MapillaryImage) imageAbs;
-        Point nextp = null;
-        // Draw sequence line
-        if (image.getSequence() != null) {
-          MapillaryImage tempImage = image.next();
-          while (tempImage != null) {
-            if (tempImage.isVisible()) {
-              nextp = mv.getPoint(tempImage.getLatLon());
-              break;
-            }
-            tempImage = tempImage.next();
-          }
-          if (nextp != null)
-            g.drawLine(p.x, p.y, nextp.x, nextp.y);
-        }
-
         ImageIcon icon;
         if (!data.getMultiSelectedImages().contains(image))
           icon = MapillaryPlugin.MAP_ICON;

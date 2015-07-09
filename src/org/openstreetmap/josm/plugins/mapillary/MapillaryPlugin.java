@@ -34,12 +34,9 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
 
   public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
   public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
-  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
-      .get();
-  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
-      "mapiconselected.png").get();
-  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
-      "mapiconimported.png").get();
+  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png").get();
+  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
+  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
   public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
   public static final int ICON_SIZE = 24;
 
@@ -50,12 +47,14 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
   private final MapillaryImportAction importAction;
   private final MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;
+  private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
 
   public static JMenuItem DOWNLOAD_MENU;
   public static JMenuItem EXPORT_MENU;
   public static JMenuItem IMPORT_MENU;
   public static JMenuItem ZOOM_MENU;
   public static JMenuItem DOWNLOAD_VIEW_MENU;
+  public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
 
   public MapillaryPlugin(PluginInformation info) {
     super(info);
@@ -64,29 +63,27 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
     importAction = new MapillaryImportAction();
     zoomAction = new MapillaryZoomAction();
     downloadViewAction = new MapillaryDownloadViewAction();
+    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
 
     if (Main.main != null) { // important for headless mode
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction,
-          false);
-      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false,
-          14);
-      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
-          14);
+      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
+      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
+      IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
+      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
       ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
-          downloadViewAction, false, 14);
+      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
     }
 
     EXPORT_MENU.setEnabled(false);
     DOWNLOAD_MENU.setEnabled(false);
     IMPORT_MENU.setEnabled(false);
+    IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);
     ZOOM_MENU.setEnabled(false);
     DOWNLOAD_VIEW_MENU.setEnabled(false);
 
     MapView.addEditLayerChangeListener(this);
     try {
-      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
-          this.getPluginDir() + "/cache/");
+      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
     } catch (IOException e) {
       Main.error(e);
     }
@@ -105,6 +102,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
       if (Main.pref.getBoolean("mapillary.download-manually"))
         setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
       setMenuEnabled(IMPORT_MENU, true);
+      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);
     }
     if (oldFrame != null && newFrame == null) { // map frame destroyed
       MapillaryMainDialog.destroyInstance();
@@ -113,6 +111,7 @@ public class MapillaryPlugin extends Plugin implements EditLayerChangeListener {
       setMenuEnabled(DOWNLOAD_MENU, false);
       setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
       setMenuEnabled(IMPORT_MENU, false);
+      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);
     }
   }
 

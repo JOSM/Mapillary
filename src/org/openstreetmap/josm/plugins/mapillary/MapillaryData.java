@@ -169,7 +169,7 @@ public class MapillaryData implements ICachedLoaderListener {
         return;
       if (selectedImage instanceof MapillaryImage
           && ((MapillaryImage) selectedImage).getSequence() != null) {
-        MapillaryImage tempImage = (MapillaryImage) selectedImage;
+        MapillaryAbstractImage tempImage = selectedImage;
         while (tempImage.next() != null) {
           tempImage = tempImage.next();
           if (tempImage.isVisible()) {
@@ -195,7 +195,7 @@ public class MapillaryData implements ICachedLoaderListener {
         throw new IllegalStateException();
       if (selectedImage instanceof MapillaryImage
           && ((MapillaryImage) selectedImage).getSequence() != null) {
-        MapillaryImage tempImage = (MapillaryImage) selectedImage;
+        MapillaryAbstractImage tempImage = selectedImage;
         while (tempImage.previous() != null) {
           tempImage = tempImage.previous();
           if (tempImage.isVisible()) {
@@ -241,17 +241,17 @@ public class MapillaryData implements ICachedLoaderListener {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Donwloadins thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
-          new MapillaryCache(mapillaryImage.next().getKey(),
+          new MapillaryCache(((MapillaryImage) mapillaryImage.next()).getKey(),
               MapillaryCache.Type.THUMBNAIL).submit(this, false);
           if (mapillaryImage.next().next() != null)
-            new MapillaryCache(mapillaryImage.next().next().getKey(),
+            new MapillaryCache(((MapillaryImage) mapillaryImage.next().next()).getKey(),
                 MapillaryCache.Type.THUMBNAIL).submit(this, false);
         }
         if (mapillaryImage.previous() != null) {
-          new MapillaryCache(mapillaryImage.previous().getKey(),
+          new MapillaryCache(((MapillaryImage) mapillaryImage.previous()).getKey(),
               MapillaryCache.Type.THUMBNAIL).submit(this, false);
           if (mapillaryImage.previous().previous() != null)
-            new MapillaryCache(mapillaryImage.previous().previous().getKey(),
+            new MapillaryCache(((MapillaryImage) mapillaryImage.previous().previous()).getKey(),
                 MapillaryCache.Type.THUMBNAIL).submit(this, false);
         }
       }

@@ -11,9 +11,13 @@ import java.util.List;
  *
  */
 public class MapillarySequence {
-  private final List<MapillaryImage> images;
-  private final String key;
-  private final long created_at;
+  private final List<MapillaryAbstractImage> images;
+  private String key;
+  private long created_at;
+  
+  public MapillarySequence() {
+    this.images = new ArrayList<>();
+  }
 
   public MapillarySequence(String key, long created_at) {
     this.images = new ArrayList<>();
@@ -26,7 +30,7 @@ public class MapillarySequence {
    * 
    * @return
    */
-  public List<MapillaryImage> getImages() {
+  public List<MapillaryAbstractImage> getImages() {
     return this.images;
   }
 
@@ -39,7 +43,7 @@ public class MapillarySequence {
    * 
    * @param image
    */
-  public synchronized void add(MapillaryImage image) {
+  public synchronized void add(MapillaryAbstractImage image) {
     this.images.add(image);
   }
 
@@ -52,8 +56,8 @@ public class MapillarySequence {
    * 
    * @param images
    */
-  public synchronized void add(List<MapillaryImage> images) {
-    for (MapillaryImage image : images)
+  public synchronized void add(List<MapillaryAbstractImage> images) {
+    for (MapillaryAbstractImage image : images)
       add(image);
   }
 
@@ -62,7 +66,7 @@ public class MapillarySequence {
    * 
    * @param image
    */
-  public void remove(MapillaryImage image) {
+  public void remove(MapillaryAbstractImage image) {
     this.images.remove(image);
   }
 
@@ -72,7 +76,7 @@ public class MapillarySequence {
    * @param image
    * @return
    */
-  public MapillaryImage next(MapillaryImage image) {
+  public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     if (!images.contains(image))
       throw new IllegalArgumentException();
     int i = images.indexOf(image);
@@ -83,12 +87,12 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the previous MapillaryImage in the sequence.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence.
    * 
    * @param image
    * @return
    */
-  public MapillaryImage previous(MapillaryImage image) {
+  public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     if (!images.contains(image))
       throw new IllegalArgumentException();
     int i = images.indexOf(image);
@@ -99,28 +103,16 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the difference of index between two MapillaryImage objects
-   * belonging to the same MapillarySequence.
+   * Returns the difference of index between two {@link MapillaryAbstractImage}
+   * objects belonging to the same {@link MapillarySequence}.
    * 
    * @param image1
    * @param image2
    * @return
    */
-  public int getDistance(MapillaryImage image1, MapillaryImage image2) {
+  public int getDistance(MapillaryAbstractImage image1, MapillaryAbstractImage image2) {
     if (!this.images.contains(image1) || !this.images.contains(image2))
       throw new IllegalArgumentException();
     return Math.abs(this.images.indexOf(image1) - this.images.indexOf(image2));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof MapillarySequence)
-      return this.getKey().equals(((MapillarySequence) obj).getKey());
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.key.hashCode();
   }
 }

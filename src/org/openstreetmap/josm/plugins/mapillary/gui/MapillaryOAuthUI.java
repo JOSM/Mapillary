@@ -38,6 +38,7 @@ public class MapillaryOAuthUI extends JPanel {
     Verifier verifier = new Verifier(in.nextLine());
     in.close();
     System.out.println();
+    in.close();
   }
 
 }

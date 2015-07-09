@@ -13,8 +13,6 @@ import java.util.List;
 public class MapillaryImage extends MapillaryAbstractImage {
   /** Unique identifier of the object */
   private final String key;
-  /** Sequence of pictures containing this object */
-  private MapillarySequence sequence;
 
   /** The user that made the image */
   private String user;
@@ -90,57 +88,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
     return user;
   }
 
-  /**
-   * Sets the MapillarySequence object which contains the MapillaryImage.
-   *
-   * @param sequence
-   *          The MapillarySequence that contains the MapillaryImage.
-   */
-  public void setSequence(MapillarySequence sequence) {
-    this.sequence = sequence;
-  }
-
-  /**
-   * Returns the sequence which contains this image.
-   *
-   * @return The MapillarySequence object that contains this MapillaryImage.
-   */
-  public MapillarySequence getSequence() {
-    return this.sequence;
-  }
-
-  @Override
   public String toString() {
-    return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
-        + this.latLon.lon() + ";ca=" + this.ca + "]";
-  }
-
-  /**
-   * If the MapillaryImage belongs to a MapillarySequence, returns the next
-   * MapillarySequence in it.
-   *
-   * @return The following MapillaryImage, or null if there is none.
-   */
-  public MapillaryImage next() {
-    synchronized (lock) {
-      if (this.getSequence() == null)
-        return null;
-      return this.getSequence().next(this);
-    }
-  }
-
-  /**
-   * If the MapillaryImage belongs to a MapillarySequence, returns the previous
-   * MapillarySequence in it.
-   *
-   * @return The previous MapillaryImage, or null if there is none.
-   */
-  public MapillaryImage previous() {
-    synchronized (lock) {
-      if (this.getSequence() == null)
-        return null;
-      return this.getSequence().previous(this);
-    }
+    return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon=" + this.latLon.lon() + ";ca=" + this.ca + "]";
   }
 
   @Override

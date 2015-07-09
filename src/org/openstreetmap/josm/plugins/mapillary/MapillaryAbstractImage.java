@@ -23,6 +23,8 @@ public abstract class MapillaryAbstractImage {
 
   /** The time the image was captured, in Epoch format */
   private long capturedAt;
+  /** Sequence of pictures containing this object */
+  private MapillarySequence sequence;
   /** Position of the picture */
   public final LatLon latLon;
   /** Direction of the picture */
@@ -104,8 +106,7 @@ public abstract class MapillaryAbstractImage {
    *          The movement of the image in latitude units.
    */
   public void move(double x, double y) {
-    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
-        this.tempLatLon.getX() + x);
+    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);
     this.isModified = true;
   }
 
@@ -202,7 +203,7 @@ public abstract class MapillaryAbstractImage {
 
     SimpleDateFormat formatter = new SimpleDateFormat(format);
     try {
-      Date dateTime = formatter.parse(date);
+      Date dateTime = (Date) formatter.parse(date);
       return dateTime.getTime();
     } catch (ParseException e) {
       Main.error(e);
@@ -218,5 +219,52 @@ public abstract class MapillaryAbstractImage {
   private long currentTime() {
     Calendar cal = Calendar.getInstance();
     return cal.getTimeInMillis();
+  }
+
+  /**
+   * Sets the MapillarySequence object which contains the MapillaryImage.
+   * 
+   * @param sequence
+   *          The MapillarySequence that contains the MapillaryImage.
+   */
+  public void setSequence(MapillarySequence sequence) {
+    this.sequence = sequence;
+  }
+
+  /**
+   * Returns the sequence which contains this image.
+   * 
+   * @return The MapillarySequence object that contains this MapillaryImage.
+   */
+  public MapillarySequence getSequence() {
+    return this.sequence;
+  }
+
+  /**
+   * If the MapillaryImage belongs to a MapillarySequence, returns the next
+   * MapillarySequence in it.
+   * 
+   * @return The following MapillaryImage, or null if there is none.
+   */
+  public MapillaryAbstractImage next() {
+    synchronized (lock) {
+      if (this.getSequence() == null)
+        return null;
+      return this.getSequence().next(this);
+    }
+  }
+
+  /**
+   * If the MapillaryImage belongs to a MapillarySequence, returns the previous
+   * MapillarySequence in it.
+   * 
+   * @return The previous MapillaryImage, or null if there is none.
+   */
+  public MapillaryAbstractImage previous() {
+    synchronized (lock) {
+      if (this.getSequence() == null)
+        return null;
+      return this.getSequence().previous(this);
+    }
   }
 }

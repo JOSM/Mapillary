@@ -144,7 +144,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         this.nextButton.setEnabled(false);
         this.previousButton.setEnabled(false);
         if (((MapillaryImage) image).getSequence() != null) {
-          MapillaryImage tempImage = (MapillaryImage) image;
+          MapillaryAbstractImage tempImage = image;
           while (tempImage.next() != null) {
             tempImage = tempImage.next();
             if (tempImage.isVisible()) {
@@ -154,7 +154,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
           }
         }
         if (((MapillaryImage) image).getSequence() != null) {
-          MapillaryImage tempImage = (MapillaryImage) image;
+          MapillaryAbstractImage tempImage = image;
           while (tempImage.previous() != null) {
             tempImage = tempImage.previous();
             if (tempImage.isVisible()) {
