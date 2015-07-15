@@ -227,7 +227,7 @@ public class MapillaryData implements ICachedLoaderListener {
     if (image != null) {
       if (image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
-        // Donwloadins thumbnails of surrounding pictures.
+        // Downloading thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
           new MapillaryCache(((MapillaryImage) mapillaryImage.next()).getKey(), MapillaryCache.Type.THUMBNAIL).submit(
               this, false);

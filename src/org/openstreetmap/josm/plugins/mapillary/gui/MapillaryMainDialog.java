@@ -162,8 +162,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
       if (image instanceof MapillaryImage) {
         mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        updateTitle();
-
         mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
         // Downloads the thumbnail.
         this.mapillaryImageDisplay.setImage(null);
@@ -181,14 +179,15 @@ public class MapillaryMainDialog extends ToggleDialog implements
         imageCache.submit(this, false);
       } else if (image instanceof MapillaryImportedImage) {
         mapillaryImageDisplay.hyperlink.setVisible(false);
+        mapillaryImageDisplay.hyperlink.setURL(null);
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           mapillaryImageDisplay.setImage(mapillaryImage.getImage());
         } catch (IOException e) {
           Main.error(e);
         }
-        mapillaryImageDisplay.hyperlink.setURL(null);
       }
+      updateTitle();
     }
   }
 
@@ -222,13 +221,22 @@ public class MapillaryMainDialog extends ToggleDialog implements
       });
     } else {
       if (this.image != null) {
-        MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        String title = tr(BASE_TITLE);
-        if (mapillaryImage.getUser() != null)
-          title += " -- " + mapillaryImage.getUser();
-        if (mapillaryImage.getCapturedAt() != 0)
-          title += " -- " + mapillaryImage.getDate();
-        setTitle(title);
+        if (this.image instanceof MapillaryImage) {
+          MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+          String title = tr(BASE_TITLE);
+          if (mapillaryImage.getUser() != null)
+            title += " -- " + mapillaryImage.getUser();
+          if (mapillaryImage.getCapturedAt() != 0)
+            title += " -- " + mapillaryImage.getDate();
+          setTitle(title);
+        }
+        else if (this.image instanceof MapillaryImportedImage) {
+          MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
+          String title = tr(BASE_TITLE);
+          title += " -- " + mapillaryImportedImage.getFile().getName();
+          title += " -- " + mapillaryImportedImage.getDate();
+          setTitle(title);
+        }
       }
     }
   }
@@ -256,9 +264,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryData.getInstance().selectNext();
-      }
+      MapillaryData.getInstance().selectNext();
     }
   }
 
@@ -277,9 +283,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryData.getInstance().selectPrevious();
-      }
+      MapillaryData.getInstance().selectPrevious();
     }
   }
 
@@ -394,7 +398,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-    setImage(MapillaryData.getInstance().getSelectedImage());
+    setImage(newImage);
     updateImage();
   }
 
