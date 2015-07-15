@@ -49,8 +49,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     images = new LinkedList<>();
 
     chooser = new JFileChooser();
-    chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
-    chooser.setDialogTitle(tr("Select pictures"));
+    File startDirectory = new File(Main.pref.get("mapillary.start-directory", System.getProperty("user.home")));
+    chooser.setCurrentDirectory(startDirectory);    chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
     chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg"));
@@ -58,6 +58,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
+        Main.pref.put("mapillary.start-directory", file.getParent());
         if (file.isDirectory()) {
           // TODO import directory
         } else {

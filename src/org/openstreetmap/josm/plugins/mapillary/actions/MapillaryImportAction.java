@@ -52,7 +52,8 @@ public class MapillaryImportAction extends JosmAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     chooser = new JFileChooser();
-    chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
+    File startDirectory = new File(Main.pref.get("mapillary.start-directory", System.getProperty("user.home")));
+    chooser.setCurrentDirectory(startDirectory);
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
@@ -61,6 +62,7 @@ public class MapillaryImportAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
+        Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
           // TODO import directory
