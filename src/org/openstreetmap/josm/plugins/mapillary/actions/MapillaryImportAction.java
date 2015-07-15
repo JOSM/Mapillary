@@ -43,21 +43,25 @@ public class MapillaryImportAction extends JosmAction {
   private int noTagsPics = 0;
 
   public MapillaryImportAction() {
-    super(tr("Import pictures"), new ImageProvider("icon24.png"), tr("Import local pictures"), Shortcut
-        .registerShortcut("Import Mapillary", tr("Import pictures into Mapillary layer"), KeyEvent.CHAR_UNDEFINED,
-            Shortcut.NONE), false, "mapillaryImport", false);
+    super(tr("Import pictures"), new ImageProvider("icon24.png"),
+        tr("Import local pictures"), Shortcut.registerShortcut(
+            "Import Mapillary", tr("Import pictures into Mapillary layer"),
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImport",
+        false);
     this.setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     chooser = new JFileChooser();
-    File startDirectory = new File(Main.pref.get("mapillary.start-directory", System.getProperty("user.home")));
+    File startDirectory = new File(Main.pref.get("mapillary.start-directory",
+        System.getProperty("user.home")));
     chooser.setCurrentDirectory(startDirectory);
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg", "png"));
+    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg",
+        "jpeg", "png"));
     chooser.setMultiSelectionEnabled(true);
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
@@ -65,10 +69,27 @@ public class MapillaryImportAction extends JosmAction {
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
-          // TODO import directory
+          for (int j = 0; j < file.listFiles().length; j++) {
+            int k = file.listFiles()[j].getName().lastIndexOf('.');
+            String extension = null;
+            if (k > 0) {
+              extension = file.listFiles()[j].getName().substring(k + 1);
+            }
+            try {
+              if (extension.equals("jpg") || extension.equals("jpeg"))
+                readJPG(file.listFiles()[j]);
+
+              else if (extension.equals("png"))
+                readPNG(file.listFiles()[j]);
+            } catch (ImageReadException | IOException e1) {
+              Main.error(e1);
+            }
+          }
         } else {
-          if (file.getPath().substring(file.getPath().length() - 4).equals(".jpg")
-              || file.getPath().substring(file.getPath().length() - 5).equals(".jpeg")) {
+          if (file.getPath().substring(file.getPath().length() - 4)
+              .equals(".jpg")
+              || file.getPath().substring(file.getPath().length() - 5)
+                  .equals(".jpeg")) {
             try {
               readJPG(file);
             } catch (ImageReadException ex) {
@@ -76,7 +97,8 @@ public class MapillaryImportAction extends JosmAction {
             } catch (IOException ex) {
               Main.error(ex);
             }
-          } else if (file.getPath().substring(file.getPath().length() - 4).equals(".png")) {
+          } else if (file.getPath().substring(file.getPath().length() - 4)
+              .equals(".png")) {
             readPNG(file);
           }
         }
@@ -96,11 +118,16 @@ public class MapillaryImportAction extends JosmAction {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      final TiffField lat_ref = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
-      final TiffField lat = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
-      final TiffField lon_ref = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
-      final TiffField lon = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
-      final TiffField ca = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+      final TiffField lat_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
+      final TiffField lat = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
+      final TiffField lon_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
+      final TiffField lon = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
+      final TiffField ca = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
@@ -111,16 +138,20 @@ public class MapillaryImportAction extends JosmAction {
       double lonValue = 0;
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
-        latValue = degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+        latValue = degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref
+            .getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
-        lonValue = degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
+        lonValue = degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref
+            .getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)
-        MapillaryData.getInstance()
-            .add(new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue()));
+        MapillaryData.getInstance().add(
+            new MapillaryImportedImage(latValue, lonValue, caValue, file,
+                datetimeOriginal.getStringValue()));
       else
-        MapillaryData.getInstance().add(new MapillaryImportedImage(latValue, lonValue, caValue, file));
+        MapillaryData.getInstance().add(
+            new MapillaryImportedImage(latValue, lonValue, caValue, file));
     }
   }
 
@@ -137,8 +168,10 @@ public class MapillaryImportAction extends JosmAction {
       horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
     else
       horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
-    LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter());
-    MapillaryData.getInstance().add(new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file));
+    LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
+        Main.map.mapView.getCenter());
+    MapillaryData.getInstance().add(
+        new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file));
     noTagsPics++;
   }
 
@@ -147,23 +180,37 @@ public class MapillaryImportAction extends JosmAction {
   }
 
   /**
-   * Calculates the decimal degree-value from a degree value given in degrees-minutes-seconds-format
+   * Calculates the decimal degree-value from a degree value given in
+   * degrees-minutes-seconds-format
    *
-   * @param degMinSec an array of length 3, the values in there are (in this order) degrees, minutes and seconds
-   * @param ref the latitude or longitude reference determining if the given value is:
-   *        <ul>
-   *        <li>north ({@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
-   *        south ({@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of the equator</li>
-   *        <li>east ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
-   *        west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}) of the equator</li>
-   *        </ul>
-   * @return the decimal degree-value for the given input, negative when west of 0-meridian or south of equator,
-   *         positive otherwise
-   * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is not one of the
-   *         values mentioned above
-   */ // TODO: Maybe move into a separate utility class?
+   * @param degMinSec
+   *          an array of length 3, the values in there are (in this order)
+   *          degrees, minutes and seconds
+   * @param ref
+   *          the latitude or longitude reference determining if the given value
+   *          is:
+   *          <ul>
+   *          <li>north (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
+   *          south (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
+   *          the equator</li>
+   *          <li>east (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
+   *          west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
+   *          ) of the equator</li>
+   *          </ul>
+   * @return the decimal degree-value for the given input, negative when west of
+   *         0-meridian or south of equator, positive otherwise
+   * @throws IllegalArgumentException
+   *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
+   *           not one of the values mentioned above
+   */
+  // TODO: Maybe move into a separate utility class?
   public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
-    if (degMinSec == null || degMinSec.length != 3) { throw new IllegalArgumentException(); }
+    if (degMinSec == null || degMinSec.length != 3) {
+      throw new IllegalArgumentException();
+    }
     switch (ref) {
     case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
     case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:

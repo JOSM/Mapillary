@@ -38,9 +38,12 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
   private LinkedList<MapillaryImportedImage> images;
 
   public MapillaryImportIntoSequenceAction() {
-    super(tr("Import pictures into sequence"), new ImageProvider("icon24.png"), tr("Import local pictures"), Shortcut
-        .registerShortcut("Import Mapillary Sequence", tr("Import pictures into Mapillary layer in a sequence"),
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImportSequence", false);
+    super(tr("Import pictures into sequence"), new ImageProvider("icon24.png"),
+        tr("Import local pictures"), Shortcut.registerShortcut(
+            "Import Mapillary Sequence",
+            tr("Import pictures into Mapillary layer in a sequence"),
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
+        "mapillaryImportSequence", false);
     this.setEnabled(false);
   }
 
@@ -49,22 +52,42 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     images = new LinkedList<>();
 
     chooser = new JFileChooser();
-    File startDirectory = new File(Main.pref.get("mapillary.start-directory", System.getProperty("user.home")));
-    chooser.setCurrentDirectory(startDirectory);    chooser.setDialogTitle(tr("Select pictures"));
+    File startDirectory = new File(Main.pref.get("mapillary.start-directory",
+        System.getProperty("user.home")));
+    chooser.setCurrentDirectory(startDirectory);
+    chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg"));
+    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg",
+        "jpeg"));
     chooser.setMultiSelectionEnabled(true);
+    
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
         Main.pref.put("mapillary.start-directory", file.getParent());
+        MapillaryLayer.getInstance();
         if (file.isDirectory()) {
-          // TODO import directory
+          for (int j = 0; j < file.listFiles().length; j++) {
+            int k = file.listFiles()[j].getName().lastIndexOf('.');
+            String extension = null;
+            if (k > 0) {
+              extension = file.listFiles()[j].getName().substring(k + 1);
+            }
+            try {
+              if (extension.equals("jpg") || extension.equals("jpeg"))
+                readJPG(file.listFiles()[j]);
+            } catch (ImageReadException e) {
+              Main.error(e);
+            } catch (IOException e) {
+              Main.error(e);
+            }
+          }
         } else {
-          MapillaryLayer.getInstance();
-          if (file.getPath().substring(file.getPath().length() - 4).equals(".jpg")
-              || file.getPath().substring(file.getPath().length() - 5).equals(".jpeg")) {
+          if (file.getPath().substring(file.getPath().length() - 4)
+              .equals(".jpg")
+              || file.getPath().substring(file.getPath().length() - 5)
+                  .equals(".jpeg")) {
             try {
               readJPG(file);
             } catch (ImageReadException ex) {
@@ -91,28 +114,37 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      final TiffField lat_ref = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
-      final TiffField lat = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
-      final TiffField lon_ref = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
-      final TiffField lon = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
-      final TiffField ca = jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+      final TiffField lat_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
+      final TiffField lat = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
+      final TiffField lon_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
+      final TiffField lon = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
+      final TiffField ca = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-      if (lat_ref == null || lat == null || lon == null || lon_ref == null || datetimeOriginal == null)
-        throw new IllegalArgumentException("The picture has not correct EXIF tags");
+      if (lat_ref == null || lat == null || lon == null || lon_ref == null
+          || datetimeOriginal == null)
+        throw new IllegalArgumentException(
+            "The picture has not correct EXIF tags");
 
       double latValue = 0;
       double lonValue = 0;
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
-        latValue = MapillaryImportAction.degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+        latValue = MapillaryImportAction.degMinSecToDouble(
+            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
-        lonValue = MapillaryImportAction.degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
+        lonValue = MapillaryImportAction.degMinSecToDouble(
+            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
 
-      MapillaryImportedImage image = new MapillaryImportedImage(latValue, lonValue, caValue, file,
-          datetimeOriginal.getStringValue());
+      MapillaryImportedImage image = new MapillaryImportedImage(latValue,
+          lonValue, caValue, file, datetimeOriginal.getStringValue());
       MapillaryData.getInstance().add(image);
       image.getCapturedAt();
 
@@ -129,7 +161,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     }
   }
 
-  public class MapillaryEpochComparator implements Comparator<MapillaryAbstractImage> {
+  public class MapillaryEpochComparator implements
+      Comparator<MapillaryAbstractImage> {
 
     @Override
     public int compare(MapillaryAbstractImage arg0, MapillaryAbstractImage arg1) {
