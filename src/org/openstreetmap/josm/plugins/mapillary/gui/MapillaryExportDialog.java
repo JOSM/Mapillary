@@ -47,8 +47,12 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   protected JLabel path;
   public JFileChooser chooser;
   protected String exportDirectory;
+  private JButton ok;
 
-  public MapillaryExportDialog() {
+  public MapillaryExportDialog(JButton ok) {
+    this.ok = ok;
+    ok.setEnabled(false);
+    
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
     RewriteButtonAction action = new RewriteButtonAction(this);
@@ -100,7 +104,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   }
 
   /**
-   * Creates the folder choser GUI.
+   * Creates the folder chooser GUI.
    */
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -114,6 +118,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       path.setText(chooser.getSelectedFile().toString());
       this.updateUI();
+      ok.setEnabled(true);
     }
   }
 

@@ -4,11 +4,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -43,9 +45,18 @@ public class MapillaryExportAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    dialog = new MapillaryExportDialog();
-    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.OK_CANCEL_OPTION);
+    JOptionPane pane = new JOptionPane();
+
+    JButton ok = new JButton("Ok");
+    ok.addActionListener(new OKAction(pane));
+    JButton cancel = new JButton(tr("Cancel"));
+    cancel.addActionListener(new CancelAction(pane));
+
+
+    dialog = new MapillaryExportDialog(ok);
+    pane.setMessage(dialog);
+    pane.setOptions(new JButton[] { ok, cancel });
+
     JDialog dlg = pane.createDialog(Main.parent, tr("Export images"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
@@ -94,4 +105,29 @@ public class MapillaryExportAction extends JosmAction {
         dialog.chooser.getSelectedFile().toString())));
   }
 
+  private class OKAction implements ActionListener {
+    private JOptionPane pane;
+
+    public OKAction(JOptionPane pane) {
+      this.pane = pane;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      pane.setValue(JOptionPane.OK_OPTION);
+    }
+  }
+
+  private class CancelAction implements ActionListener {
+    private JOptionPane pane;
+
+    public CancelAction(JOptionPane pane) {
+      this.pane = pane;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      pane.setValue(JOptionPane.CANCEL_OPTION);
+    }
+  }
 }

@@ -12,8 +12,12 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
@@ -66,25 +70,49 @@ public class MapillaryExportWriterThread extends Thread {
           finalPath = path.substring(0, path.lastIndexOf('.'));
         } else if (mimg instanceof MapillaryImage)
           finalPath = path + "/" + ((MapillaryImage) mimg).getKey();
-        else
-          finalPath = path + "/" + i;
+        else if (mimg instanceof MapillaryImportedImage)
+          finalPath = path + "/"
+              + ((MapillaryImportedImage) mimg).getFile().getName();
+        ;
         // Creates a temporal file that is going to be deleted after
         // writing the EXIF tags.
         tempFile = new File(finalPath + ".tmp");
         ImageIO.write(img, "jpg", tempFile);
 
         // Write EXIF tags
-        TiffOutputSet outputSet = new TiffOutputSet();
-        TiffOutputDirectory exifDirectory = outputSet
-            .getOrCreateExifDirectory();
+        TiffOutputSet outputSet = null;
+        TiffOutputDirectory exifDirectory = null;
+        // If the image is imported, loads the rest of the EXIF data.
+        if (mimg instanceof MapillaryImportedImage) {
+          final ImageMetadata metadata = Imaging
+              .getMetadata(((MapillaryImportedImage) mimg).getFile());
+          final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+          if (null != jpegMetadata) {
+            final TiffImageMetadata exif = jpegMetadata.getExif();
+            if (null != exif) {
+              outputSet = exif.getOutputSet();
+            }
+          }
+        }
+        if (null == outputSet) {
+          outputSet = new TiffOutputSet();
+        }
+        exifDirectory = outputSet.getOrCreateExifDirectory();
+
+        exifDirectory
+            .removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
         exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
             GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+
+        exifDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
         exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
             RationalNumber.valueOf(mimg.getCa()));
-        if (mimg instanceof MapillaryImportedImage) {
+
+        exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+        if (mimg instanceof MapillaryImportedImage)
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImportedImage) mimg).getDate("yyyy/MM/dd hh:mm:ss"));
-        } else if (mimg instanceof MapillaryImage)
+        else if (mimg instanceof MapillaryImage)
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImage) mimg).getDate("yyyy/MM/dd hh/mm/ss"));
         outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon()
