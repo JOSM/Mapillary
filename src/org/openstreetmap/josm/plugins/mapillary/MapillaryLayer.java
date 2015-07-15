@@ -200,6 +200,27 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
     super.destroy();
   }
+  
+  /**
+   * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map view.
+   */
+  public void showAllPictures() {
+    double minLat = 90;
+    double minLon = 180;
+    double maxLat = -90;
+    double maxLon = -180;
+    for (MapillaryAbstractImage img : data.getImages()) {
+      if (img.getLatLon().lat() < minLat)
+        minLat = img.getLatLon().lat();
+      if (img.getLatLon().lon() < minLon)
+        minLon = img.getLatLon().lon();
+      if (img.getLatLon().lat() > maxLat)
+        maxLat = img.getLatLon().lat();
+      if (img.getLatLon().lon() > maxLon)
+        maxLon = img.getLatLon().lon();
+    }
+    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon (maxLat, maxLon)));
+  }
 
   /**
    * Returns true any of the images from the database has been modified.

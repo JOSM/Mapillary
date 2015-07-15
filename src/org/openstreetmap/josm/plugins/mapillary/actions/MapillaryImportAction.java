@@ -153,6 +153,8 @@ public class MapillaryImportAction extends JosmAction {
         MapillaryData.getInstance().add(
             new MapillaryImportedImage(latValue, lonValue, caValue, file));
     }
+    
+    MapillaryLayer.getInstance().showAllPictures();
   }
 
   /**

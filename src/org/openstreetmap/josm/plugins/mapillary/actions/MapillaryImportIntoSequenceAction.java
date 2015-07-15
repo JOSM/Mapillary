@@ -100,6 +100,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       }
       joinImages();
     }
+    
+    MapillaryLayer.getInstance().showAllPictures();
   }
 
   /**
