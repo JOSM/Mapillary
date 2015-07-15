@@ -4,7 +4,11 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Locale;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -22,18 +26,34 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  */
 public class MapillarySquareDownloadManagerThread extends Thread {
 
-  private final String urlImages;
-  private final String urlSequences;
-  private final String urlSigns;
+  private final String imageQueryString;
+  private final String sequenceQueryString;
+  private final String signQueryString;
   private final MapillaryLayer layer;
   public boolean imagesAdded = false;
 
-  public MapillarySquareDownloadManagerThread(String urlImages, String urlSequences, String urlSigns,
-      MapillaryLayer layer) {
-    this.urlImages = urlImages;
-    this.urlSequences = urlSequences;
-    this.urlSigns = urlSigns;
+  public MapillarySquareDownloadManagerThread(ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {
+    this.imageQueryString = buildQueryString(queryStringParts);
+    this.sequenceQueryString = buildQueryString(queryStringParts);
+    this.signQueryString = buildQueryString(queryStringParts);
+
+    Main.info("GET " + sequenceQueryString + " (Mapillary plugin)"); // TODO: Move this line to the appropriate place, here's no GET-request
+
     this.layer = layer;
+  }
+
+  //TODO: Maybe move into a separate utility class?
+  private String buildQueryString(ConcurrentHashMap<String, Double> hash) {
+    StringBuilder ret = new StringBuilder("?client_id=" + MapillaryDownloader.CLIENT_ID);
+    for (String key : hash.keySet())
+      if (key != null)
+        try {
+          ret.append("&" + URLEncoder.encode(key, "UTF-8"))
+             .append("=" + URLEncoder.encode(String.format(Locale.UK, "%f", hash.get(key)), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+          // This should not happen, as the encoding is hard-coded
+        }
+    return ret.toString();
   }
 
   @Override
@@ -52,7 +72,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       Main.error(e);
     }
     layer.updateHelpText();
-    layer.data.dataUpdated();
+    layer.getMapillaryData().dataUpdated();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();
   }
@@ -62,14 +82,20 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySequenceDownloadThread(ex, urlSequences
-          + "&page=" + page + "&limit=10", layer, this));
+      ex.execute(
+        new MapillarySequenceDownloadThread(
+          ex,
+          sequenceQueryString + "&page=" + page + "&limit=10",
+          layer,
+          this
+        )
+      );
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
     }
     ex.awaitTermination(15, TimeUnit.SECONDS);
-    layer.data.dataUpdated();
+    layer.getMapillaryData().dataUpdated();
   }
 
   private void completeImages() throws InterruptedException {
@@ -77,7 +103,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillaryImageInfoDownloaderThread(ex, urlImages
+      ex.execute(new MapillaryImageInfoDownloaderThread(ex, imageQueryString
           + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
@@ -91,7 +117,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySignDownloaderThread(ex, urlSigns + "&page="
+      ex.execute(new MapillarySignDownloaderThread(ex, signQueryString + "&page="
           + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);

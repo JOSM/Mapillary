@@ -72,7 +72,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   public static MapillaryImage BLUE;
   public static MapillaryImage RED;
 
-  public final MapillaryData data = MapillaryData.getInstance();
+  private final MapillaryData data = MapillaryData.getInstance();
 
   public ArrayList<Bounds> bounds;
 
@@ -587,7 +587,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   @Override
   public void layerRemoved(Layer oldLayer) {
   }
-  
+
   public void updateHelpText() {
     String ret = "";
     if (data.size() > 0)
@@ -595,7 +595,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     else
       ret += tr("No images found");
     ret += " -- " + tr(mode.toString());
-    
+
      Main.map.statusLine.setHelpText(ret);
   }
 }

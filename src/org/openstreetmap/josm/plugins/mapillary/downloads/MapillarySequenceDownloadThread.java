@@ -29,16 +29,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * @see MapillarySquareDownloadManagerThread
  */
 public class MapillarySequenceDownloadThread extends Thread {
+  private static final String URL = MapillaryDownloader.BASE_URL + "search/s/";
 
-  private final String url;
+  private final String queryString;
   private final ExecutorService ex;
   private final List<Bounds> bounds;
   private final MapillaryLayer layer;
   private final MapillarySquareDownloadManagerThread manager;
 
-  public MapillarySequenceDownloadThread(ExecutorService ex, String url,
+  public MapillarySequenceDownloadThread(ExecutorService ex, String queryString,
       MapillaryLayer layer, MapillarySquareDownloadManagerThread manager) {
-    this.url = url;
+    this.queryString = queryString;
     this.ex = ex;
     this.bounds = layer.bounds;
     this.layer = layer;
@@ -49,8 +50,7 @@ public class MapillarySequenceDownloadThread extends Thread {
   public void run() {
     try {
       BufferedReader br;
-      br = new BufferedReader(new InputStreamReader(new URL(url).openStream(),
-          "UTF-8"));
+      br = new BufferedReader(new InputStreamReader(new URL(URL + queryString).openStream(), "UTF-8"));
       JsonObject jsonall = Json.createReader(br).readObject();
 
       if (!jsonall.getBoolean("more") && !ex.isShutdown())
@@ -70,7 +70,7 @@ public class MapillarySequenceDownloadThread extends Thread {
                 .getJsonArray(j).getJsonNumber(0).doubleValue(), cas
                 .getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
-            Main.warn("Mapillary bug at " + url);
+            Main.warn("Mapillary bug at " + URL + queryString);
             isSequenceWrong = true;
           }
         }
@@ -91,14 +91,14 @@ public class MapillarySequenceDownloadThread extends Thread {
         boolean imagesAdded = false;
         MapillaryImage.lock.lock();
         for (MapillaryImage img : finalImages) {
-          if (layer.data.getImages().contains(img)) {
+          if (layer.getMapillaryData().getImages().contains(img)) {
             sequence.add(img);
-            ((MapillaryImage) layer.data.getImages().get(
-                layer.data.getImages().indexOf(img))).setSequence(sequence);
+            ((MapillaryImage) layer.getMapillaryData().getImages().get(
+                layer.getMapillaryData().getImages().indexOf(img))).setSequence(sequence);
             finalImages.set(
                 finalImages.indexOf(img),
-                (MapillaryImage) layer.data.getImages().get(
-                    layer.data.getImages().indexOf(img)));
+                (MapillaryImage) layer.getMapillaryData().getImages().get(
+                    layer.getMapillaryData().getImages().indexOf(img)));
           } else {
             img.setSequence(sequence);
             imagesAdded = true;
@@ -109,11 +109,11 @@ public class MapillarySequenceDownloadThread extends Thread {
         if (manager != null) {
           manager.imagesAdded = imagesAdded;
         }
-        layer.data.addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(
+        layer.getMapillaryData().addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(
             finalImages));
       }
     } catch (IOException e) {
-      Main.error("Error reading the url " + url
+      Main.error("Error reading the url " + URL + queryString
           + " might be a Mapillary problem.");
     }
   }

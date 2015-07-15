@@ -17,15 +17,14 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 public class MapillarySignDownloaderThread extends Thread {
-
-  private final String url;
+  private static final String URL = MapillaryDownloader.BASE_URL + "search/im/or/";
+  private final String queryString;
   private final ExecutorService ex;
   private final MapillaryLayer layer;
 
-  public MapillarySignDownloaderThread(ExecutorService ex, String url,
-      MapillaryLayer layer) {
+  public MapillarySignDownloaderThread(ExecutorService ex, String queryString, MapillaryLayer layer) {
     this.ex = ex;
-    this.url = url;
+    this.queryString = queryString;
     this.layer = layer;
   }
 
@@ -33,8 +32,7 @@ public class MapillarySignDownloaderThread extends Thread {
   public void run() {
     BufferedReader br;
     try {
-      br = new BufferedReader(new InputStreamReader(new URL(url).openStream(),
-          "UTF-8"));
+      br = new BufferedReader(new InputStreamReader(new URL(URL + queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {
         ex.shutdown();
@@ -50,7 +48,7 @@ public class MapillarySignDownloaderThread extends Thread {
             rects = rectversions.getJsonObject(j).getJsonArray("rects");
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : layer.data.getImages())
+              for (MapillaryAbstractImage image : layer.getMapillaryData().getImages())
                 if (image instanceof MapillaryImage
                     && ((MapillaryImage) image).getKey().equals(key))
                   ((MapillaryImage) image).addSign(data.getString("type"));
@@ -62,7 +60,7 @@ public class MapillarySignDownloaderThread extends Thread {
         else if (rects != null) {
           for (int j = 0; j < rects.size(); j++) {
             JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : layer.data.getImages())
+            for (MapillaryAbstractImage image : layer.getMapillaryData().getImages())
               if (image instanceof MapillaryImage
                   && ((MapillaryImage) image).getKey().equals(key))
                 ((MapillaryImage) image).addSign(data.getString("type"));

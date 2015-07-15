@@ -2,15 +2,14 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
 
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.Json;
-
-import java.util.concurrent.ExecutorService;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -24,14 +23,14 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @see MapillarySquareDownloadManagerThread
  */
 public class MapillaryImageInfoDownloaderThread extends Thread {
-  private final String url;
+  private static final String URL = MapillaryDownloader.BASE_URL + "search/im/";
+  private final String queryString;
   private final ExecutorService ex;
   private final MapillaryLayer layer;
 
-  public MapillaryImageInfoDownloaderThread(ExecutorService ex, String url,
-      MapillaryLayer layer) {
+  public MapillaryImageInfoDownloaderThread(ExecutorService ex, String queryString, MapillaryLayer layer) {
     this.ex = ex;
-    this.url = url;
+    this.queryString = queryString;
     this.layer = layer;
   }
 
@@ -39,7 +38,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
   public void run() {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(
-          new URL(url).openStream(), "UTF-8"));
+          new URL(URL + queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))
         ex.shutdown();
@@ -48,7 +47,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
       for (int i = 0; i < jsonarr.size(); i++) {
         data = jsonarr.getJsonObject(i);
         String key = data.getString("key");
-        for (MapillaryAbstractImage image : layer.data.getImages()) {
+        for (MapillaryAbstractImage image : layer.getMapillaryData().getImages()) {
           if (image instanceof MapillaryImage) {
             if (((MapillaryImage) image).getKey().equals(key)
                 && ((MapillaryImage) image).getUser() == null) {

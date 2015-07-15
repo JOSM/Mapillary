@@ -47,10 +47,9 @@ public class MapillarySequenceDownloadThreadTest {
         LatLon maxLatLon = new LatLon(59.3212546, 18.0616686);
 
         ExecutorService ex = Executors.newSingleThreadExecutor();
-        String url = String.format(
+        String queryString = String.format(
             Locale.UK,
-            "%ssearch/s?max_lat=%.8f&max_lon=%.8f&min_lat=%.8f&min_lon=%.8f&limit=10&client_id=%s",
-            MapillaryDownloader.BASE_URL,
+            "?max_lat=%.8f&max_lon=%.8f&min_lat=%.8f&min_lon=%.8f&limit=10&client_id=%s",
             maxLatLon.lat(),
             maxLatLon.lon(),
             minLatLon.lat(),
@@ -62,7 +61,7 @@ public class MapillarySequenceDownloadThreadTest {
         int page = 1;
         while (!ex.isShutdown() && MapillaryLayer.getInstance().getMapillaryData().getImages().size() <= 0 && page < 50) {
             System.out.println("Sending sequence-request "+page+" to Mapillary-servers…");
-            Thread downloadThread = new MapillarySequenceDownloadThread(ex, url+"&page="+page, MapillaryLayer.getInstance(), null);
+            Thread downloadThread = new MapillarySequenceDownloadThread(ex, queryString+"&page="+page, MapillaryLayer.getInstance(), null);
             downloadThread.start();
             downloadThread.join();
             page++;
