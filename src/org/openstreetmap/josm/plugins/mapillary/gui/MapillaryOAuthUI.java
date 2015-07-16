@@ -1,15 +1,14 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
-import java.util.Scanner;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryOAuthApi;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
+import org.openstreetmap.josm.plugins.mapillary.oauth.PortListener;
 
 /**
  * JPanel used to get the OAuth tokens from Mapillary.
@@ -19,26 +18,31 @@ import org.scribe.oauth.OAuthService;
  */
 public class MapillaryOAuthUI extends JPanel {
 
-  private static final Token EMPTY_TOKEN = null;
+  PortListener portListener;
+  JLabel text;
 
+  /**
+   * Main constructor.
+   */
   public MapillaryOAuthUI() {
-    Scanner in = new Scanner(System.in);
-    OAuthService service = new ServiceBuilder()
-        .provider(MapillaryOAuthApi.class)
-        .apiKey("NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm")
-        .apiSecret("Secret").build();
-    String authorizationUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
-    this.add(new JLabel("Login"));
-    System.out.println("Fetching the Authorization URL...");
-    System.out.println("Got the Authorization URL!");
-    System.out.println("Now go and authorize Scribe here:");
-    System.out.println(authorizationUrl);
-    System.out.println("And paste the authorization code here");
-    System.out.print(">>");
-    Verifier verifier = new Verifier(in.nextLine());
-    in.close();
-    System.out.println();
-    in.close();
-  }
+    text = new JLabel("Authorize in browser");
+    this.add(text);
+    portListener = new PortListener(text);
+    portListener.start();
 
+    String url = "http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&response_type=code&scope=user:email";
+    Desktop desktop = Desktop.getDesktop();
+    try {
+      desktop.browse(new URI(url));
+    } catch (IOException | URISyntaxException ex) {
+      ex.printStackTrace();
+    } catch (UnsupportedOperationException ex) {
+      Runtime runtime = Runtime.getRuntime();
+      try {
+        runtime.exec("xdg-open " + url);
+      } catch (IOException exc) {
+        exc.printStackTrace();
+      }
+    }
+  }
 }
