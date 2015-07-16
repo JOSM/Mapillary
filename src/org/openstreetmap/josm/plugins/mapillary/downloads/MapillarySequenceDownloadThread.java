@@ -37,8 +37,17 @@ public class MapillarySequenceDownloadThread extends Thread {
   private final MapillaryLayer layer;
   private final MapillarySquareDownloadManagerThread manager;
 
-  public MapillarySequenceDownloadThread(ExecutorService ex, String queryString,
-      MapillaryLayer layer, MapillarySquareDownloadManagerThread manager) {
+  /**
+   * Main constructor.
+   * 
+   * @param ex
+   * @param queryString
+   * @param layer
+   * @param manager
+   */
+  public MapillarySequenceDownloadThread(ExecutorService ex,
+      String queryString, MapillaryLayer layer,
+      MapillarySquareDownloadManagerThread manager) {
     this.queryString = queryString;
     this.ex = ex;
     this.bounds = layer.bounds;
@@ -50,7 +59,8 @@ public class MapillarySequenceDownloadThread extends Thread {
   public void run() {
     try {
       BufferedReader br;
-      br = new BufferedReader(new InputStreamReader(new URL(URL + queryString).openStream(), "UTF-8"));
+      br = new BufferedReader(new InputStreamReader(
+          new URL(URL + queryString).openStream(), "UTF-8"));
       JsonObject jsonall = Json.createReader(br).readObject();
 
       if (!jsonall.getBoolean("more") && !ex.isShutdown())
@@ -93,12 +103,13 @@ public class MapillarySequenceDownloadThread extends Thread {
         for (MapillaryImage img : finalImages) {
           if (layer.getMapillaryData().getImages().contains(img)) {
             sequence.add(img);
-            ((MapillaryImage) layer.getMapillaryData().getImages().get(
-                layer.getMapillaryData().getImages().indexOf(img))).setSequence(sequence);
+            ((MapillaryImage) layer.getMapillaryData().getImages()
+                .get(layer.getMapillaryData().getImages().indexOf(img)))
+                .setSequence(sequence);
             finalImages.set(
                 finalImages.indexOf(img),
-                (MapillaryImage) layer.getMapillaryData().getImages().get(
-                    layer.getMapillaryData().getImages().indexOf(img)));
+                (MapillaryImage) layer.getMapillaryData().getImages()
+                    .get(layer.getMapillaryData().getImages().indexOf(img)));
           } else {
             img.setSequence(sequence);
             imagesAdded = true;
@@ -109,8 +120,8 @@ public class MapillarySequenceDownloadThread extends Thread {
         if (manager != null) {
           manager.imagesAdded = imagesAdded;
         }
-        layer.getMapillaryData().addWithoutUpdate(new ArrayList<MapillaryAbstractImage>(
-            finalImages));
+        layer.getMapillaryData().addWithoutUpdate(
+            new ArrayList<MapillaryAbstractImage>(finalImages));
       }
     } catch (IOException e) {
       Main.error("Error reading the url " + URL + queryString

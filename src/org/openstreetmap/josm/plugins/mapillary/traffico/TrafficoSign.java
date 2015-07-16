@@ -29,21 +29,30 @@ public class TrafficoSign {
     if (signs.get(country) == null) {
       System.out.println("Read signs for " + country);
       InputStream countryStream = TrafficoSign.class
-          .getResourceAsStream("/data/fonts/traffico/signs/" + country + ".json");
-      if (countryStream == null) { return null; }
+          .getResourceAsStream("/data/fonts/traffico/signs/" + country
+              + ".json");
+      if (countryStream == null) {
+        return null;
+      }
       JsonObject countrySigns = Json.createReader(countryStream).readObject();
       Set<String> countrySignNames = countrySigns.keySet();
       System.out.println(countrySignNames.size() + " signs found");
       Map<String, TrafficoSignElement[]> countryMap = new HashMap<>();
       for (String name : countrySignNames) {
         System.out.println(" * sign " + name);
-        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray("elements");
-        List<TrafficoSignElement> layers = new ArrayList<>(); // TODO: Replace by an array when all types of sign
-                                                              // elements (text!) are supported
+        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(
+            "elements");
+
+        // TODO: Replace by an array when all types of sign elements (text!) are
+        // supported
+        List<TrafficoSignElement> layers = new ArrayList<>();
+
         for (int i = 0; i < elements.size(); i++) {
-          System.out.println("   - " + elements.getJsonObject(i).getString("color") + " layer "
+          System.out.println("   - "
+              + elements.getJsonObject(i).getString("color") + " layer "
               + elements.getJsonObject(i).getString("type"));
-          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i).getString("type"));
+          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i)
+              .getString("type"));
           if (glyph != null) {
             Color c;
             switch (elements.getJsonObject(i).getString("color").toLowerCase()) {
@@ -75,8 +84,12 @@ public class TrafficoSign {
       }
       signs.put(country, countryMap);
     }
-    if (signs.get(country).get(signName) != null) { return signs.get(country).get(signName); }
-    if (isIn.containsKey(country)) { return TrafficoSign.getSign(isIn.get(country), signName); }
+    if (signs.get(country).get(signName) != null) {
+      return signs.get(country).get(signName);
+    }
+    if (isIn.containsKey(country)) {
+      return TrafficoSign.getSign(isIn.get(country), signName);
+    }
     return null;
   }
 }

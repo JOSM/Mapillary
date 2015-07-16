@@ -30,33 +30,39 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String sequenceQueryString;
   private final String signQueryString;
   private final MapillaryLayer layer;
+  /** Whether if new images have been added in the download or not. */
   public boolean imagesAdded = false;
 
   /**
    * Main constructor.
    * 
-   * @param urlImages URL used to download the images.
-   * @param urlSequences URL used to download the sequences.
-   * @param urlSigns URL used to download the signs.
+   * @param queryStringParts
+   * @param layer
+   * 
    */
-  public MapillarySquareDownloadManagerThread(ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {
+  public MapillarySquareDownloadManagerThread(
+      ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {
     this.imageQueryString = buildQueryString(queryStringParts);
     this.sequenceQueryString = buildQueryString(queryStringParts);
     this.signQueryString = buildQueryString(queryStringParts);
 
-    Main.info("GET " + sequenceQueryString + " (Mapillary plugin)"); // TODO: Move this line to the appropriate place, here's no GET-request
+    // TODO: Move this line to the appropriate place, here's no GET-request
+    Main.info("GET " + sequenceQueryString + " (Mapillary plugin)");
 
     this.layer = layer;
   }
 
-  //TODO: Maybe move into a separate utility class?
+  // TODO: Maybe move into a separate utility class?
   private String buildQueryString(ConcurrentHashMap<String, Double> hash) {
-    StringBuilder ret = new StringBuilder("?client_id=" + MapillaryDownloader.CLIENT_ID);
+    StringBuilder ret = new StringBuilder("?client_id="
+        + MapillaryDownloader.CLIENT_ID);
     for (String key : hash.keySet())
       if (key != null)
         try {
-          ret.append("&" + URLEncoder.encode(key, "UTF-8"))
-             .append("=" + URLEncoder.encode(String.format(Locale.UK, "%f", hash.get(key)), "UTF-8"));
+          ret.append("&" + URLEncoder.encode(key, "UTF-8")).append(
+              "="
+                  + URLEncoder.encode(
+                      String.format(Locale.UK, "%f", hash.get(key)), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
           // This should not happen, as the encoding is hard-coded
         }
@@ -89,14 +95,8 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(
-        new MapillarySequenceDownloadThread(
-          ex,
-          sequenceQueryString + "&page=" + page + "&limit=10",
-          layer,
-          this
-        )
-      );
+      ex.execute(new MapillarySequenceDownloadThread(ex, sequenceQueryString
+          + "&page=" + page + "&limit=10", layer, this));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
@@ -124,8 +124,8 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySignDownloaderThread(ex, signQueryString + "&page="
-          + page + "&limit=20", layer));
+      ex.execute(new MapillarySignDownloaderThread(ex, signQueryString
+          + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;

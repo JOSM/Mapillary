@@ -12,9 +12,7 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
@@ -50,7 +48,7 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1)
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closestTemp != null
+    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closest != null
         && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       data.setSelectedImage(closest);

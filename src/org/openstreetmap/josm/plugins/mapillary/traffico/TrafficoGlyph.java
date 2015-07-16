@@ -10,8 +10,10 @@ import javax.json.JsonReader;
 
 public class TrafficoGlyph {
   private static Map<String, Character> glyphs;
+
   private static Map<String, Character> readGlyphsFromResources() {
-    JsonReader reader = Json.createReader(TrafficoSignElement.class.getResourceAsStream("/data/fonts/traffico/glyphs.json"));
+    JsonReader reader = Json.createReader(TrafficoSignElement.class
+        .getResourceAsStream("/data/fonts/traffico/glyphs.json"));
     JsonObject glyphObject = reader.readObject().getJsonObject("glyphs");
     Set<String> glyphNames = glyphObject.keySet();
     glyphs = new HashMap<>();
@@ -20,12 +22,14 @@ public class TrafficoGlyph {
     }
     return glyphs;
   }
+
   public static Character getGlyph(String key) {
     if (glyphs == null) {
       glyphs = readGlyphsFromResources();
     }
     return glyphs.get(key);
   }
+
   public static void main(String[] args) {
     System.out.println(TrafficoGlyph.getGlyph("h"));
     System.out.println(TrafficoGlyph.getGlyph("DE-arrow-up"));

@@ -63,7 +63,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.add(format24);
     panel.add(moveTo);
     JButton oauth = new JButton(new OAuthAction());
-    oauth.setText("Login");
+    if (Main.pref.get("mapillary.access-token") == null)
+      oauth.setText("Login");
+    else
+       oauth.setText("Already loged in, click to relogin");
     panel.add(oauth);
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
   }

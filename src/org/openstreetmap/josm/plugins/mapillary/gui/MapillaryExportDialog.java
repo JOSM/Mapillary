@@ -50,6 +50,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
   /**
    * Main constructor.
+   * @param ok 
    */
   public MapillaryExportDialog(JButton ok) {
     this.ok = ok;

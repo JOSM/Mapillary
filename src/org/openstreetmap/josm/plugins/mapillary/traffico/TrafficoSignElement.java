@@ -8,11 +8,11 @@ public class TrafficoSignElement {
   private char glyph;
 
   public TrafficoSignElement(char glyph, Color c) {
-     if (c == null) {
-       throw new IllegalArgumentException();
-     }
-     this.color = c;
-     this.glyph = glyph;
+    if (c == null) {
+      throw new IllegalArgumentException();
+    }
+    this.color = c;
+    this.glyph = glyph;
   }
 
   /**

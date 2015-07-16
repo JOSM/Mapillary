@@ -32,7 +32,8 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
    * Main constructor.
    * 
    * @param ex {@link ExecutorService} object that is executing this thread.
-   * @param url
+   * @param queryString 
+   * @param layer 
    */
   public MapillaryImageInfoDownloaderThread(ExecutorService ex, String queryString, MapillaryLayer layer) {
     this.ex = ex;
