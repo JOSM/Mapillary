@@ -19,7 +19,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  */
 public class MapillaryData implements ICachedLoaderListener {
+
+  /** Unique instance of the class */
   public volatile static MapillaryData INSTANCE;
+  /** Enable this if you are using in Unit Tests */
   public static boolean TEST_MODE = false;
 
   private final List<MapillaryAbstractImage> images;
@@ -30,12 +33,20 @@ public class MapillaryData implements ICachedLoaderListener {
 
   private List<MapillaryDataListener> listeners = new ArrayList<>();
 
-  public MapillaryData() {
+  /**
+   * Main constructor.
+   */
+  private MapillaryData() {
     images = new CopyOnWriteArrayList<>();
     multiSelectedImages = new ArrayList<>();
     selectedImage = null;
   }
 
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
   public static MapillaryData getInstance() {
     if (INSTANCE == null) {
       INSTANCE = new MapillaryData();
@@ -47,7 +58,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * Adds a set of MapillaryImages to the object, and then repaints mapView.
    *
    * @param images
-   *          The set of images to be added.
+   *        The set of images to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images) {
@@ -59,7 +70,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * Adds an MapillaryImage to the object, and then repaints mapView.
    *
    * @param image
-   *          The image to be added.
+   *        The image to be added.
    */
   public synchronized void add(MapillaryAbstractImage image) {
     if (!images.contains(image)) {
@@ -69,10 +80,20 @@ public class MapillaryData implements ICachedLoaderListener {
     fireImagesAdded();
   }
 
+  /**
+   * Adds a new listener.
+   *
+   * @param lis Listener to be added.
+   */
   public void addListener(MapillaryDataListener lis) {
     listeners.add(lis);
   }
 
+  /**
+   * Removes a listener.
+   *
+   * @param lis Listener to be removed.
+   */
   public void removeListener(MapillaryDataListener lis) {
     listeners.remove(lis);
   }
@@ -82,7 +103,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * This is needed for concurrency.
    *
    * @param images
-   *          The set of images to be added.
+   *        The set of images to be added.
    */
   public synchronized void addWithoutUpdate(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images) {
@@ -94,7 +115,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * Highlights the image under the cursor.
    *
    * @param image
-   *          The image under the cursor.
+   *        The image under the cursor.
    */
   public void setHighlightedImage(MapillaryAbstractImage image) {
     highlightedImage = image;
@@ -114,7 +135,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * needed for concurrency.
    *
    * @param image
-   *          The image to be added.
+   *        The image to be added.
    */
   public synchronized void addWithoutUpdate(MapillaryAbstractImage image) {
     if (!images.contains(image)) {
@@ -197,27 +218,23 @@ public class MapillaryData implements ICachedLoaderListener {
   }
 
   /**
-   * Selects a new image and then starts a new
-   * {@link MapillaryImageDownloadThread} thread in order to download its
-   * surrounding thumbnails. If the user does ctrl+click, this isn't triggered.
+   * Selects a new image.If the user does ctrl+click, this isn't triggered.
    *
    * @param image
-   *          The MapillaryImage which is going to be selected
+   *        The MapillaryImage which is going to be selected
    */
   public void setSelectedImage(MapillaryAbstractImage image) {
     setSelectedImage(image, false);
   }
 
   /**
-   * Selects a new image and then starts a new
-   * {@link MapillaryImageDownloadThread} thread in order to download its
-   * surrounding thumbnails. If the user does ctrl+click, this isn't triggered.
+   * Selects a new image.If the user does ctrl+click, this isn't triggered.
    * You can choose whether to center the view on the new image or not.
    *
    * @param image
-   *          The {@link MapillaryImage} which is going to be selected.
+   *        The {@link MapillaryImage} which is going to be selected.
    * @param zoom
-   *          True if the view must be centered on the image; false otherwise.
+   *        True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = selectedImage;
@@ -263,7 +280,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * click)
    *
    * @param image
-   *          The MapillaryImage object to be added.
+   *        The MapillaryImage object to be added.
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
@@ -280,7 +297,7 @@ public class MapillaryData implements ICachedLoaderListener {
    * selected images.
    *
    * @param images
-   *          A List object containing the set of images to be added.
+   *        A List object containing the set of images to be added.
    */
   public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images)

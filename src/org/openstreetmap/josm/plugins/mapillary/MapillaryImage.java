@@ -20,10 +20,20 @@ public class MapillaryImage extends MapillaryAbstractImage {
   private List<String> signs;
   private String location;
 
+  /**
+   * Returns the localtion where the image was taken.
+   *
+   * @return A String containing the location where the picture was taken.
+   */
   public String getLocation() {
     return location;
   }
 
+  /**
+   * Sets the location of the image.
+   *
+   * @param location
+   */
   public void setLocation(String location) {
     this.location = location;
   }
@@ -84,13 +94,19 @@ public class MapillaryImage extends MapillaryAbstractImage {
     this.user = user;
   }
 
+  /**
+   * Returns the username of the person who took the picture.
+   *
+   * @return A String containing the username of the person who took the picture.
+   */
   public String getUser() {
     return user;
   }
 
   @Override
   public String toString() {
-    return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon=" + this.latLon.lon() + ";ca=" + this.ca + "]";
+    return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
+        + this.latLon.lon() + ";ca=" + this.ca + "]";
   }
 
   @Override

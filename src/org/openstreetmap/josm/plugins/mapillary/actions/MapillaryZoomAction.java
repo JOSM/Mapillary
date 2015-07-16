@@ -16,13 +16,18 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Zooms to the currently selected image.
- * 
+ *
  * @author nokutu
  *
  */
 public class MapillaryZoomAction extends JosmAction implements
     MapillaryDataListener {
 
+  private static final long serialVersionUID = -6050566219765623059L;
+
+  /**
+   * Main constructor.
+   */
   public MapillaryZoomAction() {
     super(tr("Zoom to selected image"), new ImageProvider("icon24.png"),
         tr("Zoom to selected image"), Shortcut.registerShortcut(

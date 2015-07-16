@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
@@ -20,8 +19,6 @@ import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
 import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
@@ -49,7 +46,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.Action;
@@ -59,27 +55,42 @@ import javax.swing.JOptionPane;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MapillaryLayer extends AbstractModifiableLayer implements DataSetListener, EditLayerChangeListener,
-    LayerChangeListener {
+/**
+ * This class represents the layer shown in JOSM. There can only exist one
+ * instance of this object.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryLayer extends AbstractModifiableLayer implements
+    DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
-  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref
-      .getInteger("mapillary.sequence-max-jump-distance", 100);
+  /** Maximum distance for the red/blue lines. */
+  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
+      "mapillary.sequence-max-jump-distance", 100);
 
   private boolean TEMP_MANUAL = false;
 
+  /** Unique instance of the class */
   public static MapillaryLayer INSTANCE;
-  public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
+  /** The image pointed by the blue line */
   public static MapillaryImage BLUE;
+  /** The image pointed by the red line */
   public static MapillaryImage RED;
 
-  private final MapillaryData data = MapillaryData.getInstance();
+  /** {@link MapillaryData} object that stores the database */
+  public final MapillaryData data = MapillaryData.getInstance();
 
+  /** The bounds of the areas for which the pictures have been downloaded */
   public ArrayList<Bounds> bounds;
 
+  /** Mode of the layer */
   public AbstractMode mode;
 
-  private int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
-  private int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
+  private int highlightPointRadius = Main.pref.getInteger(
+      "mappaint.highlight.radius", 7);
+  private int highlightStep = Main.pref
+      .getInteger("mappaint.highlight.step", 4);
 
   private volatile TexturePaint hatched;
 
@@ -94,11 +105,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    */
   private void init() {
     mode = new SelectMode();
-    try {
-      CACHE = JCSCacheManager.getCache("Mapillary");
-    } catch (IOException e) {
-      Main.error(e);
-    }
     if (Main.map != null && Main.map.mapView != null) {
       Main.map.mapView.addMouseListener(mode);
       Main.map.mapView.addMouseMotionListener(mode);
@@ -119,6 +125,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     data.dataUpdated();
   }
 
+  /**
+   * Changes the mode the the given one.
+   *
+   * @param mode
+   *          The mode that is going to be activated.
+   */
   public void setMode(AbstractMode mode) {
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
@@ -129,6 +141,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     updateHelpText();
   }
 
+  /**
+   * Returns the unique instance of this class.
+   *
+   * @return The unique isntance of this class.
+   */
   public synchronized static MapillaryLayer getInstance() {
     if (MapillaryLayer.INSTANCE == null)
       MapillaryLayer.INSTANCE = new MapillaryLayer();
@@ -143,7 +160,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     checkAreaTooBig();
     if (Main.pref.getBoolean("mapillary.download-manually") || TEMP_MANUAL)
       return;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data
+        .getDataSourceBounds()) {
       if (!this.bounds.contains(bounds)) {
         this.bounds.add(bounds);
         new MapillaryDownloader().getImages(bounds.getMin(), bounds.getMax());
@@ -159,7 +177,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    */
   private void checkAreaTooBig() {
     double area = 0;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data
+        .getDataSourceBounds()) {
       area += bounds.getArea();
     }
     if (area > MapillaryDownloadViewAction.MAX_AREA) {
@@ -173,9 +192,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   }
 
   /**
-   * Returns the MapillaryData object, which acts as the database of the Layer.
+   * Returns the {@link MapillaryData} object, which acts as the database of the
+   * Layer.
    *
-   * @return
+   * @return The {@link MapillaryData} object that stores the database.
    */
   public MapillaryData getMapillaryData() {
     return data;
@@ -291,8 +311,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       for (Bounds bounds : this.bounds) {
         Point p1 = mv.getPoint(bounds.getMin());
         Point p2 = mv.getPoint(bounds.getMax());
-        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y), Math.abs(p2.x - p1.x), Math.abs(p2.y
-            - p1.y));
+        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),
+            Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));
         a.subtract(new Area(r));
       }
       // paint remainder
@@ -313,15 +333,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       if (closestImages[0] != null) {
         MapillaryLayer.BLUE = closestImages[0];
         g.setColor(Color.BLUE);
-        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x, mv.getPoint(closestImages[0].getLatLon()).y,
-            selected.x, selected.y);
+        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
+            mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);
         MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
       }
       if (closestImages[1] != null) {
         MapillaryLayer.RED = closestImages[1];
         g.setColor(Color.RED);
-        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x, mv.getPoint(closestImages[1].getLatLon()).y,
-            selected.x, selected.y);
+        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
+            mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);
         MapillaryMainDialog.getInstance().redButton.setEnabled(true);
       }
     }
@@ -355,8 +375,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
           icon = MapillaryPlugin.MAP_ICON_SELECTED;
         draw(g, image, icon, p);
         if (!image.getSigns().isEmpty()) {
-          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(), p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight()
-              / 2, Main.map.mapView);
+          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),
+              p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight() / 2,
+              Main.map.mapView);
         }
       } else if (imageAbs instanceof MapillaryImportedImage) {
         MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
@@ -383,8 +404,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
     Color oldColor = g.getColor();
     Color highlightColor = PaintColors.HIGHLIGHT.get();
-    Color highlightColorTransparent = new Color(highlightColor.getRed(), highlightColor.getGreen(),
-        highlightColor.getBlue(), 100);
+    Color highlightColorTransparent = new Color(highlightColor.getRed(),
+        highlightColor.getGreen(), highlightColor.getBlue(), 100);
     g.setColor(highlightColorTransparent);
     int s = size + highlightPointRadius;
     while (s >= size) {
@@ -404,7 +425,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    * @param icon
    * @param p
    */
-  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
+  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon,
+      Point p) {
     Image imagetemp = icon.getImage();
     BufferedImage bi = (BufferedImage) imagetemp;
     int width = icon.getIconWidth();
@@ -472,7 +494,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
                 .getSequence() != ret[1].getSequence()))) {
           ret[0] = image;
           distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);
-        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(selectedCoords) < distances[1])
+        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(
+            selectedCoords) < distances[1])
             && image.getSequence() != ret[0].getSequence()) {
           ret[1] = image;
           distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);
@@ -481,9 +504,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     }
     // Predownloads the thumbnails
     if (ret[0] != null)
-      new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL).submit(data, false);
+      new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL)
+          .submit(data, false);
     if (ret[1] != null)
-      new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL).submit(data, false);
+      new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL)
+          .submit(data, false);
     return ret;
   }
 
@@ -588,6 +613,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   public void layerRemoved(Layer oldLayer) {
   }
 
+  /**
+   * Updates the help text at the bottom of the window.
+   */
   public void updateHelpText() {
     String ret = "";
     if (data.size() > 0)
@@ -596,6 +624,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       ret += tr("No images found");
     ret += " -- " + tr(mode.toString());
 
-     Main.map.statusLine.setHelpText(ret);
+    Main.map.statusLine.setHelpText(ret);
   }
 }

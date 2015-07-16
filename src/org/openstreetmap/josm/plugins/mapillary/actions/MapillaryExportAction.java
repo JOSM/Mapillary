@@ -27,14 +27,19 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Action that launches a MapillaryExportDialog and lets you export the images.
- * 
+ *
  * @author nokutu
  *
  */
 public class MapillaryExportAction extends JosmAction {
 
-  MapillaryExportDialog dialog;
+  private static final long serialVersionUID = 6009490043174837948L;
 
+  private MapillaryExportDialog dialog;
+
+  /**
+   * Main constructor.
+   */
   public MapillaryExportAction() {
     super(tr("Export pictures"), new ImageProvider("icon24.png"),
         tr("Export pictures"), Shortcut.registerShortcut("Export Mapillary",
@@ -99,6 +104,9 @@ public class MapillaryExportAction extends JosmAction {
 
   /**
    * Exports the given images from the database.
+   *
+   * @param images
+   *          The set of images to be exported.
    */
   public void export(List<MapillaryAbstractImage> images) {
     Main.worker.submit(new Thread(new MapillaryExportManager(images,

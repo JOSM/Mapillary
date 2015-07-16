@@ -31,9 +31,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
+/**
+ * Imports a set of images and puts them in a single {@link MapillarySequence}.
+ *
+ * @author nokutu
+ *
+ */
 public class MapillaryImportIntoSequenceAction extends JosmAction {
 
-  public JFileChooser chooser;
+  private static final long serialVersionUID = -9190217809965894878L;
+
+  private JFileChooser chooser;
 
   private LinkedList<MapillaryImportedImage> images;
 
@@ -128,10 +136,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-      if (lat_ref == null || lat == null || lon == null || lon_ref == null
-          || datetimeOriginal == null)
-        throw new IllegalArgumentException(
-            "The picture has not correct EXIF tags");
+      if (lat_ref == null || lat == null || lon == null || lon_ref == null || datetimeOriginal == null)
+        throw new IllegalArgumentException("The picture has not correct EXIF tags");
 
       double latValue = 0;
       double lonValue = 0;
@@ -154,6 +160,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     }
   }
 
+  /**
+   * Joins all the images in a unique {@link MapillarySequence}.
+   */
   public void joinImages() {
     Collections.sort(images, new MapillaryEpochComparator());
     MapillarySequence seq = new MapillarySequence();
@@ -163,6 +172,13 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     }
   }
 
+  /**
+   * Comparator that comperes two {@link MapillaryAbstractImage} objects
+   * depending on the time they were taken.
+   *
+   * @author nokutu
+   *
+   */
   public class MapillaryEpochComparator implements
       Comparator<MapillaryAbstractImage> {
 

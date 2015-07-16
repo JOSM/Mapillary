@@ -35,13 +35,18 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryImportAction extends JosmAction {
 
-  public JFileChooser chooser;
+  private static final long serialVersionUID = 4995924098228081806L;
+
+  private JFileChooser chooser;
 
   /**
    * Amount of pictures without the proper EXIF tags.
    */
   private int noTagsPics = 0;
 
+  /**
+   * Main constructor.
+   */
   public MapillaryImportAction() {
     super(tr("Import pictures"), new ImageProvider("icon24.png"),
         tr("Import local pictures"), Shortcut.registerShortcut(

@@ -19,22 +19,27 @@ import org.openstreetmap.josm.data.coor.LatLon;
  */
 public abstract class MapillaryAbstractImage {
 
+  /**
+   * Lock that locks next() and previous() methods. Used when downloading images
+   * to prevent concurrency problems.
+   */
   public static Lock lock = new ReentrantLock();
 
-  /** The time the image was captured, in Epoch format */
+  /** The time the image was captured, in Epoch format. */
   private long capturedAt;
-  /** Sequence of pictures containing this object */
+  /** Sequence of pictures containing this object. */
   private MapillarySequence sequence;
-  /** Position of the picture */
+  /** Position of the picture. */
   public final LatLon latLon;
-  /** Direction of the picture */
+  /** Direction of the picture. */
   public final double ca;
+  /** If the image has been modified from its initial values. */
   public boolean isModified = false;
-  /** Temporal position of the picture until it is uploaded */
+  /** Temporal position of the picture until it is uploaded. */
   public LatLon tempLatLon;
   /**
    * When the object is being dragged in the map, the temporal position is
-   * stored here
+   * stored here.
    */
   public LatLon movingLatLon;
   /** Temporal direction of the picture until it is uploaded */
@@ -46,6 +51,16 @@ public abstract class MapillaryAbstractImage {
   protected double movingCa;
   private boolean visible;
 
+  /**
+   * Main constructor of the class.
+   *
+   * @param lat
+   *          The latitude where the picture was taken.
+   * @param lon
+   *          The longitude where the picture was taken.
+   * @param ca
+   *          The direction of the picture (0 means north).
+   */
   public MapillaryAbstractImage(double lat, double lon, double ca) {
     this.latLon = new LatLon(lat, lon);
     this.tempLatLon = this.latLon;
@@ -84,6 +99,12 @@ public abstract class MapillaryAbstractImage {
     return visible;
   }
 
+  /**
+   * Set's whether the image should be visible on the map or not.
+   *
+   * @param visible
+   *          true if the image is set to be visible; false otherwise.
+   */
   public void setVisible(boolean visible) {
     this.visible = visible;
   }
@@ -106,7 +127,8 @@ public abstract class MapillaryAbstractImage {
    *          The movement of the image in latitude units.
    */
   public void move(double x, double y) {
-    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);
+    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
+        this.tempLatLon.getX() + x);
     this.isModified = true;
   }
 
@@ -168,10 +190,20 @@ public abstract class MapillaryAbstractImage {
     return getDate(format);
   }
 
+  /**
+   * Sets the Epoch time when the picture was captured.
+   *
+   * @param capturedAt
+   */
   public void setCapturedAt(long capturedAt) {
     this.capturedAt = capturedAt;
   }
 
+  /**
+   * Returns the Epoch time when the image was captured.
+   *
+   * @return The long containing the Epoch time when the image was captured.
+   */
   public long getCapturedAt() {
     return capturedAt;
   }
@@ -180,7 +212,8 @@ public abstract class MapillaryAbstractImage {
    * Returns the date the picture was taken in the given format.
    *
    * @param format
-   * @return
+   * @return A String containing the date the picture was taken using the given
+   *         format.
    */
   public String getDate(String format) {
     Date date = new Date(getCapturedAt());

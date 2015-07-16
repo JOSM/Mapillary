@@ -23,6 +23,11 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryDownloadAction extends JosmAction {
 
+  private static final long serialVersionUID = 325060354730454948L;
+
+  /**
+   * Main constructor.
+   */
   public MapillaryDownloadAction() {
     super(tr("Mapillary"), new ImageProvider("icon24.png"),
         tr("Create Mapillary layer"), Shortcut.registerShortcut("Mapillary",

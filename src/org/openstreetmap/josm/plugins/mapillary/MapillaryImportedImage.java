@@ -8,18 +8,50 @@ import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
+/**
+ * A MapillaryImoprtedImage object represents a picture imported locally.
+ *
+ * @author nokutu
+ *
+ */
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
-  /**
-   * The picture file.
-   */
+  /** The picture file. */
   protected File file;
+  /** The date when the picture was taken. */
   public final long datetimeOriginal;
 
+  /**
+   * Creates a new MapillaryImportedImage object using as date the current date,
+   * because it is missing in the file.
+   *
+   * @param lat
+   *          Latitude where the picture was taken.
+   * @param lon
+   *          Longitude where the picture was taken.
+   * @param ca
+   *          Direction of the picture (0 means north).
+   * @param file
+   *          The file containing the picture.
+   */
   public MapillaryImportedImage(double lat, double lon, double ca, File file) {
     this(lat, lon, ca, file, currentDate());
   }
 
+  /**
+   * Main constructor of the class.
+   *
+   * @param lat
+   *          Latitude where the picture was taken.
+   * @param lon
+   *          Longitude where the picture was taken.
+   * @param ca
+   *          Direction of the picture (0 means north),
+   * @param file
+   *          The file containing the picture.
+   * @param datetimeOriginal
+   *          The date the picture was taken.
+   */
   public MapillaryImportedImage(double lat, double lon, double ca, File file,
       String datetimeOriginal) {
     super(lat, lon, ca);
@@ -41,7 +73,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   /**
    * Returns the File object where the picture is located.
-   * 
+   *
    * @return The File object where the picture is located.
    */
   public File getFile() {

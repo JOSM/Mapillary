@@ -12,8 +12,19 @@ import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
+/**
+ * Changes the mode of the Layer, from Select mode to Join mode and viceversa.
+ *
+ * @author nokutu
+ *
+ */
 public class MapillaryJoinAction extends JosmAction {
 
+  private static final long serialVersionUID = -7082300908202843706L;
+
+  /**
+   * Main constructor.
+   */
   public MapillaryJoinAction() {
     super(tr("Join mode"), new ImageProvider("icon24.png"),
         tr("Join/unjoin pictures"), Shortcut.registerShortcut("Mapillary join",

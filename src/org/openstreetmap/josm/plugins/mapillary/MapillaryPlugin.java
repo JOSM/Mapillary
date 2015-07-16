@@ -29,14 +29,24 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin {
 
+  /** 24x24 icon. */
   public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
+  /** 16x16 icon. */
   public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
-  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png").get();
-  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
-  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
+  /** Icon representing an image in the map. */
+  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
+      .get();
+  /** Icon representing a selected image in the map. */
+  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
+      "mapiconselected.png").get();
+  /** Icon representing an imported iage in the map. */
+  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
+      "mapiconimported.png").get();
+  /** Icon used to identify which images have signs on them */
   public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
   public static final int ICON_SIZE = 24;
 
+  /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
   private final MapillaryDownloadAction downloadAction;
@@ -47,14 +57,26 @@ public class MapillaryPlugin extends Plugin {
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
   private final MapillaryJoinAction joinAction;
 
+  /** Menu button for the {@link MapillaryDownloadAction} action. */
   public static JMenuItem DOWNLOAD_MENU;
+  /** Menu button for the {@link MapillaryExportAction} action. */
   public static JMenuItem EXPORT_MENU;
+  /** Menu button for the {@link MapillaryImportAction} action. */
   public static JMenuItem IMPORT_MENU;
+  /** Menu button for the {@link MapillaryZoomAction} action. */
   public static JMenuItem ZOOM_MENU;
+  /** Menu button for the {@link MapillaryDownloadViewAction} action. */
   public static JMenuItem DOWNLOAD_VIEW_MENU;
+  /** Menu button for the {@link MapillaryImportIntoSequenceAction} action. */
   public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
+  /** Menu button for the {@link MapillaryJoinAction} action. */
   public static JMenuItem JOIN_MENU;
 
+  /**
+   * Main constructor.
+   *
+   * @param info
+   */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
     downloadAction = new MapillaryDownloadAction();
@@ -66,12 +88,17 @@ public class MapillaryPlugin extends Plugin {
     joinAction = new MapillaryJoinAction();
 
     if (Main.main != null) { // important for headless mode
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
-      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
-      IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
-      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
+      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction,
+          false);
+      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false,
+          14);
+      IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu,
+          importIntoSequenceAction, false, 14);
+      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
+          14);
       ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
+      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
+          downloadViewAction, false, 14);
       JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
     }
 
@@ -84,7 +111,8 @@ public class MapillaryPlugin extends Plugin {
     JOIN_MENU.setEnabled(false);
 
     try {
-      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
+      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
+          this.getPluginDir() + "/cache/");
     } catch (IOException e) {
       Main.error(e);
     }
@@ -116,6 +144,14 @@ public class MapillaryPlugin extends Plugin {
     }
   }
 
+  /**
+   * Enables/disables a JMenuItem.
+   *
+   * @param menu
+   *          The JMenuItem object that is going to be enabled or disabled.
+   * @param value
+   *          true to enable de JMenuItem; false to disable it.
+   */
   public static void setMenuEnabled(JMenuItem menu, boolean value) {
     menu.setEnabled(value);
     menu.getAction().setEnabled(value);

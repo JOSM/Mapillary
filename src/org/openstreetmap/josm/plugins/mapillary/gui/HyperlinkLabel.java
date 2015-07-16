@@ -18,6 +18,12 @@ import org.openstreetmap.josm.Main;
 
 import java.awt.Desktop;
 
+/**
+ * JLabel that acts as a hyperlink.
+ *
+ * @author nokutu
+ *
+ */
 public class HyperlinkLabel extends JLabel implements ActionListener {
 
   private String text;

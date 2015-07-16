@@ -22,9 +22,15 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryDownloadViewAction extends JosmAction {
 
+  private static final long serialVersionUID = -6837073336175123503L;
+
+  /** Max area to be downloaded */
   public static final double MAX_AREA = Main.pref.getDouble(
       "mapillary.max-download-area", 0.020);
 
+  /**
+   * Main constructor.
+   */
   public MapillaryDownloadViewAction() {
     super(tr("Download Mapillary images in current view"), new ImageProvider(
         "icon24.png"), tr("Download Mapillary images in current view"),

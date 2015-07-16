@@ -9,16 +9,33 @@ import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
+/**
+ * Sotres the
+ *
+ * @author nokutu
+ *
+ */
 public class MapillaryCache extends
     JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
 
   private volatile URL url;
   private volatile String key;
 
+  /**
+   * Types of images.
+   *
+   * @author nokutu
+   */
   public static enum Type {
     FULL_IMAGE, THUMBNAIL
   }
 
+  /**
+   * Main constructor.
+   *
+   * @param key
+   * @param type
+   */
   public MapillaryCache(String key, Type type) {
     super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap<String, String>());
     this.key = key;
