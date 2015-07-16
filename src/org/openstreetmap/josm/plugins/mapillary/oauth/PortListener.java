@@ -7,9 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-
 import org.openstreetmap.josm.Main;
 
 /**
@@ -17,17 +14,6 @@ import org.openstreetmap.josm.Main;
  *
  */
 public class PortListener extends Thread {
-
-  JLabel text;
-
-  /**
-   * Main constructor.
-   *
-   * @param text
-   */
-  public PortListener(JLabel text) {
-    this.text = text;
-  }
 
   @Override
   public void run() {
@@ -37,18 +23,25 @@ public class PortListener extends Thread {
       PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
       Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
       String s;
-      String code = null;
+      String accessToken = null;
       while (in.hasNextLine()) {
         s = in.nextLine();
-        if (s.contains("?code=")) {
-          code = s.substring(s.indexOf("=") + 1, s.indexOf("HTTP") - 1);
+        if (s.contains("access_token=")) {
+          String[] ss = s.split("&");
+          for (int i = 0; i < ss.length; i++) {
+            if (ss[i].contains("access_token=")) {
+              accessToken = ss[i].substring(ss[i].indexOf("access_token=") + 13, ss[i].length());
+              break;
+            }
+          }
           break;
         }
       }
 
       writeContent(out);
 
-      System.out.println("The code is: " + code);
+      Main.info("Successful login with Mapillary, the access token is: " + accessToken);
+      Main.pref.put("mapillary.access-token", accessToken);
 
       out.close();
       in.close();
@@ -56,20 +49,10 @@ public class PortListener extends Thread {
     } catch (IOException e) {
       Main.error(e);
     }
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          text.setText("Authorization successful");
-        }
-      });
-    } else
-      text.setText("Authorization successful");
   }
 
   private void writeContent(PrintWriter out) {
-    String response = "";
-    response += "<html><body>Authorization successful</body></html>";
+    String response = "<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>";
     out.println("HTTP/1.1 200 OK");
     out.println("Content-Length: " + response.length());
     out.println("Content-Type: text/html" + "\r\n\r\n");

@@ -108,6 +108,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
   /**
    * Fires an ActionEvent to all interested listeners.
+   * @param evt 
    */
   protected void fireActionPerformed(ActionEvent evt) {
     Object[] listeners = listenerList.getListenerList();

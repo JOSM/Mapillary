@@ -2,14 +2,16 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.Main;
@@ -17,6 +19,7 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.oauth.PortListener;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -96,50 +99,23 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      JButton login = new JButton();
-      JButton cancel = new JButton();
-      JOptionPane pane = new JOptionPane(new MapillaryOAuthUI(),
-          JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null,
-          new JButton[] { login, cancel });
-      login.setAction(new LoginAction(pane));
-      cancel.setAction(new CancelAction(pane));
-      JDialog dlg = pane.createDialog(Main.parent, tr("Login"));
-      dlg.setVisible(true);
-      dlg.dispose();
-    }
-  }
+      PortListener portListener = new PortListener();
+      portListener.start();
 
-  private class LoginAction extends AbstractAction {
-
-    private static final long serialVersionUID = -7157028112711343289L;
-
-    private JOptionPane pane;
-
-    public LoginAction(JOptionPane pane) {
-      putValue(NAME, tr("Login"));
-      this.pane = pane;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      pane.setValue(JOptionPane.OK_OPTION);
-    }
-  }
-
-  private class CancelAction extends AbstractAction {
-
-    private static final long serialVersionUID = 2329066472975953270L;
-
-    private JOptionPane pane;
-
-    public CancelAction(JOptionPane pane) {
-      putValue(NAME, tr("Cancel"));
-      this.pane = pane;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      pane.setValue(JOptionPane.CANCEL_OPTION);
+      String url = "http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&response_type=token&scope=user:email";
+      Desktop desktop = Desktop.getDesktop();
+      try {
+        desktop.browse(new URI(url));
+      } catch (IOException | URISyntaxException ex) {
+        ex.printStackTrace();
+      } catch (UnsupportedOperationException ex) {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+          runtime.exec("xdg-open " + url);
+        } catch (IOException exc) {
+          exc.printStackTrace();
+        }
+      }
     }
   }
 }

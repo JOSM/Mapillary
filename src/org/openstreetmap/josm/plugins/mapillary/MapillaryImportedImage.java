@@ -94,9 +94,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   private static String currentDate() {
     Calendar cal = Calendar.getInstance();
-
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
     return formatter.format(cal.getTime());
-
   }
 }
