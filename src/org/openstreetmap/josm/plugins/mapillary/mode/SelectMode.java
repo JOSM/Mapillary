@@ -38,7 +38,6 @@ public class SelectMode extends AbstractMode {
   private boolean imageHighlighted = false;
 
   public SelectMode() {
-    data = MapillaryData.getInstance();
     record = MapillaryRecord.getInstance();
   }
 
@@ -48,10 +47,10 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1)
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
-        && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
+    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closestTemp != null
+        && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
-      MapillaryData.getInstance().setSelectedImage(closest);
+      data.setSelectedImage(closest);
       return;
     } else if (Main.map.mapView.getActiveLayer() != MapillaryLayer
         .getInstance())
@@ -98,29 +97,24 @@ public class SelectMode extends AbstractMode {
       return;
 
     if (!Main.pref.getBoolean("mapillary.developer"))
-      for (MapillaryAbstractImage img : MapillaryData.getInstance()
-          .getMultiSelectedImages()) {
+      for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
         if (img instanceof MapillaryImage)
           return;
       }
-    if (MapillaryData.getInstance().getSelectedImage() != null) {
+    if (data.getSelectedImage() != null) {
       if (lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
         LatLon to = Main.map.mapView.getLatLon(e.getX(), e.getY());
         LatLon from = Main.map.mapView.getLatLon(start.getX(), start.getY());
-        for (MapillaryAbstractImage img : MapillaryData.getInstance()
-            .getMultiSelectedImages()) {
+        for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
 
           img.move(to.getX() - from.getX(), to.getY() - from.getY());
         }
         Main.map.repaint();
       } else if (lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
-        this.closest.turn(Math.toDegrees(Math.atan2((e.getX() - start.x),
-            -(e.getY() - start.y)))
-            - closest.getTempCa());
-        for (MapillaryAbstractImage img : MapillaryData.getInstance()
-            .getMultiSelectedImages()) {
-          img.turn(Math.toDegrees(Math.atan2((e.getX() - start.x),
-              -(e.getY() - start.y))) - closest.getTempCa());
+        this.closest
+            .turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
+        for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
+          img.turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
         }
         Main.map.repaint();
       }
@@ -183,19 +177,16 @@ public class SelectMode extends AbstractMode {
       nothingHighlighted = true;
     }
 
-    if (MapillaryData.getInstance().getHighlighted() != closestTemp
-        && closestTemp != null) {
-      MapillaryData.getInstance().setHighlightedImage(closestTemp);
+    if (data.getHighlighted() != closestTemp && closestTemp != null) {
+      data.setHighlightedImage(closestTemp);
       MapillaryMainDialog.getInstance().setImage(closestTemp);
-      MapillaryMainDialog.getInstance().updateImage();
-    } else if (MapillaryData.getInstance().getHighlighted() != closestTemp
-        && closestTemp == null) {
-      MapillaryData.getInstance().setHighlightedImage(null);
-      MapillaryMainDialog.getInstance().setImage(
-          MapillaryData.getInstance().getSelectedImage());
+      MapillaryMainDialog.getInstance().updateImage(false);
+    } else if (data.getHighlighted() != closestTemp && closestTemp == null) {
+      data.setHighlightedImage(null);
+      MapillaryMainDialog.getInstance().setImage(data.getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();
     }
-    MapillaryData.getInstance().dataUpdated();
+    data.dataUpdated();
   }
 
   @Override

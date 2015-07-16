@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 
 /**
  * Toggle dialog that shows an image and some buttons.
- * 
+ *
  * @author nokutu
  *
  */
@@ -115,10 +115,22 @@ public class MapillaryMainDialog extends ToggleDialog implements
   }
 
   /**
-   * Downloads the image of the selected MapillaryImage and sets in the
-   * MapillaryImageDisplay object.
+   * Downloads the full quality picture of the selected MapillaryImage and sets
+   * in the MapillaryImageDisplay object.
    */
   public synchronized void updateImage() {
+    updateImage(true);
+  }
+
+  /**
+   * Downloads the picture of the selected MapillaryImage and sets in the
+   * MapillaryImageDisplay object.
+   *
+   * @param fullQuality
+   *          If the full quality picture must be downloaded or just the
+   *          thumbnail.
+   */
+  public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
@@ -172,11 +184,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
         thumbnailCache.submit(this, false);
 
         // Downloads the full resolution image.
-        if (imageCache != null)
-          imageCache.cancelOutstandingTasks();
-        imageCache = new MapillaryCache(mapillaryImage.getKey(),
-            MapillaryCache.Type.FULL_IMAGE);
-        imageCache.submit(this, false);
+        if (fullQuality) {
+          if (imageCache != null)
+            imageCache.cancelOutstandingTasks();
+          imageCache = new MapillaryCache(mapillaryImage.getKey(),
+              MapillaryCache.Type.FULL_IMAGE);
+          imageCache.submit(this, false);
+        }
       } else if (image instanceof MapillaryImportedImage) {
         mapillaryImageDisplay.hyperlink.setVisible(false);
         mapillaryImageDisplay.hyperlink.setURL(null);
@@ -189,6 +203,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
       }
       updateTitle();
     }
+
   }
 
   private void disableAllButtons() {
@@ -201,7 +216,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Sets a new MapillaryImage to be shown.
-   * 
+   *
    * @param image
    */
   public synchronized void setImage(MapillaryAbstractImage image) {
@@ -243,7 +258,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Returns the MapillaryImage objects which is being shown.
-   * 
+   *
    * @return
    */
   public synchronized MapillaryAbstractImage getImage() {
@@ -252,7 +267,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Action class form the next image button.
-   * 
+   *
    * @author Jorge
    *
    */
@@ -270,7 +285,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Action class for the previous image button.
-   * 
+   *
    * @author Jorge
    *
    */
@@ -289,7 +304,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Action class to jump to the image following the red line.
-   * 
+   *
    * @author nokutu
    *
    */
@@ -310,7 +325,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Action class to jump to the image following the blue line.
-   * 
+   *
    * @author nokutu
    *
    */
@@ -363,7 +378,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Creates the layout of the dialog.
-   * 
+   *
    * @param data
    *          The content of the dialog
    * @param buttons
