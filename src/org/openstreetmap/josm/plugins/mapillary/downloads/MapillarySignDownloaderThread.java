@@ -22,6 +22,12 @@ public class MapillarySignDownloaderThread extends Thread {
   private final ExecutorService ex;
   private final MapillaryLayer layer;
 
+  /**
+   * Main constructor.
+   * 
+   * @param ex {@link ExecutorService} object that is executing this thread.
+   * @param url
+   */
   public MapillarySignDownloaderThread(ExecutorService ex, String queryString, MapillaryLayer layer) {
     this.ex = ex;
     this.queryString = queryString;

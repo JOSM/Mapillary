@@ -43,6 +43,15 @@ public class MapillaryExportWriterThread extends Thread {
   private final int amount;
   private final ProgressMonitor monitor;
 
+  /**
+   * Main constructor.
+   * 
+   * @param path Path to write the pictures.
+   * @param queue Queue of {@link MapillaryAbstractImage} objects.
+   * @param queueImages Queue of {@link BufferedImage} objects.
+   * @param amount Amount of images that are going to be exported.
+   * @param monitor Progress monitor.
+   */
   public MapillaryExportWriterThread(String path,
       ArrayBlockingQueue<BufferedImage> queue,
       ArrayBlockingQueue<MapillaryAbstractImage> queueImages, int amount,
@@ -65,6 +74,8 @@ public class MapillaryExportWriterThread extends Thread {
       try {
         img = queue.take();
         mimg = queueImages.take();
+        if (img == null || mimg == null)
+          throw new IllegalStateException("Null image");
         if (path == null && mimg instanceof MapillaryImportedImage) {
           String path = ((MapillaryImportedImage) mimg).getFile().getPath();
           finalPath = path.substring(0, path.lastIndexOf('.'));

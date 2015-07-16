@@ -58,5 +58,6 @@ public class MapillaryZoomAction extends JosmAction implements
 
   @Override
   public void imagesAdded() {
+    // Nothing
   }
 }

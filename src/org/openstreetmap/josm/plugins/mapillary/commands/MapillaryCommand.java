@@ -13,8 +13,14 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 public abstract class MapillaryCommand {
   protected List<MapillaryAbstractImage> images;
 
+  /**
+   * Undoes the action.
+   */
   public abstract void undo();
 
+  /**
+   * Redoes the action.
+   */
   public abstract void redo();
 
   /**
@@ -26,7 +32,7 @@ public abstract class MapillaryCommand {
   public abstract void sum(MapillaryCommand command);
 
   /**
-   * Checks if the image has been modified, compairing with its original values.
+   * Checks if the image has been modified, comparing with its original values.
    */
   public void checkModified() {
     for (MapillaryAbstractImage image : images)

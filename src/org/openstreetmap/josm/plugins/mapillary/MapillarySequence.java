@@ -110,8 +110,7 @@ public class MapillarySequence {
     int i = images.indexOf(image);
     if (i == images.size() - 1)
       return null;
-    else
-      return images.get(i + 1);
+    return images.get(i + 1);
   }
 
   /**
@@ -128,8 +127,7 @@ public class MapillarySequence {
     int i = images.indexOf(image);
     if (i == 0)
       return null;
-    else
-      return images.get(i - 1);
+    return images.get(i - 1);
   }
 
   /**

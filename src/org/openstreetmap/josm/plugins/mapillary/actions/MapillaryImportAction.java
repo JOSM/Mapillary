@@ -152,8 +152,7 @@ public class MapillaryImportAction extends JosmAction {
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)
         MapillaryData.getInstance().add(
-            new MapillaryImportedImage(latValue, lonValue, caValue, file,
-                datetimeOriginal.getStringValue()));
+            new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue()));
       else
         MapillaryData.getInstance().add(
             new MapillaryImportedImage(latValue, lonValue, caValue, file));

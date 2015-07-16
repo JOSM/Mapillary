@@ -26,6 +26,7 @@ import java.awt.Desktop;
  */
 public class HyperlinkLabel extends JLabel implements ActionListener {
 
+  private static final long serialVersionUID = -8965989079294159405L;
   private String text;
   private URL url;
 
@@ -45,8 +46,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    */
   @Override
   public void setText(String text) {
-    super
-        .setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+    super.setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
     this.text = text;
   }
 
@@ -69,6 +69,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
   /**
    * Returns the text set by the user.
+   * 
+   * @return The plain-text written in the label.
    */
   public String getNormalText() {
     return text;
@@ -81,13 +83,14 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   protected void processMouseEvent(MouseEvent evt) {
     super.processMouseEvent(evt);
     if (evt.getID() == MouseEvent.MOUSE_CLICKED)
-      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-          getNormalText()));
+      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getNormalText()));
   }
 
   /**
    * Adds an ActionListener to the list of listeners receiving notifications
    * when the label is clicked.
+   * 
+   * @param listener
    */
   public void addActionListener(ActionListener listener) {
     listenerList.add(ActionListener.class, listener);
@@ -96,6 +99,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   /**
    * Removes the given ActionListener from the list of listeners receiving
    * notifications when the label is clicked.
+   * 
+   * @param listener
    */
   public void removeActionListener(ActionListener listener) {
     listenerList.remove(ActionListener.class, listener);

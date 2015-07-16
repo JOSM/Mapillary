@@ -62,12 +62,12 @@ import java.util.ArrayList;
  * @author nokutu
  *
  */
-public class MapillaryLayer extends AbstractModifiableLayer implements
-    DataSetListener, EditLayerChangeListener, LayerChangeListener {
+public class MapillaryLayer extends AbstractModifiableLayer implements DataSetListener, EditLayerChangeListener,
+    LayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
-      "mapillary.sequence-max-jump-distance", 100);
+  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref
+      .getInteger("mapillary.sequence-max-jump-distance", 100);
 
   private boolean TEMP_MANUAL = false;
 
@@ -129,7 +129,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Changes the mode the the given one.
    *
    * @param mode
-   *          The mode that is going to be activated.
+   *        The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
     Main.map.mapView.removeMouseListener(this.mode);
@@ -566,34 +566,42 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void primitivesAdded(PrimitivesAddedEvent event) {
+    // Nothing
   }
 
   @Override
   public void primitivesRemoved(PrimitivesRemovedEvent event) {
+    // Nothing
   }
 
   @Override
   public void tagsChanged(TagsChangedEvent event) {
+    // Nothing
   }
 
   @Override
   public void nodeMoved(NodeMovedEvent event) {
+    // Nothing
   }
 
   @Override
   public void wayNodesChanged(WayNodesChangedEvent event) {
+    // Nothing
   }
 
   @Override
   public void relationMembersChanged(RelationMembersChangedEvent event) {
+    // Nothing
   }
 
   @Override
   public void otherDatasetChange(AbstractDatasetChangedEvent event) {
+    // Nothing
   }
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
+    // Nothing
   }
 
   @Override
@@ -607,10 +615,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void layerAdded(Layer newLayer) {
+    // Nothing
   }
 
   @Override
   public void layerRemoved(Layer oldLayer) {
+    // Nothing
   }
 
   /**

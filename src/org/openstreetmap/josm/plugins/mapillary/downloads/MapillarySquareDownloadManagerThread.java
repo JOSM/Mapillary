@@ -32,6 +32,13 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final MapillaryLayer layer;
   public boolean imagesAdded = false;
 
+  /**
+   * Main constructor.
+   * 
+   * @param urlImages URL used to download the images.
+   * @param urlSequences URL used to download the sequences.
+   * @param urlSigns URL used to download the signs.
+   */
   public MapillarySquareDownloadManagerThread(ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {
     this.imageQueryString = buildQueryString(queryStringParts);
     this.sequenceQueryString = buildQueryString(queryStringParts);

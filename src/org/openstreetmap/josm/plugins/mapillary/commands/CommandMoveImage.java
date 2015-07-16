@@ -18,8 +18,14 @@ public class CommandMoveImage extends MapillaryCommand {
   private double x;
   private double y;
 
-  public CommandMoveImage(List<MapillaryAbstractImage> images, double x,
-      double y) {
+  /**
+   * Main constructor.
+   * 
+   * @param images Set of images that are going to be moved.
+   * @param x How much the x coordinate increases.
+   * @param y How much the y coordinate increases.
+   */
+  public CommandMoveImage(List<MapillaryAbstractImage> images, double x, double y) {
     this.images = new ArrayList<>(images);
     this.x = x;
     this.y = y;
@@ -47,8 +53,7 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public String toString() {
-    return trn("Moved {0} image", "Moved {0} images", images.size(),
-        images.size());
+    return trn("Moved {0} image", "Moved {0} images", images.size(), images.size());
   }
 
   @Override

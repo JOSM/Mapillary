@@ -18,12 +18,13 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  */
 public class MapillaryDownloader {
 
+  /** Base URL of the Mapillary API. */
   public final static String BASE_URL = "https://a.mapillary.com/v2/";
+  /** Client ID for the app */
   public final static String CLIENT_ID = "NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm";
+  /** Executor that will run the petitions */
   public final static Executor EXECUTOR = Executors.newSingleThreadExecutor();
 
-  public MapillaryDownloader() {
-  }
 
   /**
    * Gets all the images in a square. It downloads all the images of all the

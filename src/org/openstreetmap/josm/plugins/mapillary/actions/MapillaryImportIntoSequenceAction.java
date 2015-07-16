@@ -188,8 +188,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         return -1;
       if (arg0.getCapturedAt() > arg1.getCapturedAt())
         return 1;
-      else
-        return 0;
+      return 0;
     }
   }
 }

@@ -29,22 +29,19 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
  */
 public class MapillaryExportDialog extends JPanel implements ActionListener {
 
+  private static final long serialVersionUID = 8675637080225099248L;
   protected JOptionPane optionPane;
   /** Button to export all downloaded images. */
   public JRadioButton all;
-  /**
-   * Button to export all images in the sequence of the selected MapillaryImage.
-   */
+  /** Button to export all images in the sequence of the selected MapillaryImage. */
   public JRadioButton sequence;
-  /**
-   * Button to export all images belonging to the selected MapillaryImage
-   * objects.
-   */
+  /** Button to export all images belonging to the selected {@link MapillaryImage} objects. */
   public JRadioButton selected;
+  /** Button to rewrite all imported images */
   public JRadioButton rewrite;
   public ButtonGroup group;
-  protected JButton choose;
-  protected JLabel path;
+  private JButton choose;
+  private JLabel path;
   public JFileChooser chooser;
   protected String exportDirectory;
   private JButton ok;
@@ -124,6 +121,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
   public class RewriteButtonAction extends AbstractAction {
 
+    private static final long serialVersionUID = -9103251296651015563L;
     private String lastPath;
     private MapillaryExportDialog dlg;
 

@@ -17,6 +17,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 public class CommandTurnImage extends MapillaryCommand {
   private double ca;
 
+  /**
+   * Main constructor.
+   * 
+   * @param images Set of images that is turned.
+   * @param ca How much the images turn.
+   */
   public CommandTurnImage(List<MapillaryAbstractImage> images, double ca) {
     this.images = new ArrayList<>(images);
     this.ca = ca;
@@ -44,8 +50,7 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public String toString() {
-    return trn("Turned {0} image", "Turned {0} images", this.images.size(),
-        this.images.size());
+    return trn("Turned {0} image", "Turned {0} images", this.images.size(), this.images.size());
   }
 
   @Override

@@ -10,7 +10,7 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 /**
- * Sotres the
+ * Stores the downloaded pictures locally.
  *
  * @author nokutu
  *
@@ -27,7 +27,11 @@ public class MapillaryCache extends
    * @author nokutu
    */
   public static enum Type {
-    FULL_IMAGE, THUMBNAIL
+    /** Full quality image */
+    FULL_IMAGE,
+    
+    /** Low quality image */
+    THUMBNAIL
   }
 
   /**
