@@ -31,7 +31,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * ToggleDialog that lets you filter the images that are being shown.
- * 
+ *
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  *
@@ -39,7 +39,9 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryFilterDialog extends ToggleDialog implements
     MapillaryDataListener {
 
-  public static MapillaryFilterDialog INSTANCE;
+  private static final long serialVersionUID = -4192029663670922103L;
+
+  private static MapillaryFilterDialog INSTANCE;
 
   private final static String[] TIME_LIST = { tr("All time"), tr("This year"),
       tr("This month"), tr("This week") };
@@ -49,18 +51,18 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   private final JPanel panel = new JPanel(new GridLayout(ROWS, COLUMNS));
 
-  public final JCheckBox imported = new JCheckBox("Imported images");
-  public final JCheckBox downloaded = new JCheckBox(
+  private final JCheckBox imported = new JCheckBox("Imported images");
+  private final JCheckBox downloaded = new JCheckBox(
       new downloadCheckBoxAction());
-  public final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
-  public final JComboBox<String> time;
-  public final JTextField user;
+  private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
+  private final JComboBox<String> time;
+  private final JTextField user;
 
-  public final SideButton updateButton = new SideButton(new UpdateAction());
-  public final SideButton resetButton = new SideButton(new ResetAction());
-  public final JButton signChooser = new JButton(new SignChooserAction());
+  private final SideButton updateButton = new SideButton(new UpdateAction());
+  private final SideButton resetButton = new SideButton(new ResetAction());
+  private final JButton signChooser = new JButton(new SignChooserAction());
 
-  public final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
+  private final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
       .getInstance();
 
   /** The list of sign names */
@@ -73,14 +75,14 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       "danger_pedestrian_crossing", "prohibitory_no_u_turn",
       "prohibitory_noturn" };
   /** The the {@link JCheckBox} where the respective tag should be searched */
-  private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxspeed,
+  private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxSpeed,
       signFilter.stop, signFilter.giveWay, signFilter.roundabout,
       signFilter.access, signFilter.access, signFilter.intersection,
       signFilter.direction, signFilter.direction, signFilter.intersection,
       signFilter.uneven, signFilter.noParking, signFilter.noOvertaking,
       signFilter.crossing, signFilter.noTurn, signFilter.noTurn };
 
-  public MapillaryFilterDialog() {
+  private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillaryfilter.png",
         tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
             tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
@@ -118,6 +120,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         Arrays.asList(new SideButton[] { updateButton, resetButton }));
   }
 
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return THe unique instance of the class.
+   */
   public static MapillaryFilterDialog getInstance() {
     if (INSTANCE == null)
       INSTANCE = new MapillaryFilterDialog();
@@ -208,7 +215,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   /**
    * Checks if the image fulfills the sign conditions.
-   * 
+   *
    * @param img
    *          The {@link MapillaryAbstractImage} object that is going to be
    *          checked.
@@ -242,6 +249,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   private class downloadCheckBoxAction extends AbstractAction {
 
+    private static final long serialVersionUID = 4672634002899519496L;
+
     public downloadCheckBoxAction() {
       putValue(NAME, tr("Downloaded images"));
     }
@@ -253,6 +262,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   }
 
   private class UpdateAction extends AbstractAction {
+
+    private static final long serialVersionUID = -7417238601979689863L;
+
     public UpdateAction() {
       putValue(NAME, tr("Update"));
     }
@@ -264,6 +276,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   }
 
   private class ResetAction extends AbstractAction {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1178261778165525040L;
+
     public ResetAction() {
       putValue(NAME, tr("Reset"));
     }
@@ -275,6 +292,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   }
 
   private class OnlySignsAction extends AbstractAction {
+
+    private static final long serialVersionUID = -2937440338019185723L;
+
     public OnlySignsAction() {
       putValue(NAME, tr("Only images with signs"));
     }
@@ -287,11 +307,14 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   /**
    * Opens a new window where you can specifically filter signs.
-   * 
+   *
    * @author nokutu
    *
    */
   private class SignChooserAction extends AbstractAction {
+
+    private static final long serialVersionUID = 8706299665735930148L;
+
     public SignChooserAction() {
       putValue(NAME, tr("Choose signs"));
     }
@@ -309,6 +332,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     }
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
   public static void destroyInstance() {
     MapillaryFilterDialog.INSTANCE = null;
   }

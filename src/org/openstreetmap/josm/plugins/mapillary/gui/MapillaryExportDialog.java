@@ -23,7 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 
 /**
  * GUI for exporting images.
- * 
+ *
  * @author nokutu
  *
  */
@@ -37,15 +37,20 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   public JRadioButton sequence;
   /** Button to export all images belonging to the selected {@link MapillaryImage} objects. */
   public JRadioButton selected;
-  /** Button to rewrite all imported images */
+  /** Button to rewrite all imported images. */
   public JRadioButton rewrite;
+  /** Group of button containing all the options. */
   public ButtonGroup group;
   private JButton choose;
   private JLabel path;
+  /** File chooser. */
   public JFileChooser chooser;
   protected String exportDirectory;
   private JButton ok;
 
+  /**
+   * Main constructor.
+   */
   public MapillaryExportDialog(JButton ok) {
     this.ok = ok;
     ok.setEnabled(false);
@@ -119,12 +124,25 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     }
   }
 
+  /**
+   * Enables/disables some parts of the panel depending if the rewrite button is
+   * active.
+   *
+   * @author nokutu
+   *
+   */
   public class RewriteButtonAction extends AbstractAction {
 
     private static final long serialVersionUID = -9103251296651015563L;
     private String lastPath;
     private MapillaryExportDialog dlg;
 
+    /**
+     * Main constructor.
+     *
+     * @param dlg
+     *          Parent dialog.
+     */
     public RewriteButtonAction(MapillaryExportDialog dlg) {
       this.dlg = dlg;
     }

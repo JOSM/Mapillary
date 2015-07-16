@@ -18,6 +18,12 @@ import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
+/**
+ * Creates the preferences panel for the plugin.
+ *
+ * @author nokutu
+ *
+ */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
   private JCheckBox reverseButtons = new JCheckBox(
@@ -78,7 +84,15 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     return false;
   }
 
+  /**
+   * Opens the {@link MapillaryoAuthUI} window and lets the user log in.
+   *
+   * @author nokutu
+   *
+   */
   public class OAuthAction extends AbstractAction {
+
+    private static final long serialVersionUID = -3908477563072057344L;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
@@ -96,6 +110,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   }
 
   private class LoginAction extends AbstractAction {
+
+    private static final long serialVersionUID = -7157028112711343289L;
+
     private JOptionPane pane;
 
     public LoginAction(JOptionPane pane) {
@@ -110,6 +127,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   }
 
   private class CancelAction extends AbstractAction {
+
+    private static final long serialVersionUID = 2329066472975953270L;
+
     private JOptionPane pane;
 
     public CancelAction(JOptionPane pane) {

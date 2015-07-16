@@ -26,11 +26,13 @@ import org.openstreetmap.josm.Main;
  * This object is a responsible JComponent which lets you zoom and drag. It is
  * included in a {@link MapillaryMainDialog} object.
  *
- * @author Jorge
+ * @author nokutu
  * @see MapillaryImageDisplay
  * @see MapillaryMainDialog
  */
 public class MapillaryImageDisplay extends JComponent {
+
+  private static final long serialVersionUID = 3369727203329307716L;
 
   private static final int DRAG_BUTTON = Main.pref.getInteger(
       "mapillary.picture-drag-button", 3);
@@ -54,7 +56,7 @@ public class MapillaryImageDisplay extends JComponent {
    */
   private Rectangle selectedRect = null;
 
-  public HyperlinkLabel hyperlink;
+  protected HyperlinkLabel hyperlink;
 
   private class ImgDisplayMouseListener implements MouseListener,
       MouseWheelListener, MouseMotionListener {
@@ -323,6 +325,9 @@ public class MapillaryImageDisplay extends JComponent {
     }
   }
 
+  /**
+   * Main constructor.
+   */
   public MapillaryImageDisplay() {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
@@ -355,9 +360,9 @@ public class MapillaryImageDisplay extends JComponent {
   }
 
   /**
-   * Returns the picture that is being displayerd
+   * Returns the picture that is being displayed
    *
-   * @return
+   * @return The picture that is being displayed.
    */
   public BufferedImage getImage() {
     return this.image;

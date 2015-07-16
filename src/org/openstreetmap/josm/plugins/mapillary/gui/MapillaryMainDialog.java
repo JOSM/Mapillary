@@ -46,26 +46,30 @@ import javax.swing.JPanel;
 public class MapillaryMainDialog extends ToggleDialog implements
     ICachedLoaderListener, MapillaryDataListener {
 
-  public final static String BASE_TITLE = "Mapillary picture";
+  private static final long serialVersionUID = 6856496736429480600L;
 
-  public static MapillaryMainDialog INSTANCE;
+  private final static String BASE_TITLE = "Mapillary picture";
 
-  public volatile MapillaryAbstractImage image;
+  private static MapillaryMainDialog INSTANCE;
 
-  public final SideButton nextButton = new SideButton(new nextPictureAction());
-  public final SideButton previousButton = new SideButton(
+  private volatile MapillaryAbstractImage image;
+
+  private final SideButton nextButton = new SideButton(new nextPictureAction());
+  private final SideButton previousButton = new SideButton(
       new previousPictureAction());
+  /** Button used to jump to the image following the red line */
   public final SideButton redButton = new SideButton(new redAction());
+  /** Button used to jump to the image following the blue line */
   public final SideButton blueButton = new SideButton(new blueAction());
 
   private JPanel buttonsPanel;
 
-  public MapillaryImageDisplay mapillaryImageDisplay;
+  private MapillaryImageDisplay mapillaryImageDisplay;
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
 
-  public MapillaryMainDialog() {
+  private MapillaryMainDialog() {
     super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
         Shortcut.registerShortcut(tr("Mapillary dialog"),
             tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
@@ -104,12 +108,20 @@ public class MapillaryMainDialog extends ToggleDialog implements
     redButton.getActionMap().put("red", new redAction());
   }
 
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
   public static MapillaryMainDialog getInstance() {
     if (INSTANCE == null)
       INSTANCE = new MapillaryMainDialog();
     return INSTANCE;
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
   public static void destroyInstance() {
     INSTANCE = null;
   }
@@ -257,9 +269,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
   }
 
   /**
-   * Returns the MapillaryImage objects which is being shown.
+   * Returns the {@link MapillaryAbstractImage} object which is being shown.
    *
-   * @return
+   * @return The {@link MapillaryAbstractImage} object which is being shown.
    */
   public synchronized MapillaryAbstractImage getImage() {
     return this.image;
@@ -268,10 +280,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Action class form the next image button.
    *
-   * @author Jorge
+   * @author nokutu
    *
    */
   class nextPictureAction extends AbstractAction {
+
+    private static final long serialVersionUID = 3023827221453154340L;
+
     public nextPictureAction() {
       putValue(NAME, tr("Next picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
@@ -286,10 +301,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Action class for the previous image button.
    *
-   * @author Jorge
+   * @author nokutu
    *
    */
   class previousPictureAction extends AbstractAction {
+
+    private static final long serialVersionUID = -6420511632957956012L;
+
     public previousPictureAction() {
       putValue(NAME, tr("Previous picture"));
       putValue(SHORT_DESCRIPTION,
@@ -309,6 +327,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    */
   class redAction extends AbstractAction {
+
+    private static final long serialVersionUID = -6480229431481386376L;
+
     public redAction() {
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
@@ -330,6 +351,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    */
   class blueAction extends AbstractAction {
+
+    private static final long serialVersionUID = 6250690644594703314L;
+
     public blueAction() {
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,

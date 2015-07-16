@@ -3,8 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -12,26 +10,45 @@ import javax.swing.JPanel;
 
 import org.openstreetmap.josm.tools.ImageProvider;
 
-public class MapillaryFilterChooseSigns extends JPanel implements
-    ActionListener {
+/**
+ * UI to choose which signs must be displayed.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryFilterChooseSigns extends JPanel {
 
-  public final JCheckBox maxspeed = new JCheckBox();
+  private static final long serialVersionUID = -3513805549022406720L;
+
+  /** Max speed signs */
+  public final JCheckBox maxSpeed = new JCheckBox();
+  /** Stop signs */
   public final JCheckBox stop = new JCheckBox();
+  /** Give way signs */
   public final JCheckBox giveWay = new JCheckBox();
+  /** Roundabout sings */
   public final JCheckBox roundabout = new JCheckBox();
+  /** Forbidden access or forbidden direction signs */
   public final JCheckBox access = new JCheckBox();
+  /** Intersection danger signs */
   public final JCheckBox intersection = new JCheckBox();
+  /** Mandatory direction signs */
   public final JCheckBox direction = new JCheckBox();
+  /** Uneven pavement signs */
   public final JCheckBox uneven = new JCheckBox();
+  /** No parking signs */
   public final JCheckBox noParking = new JCheckBox();
+  /** Forbidden overtaking signs */
   public final JCheckBox noOvertaking = new JCheckBox();
+  /** Pedestrian crossing signs */
   public final JCheckBox crossing = new JCheckBox();
+  /** Forbidden turn signs */
   public final JCheckBox noTurn = new JCheckBox();
 
   private static MapillaryFilterChooseSigns INSTANCE;
 
-  public MapillaryFilterChooseSigns() {
-    maxspeed.setSelected(true);
+  private MapillaryFilterChooseSigns() {
+    maxSpeed.setSelected(true);
     stop.setSelected(true);
     giveWay.setSelected(true);
     roundabout.setSelected(true);
@@ -49,7 +66,7 @@ public class MapillaryFilterChooseSigns extends JPanel implements
     JLabel maxspeedLabel = new JLabel(tr("Speed limit"));
     maxspeedLabel.setIcon(new ImageProvider("signs/speed.png").get());
     maxspeedPanel.add(maxspeedLabel);
-    maxspeedPanel.add(maxspeed);
+    maxspeedPanel.add(maxSpeed);
     this.add(maxspeedPanel);
 
     // Stop sign
@@ -147,16 +164,14 @@ public class MapillaryFilterChooseSigns extends JPanel implements
     this.setPreferredSize(new Dimension(600, 150));
   }
 
+  /**
+   * Return the unique instance of the class.
+   *
+   * @return THe unique instance of the class.
+   */
   public static MapillaryFilterChooseSigns getInstance() {
     if (INSTANCE == null)
       INSTANCE = new MapillaryFilterChooseSigns();
     return INSTANCE;
   }
-
-  @Override
-  public void actionPerformed(ActionEvent arg0) {
-    // TODO Auto-generated method stub
-
-  }
-
 }

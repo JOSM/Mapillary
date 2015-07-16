@@ -18,8 +18,10 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.PortListener;
  */
 public class MapillaryOAuthUI extends JPanel {
 
-  PortListener portListener;
-  JLabel text;
+  private static final long serialVersionUID = 5882019193626545915L;
+
+  private PortListener portListener;
+  private JLabel text;
 
   /**
    * Main constructor.

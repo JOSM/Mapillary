@@ -11,15 +11,21 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 
+/**
+ * Superclass for all the mode of the {@link MapillaryLayer}
+ *
+ * @author nokutu
+ * @see MapillaryLayer
+ *
+ */
 public abstract class AbstractMode extends MouseAdapter {
 
   protected MapillaryData data = MapillaryData.getInstance();
-  
-  public int cursor = Cursor.DEFAULT_CURSOR;
 
-  public AbstractMode() {
-    super();
-  }
+  /**
+   * Cursor that should become active when this mode is activated.
+   */
+  public int cursor = Cursor.DEFAULT_CURSOR;
 
   protected MapillaryAbstractImage getClosest(Point clickPoint) {
     double snapDistance = 10;
@@ -29,7 +35,8 @@ public abstract class AbstractMode extends MouseAdapter {
       Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
-      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance && image.isVisible()) {
+      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance
+          && image.isVisible()) {
         minDistance = dist;
         closest = image;
       }
@@ -37,7 +44,13 @@ public abstract class AbstractMode extends MouseAdapter {
     return closest;
   }
 
+  /**
+   * Paints whatever the mode needs.
+   *
+   * @param g
+   * @param mv
+   * @param box
+   */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
-
 
 }

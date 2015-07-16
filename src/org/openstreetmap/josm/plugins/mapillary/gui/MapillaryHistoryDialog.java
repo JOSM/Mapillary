@@ -32,7 +32,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * Toggle dialog that shows you the latest {@link MapillaryCommand} done and
  * allows the user to revert them.
- * 
+ *
  * @see MapillaryRecord
  * @see MapillaryCommand
  * @author nokutu
@@ -41,7 +41,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class MapillaryHistoryDialog extends ToggleDialog implements
     MapillaryRecordListener {
 
-  public static MapillaryHistoryDialog INSTANCE;
+  private static final long serialVersionUID = -3019715241209349372L;
+
+  private static MapillaryHistoryDialog INSTANCE;
 
   private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(
       new DefaultMutableTreeNode());
@@ -56,7 +58,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   private SideButton undoButton;
   private SideButton redoButton;
 
-  public MapillaryHistoryDialog() {
+  private MapillaryHistoryDialog() {
     super(tr("Mapillary history"), "mapillaryhistory.png",
         tr("Open Mapillary history dialog"), Shortcut.registerShortcut(
             tr("Mapillary history"), tr("Open Mapillary history dialog"),
@@ -91,6 +93,11 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
         Arrays.asList(new SideButton[] { undoButton, redoButton }));
   }
 
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
   public static MapillaryHistoryDialog getInstance() {
     if (INSTANCE == null)
       INSTANCE = new MapillaryHistoryDialog();
@@ -140,6 +147,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private class UndoAction extends AbstractAction {
 
+    private static final long serialVersionUID = -6435832206342007269L;
+
     public UndoAction() {
       putValue(NAME, tr("Undo"));
       putValue(SMALL_ICON, ImageProvider.get("undo"));
@@ -153,6 +162,9 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   }
 
   private class RedoAction extends AbstractAction {
+
+    private static final long serialVersionUID = -2761935780353053512L;
+
     public RedoAction() {
       putValue(NAME, tr("Redo"));
       putValue(SMALL_ICON, ImageProvider.get("redo"));
@@ -166,6 +178,9 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   }
 
   private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {
+
+    private static final long serialVersionUID = -3129520241562296901L;
+
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
         boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -176,6 +191,9 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     }
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
   public static void destroyInstance() {
     MapillaryHistoryDialog.INSTANCE = null;
   }

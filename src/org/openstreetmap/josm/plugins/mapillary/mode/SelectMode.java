@@ -37,6 +37,9 @@ public class SelectMode extends AbstractMode {
   private boolean nothingHighlighted;
   private boolean imageHighlighted = false;
 
+  /**
+   * Main constructor.
+   */
   public SelectMode() {
     record = MapillaryRecord.getInstance();
   }
