@@ -110,7 +110,7 @@ jar {
   from zipTree(configurations.packIntoJar.singleFile)
   manifest {
     attributes("Plugin-Mainversion": "8433",
-               "Plugin-Version": "31331",
+               "Plugin-Version": "31395",
                "Plugin-Class": "org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin",
                "Plugin-Description": "Enables user to work with pictures hosted at mapillary.com",
                "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
@@ -158,5 +158,5 @@ runJosmLatest.dependsOn installPluginToJosmLatest
  * The changed files (probably in the gradle/-folder) should then be commited to CVS.
  */
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.4'
+  gradleVersion = '2.5'
 }
