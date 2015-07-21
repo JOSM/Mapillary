@@ -39,12 +39,11 @@ public class MapillaryPlugin extends Plugin {
   /** Icon representing a selected image in the map. */
   public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
       "mapiconselected.png").get();
-  /** Icon representing an imported iage in the map. */
+  /** Icon representing an imported image in the map. */
   public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
       "mapiconimported.png").get();
   /** Icon used to identify which images have signs on them */
   public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
-  public static final int ICON_SIZE = 24;
 
   /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -56,6 +55,8 @@ public class MapillaryPlugin extends Plugin {
   private final MapillaryDownloadViewAction downloadViewAction;
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
   private final MapillaryJoinAction joinAction;
+  /** Walk action */
+  public final static MapillaryWalkAction walkAction = new MapillaryWalkAction();
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   public static JMenuItem DOWNLOAD_MENU;
@@ -71,6 +72,8 @@ public class MapillaryPlugin extends Plugin {
   public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
   /** Menu button for the {@link MapillaryJoinAction} action. */
   public static JMenuItem JOIN_MENU;
+  /** Menu button for the {@link MapillaryWalkAction} action. */
+  public static JMenuItem WALK_MENU;
 
   /**
    * Main constructor.
@@ -100,6 +103,7 @@ public class MapillaryPlugin extends Plugin {
       DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
           downloadViewAction, false, 14);
       JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
+      WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
     }
 
     EXPORT_MENU.setEnabled(false);
@@ -109,6 +113,7 @@ public class MapillaryPlugin extends Plugin {
     ZOOM_MENU.setEnabled(false);
     DOWNLOAD_VIEW_MENU.setEnabled(false);
     JOIN_MENU.setEnabled(false);
+    WALK_MENU.setEnabled(false);
 
     try {
       CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
@@ -150,7 +155,7 @@ public class MapillaryPlugin extends Plugin {
    * @param menu
    *          The JMenuItem object that is going to be enabled or disabled.
    * @param value
-   *          true to enable de JMenuItem; false to disable it.
+   *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(JMenuItem menu, boolean value) {
     menu.setEnabled(value);

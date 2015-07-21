@@ -45,6 +45,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   private LinkedList<MapillaryImportedImage> images;
 
+  /**
+   * Main constructor.
+   */
   public MapillaryImportIntoSequenceAction() {
     super(tr("Import pictures into sequence"), new ImageProvider("icon24.png"),
         tr("Import local pictures"), Shortcut.registerShortcut(

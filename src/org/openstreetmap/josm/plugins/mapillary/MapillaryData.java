@@ -31,7 +31,7 @@ public class MapillaryData implements ICachedLoaderListener {
   private MapillaryAbstractImage highlightedImage;
   private final List<MapillaryAbstractImage> multiSelectedImages;
 
-  private List<MapillaryDataListener> listeners = new ArrayList<>();
+  private List<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
 
   /**
    * Main constructor.
@@ -40,6 +40,8 @@ public class MapillaryData implements ICachedLoaderListener {
     images = new CopyOnWriteArrayList<>();
     multiSelectedImages = new ArrayList<>();
     selectedImage = null;
+    
+    addListener(MapillaryPlugin.walkAction);
   }
 
   /**
@@ -218,7 +220,7 @@ public class MapillaryData implements ICachedLoaderListener {
   }
 
   /**
-   * Selects a new image.If the user does ctrl+click, this isn't triggered.
+   * Selects a new image.If the user does ctrl + click, this isn't triggered.
    *
    * @param image
    *        The MapillaryImage which is going to be selected

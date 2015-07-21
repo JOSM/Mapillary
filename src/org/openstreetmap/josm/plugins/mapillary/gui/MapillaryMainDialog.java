@@ -64,7 +64,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private JPanel buttonsPanel;
 
-  private MapillaryImageDisplay mapillaryImageDisplay;
+  /** Object containing the shown image and that handles zoom and drag */
+  public MapillaryImageDisplay mapillaryImageDisplay;
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
@@ -256,8 +257,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
           if (mapillaryImage.getCapturedAt() != 0)
             title += " -- " + mapillaryImage.getDate();
           setTitle(title);
-        }
-        else if (this.image instanceof MapillaryImportedImage) {
+        } else if (this.image instanceof MapillaryImportedImage) {
           MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
           String title = tr(BASE_TITLE);
           title += " -- " + mapillaryImportedImage.getFile().getName();
