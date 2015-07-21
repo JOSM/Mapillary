@@ -17,7 +17,11 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.SideButton;
@@ -43,13 +47,13 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   private static MapillaryFilterDialog INSTANCE;
 
-  private final static String[] TIME_LIST = { tr("All time"), tr("This year"),
-      tr("This month"), tr("This week") };
+  private final static String[] TIME_LIST = { tr("All"), tr("Years"),
+      tr("Months"), tr("Days") };
 
-  private final static int ROWS = 0;
-  private final static int COLUMNS = 3;
+  private final JPanel panel = new JPanel();
 
-  private final JPanel panel = new JPanel(new GridLayout(ROWS, COLUMNS));
+  /** Spinner to choose the range of dates. */
+  public SpinnerNumberModel spinner;
 
   private final JCheckBox imported = new JCheckBox("Imported images");
   private final JCheckBox downloaded = new JCheckBox(
@@ -95,7 +99,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     JPanel fromPanel = new JPanel();
     fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    fromPanel.add(new JLabel("From"));
+    fromPanel.add(new JLabel("Not older than: "));
+    spinner = new SpinnerNumberModel(1, 0, 10000, 1);
+    fromPanel.add(new JSpinner(spinner));
     time = new JComboBox<>(TIME_LIST);
     fromPanel.add(time);
 
@@ -109,12 +115,18 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     imported.setSelected(true);
     downloaded.setSelected(true);
 
-    panel.add(downloaded);
-    panel.add(imported);
-    panel.add(onlySigns);
-    panel.add(fromPanel);
-    panel.add(userSearchPanel);
-    panel.add(signChooserPanel);
+    JPanel col1 = new JPanel(new GridLayout(2,1));
+    col1.add(downloaded);
+    col1.add(fromPanel);
+    panel.add(col1);
+    JPanel col2 = new JPanel(new GridLayout(2,1));
+    col2.add(imported);
+    col2.add(userSearchPanel);
+    panel.add(col2);
+    JPanel col3 = new JPanel(new GridLayout(2,1));
+    col3.add(onlySigns);
+    col3.add(signChooserPanel);
+    panel.add(col3);
 
     createLayout(panel, true,
         Arrays.asList(new SideButton[] { updateButton, resetButton }));
@@ -151,6 +163,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     onlySigns.setSelected(false);
     user.setText("");
     time.setSelectedItem(TIME_LIST[0]);
+    spinner.setValue(1);
     refresh();
   }
 
@@ -192,19 +205,22 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
       if (time.getSelectedItem() == TIME_LIST[1]) {
-        if ((currentTime - img.getCapturedAt()) / (24 * 60 * 60 * 1000) > 365) {
+        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue()
+            * 365 * 24 * 60 * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
       }
       if (time.getSelectedItem() == TIME_LIST[2]) {
-        if ((currentTime - img.getCapturedAt()) / (24 * 60 * 60 * 1000) > 30) {
+        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * 30 * 24
+            * 60 * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
       }
       if (time.getSelectedItem() == TIME_LIST[3]) {
-        if ((currentTime - img.getCapturedAt()) / (24 * 60 * 60 * 1000) > 7) {
+        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * 60
+            * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
