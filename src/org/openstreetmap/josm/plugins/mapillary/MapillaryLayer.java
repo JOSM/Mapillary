@@ -17,6 +17,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
 import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
+import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -62,14 +63,15 @@ import java.util.ArrayList;
  * @author nokutu
  *
  */
-public class MapillaryLayer extends AbstractModifiableLayer implements DataSetListener, EditLayerChangeListener,
-    LayerChangeListener {
+public class MapillaryLayer extends AbstractModifiableLayer implements
+    DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref
-      .getInteger("mapillary.sequence-max-jump-distance", 100);
+  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
+      "mapillary.sequence-max-jump-distance", 100);
 
-  private boolean TEMP_MANUAL = false;
+  /** If the download is in manual mode during the rest of the session */
+  public boolean TEMP_SEMIAUTOMATIC = false;
 
   /** Unique instance of the class */
   public static MapillaryLayer INSTANCE;
@@ -104,10 +106,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    * Initializes the Layer.
    */
   private void init() {
-    mode = new SelectMode();
     if (Main.map != null && Main.map.mapView != null) {
-      Main.map.mapView.addMouseListener(mode);
-      Main.map.mapView.addMouseMotionListener(mode);
+      setMode(new SelectMode());
       Main.map.mapView.addLayer(this);
       MapView.addEditLayerChangeListener(this, false);
       MapView.addLayerChangeListener(this);
@@ -129,22 +129,26 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    * Changes the mode the the given one.
    *
    * @param mode
-   *        The mode that is going to be activated.
+   *          The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
-    Main.map.mapView.removeMouseListener(this.mode);
-    Main.map.mapView.removeMouseMotionListener(this.mode);
+    if (this.mode != null) {
+      Main.map.mapView.removeMouseListener(this.mode);
+      Main.map.mapView.removeMouseMotionListener(this.mode);
+      NavigatableComponent.removeZoomChangeListener(this.mode);
+    }
     this.mode = mode;
     Main.map.mapView.setNewCursor(mode.cursor, this);
     Main.map.mapView.addMouseListener(mode);
     Main.map.mapView.addMouseMotionListener(mode);
+    NavigatableComponent.addZoomChangeListener(mode);
     updateHelpText();
   }
 
   /**
    * Returns the unique instance of this class.
    *
-   * @return The unique isntance of this class.
+   * @return The unique instance of this class.
    */
   public synchronized static MapillaryLayer getInstance() {
     if (MapillaryLayer.INSTANCE == null)
@@ -158,13 +162,15 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
    */
   public void download() {
     checkAreaTooBig();
-    if (Main.pref.getBoolean("mapillary.download-manually") || TEMP_MANUAL)
+    if (!Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[0])
+        || TEMP_SEMIAUTOMATIC)
       return;
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
       if (!this.bounds.contains(bounds)) {
         this.bounds.add(bounds);
-        new MapillaryDownloader().getImages(bounds.getMin(), bounds.getMax());
+        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
       }
     }
   }
@@ -182,7 +188,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       area += bounds.getArea();
     }
     if (area > MapillaryDownloadViewAction.MAX_AREA) {
-      TEMP_MANUAL = true;
+      TEMP_SEMIAUTOMATIC = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
       JOptionPane
           .showMessageDialog(
@@ -222,7 +228,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
   }
 
   /**
-   * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map view.
+   * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map
+   * view.
    */
   public void showAllPictures() {
     double minLat = 90;
@@ -239,7 +246,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       if (img.getLatLon().lon() > maxLon)
         maxLon = img.getLatLon().lon();
     }
-    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon (maxLat, maxLon)));
+    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon(
+        maxLat, maxLon)));
   }
 
   /**
@@ -436,10 +444,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     double rotationRequired = Math.toRadians(image.getCa());
     double locationX = width / 2;
     double locationY = height / 2;
-    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired,
+        locationX, locationY);
+    AffineTransformOp op = new AffineTransformOp(tx,
+        AffineTransformOp.TYPE_BILINEAR);
 
-    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2), Main.map.mapView);
+    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
+        Main.map.mapView);
     if (data.getHighlighted() == image) {
       drawPointHighlight(g, p, 16);
     }
@@ -457,7 +468,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
 
   @Override
   public void mergeFrom(Layer from) {
-    throw new UnsupportedOperationException("This layer does not support merging yet");
+    throw new UnsupportedOperationException(
+        "This layer does not support merging yet");
   }
 
   @Override
@@ -479,7 +491,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       return new MapillaryImage[2];
     MapillaryImage selected = (MapillaryImage) data.getSelectedImage();
     MapillaryImage[] ret = new MapillaryImage[2];
-    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE, SEQUENCE_MAX_JUMP_DISTANCE };
+    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,
+        SEQUENCE_MAX_JUMP_DISTANCE };
     LatLon selectedCoords = data.getSelectedImage().getLatLon();
     for (MapillaryAbstractImage imagePrev : data.getImages()) {
       if (!(imagePrev instanceof MapillaryImage))

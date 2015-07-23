@@ -26,7 +26,7 @@ public class MapillaryDownloadViewAction extends JosmAction {
 
   /** Max area to be downloaded */
   public static final double MAX_AREA = Main.pref.getDouble(
-      "mapillary.max-download-area", 0.020);
+      "mapillary.max-download-area", 0.015);
 
   /**
    * Main constructor.
@@ -44,7 +44,7 @@ public class MapillaryDownloadViewAction extends JosmAction {
   public void actionPerformed(ActionEvent arg0) {
     MapillaryLayer.getInstance().bounds.add(Main.map.mapView.getRealBounds());
     if (Main.map.mapView.getRealBounds().getArea() <= MAX_AREA) {
-      new MapillaryDownloader().getImages(Main.map.mapView.getRealBounds());
+      MapillaryDownloader.getImages(Main.map.mapView.getRealBounds());
     } else {
       JOptionPane.showMessageDialog(Main.parent,
           tr("This area is too big to be downloaded"));

@@ -4,12 +4,16 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
+import java.util.Calendar;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 
 /**
  * Superclass for all the mode of the {@link MapillaryLayer}
@@ -18,9 +22,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
  * @see MapillaryLayer
  *
  */
-public abstract class AbstractMode extends MouseAdapter {
+public abstract class AbstractMode extends MouseAdapter implements
+    ZoomChangeListener {
 
   protected MapillaryData data = MapillaryData.getInstance();
+
+  private long lastDownload;
 
   /**
    * Cursor that should become active when this mode is activated.
@@ -53,4 +60,26 @@ public abstract class AbstractMode extends MouseAdapter {
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
 
+  @Override
+  public synchronized void zoomChanged() {
+    if (Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[1])
+        || MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC) {
+      if (Calendar.getInstance().getTimeInMillis() - lastDownload >= 2000) {
+        lastDownload = Calendar.getInstance().getTimeInMillis();
+        MapillaryDownloader.completeView();
+      } else {
+        new Thread() {
+          @Override
+          public synchronized void run() {
+            try {
+              wait(100);
+            } catch (InterruptedException e) {
+            }
+            zoomChanged();
+          }
+        }.start();
+      }
+    }
+  }
 }

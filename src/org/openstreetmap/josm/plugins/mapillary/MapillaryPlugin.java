@@ -14,6 +14,7 @@ import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
@@ -133,7 +134,8 @@ public class MapillaryPlugin extends Plugin {
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       setMenuEnabled(DOWNLOAD_MENU, true);
-      if (Main.pref.getBoolean("mapillary.download-manually"))
+      if (Main.pref.get("mapillary.download-mode").equals(
+          MapillaryDownloader.MODES[2]))
         setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
       setMenuEnabled(IMPORT_MENU, true);
       setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);

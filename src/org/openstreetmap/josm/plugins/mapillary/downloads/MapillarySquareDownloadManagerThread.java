@@ -35,10 +35,10 @@ public class MapillarySquareDownloadManagerThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param queryStringParts
    * @param layer
-   * 
+   *
    */
   public MapillarySquareDownloadManagerThread(
       ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {

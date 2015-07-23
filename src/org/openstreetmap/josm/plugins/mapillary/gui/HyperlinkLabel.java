@@ -46,7 +46,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    */
   @Override
   public void setText(String text) {
-    super.setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+    super
+        .setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
     this.text = text;
   }
 
@@ -69,7 +70,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
   /**
    * Returns the text set by the user.
-   * 
+   *
    * @return The plain-text written in the label.
    */
   public String getNormalText() {
@@ -83,13 +84,14 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   protected void processMouseEvent(MouseEvent evt) {
     super.processMouseEvent(evt);
     if (evt.getID() == MouseEvent.MOUSE_CLICKED)
-      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getNormalText()));
+      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+          getNormalText()));
   }
 
   /**
    * Adds an ActionListener to the list of listeners receiving notifications
    * when the label is clicked.
-   * 
+   *
    * @param listener
    */
   public void addActionListener(ActionListener listener) {
@@ -99,7 +101,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   /**
    * Removes the given ActionListener from the list of listeners receiving
    * notifications when the label is clicked.
-   * 
+   *
    * @param listener
    */
   public void removeActionListener(ActionListener listener) {
@@ -108,7 +110,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
   /**
    * Fires an ActionEvent to all interested listeners.
-   * @param evt 
+   *
+   * @param evt
    */
   protected void fireActionPerformed(ActionEvent evt) {
     Object[] listeners = listenerList.getListenerList();
@@ -125,11 +128,13 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     if (this.url == null)
       return;
     Desktop desktop = Desktop.getDesktop();
-    try {
-      desktop.browse(url.toURI());
-    } catch (IOException | URISyntaxException ex) {
-      ex.printStackTrace();
-    } catch (UnsupportedOperationException ex) {
+    if (desktop.isSupported(Desktop.Action.BROWSE)) {
+      try {
+        desktop.browse(url.toURI());
+      } catch (IOException | URISyntaxException e1) {
+        Main.error(e1);
+      }
+    } else {
       Runtime runtime = Runtime.getRuntime();
       try {
         runtime.exec("xdg-open " + url);

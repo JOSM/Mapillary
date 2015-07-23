@@ -12,6 +12,8 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.Main;
@@ -19,6 +21,7 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.oauth.PortListener;
 
 /**
@@ -31,7 +34,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
   private JCheckBox reverseButtons = new JCheckBox(
       tr("Reverse buttons position when displaying images."));
-  private JCheckBox downloadMode = new JCheckBox(tr("Download images manually"));
+  private JComboBox<String> downloadMode = new JComboBox<>(
+      MapillaryDownloader.MODES);
   private JCheckBox displayHour = new JCheckBox(
       tr("Display hour when the picture was taken"));
   private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
@@ -49,8 +53,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
     reverseButtons.setSelected(Main.pref
         .getBoolean("mapillary.reverse-buttons"));
-    downloadMode.setSelected(Main.pref
-        .getBoolean("mapillary.download-manually"));
     displayHour.setSelected(Main.pref
         .getBoolean("mapillary.display-hour", true));
     format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
@@ -58,7 +60,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     panel.add(reverseButtons);
-    panel.add(downloadMode);
+
+    JPanel downloadModePanel = new JPanel();
+    downloadModePanel.add(new JLabel(tr("Download mode: ")));
+    downloadModePanel.add(downloadMode);
+    panel.add(downloadModePanel);
+
     panel.add(displayHour);
     panel.add(format24);
     panel.add(moveTo);
@@ -66,7 +73,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     if (Main.pref.get("mapillary.access-token") == null)
       oauth.setText("Login");
     else
-       oauth.setText("Already loged in, click to relogin.");
+      oauth.setText("Already loged in, click to relogin.");
     panel.add(oauth);
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
   }
@@ -75,9 +82,16 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   public boolean ok() {
     boolean mod = false;
     Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
-    Main.pref.put("mapillary.download-manually", downloadMode.isSelected());
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU,
-        downloadMode.isSelected());
+
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);
+    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[0]))
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[0]);
+    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[1]))
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[1]);
+    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[2])) {
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[2]);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
+    }
 
     Main.pref.put("mapillary.display-hour", displayHour.isSelected());
     Main.pref.put("mapillary.format-24", format24.isSelected());
@@ -107,11 +121,13 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
       String url = "http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&response_type=token&scope=user:email";
       Desktop desktop = Desktop.getDesktop();
-      try {
-        desktop.browse(new URI(url));
-      } catch (IOException | URISyntaxException ex) {
-        ex.printStackTrace();
-      } catch (UnsupportedOperationException ex) {
+      if (desktop.isSupported(Desktop.Action.BROWSE)) {
+        try {
+          desktop.browse(new URI(url));
+        } catch (IOException | URISyntaxException e1) {
+          Main.error(e1);
+        }
+      } else {
         Runtime runtime = Runtime.getRuntime();
         try {
           runtime.exec("xdg-open " + url);

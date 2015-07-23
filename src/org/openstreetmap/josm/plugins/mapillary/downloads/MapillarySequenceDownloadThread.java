@@ -39,7 +39,7 @@ public class MapillarySequenceDownloadThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param ex
    * @param queryString
    * @param layer
@@ -89,7 +89,6 @@ public class MapillarySequenceDownloadThread extends Thread {
         MapillarySequence sequence = new MapillarySequence(
             jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
                 .longValue());
-
         List<MapillaryImage> finalImages = new ArrayList<>(images);
         // Here it gets only those images which are in the downloaded
         // area.
