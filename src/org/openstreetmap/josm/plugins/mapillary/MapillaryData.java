@@ -1,10 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.CacheEntry;
-import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
-import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @see MapillarySequence
  *
  */
-public class MapillaryData implements ICachedLoaderListener {
+public class MapillaryData {
 
   /** Unique instance of the class */
   public volatile static MapillaryData INSTANCE;
@@ -40,7 +37,7 @@ public class MapillaryData implements ICachedLoaderListener {
     images = new CopyOnWriteArrayList<>();
     multiSelectedImages = new ArrayList<>();
     selectedImage = null;
-    
+
     addListener(MapillaryPlugin.walkAction);
   }
 
@@ -248,18 +245,14 @@ public class MapillaryData implements ICachedLoaderListener {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Downloading thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
-          new MapillaryCache(((MapillaryImage) mapillaryImage.next()).getKey(), MapillaryCache.Type.THUMBNAIL).submit(
-              this, false);
+          Utils.downloadPicture(mapillaryImage.next());
           if (mapillaryImage.next().next() != null)
-            new MapillaryCache(((MapillaryImage) mapillaryImage.next().next()).getKey(), MapillaryCache.Type.THUMBNAIL)
-                .submit(this, false);
+            Utils.downloadPicture(mapillaryImage.next().next());
         }
         if (mapillaryImage.previous() != null) {
-          new MapillaryCache(((MapillaryImage) mapillaryImage.previous()).getKey(), MapillaryCache.Type.THUMBNAIL)
-              .submit(this, false);
+          Utils.downloadPicture(mapillaryImage.previous());
           if (mapillaryImage.previous().previous() != null)
-            new MapillaryCache(((MapillaryImage) mapillaryImage.previous().previous()).getKey(),
-                MapillaryCache.Type.THUMBNAIL).submit(this, false);
+            Utils.downloadPicture(mapillaryImage.previous().previous());
         }
       }
     }
@@ -320,15 +313,6 @@ public class MapillaryData implements ICachedLoaderListener {
    */
   public List<MapillaryAbstractImage> getMultiSelectedImages() {
     return multiSelectedImages;
-  }
-
-  /**
-   * This is empty because it is used just to make sure that certain images have
-   * already been downloaded.
-   */
-  @Override
-  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
-    // DO NOTHING
   }
 
   /**

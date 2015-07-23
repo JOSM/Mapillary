@@ -27,7 +27,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.imageio.ImageIO;
@@ -61,6 +65,23 @@ public class MapillaryMainDialog extends ToggleDialog implements
   public final SideButton redButton = new SideButton(new redAction());
   /** Button used to jump to the image following the blue line */
   public final SideButton blueButton = new SideButton(new blueAction());
+
+  private final SideButton playButton = new SideButton(new playAction());
+  private final SideButton pauseButton = new SideButton(new pauseAction());
+  private final SideButton stopButton = new SideButton(new stopAction());
+
+  /**
+   * Buttons mode.
+   *
+   * @author nokutu
+   *
+   */
+  public static enum Mode {
+    /** Standard mode to view pictures. */
+    NORMAL,
+    /** Mode when in walk. */
+    WALK;
+  }
 
   private JPanel buttonsPanel;
 
@@ -118,6 +139,30 @@ public class MapillaryMainDialog extends ToggleDialog implements
     if (INSTANCE == null)
       INSTANCE = new MapillaryMainDialog();
     return INSTANCE;
+  }
+
+  /**
+   * @param mode
+   */
+  public void setMode(Mode mode) {
+    switch (mode) {
+      case NORMAL:
+        createLayout(
+            mapillaryImageDisplay,
+            Arrays.asList(new SideButton[] { blueButton, previousButton,
+                nextButton, redButton }),
+            Main.pref.getBoolean("mapillary.reverse-buttons"));
+        break;
+      case WALK:
+        createLayout(
+            mapillaryImageDisplay,
+            Arrays.asList(new SideButton[] { playButton, pauseButton,
+                stopButton }),
+            Main.pref.getBoolean("mapillary.reverse-buttons"));
+        break;
+    }
+    disableAllButtons();
+
   }
 
   /**
@@ -283,7 +328,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  class nextPictureAction extends AbstractAction {
+  private class nextPictureAction extends AbstractAction {
 
     private static final long serialVersionUID = 3023827221453154340L;
 
@@ -304,7 +349,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  class previousPictureAction extends AbstractAction {
+  private class previousPictureAction extends AbstractAction {
 
     private static final long serialVersionUID = -6420511632957956012L;
 
@@ -326,7 +371,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  class redAction extends AbstractAction {
+  private class redAction extends AbstractAction {
 
     private static final long serialVersionUID = -6480229431481386376L;
 
@@ -350,7 +395,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  class blueAction extends AbstractAction {
+  private class blueAction extends AbstractAction {
 
     private static final long serialVersionUID = 6250690644594703314L;
 
@@ -365,6 +410,80 @@ public class MapillaryMainDialog extends ToggleDialog implements
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryData.getInstance().setSelectedImage(MapillaryLayer.BLUE, true);
       }
+    }
+  }
+
+  private class stopAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = -6561451575815789198L;
+
+    private WalkThread thread;
+
+    public stopAction() {
+      putValue(NAME, tr("Stop"));
+      putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
+      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryStop.png"));
+      MapillaryPlugin.walkAction.addListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (thread != null)
+        thread.stopWalk();
+    }
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+      this.thread = thread;
+    }
+  }
+
+  private class playAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = -17943404752082788L;
+    private WalkThread thread;
+
+    public playAction() {
+      putValue(NAME, tr("Play"));
+      putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
+      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPlay.png"));
+      MapillaryPlugin.walkAction.addListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (thread != null)
+        thread.play();
+    }
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+      if (thread != null)
+        this.thread = thread;
+    }
+  }
+
+  private class pauseAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = 4400240686337741192L;
+
+    private WalkThread thread;
+
+    public pauseAction() {
+      putValue(NAME, tr("Pause"));
+      putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
+      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPause.png"));
+      MapillaryPlugin.walkAction.addListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      thread.pause();
+    }
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+      this.thread = thread;
     }
   }
 

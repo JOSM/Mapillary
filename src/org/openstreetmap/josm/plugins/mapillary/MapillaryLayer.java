@@ -4,7 +4,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -220,7 +220,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
     super.destroy();
   }
-  
+
   /**
    * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map view.
    */
@@ -504,11 +504,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements DataSetLi
     }
     // Predownloads the thumbnails
     if (ret[0] != null)
-      new MapillaryCache(ret[0].getKey(), MapillaryCache.Type.THUMBNAIL)
-          .submit(data, false);
+      Utils.downloadPicture(ret[0]);
     if (ret[1] != null)
-      new MapillaryCache(ret[1].getKey(), MapillaryCache.Type.THUMBNAIL)
-          .submit(data, false);
+      Utils.downloadPicture(ret[1]);
     return ret;
   }
 
