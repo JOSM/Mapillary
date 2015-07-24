@@ -26,9 +26,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     ZoomChangeListener {
 
   protected MapillaryData data = MapillaryData.getInstance();
-
-  /** If in semiautomatic mode, the last Epoch time when there was a download */
-  private long lastDownload;
+  private static final SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
 
   /**
    * Cursor that should become active when this mode is activated.
@@ -62,25 +60,45 @@ public abstract class AbstractMode extends MouseAdapter implements
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
 
   @Override
-  public synchronized void zoomChanged() {
+  public void zoomChanged() {
     if (Main.pref.get("mapillary.download-mode").equals(
         MapillaryDownloader.MODES[1])
         || MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC) {
-      if (Calendar.getInstance().getTimeInMillis() - lastDownload >= 2000) {
-        lastDownload = Calendar.getInstance().getTimeInMillis();
-        MapillaryDownloader.completeView();
-      } else {
-        new Thread() {
-          @Override
-          public synchronized void run() {
-            try {
-              wait(100);
-            } catch (InterruptedException e) {
-            }
-            zoomChanged();
+      if (!semiautomaticThread.isAlive())
+        semiautomaticThread.start();
+      semiautomaticThread.moved();
+    }
+  }
+
+  private static class SemiautomaticThread extends Thread {
+
+    /** If in semiautomatic mode, the last Epoch time when there was a download */
+    private long lastDownload;
+
+    private boolean moved = false;
+
+    @Override
+    public void run() {
+      while (true) {
+        if (moved
+            && Calendar.getInstance().getTimeInMillis() - lastDownload >= 2000) {
+          lastDownload = Calendar.getInstance().getTimeInMillis();
+          MapillaryDownloader.completeView();
+          moved = false;
+          MapillaryData.getInstance().dataUpdated();
+        }
+        synchronized (this) {
+          try {
+            wait(100);
+          } catch (InterruptedException e) {
+            Main.error(e);
           }
-        }.start();
+        }
       }
+    }
+
+    public void moved() {
+      moved = true;
     }
   }
 }

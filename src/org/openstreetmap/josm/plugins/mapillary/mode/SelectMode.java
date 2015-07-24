@@ -17,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
 import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 /**
@@ -40,6 +41,9 @@ public class SelectMode extends AbstractMode {
    */
   public SelectMode() {
     record = MapillaryRecord.getInstance();
+    if (Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[1]))
+      zoomChanged();
   }
 
   @Override

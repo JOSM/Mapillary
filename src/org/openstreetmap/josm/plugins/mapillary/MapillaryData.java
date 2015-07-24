@@ -28,7 +28,7 @@ public class MapillaryData {
   private MapillaryAbstractImage highlightedImage;
   private final List<MapillaryAbstractImage> multiSelectedImages;
 
-  private List<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
+  private CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
 
   /**
    * Main constructor.
@@ -51,6 +51,13 @@ public class MapillaryData {
       INSTANCE = new MapillaryData();
     }
     return INSTANCE;
+  }
+
+  /**
+   * Destroys the unique instance.
+   */
+  public void destroy() {
+    INSTANCE = null;
   }
 
   /**

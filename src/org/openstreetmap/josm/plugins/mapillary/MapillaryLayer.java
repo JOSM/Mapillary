@@ -53,6 +53,7 @@ import javax.swing.Icon;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -82,7 +83,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public final MapillaryData data;
 
   /** The bounds of the areas for which the pictures have been downloaded */
-  public ArrayList<Bounds> bounds;
+  public CopyOnWriteArrayList<Bounds> bounds;
 
   /** Mode of the layer */
   public AbstractMode mode;
@@ -97,7 +98,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
     data = MapillaryData.getInstance();
-    bounds = new ArrayList<>();
+    bounds = new CopyOnWriteArrayList<>();
     init();
   }
 
@@ -119,7 +120,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (!MapillaryMainDialog.getInstance().isShowing())
         MapillaryMainDialog.getInstance().getButton().doClick();
     }
-
     createHatchTexture();
     data.dataUpdated();
   }
@@ -137,11 +137,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       NavigatableComponent.removeZoomChangeListener(this.mode);
     }
     this.mode = mode;
-    Main.map.mapView.setNewCursor(mode.cursor, this);
-    Main.map.mapView.addMouseListener(mode);
-    Main.map.mapView.addMouseMotionListener(mode);
-    NavigatableComponent.addZoomChangeListener(mode);
-    updateHelpText();
+    if (mode != null) {
+      Main.map.mapView.setNewCursor(mode.cursor, this);
+      Main.map.mapView.addMouseListener(mode);
+      Main.map.mapView.addMouseMotionListener(mode);
+      NavigatableComponent.addZoomChangeListener(mode);
+      updateHelpText();
+    }
   }
 
   /**
@@ -167,11 +169,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void destroy() {
+    setMode(null);
+    MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
     MapillaryMainDialog.getInstance().updateImage();
-    data.getImages().clear();
-    MapillaryLayer.INSTANCE = null;
-    MapillaryData.INSTANCE = null;
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
     Main.map.mapView.removeMouseListener(mode);
@@ -179,6 +180,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapView.removeEditLayerChangeListener(this);
     if (Main.map.mapView.getEditLayer() != null)
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
+    MapillaryLayer.INSTANCE = null;
     super.destroy();
   }
 
@@ -592,8 +594,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       ret += tr("Total images: {0}", data.size());
     else
       ret += tr("No images found");
-    ret += " -- " + tr(mode.toString());
-
+    if (mode != null)
+      ret += " -- " + tr(mode.toString());
     Main.map.statusLine.setHelpText(ret);
   }
 }

@@ -82,7 +82,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         downloadSigns();
       }
     } catch (InterruptedException e) {
-      Main.error(e);
+      Main.error("Mapillary download interrupted (probably because of closing the layer).");
     }
     layer.updateHelpText();
     layer.getMapillaryData().dataUpdated();

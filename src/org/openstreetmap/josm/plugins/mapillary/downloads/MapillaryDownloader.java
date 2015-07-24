@@ -2,9 +2,10 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
@@ -33,7 +34,8 @@ public class MapillaryDownloader {
   /** Client ID for the app */
   public final static String CLIENT_ID = "NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm";
   /** Executor that will run the petitions */
-  public final static Executor EXECUTOR = Executors.newSingleThreadExecutor();
+  public final static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1,
+      1, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -50,13 +52,12 @@ public class MapillaryDownloader {
     queryStringParts.put("min_lon", minLatLon.lon());
     queryStringParts.put("max_lat", maxLatLon.lat());
     queryStringParts.put("max_lon", maxLatLon.lon());
+    run(new MapillarySquareDownloadManagerThread(queryStringParts,
+        MapillaryLayer.getInstance()));
+  }
 
-    try {
-      EXECUTOR.execute(new MapillarySquareDownloadManagerThread(
-          queryStringParts, MapillaryLayer.getInstance()));
-    } catch (Exception e) {
-      Main.error(e);
-    }
+  private static void run(Thread t) {
+    EXECUTOR.execute(t);
   }
 
   /**
@@ -128,5 +129,12 @@ public class MapillaryDownloader {
               Main.parent,
               tr("The downloaded OSM area is too big. Download mode has been changed to manual until the layer is restarted."));
     }
+  }
+
+  /**
+   * Stops all running threads.
+   */
+  public static void stopAll() {
+    EXECUTOR.shutdownNow();
   }
 }
