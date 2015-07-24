@@ -46,11 +46,16 @@ public class MapillaryExportWriterThread extends Thread {
   /**
    * Main constructor.
    * 
-   * @param path Path to write the pictures.
-   * @param queue Queue of {@link MapillaryAbstractImage} objects.
-   * @param queueImages Queue of {@link BufferedImage} objects.
-   * @param amount Amount of images that are going to be exported.
-   * @param monitor Progress monitor.
+   * @param path
+   *          Path to write the pictures.
+   * @param queue
+   *          Queue of {@link MapillaryAbstractImage} objects.
+   * @param queueImages
+   *          Queue of {@link BufferedImage} objects.
+   * @param amount
+   *          Amount of images that are going to be exported.
+   * @param monitor
+   *          Progress monitor.
    */
   public MapillaryExportWriterThread(String path,
       ArrayBlockingQueue<BufferedImage> queue,

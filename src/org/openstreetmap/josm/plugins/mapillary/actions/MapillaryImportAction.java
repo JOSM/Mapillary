@@ -152,12 +152,13 @@ public class MapillaryImportAction extends JosmAction {
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)
         MapillaryData.getInstance().add(
-            new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue()));
+            new MapillaryImportedImage(latValue, lonValue, caValue, file,
+                datetimeOriginal.getStringValue()));
       else
         MapillaryData.getInstance().add(
             new MapillaryImportedImage(latValue, lonValue, caValue, file));
     }
-    
+
     MapillaryLayer.getInstance().showAllPictures();
   }
 
@@ -218,13 +219,13 @@ public class MapillaryImportAction extends JosmAction {
       throw new IllegalArgumentException();
     }
     switch (ref) {
-    case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
-    case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
-    case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
-    case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
-      break;
-    default:
-      throw new IllegalArgumentException();
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
+        break;
+      default:
+        throw new IllegalArgumentException();
     }
 
     double result = degMinSec[0].doubleValue(); // degrees

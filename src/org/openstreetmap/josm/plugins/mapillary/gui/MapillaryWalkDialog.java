@@ -9,13 +9,14 @@ import javax.swing.SpinnerNumberModel;
 
 /**
  * Dialog to set the walk mode options.
+ * 
  * @author nokutu
  *
  */
 public class MapillaryWalkDialog extends JPanel {
-  
+
   private static final long serialVersionUID = -6258767312211941358L;
-  
+
   /** Spin containing the interval value. */
   public SpinnerModel spin;
   /** Whether it must wait for the picture to be downloaded */
@@ -30,7 +31,7 @@ public class MapillaryWalkDialog extends JPanel {
     interval.add(new JLabel("Interval (miliseconds): "));
     interval.add(new JSpinner(spin));
     add(interval);
-    
+
     waitForPicture = new JCheckBox("Wait for the picture to be downloaded");
     waitForPicture.setSelected(true);
     add(waitForPicture);

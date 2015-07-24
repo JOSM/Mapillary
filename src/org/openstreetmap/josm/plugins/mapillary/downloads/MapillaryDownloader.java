@@ -1,13 +1,18 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 
 /**
@@ -19,9 +24,9 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAct
  */
 public class MapillaryDownloader {
 
-  /** Possible download modes.*/
-  public static final String[] MODES = new String[] { "Automatic", "Semiautomatic",
-  "Manual" };
+  /** Possible download modes. */
+  public static final String[] MODES = new String[] { "Automatic",
+      "Semiautomatic", "Manual" };
 
   /** Base URL of the Mapillary API. */
   public final static String BASE_URL = "https://a.mapillary.com/v2/";
@@ -81,5 +86,47 @@ public class MapillaryDownloader {
    */
   public static void getImages(Bounds bounds) {
     getImages(bounds.getMin(), bounds.getMax());
+  }
+
+  /**
+   * Downloads all images of the area covered by the OSM data. This is only just
+   * for automatic download.
+   */
+  public static void automaticDownload() {
+    MapillaryLayer layer = MapillaryLayer.getInstance();
+    checkAreaTooBig();
+    if (!Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[0])
+        || layer.TEMP_SEMIAUTOMATIC)
+      return;
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data
+        .getDataSourceBounds()) {
+      if (!layer.bounds.contains(bounds)) {
+        layer.bounds.add(bounds);
+        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
+      }
+    }
+  }
+
+  /**
+   * Checks if the area of the OSM data is too big. This means that probably
+   * lots of Mapillary images are going to be downloaded, slowing down the
+   * program too much. To solve this the automatic is stopped, an alert is shown
+   * and you will have to download areas manually.
+   */
+  private static void checkAreaTooBig() {
+    double area = 0;
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data
+        .getDataSourceBounds()) {
+      area += bounds.getArea();
+    }
+    if (area > MapillaryDownloadViewAction.MAX_AREA) {
+      MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC = true;
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
+      JOptionPane
+          .showMessageDialog(
+              Main.parent,
+              tr("The downloaded OSM area is too big. Download mode has been changed to manual until the layer is restarted."));
+    }
   }
 }

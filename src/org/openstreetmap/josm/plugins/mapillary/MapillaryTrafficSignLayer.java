@@ -32,10 +32,12 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /**
    * Returns and when needed instantiates the Mapillary traffic sign layer.
+   * 
    * @return the only instance of the traffic sign layer
    */
   public static MapillaryTrafficSignLayer getInstance() {
-    return instance == null ? (instance = new MapillaryTrafficSignLayer()) : instance;
+    return instance == null ? (instance = new MapillaryTrafficSignLayer())
+        : instance;
   }
 
   /**
@@ -47,6 +49,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.openstreetmap.josm.gui.layer.AbstractModifiableLayer#isModified()
    */
   @Override
@@ -56,14 +59,17 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * @see org.openstreetmap.josm.gui.layer.Layer#paint(java.awt.Graphics2D, org.openstreetmap.josm.gui.MapView,
-   * org.openstreetmap.josm.data.Bounds)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#paint(java.awt.Graphics2D,
+   * org.openstreetmap.josm.gui.MapView, org.openstreetmap.josm.data.Bounds)
    */
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
     try {
-      g.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("data/fonts/traffico/traffico.ttf")).deriveFont(50.0f));
+      g.setFont(Font.createFont(Font.TRUETYPE_FONT,
+          new File("data/fonts/traffico/traffico.ttf")).deriveFont(50.0f));
     } catch (FontFormatException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -75,7 +81,10 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     points[1] = mv.getPoint(new LatLon(49.01116, 8.40679));
     points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));
 
-    TrafficoSignElement[][] signs = { TrafficoSign.getSign("europe", "mandatory_cycle_track"), TrafficoSign.getSign("de", "information_bus_stop"), TrafficoSign.getSign("europe", "information_pedestrian_crossing") };
+    TrafficoSignElement[][] signs = {
+        TrafficoSign.getSign("europe", "mandatory_cycle_track"),
+        TrafficoSign.getSign("de", "information_bus_stop"),
+        TrafficoSign.getSign("europe", "information_pedestrian_crossing") };
 
     for (int i = 0; i < signs.length && i < points.length; i++) {
       for (TrafficoSignElement layer : signs[i]) { // TODO: NPE
@@ -86,12 +95,15 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
     // Start iterating the images
     g.setColor(Color.MAGENTA);
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getMapillaryData().getImages()) {
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance()
+        .getMapillaryData().getImages()) {
       if (img instanceof MapillaryImage) {
-        g.fillOval(mv.getPoint(img.getLatLon()).x-3, mv.getPoint(img.getLatLon()).y-3, 6, 6);
+        g.fillOval(mv.getPoint(img.getLatLon()).x - 3,
+            mv.getPoint(img.getLatLon()).y - 3, 6, 6);
         if (((MapillaryImage) img).getSigns().size() >= 1) {
           Point imgLoc = mv.getPoint(img.getLatLon());
-          for (TrafficoSignElement e : TrafficoSign.getSign("de", ((MapillaryImage) img).getSigns().get(0))) {
+          for (TrafficoSignElement e : TrafficoSign.getSign("de",
+              ((MapillaryImage) img).getSigns().get(0))) {
             g.setColor(e.getColor());
             g.drawString("" + e.getGlyph(), imgLoc.x, imgLoc.y);
           }
@@ -102,6 +114,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.openstreetmap.josm.gui.layer.Layer#getIcon()
    */
   @Override
@@ -111,6 +124,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.openstreetmap.josm.gui.layer.Layer#getToolTipText()
    */
   @Override
@@ -120,16 +134,23 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * @see org.openstreetmap.josm.gui.layer.Layer#mergeFrom(org.openstreetmap.josm.gui.layer.Layer)
+   * 
+   * @see
+   * org.openstreetmap.josm.gui.layer.Layer#mergeFrom(org.openstreetmap.josm
+   * .gui.layer.Layer)
    */
   @Override
   public void mergeFrom(Layer from) {
-    // Does nothing as this layer is not mergeable (see method isMergable(Layer))
+    // Does nothing as this layer is not mergeable (see method
+    // isMergable(Layer))
   }
 
   /*
    * (non-Javadoc)
-   * @see org.openstreetmap.josm.gui.layer.Layer#isMergable(org.openstreetmap.josm.gui.layer.Layer)
+   * 
+   * @see
+   * org.openstreetmap.josm.gui.layer.Layer#isMergable(org.openstreetmap.josm
+   * .gui.layer.Layer)
    */
   @Override
   public boolean isMergable(Layer other) {
@@ -138,8 +159,10 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see
-   * org.openstreetmap.josm.gui.layer.Layer#visitBoundingBox(org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor)
+   * org.openstreetmap.josm.gui.layer.Layer#visitBoundingBox(org.openstreetmap
+   * .josm.data.osm.visitor.BoundingXYVisitor)
    */
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
@@ -149,6 +172,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.openstreetmap.josm.gui.layer.Layer#getInfoComponent()
    */
   @Override
@@ -159,6 +183,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
+   * 
    * @see org.openstreetmap.josm.gui.layer.Layer#getMenuEntries()
    */
   @Override

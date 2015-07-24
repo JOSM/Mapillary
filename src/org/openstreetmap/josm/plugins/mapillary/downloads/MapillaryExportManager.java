@@ -19,10 +19,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.xml.sax.SAXException;
 
 /**
- * Export main thread. Exportation works by creating a {@link MapillaryExportWriterThread} and several
+ * Export main thread. Exportation works by creating a
+ * {@link MapillaryExportWriterThread} and several
  * {@link MapillaryExportDownloadThread}. The second ones download every single
- * image that is going to be exported and stores them in an {@link ArrayBlockingQueue}. Then it is picked by the first
- * one and written on
+ * image that is going to be exported and stores them in an
+ * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
  * the selected folder. Each image will be named by its key.
  *
  * @author nokutu
@@ -43,11 +44,14 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   /**
    * Main constructor.
    * 
-   * @param images Set of {@link MapillaryAbstractImage} objects to be exported.
-   * @param path Export path.
+   * @param images
+   *          Set of {@link MapillaryAbstractImage} objects to be exported.
+   * @param path
+   *          Export path.
    */
   public MapillaryExportManager(List<MapillaryAbstractImage> images, String path) {
-    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor("Exporting Mapillary Images"), true);
+    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
+        "Exporting Mapillary Images"), true);
     queue = new ArrayBlockingQueue<>(10);
     queueImages = new ArrayBlockingQueue<>(10);
 
@@ -62,8 +66,10 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    * @param images
    * @throws IOException
    */
-  public MapillaryExportManager(List<MapillaryImportedImage> images) throws IOException {
-    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor("Exporting Mapillary Images"), true);
+  public MapillaryExportManager(List<MapillaryImportedImage> images)
+      throws IOException {
+    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
+        "Exporting Mapillary Images"), true);
     queue = new ArrayBlockingQueue<>(10);
     queueImages = new ArrayBlockingQueue<>(10);
     for (MapillaryImportedImage image : images) {
@@ -80,9 +86,11 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   }
 
   @Override
-  protected void realRun() throws SAXException, IOException, OsmTransferException {
+  protected void realRun() throws SAXException, IOException,
+      OsmTransferException {
     // Starts a writer thread in order to write the pictures on the disk.
-    writer = new MapillaryExportWriterThread(path, queue, queueImages, amount, this.getProgressMonitor());
+    writer = new MapillaryExportWriterThread(path, queue, queueImages, amount,
+        this.getProgressMonitor());
     writer.start();
     if (path == null) {
       try {
@@ -92,11 +100,13 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       }
       return;
     }
-    ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
+    ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(10));
     for (MapillaryAbstractImage image : images) {
       if (image instanceof MapillaryImage) {
         try {
-          ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image, queue, queueImages));
+          ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image,
+              queue, queueImages));
         } catch (Exception e) {
           Main.error(e);
         }

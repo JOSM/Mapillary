@@ -57,7 +57,6 @@ public class MapillaryExportAction extends JosmAction {
     JButton cancel = new JButton(tr("Cancel"));
     cancel.addActionListener(new CancelAction(pane));
 
-
     dialog = new MapillaryExportDialog(ok);
     pane.setMessage(dialog);
     pane.setOptions(new JButton[] { ok, cancel });

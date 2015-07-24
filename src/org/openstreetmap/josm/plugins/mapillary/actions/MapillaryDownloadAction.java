@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -40,7 +41,7 @@ public class MapillaryDownloadAction extends JosmAction {
   public void actionPerformed(ActionEvent arg0) {
     if (MapillaryLayer.INSTANCE == null) {
       if (Main.map.mapView.getEditLayer() != null)
-        MapillaryLayer.getInstance().download();
+        MapillaryDownloader.automaticDownload();
     } else {
       if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
         Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());

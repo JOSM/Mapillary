@@ -78,7 +78,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         Main.map.statusLine.setHelpText(tr("Downloading image's information"));
         completeImages();
         MapillaryMainDialog.getInstance().updateTitle();
-        Main.map.statusLine.setHelpText(tr("Downloading signs"));
+        Main.map.statusLine.setHelpText(tr("Downloading traffic signs"));
         downloadSigns();
       }
     } catch (InterruptedException e) {
@@ -124,7 +124,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySignDownloaderThread(ex, signQueryString
+      ex.execute(new MapillaryTrafficSignDownloaderThread(ex, signQueryString
           + "&page=" + page + "&limit=20", layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);

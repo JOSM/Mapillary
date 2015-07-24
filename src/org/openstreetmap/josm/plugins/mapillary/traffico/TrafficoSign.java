@@ -56,26 +56,26 @@ public class TrafficoSign {
           if (glyph != null) {
             Color c;
             switch (elements.getJsonObject(i).getString("color").toLowerCase()) {
-            case "black":
-              c = Color.BLACK;
-              break;
-            case "red":
-              c = Color.RED;
-              break;
-            case "blue":
-              c = Color.BLUE;
-              break;
-            case "white":
-              c = Color.WHITE;
-              break;
-            case "green":
-              c = Color.GREEN;
-              break;
-            case "yellow":
-              c = Color.YELLOW;
-              break;
-            default:
-              c = Color.MAGENTA;
+              case "black":
+                c = Color.BLACK;
+                break;
+              case "red":
+                c = Color.RED;
+                break;
+              case "blue":
+                c = Color.BLUE;
+                break;
+              case "white":
+                c = Color.WHITE;
+                break;
+              case "green":
+                c = Color.GREEN;
+                break;
+              case "yellow":
+                c = Color.YELLOW;
+                break;
+              default:
+                c = Color.MAGENTA;
             }
             layers.add(new TrafficoSignElement(glyph, c));
           }

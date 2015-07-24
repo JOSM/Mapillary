@@ -45,11 +45,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     try {
       while (!end && data.getSelectedImage().next() != null) {
         MapillaryAbstractImage image = data.getSelectedImage();
-        for (int i = 0; i < 5; i++) {
-          if (image.next() == null)
-            break;
-          image = image.next();
-          Utils.downloadPicture(image);
+        // Predownload next 5 pictures.
+        if (image instanceof MapillaryImage) {
+          for (int i = 0; i < 5; i++) {
+            if (image.next() == null)
+              break;
+            image = image.next();
+            Utils.downloadPicture((MapillaryImage) image);
+          }
         }
         try {
           synchronized (this) {

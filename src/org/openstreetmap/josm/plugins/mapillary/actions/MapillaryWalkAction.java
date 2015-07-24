@@ -102,5 +102,4 @@ public class MapillaryWalkAction extends JosmAction implements
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, false);
   }
 
-
 }

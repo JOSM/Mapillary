@@ -57,7 +57,7 @@ public class MapillaryData {
    * Adds a set of MapillaryImages to the object, and then repaints mapView.
    *
    * @param images
-   *        The set of images to be added.
+   *          The set of images to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images) {
@@ -69,7 +69,7 @@ public class MapillaryData {
    * Adds an MapillaryImage to the object, and then repaints mapView.
    *
    * @param image
-   *        The image to be added.
+   *          The image to be added.
    */
   public synchronized void add(MapillaryAbstractImage image) {
     if (!images.contains(image)) {
@@ -82,7 +82,8 @@ public class MapillaryData {
   /**
    * Adds a new listener.
    *
-   * @param lis Listener to be added.
+   * @param lis
+   *          Listener to be added.
    */
   public void addListener(MapillaryDataListener lis) {
     listeners.add(lis);
@@ -91,7 +92,8 @@ public class MapillaryData {
   /**
    * Removes a listener.
    *
-   * @param lis Listener to be removed.
+   * @param lis
+   *          Listener to be removed.
    */
   public void removeListener(MapillaryDataListener lis) {
     listeners.remove(lis);
@@ -102,7 +104,7 @@ public class MapillaryData {
    * This is needed for concurrency.
    *
    * @param images
-   *        The set of images to be added.
+   *          The set of images to be added.
    */
   public synchronized void addWithoutUpdate(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images) {
@@ -114,7 +116,7 @@ public class MapillaryData {
    * Highlights the image under the cursor.
    *
    * @param image
-   *        The image under the cursor.
+   *          The image under the cursor.
    */
   public void setHighlightedImage(MapillaryAbstractImage image) {
     highlightedImage = image;
@@ -134,7 +136,7 @@ public class MapillaryData {
    * needed for concurrency.
    *
    * @param image
-   *        The image to be added.
+   *          The image to be added.
    */
   public synchronized void addWithoutUpdate(MapillaryAbstractImage image) {
     if (!images.contains(image)) {
@@ -190,7 +192,8 @@ public class MapillaryData {
     while (tempImage.next() != null) {
       tempImage = tempImage.next();
       if (tempImage.isVisible()) {
-        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+        setSelectedImage(tempImage,
+            Main.pref.getBoolean("mapillary.move-to-picture", true));
         break;
       }
     }
@@ -210,7 +213,8 @@ public class MapillaryData {
     while (tempImage.previous() != null) {
       tempImage = tempImage.previous();
       if (tempImage.isVisible()) {
-        setSelectedImage(tempImage, Main.pref.getBoolean("mapillary.move-to-picture", true));
+        setSelectedImage(tempImage,
+            Main.pref.getBoolean("mapillary.move-to-picture", true));
         break;
       }
     }
@@ -220,20 +224,20 @@ public class MapillaryData {
    * Selects a new image.If the user does ctrl + click, this isn't triggered.
    *
    * @param image
-   *        The MapillaryImage which is going to be selected
+   *          The MapillaryImage which is going to be selected
    */
   public void setSelectedImage(MapillaryAbstractImage image) {
     setSelectedImage(image, false);
   }
 
   /**
-   * Selects a new image.If the user does ctrl+click, this isn't triggered.
-   * You can choose whether to center the view on the new image or not.
+   * Selects a new image.If the user does ctrl+click, this isn't triggered. You
+   * can choose whether to center the view on the new image or not.
    *
    * @param image
-   *        The {@link MapillaryImage} which is going to be selected.
+   *          The {@link MapillaryImage} which is going to be selected.
    * @param zoom
-   *        True if the view must be centered on the image; false otherwise.
+   *          True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     if (image != null) {
@@ -250,25 +254,29 @@ public class MapillaryData {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Downloading thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
-          Utils.downloadPicture(mapillaryImage.next());
+          Utils.downloadPicture((MapillaryImage) mapillaryImage.next());
           if (mapillaryImage.next().next() != null)
-            Utils.downloadPicture(mapillaryImage.next().next());
+            Utils
+                .downloadPicture((MapillaryImage) mapillaryImage.next().next());
         }
         if (mapillaryImage.previous() != null) {
-          Utils.downloadPicture(mapillaryImage.previous());
+          Utils.downloadPicture((MapillaryImage) mapillaryImage.previous());
           if (mapillaryImage.previous().previous() != null)
-            Utils.downloadPicture(mapillaryImage.previous().previous());
+            Utils.downloadPicture((MapillaryImage) mapillaryImage.previous()
+                .previous());
         }
       }
     }
     if (zoom)
-      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage().getLatLon());
+      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
+          .getLatLon());
     if (Main.map != null)
       Main.map.mapView.repaint();
     fireSelectedImageChanged(oldImage, selectedImage);
   }
 
-  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
+      MapillaryAbstractImage newImage) {
     if (listeners.isEmpty())
       return;
     for (MapillaryDataListener lis : listeners)
@@ -280,7 +288,7 @@ public class MapillaryData {
    * click)
    *
    * @param image
-   *        The MapillaryImage object to be added.
+   *          The MapillaryImage object to be added.
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
@@ -297,7 +305,7 @@ public class MapillaryData {
    * selected images.
    *
    * @param images
-   *        A List object containing the set of images to be added.
+   *          A List object containing the set of images to be added.
    */
   public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images)
@@ -312,7 +320,7 @@ public class MapillaryData {
 
   /**
    * Returns a List containing all {@code MapillaryAbstractImage} objects
-   * selected with ctrl + click
+   * selected with ctrl + click.
    *
    * @return A List object containing all the images selected.
    */

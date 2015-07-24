@@ -48,8 +48,8 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1)
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && closest != null
-        && Main.map.mapMode == Main.map.mapModeSelect) {
+    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+        && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       data.setSelectedImage(closest);
       return;
@@ -112,10 +112,12 @@ public class SelectMode extends AbstractMode {
         }
         Main.map.repaint();
       } else if (lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
-        this.closest
-            .turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
+        this.closest.turn(Math.toDegrees(Math.atan2((e.getX() - start.x),
+            -(e.getY() - start.y)))
+            - closest.getTempCa());
         for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
-          img.turn(Math.toDegrees(Math.atan2((e.getX() - start.x), -(e.getY() - start.y))) - closest.getTempCa());
+          img.turn(Math.toDegrees(Math.atan2((e.getX() - start.x),
+              -(e.getY() - start.y))) - closest.getTempCa());
         }
         Main.map.repaint();
       }

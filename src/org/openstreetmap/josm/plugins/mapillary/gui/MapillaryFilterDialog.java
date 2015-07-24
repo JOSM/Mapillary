@@ -113,15 +113,15 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     imported.setSelected(true);
     downloaded.setSelected(true);
 
-    JPanel col1 = new JPanel(new GridLayout(2,1));
+    JPanel col1 = new JPanel(new GridLayout(2, 1));
     col1.add(downloaded);
     col1.add(fromPanel);
     panel.add(col1);
-    JPanel col2 = new JPanel(new GridLayout(2,1));
+    JPanel col2 = new JPanel(new GridLayout(2, 1));
     col2.add(imported);
     col2.add(userSearchPanel);
     panel.add(col2);
-    JPanel col3 = new JPanel(new GridLayout(2,1));
+    JPanel col3 = new JPanel(new GridLayout(2, 1));
     col3.add(onlySigns);
     col3.add(signChooserPanel);
     panel.add(col3);
@@ -203,22 +203,24 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
       if (time.getSelectedItem() == TIME_LIST[1]) {
-        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue()
-            * 365 * 24 * 60 * 60 * 1000) {
+        if (img.getCapturedAt() < currentTime
+            - ((Integer) spinner.getValue()).longValue() * 365 * 24 * 60 * 60
+            * 1000) {
           img.setVisible(false);
           continue;
         }
       }
       if (time.getSelectedItem() == TIME_LIST[2]) {
-        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * 30 * 24
-            * 60 * 60 * 1000) {
+        if (img.getCapturedAt() < currentTime
+            - ((Integer) spinner.getValue()).longValue() * 30 * 24 * 60 * 60
+            * 1000) {
           img.setVisible(false);
           continue;
         }
       }
       if (time.getSelectedItem() == TIME_LIST[3]) {
-        if (img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * 60
-            * 60 * 1000) {
+        if (img.getCapturedAt() < currentTime
+            - ((Integer) spinner.getValue()).longValue() * 60 * 60 * 1000) {
           img.setVisible(false);
           continue;
         }

@@ -97,7 +97,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Returns the username of the person who took the picture.
    *
-   * @return A String containing the username of the person who took the picture.
+   * @return A String containing the username of the person who took the
+   *         picture.
    */
   public String getUser() {
     return user;

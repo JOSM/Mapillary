@@ -72,7 +72,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg",
         "jpeg"));
     chooser.setMultiSelectionEnabled(true);
-    
+
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
@@ -111,7 +111,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       }
       joinImages();
     }
-    
+
     MapillaryLayer.getInstance().showAllPictures();
   }
 
@@ -139,8 +139,10 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-      if (lat_ref == null || lat == null || lon == null || lon_ref == null || datetimeOriginal == null)
-        throw new IllegalArgumentException("The picture has not correct EXIF tags");
+      if (lat_ref == null || lat == null || lon == null || lon_ref == null
+          || datetimeOriginal == null)
+        throw new IllegalArgumentException(
+            "The picture has not correct EXIF tags");
 
       double latValue = 0;
       double lonValue = 0;

@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
@@ -51,7 +50,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -70,7 +68,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
       "mapillary.sequence-max-jump-distance", 100);
 
-  /** If the download is in manual mode during the rest of the session */
+  /** If the download is in semiautomatic during this object lifetime. */
   public boolean TEMP_SEMIAUTOMATIC = false;
 
   /** Unique instance of the class */
@@ -81,7 +79,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public static MapillaryImage RED;
 
   /** {@link MapillaryData} object that stores the database */
-  public final MapillaryData data = MapillaryData.getInstance();
+  public final MapillaryData data;
 
   /** The bounds of the areas for which the pictures have been downloaded */
   public ArrayList<Bounds> bounds;
@@ -98,6 +96,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
+    data = MapillaryData.getInstance();
     bounds = new ArrayList<>();
     init();
   }
@@ -157,47 +156,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Downloads all images of the area covered by the OSM data. This is only just
-   * for automatic download.
-   */
-  public void download() {
-    checkAreaTooBig();
-    if (!Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[0])
-        || TEMP_SEMIAUTOMATIC)
-      return;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
-        .getDataSourceBounds()) {
-      if (!this.bounds.contains(bounds)) {
-        this.bounds.add(bounds);
-        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
-      }
-    }
-  }
-
-  /**
-   * Checks if the area of the OSM data is too big. This means that probably
-   * lots of Mapillary images are going to be downloaded, slowing down the
-   * program too much. To solve this the automatic is stopped, an alert is shown
-   * and you will have to download areas manually.
-   */
-  private void checkAreaTooBig() {
-    double area = 0;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
-        .getDataSourceBounds()) {
-      area += bounds.getArea();
-    }
-    if (area > MapillaryDownloadViewAction.MAX_AREA) {
-      TEMP_SEMIAUTOMATIC = true;
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
-      JOptionPane
-          .showMessageDialog(
-              Main.parent,
-              tr("The downloaded OSM area is too big. Download mode has been changed to manual until the layer is restarted."));
-    }
-  }
-
-  /**
    * Returns the {@link MapillaryData} object, which acts as the database of the
    * Layer.
    *
@@ -207,9 +165,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     return data;
   }
 
-  /**
-   * Method invoked when the layer is destroyed.
-   */
   @Override
   public void destroy() {
     MapillaryMainDialog.getInstance().setImage(null);
@@ -565,7 +520,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       } catch (InterruptedException e) {
         Main.error(e);
       }
-      MapillaryLayer.getInstance().download();
+      MapillaryDownloader.automaticDownload();
     }
   }
 

@@ -24,7 +24,8 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
  * @see MapillaryExportManager
  * @see MapillaryExportWriterThread
  */
-public class MapillaryExportDownloadThread extends Thread implements ICachedLoaderListener {
+public class MapillaryExportDownloadThread extends Thread implements
+    ICachedLoaderListener {
 
   String url;
   ArrayBlockingQueue<BufferedImage> queue;
@@ -36,13 +37,20 @@ public class MapillaryExportDownloadThread extends Thread implements ICachedLoad
   /**
    * Main constructor.
    * 
-   * @param image Image to be downloaded.
-   * @param queue Queue of {@link BufferedImage} objects for the {@link MapillaryExportWriterThread}.
-   * @param queueImages Queue of {@link MapillaryAbstractImage} objects for the {@link MapillaryExportWriterThread}.
+   * @param image
+   *          Image to be downloaded.
+   * @param queue
+   *          Queue of {@link BufferedImage} objects for the
+   *          {@link MapillaryExportWriterThread}.
+   * @param queueImages
+   *          Queue of {@link MapillaryAbstractImage} objects for the
+   *          {@link MapillaryExportWriterThread}.
    */
-  public MapillaryExportDownloadThread(MapillaryImage image, ArrayBlockingQueue<BufferedImage> queue,
+  public MapillaryExportDownloadThread(MapillaryImage image,
+      ArrayBlockingQueue<BufferedImage> queue,
       ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
-    url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey() + "/thumb-2048.jpg";
+    url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
+        + "/thumb-2048.jpg";
     this.queue = queue;
     this.image = image;
     this.queueImages = queueImages;
@@ -50,11 +58,13 @@ public class MapillaryExportDownloadThread extends Thread implements ICachedLoad
 
   @Override
   public void run() {
-    new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(this, false);
+    new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
+        this, false);
   }
 
   @Override
-  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
+  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
+      LoadResult result) {
     try {
       queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
       queueImages.put(image);

@@ -31,11 +31,13 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
   /**
    * Main constructor.
    * 
-   * @param ex {@link ExecutorService} object that is executing this thread.
-   * @param queryString 
-   * @param layer 
+   * @param ex
+   *          {@link ExecutorService} object that is executing this thread.
+   * @param queryString
+   * @param layer
    */
-  public MapillaryImageInfoDownloaderThread(ExecutorService ex, String queryString, MapillaryLayer layer) {
+  public MapillaryImageInfoDownloaderThread(ExecutorService ex,
+      String queryString, MapillaryLayer layer) {
     this.ex = ex;
     this.queryString = queryString;
     this.layer = layer;
@@ -44,8 +46,8 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
   @Override
   public void run() {
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-          new URL(URL + queryString).openStream(), "UTF-8"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(new URL(URL
+          + queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))
         ex.shutdown();
@@ -54,7 +56,8 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
       for (int i = 0; i < jsonarr.size(); i++) {
         data = jsonarr.getJsonObject(i);
         String key = data.getString("key");
-        for (MapillaryAbstractImage image : layer.getMapillaryData().getImages()) {
+        for (MapillaryAbstractImage image : layer.getMapillaryData()
+            .getImages()) {
           if (image instanceof MapillaryImage) {
             if (((MapillaryImage) image).getKey().equals(key)
                 && ((MapillaryImage) image).getUser() == null) {

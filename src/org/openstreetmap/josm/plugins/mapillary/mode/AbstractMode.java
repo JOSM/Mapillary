@@ -16,7 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 
 /**
- * Superclass for all the mode of the {@link MapillaryLayer}
+ * Superclass for all the mode of the {@link MapillaryLayer}.
  *
  * @author nokutu
  * @see MapillaryLayer
@@ -27,6 +27,7 @@ public abstract class AbstractMode extends MouseAdapter implements
 
   protected MapillaryData data = MapillaryData.getInstance();
 
+  /** If in semiautomatic mode, the last Epoch time when there was a download */
   private long lastDownload;
 
   /**

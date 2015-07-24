@@ -22,7 +22,7 @@ import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.oauth.PortListener;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -61,6 +61,16 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     panel.add(reverseButtons);
 
+    // Sets the value of the ComboBox.
+    if (Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[0]))
+      downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);
+    if (Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[1]))
+      downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);
+    if (Main.pref.get("mapillary.download-mode").equals(
+        MapillaryDownloader.MODES[2]))
+      downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(tr("Download mode: ")));
     downloadModePanel.add(downloadMode);
@@ -116,7 +126,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      PortListener portListener = new PortListener();
+      OAuthPortListener portListener = new OAuthPortListener();
       portListener.start();
 
       String url = "http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&response_type=token&scope=user:email";

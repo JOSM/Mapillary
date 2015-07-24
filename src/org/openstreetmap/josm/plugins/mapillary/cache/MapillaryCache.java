@@ -29,7 +29,7 @@ public class MapillaryCache extends
   public static enum Type {
     /** Full quality image */
     FULL_IMAGE,
-    
+
     /** Low quality image */
     THUMBNAIL
   }

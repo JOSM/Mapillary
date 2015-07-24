@@ -11,10 +11,12 @@ import java.util.Scanner;
 import org.openstreetmap.josm.Main;
 
 /**
+ * Listens to the OAuth port in order to get the access token.
+ *
  * @author nokutu
  *
  */
-public class PortListener extends Thread {
+public class OAuthPortListener extends Thread {
 
   @Override
   public void run() {
@@ -22,7 +24,8 @@ public class PortListener extends Thread {
       ServerSocket serverSocket = new ServerSocket(8763);
       Socket clientSocket = serverSocket.accept();
       PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+      Scanner in = new Scanner(new InputStreamReader(
+          clientSocket.getInputStream()));
       String s;
       String accessToken = null;
       while (in.hasNextLine()) {
@@ -31,7 +34,8 @@ public class PortListener extends Thread {
           String[] ss = s.split("&");
           for (int i = 0; i < ss.length; i++) {
             if (ss[i].contains("access_token=")) {
-              accessToken = ss[i].substring(ss[i].indexOf("access_token=") + 13, ss[i].length());
+              accessToken = ss[i].substring(
+                  ss[i].indexOf("access_token=") + 13, ss[i].length());
               break;
             }
           }
@@ -41,7 +45,8 @@ public class PortListener extends Thread {
 
       writeContent(out);
 
-      Main.info("Successful login with Mapillary, the access token is: " + accessToken);
+      Main.info("Successful login with Mapillary, the access token is: "
+          + accessToken);
       Main.pref.put("mapillary.access-token", accessToken);
 
       out.close();

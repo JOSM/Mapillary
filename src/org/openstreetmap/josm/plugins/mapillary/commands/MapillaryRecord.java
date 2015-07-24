@@ -71,7 +71,8 @@ public class MapillaryRecord {
       for (MapillaryAbstractImage img : commandList.get(position).images)
         if (!command.images.contains(img))
           equalSets = false;
-      if (equalSets && commandList.get(position).getClass() == command.getClass()) {
+      if (equalSets
+          && commandList.get(position).getClass() == command.getClass()) {
         commandList.get(position).sum(command);
         fireRecordChanged();
         return;

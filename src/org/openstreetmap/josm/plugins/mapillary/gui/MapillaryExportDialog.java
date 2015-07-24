@@ -33,9 +33,14 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   protected JOptionPane optionPane;
   /** Button to export all downloaded images. */
   public JRadioButton all;
-  /** Button to export all images in the sequence of the selected MapillaryImage. */
+  /**
+   * Button to export all images in the sequence of the selected MapillaryImage.
+   */
   public JRadioButton sequence;
-  /** Button to export all images belonging to the selected {@link MapillaryImage} objects. */
+  /**
+   * Button to export all images belonging to the selected
+   * {@link MapillaryImage} objects.
+   */
   public JRadioButton selected;
   /** Button to rewrite all imported images. */
   public JRadioButton rewrite;
@@ -50,12 +55,13 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
   /**
    * Main constructor.
-   * @param ok 
+   * 
+   * @param ok
    */
   public MapillaryExportDialog(JButton ok) {
     this.ok = ok;
     ok.setEnabled(false);
-    
+
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
     RewriteButtonAction action = new RewriteButtonAction(this);

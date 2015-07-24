@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-
 /**
  * Implemented by those classes that need to listen to the creation of the walk
  * threads.

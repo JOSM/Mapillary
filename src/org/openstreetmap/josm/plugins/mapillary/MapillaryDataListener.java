@@ -17,8 +17,10 @@ public interface MapillaryDataListener {
    * Fired when the selected image is changed by something different from
    * manually clicking on the icon.
    *
-   * @param oldImage Old selected {@link MapillaryAbstractImage}
-   * @param newImage New selected {@link MapillaryAbstractImage}
+   * @param oldImage
+   *          Old selected {@link MapillaryAbstractImage}
+   * @param newImage
+   *          New selected {@link MapillaryAbstractImage}
    */
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage);
