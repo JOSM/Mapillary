@@ -250,9 +250,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         maxLat, maxLon)));
   }
 
-  /**
-   * Returns true any of the images from the database has been modified.
-   */
   @Override
   public boolean isModified() {
     for (MapillaryAbstractImage image : data.getImages())
@@ -303,9 +300,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     hatched = new TexturePaint(bi, r);
   }
 
-  /**
-   * Paints the database in the map.
-   */
   @Override
   public synchronized void paint(Graphics2D g, MapView mv, Bounds box) {
     if (Main.map.mapView.getActiveLayer() == this) {

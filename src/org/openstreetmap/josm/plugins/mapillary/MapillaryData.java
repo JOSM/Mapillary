@@ -236,6 +236,11 @@ public class MapillaryData {
    *        True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
+    if (image != null) {
+      System.out.println("----------------------------");
+      for (MapillaryAbstractImage img : getImages())
+        System.out.println(img.getSequence());
+    }
     MapillaryAbstractImage oldImage = selectedImage;
     selectedImage = image;
     multiSelectedImages.clear();

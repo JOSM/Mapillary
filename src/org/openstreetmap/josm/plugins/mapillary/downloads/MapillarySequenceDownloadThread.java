@@ -101,14 +101,15 @@ public class MapillarySequenceDownloadThread extends Thread {
         MapillaryImage.lock.lock();
         for (MapillaryImage img : finalImages) {
           if (layer.getMapillaryData().getImages().contains(img)) {
+            // The image in finalImages is substituted by the one in the
+            // database, as they are equal.
+            img = (MapillaryImage) layer.getMapillaryData().getImages()
+                .get(layer.getMapillaryData().getImages().indexOf(img));
             sequence.add(img);
             ((MapillaryImage) layer.getMapillaryData().getImages()
                 .get(layer.getMapillaryData().getImages().indexOf(img)))
                 .setSequence(sequence);
-            finalImages.set(
-                finalImages.indexOf(img),
-                (MapillaryImage) layer.getMapillaryData().getImages()
-                    .get(layer.getMapillaryData().getImages().indexOf(img)));
+            finalImages.set(finalImages.indexOf(img), img);
           } else {
             img.setSequence(sequence);
             imagesAdded = true;

@@ -7,18 +7,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 /**
- * Downloads and stores pictures in cache.
+ * Utility methods for working with cache.
  *
  * @author nokutu
  *
  */
-public class Utils implements ICachedLoaderListener {
+public class Utils {
 
-  static Utils INSTANCE = new Utils();
-
+  private static IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
 
   /**
-   * Downloads the picture of the given image.
+   * Downloads the picture of the given image and does nothing when it is downloaded.
    *
    * @param img
    */
@@ -26,15 +25,17 @@ public class Utils implements ICachedLoaderListener {
     if (!(img instanceof MapillaryImage))
       throw new IllegalArgumentException();
     new MapillaryCache(((MapillaryImage) img).getKey(), MapillaryCache.Type.THUMBNAIL).submit(
-        INSTANCE, false);
+        IGNORE_DOWNLOAD, false);
     new MapillaryCache(((MapillaryImage) img).getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
-        INSTANCE, false);
+        IGNORE_DOWNLOAD, false);
   }
 
-  @Override
-  public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1,
-      LoadResult arg2) {
-    // Nothing
-  }
+  private static class IgnoreDownload implements ICachedLoaderListener {
 
+    @Override
+    public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1,
+        LoadResult arg2) {
+      // Nothing
+    }
+  }
 }
