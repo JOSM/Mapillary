@@ -7,6 +7,15 @@ jdk:
   - openjdk7
 script: ./gradlew build javadoc
 
+# Release the plugin via GitHub releases when pushing a tag
+deploy:
+  provider: releases
+  api_key: "${GH_TOKEN}"
+  file: "build/libs/josm-mapillary-plugin.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+
 #Deploy to GitHub pages
 after_success: |
   if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then
