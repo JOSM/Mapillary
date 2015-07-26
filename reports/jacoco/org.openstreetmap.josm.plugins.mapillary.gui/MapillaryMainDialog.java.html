@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryMainDialog.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui</a> &gt; <span class="el_source">MapillaryMainDialog.java</span></div><h1>MapillaryMainDialog.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.gui;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.cache.CacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
+import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
+import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
+
+import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.AbstractAction;
+import javax.swing.JPanel;
+
+/**
+ * Toggle dialog that shows an image and some buttons.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryMainDialog extends ToggleDialog implements
+    ICachedLoaderListener, MapillaryDataListener {
+
+  private static final long serialVersionUID = 6856496736429480600L;
+
+  private final static String BASE_TITLE = &quot;Mapillary picture&quot;;
+
+  private static MapillaryMainDialog INSTANCE;
+
+  private volatile MapillaryAbstractImage image;
+
+<span class="nc" id="L61">  private final SideButton nextButton = new SideButton(new nextPictureAction());</span>
+<span class="nc" id="L62">  private final SideButton previousButton = new SideButton(</span>
+      new previousPictureAction());
+  /** Button used to jump to the image following the red line */
+<span class="nc" id="L65">  public final SideButton redButton = new SideButton(new redAction());</span>
+  /** Button used to jump to the image following the blue line */
+<span class="nc" id="L67">  public final SideButton blueButton = new SideButton(new blueAction());</span>
+
+<span class="nc" id="L69">  private final SideButton playButton = new SideButton(new playAction());</span>
+<span class="nc" id="L70">  private final SideButton pauseButton = new SideButton(new pauseAction());</span>
+<span class="nc" id="L71">  private final SideButton stopButton = new SideButton(new stopAction());</span>
+
+  /**
+   * Buttons mode.
+   *
+   * @author nokutu
+   *
+   */
+<span class="nc" id="L79">  public static enum Mode {</span>
+    /** Standard mode to view pictures. */
+<span class="nc" id="L81">    NORMAL,</span>
+    /** Mode when in walk. */
+<span class="nc" id="L83">    WALK;</span>
+  }
+
+  private JPanel buttonsPanel;
+
+  /** Object containing the shown image and that handles zoom and drag */
+  public MapillaryImageDisplay mapillaryImageDisplay;
+
+  private MapillaryCache imageCache;
+  private MapillaryCache thumbnailCache;
+
+  private MapillaryMainDialog() {
+<span class="nc" id="L95">    super(tr(BASE_TITLE), &quot;mapillary.png&quot;, tr(&quot;Open Mapillary window&quot;),</span>
+<span class="nc" id="L96">        Shortcut.registerShortcut(tr(&quot;Mapillary dialog&quot;),</span>
+<span class="nc" id="L97">            tr(&quot;Open Mapillary main dialog&quot;), KeyEvent.VK_M, Shortcut.NONE),</span>
+        200, false, MapillaryPreferenceSetting.class);
+<span class="nc" id="L99">    MapillaryData.getInstance().addListener(this);</span>
+<span class="nc" id="L100">    addShortcuts();</span>
+<span class="nc" id="L101">    mapillaryImageDisplay = new MapillaryImageDisplay();</span>
+
+<span class="nc" id="L103">    blueButton.setForeground(Color.BLUE);</span>
+<span class="nc" id="L104">    redButton.setForeground(Color.RED);</span>
+
+<span class="nc" id="L106">    createLayout(</span>
+        mapillaryImageDisplay,
+<span class="nc" id="L108">        Arrays.asList(new SideButton[] { blueButton, previousButton,</span>
+            nextButton, redButton }),
+<span class="nc" id="L110">        Main.pref.getBoolean(&quot;mapillary.reverse-buttons&quot;));</span>
+<span class="nc" id="L111">    disableAllButtons();</span>
+
+<span class="nc" id="L113">  }</span>
+
+  /**
+   * Adds the shortcuts to the buttons.
+   */
+  private void addShortcuts() {
+<span class="nc" id="L119">    nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(</span>
+<span class="nc" id="L120">        KeyStroke.getKeyStroke(&quot;PAGE_DOWN&quot;), &quot;next&quot;);</span>
+<span class="nc" id="L121">    nextButton.getActionMap().put(&quot;next&quot;, new nextPictureAction());</span>
+<span class="nc" id="L122">    previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(</span>
+<span class="nc" id="L123">        KeyStroke.getKeyStroke(&quot;PAGE_UP&quot;), &quot;previous&quot;);</span>
+<span class="nc" id="L124">    previousButton.getActionMap().put(&quot;previous&quot;, new previousPictureAction());</span>
+<span class="nc" id="L125">    blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(</span>
+<span class="nc" id="L126">        KeyStroke.getKeyStroke(&quot;control PAGE_UP&quot;), &quot;blue&quot;);</span>
+<span class="nc" id="L127">    blueButton.getActionMap().put(&quot;blue&quot;, new blueAction());</span>
+<span class="nc" id="L128">    redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(</span>
+<span class="nc" id="L129">        KeyStroke.getKeyStroke(&quot;control PAGE_DOWN&quot;), &quot;red&quot;);</span>
+<span class="nc" id="L130">    redButton.getActionMap().put(&quot;red&quot;, new redAction());</span>
+<span class="nc" id="L131">  }</span>
+
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
+  public static MapillaryMainDialog getInstance() {
+<span class="nc bnc" id="L139" title="All 2 branches missed.">    if (INSTANCE == null)</span>
+<span class="nc" id="L140">      INSTANCE = new MapillaryMainDialog();</span>
+<span class="nc" id="L141">    return INSTANCE;</span>
+  }
+
+  /**
+   * @param mode
+   */
+  public void setMode(Mode mode) {
+<span class="nc bnc" id="L148" title="All 3 branches missed.">    switch (mode) {</span>
+      case NORMAL:
+<span class="nc" id="L150">        createLayout(</span>
+            mapillaryImageDisplay,
+<span class="nc" id="L152">            Arrays.asList(new SideButton[] { blueButton, previousButton,</span>
+                nextButton, redButton }),
+<span class="nc" id="L154">            Main.pref.getBoolean(&quot;mapillary.reverse-buttons&quot;));</span>
+<span class="nc" id="L155">        break;</span>
+      case WALK:
+<span class="nc" id="L157">        createLayout(</span>
+            mapillaryImageDisplay,
+<span class="nc" id="L159">            Arrays.asList(new SideButton[] { playButton, pauseButton,</span>
+                stopButton }),
+<span class="nc" id="L161">            Main.pref.getBoolean(&quot;mapillary.reverse-buttons&quot;));</span>
+        break;
+    }
+<span class="nc" id="L164">    disableAllButtons();</span>
+
+<span class="nc" id="L166">  }</span>
+
+  /**
+   * Destroys the unique instance of the class.
+   */
+  public static void destroyInstance() {
+<span class="nc" id="L172">    INSTANCE = null;</span>
+<span class="nc" id="L173">  }</span>
+
+  /**
+   * Downloads the full quality picture of the selected MapillaryImage and sets
+   * in the MapillaryImageDisplay object.
+   */
+  public synchronized void updateImage() {
+<span class="nc" id="L180">    updateImage(true);</span>
+<span class="nc" id="L181">  }</span>
+
+  /**
+   * Downloads the picture of the selected MapillaryImage and sets in the
+   * MapillaryImageDisplay object.
+   *
+   * @param fullQuality
+   *          If the full quality picture must be downloaded or just the
+   *          thumbnail.
+   */
+  public synchronized void updateImage(boolean fullQuality) {
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L193">      SwingUtilities.invokeLater(new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L196">          updateImage();</span>
+<span class="nc" id="L197">        }</span>
+      });
+    } else {
+<span class="nc bnc" id="L200" title="All 2 branches missed.">      if (MapillaryLayer.INSTANCE == null) {</span>
+<span class="nc" id="L201">        return;</span>
+      }
+<span class="nc bnc" id="L203" title="All 2 branches missed.">      if (this.image == null) {</span>
+<span class="nc" id="L204">        mapillaryImageDisplay.setImage(null);</span>
+<span class="nc" id="L205">        setTitle(tr(BASE_TITLE));</span>
+<span class="nc" id="L206">        disableAllButtons();</span>
+<span class="nc" id="L207">        return;</span>
+      }
+      // Enables/disables next/previous buttons
+<span class="nc" id="L210">      this.nextButton.setEnabled(false);</span>
+<span class="nc" id="L211">      this.previousButton.setEnabled(false);</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">      if (image.getSequence() != null) {</span>
+<span class="nc" id="L213">        MapillaryAbstractImage tempImage = image;</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        while (tempImage.next() != null) {</span>
+<span class="nc" id="L215">          tempImage = tempImage.next();</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">          if (tempImage.isVisible()) {</span>
+<span class="nc" id="L217">            this.nextButton.setEnabled(true);</span>
+<span class="nc" id="L218">            break;</span>
+          }
+        }
+      }
+<span class="nc bnc" id="L222" title="All 2 branches missed.">      if (image.getSequence() != null) {</span>
+<span class="nc" id="L223">        MapillaryAbstractImage tempImage = image;</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        while (tempImage.previous() != null) {</span>
+<span class="nc" id="L225">          tempImage = tempImage.previous();</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">          if (tempImage.isVisible()) {</span>
+<span class="nc" id="L227">            this.previousButton.setEnabled(true);</span>
+<span class="nc" id="L228">            break;</span>
+          }
+        }
+      }
+<span class="nc bnc" id="L232" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
+<span class="nc" id="L233">        mapillaryImageDisplay.hyperlink.setVisible(true);</span>
+<span class="nc" id="L234">        MapillaryImage mapillaryImage = (MapillaryImage) this.image;</span>
+<span class="nc" id="L235">        mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());</span>
+        // Downloads the thumbnail.
+<span class="nc" id="L237">        this.mapillaryImageDisplay.setImage(null);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">        if (thumbnailCache != null)</span>
+<span class="nc" id="L239">          thumbnailCache.cancelOutstandingTasks();</span>
+<span class="nc" id="L240">        thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),</span>
+            MapillaryCache.Type.THUMBNAIL);
+<span class="nc" id="L242">        thumbnailCache.submit(this, false);</span>
+
+        // Downloads the full resolution image.
+<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (fullQuality) {</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">          if (imageCache != null)</span>
+<span class="nc" id="L247">            imageCache.cancelOutstandingTasks();</span>
+<span class="nc" id="L248">          imageCache = new MapillaryCache(mapillaryImage.getKey(),</span>
+              MapillaryCache.Type.FULL_IMAGE);
+<span class="nc" id="L250">          imageCache.submit(this, false);</span>
+        }
+<span class="nc bnc" id="L252" title="All 2 branches missed.">      } else if (image instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L253">        mapillaryImageDisplay.hyperlink.setVisible(false);</span>
+<span class="nc" id="L254">        mapillaryImageDisplay.hyperlink.setURL(null);</span>
+<span class="nc" id="L255">        MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;</span>
+        try {
+<span class="nc" id="L257">          mapillaryImageDisplay.setImage(mapillaryImage.getImage());</span>
+<span class="nc" id="L258">        } catch (IOException e) {</span>
+<span class="nc" id="L259">          Main.error(e);</span>
+<span class="nc" id="L260">        }</span>
+      }
+<span class="nc" id="L262">      updateTitle();</span>
+    }
+
+<span class="nc" id="L265">  }</span>
+
+  private void disableAllButtons() {
+<span class="nc" id="L268">    nextButton.setEnabled(false);</span>
+<span class="nc" id="L269">    previousButton.setEnabled(false);</span>
+<span class="nc" id="L270">    blueButton.setEnabled(false);</span>
+<span class="nc" id="L271">    redButton.setEnabled(false);</span>
+<span class="nc" id="L272">    mapillaryImageDisplay.hyperlink.setVisible(false);</span>
+<span class="nc" id="L273">  }</span>
+
+  /**
+   * Sets a new MapillaryImage to be shown.
+   *
+   * @param image
+   */
+  public synchronized void setImage(MapillaryAbstractImage image) {
+<span class="nc" id="L281">    this.image = image;</span>
+<span class="nc" id="L282">  }</span>
+
+  /**
+   * Updates the title of the dialog.
+   */
+  public synchronized void updateTitle() {
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L289">      SwingUtilities.invokeLater(new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L292">          updateTitle();</span>
+<span class="nc" id="L293">        }</span>
+      });
+    } else {
+<span class="nc bnc" id="L296" title="All 2 branches missed.">      if (this.image != null) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (this.image instanceof MapillaryImage) {</span>
+<span class="nc" id="L298">          MapillaryImage mapillaryImage = (MapillaryImage) this.image;</span>
+<span class="nc" id="L299">          String title = tr(BASE_TITLE);</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">          if (mapillaryImage.getUser() != null)</span>
+<span class="nc" id="L301">            title += &quot; -- &quot; + mapillaryImage.getUser();</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">          if (mapillaryImage.getCapturedAt() != 0)</span>
+<span class="nc" id="L303">            title += &quot; -- &quot; + mapillaryImage.getDate();</span>
+<span class="nc" id="L304">          setTitle(title);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        } else if (this.image instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L306">          MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;</span>
+<span class="nc" id="L307">          String title = tr(BASE_TITLE);</span>
+<span class="nc" id="L308">          title += &quot; -- &quot; + mapillaryImportedImage.getFile().getName();</span>
+<span class="nc" id="L309">          title += &quot; -- &quot; + mapillaryImportedImage.getDate();</span>
+<span class="nc" id="L310">          setTitle(title);</span>
+        }
+      }
+    }
+<span class="nc" id="L314">  }</span>
+
+  /**
+   * Returns the {@link MapillaryAbstractImage} object which is being shown.
+   *
+   * @return The {@link MapillaryAbstractImage} object which is being shown.
+   */
+  public synchronized MapillaryAbstractImage getImage() {
+<span class="nc" id="L322">    return this.image;</span>
+  }
+
+  /**
+   * Action class form the next image button.
+   *
+   * @author nokutu
+   *
+   */
+  private class nextPictureAction extends AbstractAction {
+
+    private static final long serialVersionUID = 3023827221453154340L;
+
+<span class="nc" id="L335">    public nextPictureAction() {</span>
+<span class="nc" id="L336">      putValue(NAME, tr(&quot;Next picture&quot;));</span>
+<span class="nc" id="L337">      putValue(SHORT_DESCRIPTION, tr(&quot;Shows the next picture in the sequence&quot;));</span>
+<span class="nc" id="L338">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L342">      MapillaryData.getInstance().selectNext();</span>
+<span class="nc" id="L343">    }</span>
+  }
+
+  /**
+   * Action class for the previous image button.
+   *
+   * @author nokutu
+   *
+   */
+  private class previousPictureAction extends AbstractAction {
+
+    private static final long serialVersionUID = -6420511632957956012L;
+
+<span class="nc" id="L356">    public previousPictureAction() {</span>
+<span class="nc" id="L357">      putValue(NAME, tr(&quot;Previous picture&quot;));</span>
+<span class="nc" id="L358">      putValue(SHORT_DESCRIPTION,</span>
+<span class="nc" id="L359">          tr(&quot;Shows the previous picture in the sequence&quot;));</span>
+<span class="nc" id="L360">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L364">      MapillaryData.getInstance().selectPrevious();</span>
+<span class="nc" id="L365">    }</span>
+  }
+
+  /**
+   * Action class to jump to the image following the red line.
+   *
+   * @author nokutu
+   *
+   */
+  private class redAction extends AbstractAction {
+
+    private static final long serialVersionUID = -6480229431481386376L;
+
+<span class="nc" id="L378">    public redAction() {</span>
+<span class="nc" id="L379">      putValue(NAME, tr(&quot;Jump to red&quot;));</span>
+<span class="nc" id="L380">      putValue(SHORT_DESCRIPTION,</span>
+<span class="nc" id="L381">          tr(&quot;Jumps to the picture at the other side of the red line&quot;));</span>
+<span class="nc" id="L382">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L386" title="All 2 branches missed.">      if (MapillaryMainDialog.getInstance().getImage() != null) {</span>
+<span class="nc" id="L387">        MapillaryData.getInstance().setSelectedImage(MapillaryLayer.RED, true);</span>
+      }
+<span class="nc" id="L389">    }</span>
+  }
+
+  /**
+   * Action class to jump to the image following the blue line.
+   *
+   * @author nokutu
+   *
+   */
+  private class blueAction extends AbstractAction {
+
+    private static final long serialVersionUID = 6250690644594703314L;
+
+<span class="nc" id="L402">    public blueAction() {</span>
+<span class="nc" id="L403">      putValue(NAME, tr(&quot;Jump to blue&quot;));</span>
+<span class="nc" id="L404">      putValue(SHORT_DESCRIPTION,</span>
+<span class="nc" id="L405">          tr(&quot;Jumps to the picture at the other side of the blue line&quot;));</span>
+<span class="nc" id="L406">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L410" title="All 2 branches missed.">      if (MapillaryMainDialog.getInstance().getImage() != null) {</span>
+<span class="nc" id="L411">        MapillaryData.getInstance().setSelectedImage(MapillaryLayer.BLUE, true);</span>
+      }
+<span class="nc" id="L413">    }</span>
+  }
+
+  private class stopAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = -6561451575815789198L;
+
+    private WalkThread thread;
+
+<span class="nc" id="L422">    public stopAction() {</span>
+<span class="nc" id="L423">      putValue(NAME, tr(&quot;Stop&quot;));</span>
+<span class="nc" id="L424">      putValue(SHORT_DESCRIPTION, tr(&quot;Stops the walk.&quot;));</span>
+<span class="nc" id="L425">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryStop.png&quot;));</span>
+<span class="nc" id="L426">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L427">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L431" title="All 2 branches missed.">      if (thread != null)</span>
+<span class="nc" id="L432">        thread.stopWalk();</span>
+<span class="nc" id="L433">    }</span>
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+<span class="nc" id="L437">      this.thread = thread;</span>
+<span class="nc" id="L438">    }</span>
+  }
+
+  private class playAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = -17943404752082788L;
+    private WalkThread thread;
+
+<span class="nc" id="L446">    public playAction() {</span>
+<span class="nc" id="L447">      putValue(NAME, tr(&quot;Play&quot;));</span>
+<span class="nc" id="L448">      putValue(SHORT_DESCRIPTION, tr(&quot;Continues with the paused walk.&quot;));</span>
+<span class="nc" id="L449">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPlay.png&quot;));</span>
+<span class="nc" id="L450">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L451">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L455" title="All 2 branches missed.">      if (thread != null)</span>
+<span class="nc" id="L456">        thread.play();</span>
+<span class="nc" id="L457">    }</span>
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+<span class="nc bnc" id="L461" title="All 2 branches missed.">      if (thread != null)</span>
+<span class="nc" id="L462">        this.thread = thread;</span>
+<span class="nc" id="L463">    }</span>
+  }
+
+  private class pauseAction extends AbstractAction implements WalkListener {
+
+    private static final long serialVersionUID = 4400240686337741192L;
+
+    private WalkThread thread;
+
+<span class="nc" id="L472">    public pauseAction() {</span>
+<span class="nc" id="L473">      putValue(NAME, tr(&quot;Pause&quot;));</span>
+<span class="nc" id="L474">      putValue(SHORT_DESCRIPTION, tr(&quot;Pauses the walk.&quot;));</span>
+<span class="nc" id="L475">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPause.png&quot;));</span>
+<span class="nc" id="L476">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L477">    }</span>
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L481">      thread.pause();</span>
+<span class="nc" id="L482">    }</span>
+
+    @Override
+    public void walkStarted(WalkThread thread) {
+<span class="nc" id="L486">      this.thread = thread;</span>
+<span class="nc" id="L487">    }</span>
+  }
+
+  /**
+   * When the pictures are returned from the cache, they are set in the
+   * {@link MapillaryImageDisplay} object.
+   */
+  @Override
+  public void loadingFinished(final CacheEntry data,
+      final CacheEntryAttributes attributes, final LoadResult result) {
+<span class="nc bnc" id="L497" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L498">      SwingUtilities.invokeLater(new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L501">          loadingFinished(data, attributes, result);</span>
+<span class="nc" id="L502">        }</span>
+      });
+<span class="nc bnc" id="L504" title="All 4 branches missed.">    } else if (data != null &amp;&amp; result == LoadResult.SUCCESS) {</span>
+      try {
+<span class="nc" id="L506">        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data</span>
+<span class="nc" id="L507">            .getContent()));</span>
+<span class="nc bnc" id="L508" title="All 2 branches missed.">        if (img == null)</span>
+<span class="nc" id="L509">          return;</span>
+<span class="nc bnc" id="L510" title="All 2 branches missed.">        if (this.mapillaryImageDisplay.getImage() == null)</span>
+<span class="nc" id="L511">          mapillaryImageDisplay.setImage(img);</span>
+<span class="nc" id="L512">        else if (img.getHeight() &gt; this.mapillaryImageDisplay.getImage()</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">            .getHeight()) {</span>
+<span class="nc" id="L514">          mapillaryImageDisplay.setImage(img);</span>
+        }
+<span class="nc" id="L516">      } catch (IOException e) {</span>
+<span class="nc" id="L517">        Main.error(e);</span>
+<span class="nc" id="L518">      }</span>
+    }
+<span class="nc" id="L520">  }</span>
+
+  /**
+   * Creates the layout of the dialog.
+   *
+   * @param data
+   *          The content of the dialog
+   * @param buttons
+   *          The buttons where you can click
+   * @param reverse
+   *          {@code true} if the buttons should go at the top; {@code false}
+   *          otherwise.
+   */
+  public void createLayout(Component data, List&lt;SideButton&gt; buttons,
+      boolean reverse) {
+<span class="nc" id="L535">    this.removeAll();</span>
+<span class="nc" id="L536">    JPanel panel = new JPanel();</span>
+<span class="nc" id="L537">    panel.setLayout(new BorderLayout());</span>
+<span class="nc" id="L538">    panel.add(data, BorderLayout.CENTER);</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">    if (reverse) {</span>
+<span class="nc" id="L540">      buttonsPanel = new JPanel(new GridLayout(1, 1));</span>
+<span class="nc bnc" id="L541" title="All 4 branches missed.">      if (!buttons.isEmpty() &amp;&amp; buttons.get(0) != null) {</span>
+<span class="nc bnc" id="L542" title="All 2 branches missed.">        final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(</span>
+            &quot;dialog.align.left&quot;, false) ? new FlowLayout(FlowLayout.LEFT)
+<span class="nc" id="L544">            : new GridLayout(1, buttons.size()));</span>
+<span class="nc" id="L545">        buttonsPanel.add(buttonRowPanel);</span>
+<span class="nc bnc" id="L546" title="All 2 branches missed.">        for (SideButton button : buttons)</span>
+<span class="nc" id="L547">          buttonRowPanel.add(button);</span>
+      }
+<span class="nc" id="L549">      panel.add(buttonsPanel, BorderLayout.NORTH);</span>
+<span class="nc" id="L550">      createLayout(panel, true, null);</span>
+    } else
+<span class="nc" id="L552">      createLayout(panel, true, buttons);</span>
+<span class="nc" id="L553">    this.add(titleBar, BorderLayout.NORTH);</span>
+<span class="nc" id="L554">  }</span>
+
+  @Override
+  public void selectedImageChanged(MapillaryAbstractImage oldImage,
+      MapillaryAbstractImage newImage) {
+<span class="nc" id="L559">    setImage(newImage);</span>
+<span class="nc" id="L560">    updateImage();</span>
+<span class="nc" id="L561">  }</span>
+
+  @Override
+  public void imagesAdded() {
+<span class="nc" id="L565">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

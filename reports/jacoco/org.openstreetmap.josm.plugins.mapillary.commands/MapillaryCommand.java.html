@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryCommand.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.commands</a> &gt; <span class="el_source">MapillaryCommand.java</span></div><h1>MapillaryCommand.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.commands;
+
+import java.util.List;
+
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+
+/**
+ * Abstract class for any Mapillary command.
+ * 
+ * @author nokutu
+ *
+ */
+<span class="nc" id="L13">public abstract class MapillaryCommand {</span>
+  protected List&lt;MapillaryAbstractImage&gt; images;
+
+  /**
+   * Undoes the action.
+   */
+  public abstract void undo();
+
+  /**
+   * Redoes the action.
+   */
+  public abstract void redo();
+
+  /**
+   * If two equal commands are applied consecutively to the same set of images,
+   * they are summed in order to reduce them to just one command.
+   * 
+   * @param command
+   */
+  public abstract void sum(MapillaryCommand command);
+
+  /**
+   * Checks if the image has been modified, comparing with its original values.
+   */
+  public void checkModified() {
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">      image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);</span>
+<span class="nc" id="L40">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

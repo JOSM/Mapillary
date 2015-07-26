@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryRecord.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.commands</a> &gt; <span class="el_source">MapillaryRecord.java</span></div><h1>MapillaryRecord.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.commands;
+
+import java.util.ArrayList;
+
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+
+/**
+ * History record system in order to let the user undo and redo commands
+ * 
+ * @author nokutu
+ *
+ */
+public class MapillaryRecord {
+  /** The unique instance of the class. */
+  private static MapillaryRecord INSTANCE;
+
+  private ArrayList&lt;MapillaryRecordListener&gt; listeners;
+
+  /** The set of commands that have taken place or that have been undone. */
+  public ArrayList&lt;MapillaryCommand&gt; commandList;
+  /** Last written command. */
+  public int position;
+
+  /**
+   * Main constructor.
+   */
+<span class="nc" id="L27">  public MapillaryRecord() {</span>
+<span class="nc" id="L28">    commandList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L29">    position = -1;</span>
+<span class="nc" id="L30">    listeners = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L31">  }</span>
+
+  /**
+   * Returns the unique instance of the class.
+   * 
+   * @return The unique instance of the class.
+   */
+  public static synchronized MapillaryRecord getInstance() {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryRecord.INSTANCE == null)</span>
+<span class="nc" id="L40">      MapillaryRecord.INSTANCE = new MapillaryRecord();</span>
+<span class="nc" id="L41">    return MapillaryRecord.INSTANCE;</span>
+  }
+
+  /**
+   * Adds a listener.
+   * 
+   * @param lis
+   */
+  public void addListener(MapillaryRecordListener lis) {
+<span class="nc" id="L50">    this.listeners.add(lis);</span>
+<span class="nc" id="L51">  }</span>
+
+  /**
+   * Removes the given listener.
+   * 
+   * @param lis
+   */
+  public void removeListener(MapillaryRecordListener lis) {
+<span class="nc" id="L59">    this.listeners.remove(lis);</span>
+<span class="nc" id="L60">  }</span>
+
+  /**
+   * Adds a new command to the list.
+   * 
+   * @param command
+   */
+  public void addCommand(MapillaryCommand command) {
+    // Checks if it is a continuation of last command
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (position != -1) {</span>
+<span class="nc" id="L70">      boolean equalSets = true;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      for (MapillaryAbstractImage img : commandList.get(position).images)</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (!command.images.contains(img))</span>
+<span class="nc" id="L73">          equalSets = false;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">      if (equalSets</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">          &amp;&amp; commandList.get(position).getClass() == command.getClass()) {</span>
+<span class="nc" id="L76">        commandList.get(position).sum(command);</span>
+<span class="nc" id="L77">        fireRecordChanged();</span>
+<span class="nc" id="L78">        return;</span>
+      }
+    }
+    // Adds the command to the last position of the list.
+<span class="nc" id="L82">    commandList.add(position + 1, command);</span>
+<span class="nc" id="L83">    position++;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">    while (commandList.size() &gt; position + 1) {</span>
+<span class="nc" id="L85">      commandList.remove(position + 1);</span>
+    }
+<span class="nc" id="L87">    fireRecordChanged();</span>
+<span class="nc" id="L88">  }</span>
+
+  /**
+   * Undo latest command.
+   */
+  public void undo() {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    if (position == -1)</span>
+<span class="nc" id="L95">      return;</span>
+<span class="nc" id="L96">    commandList.get(position).undo();</span>
+<span class="nc" id="L97">    position--;</span>
+<span class="nc" id="L98">    fireRecordChanged();</span>
+<span class="nc" id="L99">  }</span>
+
+  /**
+   * Redo latest undoed action.
+   */
+  public void redo() {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    if (position + 1 &gt;= commandList.size())</span>
+<span class="nc" id="L106">      return;</span>
+<span class="nc" id="L107">    position++;</span>
+<span class="nc" id="L108">    commandList.get(position).redo();</span>
+<span class="nc" id="L109">    fireRecordChanged();</span>
+<span class="nc" id="L110">  }</span>
+
+  private void fireRecordChanged() {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    for (MapillaryRecordListener lis : listeners)</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (lis != null)</span>
+<span class="nc" id="L115">        lis.recordChanged();</span>
+<span class="nc" id="L116">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

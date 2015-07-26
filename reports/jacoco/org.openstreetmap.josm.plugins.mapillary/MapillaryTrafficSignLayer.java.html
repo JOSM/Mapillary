@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryTrafficSignLayer.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryTrafficSignLayer.java</span></div><h1>MapillaryTrafficSignLayer.java</h1><pre class="source lang-java linenums">/**
+ *
+ */
+package org.openstreetmap.josm.plugins.mapillary;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
+import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSignElement;
+
+/**
+ *
+ */
+public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
+  private static MapillaryTrafficSignLayer instance;
+
+  /**
+   * Returns and when needed instantiates the Mapillary traffic sign layer.
+   * 
+   * @return the only instance of the traffic sign layer
+   */
+  public static MapillaryTrafficSignLayer getInstance() {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    return instance == null ? (instance = new MapillaryTrafficSignLayer())</span>
+        : instance;
+  }
+
+  /**
+   * @param name
+   */
+  private MapillaryTrafficSignLayer() {
+<span class="nc" id="L47">    super(&quot;Mapillary traffic signs&quot;);</span>
+<span class="nc" id="L48">  }</span>
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.AbstractModifiableLayer#isModified()
+   */
+  @Override
+  public boolean isModified() {
+<span class="nc" id="L57">    return false;</span>
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#paint(java.awt.Graphics2D,
+   * org.openstreetmap.josm.gui.MapView, org.openstreetmap.josm.data.Bounds)
+   */
+  @Override
+  public void paint(Graphics2D g, MapView mv, Bounds box) {
+<span class="nc" id="L68">    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,</span>
+        RenderingHints.VALUE_ANTIALIAS_ON);
+    try {
+<span class="nc" id="L71">      g.setFont(Font.createFont(Font.TRUETYPE_FONT,</span>
+<span class="nc" id="L72">          new File(&quot;data/fonts/traffico/traffico.ttf&quot;)).deriveFont(50.0f));</span>
+<span class="nc" id="L73">    } catch (FontFormatException e) {</span>
+<span class="nc" id="L74">      e.printStackTrace();</span>
+<span class="nc" id="L75">    } catch (IOException e) {</span>
+<span class="nc" id="L76">      e.printStackTrace();</span>
+<span class="nc" id="L77">    }</span>
+
+<span class="nc" id="L79">    Point[] points = new Point[3];</span>
+<span class="nc" id="L80">    points[0] = mv.getPoint(new LatLon(49.01058, 8.40743));</span>
+<span class="nc" id="L81">    points[1] = mv.getPoint(new LatLon(49.01116, 8.40679));</span>
+<span class="nc" id="L82">    points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));</span>
+
+<span class="nc" id="L84">    TrafficoSignElement[][] signs = {</span>
+<span class="nc" id="L85">        TrafficoSign.getSign(&quot;europe&quot;, &quot;mandatory_cycle_track&quot;),</span>
+<span class="nc" id="L86">        TrafficoSign.getSign(&quot;de&quot;, &quot;information_bus_stop&quot;),</span>
+<span class="nc" id="L87">        TrafficoSign.getSign(&quot;europe&quot;, &quot;information_pedestrian_crossing&quot;) };</span>
+
+<span class="nc bnc" id="L89" title="All 4 branches missed.">    for (int i = 0; i &lt; signs.length &amp;&amp; i &lt; points.length; i++) {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">      for (TrafficoSignElement layer : signs[i]) { // TODO: NPE</span>
+<span class="nc" id="L91">        g.setColor(layer.getColor());</span>
+<span class="nc" id="L92">        g.drawString(&quot;&quot; + layer.getGlyph(), points[i].x - 25, points[i].y + 25);</span>
+      }
+    }
+
+    // Start iterating the images
+<span class="nc" id="L97">    g.setColor(Color.MAGENTA);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance()</span>
+<span class="nc" id="L99">        .getMapillaryData().getImages()) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">      if (img instanceof MapillaryImage) {</span>
+<span class="nc" id="L101">        g.fillOval(mv.getPoint(img.getLatLon()).x - 3,</span>
+<span class="nc" id="L102">            mv.getPoint(img.getLatLon()).y - 3, 6, 6);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (((MapillaryImage) img).getSigns().size() &gt;= 1) {</span>
+<span class="nc" id="L104">          Point imgLoc = mv.getPoint(img.getLatLon());</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">          for (TrafficoSignElement e : TrafficoSign.getSign(&quot;de&quot;,</span>
+<span class="nc" id="L106">              ((MapillaryImage) img).getSigns().get(0))) {</span>
+<span class="nc" id="L107">            g.setColor(e.getColor());</span>
+<span class="nc" id="L108">            g.drawString(&quot;&quot; + e.getGlyph(), imgLoc.x, imgLoc.y);</span>
+          }
+        }
+      }
+<span class="nc" id="L112">    }</span>
+<span class="nc" id="L113">  }</span>
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#getIcon()
+   */
+  @Override
+  public Icon getIcon() {
+<span class="nc" id="L122">    return MapillaryPlugin.ICON16;</span>
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#getToolTipText()
+   */
+  @Override
+  public String getToolTipText() {
+<span class="nc" id="L132">    return null;</span>
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.openstreetmap.josm.gui.layer.Layer#mergeFrom(org.openstreetmap.josm
+   * .gui.layer.Layer)
+   */
+  @Override
+  public void mergeFrom(Layer from) {
+    // Does nothing as this layer is not mergeable (see method
+    // isMergable(Layer))
+<span class="nc" id="L146">  }</span>
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.openstreetmap.josm.gui.layer.Layer#isMergable(org.openstreetmap.josm
+   * .gui.layer.Layer)
+   */
+  @Override
+  public boolean isMergable(Layer other) {
+<span class="nc" id="L157">    return false;</span>
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.openstreetmap.josm.gui.layer.Layer#visitBoundingBox(org.openstreetmap
+   * .josm.data.osm.visitor.BoundingXYVisitor)
+   */
+  @Override
+  public void visitBoundingBox(BoundingXYVisitor v) {
+    // TODO Auto-generated method stub
+
+<span class="nc" id="L171">  }</span>
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#getInfoComponent()
+   */
+  @Override
+  public Object getInfoComponent() {
+    // TODO Auto-generated method stub
+<span class="nc" id="L181">    return null;</span>
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.openstreetmap.josm.gui.layer.Layer#getMenuEntries()
+   */
+  @Override
+  public Action[] getMenuEntries() {
+    // TODO Auto-generated method stub
+<span class="nc" id="L192">    return null;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

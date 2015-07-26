@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryExportWriterThread.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.downloads</a> &gt; <span class="el_source">MapillaryExportWriterThread.java</span></div><h1>MapillaryExportWriterThread.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.downloads;
+
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
+import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+
+/**
+ * Writes the images from the queue in the file system.
+ * 
+ * @author nokutu
+ * @see MapillaryExportManager
+ */
+public class MapillaryExportWriterThread extends Thread {
+
+  private final String path;
+  private final ArrayBlockingQueue&lt;BufferedImage&gt; queue;
+  private final ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages;
+  private final int amount;
+  private final ProgressMonitor monitor;
+
+  /**
+   * Main constructor.
+   * 
+   * @param path
+   *          Path to write the pictures.
+   * @param queue
+   *          Queue of {@link MapillaryAbstractImage} objects.
+   * @param queueImages
+   *          Queue of {@link BufferedImage} objects.
+   * @param amount
+   *          Amount of images that are going to be exported.
+   * @param monitor
+   *          Progress monitor.
+   */
+  public MapillaryExportWriterThread(String path,
+      ArrayBlockingQueue&lt;BufferedImage&gt; queue,
+      ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages, int amount,
+<span class="nc" id="L63">      ProgressMonitor monitor) {</span>
+<span class="nc" id="L64">    this.path = path;</span>
+<span class="nc" id="L65">    this.queue = queue;</span>
+<span class="nc" id="L66">    this.queueImages = queueImages;</span>
+<span class="nc" id="L67">    this.amount = amount;</span>
+<span class="nc" id="L68">    this.monitor = monitor;</span>
+<span class="nc" id="L69">  }</span>
+
+  @Override
+  public void run() {
+<span class="nc" id="L73">    monitor.setCustomText(&quot;Downloaded 0/&quot; + amount);</span>
+<span class="nc" id="L74">    File tempFile = null;</span>
+    BufferedImage img;
+<span class="nc" id="L76">    MapillaryAbstractImage mimg = null;</span>
+<span class="nc" id="L77">    String finalPath = &quot;&quot;;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    for (int i = 0; i &lt; amount; i++) {</span>
+      try {
+<span class="nc" id="L80">        img = queue.take();</span>
+<span class="nc" id="L81">        mimg = queueImages.take();</span>
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        if (img == null || mimg == null)</span>
+<span class="nc" id="L83">          throw new IllegalStateException(&quot;Null image&quot;);</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">        if (path == null &amp;&amp; mimg instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L85">          String path = ((MapillaryImportedImage) mimg).getFile().getPath();</span>
+<span class="nc" id="L86">          finalPath = path.substring(0, path.lastIndexOf('.'));</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImage)</span>
+<span class="nc" id="L88">          finalPath = path + &quot;/&quot; + ((MapillaryImage) mimg).getKey();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L90">          finalPath = path + &quot;/&quot;</span>
+<span class="nc" id="L91">              + ((MapillaryImportedImage) mimg).getFile().getName();</span>
+        ;
+        // Creates a temporal file that is going to be deleted after
+        // writing the EXIF tags.
+<span class="nc" id="L95">        tempFile = new File(finalPath + &quot;.tmp&quot;);</span>
+<span class="nc" id="L96">        ImageIO.write(img, &quot;jpg&quot;, tempFile);</span>
+
+        // Write EXIF tags
+<span class="nc" id="L99">        TiffOutputSet outputSet = null;</span>
+<span class="nc" id="L100">        TiffOutputDirectory exifDirectory = null;</span>
+        // If the image is imported, loads the rest of the EXIF data.
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L103">          final ImageMetadata metadata = Imaging</span>
+<span class="nc" id="L104">              .getMetadata(((MapillaryImportedImage) mimg).getFile());</span>
+<span class="nc" id="L105">          final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">          if (null != jpegMetadata) {</span>
+<span class="nc" id="L107">            final TiffImageMetadata exif = jpegMetadata.getExif();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (null != exif) {</span>
+<span class="nc" id="L109">              outputSet = exif.getOutputSet();</span>
+            }
+          }
+        }
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (null == outputSet) {</span>
+<span class="nc" id="L114">          outputSet = new TiffOutputSet();</span>
+        }
+<span class="nc" id="L116">        exifDirectory = outputSet.getOrCreateExifDirectory();</span>
+
+<span class="nc" id="L118">        exifDirectory</span>
+<span class="nc" id="L119">            .removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
+<span class="nc" id="L120">        exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
+            GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+
+<span class="nc" id="L123">        exifDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="nc" id="L124">        exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
+<span class="nc" id="L125">            RationalNumber.valueOf(mimg.getCa()));</span>
+
+<span class="nc" id="L127">        exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L129">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="nc" id="L130">              ((MapillaryImportedImage) mimg).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImage)</span>
+<span class="nc" id="L132">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="nc" id="L133">              ((MapillaryImage) mimg).getDate(&quot;yyyy/MM/dd hh/mm/ss&quot;));</span>
+<span class="nc" id="L134">        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon()</span>
+<span class="nc" id="L135">            .lat());</span>
+<span class="nc" id="L136">        OutputStream os = new BufferedOutputStream(new FileOutputStream(</span>
+            finalPath + &quot;.jpg&quot;));
+<span class="nc" id="L138">        new ExifRewriter().updateExifMetadataLossless(tempFile, os, outputSet);</span>
+<span class="nc" id="L139">        tempFile.delete();</span>
+<span class="nc" id="L140">        os.close();</span>
+<span class="nc" id="L141">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L142">        Main.info(&quot;Mapillary export cancelled&quot;);</span>
+<span class="nc" id="L143">        return;</span>
+<span class="nc" id="L144">      } catch (IOException e) {</span>
+<span class="nc" id="L145">        Main.error(e);</span>
+<span class="nc" id="L146">      } catch (ImageWriteException e) {</span>
+<span class="nc" id="L147">        Main.error(e);</span>
+<span class="nc" id="L148">      } catch (ImageReadException e) {</span>
+<span class="nc" id="L149">        Main.error(e);</span>
+<span class="nc" id="L150">      }</span>
+
+      // Increases the progress bar.
+<span class="nc" id="L153">      monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / amount);</span>
+<span class="nc" id="L154">      monitor.setCustomText(&quot;Downloaded &quot; + (i + 1) + &quot;/&quot; + amount);</span>
+    }
+<span class="nc" id="L156">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

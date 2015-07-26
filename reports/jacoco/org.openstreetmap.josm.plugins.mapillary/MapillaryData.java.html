@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryData.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryData.java</span></div><h1>MapillaryData.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+/**
+ * Database class for all the MapillaryImage objects.
+ *
+ * @author nokutu
+ * @see MapillaryAbstractImage
+ * @see MapillarySequence
+ *
+ */
+public class MapillaryData {
+
+  /** Unique instance of the class */
+  public volatile static MapillaryData INSTANCE;
+  /** Enable this if you are using in Unit Tests */
+<span class="fc" id="L23">  public static boolean TEST_MODE = false;</span>
+
+  private final List&lt;MapillaryAbstractImage&gt; images;
+  private MapillaryAbstractImage selectedImage;
+  /** The image under the cursor */
+  private MapillaryAbstractImage highlightedImage;
+  private final List&lt;MapillaryAbstractImage&gt; multiSelectedImages;
+
+<span class="fc" id="L31">  private CopyOnWriteArrayList&lt;MapillaryDataListener&gt; listeners = new CopyOnWriteArrayList&lt;&gt;();</span>
+
+  /**
+   * Main constructor.
+   */
+<span class="fc" id="L36">  private MapillaryData() {</span>
+<span class="fc" id="L37">    images = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L38">    multiSelectedImages = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">    selectedImage = null;</span>
+
+<span class="fc" id="L41">    addListener(MapillaryPlugin.walkAction);</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
+  public static MapillaryData getInstance() {
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (INSTANCE == null) {</span>
+<span class="fc" id="L51">      INSTANCE = new MapillaryData();</span>
+    }
+<span class="fc" id="L53">    return INSTANCE;</span>
+  }
+
+  /**
+   * Destroys the unique instance.
+   */
+  public void destroy() {
+<span class="nc" id="L60">    INSTANCE = null;</span>
+<span class="nc" id="L61">  }</span>
+
+  /**
+   * Adds a set of MapillaryImages to the object, and then repaints mapView.
+   *
+   * @param images
+   *          The set of images to be added.
+   */
+  public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images) {</span>
+<span class="nc" id="L71">      add(image);</span>
+<span class="nc" id="L72">    }</span>
+<span class="nc" id="L73">  }</span>
+
+  /**
+   * Adds an MapillaryImage to the object, and then repaints mapView.
+   *
+   * @param image
+   *          The image to be added.
+   */
+  public synchronized void add(MapillaryAbstractImage image) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (!images.contains(image)) {</span>
+<span class="nc" id="L83">      this.images.add(image);</span>
+    }
+<span class="nc" id="L85">    dataUpdated();</span>
+<span class="nc" id="L86">    fireImagesAdded();</span>
+<span class="nc" id="L87">  }</span>
+
+  /**
+   * Adds a new listener.
+   *
+   * @param lis
+   *          Listener to be added.
+   */
+  public void addListener(MapillaryDataListener lis) {
+<span class="fc" id="L96">    listeners.add(lis);</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * Removes a listener.
+   *
+   * @param lis
+   *          Listener to be removed.
+   */
+  public void removeListener(MapillaryDataListener lis) {
+<span class="nc" id="L106">    listeners.remove(lis);</span>
+<span class="nc" id="L107">  }</span>
+
+  /**
+   * Adds a set of MapillaryImages to the object, but doesn't repaint mapView.
+   * This is needed for concurrency.
+   *
+   * @param images
+   *          The set of images to be added.
+   */
+  public synchronized void addWithoutUpdate(List&lt;MapillaryAbstractImage&gt; images) {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images) {</span>
+<span class="fc" id="L118">      addWithoutUpdate(image);</span>
+<span class="fc" id="L119">    }</span>
+<span class="fc" id="L120">  }</span>
+
+  /**
+   * Highlights the image under the cursor.
+   *
+   * @param image
+   *          The image under the cursor.
+   */
+  public void setHighlightedImage(MapillaryAbstractImage image) {
+<span class="nc" id="L129">    highlightedImage = image;</span>
+<span class="nc" id="L130">  }</span>
+
+  /**
+   * Returns the image under the mouse cursor.
+   *
+   * @return The image under the mouse cursor.
+   */
+  public MapillaryAbstractImage getHighlighted() {
+<span class="nc" id="L138">    return highlightedImage;</span>
+  }
+
+  /**
+   * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
+   * needed for concurrency.
+   *
+   * @param image
+   *          The image to be added.
+   */
+  public synchronized void addWithoutUpdate(MapillaryAbstractImage image) {
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    if (!images.contains(image)) {</span>
+<span class="fc" id="L150">      this.images.add(image);</span>
+    }
+<span class="fc" id="L152">    fireImagesAdded();</span>
+<span class="fc" id="L153">  }</span>
+
+  /**
+   * Repaints mapView object.
+   */
+  public synchronized void dataUpdated() {
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">    if (!TEST_MODE)</span>
+<span class="nc" id="L160">      Main.map.mapView.repaint();</span>
+<span class="fc" id="L161">  }</span>
+
+  /**
+   * Returns a List containing all images.
+   *
+   * @return A List object containing all images.
+   */
+  public List&lt;MapillaryAbstractImage&gt; getImages() {
+<span class="fc" id="L169">    return images;</span>
+  }
+
+  /**
+   * Returns the MapillaryImage object that is currently selected.
+   *
+   * @return The selected MapillaryImage object.
+   */
+  public MapillaryAbstractImage getSelectedImage() {
+<span class="nc" id="L178">    return selectedImage;</span>
+  }
+
+  private void fireImagesAdded() {
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (listeners.isEmpty())</span>
+<span class="nc" id="L183">      return;</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">    for (MapillaryDataListener lis : listeners)</span>
+<span class="fc" id="L185">      lis.imagesAdded();</span>
+<span class="fc" id="L186">  }</span>
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
+   * following visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   */
+  public void selectNext() {
+<span class="nc bnc" id="L194" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
+<span class="nc" id="L195">      return;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
+<span class="nc" id="L197">      return;</span>
+<span class="nc" id="L198">    MapillaryAbstractImage tempImage = selectedImage;</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">    while (tempImage.next() != null) {</span>
+<span class="nc" id="L200">      tempImage = tempImage.next();</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
+<span class="nc" id="L202">        setSelectedImage(tempImage,</span>
+<span class="nc" id="L203">            Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;, true));</span>
+<span class="nc" id="L204">        break;</span>
+      }
+    }
+<span class="nc" id="L207">  }</span>
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
+   * previous visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   */
+  public void selectPrevious() {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
+<span class="nc" id="L216">      return;</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
+<span class="nc" id="L218">      throw new IllegalStateException();</span>
+<span class="nc" id="L219">    MapillaryAbstractImage tempImage = selectedImage;</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    while (tempImage.previous() != null) {</span>
+<span class="nc" id="L221">      tempImage = tempImage.previous();</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
+<span class="nc" id="L223">        setSelectedImage(tempImage,</span>
+<span class="nc" id="L224">            Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;, true));</span>
+<span class="nc" id="L225">        break;</span>
+      }
+    }
+<span class="nc" id="L228">  }</span>
+
+  /**
+   * Selects a new image.If the user does ctrl + click, this isn't triggered.
+   *
+   * @param image
+   *          The MapillaryImage which is going to be selected
+   */
+  public void setSelectedImage(MapillaryAbstractImage image) {
+<span class="nc" id="L237">    setSelectedImage(image, false);</span>
+<span class="nc" id="L238">  }</span>
+
+  /**
+   * Selects a new image.If the user does ctrl+click, this isn't triggered. You
+   * can choose whether to center the view on the new image or not.
+   *
+   * @param image
+   *          The {@link MapillaryImage} which is going to be selected.
+   * @param zoom
+   *          True if the view must be centered on the image; false otherwise.
+   */
+  public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    if (image != null) {</span>
+<span class="nc" id="L251">      System.out.println(&quot;----------------------------&quot;);</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">      for (MapillaryAbstractImage img : getImages())</span>
+<span class="nc" id="L253">        System.out.println(img.getSequence());</span>
+    }
+<span class="nc" id="L255">    MapillaryAbstractImage oldImage = selectedImage;</span>
+<span class="nc" id="L256">    selectedImage = image;</span>
+<span class="nc" id="L257">    multiSelectedImages.clear();</span>
+<span class="nc" id="L258">    multiSelectedImages.add(image);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (image != null) {</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
+<span class="nc" id="L261">        MapillaryImage mapillaryImage = (MapillaryImage) image;</span>
+        // Downloading thumbnails of surrounding pictures.
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (mapillaryImage.next() != null) {</span>
+<span class="nc" id="L264">          Utils.downloadPicture((MapillaryImage) mapillaryImage.next());</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">          if (mapillaryImage.next().next() != null)</span>
+<span class="nc" id="L266">            Utils</span>
+<span class="nc" id="L267">                .downloadPicture((MapillaryImage) mapillaryImage.next().next());</span>
+        }
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (mapillaryImage.previous() != null) {</span>
+<span class="nc" id="L270">          Utils.downloadPicture((MapillaryImage) mapillaryImage.previous());</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">          if (mapillaryImage.previous().previous() != null)</span>
+<span class="nc" id="L272">            Utils.downloadPicture((MapillaryImage) mapillaryImage.previous()</span>
+<span class="nc" id="L273">                .previous());</span>
+        }
+      }
+    }
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (zoom)</span>
+<span class="nc" id="L278">      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()</span>
+<span class="nc" id="L279">          .getLatLon());</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">    if (Main.map != null)</span>
+<span class="nc" id="L281">      Main.map.mapView.repaint();</span>
+<span class="nc" id="L282">    fireSelectedImageChanged(oldImage, selectedImage);</span>
+<span class="nc" id="L283">  }</span>
+
+  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
+      MapillaryAbstractImage newImage) {
+<span class="nc bnc" id="L287" title="All 2 branches missed.">    if (listeners.isEmpty())</span>
+<span class="nc" id="L288">      return;</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">    for (MapillaryDataListener lis : listeners)</span>
+<span class="nc" id="L290">      lis.selectedImageChanged(oldImage, newImage);</span>
+<span class="nc" id="L291">  }</span>
+
+  /**
+   * Adds a MapillaryImage object to the list of selected images, (when ctrl +
+   * click)
+   *
+   * @param image
+   *          The MapillaryImage object to be added.
+   */
+  public void addMultiSelectedImage(MapillaryAbstractImage image) {
+<span class="nc bnc" id="L301" title="All 2 branches missed.">    if (!this.multiSelectedImages.contains(image)) {</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">      if (this.getSelectedImage() != null)</span>
+<span class="nc" id="L303">        this.multiSelectedImages.add(image);</span>
+      else
+<span class="nc" id="L305">        this.setSelectedImage(image);</span>
+    }
+<span class="nc" id="L307">    Main.map.mapView.repaint();</span>
+<span class="nc" id="L308">  }</span>
+
+  /**
+   * Adds a set of {@code MapillaryAbstractImage} objects to the list of
+   * selected images.
+   *
+   * @param images
+   *          A List object containing the set of images to be added.
+   */
+  public void addMultiSelectedImage(List&lt;MapillaryAbstractImage&gt; images) {
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">      if (!this.multiSelectedImages.contains(image)) {</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (this.getSelectedImage() != null)</span>
+<span class="nc" id="L321">          this.multiSelectedImages.add(image);</span>
+        else
+<span class="nc" id="L323">          this.setSelectedImage(image);</span>
+      }
+<span class="nc" id="L325">    Main.map.mapView.repaint();</span>
+<span class="nc" id="L326">  }</span>
+
+  /**
+   * Returns a List containing all {@code MapillaryAbstractImage} objects
+   * selected with ctrl + click.
+   *
+   * @return A List object containing all the images selected.
+   */
+  public List&lt;MapillaryAbstractImage&gt; getMultiSelectedImages() {
+<span class="nc" id="L335">    return multiSelectedImages;</span>
+  }
+
+  /**
+   * Returns the amount of images contained by this object.
+   *
+   * @return The amount of images in stored.
+   */
+  public int size() {
+<span class="nc" id="L344">    return images.size();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

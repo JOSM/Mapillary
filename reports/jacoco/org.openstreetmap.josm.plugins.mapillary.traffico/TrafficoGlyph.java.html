@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TrafficoGlyph.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.traffico</a> &gt; <span class="el_source">TrafficoGlyph.java</span></div><h1>TrafficoGlyph.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.traffico;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+<span class="nc" id="L11">public class TrafficoGlyph {</span>
+  private static Map&lt;String, Character&gt; glyphs;
+
+  private static Map&lt;String, Character&gt; readGlyphsFromResources() {
+<span class="nc" id="L15">    JsonReader reader = Json.createReader(TrafficoSignElement.class</span>
+<span class="nc" id="L16">        .getResourceAsStream(&quot;/data/fonts/traffico/glyphs.json&quot;));</span>
+<span class="nc" id="L17">    JsonObject glyphObject = reader.readObject().getJsonObject(&quot;glyphs&quot;);</span>
+<span class="nc" id="L18">    Set&lt;String&gt; glyphNames = glyphObject.keySet();</span>
+<span class="nc" id="L19">    glyphs = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L20" title="All 2 branches missed.">    for (String name : glyphNames) {</span>
+<span class="nc" id="L21">      glyphs.put(name, glyphObject.getString(name).charAt(0));</span>
+<span class="nc" id="L22">    }</span>
+<span class="nc" id="L23">    return glyphs;</span>
+  }
+
+  public static Character getGlyph(String key) {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">    if (glyphs == null) {</span>
+<span class="nc" id="L28">      glyphs = readGlyphsFromResources();</span>
+    }
+<span class="nc" id="L30">    return glyphs.get(key);</span>
+  }
+
+  public static void main(String[] args) {
+<span class="nc" id="L34">    System.out.println(TrafficoGlyph.getGlyph(&quot;h&quot;));</span>
+<span class="nc" id="L35">    System.out.println(TrafficoGlyph.getGlyph(&quot;DE-arrow-up&quot;));</span>
+<span class="nc" id="L36">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

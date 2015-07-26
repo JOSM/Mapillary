@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryPlugin.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryPlugin.java</span></div><h1>MapillaryPlugin.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary;
+
+import java.io.IOException;
+
+import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+
+import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.gui.MainMenu;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MapFrame;
+import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
+import org.openstreetmap.josm.plugins.Plugin;
+import org.openstreetmap.josm.plugins.PluginInformation;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.actions.*;
+import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ * This is the main class of the Mapillary plugin.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryPlugin extends Plugin {
+
+  /** 24x24 icon. */
+<span class="fc" id="L34">  public static final ImageIcon ICON24 = new ImageProvider(&quot;icon24.png&quot;).get();</span>
+  /** 16x16 icon. */
+<span class="fc" id="L36">  public static final ImageIcon ICON16 = new ImageProvider(&quot;icon16.png&quot;).get();</span>
+  /** Icon representing an image in the map. */
+<span class="fc" id="L38">  public static final ImageIcon MAP_ICON = new ImageProvider(&quot;mapicon.png&quot;)</span>
+<span class="fc" id="L39">      .get();</span>
+  /** Icon representing a selected image in the map. */
+<span class="fc" id="L41">  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(</span>
+<span class="fc" id="L42">      &quot;mapiconselected.png&quot;).get();</span>
+  /** Icon representing an imported image in the map. */
+<span class="fc" id="L44">  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(</span>
+<span class="fc" id="L45">      &quot;mapiconimported.png&quot;).get();</span>
+  /** Icon used to identify which images have signs on them */
+<span class="fc" id="L47">  public static final ImageIcon MAP_SIGN = new ImageProvider(&quot;sign.png&quot;).get();</span>
+
+  /** Cache that stores the pictures the downloaded pictures. */
+  public static CacheAccess&lt;String, BufferedImageCacheEntry&gt; CACHE;
+
+  private final MapillaryDownloadAction downloadAction;
+  private final MapillaryExportAction exportAction;
+  private final MapillaryImportAction importAction;
+  private final MapillaryZoomAction zoomAction;
+  private final MapillaryDownloadViewAction downloadViewAction;
+  private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
+  private final MapillaryJoinAction joinAction;
+  /** Walk action */
+<span class="fc" id="L60">  public final static MapillaryWalkAction walkAction = new MapillaryWalkAction();</span>
+
+  /** Menu button for the {@link MapillaryDownloadAction} action. */
+  public static JMenuItem DOWNLOAD_MENU;
+  /** Menu button for the {@link MapillaryExportAction} action. */
+  public static JMenuItem EXPORT_MENU;
+  /** Menu button for the {@link MapillaryImportAction} action. */
+  public static JMenuItem IMPORT_MENU;
+  /** Menu button for the {@link MapillaryZoomAction} action. */
+  public static JMenuItem ZOOM_MENU;
+  /** Menu button for the {@link MapillaryDownloadViewAction} action. */
+  public static JMenuItem DOWNLOAD_VIEW_MENU;
+  /** Menu button for the {@link MapillaryImportIntoSequenceAction} action. */
+  public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
+  /** Menu button for the {@link MapillaryJoinAction} action. */
+  public static JMenuItem JOIN_MENU;
+  /** Menu button for the {@link MapillaryWalkAction} action. */
+  public static JMenuItem WALK_MENU;
+
+  /**
+   * Main constructor.
+   *
+   * @param info
+   */
+  public MapillaryPlugin(PluginInformation info) {
+<span class="nc" id="L85">    super(info);</span>
+<span class="nc" id="L86">    downloadAction = new MapillaryDownloadAction();</span>
+<span class="nc" id="L87">    exportAction = new MapillaryExportAction();</span>
+<span class="nc" id="L88">    importAction = new MapillaryImportAction();</span>
+<span class="nc" id="L89">    zoomAction = new MapillaryZoomAction();</span>
+<span class="nc" id="L90">    downloadViewAction = new MapillaryDownloadViewAction();</span>
+<span class="nc" id="L91">    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();</span>
+<span class="nc" id="L92">    joinAction = new MapillaryJoinAction();</span>
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    if (Main.main != null) { // important for headless mode</span>
+<span class="nc" id="L95">      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction,</span>
+          false);
+<span class="nc" id="L97">      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false,</span>
+<span class="nc" id="L98">          14);</span>
+<span class="nc" id="L99">      IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu,</span>
+<span class="nc" id="L100">          importIntoSequenceAction, false, 14);</span>
+<span class="nc" id="L101">      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,</span>
+<span class="nc" id="L102">          14);</span>
+<span class="nc" id="L103">      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);</span>
+<span class="nc" id="L104">      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,</span>
+<span class="nc" id="L105">          downloadViewAction, false, 14);</span>
+<span class="nc" id="L106">      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);</span>
+<span class="nc" id="L107">      WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);</span>
+    }
+
+<span class="nc" id="L110">    EXPORT_MENU.setEnabled(false);</span>
+<span class="nc" id="L111">    DOWNLOAD_MENU.setEnabled(false);</span>
+<span class="nc" id="L112">    IMPORT_MENU.setEnabled(false);</span>
+<span class="nc" id="L113">    IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);</span>
+<span class="nc" id="L114">    ZOOM_MENU.setEnabled(false);</span>
+<span class="nc" id="L115">    DOWNLOAD_VIEW_MENU.setEnabled(false);</span>
+<span class="nc" id="L116">    JOIN_MENU.setEnabled(false);</span>
+<span class="nc" id="L117">    WALK_MENU.setEnabled(false);</span>
+
+    try {
+<span class="nc" id="L120">      CACHE = JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000,</span>
+<span class="nc" id="L121">          this.getPluginDir() + &quot;/cache/&quot;);</span>
+<span class="nc" id="L122">    } catch (IOException e) {</span>
+<span class="nc" id="L123">      Main.error(e);</span>
+<span class="nc" id="L124">    }</span>
+<span class="nc" id="L125">  }</span>
+
+  /**
+   * Called when the JOSM map frame is created or destroyed.
+   */
+  @Override
+  public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
+<span class="nc bnc" id="L132" title="All 4 branches missed.">    if (oldFrame == null &amp;&amp; newFrame != null) { // map frame added</span>
+<span class="nc" id="L133">      Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);</span>
+<span class="nc" id="L134">      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);</span>
+<span class="nc" id="L135">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
+<span class="nc" id="L136">      setMenuEnabled(DOWNLOAD_MENU, true);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
+          MapillaryDownloader.MODES[2]))
+<span class="nc" id="L139">        setMenuEnabled(DOWNLOAD_VIEW_MENU, true);</span>
+<span class="nc" id="L140">      setMenuEnabled(IMPORT_MENU, true);</span>
+<span class="nc" id="L141">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);</span>
+    }
+<span class="nc bnc" id="L143" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
+<span class="nc" id="L144">      MapillaryMainDialog.destroyInstance();</span>
+<span class="nc" id="L145">      MapillaryHistoryDialog.destroyInstance();</span>
+<span class="nc" id="L146">      MapillaryFilterDialog.destroyInstance();</span>
+<span class="nc" id="L147">      setMenuEnabled(DOWNLOAD_MENU, false);</span>
+<span class="nc" id="L148">      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);</span>
+<span class="nc" id="L149">      setMenuEnabled(IMPORT_MENU, false);</span>
+<span class="nc" id="L150">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);</span>
+    }
+<span class="nc" id="L152">  }</span>
+
+  /**
+   * Enables/disables a JMenuItem.
+   *
+   * @param menu
+   *          The JMenuItem object that is going to be enabled or disabled.
+   * @param value
+   *          true to enable the JMenuItem; false to disable it.
+   */
+  public static void setMenuEnabled(JMenuItem menu, boolean value) {
+<span class="nc" id="L163">    menu.setEnabled(value);</span>
+<span class="nc" id="L164">    menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L165">  }</span>
+
+  @Override
+  public PreferenceSetting getPreferenceSetting() {
+<span class="nc" id="L169">    return new MapillaryPreferenceSetting();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

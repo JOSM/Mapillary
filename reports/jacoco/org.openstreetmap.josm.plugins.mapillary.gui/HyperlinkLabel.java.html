@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>HyperlinkLabel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui</a> &gt; <span class="el_source">HyperlinkLabel.java</span></div><h1>HyperlinkLabel.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.gui;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+
+import org.openstreetmap.josm.Main;
+
+import java.awt.Desktop;
+
+/**
+ * JLabel that acts as a hyperlink.
+ *
+ * @author nokutu
+ *
+ */
+public class HyperlinkLabel extends JLabel implements ActionListener {
+
+  private static final long serialVersionUID = -8965989079294159405L;
+  private String text;
+  private URL url;
+
+  /**
+   * Creates a new HyperlinlLabel.
+   */
+  public HyperlinkLabel() {
+<span class="nc" id="L37">    super(tr(&quot;View in website&quot;), SwingUtilities.RIGHT);</span>
+<span class="nc" id="L38">    this.addActionListener(this);</span>
+<span class="nc" id="L39">    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+
+<span class="nc" id="L41">    enableEvents(MouseEvent.MOUSE_EVENT_MASK);</span>
+<span class="nc" id="L42">  }</span>
+
+  /**
+   * Sets the text of the label.
+   */
+  @Override
+  public void setText(String text) {
+<span class="nc" id="L49">    super</span>
+<span class="nc" id="L50">        .setText(&quot;&lt;html&gt;&lt;font color=\&quot;#0000CF\&quot; size=\&quot;2\&quot;&gt;&quot; + text + &quot;&lt;/font&gt;&lt;/html&gt;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="nc" id="L51">    this.text = text;</span>
+<span class="nc" id="L52">  }</span>
+
+  /**
+   * Sets a new URL, just pass the key of the image or null if there is none.
+   *
+   * @param key
+   */
+  public void setURL(String key) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    if (key == null) {</span>
+<span class="nc" id="L61">      this.url = null;</span>
+<span class="nc" id="L62">      return;</span>
+    }
+    try {
+<span class="nc" id="L65">      this.url = new URL(&quot;http://www.mapillary.com/map/im/&quot; + key);</span>
+<span class="nc" id="L66">    } catch (MalformedURLException e) {</span>
+<span class="nc" id="L67">      Main.error(e);</span>
+<span class="nc" id="L68">    }</span>
+<span class="nc" id="L69">  }</span>
+
+  /**
+   * Returns the text set by the user.
+   *
+   * @return The plain-text written in the label.
+   */
+  public String getNormalText() {
+<span class="nc" id="L77">    return text;</span>
+  }
+
+  /**
+   * Processes mouse events and responds to clicks.
+   */
+  @Override
+  protected void processMouseEvent(MouseEvent evt) {
+<span class="nc" id="L85">    super.processMouseEvent(evt);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (evt.getID() == MouseEvent.MOUSE_CLICKED)</span>
+<span class="nc" id="L87">      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,</span>
+<span class="nc" id="L88">          getNormalText()));</span>
+<span class="nc" id="L89">  }</span>
+
+  /**
+   * Adds an ActionListener to the list of listeners receiving notifications
+   * when the label is clicked.
+   *
+   * @param listener
+   */
+  public void addActionListener(ActionListener listener) {
+<span class="nc" id="L98">    listenerList.add(ActionListener.class, listener);</span>
+<span class="nc" id="L99">  }</span>
+
+  /**
+   * Removes the given ActionListener from the list of listeners receiving
+   * notifications when the label is clicked.
+   *
+   * @param listener
+   */
+  public void removeActionListener(ActionListener listener) {
+<span class="nc" id="L108">    listenerList.remove(ActionListener.class, listener);</span>
+<span class="nc" id="L109">  }</span>
+
+  /**
+   * Fires an ActionEvent to all interested listeners.
+   *
+   * @param evt
+   */
+  protected void fireActionPerformed(ActionEvent evt) {
+<span class="nc" id="L117">    Object[] listeners = listenerList.getListenerList();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    for (int i = 0; i &lt; listeners.length; i += 2) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">      if (listeners[i] == ActionListener.class) {</span>
+<span class="nc" id="L120">        ActionListener listener = (ActionListener) listeners[i + 1];</span>
+<span class="nc" id="L121">        listener.actionPerformed(evt);</span>
+      }
+    }
+<span class="nc" id="L124">  }</span>
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (this.url == null)</span>
+<span class="nc" id="L129">      return;</span>
+<span class="nc" id="L130">    Desktop desktop = Desktop.getDesktop();</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
+      try {
+<span class="nc" id="L133">        desktop.browse(url.toURI());</span>
+<span class="nc" id="L134">      } catch (IOException | URISyntaxException e1) {</span>
+<span class="nc" id="L135">        Main.error(e1);</span>
+<span class="nc" id="L136">      }</span>
+    } else {
+<span class="nc" id="L138">      Runtime runtime = Runtime.getRuntime();</span>
+      try {
+<span class="nc" id="L140">        runtime.exec(&quot;xdg-open &quot; + url);</span>
+<span class="nc" id="L141">      } catch (IOException exc) {</span>
+<span class="nc" id="L142">        exc.printStackTrace();</span>
+<span class="nc" id="L143">      }</span>
+    }
+<span class="nc" id="L145">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

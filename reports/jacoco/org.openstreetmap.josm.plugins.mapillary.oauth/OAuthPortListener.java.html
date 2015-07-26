@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OAuthPortListener.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.oauth</a> &gt; <span class="el_source">OAuthPortListener.java</span></div><h1>OAuthPortListener.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.oauth;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+import org.openstreetmap.josm.Main;
+
+/**
+ * Listens to the OAuth port in order to get the access token.
+ *
+ * @author nokutu
+ *
+ */
+<span class="nc" id="L19">public class OAuthPortListener extends Thread {</span>
+
+  @Override
+  public void run() {
+    try {
+<span class="nc" id="L24">      ServerSocket serverSocket = new ServerSocket(8763);</span>
+<span class="nc" id="L25">      Socket clientSocket = serverSocket.accept();</span>
+<span class="nc" id="L26">      PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);</span>
+<span class="nc" id="L27">      Scanner in = new Scanner(new InputStreamReader(</span>
+<span class="nc" id="L28">          clientSocket.getInputStream()));</span>
+      String s;
+<span class="nc" id="L30">      String accessToken = null;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">      while (in.hasNextLine()) {</span>
+<span class="nc" id="L32">        s = in.nextLine();</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (s.contains(&quot;access_token=&quot;)) {</span>
+<span class="nc" id="L34">          String[] ss = s.split(&quot;&amp;&quot;);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">          for (int i = 0; i &lt; ss.length; i++) {</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">            if (ss[i].contains(&quot;access_token=&quot;)) {</span>
+<span class="nc" id="L37">              accessToken = ss[i].substring(</span>
+<span class="nc" id="L38">                  ss[i].indexOf(&quot;access_token=&quot;) + 13, ss[i].length());</span>
+<span class="nc" id="L39">              break;</span>
+            }
+          }
+<span class="nc" id="L42">          break;</span>
+        }
+      }
+
+<span class="nc" id="L46">      writeContent(out);</span>
+
+<span class="nc" id="L48">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot;</span>
+          + accessToken);
+<span class="nc" id="L50">      Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
+
+<span class="nc" id="L52">      out.close();</span>
+<span class="nc" id="L53">      in.close();</span>
+<span class="nc" id="L54">      serverSocket.close();</span>
+<span class="nc" id="L55">    } catch (BindException e) {</span>
+<span class="nc" id="L56">      return;</span>
+<span class="nc" id="L57">    } catch (IOException e) {</span>
+<span class="nc" id="L58">      Main.error(e);</span>
+<span class="nc" id="L59">    }</span>
+<span class="nc" id="L60">  }</span>
+
+  private void writeContent(PrintWriter out) {
+<span class="nc" id="L63">    String response = &quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Mapillary login&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Login successful, return to JOSM.&lt;/body&gt;&lt;/html&gt;&quot;;</span>
+<span class="nc" id="L64">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>
+<span class="nc" id="L65">    out.println(&quot;Content-Length: &quot; + response.length());</span>
+<span class="nc" id="L66">    out.println(&quot;Content-Type: text/html&quot; + &quot;\r\n\r\n&quot;);</span>
+<span class="nc" id="L67">    out.println(response);</span>
+<span class="nc" id="L68">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

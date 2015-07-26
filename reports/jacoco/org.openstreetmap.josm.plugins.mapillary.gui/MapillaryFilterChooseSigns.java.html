@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryFilterChooseSigns.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui</a> &gt; <span class="el_source">MapillaryFilterChooseSigns.java</span></div><h1>MapillaryFilterChooseSigns.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.gui;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.Dimension;
+
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ * UI to choose which signs must be displayed.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryFilterChooseSigns extends JPanel {
+
+  private static final long serialVersionUID = -3513805549022406720L;
+
+  /** Max speed signs */
+<span class="nc" id="L24">  public final JCheckBox maxSpeed = new JCheckBox();</span>
+  /** Stop signs */
+<span class="nc" id="L26">  public final JCheckBox stop = new JCheckBox();</span>
+  /** Give way signs */
+<span class="nc" id="L28">  public final JCheckBox giveWay = new JCheckBox();</span>
+  /** Roundabout sings */
+<span class="nc" id="L30">  public final JCheckBox roundabout = new JCheckBox();</span>
+  /** Forbidden access or forbidden direction signs */
+<span class="nc" id="L32">  public final JCheckBox access = new JCheckBox();</span>
+  /** Intersection danger signs */
+<span class="nc" id="L34">  public final JCheckBox intersection = new JCheckBox();</span>
+  /** Mandatory direction signs */
+<span class="nc" id="L36">  public final JCheckBox direction = new JCheckBox();</span>
+  /** Uneven pavement signs */
+<span class="nc" id="L38">  public final JCheckBox uneven = new JCheckBox();</span>
+  /** No parking signs */
+<span class="nc" id="L40">  public final JCheckBox noParking = new JCheckBox();</span>
+  /** Forbidden overtaking signs */
+<span class="nc" id="L42">  public final JCheckBox noOvertaking = new JCheckBox();</span>
+  /** Pedestrian crossing signs */
+<span class="nc" id="L44">  public final JCheckBox crossing = new JCheckBox();</span>
+  /** Forbidden turn signs */
+<span class="nc" id="L46">  public final JCheckBox noTurn = new JCheckBox();</span>
+
+  private static MapillaryFilterChooseSigns INSTANCE;
+
+<span class="nc" id="L50">  private MapillaryFilterChooseSigns() {</span>
+<span class="nc" id="L51">    maxSpeed.setSelected(true);</span>
+<span class="nc" id="L52">    stop.setSelected(true);</span>
+<span class="nc" id="L53">    giveWay.setSelected(true);</span>
+<span class="nc" id="L54">    roundabout.setSelected(true);</span>
+<span class="nc" id="L55">    access.setSelected(true);</span>
+<span class="nc" id="L56">    intersection.setSelected(true);</span>
+<span class="nc" id="L57">    direction.setSelected(true);</span>
+<span class="nc" id="L58">    uneven.setSelected(true);</span>
+<span class="nc" id="L59">    noParking.setSelected(true);</span>
+<span class="nc" id="L60">    noOvertaking.setSelected(true);</span>
+<span class="nc" id="L61">    crossing.setSelected(true);</span>
+<span class="nc" id="L62">    noTurn.setSelected(true);</span>
+
+    // Max speed sign
+<span class="nc" id="L65">    JPanel maxspeedPanel = new JPanel();</span>
+<span class="nc" id="L66">    JLabel maxspeedLabel = new JLabel(tr(&quot;Speed limit&quot;));</span>
+<span class="nc" id="L67">    maxspeedLabel.setIcon(new ImageProvider(&quot;signs/speed.png&quot;).get());</span>
+<span class="nc" id="L68">    maxspeedPanel.add(maxspeedLabel);</span>
+<span class="nc" id="L69">    maxspeedPanel.add(maxSpeed);</span>
+<span class="nc" id="L70">    this.add(maxspeedPanel);</span>
+
+    // Stop sign
+<span class="nc" id="L73">    JPanel stopPanel = new JPanel();</span>
+<span class="nc" id="L74">    JLabel stopLabel = new JLabel(tr(&quot;Stop&quot;));</span>
+<span class="nc" id="L75">    stopLabel.setIcon(new ImageProvider(&quot;signs/stop.png&quot;).get());</span>
+<span class="nc" id="L76">    stopPanel.add(stopLabel);</span>
+<span class="nc" id="L77">    stopPanel.add(stop);</span>
+<span class="nc" id="L78">    this.add(stopPanel);</span>
+
+    // Give way sign
+<span class="nc" id="L81">    JPanel giveWayPanel = new JPanel();</span>
+<span class="nc" id="L82">    JLabel giveWayLabel = new JLabel(tr(&quot;Give way&quot;));</span>
+<span class="nc" id="L83">    giveWayLabel.setIcon(new ImageProvider(&quot;signs/right_of_way.png&quot;).get());</span>
+<span class="nc" id="L84">    giveWayPanel.add(giveWayLabel);</span>
+<span class="nc" id="L85">    giveWayPanel.add(giveWay);</span>
+<span class="nc" id="L86">    this.add(giveWayPanel);</span>
+
+    // Roundabout sign
+<span class="nc" id="L89">    JPanel roundaboutPanel = new JPanel();</span>
+<span class="nc" id="L90">    JLabel roundaboutLabel = new JLabel(tr(&quot;Give way&quot;));</span>
+<span class="nc" id="L91">    roundaboutLabel.setIcon(new ImageProvider(&quot;signs/roundabout_right.png&quot;)</span>
+<span class="nc" id="L92">        .get());</span>
+<span class="nc" id="L93">    roundaboutPanel.add(roundaboutLabel);</span>
+<span class="nc" id="L94">    roundaboutPanel.add(roundabout);</span>
+<span class="nc" id="L95">    this.add(roundaboutPanel);</span>
+
+    // No entry sign
+<span class="nc" id="L98">    JPanel noEntryPanel = new JPanel();</span>
+<span class="nc" id="L99">    JLabel noEntryLabel = new JLabel(tr(&quot;No entry&quot;));</span>
+<span class="nc" id="L100">    noEntryLabel.setIcon(new ImageProvider(&quot;signs/no_entry.png&quot;).get());</span>
+<span class="nc" id="L101">    noEntryPanel.add(noEntryLabel);</span>
+<span class="nc" id="L102">    noEntryPanel.add(access);</span>
+<span class="nc" id="L103">    this.add(noEntryPanel);</span>
+
+    // Danger intersection
+<span class="nc" id="L106">    JPanel intersectionPanel = new JPanel();</span>
+<span class="nc" id="L107">    JLabel intersectionLabel = new JLabel(tr(&quot;Intersection danger&quot;));</span>
+<span class="nc" id="L108">    intersectionLabel</span>
+<span class="nc" id="L109">        .setIcon(new ImageProvider(&quot;signs/intersection_danger.png&quot;).get());</span>
+<span class="nc" id="L110">    intersectionPanel.add(intersectionLabel);</span>
+<span class="nc" id="L111">    intersectionPanel.add(intersection);</span>
+<span class="nc" id="L112">    this.add(intersectionPanel);</span>
+
+    // Mandatory direction
+<span class="nc" id="L115">    JPanel directionPanel = new JPanel();</span>
+<span class="nc" id="L116">    JLabel directionLabel = new JLabel(tr(&quot;Mandatory direction (any)&quot;));</span>
+<span class="nc" id="L117">    directionLabel.setIcon(new ImageProvider(&quot;signs/only_straight_on.png&quot;)</span>
+<span class="nc" id="L118">        .get());</span>
+<span class="nc" id="L119">    directionPanel.add(directionLabel);</span>
+<span class="nc" id="L120">    directionPanel.add(direction);</span>
+<span class="nc" id="L121">    this.add(directionPanel);</span>
+
+    // No turn
+<span class="nc" id="L124">    JPanel noTurnPanel = new JPanel();</span>
+<span class="nc" id="L125">    JLabel noTurnLabel = new JLabel(tr(&quot;No turn&quot;));</span>
+<span class="nc" id="L126">    noTurnLabel.setIcon(new ImageProvider(&quot;signs/no_turn.png&quot;).get());</span>
+<span class="nc" id="L127">    noTurnPanel.add(noTurnLabel);</span>
+<span class="nc" id="L128">    noTurnPanel.add(noTurn);</span>
+<span class="nc" id="L129">    this.add(noTurnPanel);</span>
+
+    // Uneven road
+<span class="nc" id="L132">    JPanel unevenPanel = new JPanel();</span>
+<span class="nc" id="L133">    JLabel unevenLabel = new JLabel(tr(&quot;Uneven road&quot;));</span>
+<span class="nc" id="L134">    unevenLabel.setIcon(new ImageProvider(&quot;signs/uneaven.png&quot;).get());</span>
+<span class="nc" id="L135">    unevenPanel.add(unevenLabel);</span>
+<span class="nc" id="L136">    unevenPanel.add(uneven);</span>
+<span class="nc" id="L137">    this.add(unevenPanel);</span>
+
+    // No parking
+<span class="nc" id="L140">    JPanel noParkingPanel = new JPanel();</span>
+<span class="nc" id="L141">    JLabel noParkingLabel = new JLabel(tr(&quot;No parking&quot;));</span>
+<span class="nc" id="L142">    noParkingLabel.setIcon(new ImageProvider(&quot;signs/no_parking.png&quot;).get());</span>
+<span class="nc" id="L143">    noParkingPanel.add(noParkingLabel);</span>
+<span class="nc" id="L144">    noParkingPanel.add(noParking);</span>
+<span class="nc" id="L145">    this.add(noParkingPanel);</span>
+
+    // No overtaking
+<span class="nc" id="L148">    JPanel noOvertakingPanel = new JPanel();</span>
+<span class="nc" id="L149">    JLabel noOvertakingLabel = new JLabel(tr(&quot;No overtaking&quot;));</span>
+<span class="nc" id="L150">    noOvertakingLabel.setIcon(new ImageProvider(&quot;signs/no_overtaking.png&quot;)</span>
+<span class="nc" id="L151">        .get());</span>
+<span class="nc" id="L152">    noOvertakingPanel.add(noOvertakingLabel);</span>
+<span class="nc" id="L153">    noOvertakingPanel.add(noOvertaking);</span>
+<span class="nc" id="L154">    this.add(noOvertakingPanel);</span>
+
+    // Pedestrian crossing
+<span class="nc" id="L157">    JPanel crossingPanel = new JPanel();</span>
+<span class="nc" id="L158">    JLabel crossingLabel = new JLabel(tr(&quot;Pedestrian crossing&quot;));</span>
+<span class="nc" id="L159">    crossingLabel.setIcon(new ImageProvider(&quot;signs/crossing.png&quot;).get());</span>
+<span class="nc" id="L160">    crossingPanel.add(crossingLabel);</span>
+<span class="nc" id="L161">    crossingPanel.add(crossing);</span>
+<span class="nc" id="L162">    this.add(crossingPanel);</span>
+
+<span class="nc" id="L164">    this.setPreferredSize(new Dimension(600, 150));</span>
+<span class="nc" id="L165">  }</span>
+
+  /**
+   * Return the unique instance of the class.
+   *
+   * @return THe unique instance of the class.
+   */
+  public static MapillaryFilterChooseSigns getInstance() {
+<span class="nc bnc" id="L173" title="All 2 branches missed.">    if (INSTANCE == null)</span>
+<span class="nc" id="L174">      INSTANCE = new MapillaryFilterChooseSigns();</span>
+<span class="nc" id="L175">    return INSTANCE;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

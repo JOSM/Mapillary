@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryTrafficSignDownloaderThread.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.downloads</a> &gt; <span class="el_source">MapillaryTrafficSignDownloaderThread.java</span></div><h1>MapillaryTrafficSignDownloaderThread.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.downloads;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+
+/**
+ * Downloads the signs information in a given area.
+ * 
+ * @author nokutu
+ *
+ */
+public class MapillaryTrafficSignDownloaderThread extends Thread {
+  private static final String URL = MapillaryDownloader.BASE_URL
+      + &quot;search/im/or/&quot;;
+  private final String queryString;
+  private final ExecutorService ex;
+  private final MapillaryLayer layer;
+
+  /**
+   * Main constructor.
+   * 
+   * @param ex
+   *          {@link ExecutorService} object that is executing this thread.
+   * @param queryString
+   * @param layer
+   */
+  public MapillaryTrafficSignDownloaderThread(ExecutorService ex,
+<span class="nc" id="L41">      String queryString, MapillaryLayer layer) {</span>
+<span class="nc" id="L42">    this.ex = ex;</span>
+<span class="nc" id="L43">    this.queryString = queryString;</span>
+<span class="nc" id="L44">    this.layer = layer;</span>
+<span class="nc" id="L45">  }</span>
+
+  @Override
+  public void run() {
+    BufferedReader br;
+    try {
+<span class="nc" id="L51">      br = new BufferedReader(new InputStreamReader(</span>
+<span class="nc" id="L52">          new URL(URL + queryString).openStream(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L53">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;)) {</span>
+<span class="nc" id="L55">        ex.shutdown();</span>
+      }
+<span class="nc" id="L57">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
+<span class="nc" id="L59">        JsonArray rects = jsonarr.getJsonObject(i).getJsonArray(&quot;rects&quot;);</span>
+<span class="nc" id="L60">        JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(</span>
+            &quot;rectversions&quot;);
+<span class="nc" id="L62">        String key = jsonarr.getJsonObject(i).getString(&quot;key&quot;);</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (rectversions != null) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">          for (int j = 0; j &lt; rectversions.size(); j++) {</span>
+<span class="nc" id="L65">            rects = rectversions.getJsonObject(j).getJsonArray(&quot;rects&quot;);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            for (int k = 0; k &lt; rects.size(); k++) {</span>
+<span class="nc" id="L67">              JsonObject data = rects.getJsonObject(k);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">              for (MapillaryAbstractImage image : layer.getMapillaryData()</span>
+<span class="nc" id="L69">                  .getImages())</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                if (image instanceof MapillaryImage</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                    &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
+<span class="nc" id="L72">                  ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+            }
+          }
+        }
+
+        // Just one sign on the picture
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        else if (rects != null) {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">          for (int j = 0; j &lt; rects.size(); j++) {</span>
+<span class="nc" id="L80">            JsonObject data = rects.getJsonObject(j);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            for (MapillaryAbstractImage image : layer.getMapillaryData()</span>
+<span class="nc" id="L82">                .getImages())</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">              if (image instanceof MapillaryImage</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                  &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
+<span class="nc" id="L85">                ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+          }
+        }
+      }
+<span class="nc" id="L89">    } catch (MalformedURLException e) {</span>
+<span class="nc" id="L90">      Main.error(e);</span>
+<span class="nc" id="L91">    } catch (IOException e) {</span>
+<span class="nc" id="L92">      Main.error(e);</span>
+<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

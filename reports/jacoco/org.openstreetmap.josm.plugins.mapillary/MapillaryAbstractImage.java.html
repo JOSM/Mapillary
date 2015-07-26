@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryAbstractImage.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryAbstractImage.java</span></div><h1>MapillaryAbstractImage.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary;
+
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.coor.LatLon;
+
+/**
+ * Abstract superclass for all image objects. At the moment there is just 2,
+ * {@link MapillaryImportedImage} and {@link MapillaryImage}.
+ *
+ * @author nokutu
+ *
+ */
+public abstract class MapillaryAbstractImage {
+
+  /**
+   * Lock that locks next() and previous() methods. Used when downloading images
+   * to prevent concurrency problems.
+   */
+<span class="fc" id="L26">  public static Lock lock = new ReentrantLock();</span>
+
+  /** The time the image was captured, in Epoch format. */
+  private long capturedAt;
+  /** Sequence of pictures containing this object. */
+  private MapillarySequence sequence;
+  /** Position of the picture. */
+  public final LatLon latLon;
+  /** Direction of the picture. */
+  public final double ca;
+  /** If the image has been modified from its initial values. */
+<span class="fc" id="L37">  public boolean isModified = false;</span>
+  /** Temporal position of the picture until it is uploaded. */
+  public LatLon tempLatLon;
+  /**
+   * When the object is being dragged in the map, the temporal position is
+   * stored here.
+   */
+  public LatLon movingLatLon;
+  /** Temporal direction of the picture until it is uploaded */
+  public double tempCa;
+  /**
+   * When the object direction is being moved in the map, the temporal direction
+   * is stored here
+   */
+  protected double movingCa;
+  private boolean visible;
+
+  /**
+   * Main constructor of the class.
+   *
+   * @param lat
+   *          The latitude where the picture was taken.
+   * @param lon
+   *          The longitude where the picture was taken.
+   * @param ca
+   *          The direction of the picture (0 means north).
+   */
+<span class="fc" id="L64">  public MapillaryAbstractImage(double lat, double lon, double ca) {</span>
+<span class="fc" id="L65">    this.latLon = new LatLon(lat, lon);</span>
+<span class="fc" id="L66">    this.tempLatLon = this.latLon;</span>
+<span class="fc" id="L67">    this.movingLatLon = this.latLon;</span>
+<span class="fc" id="L68">    this.ca = ca;</span>
+<span class="fc" id="L69">    this.tempCa = ca;</span>
+<span class="fc" id="L70">    this.movingCa = ca;</span>
+<span class="fc" id="L71">    this.visible = true;</span>
+<span class="fc" id="L72">  }</span>
+
+  /**
+   * Returns whether the object has been modified or not.
+   *
+   * @return true if the object has been modified; false otherwise.
+   */
+  public boolean isModified() {
+<span class="nc" id="L80">    return this.isModified;</span>
+  }
+
+  /**
+   * Returns a LatLon object containing the current coordinates of the object.
+   * When you are dragging the image this changes.
+   *
+   * @return The LatLon object with the position of the object.
+   */
+  public LatLon getLatLon() {
+<span class="fc" id="L90">    return movingLatLon;</span>
+  }
+
+  /**
+   * Returns whether the image is visible on the map or not.
+   *
+   * @return True if the image is visible; false otherwise.
+   */
+  public boolean isVisible() {
+<span class="nc" id="L99">    return visible;</span>
+  }
+
+  /**
+   * Set's whether the image should be visible on the map or not.
+   *
+   * @param visible
+   *          true if the image is set to be visible; false otherwise.
+   */
+  public void setVisible(boolean visible) {
+<span class="nc" id="L109">    this.visible = visible;</span>
+<span class="nc" id="L110">  }</span>
+
+  /**
+   * Returns the last fixed coordinates of the object.
+   *
+   * @return A LatLon object containing.
+   */
+  public LatLon getTempLatLon() {
+<span class="nc" id="L118">    return tempLatLon;</span>
+  }
+
+  /**
+   * Moves the image temporally to another position
+   *
+   * @param x
+   *          The movement of the image in longitude units.
+   * @param y
+   *          The movement of the image in latitude units.
+   */
+  public void move(double x, double y) {
+<span class="nc" id="L130">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,</span>
+<span class="nc" id="L131">        this.tempLatLon.getX() + x);</span>
+<span class="nc" id="L132">    this.isModified = true;</span>
+<span class="nc" id="L133">  }</span>
+
+  /**
+   * Turns the image direction.
+   *
+   * @param ca
+   *          The angle the image is moving.
+   */
+  public void turn(double ca) {
+<span class="nc" id="L142">    this.movingCa = this.tempCa + ca;</span>
+<span class="nc" id="L143">    this.isModified = true;</span>
+<span class="nc" id="L144">  }</span>
+
+  /**
+   * Called when the mouse button is released, meaning that the picture has
+   * stopped being dragged.
+   */
+  public void stopMoving() {
+<span class="nc" id="L151">    this.tempLatLon = this.movingLatLon;</span>
+<span class="nc" id="L152">    this.tempCa = this.movingCa;</span>
+<span class="nc" id="L153">  }</span>
+
+  /**
+   * Returns the direction towards the image has been taken.
+   *
+   * @return The direction of the image (0 means north and goes clockwise).
+   */
+  public double getCa() {
+<span class="nc" id="L161">    return movingCa;</span>
+  }
+
+  /**
+   * Returns the last fixed direction of the object.
+   *
+   * @return The last fixed direction of the object. 0 means north.
+   */
+  public double getTempCa() {
+<span class="nc" id="L170">    return tempCa;</span>
+  }
+
+  /**
+   * Returns the date the picture was taken in DMY format.
+   *
+   * @return A String object containing the date when the picture was taken.
+   */
+  public String getDate() {
+<span class="nc" id="L179">    String format = &quot;&quot;;</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;))</span>
+<span class="nc" id="L181">      format += &quot;yyyy-MM-dd&quot;;</span>
+    else
+<span class="nc" id="L183">      format += &quot;dd/MM/yyyy&quot;;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;))</span>
+<span class="nc" id="L186">        format += &quot; - HH:mm:ss (z)&quot;;</span>
+      else
+<span class="nc" id="L188">        format += &quot; - h:mm:ss a (z)&quot;;</span>
+    }
+<span class="nc" id="L190">    return getDate(format);</span>
+  }
+
+  /**
+   * Sets the Epoch time when the picture was captured.
+   *
+   * @param capturedAt
+   */
+  public void setCapturedAt(long capturedAt) {
+<span class="nc" id="L199">    this.capturedAt = capturedAt;</span>
+<span class="nc" id="L200">  }</span>
+
+  /**
+   * Returns the Epoch time when the image was captured.
+   *
+   * @return The long containing the Epoch time when the image was captured.
+   */
+  public long getCapturedAt() {
+<span class="nc" id="L208">    return capturedAt;</span>
+  }
+
+  /**
+   * Returns the date the picture was taken in the given format.
+   *
+   * @param format
+   * @return A String containing the date the picture was taken using the given
+   *         format.
+   */
+  public String getDate(String format) {
+<span class="nc" id="L219">    Date date = new Date(getCapturedAt());</span>
+
+<span class="nc" id="L221">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="nc" id="L222">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
+<span class="nc" id="L223">    return formatter.format(date);</span>
+  }
+
+  /**
+   * Parses a string with a given format and returns the Epoch time.
+   *
+   * @param date
+   *          The string containing the date.
+   * @param format
+   *          The format of the date.
+   * @return The date in Epoch format.
+   */
+  public long getEpoch(String date, String format) {
+
+<span class="fc" id="L237">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+    try {
+<span class="fc" id="L239">      Date dateTime = formatter.parse(date);</span>
+<span class="fc" id="L240">      return dateTime.getTime();</span>
+<span class="nc" id="L241">    } catch (ParseException e) {</span>
+<span class="nc" id="L242">      Main.error(e);</span>
+    }
+<span class="nc" id="L244">    return currentTime();</span>
+  }
+
+  /**
+   * Returns current time in Epoch format
+   *
+   * @return The current date in Epoch format.
+   */
+  private long currentTime() {
+<span class="nc" id="L253">    Calendar cal = Calendar.getInstance();</span>
+<span class="nc" id="L254">    return cal.getTimeInMillis();</span>
+  }
+
+  /**
+   * Sets the MapillarySequence object which contains the MapillaryImage.
+   *
+   * @param sequence
+   *          The MapillarySequence that contains the MapillaryImage.
+   */
+  public void setSequence(MapillarySequence sequence) {
+<span class="fc" id="L264">    this.sequence = sequence;</span>
+<span class="fc" id="L265">  }</span>
+
+  /**
+   * Returns the sequence which contains this image.
+   *
+   * @return The MapillarySequence object that contains this MapillaryImage.
+   */
+  public MapillarySequence getSequence() {
+<span class="nc" id="L273">    return this.sequence;</span>
+  }
+
+  /**
+   * If the MapillaryImage belongs to a MapillarySequence, returns the next
+   * MapillarySequence in it.
+   *
+   * @return The following MapillaryImage, or null if there is none.
+   */
+  public MapillaryAbstractImage next() {
+<span class="nc" id="L283">    synchronized (lock) {</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">      if (this.getSequence() == null)</span>
+<span class="nc" id="L285">        return null;</span>
+<span class="nc" id="L286">      return this.getSequence().next(this);</span>
+<span class="nc" id="L287">    }</span>
+  }
+
+  /**
+   * If the MapillaryImage belongs to a MapillarySequence, returns the previous
+   * MapillarySequence in it.
+   *
+   * @return The previous MapillaryImage, or null if there is none.
+   */
+  public MapillaryAbstractImage previous() {
+<span class="nc" id="L297">    synchronized (lock) {</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">      if (this.getSequence() == null)</span>
+<span class="nc" id="L299">        return null;</span>
+<span class="nc" id="L300">      return this.getSequence().previous(this);</span>
+<span class="nc" id="L301">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

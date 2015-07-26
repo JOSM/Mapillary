@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryImportedImage.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryImportedImage.java</span></div><h1>MapillaryImportedImage.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import javax.imageio.ImageIO;
+
+/**
+ * A MapillaryImoprtedImage object represents a picture imported locally.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryImportedImage extends MapillaryAbstractImage {
+
+  /** The picture file. */
+  protected File file;
+  /** The date when the picture was taken. */
+  public final long datetimeOriginal;
+
+  /**
+   * Creates a new MapillaryImportedImage object using as date the current date,
+   * because it is missing in the file.
+   *
+   * @param lat
+   *          Latitude where the picture was taken.
+   * @param lon
+   *          Longitude where the picture was taken.
+   * @param ca
+   *          Direction of the picture (0 means north).
+   * @param file
+   *          The file containing the picture.
+   */
+  public MapillaryImportedImage(double lat, double lon, double ca, File file) {
+<span class="fc" id="L38">    this(lat, lon, ca, file, currentDate());</span>
+<span class="fc" id="L39">  }</span>
+
+  /**
+   * Main constructor of the class.
+   *
+   * @param lat
+   *          Latitude where the picture was taken.
+   * @param lon
+   *          Longitude where the picture was taken.
+   * @param ca
+   *          Direction of the picture (0 means north),
+   * @param file
+   *          The file containing the picture.
+   * @param datetimeOriginal
+   *          The date the picture was taken.
+   */
+  public MapillaryImportedImage(double lat, double lon, double ca, File file,
+      String datetimeOriginal) {
+<span class="fc" id="L57">    super(lat, lon, ca);</span>
+<span class="fc" id="L58">    this.file = file;</span>
+<span class="fc" id="L59">    this.datetimeOriginal = getEpoch(datetimeOriginal, &quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
+<span class="fc" id="L60">  }</span>
+
+  /**
+   * Returns the pictures of the file.
+   *
+   * @return A BufferedImage object containing the pictures.
+   * @throws IOException
+   * @throws IllegalArgumentException
+   *           if file is currently set to null
+   */
+  public BufferedImage getImage() throws IOException {
+<span class="nc" id="L71">    return ImageIO.read(file);</span>
+  }
+
+  /**
+   * Returns the File object where the picture is located.
+   *
+   * @return The File object where the picture is located.
+   */
+  public File getFile() {
+<span class="nc" id="L80">    return file;</span>
+  }
+
+  @Override
+  public boolean equals(Object object) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (object instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L86">      return this.file.equals(((MapillaryImportedImage) object).file);</span>
+<span class="nc" id="L87">    return false;</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L92">    return this.file.hashCode();</span>
+  }
+
+  private static String currentDate() {
+<span class="fc" id="L96">    Calendar cal = Calendar.getInstance();</span>
+<span class="fc" id="L97">    SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
+<span class="fc" id="L98">    return formatter.format(cal.getTime());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
