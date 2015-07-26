@@ -115,7 +115,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   }
 
   /**
-   * Opens the {@link MapillaryoAuthUI} window and lets the user log in.
+   * Opens the MapillaryOAuthUI window and lets the user log in.
    *
    * @author nokutu
    *
