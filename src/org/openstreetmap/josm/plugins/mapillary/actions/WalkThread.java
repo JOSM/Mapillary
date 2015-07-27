@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
@@ -23,7 +25,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   private MapillaryData data;
   private Lock lock = new ReentrantLock();
   private boolean end = false;
-  private boolean waitForPicture;
+  private final boolean waitForFullQuality;
+  private final boolean followSelected;
   private BufferedImage lastImage;
   private volatile boolean paused = false;
 
@@ -32,10 +35,12 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    *
    * @param interval
    * @param waitForPicture
+   * @param followSelected
    */
-  public WalkThread(int interval, boolean waitForPicture) {
+  public WalkThread(int interval, boolean waitForPicture, boolean followSelected) {
     this.interval = interval;
-    this.waitForPicture = waitForPicture;
+    this.waitForFullQuality = waitForPicture;
+    this.followSelected = followSelected;
     data = MapillaryLayer.getInstance().getMapillaryData();
     data.addListener(this);
   }
@@ -45,18 +50,26 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     try {
       while (!end && data.getSelectedImage().next() != null) {
         MapillaryAbstractImage image = data.getSelectedImage();
-        // Predownload next 5 pictures.
         if (image instanceof MapillaryImage) {
-          for (int i = 0; i < 5; i++) {
+          // Predownload next 10 thumbnails.
+          for (int i = 0; i < 10; i++) {
             if (image.next() == null)
               break;
             image = image.next();
-            Utils.downloadPicture((MapillaryImage) image);
+            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.THUMBNAIL);
           }
         }
+        if (waitForFullQuality)
+          // Start downloading 3 next full images.
+          for (int i = 0; i < 3; i++) {
+            if (image.next() == null)
+              break;
+            image = image.next();
+            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL);
+          }
         try {
           synchronized (this) {
-            if (waitForPicture
+            if (waitForFullQuality
                 && data.getSelectedImage() instanceof MapillaryImage) {
               while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
                   .getImage() == lastImage
@@ -83,7 +96,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
               .getImage();
           synchronized (lock) {
-            data.selectNext();
+            data.selectNext(followSelected);
           }
         } catch (InterruptedException e) {
           return;
@@ -92,16 +105,11 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     } catch (NullPointerException e) {
       return;
     }
-    end = true;
-    data.removeListener(this);
-    MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.NORMAL);
+    end();
   }
 
   @Override
   public void interrupt() {
-    end = true;
-    data.removeListener(this);
-    MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.NORMAL);
     super.interrupt();
   }
 
@@ -138,6 +146,35 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * Stops the execution.
    */
   public void stopWalk() {
-    this.interrupt();
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          stopWalk();
+        }
+      });
+    } else {
+      end();
+      this.interrupt();
+    }
+  }
+
+  /**
+   * Called when the walk stops by itself of forcefully.
+   */
+  public void end() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          end();
+        }
+      });
+    } else {
+      end = true;
+      data.removeListener(this);
+      MapillaryMainDialog.getInstance()
+          .setMode(MapillaryMainDialog.Mode.NORMAL);
+    }
   }
 }

@@ -33,9 +33,9 @@ public class MapillaryDownloader {
   public final static String BASE_URL = "https://a.mapillary.com/v2/";
   /** Client ID for the app */
   public final static String CLIENT_ID = "NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm";
-  /** Executor that will run the petitions */
-  public final static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1,
-      1, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
+  /** Executor that will run the petitions. */
+  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
+      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -68,16 +68,40 @@ public class MapillaryDownloader {
     Bounds view = Main.map.mapView.getRealBounds();
     if (view.getArea() > MapillaryDownloadViewAction.MAX_AREA)
       return;
-    for (Bounds bound : MapillaryLayer.getInstance().bounds) {
-      if (!view.intersects(bound))
-        continue;
-      if (bound.equals(view)) {
-        // Already downloaded
-        return;
-      }
-    }
+    if (isViewDownloaded(view))
+      return;
     MapillaryLayer.getInstance().bounds.add(view);
     getImages(view);
+  }
+
+  private static boolean isViewDownloaded(Bounds view) {
+    int n = 15;
+    boolean[][] inside = new boolean[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (isInBounds(new LatLon(view.getMinLat()
+            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n), view.getMinLon()
+ + (view.getMaxLon() - view.getMinLon())
+                * ((double) j / n)))) {
+          inside[i][j] = true;
+        }
+      }
+    }
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (!inside[i][j])
+          return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean isInBounds(LatLon latlon) {
+    for (Bounds bounds : MapillaryLayer.getInstance().bounds) {
+      if (bounds.contains(latlon))
+        return true;
+    }
+    return false;
   }
 
   /**
@@ -136,5 +160,7 @@ public class MapillaryDownloader {
    */
   public static void stopAll() {
     EXECUTOR.shutdownNow();
+    EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(50));
   }
 }

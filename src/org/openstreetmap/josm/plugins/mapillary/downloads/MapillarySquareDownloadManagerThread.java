@@ -30,8 +30,6 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String sequenceQueryString;
   private final String signQueryString;
   private final MapillaryLayer layer;
-  /** Whether if new images have been added in the download or not. */
-  public boolean imagesAdded = false;
 
   /**
    * Main constructor.
@@ -74,13 +72,11 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     Main.map.statusLine.setHelpText(tr("Downloading images from Mapillary"));
     try {
       downloadSequences();
-      if (imagesAdded) {
-        Main.map.statusLine.setHelpText(tr("Downloading image's information"));
-        completeImages();
-        MapillaryMainDialog.getInstance().updateTitle();
-        Main.map.statusLine.setHelpText(tr("Downloading traffic signs"));
-        downloadSigns();
-      }
+      Main.map.statusLine.setHelpText(tr("Downloading image's information"));
+      completeImages();
+      MapillaryMainDialog.getInstance().updateTitle();
+      Main.map.statusLine.setHelpText(tr("Downloading traffic signs"));
+      downloadSigns();
     } catch (InterruptedException e) {
       Main.error("Mapillary download interrupted (probably because of closing the layer).");
     }
@@ -96,7 +92,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!ex.isShutdown()) {
       ex.execute(new MapillarySequenceDownloadThread(ex, sequenceQueryString
-          + "&page=" + page + "&limit=10", layer, this));
+          + "&page=" + page + "&limit=10"));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;

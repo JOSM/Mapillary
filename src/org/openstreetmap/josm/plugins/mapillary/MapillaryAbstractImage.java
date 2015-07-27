@@ -23,7 +23,7 @@ public abstract class MapillaryAbstractImage {
    * Lock that locks next() and previous() methods. Used when downloading images
    * to prevent concurrency problems.
    */
-  public static Lock lock = new ReentrantLock();
+  public static Lock LOCK = new ReentrantLock();
 
   /** The time the image was captured, in Epoch format. */
   private long capturedAt;
@@ -280,7 +280,7 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-    synchronized (lock) {
+    synchronized (LOCK) {
       if (this.getSequence() == null)
         return null;
       return this.getSequence().next(this);
@@ -294,7 +294,7 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-    synchronized (lock) {
+    synchronized (LOCK) {
       if (this.getSequence() == null)
         return null;
       return this.getSequence().previous(this);

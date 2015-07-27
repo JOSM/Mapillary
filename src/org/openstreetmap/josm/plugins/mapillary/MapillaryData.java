@@ -208,6 +208,29 @@ public class MapillaryData {
 
   /**
    * If the selected MapillaryImage is part of a MapillarySequence then the
+   * following visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   *
+   * @param moveToPicture
+   *          True if the view must me moved to the next picture.
+   */
+  public void selectNext(boolean moveToPicture) {
+    if (getSelectedImage() == null)
+      return;
+    if (getSelectedImage().getSequence() == null)
+      return;
+    MapillaryAbstractImage tempImage = selectedImage;
+    while (tempImage.next() != null) {
+      tempImage = tempImage.next();
+      if (tempImage.isVisible()) {
+        setSelectedImage(tempImage, moveToPicture);
+        break;
+      }
+    }
+  }
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
    * previous visible MapillaryImage is selected. In case there is none, does
    * nothing.
    */
@@ -222,6 +245,29 @@ public class MapillaryData {
       if (tempImage.isVisible()) {
         setSelectedImage(tempImage,
             Main.pref.getBoolean("mapillary.move-to-picture", true));
+        break;
+      }
+    }
+  }
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
+   * previous visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   *
+   * @param moveToPicture
+   *          True if the view must me moved to the previous picture.
+   */
+  public void selectPrevious(boolean moveToPicture) {
+    if (getSelectedImage() == null)
+      return;
+    if (getSelectedImage().getSequence() == null)
+      throw new IllegalStateException();
+    MapillaryAbstractImage tempImage = selectedImage;
+    while (tempImage.previous() != null) {
+      tempImage = tempImage.previous();
+      if (tempImage.isVisible()) {
+        setSelectedImage(tempImage, moveToPicture);
         break;
       }
     }
@@ -247,11 +293,6 @@ public class MapillaryData {
    *          True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
-    if (image != null) {
-      System.out.println("----------------------------");
-      for (MapillaryAbstractImage img : getImages())
-        System.out.println(img.getSequence());
-    }
     MapillaryAbstractImage oldImage = selectedImage;
     selectedImage = image;
     multiSelectedImages.clear();

@@ -152,8 +152,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The unique instance of this class.
    */
   public synchronized static MapillaryLayer getInstance() {
-    if (MapillaryLayer.INSTANCE == null)
-      MapillaryLayer.INSTANCE = new MapillaryLayer();
+    if (INSTANCE == null)
+      INSTANCE = new MapillaryLayer();
     return MapillaryLayer.INSTANCE;
   }
 
@@ -170,6 +170,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void destroy() {
     setMode(null);
+    AbstractMode.resetThread();
     MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
     MapillaryMainDialog.getInstance().updateImage();
@@ -180,6 +181,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapView.removeEditLayerChangeListener(this);
     if (Main.map.mapView.getEditLayer() != null)
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
+    MapillaryData.INSTANCE = null;
     MapillaryLayer.INSTANCE = null;
     super.destroy();
   }

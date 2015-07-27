@@ -25,8 +25,10 @@ import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 public abstract class AbstractMode extends MouseAdapter implements
     ZoomChangeListener {
 
+  private final static int DOWNLOAD_COOLDOWN = 2000;
+
   protected MapillaryData data = MapillaryData.getInstance();
-  private static final SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
+  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
 
   /**
    * Cursor that should become active when this mode is activated.
@@ -70,6 +72,14 @@ public abstract class AbstractMode extends MouseAdapter implements
     }
   }
 
+  /**
+   * Resets the semiautomatic mode thread.
+   */
+  public static void resetThread() {
+    semiautomaticThread.interrupt();
+    semiautomaticThread = new SemiautomaticThread();
+  }
+
   private static class SemiautomaticThread extends Thread {
 
     /** If in semiautomatic mode, the last Epoch time when there was a download */
@@ -81,7 +91,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     public void run() {
       while (true) {
         if (moved
-            && Calendar.getInstance().getTimeInMillis() - lastDownload >= 2000) {
+            && Calendar.getInstance().getTimeInMillis() - lastDownload >= DOWNLOAD_COOLDOWN) {
           lastDownload = Calendar.getInstance().getTimeInMillis();
           MapillaryDownloader.completeView();
           moved = false;
@@ -91,7 +101,6 @@ public abstract class AbstractMode extends MouseAdapter implements
           try {
             wait(100);
           } catch (InterruptedException e) {
-            Main.error(e);
           }
         }
       }

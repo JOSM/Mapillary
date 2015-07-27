@@ -15,6 +15,16 @@ public class Utils {
 
   private static IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
 
+  /** Picture quality */
+  public enum PICTURE {
+    /** Thumbnail quality picture () */
+    THUMBNAIL,
+    /** Full quality picture () */
+    FULL,
+    /** Both of them */
+    BOTH;
+  }
+
   /**
    * Downloads the picture of the given image and does nothing when it is
    * downloaded.
@@ -22,10 +32,38 @@ public class Utils {
    * @param img
    */
   public static void downloadPicture(MapillaryImage img) {
-    new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
-        IGNORE_DOWNLOAD, false);
-    new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
-        IGNORE_DOWNLOAD, false);
+    downloadPicture(img, PICTURE.BOTH);
+  }
+
+  /**
+   * Downloads the picture of the given image and does nothing when it is
+   * downloaded.
+   *
+   * @param img
+   * @param pic
+   *          The picture type to be downloaded (full quality, thumbnail or
+   *          both.)
+   */
+  public static void downloadPicture(MapillaryImage img, PICTURE pic) {
+    if (pic == PICTURE.BOTH) {
+      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)
+        new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
+            IGNORE_DOWNLOAD, false);
+      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
+          .get() == null)
+        new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
+            .submit(IGNORE_DOWNLOAD, false);
+    } else if (pic == PICTURE.THUMBNAIL
+        && new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
+            .get() == null) {
+      new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
+          IGNORE_DOWNLOAD, false);
+    } else if (pic == PICTURE.FULL
+        && new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
+            .get() == null) {
+      new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
+          IGNORE_DOWNLOAD, false);
+    }
   }
 
   private static class IgnoreDownload implements ICachedLoaderListener {

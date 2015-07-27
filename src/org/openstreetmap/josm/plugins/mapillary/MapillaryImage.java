@@ -21,7 +21,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   private String location;
 
   /**
-   * Returns the localtion where the image was taken.
+   * Returns the location where the image was taken.
    *
    * @return A String containing the location where the picture was taken.
    */
@@ -39,7 +39,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   /**
-   * Main contructor of the class MapillaryImage
+   * Main constructor of the class MapillaryImage
    *
    * @param key
    *          The unique identifier of the image.

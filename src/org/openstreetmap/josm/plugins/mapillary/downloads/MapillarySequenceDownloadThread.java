@@ -12,9 +12,10 @@ import javax.json.Json;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -31,28 +32,25 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 public class MapillarySequenceDownloadThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL + "search/s/";
 
+  /** Lock to prevent multiple downloads to be imported at the same time. */
+  private static final Lock LOCK = new ReentrantLock();
+
   private final String queryString;
   private final ExecutorService ex;
-  private final List<Bounds> bounds;
   private final MapillaryLayer layer;
-  private final MapillarySquareDownloadManagerThread manager;
 
   /**
    * Main constructor.
    *
    * @param ex
    * @param queryString
-   * @param layer
    * @param manager
    */
   public MapillarySequenceDownloadThread(ExecutorService ex,
-      String queryString, MapillaryLayer layer,
-      MapillarySquareDownloadManagerThread manager) {
+      String queryString) {
     this.queryString = queryString;
     this.ex = ex;
-    this.bounds = layer.bounds;
-    this.layer = layer;
-    this.manager = manager;
+    this.layer = MapillaryLayer.getInstance();
   }
 
   @Override
@@ -97,29 +95,27 @@ public class MapillarySequenceDownloadThread extends Thread {
             finalImages.remove(img);
         }
 
-        boolean imagesAdded = false;
-        MapillaryImage.lock.lock();
-        for (MapillaryImage img : finalImages) {
-          if (layer.getMapillaryData().getImages().contains(img)) {
-            // The image in finalImages is substituted by the one in the
-            // database, as they are equal.
-            img = (MapillaryImage) layer.getMapillaryData().getImages()
-                .get(layer.getMapillaryData().getImages().indexOf(img));
-            sequence.add(img);
-            ((MapillaryImage) layer.getMapillaryData().getImages()
-                .get(layer.getMapillaryData().getImages().indexOf(img)))
-                .setSequence(sequence);
-            finalImages.set(finalImages.indexOf(img), img);
-          } else {
-            img.setSequence(sequence);
-            imagesAdded = true;
-            sequence.add(img);
+        MapillaryImage.LOCK.lock();
+        synchronized (LOCK) {
+          for (MapillaryImage img : finalImages) {
+            if (layer.getMapillaryData().getImages().contains(img)) {
+              // The image in finalImages is substituted by the one in the
+              // database, as they represent the same picture.
+              img = (MapillaryImage) layer.getMapillaryData().getImages()
+                  .get(layer.getMapillaryData().getImages().indexOf(img));
+              sequence.add(img);
+              ((MapillaryImage) layer.getMapillaryData().getImages()
+                  .get(layer.getMapillaryData().getImages().indexOf(img)))
+                  .setSequence(sequence);
+              finalImages.set(finalImages.indexOf(img), img);
+            } else {
+              img.setSequence(sequence);
+              sequence.add(img);
+            }
           }
         }
-        MapillaryImage.lock.unlock();
-        if (manager != null) {
-          manager.imagesAdded = imagesAdded;
-        }
+        MapillaryImage.LOCK.unlock();
+
         layer.getMapillaryData().addWithoutUpdate(
             new ArrayList<MapillaryAbstractImage>(finalImages));
       }
@@ -130,8 +126,8 @@ public class MapillarySequenceDownloadThread extends Thread {
   }
 
   private boolean isInside(MapillaryAbstractImage image) {
-    for (int i = 0; i < bounds.size(); i++)
-      if (bounds.get(i).contains(image.getLatLon()))
+    for (int i = 0; i < layer.bounds.size(); i++)
+      if (layer.bounds.get(i).contains(image.getLatLon()))
         return true;
     return false;
   }
