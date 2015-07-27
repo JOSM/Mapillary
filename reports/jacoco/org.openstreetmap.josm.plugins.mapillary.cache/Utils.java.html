@@ -15,6 +15,16 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 <span class="nc" id="L16">  private static IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();</span>
 
+  /** Picture quality */
+<span class="nc" id="L19">  public enum PICTURE {</span>
+    /** Thumbnail quality picture () */
+<span class="nc" id="L21">    THUMBNAIL,</span>
+    /** Full quality picture () */
+<span class="nc" id="L23">    FULL,</span>
+    /** Both of them */
+<span class="nc" id="L25">    BOTH;</span>
+  }
+
   /**
    * Downloads the picture of the given image and does nothing when it is
    * downloaded.
@@ -22,19 +32,47 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
    * @param img
    */
   public static void downloadPicture(MapillaryImage img) {
-<span class="nc" id="L25">    new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(</span>
-        IGNORE_DOWNLOAD, false);
-<span class="nc" id="L27">    new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(</span>
-        IGNORE_DOWNLOAD, false);
-<span class="nc" id="L29">  }</span>
+<span class="nc" id="L35">    downloadPicture(img, PICTURE.BOTH);</span>
+<span class="nc" id="L36">  }</span>
 
-<span class="nc" id="L31">  private static class IgnoreDownload implements ICachedLoaderListener {</span>
+  /**
+   * Downloads the picture of the given image and does nothing when it is
+   * downloaded.
+   *
+   * @param img
+   * @param pic
+   *          The picture type to be downloaded (full quality, thumbnail or
+   *          both.)
+   */
+  public static void downloadPicture(MapillaryImage img, PICTURE pic) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (pic == PICTURE.BOTH) {</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)</span>
+<span class="nc" id="L50">        new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(</span>
+            IGNORE_DOWNLOAD, false);
+<span class="nc" id="L52">      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">          .get() == null)</span>
+<span class="nc" id="L54">        new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)</span>
+<span class="nc" id="L55">            .submit(IGNORE_DOWNLOAD, false);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    } else if (pic == PICTURE.THUMBNAIL</span>
+<span class="nc" id="L57">        &amp;&amp; new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            .get() == null) {</span>
+<span class="nc" id="L59">      new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(</span>
+          IGNORE_DOWNLOAD, false);
+<span class="nc bnc" id="L61" title="All 2 branches missed.">    } else if (pic == PICTURE.FULL</span>
+<span class="nc" id="L62">        &amp;&amp; new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            .get() == null) {</span>
+<span class="nc" id="L64">      new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(</span>
+          IGNORE_DOWNLOAD, false);
+    }
+<span class="nc" id="L67">  }</span>
+
+<span class="nc" id="L69">  private static class IgnoreDownload implements ICachedLoaderListener {</span>
 
     @Override
     public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1,
         LoadResult arg2) {
       // Nothing
-<span class="nc" id="L37">    }</span>
+<span class="nc" id="L75">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

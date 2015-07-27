@@ -2,6 +2,7 @@
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -16,16 +17,15 @@ import org.openstreetmap.josm.Main;
  * @author nokutu
  *
  */
-<span class="nc" id="L19">public class OAuthPortListener extends Thread {</span>
+<span class="nc" id="L20">public class OAuthPortListener extends Thread {</span>
 
   @Override
   public void run() {
     try {
-<span class="nc" id="L24">      ServerSocket serverSocket = new ServerSocket(8763);</span>
-<span class="nc" id="L25">      Socket clientSocket = serverSocket.accept();</span>
-<span class="nc" id="L26">      PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);</span>
-<span class="nc" id="L27">      Scanner in = new Scanner(new InputStreamReader(</span>
-<span class="nc" id="L28">          clientSocket.getInputStream()));</span>
+<span class="nc" id="L25">      ServerSocket serverSocket = new ServerSocket(8763);</span>
+<span class="nc" id="L26">      Socket clientSocket = serverSocket.accept();</span>
+<span class="nc" id="L27">      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), &quot;UTF-8&quot;), true);</span>
+<span class="nc" id="L28">      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), &quot;UTF-8&quot;));</span>
       String s;
 <span class="nc" id="L30">      String accessToken = null;</span>
 <span class="nc bnc" id="L31" title="All 2 branches missed.">      while (in.hasNextLine()) {</span>

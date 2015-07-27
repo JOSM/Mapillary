@@ -98,6 +98,8 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportIntoSequenceAction.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread$2.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkListener.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog$RewriteButtonAction.class</li>
@@ -136,6 +138,7 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryWalkDialog.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache$Type.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Utils$PICTURE.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Utils$IgnoreDownload.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Utils$1.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Utils.class</li>
@@ -162,8 +165,8 @@
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>3774 lines of code analyzed,
-	in 85 classes, 
+<p>3872 lines of code analyzed,
+	in 88 classes, 
 	in 9 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
 <tr class="tableheader">
@@ -173,8 +176,8 @@
 </tr>
 <tr class="tablerow0">
 <td>High Priority Warnings</td>
-<td align="right">13</td>
-<td align="right">3.44</td>
+<td align="right">11</td>
+<td align="right">2.84</td>
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
@@ -186,10 +189,10 @@
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>13</b>
+<b>11</b>
 </td>
 <td align="right">
-<b>3.44</b>
+<b>2.84</b>
 </td>
 </tr>
 </table>
@@ -202,12 +205,6 @@
 </p>
 <h2>Contents</h2>
 <ul>
-<li>
-<a href="#Warnings_BAD_PRACTICE">Bad practice Warnings</a>
-</li>
-<li>
-<a href="#Warnings_I18N">Internationalization Warnings</a>
-</li>
 <li>
 <a href="#Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
 </li>
@@ -229,18 +226,6 @@
 </tr>
 <tr class="tablerow0">
 <td>
-<a href="#Warnings_BAD_PRACTICE">Bad practice Warnings</a>
-</td>
-<td align="right">2</td>
-</tr>
-<tr class="tablerow1">
-<td>
-<a href="#Warnings_I18N">Internationalization Warnings</a>
-</td>
-<td align="right">2</td>
-</tr>
-<tr class="tablerow0">
-<td>
 <a href="#Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
 </td>
 <td align="right">3</td>
@@ -249,99 +234,25 @@
 <td>
 <a href="#Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
 </td>
-<td align="right">4</td>
+<td align="right">5</td>
 </tr>
 <tr class="tablerow0">
 <td>
 <a href="#Warnings_STYLE">Dodgy code Warnings</a>
 </td>
-<td align="right">2</td>
+<td align="right">3</td>
 </tr>
 <tr class="tablerow1">
 <td>
 <b>Total</b>
 </td>
 <td align="right">
-<b>13</b>
+<b>11</b>
 </td>
 </tr>
 </table>
 <h1>Warnings</h1>
 <p>Click on a warning row to see full context information.</p>
-<h2>
-<a name="Warnings_BAD_PRACTICE">Bad practice Warnings</a>
-</h2>
-<table class="warningtable" width="100%" cellspacing="0">
-<tr class="tableheader">
-<th align="left">Code</th>
-<th align="left">Warning</th>
-</tr>
-<tr class="tablerow1" onclick="toggleRow('N66220');">
-<td>
-<span class="priority-1">ES</span>
-</td>
-<td>Comparison of String parameter using == or != in org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction.degMinSecToDouble(RationalNumber[], String) </td>
-</tr>
-<tr class="detailrow1">
-<td/>
-<td>
-<p id="N66220" style="display: none;">
-<a href="#ES_COMPARING_PARAMETER_STRING_WITH_EQ">Bug type ES_COMPARING_PARAMETER_STRING_WITH_EQ (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction.degMinSecToDouble(RationalNumber[], String)<br/>Actual type String<br/>String constant "S"<br/>Value loaded from ref<br/>At MapillaryImportAction.java:[line 235]</p>
-</td>
-</tr>
-<tr class="tablerow0" onclick="toggleRow('N66302');">
-<td>
-<span class="priority-1">ES</span>
-</td>
-<td>Comparison of String parameter using == or != in org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction.degMinSecToDouble(RationalNumber[], String) </td>
-</tr>
-<tr class="detailrow0">
-<td/>
-<td>
-<p id="N66302" style="display: none;">
-<a href="#ES_COMPARING_PARAMETER_STRING_WITH_EQ">Bug type ES_COMPARING_PARAMETER_STRING_WITH_EQ (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction.degMinSecToDouble(RationalNumber[], String)<br/>Actual type String<br/>String constant "W"<br/>Value loaded from ref<br/>At MapillaryImportAction.java:[line 235]</p>
-</td>
-</tr>
-</table>
-<h2>
-<a name="Warnings_I18N">Internationalization Warnings</a>
-</h2>
-<table class="warningtable" width="100%" cellspacing="0">
-<tr class="tableheader">
-<th align="left">Code</th>
-<th align="left">Warning</th>
-</tr>
-<tr class="tablerow1" onclick="toggleRow('N66596');">
-<td>
-<span class="priority-1">Dm</span>
-</td>
-<td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener.run(): new java.io.InputStreamReader(InputStream)</td>
-</tr>
-<tr class="detailrow1">
-<td/>
-<td>
-<p id="N66596" style="display: none;">
-<a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener.run()<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthPortListener.java:[line 28]</p>
-</td>
-</tr>
-<tr class="tablerow0" onclick="toggleRow('N66665');">
-<td>
-<span class="priority-1">Dm</span>
-</td>
-<td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener.run(): new java.io.PrintWriter(OutputStream, boolean)</td>
-</tr>
-<tr class="detailrow0">
-<td/>
-<td>
-<p id="N66665" style="display: none;">
-<a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener.run()<br/>Called method new java.io.PrintWriter(OutputStream, boolean)<br/>At OAuthPortListener.java:[line 26]</p>
-</td>
-</tr>
-</table>
 <h2>
 <a name="Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
 </h2>
@@ -350,7 +261,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66544');">
+<tr class="tablerow1" onclick="toggleRow('N66453');">
 <td>
 <span class="priority-1">MS</span>
 </td>
@@ -359,26 +270,26 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66544" style="display: none;">
+<p id="N66453" style="display: none;">
 <a href="#MS_MUTABLE_ARRAY">Bug type MS_MUTABLE_ARRAY (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader<br/>Field org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader.MODES<br/>At MapillaryDownloader.java:[line 29]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65982');">
+<tr class="tablerow0" onclick="toggleRow('N65988');">
 <td>
 <span class="priority-1">MS</span>
 </td>
-<td>org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.lock isn't final but should be</td>
+<td>org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.LOCK isn't final but should be</td>
 </tr>
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N65982" style="display: none;">
+<p id="N65988" style="display: none;">
 <a href="#MS_SHOULD_BE_FINAL">Bug type MS_SHOULD_BE_FINAL (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.lock<br/>At MapillaryAbstractImage.java:[line 26]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.LOCK<br/>At MapillaryAbstractImage.java:[line 26]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66034');">
+<tr class="tablerow1" onclick="toggleRow('N66040');">
 <td>
 <span class="priority-1">MS</span>
 </td>
@@ -387,7 +298,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66034" style="display: none;">
+<p id="N66040" style="display: none;">
 <a href="#MS_SHOULD_BE_FINAL">Bug type MS_SHOULD_BE_FINAL (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryData.TEST_MODE<br/>At MapillaryData.java:[line 23]</p>
 </td>
@@ -401,7 +312,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66384');">
+<tr class="tablerow1" onclick="toggleRow('N66293');">
 <td>
 <span class="priority-1">JLM</span>
 </td>
@@ -410,12 +321,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66384" style="display: none;">
+<p id="N66293" style="display: none;">
 <a href="#JLM_JSR166_LOCK_MONITORENTER">Bug type JLM_JSR166_LOCK_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.run()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.lock<br/>At WalkThread.java:[line 85]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.run()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.lock<br/>At WalkThread.java:[line 98]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66464');">
+<tr class="tablerow0" onclick="toggleRow('N66373');">
 <td>
 <span class="priority-1">JLM</span>
 </td>
@@ -424,37 +335,51 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66464" style="display: none;">
+<p id="N66373" style="display: none;">
 <a href="#JLM_JSR166_LOCK_MONITORENTER">Bug type JLM_JSR166_LOCK_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.selectedImageChanged(MapillaryAbstractImage, MapillaryAbstractImage)<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.lock<br/>At WalkThread.java:[line 117]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.selectedImageChanged(MapillaryAbstractImage, MapillaryAbstractImage)<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.actions.WalkThread.lock<br/>At WalkThread.java:[line 125]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65822');">
+<tr class="tablerow1" onclick="toggleRow('N66505');">
+<td>
+<span class="priority-1">JLM</span>
+</td>
+<td>Synchronization performed on java.util.concurrent.locks.ReentrantLock in org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread.run()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66505" style="display: none;">
+<a href="#JLM_JSR166_LOCK_MONITORENTER">Bug type JLM_JSR166_LOCK_MONITORENTER (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread<br/>In method org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread.run()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread.LOCK<br/>At MapillarySequenceDownloadThread.java:[line 98]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N65828');">
 <td>
 <span class="priority-1">JLM</span>
 </td>
 <td>Synchronization performed on java.util.concurrent.locks.ReentrantLock in org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.next()</td>
 </tr>
-<tr class="detailrow1">
+<tr class="detailrow0">
 <td/>
 <td>
-<p id="N65822" style="display: none;">
+<p id="N65828" style="display: none;">
 <a href="#JLM_JSR166_LOCK_MONITORENTER">Bug type JLM_JSR166_LOCK_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.next()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.lock<br/>At MapillaryAbstractImage.java:[line 283]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.next()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.LOCK<br/>At MapillaryAbstractImage.java:[line 283]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65902');">
+<tr class="tablerow1" onclick="toggleRow('N65908');">
 <td>
 <span class="priority-1">JLM</span>
 </td>
 <td>Synchronization performed on java.util.concurrent.locks.ReentrantLock in org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.previous()</td>
 </tr>
-<tr class="detailrow0">
+<tr class="detailrow1">
 <td/>
 <td>
-<p id="N65902" style="display: none;">
+<p id="N65908" style="display: none;">
 <a href="#JLM_JSR166_LOCK_MONITORENTER">Bug type JLM_JSR166_LOCK_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.previous()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.lock<br/>At MapillaryAbstractImage.java:[line 297]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.previous()<br/>Type java.util.concurrent.locks.ReentrantLock<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.LOCK<br/>At MapillaryAbstractImage.java:[line 297]</p>
 </td>
 </tr>
 </table>
@@ -466,7 +391,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66086');">
+<tr class="tablerow1" onclick="toggleRow('N66092');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -475,47 +400,43 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66086" style="display: none;">
+<p id="N66092" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.destroy()<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryData.INSTANCE<br/>At MapillaryData.java:[line 60]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66153');">
+<tr class="tablerow0" onclick="toggleRow('N66159');">
+<td>
+<span class="priority-1">ST</span>
+</td>
+<td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryData.INSTANCE from instance method org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.destroy()</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N66159" style="display: none;">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryLayer<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.destroy()<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryData.INSTANCE<br/>At MapillaryLayer.java:[line 184]</p>
+</td>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66226');">
 <td>
 <span class="priority-1">ST</span>
 </td>
 <td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.INSTANCE from instance method org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.destroy()</td>
 </tr>
-<tr class="detailrow0">
+<tr class="detailrow1">
 <td/>
 <td>
-<p id="N66153" style="display: none;">
+<p id="N66226" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryLayer<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.destroy()<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.INSTANCE<br/>At MapillaryLayer.java:[line 183]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryLayer<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.destroy()<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryLayer.INSTANCE<br/>At MapillaryLayer.java:[line 185]</p>
 </td>
 </tr>
 </table>
 <h1>
 <a name="Details">Details</a>
 </h1>
-<h2>
-<a name="DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING: Reliance on default encoding</a>
-</h2>
-
-<p> Found a call to a method which will perform a byte to String (or String to byte) conversion, and will assume that the default platform encoding is suitable. This will cause the application behaviour to vary between platforms. Use an alternative API and specify a charset name or Charset object explicitly.  </p>
-
-      
-<h2>
-<a name="ES_COMPARING_PARAMETER_STRING_WITH_EQ">ES_COMPARING_PARAMETER_STRING_WITH_EQ: Comparison of String parameter using == or !=</a>
-</h2>
-
-  <p>This code compares a <code>java.lang.String</code> parameter for reference
-equality using the == or != operators. Requiring callers to
-pass only String constants or interned strings to a method is unnecessarily
-fragile, and rarely leads to measurable performance gains. Consider
-using the <code>equals(Object)</code> method instead.</p>
-
-    
 <h2>
 <a name="JLM_JSR166_LOCK_MONITORENTER">JLM_JSR166_LOCK_MONITORENTER: Synchronization performed on Lock</a>
 </h2>

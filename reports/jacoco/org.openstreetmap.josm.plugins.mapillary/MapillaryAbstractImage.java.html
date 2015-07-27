@@ -23,7 +23,7 @@ public abstract class MapillaryAbstractImage {
    * Lock that locks next() and previous() methods. Used when downloading images
    * to prevent concurrency problems.
    */
-<span class="fc" id="L26">  public static Lock lock = new ReentrantLock();</span>
+<span class="fc" id="L26">  public static Lock LOCK = new ReentrantLock();</span>
 
   /** The time the image was captured, in Epoch format. */
   private long capturedAt;
@@ -176,18 +176,18 @@ public abstract class MapillaryAbstractImage {
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-<span class="nc" id="L179">    String format = &quot;&quot;;</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;))</span>
-<span class="nc" id="L181">      format += &quot;yyyy-MM-dd&quot;;</span>
+<span class="fc" id="L179">    String format = &quot;&quot;;</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;))</span>
+<span class="fc" id="L181">      format += &quot;yyyy-MM-dd&quot;;</span>
     else
-<span class="nc" id="L183">      format += &quot;dd/MM/yyyy&quot;;</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
-<span class="nc bnc" id="L185" title="All 2 branches missed.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;))</span>
-<span class="nc" id="L186">        format += &quot; - HH:mm:ss (z)&quot;;</span>
+<span class="fc" id="L183">      format += &quot;dd/MM/yyyy&quot;;</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;))</span>
+<span class="fc" id="L186">        format += &quot; - HH:mm:ss (z)&quot;;</span>
       else
-<span class="nc" id="L188">        format += &quot; - h:mm:ss a (z)&quot;;</span>
+<span class="fc" id="L188">        format += &quot; - h:mm:ss a (z)&quot;;</span>
     }
-<span class="nc" id="L190">    return getDate(format);</span>
+<span class="fc" id="L190">    return getDate(format);</span>
   }
 
   /**
@@ -196,8 +196,8 @@ public abstract class MapillaryAbstractImage {
    * @param capturedAt
    */
   public void setCapturedAt(long capturedAt) {
-<span class="nc" id="L199">    this.capturedAt = capturedAt;</span>
-<span class="nc" id="L200">  }</span>
+<span class="fc" id="L199">    this.capturedAt = capturedAt;</span>
+<span class="fc" id="L200">  }</span>
 
   /**
    * Returns the Epoch time when the image was captured.
@@ -205,7 +205,7 @@ public abstract class MapillaryAbstractImage {
    * @return The long containing the Epoch time when the image was captured.
    */
   public long getCapturedAt() {
-<span class="nc" id="L208">    return capturedAt;</span>
+<span class="fc" id="L208">    return capturedAt;</span>
   }
 
   /**
@@ -216,11 +216,11 @@ public abstract class MapillaryAbstractImage {
    *         format.
    */
   public String getDate(String format) {
-<span class="nc" id="L219">    Date date = new Date(getCapturedAt());</span>
+<span class="fc" id="L219">    Date date = new Date(getCapturedAt());</span>
 
-<span class="nc" id="L221">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
-<span class="nc" id="L222">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
-<span class="nc" id="L223">    return formatter.format(date);</span>
+<span class="fc" id="L221">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="fc" id="L222">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
+<span class="fc" id="L223">    return formatter.format(date);</span>
   }
 
   /**
@@ -280,7 +280,7 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-<span class="nc" id="L283">    synchronized (lock) {</span>
+<span class="nc" id="L283">    synchronized (LOCK) {</span>
 <span class="nc bnc" id="L284" title="All 2 branches missed.">      if (this.getSequence() == null)</span>
 <span class="nc" id="L285">        return null;</span>
 <span class="nc" id="L286">      return this.getSequence().next(this);</span>
@@ -294,7 +294,7 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-<span class="nc" id="L297">    synchronized (lock) {</span>
+<span class="nc" id="L297">    synchronized (LOCK) {</span>
 <span class="nc bnc" id="L298" title="All 2 branches missed.">      if (this.getSequence() == null)</span>
 <span class="nc" id="L299">        return null;</span>
 <span class="nc" id="L300">      return this.getSequence().previous(this);</span>

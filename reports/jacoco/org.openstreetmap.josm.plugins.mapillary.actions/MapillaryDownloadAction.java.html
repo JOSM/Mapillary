@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -30,24 +29,23 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-<span class="nc" id="L33">    super(tr(&quot;Mapillary&quot;), new ImageProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L34">        tr(&quot;Create Mapillary layer&quot;), Shortcut.registerShortcut(&quot;Mapillary&quot;,</span>
-<span class="nc" id="L35">            tr(&quot;Start Mapillary layer&quot;), KeyEvent.VK_COMMA, Shortcut.SHIFT),</span>
+<span class="nc" id="L32">    super(tr(&quot;Mapillary&quot;), new ImageProvider(&quot;icon24.png&quot;),</span>
+<span class="nc" id="L33">        tr(&quot;Create Mapillary layer&quot;), Shortcut.registerShortcut(&quot;Mapillary&quot;,</span>
+<span class="nc" id="L34">            tr(&quot;Start Mapillary layer&quot;), KeyEvent.VK_COMMA, Shortcut.SHIFT),</span>
         false, &quot;mapillaryDownload&quot;, false);
-<span class="nc" id="L37">    this.setEnabled(false);</span>
-<span class="nc" id="L38">  }</span>
+<span class="nc" id="L36">    this.setEnabled(false);</span>
+<span class="nc" id="L37">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (MapillaryLayer.INSTANCE == null) {</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L44">        MapillaryDownloader.automaticDownload();</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (MapillaryLayer.INSTANCE == null) {</span>
+<span class="nc" id="L42">      MapillaryLayer.getInstance();</span>
     } else {
-<span class="nc bnc" id="L46" title="All 2 branches missed.">      if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())</span>
-<span class="nc" id="L47">        Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">      if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())</span>
+<span class="nc" id="L45">        Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());</span>
       else
-<span class="nc" id="L49">        Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());</span>
+<span class="nc" id="L47">        Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());</span>
     }
-<span class="nc" id="L51">  }</span>
+<span class="nc" id="L49">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

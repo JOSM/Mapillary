@@ -9,7 +9,7 @@ import javax.swing.SpinnerNumberModel;
 
 /**
  * Dialog to set the walk mode options.
- * 
+ *
  * @author nokutu
  *
  */
@@ -21,20 +21,26 @@ public class MapillaryWalkDialog extends JPanel {
   public SpinnerModel spin;
   /** Whether it must wait for the picture to be downloaded */
   public JCheckBox waitForPicture;
+  /** Whether the view must follow the selected image. */
+  public JCheckBox followSelection;
 
   /**
    * Main constructor
    */
-<span class="nc" id="L28">  public MapillaryWalkDialog() {</span>
-<span class="nc" id="L29">    JPanel interval = new JPanel();</span>
-<span class="nc" id="L30">    spin = new SpinnerNumberModel(3000, 100, 15000, 100);</span>
-<span class="nc" id="L31">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
-<span class="nc" id="L32">    interval.add(new JSpinner(spin));</span>
-<span class="nc" id="L33">    add(interval);</span>
+<span class="nc" id="L30">  public MapillaryWalkDialog() {</span>
+<span class="nc" id="L31">    JPanel interval = new JPanel();</span>
+<span class="nc" id="L32">    spin = new SpinnerNumberModel(3000, 100, 15000, 100);</span>
+<span class="nc" id="L33">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
+<span class="nc" id="L34">    interval.add(new JSpinner(spin));</span>
+<span class="nc" id="L35">    add(interval);</span>
 
-<span class="nc" id="L35">    waitForPicture = new JCheckBox(&quot;Wait for the picture to be downloaded&quot;);</span>
-<span class="nc" id="L36">    waitForPicture.setSelected(true);</span>
-<span class="nc" id="L37">    add(waitForPicture);</span>
-<span class="nc" id="L38">  }</span>
+<span class="nc" id="L37">    waitForPicture = new JCheckBox(&quot;Wait for full quality pictures&quot;);</span>
+<span class="nc" id="L38">    waitForPicture.setSelected(true);</span>
+<span class="nc" id="L39">    add(waitForPicture);</span>
+
+<span class="nc" id="L41">    followSelection = new JCheckBox(&quot;Follow selected image&quot;);</span>
+<span class="nc" id="L42">    followSelection.setSelected(true);</span>
+<span class="nc" id="L43">    add(followSelection);</span>
+<span class="nc" id="L44">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

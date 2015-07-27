@@ -502,22 +502,23 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L502">        }</span>
       });
 <span class="nc bnc" id="L504" title="All 4 branches missed.">    } else if (data != null &amp;&amp; result == LoadResult.SUCCESS) {</span>
+<span class="nc" id="L505">      System.out.println(attributes.getMetadata());</span>
       try {
-<span class="nc" id="L506">        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data</span>
-<span class="nc" id="L507">            .getContent()));</span>
-<span class="nc bnc" id="L508" title="All 2 branches missed.">        if (img == null)</span>
-<span class="nc" id="L509">          return;</span>
-<span class="nc bnc" id="L510" title="All 2 branches missed.">        if (this.mapillaryImageDisplay.getImage() == null)</span>
-<span class="nc" id="L511">          mapillaryImageDisplay.setImage(img);</span>
-<span class="nc" id="L512">        else if (img.getHeight() &gt; this.mapillaryImageDisplay.getImage()</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">            .getHeight()) {</span>
-<span class="nc" id="L514">          mapillaryImageDisplay.setImage(img);</span>
+<span class="nc" id="L507">        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data</span>
+<span class="nc" id="L508">            .getContent()));</span>
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        if (img == null)</span>
+<span class="nc" id="L510">          return;</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">        if (this.mapillaryImageDisplay.getImage() == null)</span>
+<span class="nc" id="L512">          mapillaryImageDisplay.setImage(img);</span>
+<span class="nc" id="L513">        else if (img.getHeight() &gt; this.mapillaryImageDisplay.getImage()</span>
+<span class="nc bnc" id="L514" title="All 2 branches missed.">            .getHeight()) {</span>
+<span class="nc" id="L515">          mapillaryImageDisplay.setImage(img);</span>
         }
-<span class="nc" id="L516">      } catch (IOException e) {</span>
-<span class="nc" id="L517">        Main.error(e);</span>
-<span class="nc" id="L518">      }</span>
+<span class="nc" id="L517">      } catch (IOException e) {</span>
+<span class="nc" id="L518">        Main.error(e);</span>
+<span class="nc" id="L519">      }</span>
     }
-<span class="nc" id="L520">  }</span>
+<span class="nc" id="L521">  }</span>
 
   /**
    * Creates the layout of the dialog.
@@ -532,36 +533,36 @@ public class MapillaryMainDialog extends ToggleDialog implements
    */
   public void createLayout(Component data, List&lt;SideButton&gt; buttons,
       boolean reverse) {
-<span class="nc" id="L535">    this.removeAll();</span>
-<span class="nc" id="L536">    JPanel panel = new JPanel();</span>
-<span class="nc" id="L537">    panel.setLayout(new BorderLayout());</span>
-<span class="nc" id="L538">    panel.add(data, BorderLayout.CENTER);</span>
-<span class="nc bnc" id="L539" title="All 2 branches missed.">    if (reverse) {</span>
-<span class="nc" id="L540">      buttonsPanel = new JPanel(new GridLayout(1, 1));</span>
-<span class="nc bnc" id="L541" title="All 4 branches missed.">      if (!buttons.isEmpty() &amp;&amp; buttons.get(0) != null) {</span>
-<span class="nc bnc" id="L542" title="All 2 branches missed.">        final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(</span>
+<span class="nc" id="L536">    this.removeAll();</span>
+<span class="nc" id="L537">    JPanel panel = new JPanel();</span>
+<span class="nc" id="L538">    panel.setLayout(new BorderLayout());</span>
+<span class="nc" id="L539">    panel.add(data, BorderLayout.CENTER);</span>
+<span class="nc bnc" id="L540" title="All 2 branches missed.">    if (reverse) {</span>
+<span class="nc" id="L541">      buttonsPanel = new JPanel(new GridLayout(1, 1));</span>
+<span class="nc bnc" id="L542" title="All 4 branches missed.">      if (!buttons.isEmpty() &amp;&amp; buttons.get(0) != null) {</span>
+<span class="nc bnc" id="L543" title="All 2 branches missed.">        final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(</span>
             &quot;dialog.align.left&quot;, false) ? new FlowLayout(FlowLayout.LEFT)
-<span class="nc" id="L544">            : new GridLayout(1, buttons.size()));</span>
-<span class="nc" id="L545">        buttonsPanel.add(buttonRowPanel);</span>
-<span class="nc bnc" id="L546" title="All 2 branches missed.">        for (SideButton button : buttons)</span>
-<span class="nc" id="L547">          buttonRowPanel.add(button);</span>
+<span class="nc" id="L545">            : new GridLayout(1, buttons.size()));</span>
+<span class="nc" id="L546">        buttonsPanel.add(buttonRowPanel);</span>
+<span class="nc bnc" id="L547" title="All 2 branches missed.">        for (SideButton button : buttons)</span>
+<span class="nc" id="L548">          buttonRowPanel.add(button);</span>
       }
-<span class="nc" id="L549">      panel.add(buttonsPanel, BorderLayout.NORTH);</span>
-<span class="nc" id="L550">      createLayout(panel, true, null);</span>
+<span class="nc" id="L550">      panel.add(buttonsPanel, BorderLayout.NORTH);</span>
+<span class="nc" id="L551">      createLayout(panel, true, null);</span>
     } else
-<span class="nc" id="L552">      createLayout(panel, true, buttons);</span>
-<span class="nc" id="L553">    this.add(titleBar, BorderLayout.NORTH);</span>
-<span class="nc" id="L554">  }</span>
+<span class="nc" id="L553">      createLayout(panel, true, buttons);</span>
+<span class="nc" id="L554">    this.add(titleBar, BorderLayout.NORTH);</span>
+<span class="nc" id="L555">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc" id="L559">    setImage(newImage);</span>
-<span class="nc" id="L560">    updateImage();</span>
-<span class="nc" id="L561">  }</span>
+<span class="nc" id="L560">    setImage(newImage);</span>
+<span class="nc" id="L561">    updateImage();</span>
+<span class="nc" id="L562">  }</span>
 
   @Override
   public void imagesAdded() {
-<span class="nc" id="L565">  }</span>
+<span class="nc" id="L566">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

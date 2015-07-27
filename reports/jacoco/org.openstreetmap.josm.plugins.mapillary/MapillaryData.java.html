@@ -208,24 +208,70 @@ public class MapillaryData {
 
   /**
    * If the selected MapillaryImage is part of a MapillarySequence then the
+   * following visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   *
+   * @param moveToPicture
+   *          True if the view must me moved to the next picture.
+   */
+  public void selectNext(boolean moveToPicture) {
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
+<span class="nc" id="L219">      return;</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
+<span class="nc" id="L221">      return;</span>
+<span class="nc" id="L222">    MapillaryAbstractImage tempImage = selectedImage;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">    while (tempImage.next() != null) {</span>
+<span class="nc" id="L224">      tempImage = tempImage.next();</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
+<span class="nc" id="L226">        setSelectedImage(tempImage, moveToPicture);</span>
+<span class="nc" id="L227">        break;</span>
+      }
+    }
+<span class="nc" id="L230">  }</span>
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
    * previous visible MapillaryImage is selected. In case there is none, does
    * nothing.
    */
   public void selectPrevious() {
-<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
-<span class="nc" id="L216">      return;</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
-<span class="nc" id="L218">      throw new IllegalStateException();</span>
-<span class="nc" id="L219">    MapillaryAbstractImage tempImage = selectedImage;</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">    while (tempImage.previous() != null) {</span>
-<span class="nc" id="L221">      tempImage = tempImage.previous();</span>
-<span class="nc bnc" id="L222" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
-<span class="nc" id="L223">        setSelectedImage(tempImage,</span>
-<span class="nc" id="L224">            Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;, true));</span>
-<span class="nc" id="L225">        break;</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
+<span class="nc" id="L239">      return;</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
+<span class="nc" id="L241">      throw new IllegalStateException();</span>
+<span class="nc" id="L242">    MapillaryAbstractImage tempImage = selectedImage;</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">    while (tempImage.previous() != null) {</span>
+<span class="nc" id="L244">      tempImage = tempImage.previous();</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
+<span class="nc" id="L246">        setSelectedImage(tempImage,</span>
+<span class="nc" id="L247">            Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;, true));</span>
+<span class="nc" id="L248">        break;</span>
       }
     }
-<span class="nc" id="L228">  }</span>
+<span class="nc" id="L251">  }</span>
+
+  /**
+   * If the selected MapillaryImage is part of a MapillarySequence then the
+   * previous visible MapillaryImage is selected. In case there is none, does
+   * nothing.
+   *
+   * @param moveToPicture
+   *          True if the view must me moved to the previous picture.
+   */
+  public void selectPrevious(boolean moveToPicture) {
+<span class="nc bnc" id="L262" title="All 2 branches missed.">    if (getSelectedImage() == null)</span>
+<span class="nc" id="L263">      return;</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">    if (getSelectedImage().getSequence() == null)</span>
+<span class="nc" id="L265">      throw new IllegalStateException();</span>
+<span class="nc" id="L266">    MapillaryAbstractImage tempImage = selectedImage;</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">    while (tempImage.previous() != null) {</span>
+<span class="nc" id="L268">      tempImage = tempImage.previous();</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">      if (tempImage.isVisible()) {</span>
+<span class="nc" id="L270">        setSelectedImage(tempImage, moveToPicture);</span>
+<span class="nc" id="L271">        break;</span>
+      }
+    }
+<span class="nc" id="L274">  }</span>
 
   /**
    * Selects a new image.If the user does ctrl + click, this isn't triggered.
@@ -234,8 +280,8 @@ public class MapillaryData {
    *          The MapillaryImage which is going to be selected
    */
   public void setSelectedImage(MapillaryAbstractImage image) {
-<span class="nc" id="L237">    setSelectedImage(image, false);</span>
-<span class="nc" id="L238">  }</span>
+<span class="nc" id="L283">    setSelectedImage(image, false);</span>
+<span class="nc" id="L284">  }</span>
 
   /**
    * Selects a new image.If the user does ctrl+click, this isn't triggered. You
@@ -247,48 +293,43 @@ public class MapillaryData {
    *          True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
-<span class="nc bnc" id="L250" title="All 2 branches missed.">    if (image != null) {</span>
-<span class="nc" id="L251">      System.out.println(&quot;----------------------------&quot;);</span>
-<span class="nc bnc" id="L252" title="All 2 branches missed.">      for (MapillaryAbstractImage img : getImages())</span>
-<span class="nc" id="L253">        System.out.println(img.getSequence());</span>
-    }
-<span class="nc" id="L255">    MapillaryAbstractImage oldImage = selectedImage;</span>
-<span class="nc" id="L256">    selectedImage = image;</span>
-<span class="nc" id="L257">    multiSelectedImages.clear();</span>
-<span class="nc" id="L258">    multiSelectedImages.add(image);</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (image != null) {</span>
-<span class="nc bnc" id="L260" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
-<span class="nc" id="L261">        MapillaryImage mapillaryImage = (MapillaryImage) image;</span>
+<span class="nc" id="L296">    MapillaryAbstractImage oldImage = selectedImage;</span>
+<span class="nc" id="L297">    selectedImage = image;</span>
+<span class="nc" id="L298">    multiSelectedImages.clear();</span>
+<span class="nc" id="L299">    multiSelectedImages.add(image);</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">    if (image != null) {</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
+<span class="nc" id="L302">        MapillaryImage mapillaryImage = (MapillaryImage) image;</span>
         // Downloading thumbnails of surrounding pictures.
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (mapillaryImage.next() != null) {</span>
-<span class="nc" id="L264">          Utils.downloadPicture((MapillaryImage) mapillaryImage.next());</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">          if (mapillaryImage.next().next() != null)</span>
-<span class="nc" id="L266">            Utils</span>
-<span class="nc" id="L267">                .downloadPicture((MapillaryImage) mapillaryImage.next().next());</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">        if (mapillaryImage.next() != null) {</span>
+<span class="nc" id="L305">          Utils.downloadPicture((MapillaryImage) mapillaryImage.next());</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">          if (mapillaryImage.next().next() != null)</span>
+<span class="nc" id="L307">            Utils</span>
+<span class="nc" id="L308">                .downloadPicture((MapillaryImage) mapillaryImage.next().next());</span>
         }
-<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (mapillaryImage.previous() != null) {</span>
-<span class="nc" id="L270">          Utils.downloadPicture((MapillaryImage) mapillaryImage.previous());</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">          if (mapillaryImage.previous().previous() != null)</span>
-<span class="nc" id="L272">            Utils.downloadPicture((MapillaryImage) mapillaryImage.previous()</span>
-<span class="nc" id="L273">                .previous());</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (mapillaryImage.previous() != null) {</span>
+<span class="nc" id="L311">          Utils.downloadPicture((MapillaryImage) mapillaryImage.previous());</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">          if (mapillaryImage.previous().previous() != null)</span>
+<span class="nc" id="L313">            Utils.downloadPicture((MapillaryImage) mapillaryImage.previous()</span>
+<span class="nc" id="L314">                .previous());</span>
         }
       }
     }
-<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (zoom)</span>
-<span class="nc" id="L278">      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()</span>
-<span class="nc" id="L279">          .getLatLon());</span>
-<span class="nc bnc" id="L280" title="All 2 branches missed.">    if (Main.map != null)</span>
-<span class="nc" id="L281">      Main.map.mapView.repaint();</span>
-<span class="nc" id="L282">    fireSelectedImageChanged(oldImage, selectedImage);</span>
-<span class="nc" id="L283">  }</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    if (zoom)</span>
+<span class="nc" id="L319">      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()</span>
+<span class="nc" id="L320">          .getLatLon());</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">    if (Main.map != null)</span>
+<span class="nc" id="L322">      Main.map.mapView.repaint();</span>
+<span class="nc" id="L323">    fireSelectedImageChanged(oldImage, selectedImage);</span>
+<span class="nc" id="L324">  }</span>
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L287" title="All 2 branches missed.">    if (listeners.isEmpty())</span>
-<span class="nc" id="L288">      return;</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">    for (MapillaryDataListener lis : listeners)</span>
-<span class="nc" id="L290">      lis.selectedImageChanged(oldImage, newImage);</span>
-<span class="nc" id="L291">  }</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">    if (listeners.isEmpty())</span>
+<span class="nc" id="L329">      return;</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">    for (MapillaryDataListener lis : listeners)</span>
+<span class="nc" id="L331">      lis.selectedImageChanged(oldImage, newImage);</span>
+<span class="nc" id="L332">  }</span>
 
   /**
    * Adds a MapillaryImage object to the list of selected images, (when ctrl +
@@ -298,14 +339,14 @@ public class MapillaryData {
    *          The MapillaryImage object to be added.
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L301" title="All 2 branches missed.">    if (!this.multiSelectedImages.contains(image)) {</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">      if (this.getSelectedImage() != null)</span>
-<span class="nc" id="L303">        this.multiSelectedImages.add(image);</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">    if (!this.multiSelectedImages.contains(image)) {</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">      if (this.getSelectedImage() != null)</span>
+<span class="nc" id="L344">        this.multiSelectedImages.add(image);</span>
       else
-<span class="nc" id="L305">        this.setSelectedImage(image);</span>
+<span class="nc" id="L346">        this.setSelectedImage(image);</span>
     }
-<span class="nc" id="L307">    Main.map.mapView.repaint();</span>
-<span class="nc" id="L308">  }</span>
+<span class="nc" id="L348">    Main.map.mapView.repaint();</span>
+<span class="nc" id="L349">  }</span>
 
   /**
    * Adds a set of {@code MapillaryAbstractImage} objects to the list of
@@ -315,15 +356,15 @@ public class MapillaryData {
    *          A List object containing the set of images to be added.
    */
   public void addMultiSelectedImage(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc bnc" id="L318" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
-<span class="nc bnc" id="L319" title="All 2 branches missed.">      if (!this.multiSelectedImages.contains(image)) {</span>
-<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (this.getSelectedImage() != null)</span>
-<span class="nc" id="L321">          this.multiSelectedImages.add(image);</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">      if (!this.multiSelectedImages.contains(image)) {</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">        if (this.getSelectedImage() != null)</span>
+<span class="nc" id="L362">          this.multiSelectedImages.add(image);</span>
         else
-<span class="nc" id="L323">          this.setSelectedImage(image);</span>
+<span class="nc" id="L364">          this.setSelectedImage(image);</span>
       }
-<span class="nc" id="L325">    Main.map.mapView.repaint();</span>
-<span class="nc" id="L326">  }</span>
+<span class="nc" id="L366">    Main.map.mapView.repaint();</span>
+<span class="nc" id="L367">  }</span>
 
   /**
    * Returns a List containing all {@code MapillaryAbstractImage} objects
@@ -332,7 +373,7 @@ public class MapillaryData {
    * @return A List object containing all the images selected.
    */
   public List&lt;MapillaryAbstractImage&gt; getMultiSelectedImages() {
-<span class="nc" id="L335">    return multiSelectedImages;</span>
+<span class="nc" id="L376">    return multiSelectedImages;</span>
   }
 
   /**
@@ -341,7 +382,7 @@ public class MapillaryData {
    * @return The amount of images in stored.
    */
   public int size() {
-<span class="nc" id="L344">    return images.size();</span>
+<span class="nc" id="L385">    return images.size();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

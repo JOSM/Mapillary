@@ -18,7 +18,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * Downloads the signs information in a given area.
- * 
+ *
  * @author nokutu
  *
  */
@@ -31,7 +31,7 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param ex
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
