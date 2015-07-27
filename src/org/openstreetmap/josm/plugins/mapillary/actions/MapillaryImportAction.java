@@ -232,8 +232,8 @@ public class MapillaryImportAction extends JosmAction {
     result += degMinSec[1].doubleValue() / 60; // minutes
     result += degMinSec[2].doubleValue() / 3600; // seconds
 
-    if (ref == GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH
-        || ref == GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST) {
+    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
+        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
       result *= -1;
     }
 

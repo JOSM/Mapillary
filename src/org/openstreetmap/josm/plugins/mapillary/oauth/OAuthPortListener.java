@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -23,9 +24,8 @@ public class OAuthPortListener extends Thread {
     try {
       ServerSocket serverSocket = new ServerSocket(8763);
       Socket clientSocket = serverSocket.accept();
-      PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-      Scanner in = new Scanner(new InputStreamReader(
-          clientSocket.getInputStream()));
+      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
+      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
       String s;
       String accessToken = null;
       while (in.hasNextLine()) {

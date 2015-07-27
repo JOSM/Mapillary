@@ -44,7 +44,6 @@ public class MapillarySequenceDownloadThread extends Thread {
    *
    * @param ex
    * @param queryString
-   * @param manager
    */
   public MapillarySequenceDownloadThread(ExecutorService ex,
       String queryString) {
