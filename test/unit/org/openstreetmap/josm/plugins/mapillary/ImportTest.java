@@ -65,7 +65,9 @@ public class ImportTest extends AbstractTest {
     ref = GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH;
     assertEquals(-1, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
     num[0] = new RationalNumber(180, 1);
-    assertEquals(0, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    assertEquals(-180, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    num[0] = new RationalNumber(190, 1);
+    assertEquals(170, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
   }
 
 }
