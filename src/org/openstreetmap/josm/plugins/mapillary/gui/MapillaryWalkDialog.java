@@ -23,6 +23,8 @@ public class MapillaryWalkDialog extends JPanel {
   public JCheckBox waitForPicture;
   /** Whether the view must follow the selected image. */
   public JCheckBox followSelection;
+  /** Go forward or backwards */
+  public JCheckBox goForward;
 
   /**
    * Main constructor
@@ -41,5 +43,9 @@ public class MapillaryWalkDialog extends JPanel {
     followSelection = new JCheckBox("Follow selected image");
     followSelection.setSelected(true);
     add(followSelection);
+
+    goForward = new JCheckBox("Go forward");
+    goForward.setSelected(true);
+    add(goForward);
   }
 }

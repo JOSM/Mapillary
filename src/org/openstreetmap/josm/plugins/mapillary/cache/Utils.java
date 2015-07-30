@@ -17,27 +17,28 @@ public class Utils {
 
   /** Picture quality */
   public enum PICTURE {
-    /** Thumbnail quality picture () */
+    /** Thumbnail quality picture (320 p) */
     THUMBNAIL,
-    /** Full quality picture () */
-    FULL,
+    /** Full quality picture (2048 p) */
+    FULL_IMAGE,
     /** Both of them */
     BOTH;
   }
 
   /**
-   * Downloads the picture of the given image and does nothing when it is
-   * downloaded.
+   * Downloads the the thumbnail and the full resolution picture of the given
+   * image. Does nothing if it is already in cache.
    *
    * @param img
+   *          The image whose picture is going to be downloaded.
    */
   public static void downloadPicture(MapillaryImage img) {
     downloadPicture(img, PICTURE.BOTH);
   }
 
   /**
-   * Downloads the picture of the given image and does nothing when it is
-   * downloaded.
+   * Downloads the picture of the given image. Does nothing when it is already
+   * in cache.
    *
    * @param img
    * @param pic
@@ -45,24 +46,25 @@ public class Utils {
    *          both.)
    */
   public static void downloadPicture(MapillaryImage img, PICTURE pic) {
-    if (pic == PICTURE.BOTH) {
-      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)
+    switch (pic) {
+      case BOTH:
+        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
+            .get() == null)
+          new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
+              .submit(IGNORE_DOWNLOAD, false);
+        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
+            .get() == null)
+          new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
+              .submit(IGNORE_DOWNLOAD, false);
+        break;
+      case THUMBNAIL:
         new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
             IGNORE_DOWNLOAD, false);
-      if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
-          .get() == null)
+        break;
+      case FULL_IMAGE:
         new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
             .submit(IGNORE_DOWNLOAD, false);
-    } else if (pic == PICTURE.THUMBNAIL
-        && new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
-            .get() == null) {
-      new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
-          IGNORE_DOWNLOAD, false);
-    } else if (pic == PICTURE.FULL
-        && new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
-            .get() == null) {
-      new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
-          IGNORE_DOWNLOAD, false);
+        break;
     }
   }
 

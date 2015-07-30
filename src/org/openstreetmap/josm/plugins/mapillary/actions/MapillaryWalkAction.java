@@ -56,7 +56,8 @@ public class MapillaryWalkAction extends JosmAction implements
     if (pane.getValue() != null
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       thread = new WalkThread((int) dialog.spin.getValue(),
-          dialog.waitForPicture.isSelected(), dialog.followSelection.isSelected());
+          dialog.waitForPicture.isSelected(),
+          dialog.followSelection.isSelected(), dialog.goForward.isSelected());
       fireWalkStarted();
       thread.start();
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.WALK);

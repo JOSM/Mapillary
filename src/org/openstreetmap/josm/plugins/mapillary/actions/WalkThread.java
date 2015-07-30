@@ -27,6 +27,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   private boolean end = false;
   private final boolean waitForFullQuality;
   private final boolean followSelected;
+  private final boolean goForward;
   private BufferedImage lastImage;
   private volatile boolean paused = false;
 
@@ -36,11 +37,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * @param interval
    * @param waitForPicture
    * @param followSelected
+   * @param goForward
    */
-  public WalkThread(int interval, boolean waitForPicture, boolean followSelected) {
+  public WalkThread(int interval, boolean waitForPicture,
+      boolean followSelected, boolean goForward) {
     this.interval = interval;
     this.waitForFullQuality = waitForPicture;
     this.followSelected = followSelected;
+    this.goForward = goForward;
     data = MapillaryLayer.getInstance().getMapillaryData();
     data.addListener(this);
   }
@@ -66,7 +70,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             if (image.next() == null)
               break;
             image = image.next();
-            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL);
+            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL_IMAGE);
           }
         try {
           synchronized (this) {
@@ -97,7 +101,10 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
               .getImage();
           lock.lock();
-          data.selectNext(followSelected);
+          if (goForward)
+            data.selectNext(followSelected);
+          else
+            data.selectPrevious(followSelected);
           lock.unlock();
         } catch (InterruptedException e) {
           return;

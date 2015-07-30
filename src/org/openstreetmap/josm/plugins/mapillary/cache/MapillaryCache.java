@@ -44,15 +44,17 @@ public class MapillaryCache extends
     super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap<String, String>());
     this.key = key;
     try {
-      if (type == Type.FULL_IMAGE) {
-        url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-            + "/thumb-2048.jpg");
-        this.key += ".FULL_IMAGE";
-
-      } else if (type == Type.THUMBNAIL) {
-        url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-            + "/thumb-320.jpg");
-        this.key += ".THUMBNAIL";
+      switch (type) {
+        case FULL_IMAGE:
+          url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+              + "/thumb-2048.jpg");
+          this.key += ".FULL_IMAGE";
+          break;
+        case THUMBNAIL:
+          url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+              + "/thumb-320.jpg");
+          this.key += ".THUMBNAIL";
+          break;
       }
     } catch (MalformedURLException e) {
       Main.error(e);
