@@ -29,7 +29,7 @@ public class MapillaryWalkDialog extends JPanel {
    */
   public MapillaryWalkDialog() {
     JPanel interval = new JPanel();
-    spin = new SpinnerNumberModel(3000, 100, 15000, 100);
+    spin = new SpinnerNumberModel(2000, 500, 10000, 500);
     interval.add(new JLabel("Interval (miliseconds): "));
     interval.add(new JSpinner(spin));
     add(interval);

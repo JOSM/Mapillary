@@ -74,6 +74,8 @@ public class MapillaryImportAction extends JosmAction {
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
+          if (file.listFiles() == null)
+            continue;
           for (int j = 0; j < file.listFiles().length; j++) {
             int k = file.listFiles()[j].getName().lastIndexOf('.');
             String extension = null;
@@ -86,7 +88,7 @@ public class MapillaryImportAction extends JosmAction {
 
               else if (extension.equals("png"))
                 readPNG(file.listFiles()[j]);
-            } catch (ImageReadException | IOException e1) {
+            } catch (ImageReadException | IOException | NullPointerException e1) {
               Main.error(e1);
             }
           }

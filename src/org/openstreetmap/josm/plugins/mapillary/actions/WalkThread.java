@@ -56,7 +56,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             if (image.next() == null)
               break;
             image = image.next();
-            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.THUMBNAIL);
+            Utils.downloadPicture((MapillaryImage) image,
+                Utils.PICTURE.THUMBNAIL);
           }
         }
         if (waitForFullQuality)
@@ -95,11 +96,13 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           }
           lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
               .getImage();
-          synchronized (lock) {
-            data.selectNext(followSelected);
-          }
+          lock.lock();
+          data.selectNext(followSelected);
+          lock.unlock();
         } catch (InterruptedException e) {
           return;
+        } finally {
+          lock.unlock();
         }
       }
     } catch (NullPointerException e) {
@@ -110,7 +113,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 
   @Override
   public void interrupt() {
-    super.interrupt();
+    lock.lock();
+    try {
+      super.interrupt();
+    } catch (Exception e) {
+    } finally {
+      lock.unlock();
+    }
+
   }
 
   @Override
@@ -122,9 +132,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
     if (newImage != oldImage.next()) {
-      synchronized (lock) {
-        interrupt();
-      }
+      interrupt();
     }
   }
 

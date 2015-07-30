@@ -45,8 +45,7 @@ public class MapillarySequenceDownloadThread extends Thread {
    * @param ex
    * @param queryString
    */
-  public MapillarySequenceDownloadThread(ExecutorService ex,
-      String queryString) {
+  public MapillarySequenceDownloadThread(ExecutorService ex, String queryString) {
     this.queryString = queryString;
     this.ex = ex;
     this.layer = MapillaryLayer.getInstance();
@@ -94,26 +93,26 @@ public class MapillarySequenceDownloadThread extends Thread {
             finalImages.remove(img);
         }
 
+        LOCK.lock();
         MapillaryImage.LOCK.lock();
-        synchronized (LOCK) {
-          for (MapillaryImage img : finalImages) {
-            if (layer.getMapillaryData().getImages().contains(img)) {
-              // The image in finalImages is substituted by the one in the
-              // database, as they represent the same picture.
-              img = (MapillaryImage) layer.getMapillaryData().getImages()
-                  .get(layer.getMapillaryData().getImages().indexOf(img));
-              sequence.add(img);
-              ((MapillaryImage) layer.getMapillaryData().getImages()
-                  .get(layer.getMapillaryData().getImages().indexOf(img)))
-                  .setSequence(sequence);
-              finalImages.set(finalImages.indexOf(img), img);
-            } else {
-              img.setSequence(sequence);
-              sequence.add(img);
-            }
+        for (MapillaryImage img : finalImages) {
+          if (layer.getMapillaryData().getImages().contains(img)) {
+            // The image in finalImages is substituted by the one in the
+            // database, as they represent the same picture.
+            img = (MapillaryImage) layer.getMapillaryData().getImages()
+                .get(layer.getMapillaryData().getImages().indexOf(img));
+            sequence.add(img);
+            ((MapillaryImage) layer.getMapillaryData().getImages()
+                .get(layer.getMapillaryData().getImages().indexOf(img)))
+                .setSequence(sequence);
+            finalImages.set(finalImages.indexOf(img), img);
+          } else {
+            img.setSequence(sequence);
+            sequence.add(img);
           }
         }
         MapillaryImage.LOCK.unlock();
+        LOCK.unlock();
 
         layer.getMapillaryData().addWithoutUpdate(
             new ArrayList<MapillaryAbstractImage>(finalImages));
@@ -121,6 +120,9 @@ public class MapillarySequenceDownloadThread extends Thread {
     } catch (IOException e) {
       Main.error("Error reading the url " + URL + queryString
           + " might be a Mapillary problem.");
+    } finally {
+      LOCK.unlock();
+      MapillaryImage.LOCK.unlock();
     }
   }
 

@@ -50,7 +50,7 @@ public class MapillaryWalkAction extends JosmAction implements
     MapillaryWalkDialog dialog = new MapillaryWalkDialog();
     JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
-    JDialog dlg = pane.createDialog(Main.parent, tr("Export images"));
+    JDialog dlg = pane.createDialog(Main.parent, tr("Walk mode"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
     if (pane.getValue() != null

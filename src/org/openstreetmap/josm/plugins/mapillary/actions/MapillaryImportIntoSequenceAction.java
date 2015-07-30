@@ -76,6 +76,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
         File file = chooser.getSelectedFiles()[i];
+        if (file == null)
+          break;
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
@@ -88,9 +90,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
             try {
               if (extension.equals("jpg") || extension.equals("jpeg"))
                 readJPG(file.listFiles()[j]);
-            } catch (ImageReadException e) {
-              Main.error(e);
-            } catch (IOException e) {
+            } catch (ImageReadException | NullPointerException | IOException e) {
               Main.error(e);
             }
           }

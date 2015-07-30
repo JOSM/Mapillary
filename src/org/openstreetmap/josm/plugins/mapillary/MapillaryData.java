@@ -56,7 +56,7 @@ public class MapillaryData {
   /**
    * Destroys the unique instance.
    */
-  public void destroy() {
+  public static void clearInstance() {
     INSTANCE = null;
   }
 

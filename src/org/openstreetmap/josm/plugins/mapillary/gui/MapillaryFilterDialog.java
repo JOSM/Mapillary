@@ -202,7 +202,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       }
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
-      if (time.getSelectedItem() == TIME_LIST[1]) {
+      if (time.getSelectedItem().equals(TIME_LIST[1])) {
         if (img.getCapturedAt() < currentTime
             - ((Integer) spinner.getValue()).longValue() * 365 * 24 * 60 * 60
             * 1000) {
@@ -210,7 +210,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
           continue;
         }
       }
-      if (time.getSelectedItem() == TIME_LIST[2]) {
+      if (time.getSelectedItem().equals(TIME_LIST[2])) {
         if (img.getCapturedAt() < currentTime
             - ((Integer) spinner.getValue()).longValue() * 30 * 24 * 60 * 60
             * 1000) {
@@ -218,7 +218,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
           continue;
         }
       }
-      if (time.getSelectedItem() == TIME_LIST[3]) {
+      if (time.getSelectedItem().equals(TIME_LIST[3])) {
         if (img.getCapturedAt() < currentTime
             - ((Integer) spinner.getValue()).longValue() * 60 * 60 * 1000) {
           img.setVisible(false);

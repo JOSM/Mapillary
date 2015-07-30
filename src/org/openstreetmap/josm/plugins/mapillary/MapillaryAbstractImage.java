@@ -280,10 +280,14 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-    synchronized (LOCK) {
-      if (this.getSequence() == null)
+    LOCK.lock();
+    try {
+      if (this.getSequence() == null) {
         return null;
+      }
       return this.getSequence().next(this);
+    } finally {
+      LOCK.unlock();
     }
   }
 
@@ -294,10 +298,15 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-    synchronized (LOCK) {
-      if (this.getSequence() == null)
+    LOCK.lock();
+    try {
+      if (this.getSequence() == null) {
         return null;
+      }
       return this.getSequence().previous(this);
+    } finally {
+      LOCK.unlock();
     }
+
   }
 }

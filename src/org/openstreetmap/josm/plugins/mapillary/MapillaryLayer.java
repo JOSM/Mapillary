@@ -181,9 +181,16 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapView.removeEditLayerChangeListener(this);
     if (Main.map.mapView.getEditLayer() != null)
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
-    MapillaryData.INSTANCE = null;
-    MapillaryLayer.INSTANCE = null;
+    MapillaryData.clearInstance();
+    clearInstance();
     super.destroy();
+  }
+
+  /**
+   * Clears the unique instance of this class.
+   */
+  public static void clearInstance() {
+    INSTANCE = null;
   }
 
   /**

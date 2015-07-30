@@ -172,7 +172,6 @@ public class SelectMode extends AbstractMode {
       Main.map.mapMode.putValue("active", Boolean.TRUE);
 
     } else if (imageHighlighted && !nothingHighlighted
-        && Main.map.mapView != null
         && Main.map.mapView.getEditLayer().data != null
         && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {
 
