@@ -202,7 +202,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       }
       // Calculates the amount of days since the image was taken
 <span class="nc" id="L204">      Long currentTime = currentTime();</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">      if (time.getSelectedItem() == TIME_LIST[1]) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">      if (time.getSelectedItem().equals(TIME_LIST[1])) {</span>
 <span class="nc" id="L206">        if (img.getCapturedAt() &lt; currentTime</span>
 <span class="nc bnc" id="L207" title="All 2 branches missed.">            - ((Integer) spinner.getValue()).longValue() * 365 * 24 * 60 * 60</span>
             * 1000) {
@@ -210,7 +210,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 <span class="nc" id="L210">          continue;</span>
         }
       }
-<span class="nc bnc" id="L213" title="All 2 branches missed.">      if (time.getSelectedItem() == TIME_LIST[2]) {</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">      if (time.getSelectedItem().equals(TIME_LIST[2])) {</span>
 <span class="nc" id="L214">        if (img.getCapturedAt() &lt; currentTime</span>
 <span class="nc bnc" id="L215" title="All 2 branches missed.">            - ((Integer) spinner.getValue()).longValue() * 30 * 24 * 60 * 60</span>
             * 1000) {
@@ -218,7 +218,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 <span class="nc" id="L218">          continue;</span>
         }
       }
-<span class="nc bnc" id="L221" title="All 2 branches missed.">      if (time.getSelectedItem() == TIME_LIST[3]) {</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">      if (time.getSelectedItem().equals(TIME_LIST[3])) {</span>
 <span class="nc" id="L222">        if (img.getCapturedAt() &lt; currentTime</span>
 <span class="nc bnc" id="L223" title="All 2 branches missed.">            - ((Integer) spinner.getValue()).longValue() * 60 * 60 * 1000) {</span>
 <span class="nc" id="L224">          img.setVisible(false);</span>

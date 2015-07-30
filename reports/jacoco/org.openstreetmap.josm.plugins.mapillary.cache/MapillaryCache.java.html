@@ -44,47 +44,49 @@ public class MapillaryCache extends
 <span class="nc" id="L44">    super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap&lt;String, String&gt;());</span>
 <span class="nc" id="L45">    this.key = key;</span>
     try {
-<span class="nc bnc" id="L47" title="All 2 branches missed.">      if (type == Type.FULL_IMAGE) {</span>
-<span class="nc" id="L48">        url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
-            + &quot;/thumb-2048.jpg&quot;);
-<span class="nc" id="L50">        this.key += &quot;.FULL_IMAGE&quot;;</span>
-
-<span class="nc bnc" id="L52" title="All 2 branches missed.">      } else if (type == Type.THUMBNAIL) {</span>
-<span class="nc" id="L53">        url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
-            + &quot;/thumb-320.jpg&quot;);
-<span class="nc" id="L55">        this.key += &quot;.THUMBNAIL&quot;;</span>
+<span class="nc bnc" id="L47" title="All 3 branches missed.">      switch (type) {</span>
+        case FULL_IMAGE:
+<span class="nc" id="L49">          url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
+              + &quot;/thumb-2048.jpg&quot;);
+<span class="nc" id="L51">          this.key += &quot;.FULL_IMAGE&quot;;</span>
+<span class="nc" id="L52">          break;</span>
+        case THUMBNAIL:
+<span class="nc" id="L54">          url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
+              + &quot;/thumb-320.jpg&quot;);
+<span class="nc" id="L56">          this.key += &quot;.THUMBNAIL&quot;;</span>
+          break;
       }
-<span class="nc" id="L57">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L58">      Main.error(e);</span>
-<span class="nc" id="L59">    }</span>
-<span class="nc" id="L60">  }</span>
+<span class="nc" id="L59">    } catch (MalformedURLException e) {</span>
+<span class="nc" id="L60">      Main.error(e);</span>
+<span class="nc" id="L61">    }</span>
+<span class="nc" id="L62">  }</span>
 
   @Override
   public String getCacheKey() {
-<span class="nc" id="L64">    return key;</span>
+<span class="nc" id="L66">    return key;</span>
   }
 
   @Override
   public URL getUrl() {
-<span class="nc" id="L69">    return url;</span>
+<span class="nc" id="L71">    return url;</span>
   }
 
   @Override
   protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
-<span class="nc" id="L74">    return new BufferedImageCacheEntry(content);</span>
+<span class="nc" id="L76">    return new BufferedImageCacheEntry(content);</span>
   }
 
   @Override
   protected boolean isObjectLoadable() {
-<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (cacheData == null)</span>
-<span class="nc" id="L80">      return false;</span>
-<span class="nc" id="L81">    byte[] content = cacheData.getContent();</span>
-<span class="nc bnc" id="L82" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (cacheData == null)</span>
+<span class="nc" id="L82">      return false;</span>
+<span class="nc" id="L83">    byte[] content = cacheData.getContent();</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
   }
 
   // @Override
   protected boolean handleNotFound() {
-<span class="nc" id="L87">    return false;</span>
+<span class="nc" id="L89">    return false;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

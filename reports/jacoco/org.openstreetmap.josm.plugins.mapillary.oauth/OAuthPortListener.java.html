@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Scanner;
 
 import org.openstreetmap.josm.Main;
@@ -17,54 +18,70 @@ import org.openstreetmap.josm.Main;
  * @author nokutu
  *
  */
-<span class="nc" id="L20">public class OAuthPortListener extends Thread {</span>
+<span class="nc" id="L21">public class OAuthPortListener extends Thread {</span>
 
   @Override
   public void run() {
     try {
-<span class="nc" id="L25">      ServerSocket serverSocket = new ServerSocket(8763);</span>
-<span class="nc" id="L26">      Socket clientSocket = serverSocket.accept();</span>
-<span class="nc" id="L27">      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), &quot;UTF-8&quot;), true);</span>
-<span class="nc" id="L28">      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L26">      ServerSocket serverSocket = new ServerSocket(8763);</span>
+<span class="nc" id="L27">      Socket clientSocket = serverSocket.accept();</span>
+<span class="nc" id="L28">      PrintWriter out = new PrintWriter(new OutputStreamWriter(</span>
+<span class="nc" id="L29">          clientSocket.getOutputStream(), &quot;UTF-8&quot;), true);</span>
+<span class="nc" id="L30">      Scanner in = new Scanner(new InputStreamReader(</span>
+<span class="nc" id="L31">          clientSocket.getInputStream(), &quot;UTF-8&quot;));</span>
       String s;
-<span class="nc" id="L30">      String accessToken = null;</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">      while (in.hasNextLine()) {</span>
-<span class="nc" id="L32">        s = in.nextLine();</span>
-<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (s.contains(&quot;access_token=&quot;)) {</span>
-<span class="nc" id="L34">          String[] ss = s.split(&quot;&amp;&quot;);</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">          for (int i = 0; i &lt; ss.length; i++) {</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">            if (ss[i].contains(&quot;access_token=&quot;)) {</span>
-<span class="nc" id="L37">              accessToken = ss[i].substring(</span>
-<span class="nc" id="L38">                  ss[i].indexOf(&quot;access_token=&quot;) + 13, ss[i].length());</span>
-<span class="nc" id="L39">              break;</span>
+<span class="nc" id="L33">      String accessToken = null;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">      while (in.hasNextLine()) {</span>
+<span class="nc" id="L35">        s = in.nextLine();</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (s.contains(&quot;access_token=&quot;)) {</span>
+<span class="nc" id="L37">          String[] ss = s.split(&quot;&amp;&quot;);</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">          for (int i = 0; i &lt; ss.length; i++) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (ss[i].contains(&quot;access_token=&quot;)) {</span>
+<span class="nc" id="L40">              accessToken = ss[i].substring(</span>
+<span class="nc" id="L41">                  ss[i].indexOf(&quot;access_token=&quot;) + 13, ss[i].length());</span>
+<span class="nc" id="L42">              break;</span>
             }
           }
-<span class="nc" id="L42">          break;</span>
-        }
+<span class="nc" id="L45">          break;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        } else if (s.contains(&quot;keep-alive&quot;))</span>
+<span class="nc" id="L47">          break;</span>
       }
 
-<span class="nc" id="L46">      writeContent(out);</span>
-
-<span class="nc" id="L48">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot;</span>
-          + accessToken);
-<span class="nc" id="L50">      Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
+<span class="nc" id="L50">      writeContent(out);</span>
 
 <span class="nc" id="L52">      out.close();</span>
 <span class="nc" id="L53">      in.close();</span>
 <span class="nc" id="L54">      serverSocket.close();</span>
-<span class="nc" id="L55">    } catch (BindException e) {</span>
-<span class="nc" id="L56">      return;</span>
-<span class="nc" id="L57">    } catch (IOException e) {</span>
-<span class="nc" id="L58">      Main.error(e);</span>
-<span class="nc" id="L59">    }</span>
-<span class="nc" id="L60">  }</span>
+
+<span class="nc" id="L56">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot;</span>
+          + accessToken);
+      // Saves the access token in preferences.
+<span class="nc" id="L59">      Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
+      // Sets the logged username in preferences.
+<span class="nc" id="L61">      Main.pref</span>
+<span class="nc" id="L62">          .put(</span>
+              &quot;mapillary.username&quot;,
+              OAuthUtils
+<span class="nc" id="L65">                  .getWithHeader(</span>
+                      new URL(
+                          &quot;https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
+<span class="nc" id="L68">                  .getString(&quot;username&quot;));</span>
+
+<span class="nc" id="L70">      Main.info(&quot;The username is: &quot; + Main.pref.get(&quot;mapillary.username&quot;));</span>
+
+<span class="nc" id="L72">    } catch (BindException e) {</span>
+<span class="nc" id="L73">      return;</span>
+<span class="nc" id="L74">    } catch (IOException e) {</span>
+<span class="nc" id="L75">      Main.error(e);</span>
+<span class="nc" id="L76">    }</span>
+<span class="nc" id="L77">  }</span>
 
   private void writeContent(PrintWriter out) {
-<span class="nc" id="L63">    String response = &quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Mapillary login&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Login successful, return to JOSM.&lt;/body&gt;&lt;/html&gt;&quot;;</span>
-<span class="nc" id="L64">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>
-<span class="nc" id="L65">    out.println(&quot;Content-Length: &quot; + response.length());</span>
-<span class="nc" id="L66">    out.println(&quot;Content-Type: text/html&quot; + &quot;\r\n\r\n&quot;);</span>
-<span class="nc" id="L67">    out.println(response);</span>
-<span class="nc" id="L68">  }</span>
+<span class="nc" id="L80">    String response = &quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Mapillary login&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Login successful, return to JOSM.&lt;/body&gt;&lt;/html&gt;&quot;;</span>
+<span class="nc" id="L81">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>
+<span class="nc" id="L82">    out.println(&quot;Content-Length: &quot; + response.length());</span>
+<span class="nc" id="L83">    out.println(&quot;Content-Type: text/html&quot; + &quot;\r\n\r\n&quot;);</span>
+<span class="nc" id="L84">    out.println(response);</span>
+<span class="nc" id="L85">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

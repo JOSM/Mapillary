@@ -23,24 +23,30 @@ public class MapillaryWalkDialog extends JPanel {
   public JCheckBox waitForPicture;
   /** Whether the view must follow the selected image. */
   public JCheckBox followSelection;
+  /** Go forward or backwards */
+  public JCheckBox goForward;
 
   /**
    * Main constructor
    */
-<span class="nc" id="L30">  public MapillaryWalkDialog() {</span>
-<span class="nc" id="L31">    JPanel interval = new JPanel();</span>
-<span class="nc" id="L32">    spin = new SpinnerNumberModel(3000, 100, 15000, 100);</span>
-<span class="nc" id="L33">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
-<span class="nc" id="L34">    interval.add(new JSpinner(spin));</span>
-<span class="nc" id="L35">    add(interval);</span>
+<span class="nc" id="L32">  public MapillaryWalkDialog() {</span>
+<span class="nc" id="L33">    JPanel interval = new JPanel();</span>
+<span class="nc" id="L34">    spin = new SpinnerNumberModel(2000, 500, 10000, 500);</span>
+<span class="nc" id="L35">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
+<span class="nc" id="L36">    interval.add(new JSpinner(spin));</span>
+<span class="nc" id="L37">    add(interval);</span>
 
-<span class="nc" id="L37">    waitForPicture = new JCheckBox(&quot;Wait for full quality pictures&quot;);</span>
-<span class="nc" id="L38">    waitForPicture.setSelected(true);</span>
-<span class="nc" id="L39">    add(waitForPicture);</span>
+<span class="nc" id="L39">    waitForPicture = new JCheckBox(&quot;Wait for full quality pictures&quot;);</span>
+<span class="nc" id="L40">    waitForPicture.setSelected(true);</span>
+<span class="nc" id="L41">    add(waitForPicture);</span>
 
-<span class="nc" id="L41">    followSelection = new JCheckBox(&quot;Follow selected image&quot;);</span>
-<span class="nc" id="L42">    followSelection.setSelected(true);</span>
-<span class="nc" id="L43">    add(followSelection);</span>
-<span class="nc" id="L44">  }</span>
+<span class="nc" id="L43">    followSelection = new JCheckBox(&quot;Follow selected image&quot;);</span>
+<span class="nc" id="L44">    followSelection.setSelected(true);</span>
+<span class="nc" id="L45">    add(followSelection);</span>
+
+<span class="nc" id="L47">    goForward = new JCheckBox(&quot;Go forward&quot;);</span>
+<span class="nc" id="L48">    goForward.setSelected(true);</span>
+<span class="nc" id="L49">    add(goForward);</span>
+<span class="nc" id="L50">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

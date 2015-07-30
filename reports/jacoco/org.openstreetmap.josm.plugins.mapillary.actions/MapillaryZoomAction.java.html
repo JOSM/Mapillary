@@ -29,15 +29,15 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-<span class="nc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), new ImageProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L33">        tr(&quot;Zoom to selected image&quot;), Shortcut.registerShortcut(</span>
+<span class="fc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), new ImageProvider(MapillaryPlugin.directory + &quot;images/icon24.png&quot;),</span>
+<span class="fc" id="L33">        tr(&quot;Zoom to selected image&quot;), Shortcut.registerShortcut(</span>
             &quot;Zoom Mapillary&quot;,
-<span class="nc" id="L35">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
+<span class="fc" id="L35">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryZoom&quot;,
         false);
-<span class="nc" id="L38">    MapillaryData.getInstance().addListener(this);</span>
-<span class="nc" id="L39">    this.setEnabled(false);</span>
-<span class="nc" id="L40">  }</span>
+<span class="fc" id="L38">    MapillaryData.getInstance().addListener(this);</span>
+<span class="fc" id="L39">    this.setEnabled(false);</span>
+<span class="fc" id="L40">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
@@ -59,6 +59,6 @@ public class MapillaryZoomAction extends JosmAction implements
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="nc" id="L62">  }</span>
+<span class="fc" id="L62">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

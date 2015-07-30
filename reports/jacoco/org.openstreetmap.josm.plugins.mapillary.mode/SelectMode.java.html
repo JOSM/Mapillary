@@ -171,38 +171,37 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L171">      nothingHighlighted = false;</span>
 <span class="nc" id="L172">      Main.map.mapMode.putValue(&quot;active&quot;, Boolean.TRUE);</span>
 
-<span class="nc bnc" id="L174" title="All 6 branches missed.">    } else if (imageHighlighted &amp;&amp; !nothingHighlighted</span>
-        &amp;&amp; Main.map.mapView != null
-<span class="nc bnc" id="L176" title="All 2 branches missed.">        &amp;&amp; Main.map.mapView.getEditLayer().data != null</span>
-<span class="nc bnc" id="L177" title="All 2 branches missed.">        &amp;&amp; Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {</span>
+<span class="nc bnc" id="L174" title="All 4 branches missed.">    } else if (imageHighlighted &amp;&amp; !nothingHighlighted</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        &amp;&amp; Main.map.mapView.getEditLayer().data != null</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        &amp;&amp; Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {</span>
 
-<span class="nc bnc" id="L179" title="All 2 branches missed.">      for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data</span>
-<span class="nc" id="L180">          .allPrimitives()) {</span>
-<span class="nc" id="L181">        primivitive.setHighlighted(false);</span>
-<span class="nc" id="L182">      }</span>
-<span class="nc" id="L183">      imageHighlighted = false;</span>
-<span class="nc" id="L184">      nothingHighlighted = true;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">      for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data</span>
+<span class="nc" id="L179">          .allPrimitives()) {</span>
+<span class="nc" id="L180">        primivitive.setHighlighted(false);</span>
+<span class="nc" id="L181">      }</span>
+<span class="nc" id="L182">      imageHighlighted = false;</span>
+<span class="nc" id="L183">      nothingHighlighted = true;</span>
     }
 
-<span class="nc bnc" id="L187" title="All 4 branches missed.">    if (data.getHighlighted() != closestTemp &amp;&amp; closestTemp != null) {</span>
-<span class="nc" id="L188">      data.setHighlightedImage(closestTemp);</span>
-<span class="nc" id="L189">      MapillaryMainDialog.getInstance().setImage(closestTemp);</span>
-<span class="nc" id="L190">      MapillaryMainDialog.getInstance().updateImage(false);</span>
-<span class="nc bnc" id="L191" title="All 4 branches missed.">    } else if (data.getHighlighted() != closestTemp &amp;&amp; closestTemp == null) {</span>
-<span class="nc" id="L192">      data.setHighlightedImage(null);</span>
-<span class="nc" id="L193">      MapillaryMainDialog.getInstance().setImage(data.getSelectedImage());</span>
-<span class="nc" id="L194">      MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc bnc" id="L186" title="All 4 branches missed.">    if (data.getHighlighted() != closestTemp &amp;&amp; closestTemp != null) {</span>
+<span class="nc" id="L187">      data.setHighlightedImage(closestTemp);</span>
+<span class="nc" id="L188">      MapillaryMainDialog.getInstance().setImage(closestTemp);</span>
+<span class="nc" id="L189">      MapillaryMainDialog.getInstance().updateImage(false);</span>
+<span class="nc bnc" id="L190" title="All 4 branches missed.">    } else if (data.getHighlighted() != closestTemp &amp;&amp; closestTemp == null) {</span>
+<span class="nc" id="L191">      data.setHighlightedImage(null);</span>
+<span class="nc" id="L192">      MapillaryMainDialog.getInstance().setImage(data.getSelectedImage());</span>
+<span class="nc" id="L193">      MapillaryMainDialog.getInstance().updateImage();</span>
     }
-<span class="nc" id="L196">    data.dataUpdated();</span>
-<span class="nc" id="L197">  }</span>
+<span class="nc" id="L195">    data.dataUpdated();</span>
+<span class="nc" id="L196">  }</span>
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-<span class="nc" id="L201">  }</span>
+<span class="nc" id="L200">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L205">    return &quot;Select mode&quot;;</span>
+<span class="nc" id="L204">    return &quot;Select mode&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

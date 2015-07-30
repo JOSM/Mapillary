@@ -27,8 +27,9 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc" id="L27">  private boolean end = false;</span>
   private final boolean waitForFullQuality;
   private final boolean followSelected;
+  private final boolean goForward;
   private BufferedImage lastImage;
-<span class="nc" id="L31">  private volatile boolean paused = false;</span>
+<span class="nc" id="L32">  private volatile boolean paused = false;</span>
 
   /**
    * Main constructor.
@@ -36,146 +37,160 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * @param interval
    * @param waitForPicture
    * @param followSelected
+   * @param goForward
    */
-<span class="nc" id="L40">  public WalkThread(int interval, boolean waitForPicture, boolean followSelected) {</span>
-<span class="nc" id="L41">    this.interval = interval;</span>
-<span class="nc" id="L42">    this.waitForFullQuality = waitForPicture;</span>
-<span class="nc" id="L43">    this.followSelected = followSelected;</span>
-<span class="nc" id="L44">    data = MapillaryLayer.getInstance().getMapillaryData();</span>
-<span class="nc" id="L45">    data.addListener(this);</span>
-<span class="nc" id="L46">  }</span>
+  public WalkThread(int interval, boolean waitForPicture,
+<span class="nc" id="L43">      boolean followSelected, boolean goForward) {</span>
+<span class="nc" id="L44">    this.interval = interval;</span>
+<span class="nc" id="L45">    this.waitForFullQuality = waitForPicture;</span>
+<span class="nc" id="L46">    this.followSelected = followSelected;</span>
+<span class="nc" id="L47">    this.goForward = goForward;</span>
+<span class="nc" id="L48">    data = MapillaryLayer.getInstance().getMapillaryData();</span>
+<span class="nc" id="L49">    data.addListener(this);</span>
+<span class="nc" id="L50">  }</span>
 
   @Override
   public void run() {
     try {
-<span class="nc bnc" id="L51" title="All 4 branches missed.">      while (!end &amp;&amp; data.getSelectedImage().next() != null) {</span>
-<span class="nc" id="L52">        MapillaryAbstractImage image = data.getSelectedImage();</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (image instanceof MapillaryImage) {</span>
+<span class="nc bnc" id="L55" title="All 4 branches missed.">      while (!end &amp;&amp; data.getSelectedImage().next() != null) {</span>
+<span class="nc" id="L56">        MapillaryAbstractImage image = data.getSelectedImage();</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (image instanceof MapillaryImage) {</span>
           // Predownload next 10 thumbnails.
-<span class="nc bnc" id="L55" title="All 2 branches missed.">          for (int i = 0; i &lt; 10; i++) {</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (image.next() == null)</span>
-<span class="nc" id="L57">              break;</span>
-<span class="nc" id="L58">            image = image.next();</span>
-<span class="nc" id="L59">            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.THUMBNAIL);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">          for (int i = 0; i &lt; 10; i++) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (image.next() == null)</span>
+<span class="nc" id="L61">              break;</span>
+<span class="nc" id="L62">            image = image.next();</span>
+<span class="nc" id="L63">            Utils.downloadPicture((MapillaryImage) image,</span>
+                Utils.PICTURE.THUMBNAIL);
           }
         }
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (waitForFullQuality)</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (waitForFullQuality)</span>
           // Start downloading 3 next full images.
-<span class="nc bnc" id="L64" title="All 2 branches missed.">          for (int i = 0; i &lt; 3; i++) {</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">            if (image.next() == null)</span>
-<span class="nc" id="L66">              break;</span>
-<span class="nc" id="L67">            image = image.next();</span>
-<span class="nc" id="L68">            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">          for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (image.next() == null)</span>
+<span class="nc" id="L71">              break;</span>
+<span class="nc" id="L72">            image = image.next();</span>
+<span class="nc" id="L73">            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL_IMAGE);</span>
           }
         try {
-<span class="nc" id="L71">          synchronized (this) {</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">            if (waitForFullQuality</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">                &amp;&amp; data.getSelectedImage() instanceof MapillaryImage) {</span>
-<span class="nc" id="L74">              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">                  .getImage() == lastImage</span>
-<span class="nc" id="L76">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">                      .getImage() == null</span>
-<span class="nc" id="L78">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">                      .getImage().getWidth() &lt; 2048)</span>
-<span class="nc" id="L80">                wait(100);</span>
+<span class="nc" id="L76">          synchronized (this) {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (waitForFullQuality</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                &amp;&amp; data.getSelectedImage() instanceof MapillaryImage) {</span>
+<span class="nc" id="L79">              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                  .getImage() == lastImage</span>
+<span class="nc" id="L81">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">                      .getImage() == null</span>
+<span class="nc" id="L83">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                      .getImage().getWidth() &lt; 2048)</span>
+<span class="nc" id="L85">                wait(100);</span>
             } else {
-<span class="nc" id="L82">              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">                  .getImage() == lastImage</span>
-<span class="nc" id="L84">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                      .getImage() == null</span>
-<span class="nc" id="L86">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">                      .getImage().getWidth() &lt; 320)</span>
-<span class="nc" id="L88">                wait(100);</span>
+<span class="nc" id="L87">              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                  .getImage() == lastImage</span>
+<span class="nc" id="L89">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                      .getImage() == null</span>
+<span class="nc" id="L91">                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                      .getImage().getWidth() &lt; 320)</span>
+<span class="nc" id="L93">                wait(100);</span>
             }
-<span class="nc bnc" id="L90" title="All 2 branches missed.">            while (paused)</span>
-<span class="nc" id="L91">              wait(100);</span>
-<span class="nc" id="L92">            wait(interval);</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">            while (paused)</span>
-<span class="nc" id="L94">              wait(100);</span>
-<span class="nc" id="L95">          }</span>
-<span class="nc" id="L96">          lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
-<span class="nc" id="L97">              .getImage();</span>
-<span class="nc" id="L98">          synchronized (lock) {</span>
-<span class="nc" id="L99">            data.selectNext(followSelected);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            while (paused)</span>
+<span class="nc" id="L96">              wait(100);</span>
+<span class="nc" id="L97">            wait(interval);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            while (paused)</span>
+<span class="nc" id="L99">              wait(100);</span>
 <span class="nc" id="L100">          }</span>
-<span class="nc" id="L101">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L102">          return;</span>
-<span class="nc" id="L103">        }</span>
-<span class="nc" id="L104">      }</span>
-<span class="nc" id="L105">    } catch (NullPointerException e) {</span>
-<span class="nc" id="L106">      return;</span>
-<span class="nc" id="L107">    }</span>
-<span class="nc" id="L108">    end();</span>
-<span class="nc" id="L109">  }</span>
+<span class="nc" id="L101">          lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay</span>
+<span class="nc" id="L102">              .getImage();</span>
+<span class="nc" id="L103">          lock.lock();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">          if (goForward)</span>
+<span class="nc" id="L105">            data.selectNext(followSelected);</span>
+          else
+<span class="nc" id="L107">            data.selectPrevious(followSelected);</span>
+<span class="nc" id="L108">          lock.unlock();</span>
+<span class="nc" id="L109">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L110">          return;</span>
+        } finally {
+<span class="nc" id="L112">          lock.unlock();</span>
+<span class="nc" id="L113">        }</span>
+<span class="nc" id="L114">      }</span>
+<span class="nc" id="L115">    } catch (NullPointerException e) {</span>
+<span class="nc" id="L116">      return;</span>
+<span class="nc" id="L117">    }</span>
+<span class="nc" id="L118">    end();</span>
+<span class="nc" id="L119">  }</span>
 
   @Override
   public void interrupt() {
-<span class="nc" id="L113">    super.interrupt();</span>
-<span class="nc" id="L114">  }</span>
+<span class="nc" id="L123">    lock.lock();</span>
+    try {
+<span class="nc" id="L125">      super.interrupt();</span>
+<span class="nc" id="L126">    } catch (Exception e) {</span>
+    } finally {
+<span class="nc" id="L128">      lock.unlock();</span>
+<span class="nc" id="L129">    }</span>
+
+<span class="nc" id="L131">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="nc" id="L119">  }</span>
+<span class="nc" id="L136">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L124" title="All 2 branches missed.">    if (newImage != oldImage.next()) {</span>
-<span class="nc" id="L125">      synchronized (lock) {</span>
-<span class="nc" id="L126">        interrupt();</span>
-<span class="nc" id="L127">      }</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">    if (newImage != oldImage.next()) {</span>
+<span class="nc" id="L142">      interrupt();</span>
     }
-<span class="nc" id="L129">  }</span>
+<span class="nc" id="L144">  }</span>
 
   /**
    * Continues with the execution if paused.
    */
   public void play() {
-<span class="nc" id="L135">    paused = false;</span>
-<span class="nc" id="L136">  }</span>
+<span class="nc" id="L150">    paused = false;</span>
+<span class="nc" id="L151">  }</span>
 
   /**
    * Pauses the execution.
    */
   public void pause() {
-<span class="nc" id="L142">    paused = true;</span>
-<span class="nc" id="L143">  }</span>
+<span class="nc" id="L157">    paused = true;</span>
+<span class="nc" id="L158">  }</span>
 
   /**
    * Stops the execution.
    */
   public void stopWalk() {
-<span class="nc bnc" id="L149" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L150">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L165">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L153">          stopWalk();</span>
-<span class="nc" id="L154">        }</span>
+<span class="nc" id="L168">          stopWalk();</span>
+<span class="nc" id="L169">        }</span>
       });
     } else {
-<span class="nc" id="L157">      end();</span>
-<span class="nc" id="L158">      this.interrupt();</span>
+<span class="nc" id="L172">      end();</span>
+<span class="nc" id="L173">      this.interrupt();</span>
     }
-<span class="nc" id="L160">  }</span>
+<span class="nc" id="L175">  }</span>
 
   /**
    * Called when the walk stops by itself of forcefully.
    */
   public void end() {
-<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L167">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L182">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L170">          end();</span>
-<span class="nc" id="L171">        }</span>
+<span class="nc" id="L185">          end();</span>
+<span class="nc" id="L186">        }</span>
       });
     } else {
-<span class="nc" id="L174">      end = true;</span>
-<span class="nc" id="L175">      data.removeListener(this);</span>
-<span class="nc" id="L176">      MapillaryMainDialog.getInstance()</span>
-<span class="nc" id="L177">          .setMode(MapillaryMainDialog.Mode.NORMAL);</span>
+<span class="nc" id="L189">      end = true;</span>
+<span class="nc" id="L190">      data.removeListener(this);</span>
+<span class="nc" id="L191">      MapillaryMainDialog.getInstance()</span>
+<span class="nc" id="L192">          .setMode(MapillaryMainDialog.Mode.NORMAL);</span>
     }
-<span class="nc" id="L179">  }</span>
+<span class="nc" id="L194">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

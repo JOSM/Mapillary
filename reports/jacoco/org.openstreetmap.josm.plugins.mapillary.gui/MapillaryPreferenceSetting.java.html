@@ -83,7 +83,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 <span class="nc bnc" id="L83" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.access-token&quot;) == null)</span>
 <span class="nc" id="L84">      oauth.setText(&quot;Login&quot;);</span>
     else
-<span class="nc" id="L86">      oauth.setText(&quot;Already loged in, click to relogin.&quot;);</span>
+<span class="nc" id="L86">      oauth.setText(&quot;Logged as: &quot; + Main.pref.get(&quot;mapillary.username&quot;) + &quot;. Click to relogin.&quot;);</span>
 <span class="nc" id="L87">    panel.add(oauth);</span>
 <span class="nc" id="L88">    gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, panel);</span>
 <span class="nc" id="L89">  }</span>
@@ -129,7 +129,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 <span class="nc" id="L129">      OAuthPortListener portListener = new OAuthPortListener();</span>
 <span class="nc" id="L130">      portListener.start();</span>
 
-<span class="nc" id="L132">      String url = &quot;http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&amp;response_type=token&amp;scope=user:email&quot;;</span>
+<span class="nc" id="L132">      String url = &quot;http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&amp;response_type=token&amp;scope=user:read%20public:upload%20public:write&quot;;</span>
 <span class="nc" id="L133">      Desktop desktop = Desktop.getDesktop();</span>
 <span class="nc bnc" id="L134" title="All 2 branches missed.">      if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
         try {
