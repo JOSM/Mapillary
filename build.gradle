@@ -137,7 +137,7 @@ task installPluginToJosm(type: Copy) {
 installPluginToJosm.dependsOn jar
 
 task runJosm(type: Exec) {
- commandLine 'java', '-jar', '/home/nokutu/josm/core/dist/josm-custom.jar'
+ commandLine 'josm'
 }
 runJosm.dependsOn installPluginToJosm
 
