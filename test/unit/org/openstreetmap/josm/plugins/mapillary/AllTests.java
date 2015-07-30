@@ -3,10 +3,14 @@ package org.openstreetmap.josm.plugins.mapillary;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.openstreetmap.josm.plugins.mapillary.util.TestUtil;
 
+/**
+ * Runs all tests.
+ *
+ * @author nokutu
+ *
+ */
 @RunWith(Suite.class)
-@SuiteClasses({ ImportTest.class,
-    MapillarySequenceDownloadThreadTest.class})
+@SuiteClasses({ ImportTest.class, MapillarySequenceDownloadThreadTest.class })
 public class AllTests {
 }

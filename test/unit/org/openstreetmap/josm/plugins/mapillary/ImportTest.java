@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,35 +10,50 @@ import javax.imageio.IIOException;
 
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openstreetmap.gui.jmapviewer.interfaces.ICoordinate;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 
-public class ImportTest extends AbstractTest{
+/**
+ * Test the importation of images.
+ *
+ * @author nokutu
+ *
+ */
+public class ImportTest extends AbstractTest {
 
+  /**
+   * Test the importation of images in PNG format.
+   */
   @Test
-  public void importNoTagsTest() throws InterruptedException {
+  public void importNoTagsTest() {
     File image = new File(MapillaryPlugin.directory + "images/icon16.png");
-    MapillaryImportedImage img = MapillaryPlugin.importAction.readNoTags(image);
+    MapillaryImportedImage img = MapillaryPlugin.importAction.readNoTags(image,
+        new LatLon(0, 0));
     assertEquals(0, img.getCa(), 0.01);
-    assert(Main.map.mapView.getRealBounds().getCenter().equalsEpsilon(img.getLatLon()));
+    assert (Main.map.mapView.getRealBounds().getCenter().equalsEpsilon(img
+        .getLatLon()));
   }
 
-  @Test(expected=IIOException.class)
+  /**
+   * Test if provided an invalid file, the proper exception is thrown.
+   *
+   * @throws IOException
+   */
+  @Test(expected = IIOException.class)
   public void testInvalidFiles() throws IOException {
-      MapillaryImportedImage img = new MapillaryImportedImage(0,0,0, null);
-      assertEquals(null, img.getImage());
-      assertEquals(null, img.getFile());
+    MapillaryImportedImage img = new MapillaryImportedImage(0, 0, 0, null);
+    assertEquals(null, img.getImage());
+    assertEquals(null, img.getFile());
 
-      img = new MapillaryImportedImage(0, 0, 0, new File(""));
-      assertEquals(new File(""), img.getFile());
-      img.getImage();
+    img = new MapillaryImportedImage(0, 0, 0, new File(""));
+    assertEquals(new File(""), img.getFile());
+    img.getImage();
   }
 
+  /**
+   * Test degMinSecToDouble method.
+   */
   @Test
   public void degMinSecToDoubleTest() {
     RationalNumber[] num = new RationalNumber[3];

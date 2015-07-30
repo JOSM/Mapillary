@@ -32,7 +32,7 @@ public class MapillaryDownloader {
   /** Base URL of the Mapillary API. */
   public final static String BASE_URL = "https://a.mapillary.com/v2/";
   /** Client ID for the app */
-  public final static String CLIENT_ID = "NzNRM2otQkR2SHJzaXJmNmdQWVQ0dzo1YTA2NmNlODhlNWMwOTBm";
+  public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
       100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));

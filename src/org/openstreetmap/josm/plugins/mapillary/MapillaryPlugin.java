@@ -51,6 +51,7 @@ public class MapillaryPlugin extends Plugin {
 
   private final MapillaryDownloadAction downloadAction;
   private final MapillaryExportAction exportAction;
+  /** Import action */
   public static MapillaryImportAction importAction;
   private final MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;

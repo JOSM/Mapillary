@@ -83,7 +83,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     if (Main.pref.get("mapillary.access-token") == null)
       oauth.setText("Login");
     else
-      oauth.setText("Already loged in, click to relogin.");
+      oauth.setText("Logged as: " + Main.pref.get("mapillary.username") + ". Click to relogin.");
     panel.add(oauth);
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
   }
@@ -129,7 +129,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       OAuthPortListener portListener = new OAuthPortListener();
       portListener.start();
 
-      String url = "http://www.mapillary.io/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=MkJKbDA0bnZuZlcxeTJHTmFqN3g1dzplZTlkZjQyYjYyZTczOTdi&response_type=token&scope=user:email";
+      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&response_type=token&scope=user:read%20public:upload%20public:write";
       Desktop desktop = Desktop.getDesktop();
       if (desktop.isSupported(Desktop.Action.BROWSE)) {
         try {

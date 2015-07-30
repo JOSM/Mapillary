@@ -117,13 +117,14 @@ public class MapillarySequenceDownloadThread extends Thread {
           LOCK.unlock();
         }
 
-        layer.getMapillaryData().addWithoutUpdate(
-            new ArrayList<MapillaryAbstractImage>(finalImages));
+        layer.getMapillaryData().add(
+            new ArrayList<MapillaryAbstractImage>(finalImages), false);
       }
     } catch (IOException e) {
       Main.error("Error reading the url " + URL + queryString
           + " might be a Mapillary problem.");
     }
+    layer.getMapillaryData().dataUpdated();
   }
 
   private boolean isInside(MapillaryAbstractImage image) {

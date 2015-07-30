@@ -67,9 +67,7 @@ public class MapillaryData {
    *          The set of images to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images) {
-      add(image);
-    }
+    add(images, true);
   }
 
   /**
@@ -79,11 +77,7 @@ public class MapillaryData {
    *          The image to be added.
    */
   public synchronized void add(MapillaryAbstractImage image) {
-    if (!images.contains(image)) {
-      this.images.add(image);
-    }
-    dataUpdated();
-    fireImagesAdded();
+    add(image, true);
   }
 
   /**
@@ -112,10 +106,13 @@ public class MapillaryData {
    *
    * @param images
    *          The set of images to be added.
+   * @param update
+   *          Whether the map must be updated or no.
    */
-  public synchronized void addWithoutUpdate(List<MapillaryAbstractImage> images) {
+  public synchronized void add(List<MapillaryAbstractImage> images,
+      boolean update) {
     for (MapillaryAbstractImage image : images) {
-      addWithoutUpdate(image);
+      add(image, update);
     }
   }
 
@@ -144,11 +141,15 @@ public class MapillaryData {
    *
    * @param image
    *          The image to be added.
+   * @param update
+   *          Whether the map must be updated or not.
    */
-  public synchronized void addWithoutUpdate(MapillaryAbstractImage image) {
+  public synchronized void add(MapillaryAbstractImage image, boolean update) {
     if (!images.contains(image)) {
       this.images.add(image);
     }
+    if (update)
+      dataUpdated();
     fireImagesAdded();
   }
 

@@ -49,9 +49,10 @@ public class MapillaryImportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportAction() {
-    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
-        tr("Import local pictures"), Shortcut.registerShortcut(
-            "Import Mapillary", tr("Import pictures into Mapillary layer"),
+    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.directory
+        + "images/icon24.png"), tr("Import local pictures"), Shortcut
+        .registerShortcut("Import Mapillary",
+            tr("Import pictures into Mapillary layer"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImport",
         false);
     this.setEnabled(false);
@@ -173,14 +174,29 @@ public class MapillaryImportAction extends JosmAction {
    * @return The imported image.
    */
   public MapillaryImportedImage readNoTags(File file) {
+    return readNoTags(
+        file,
+        Main.map.mapView.getProjection().eastNorth2latlon(
+            Main.map.mapView.getCenter()));
+  }
+
+  /**
+   * Reads a image file that doesn't contain the needed GPS information. And
+   * creates a new icon in the middle of the map.
+   *
+   * @param file
+   * @param pos
+   *          A {@link LatLon} object indicating the position in the map where
+   *          the image must be set.
+   * @return The imported image.
+   */
+  public MapillaryImportedImage readNoTags(File file, LatLon pos) {
     double HORIZONTAL_DISTANCE = 0.0001;
     double horDev;
     if (noTagsPics % 2 == 0)
       horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
     else
       horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
-    LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
-        Main.map.mapView.getCenter());
     noTagsPics++;
     return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
   }
@@ -245,18 +261,12 @@ public class MapillaryImportAction extends JosmAction {
     result += degMinSec[1].doubleValue() / 60; // minutes
     result += degMinSec[2].doubleValue() / 3600; // seconds
 
-    while (result >= 180) {
-      result -= 180;
-    }
-    while (result <= -180) {
-      result += 180;
-    }
-
     if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
         || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
       result *= -1;
     }
 
+    result = 360*((result+180)/360 - Math.floor((result+180)/360)) - 180;
     return result;
   }
 }
