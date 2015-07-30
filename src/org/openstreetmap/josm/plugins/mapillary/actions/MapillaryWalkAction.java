@@ -38,10 +38,10 @@ public class MapillaryWalkAction extends JosmAction implements
    *
    */
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), new ImageProvider("icon24.png"), tr("Walk mode"),
-        Shortcut.registerShortcut("Mapillary walk", tr("Start walk mode"),
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryWalk",
-        false);
+    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.directory
+        + "images/icon24.png"), tr("Walk mode"), Shortcut.registerShortcut(
+        "Mapillary walk", tr("Start walk mode"), KeyEvent.CHAR_UNDEFINED,
+        Shortcut.NONE), false, "mapillaryWalk", false);
     this.setEnabled(false);
   }
 

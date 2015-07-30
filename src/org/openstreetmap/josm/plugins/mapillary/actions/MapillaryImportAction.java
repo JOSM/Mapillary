@@ -24,6 +24,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -48,7 +49,7 @@ public class MapillaryImportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportAction() {
-    super(tr("Import pictures"), new ImageProvider("icon24.png"),
+    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
         tr("Import local pictures"), Shortcut.registerShortcut(
             "Import Mapillary", tr("Import pictures into Mapillary layer"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImport",
@@ -84,10 +85,10 @@ public class MapillaryImportAction extends JosmAction {
             }
             try {
               if (extension.equals("jpg") || extension.equals("jpeg"))
-                readJPG(file.listFiles()[j]);
+                MapillaryData.getInstance().add(readJPG(file.listFiles()[j]));
 
               else if (extension.equals("png"))
-                readPNG(file.listFiles()[j]);
+                MapillaryData.getInstance().add(readPNG(file.listFiles()[j]));
             } catch (ImageReadException | IOException | NullPointerException e1) {
               Main.error(e1);
             }
@@ -98,7 +99,7 @@ public class MapillaryImportAction extends JosmAction {
               || file.getPath().substring(file.getPath().length() - 5)
                   .equals(".jpeg")) {
             try {
-              readJPG(file);
+              MapillaryData.getInstance().add(readJPG(file));
             } catch (ImageReadException ex) {
               Main.error(ex);
             } catch (IOException ex) {
@@ -106,22 +107,26 @@ public class MapillaryImportAction extends JosmAction {
             }
           } else if (file.getPath().substring(file.getPath().length() - 4)
               .equals(".png")) {
-            readPNG(file);
+            MapillaryData.getInstance().add(readPNG(file));
           }
         }
       }
+      MapillaryLayer.getInstance().showAllPictures();
+
     }
   }
 
   /**
-   * Reads a jpg pictures that contains the needed GPS information (position and
+   * Reads a JPG pictures that contains the needed GPS information (position and
    * direction) and creates a new icon in that position.
    *
    * @param file
+   * @return The imported image.
    * @throws ImageReadException
    * @throws IOException
    */
-  public void readJPG(File file) throws ImageReadException, IOException {
+  public MapillaryImportedImage readJPG(File file) throws ImageReadException,
+      IOException {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
@@ -138,8 +143,7 @@ public class MapillaryImportAction extends JosmAction {
       final TiffField datetimeOriginal = jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
-        readNoTags(file);
-        return;
+        return readNoTags(file);
       }
       double latValue = 0;
       double lonValue = 0;
@@ -153,15 +157,12 @@ public class MapillaryImportAction extends JosmAction {
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)
-        MapillaryData.getInstance().add(
-            new MapillaryImportedImage(latValue, lonValue, caValue, file,
-                datetimeOriginal.getStringValue()));
+        return new MapillaryImportedImage(latValue, lonValue, caValue, file,
+            datetimeOriginal.getStringValue());
       else
-        MapillaryData.getInstance().add(
-            new MapillaryImportedImage(latValue, lonValue, caValue, file));
+        return new MapillaryImportedImage(latValue, lonValue, caValue, file);
     }
-
-    MapillaryLayer.getInstance().showAllPictures();
+    throw new IllegalStateException("Invalid format.");
   }
 
   /**
@@ -169,8 +170,9 @@ public class MapillaryImportAction extends JosmAction {
    * creates a new icon in the middle of the map.
    *
    * @param file
+   * @return The imported image.
    */
-  private void readNoTags(File file) {
+  public MapillaryImportedImage readNoTags(File file) {
     double HORIZONTAL_DISTANCE = 0.0001;
     double horDev;
     if (noTagsPics % 2 == 0)
@@ -179,13 +181,18 @@ public class MapillaryImportAction extends JosmAction {
       horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
     LatLon pos = Main.map.mapView.getProjection().eastNorth2latlon(
         Main.map.mapView.getCenter());
-    MapillaryData.getInstance().add(
-        new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file));
     noTagsPics++;
+    return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
   }
 
-  private void readPNG(File file) {
-    readNoTags(file);
+  /**
+   * Reads an image in PNG format.
+   *
+   * @param file
+   * @return The imported image.
+   */
+  public MapillaryImportedImage readPNG(File file) {
+    return readNoTags(file);
   }
 
   /**
@@ -218,8 +225,12 @@ public class MapillaryImportAction extends JosmAction {
   // TODO: Maybe move into a separate utility class?
   public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
     if (degMinSec == null || degMinSec.length != 3) {
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Array's length must be 3.");
     }
+    for (int i = 0; i < 3; i++)
+      if (degMinSec[i] == null)
+        throw new IllegalArgumentException("Null value in array.");
+
     switch (ref) {
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
@@ -227,12 +238,19 @@ public class MapillaryImportAction extends JosmAction {
       case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
         break;
       default:
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Invalid ref.");
     }
 
     double result = degMinSec[0].doubleValue(); // degrees
     result += degMinSec[1].doubleValue() / 60; // minutes
     result += degMinSec[2].doubleValue() / 3600; // seconds
+
+    while (result >= 180) {
+      result -= 180;
+    }
+    while (result <= -180) {
+      result += 180;
+    }
 
     if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
         || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {

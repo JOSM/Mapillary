@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -33,7 +34,7 @@ public class MapillaryDownloadViewAction extends JosmAction {
    */
   public MapillaryDownloadViewAction() {
     super(tr("Download Mapillary images in current view"), new ImageProvider(
-        "icon24.png"), tr("Download Mapillary images in current view"),
+        MapillaryPlugin.directory + "images/icon24.png"), tr("Download Mapillary images in current view"),
         Shortcut.registerShortcut("Mapillary area",
             tr("Download Mapillary images in current view"),
             KeyEvent.VK_PERIOD, Shortcut.SHIFT), false, "mapillaryArea", false);

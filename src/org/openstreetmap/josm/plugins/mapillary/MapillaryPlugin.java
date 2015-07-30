@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -30,34 +31,33 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin {
 
+  /** Plugin's directory */
+  public static String directory;
   /** 24x24 icon. */
-  public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
+  public static ImageIcon ICON24;
   /** 16x16 icon. */
-  public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
+  public static ImageIcon ICON16;
   /** Icon representing an image in the map. */
-  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png")
-      .get();
+  public static ImageIcon MAP_ICON;
   /** Icon representing a selected image in the map. */
-  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider(
-      "mapiconselected.png").get();
+  public static ImageIcon MAP_ICON_SELECTED;
   /** Icon representing an imported image in the map. */
-  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider(
-      "mapiconimported.png").get();
+  public static ImageIcon MAP_ICON_IMPORTED;
   /** Icon used to identify which images have signs on them */
-  public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
+  public static ImageIcon MAP_SIGN;
 
   /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
   private final MapillaryDownloadAction downloadAction;
   private final MapillaryExportAction exportAction;
-  private final MapillaryImportAction importAction;
+  public static MapillaryImportAction importAction;
   private final MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
   private final MapillaryJoinAction joinAction;
   /** Walk action */
-  public final static MapillaryWalkAction walkAction = new MapillaryWalkAction();
+  public static MapillaryWalkAction walkAction;
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   public static JMenuItem DOWNLOAD_MENU;
@@ -83,7 +83,19 @@ public class MapillaryPlugin extends Plugin {
    */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
+
+    directory = new File("").getAbsolutePath() + "/";
+    ICON24 = new ImageProvider(directory + "images/icon24.png").get();
+    ICON16 = new ImageProvider(directory + "images/icon16.png").get();
+    MAP_ICON = new ImageProvider(directory + "images/mapicon.png").get();
+    MAP_ICON_SELECTED = new ImageProvider(directory
+        + "images/mapiconselected.png").get();
+    MAP_ICON_IMPORTED = new ImageProvider(directory
+        + "images/mapiconimported.png").get();
+    MAP_SIGN = new ImageProvider(directory + "images/sign.png").get();
+
     downloadAction = new MapillaryDownloadAction();
+    walkAction = new MapillaryWalkAction();
     exportAction = new MapillaryExportAction();
     importAction = new MapillaryImportAction();
     zoomAction = new MapillaryZoomAction();
@@ -105,16 +117,16 @@ public class MapillaryPlugin extends Plugin {
           downloadViewAction, false, 14);
       JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
       WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
-    }
 
-    EXPORT_MENU.setEnabled(false);
-    DOWNLOAD_MENU.setEnabled(false);
-    IMPORT_MENU.setEnabled(false);
-    IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);
-    ZOOM_MENU.setEnabled(false);
-    DOWNLOAD_VIEW_MENU.setEnabled(false);
-    JOIN_MENU.setEnabled(false);
-    WALK_MENU.setEnabled(false);
+      EXPORT_MENU.setEnabled(false);
+      DOWNLOAD_MENU.setEnabled(false);
+      IMPORT_MENU.setEnabled(false);
+      IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);
+      ZOOM_MENU.setEnabled(false);
+      DOWNLOAD_VIEW_MENU.setEnabled(false);
+      JOIN_MENU.setEnabled(false);
+      WALK_MENU.setEnabled(false);
+    }
 
     try {
       CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,

@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -29,7 +30,7 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-    super(tr("Mapillary"), new ImageProvider("icon24.png"),
+    super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
         tr("Create Mapillary layer"), Shortcut.registerShortcut("Mapillary",
             tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
         false, "mapillaryDownload", false);

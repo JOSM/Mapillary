@@ -1,8 +1,13 @@
 package org.openstreetmap.josm.plugins.mapillary.util;
 
+import java.io.File;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.projection.Projections;
+import org.openstreetmap.josm.plugins.PluginException;
+import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.I18n;
 
 public class TestUtil {
@@ -29,7 +34,12 @@ public class TestUtil {
             Main.pref.init(false);
             I18n.set(Main.pref.get("language", "en"));
             Main.setProjection(Projections.getProjectionByCode("EPSG:3857")); // Mercator
-
+            try {
+              new MapillaryPlugin(new PluginInformation(new File("/home/nokutu/.josm/plugins/Mapillary.jar")));
+            } catch (PluginException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
             isInitialized = true;
         }
     }
