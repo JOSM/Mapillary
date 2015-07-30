@@ -31,8 +31,7 @@ public class ImportTest extends AbstractTest {
     MapillaryImportedImage img = MapillaryPlugin.importAction.readNoTags(image,
         new LatLon(0, 0));
     assertEquals(0, img.getCa(), 0.01);
-    assert (Main.map.mapView.getRealBounds().getCenter().equalsEpsilon(img
-        .getLatLon()));
+    assertTrue(new LatLon(0, 0).equalsEpsilon(img.getLatLon()));
   }
 
   /**
