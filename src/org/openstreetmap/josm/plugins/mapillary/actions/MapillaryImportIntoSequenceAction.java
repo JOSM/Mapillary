@@ -50,7 +50,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportIntoSequenceAction() {
-    super(tr("Import pictures into sequence"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
+    super(tr("Import pictures into sequence"), new ImageProvider(
+        MapillaryPlugin.directory
+            + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
         tr("Import local pictures"), Shortcut.registerShortcut(
             "Import Mapillary Sequence",
             tr("Import pictures into Mapillary layer in a sequence"),

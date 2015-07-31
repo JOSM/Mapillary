@@ -33,6 +33,8 @@ public class MapillaryPlugin extends Plugin {
 
   /** Plugin's directory */
   public static String directory;
+  /** OS route separator */
+  public static final String SEPARATOR = System.getProperty("file.separator");
   /** 24x24 icon. */
   public static ImageIcon ICON24;
   /** 16x16 icon. */
@@ -85,15 +87,16 @@ public class MapillaryPlugin extends Plugin {
   public MapillaryPlugin(PluginInformation info) {
     super(info);
 
-    directory = new File("").getAbsolutePath() + "/";
-    ICON24 = new ImageProvider(directory + "images/icon24.png").get();
-    ICON16 = new ImageProvider(directory + "images/icon16.png").get();
-    MAP_ICON = new ImageProvider(directory + "images/mapicon.png").get();
+
+    directory = new File("").getAbsolutePath() + SEPARATOR;
+    ICON24 = new ImageProvider(directory + "images" + SEPARATOR + "icon24.png").get();
+    ICON16 = new ImageProvider(directory + "images" + SEPARATOR + "icon16.png").get();
+    MAP_ICON = new ImageProvider(directory + "images" + SEPARATOR + "mapicon.png").get();
     MAP_ICON_SELECTED = new ImageProvider(directory
-        + "images/mapiconselected.png").get();
+        + "images" + SEPARATOR + "mapiconselected.png").get();
     MAP_ICON_IMPORTED = new ImageProvider(directory
         + "images/mapiconimported.png").get();
-    MAP_SIGN = new ImageProvider(directory + "images/sign.png").get();
+    MAP_SIGN = new ImageProvider(directory + "images" + SEPARATOR + "sign.png").get();
 
     downloadAction = new MapillaryDownloadAction();
     walkAction = new MapillaryWalkAction();

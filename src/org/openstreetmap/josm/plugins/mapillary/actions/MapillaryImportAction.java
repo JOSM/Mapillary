@@ -50,9 +50,9 @@ public class MapillaryImportAction extends JosmAction {
    */
   public MapillaryImportAction() {
     super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.directory
-        + "images/icon24.png"), tr("Import local pictures"), Shortcut
-        .registerShortcut("Import Mapillary",
-            tr("Import pictures into Mapillary layer"),
+        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
+        tr("Import local pictures"), Shortcut.registerShortcut(
+            "Import Mapillary", tr("Import pictures into Mapillary layer"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImport",
         false);
     this.setEnabled(false);
@@ -266,7 +266,7 @@ public class MapillaryImportAction extends JosmAction {
       result *= -1;
     }
 
-    result = 360*((result+180)/360 - Math.floor((result+180)/360)) - 180;
+    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
     return result;
   }
 }

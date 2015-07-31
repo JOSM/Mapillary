@@ -30,7 +30,8 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-    super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
+    super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.directory
+        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
         tr("Create Mapillary layer"), Shortcut.registerShortcut("Mapillary",
             tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
         false, "mapillaryDownload", false);

@@ -42,7 +42,8 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-    super(tr("Export pictures"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
+    super(tr("Export pictures"), new ImageProvider(MapillaryPlugin.directory
+        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
         tr("Export pictures"), Shortcut.registerShortcut("Export Mapillary",
             tr("Export Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryExport", false);

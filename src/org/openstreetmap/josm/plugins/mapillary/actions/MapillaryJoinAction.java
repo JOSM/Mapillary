@@ -27,7 +27,8 @@ public class MapillaryJoinAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryJoinAction() {
-    super(tr("Join mode"), new ImageProvider(MapillaryPlugin.directory + "images/icon24.png"),
+    super(tr("Join mode"), new ImageProvider(MapillaryPlugin.directory
+        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
         tr("Join/unjoin pictures"), Shortcut.registerShortcut("Mapillary join",
             tr("Join Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryJoin", false);
