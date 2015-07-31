@@ -8,13 +8,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 
 /**
  * Class that concentrates all the ways of downloading of the plugin. All the
@@ -28,6 +28,16 @@ public class MapillaryDownloader {
   /** Possible download modes. */
   public static final String[] MODES = new String[] { "Automatic",
       "Semiautomatic", "Manual" };
+  /** Automatic mode. */
+  public static final int AUTOMATIC = 0;
+  /** Semiautomatic mode. */
+  public static final int SEMIAUTOMATIC = 1;
+  /** Manual mode. */
+  public static final int MANUAL = 2;
+
+  /** Max area to be downloaded */
+  public static final double MAX_AREA = Main.pref.getDouble(
+      "mapillary.max-download-area", 0.015);
 
   /** Base URL of the Mapillary API. */
   public final static String BASE_URL = "https://a.mapillary.com/v2/";
@@ -65,8 +75,10 @@ public class MapillaryDownloader {
    *
    */
   public static void completeView() {
+    if (getMode() != SEMIAUTOMATIC && getMode() != MANUAL)
+      throw new IllegalStateException("Must be in semiautomatic or manual mode");
     Bounds view = Main.map.mapView.getRealBounds();
-    if (view.getArea() > MapillaryDownloadViewAction.MAX_AREA)
+    if (view.getArea() > MAX_AREA)
       return;
     if (isViewDownloaded(view))
       return;
@@ -80,8 +92,8 @@ public class MapillaryDownloader {
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
         if (isInBounds(new LatLon(view.getMinLat()
-            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n), view.getMinLon()
- + (view.getMaxLon() - view.getMinLon())
+            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
+            view.getMinLon() + (view.getMaxLon() - view.getMinLon())
                 * ((double) j / n)))) {
           inside[i][j] = true;
         }
@@ -119,11 +131,13 @@ public class MapillaryDownloader {
    */
   public static void automaticDownload() {
     MapillaryLayer layer = MapillaryLayer.getInstance();
-    checkAreaTooBig();
-    if (!Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[0])
-        || layer.TEMP_SEMIAUTOMATIC)
+    if (isAreaTooBig()) {
+      tooBigErrorDialog();
       return;
+    }
+
+    if (getMode() != AUTOMATIC)
+      throw new IllegalStateException("Must be in automatic mode.");
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
       if (!layer.bounds.contains(bounds)) {
@@ -139,19 +153,50 @@ public class MapillaryDownloader {
    * program too much. To solve this the automatic is stopped, an alert is shown
    * and you will have to download areas manually.
    */
-  private static void checkAreaTooBig() {
+  private static boolean isAreaTooBig() {
     double area = 0;
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
       area += bounds.getArea();
     }
-    if (area > MapillaryDownloadViewAction.MAX_AREA) {
+    if (area > MAX_AREA)
+      return true;
+    return false;
+  }
+
+  /**
+   * Returns the current download mode.
+   *
+   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
+   */
+  public static int getMode() {
+    if (Main.pref.get("mapillary.download-mode").equals(MODES[0])
+        && !MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC)
+      return 0;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES[1])
+        || MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC)
+      return 1;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES[2]))
+      return 2;
+    else
+      throw new IllegalStateException();
+  }
+
+  private static void tooBigErrorDialog() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          tooBigErrorDialog();
+        }
+      });
+    } else {
       MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
       JOptionPane
           .showMessageDialog(
               Main.parent,
-              tr("The downloaded OSM area is too big. Download mode has been changed to manual until the layer is restarted."));
+              tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
     }
   }
 

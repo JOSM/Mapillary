@@ -106,6 +106,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
+    if (INSTANCE == null)
+      INSTANCE = this;
     if (Main.map != null && Main.map.mapView != null) {
       setMode(new SelectMode());
       Main.map.mapView.addLayer(this);
@@ -113,6 +115,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       MapView.addLayerChangeListener(this);
       if (Main.map.mapView.getEditLayer() != null)
         Main.map.mapView.getEditLayer().data.addDataSetListener(this);
+      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)
+        MapillaryDownloader.automaticDownload();
+      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)
+        mode.zoomChanged();
     }
     if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in
                                                // headless mode
@@ -153,7 +159,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public synchronized static MapillaryLayer getInstance() {
     if (INSTANCE == null)
-      INSTANCE = new MapillaryLayer();
+      return new MapillaryLayer();
     return MapillaryLayer.INSTANCE;
   }
 
@@ -444,8 +450,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Returns the 2 closest images belonging to a different sequence.
    *
-   * @return An array of length 2 containing the two closest images belonging
-   *         to different sequences.
+   * @return An array of length 2 containing the two closest images belonging to
+   *         different sequences.
    */
   private MapillaryImage[] getClosestImagesFromDifferentSequences() {
     if (!(data.getSelectedImage() instanceof MapillaryImage))

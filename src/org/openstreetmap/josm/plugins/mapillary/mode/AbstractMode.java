@@ -63,9 +63,7 @@ public abstract class AbstractMode extends MouseAdapter implements
 
   @Override
   public void zoomChanged() {
-    if (Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[1])
-        || MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC) {
+    if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC) {
       if (!semiautomaticThread.isAlive())
         semiautomaticThread.start();
       semiautomaticThread.moved();
