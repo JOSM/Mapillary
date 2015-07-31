@@ -147,22 +147,21 @@ public class MapillaryPlugin extends Plugin {
 <span class="nc" id="L147">      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);</span>
 <span class="nc" id="L148">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
 <span class="nc" id="L149">      setMenuEnabled(DOWNLOAD_MENU, true);</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">      if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
-          MapillaryDownloader.MODES[2]))
-<span class="nc" id="L152">        setMenuEnabled(DOWNLOAD_VIEW_MENU, true);</span>
-<span class="nc" id="L153">      setMenuEnabled(IMPORT_MENU, true);</span>
-<span class="nc" id="L154">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MANUAL)</span>
+<span class="nc" id="L151">        setMenuEnabled(DOWNLOAD_VIEW_MENU, true);</span>
+<span class="nc" id="L152">      setMenuEnabled(IMPORT_MENU, true);</span>
+<span class="nc" id="L153">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);</span>
     }
-<span class="nc bnc" id="L156" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
-<span class="nc" id="L157">      MapillaryMainDialog.destroyInstance();</span>
-<span class="nc" id="L158">      MapillaryHistoryDialog.destroyInstance();</span>
-<span class="nc" id="L159">      MapillaryFilterDialog.destroyInstance();</span>
-<span class="nc" id="L160">      setMenuEnabled(DOWNLOAD_MENU, false);</span>
-<span class="nc" id="L161">      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);</span>
-<span class="nc" id="L162">      setMenuEnabled(IMPORT_MENU, false);</span>
-<span class="nc" id="L163">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);</span>
+<span class="nc bnc" id="L155" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
+<span class="nc" id="L156">      MapillaryMainDialog.destroyInstance();</span>
+<span class="nc" id="L157">      MapillaryHistoryDialog.destroyInstance();</span>
+<span class="nc" id="L158">      MapillaryFilterDialog.destroyInstance();</span>
+<span class="nc" id="L159">      setMenuEnabled(DOWNLOAD_MENU, false);</span>
+<span class="nc" id="L160">      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);</span>
+<span class="nc" id="L161">      setMenuEnabled(IMPORT_MENU, false);</span>
+<span class="nc" id="L162">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);</span>
     }
-<span class="nc" id="L165">  }</span>
+<span class="nc" id="L164">  }</span>
 
   /**
    * Enables/disables a JMenuItem.
@@ -173,13 +172,13 @@ public class MapillaryPlugin extends Plugin {
    *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(JMenuItem menu, boolean value) {
-<span class="nc" id="L176">    menu.setEnabled(value);</span>
-<span class="nc" id="L177">    menu.getAction().setEnabled(value);</span>
-<span class="nc" id="L178">  }</span>
+<span class="nc" id="L175">    menu.setEnabled(value);</span>
+<span class="nc" id="L176">    menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L177">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L182">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L181">    return new MapillaryPreferenceSetting();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

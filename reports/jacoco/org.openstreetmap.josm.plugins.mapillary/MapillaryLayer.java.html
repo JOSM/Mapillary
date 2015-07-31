@@ -106,23 +106,29 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-<span class="pc bpc" id="L109" title="3 of 4 branches missed.">    if (Main.map != null &amp;&amp; Main.map.mapView != null) {</span>
-<span class="nc" id="L110">      setMode(new SelectMode());</span>
-<span class="nc" id="L111">      Main.map.mapView.addLayer(this);</span>
-<span class="nc" id="L112">      MapView.addEditLayerChangeListener(this, false);</span>
-<span class="nc" id="L113">      MapView.addLayerChangeListener(this);</span>
-<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L115">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (INSTANCE == null)</span>
+<span class="fc" id="L110">      INSTANCE = this;</span>
+<span class="pc bpc" id="L111" title="3 of 4 branches missed.">    if (Main.map != null &amp;&amp; Main.map.mapView != null) {</span>
+<span class="nc" id="L112">      setMode(new SelectMode());</span>
+<span class="nc" id="L113">      Main.map.mapView.addLayer(this);</span>
+<span class="nc" id="L114">      MapView.addEditLayerChangeListener(this, false);</span>
+<span class="nc" id="L115">      MapView.addLayerChangeListener(this);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
+<span class="nc" id="L117">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)</span>
+<span class="nc" id="L119">        MapillaryDownloader.automaticDownload();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)</span>
+<span class="nc" id="L121">        mode.zoomChanged();</span>
     }
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in</span>
                                                // headless mode
-<span class="nc" id="L119">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">      if (!MapillaryMainDialog.getInstance().isShowing())</span>
-<span class="nc" id="L121">        MapillaryMainDialog.getInstance().getButton().doClick();</span>
+<span class="nc" id="L125">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (!MapillaryMainDialog.getInstance().isShowing())</span>
+<span class="nc" id="L127">        MapillaryMainDialog.getInstance().getButton().doClick();</span>
     }
-<span class="fc" id="L123">    createHatchTexture();</span>
-<span class="fc" id="L124">    data.dataUpdated();</span>
-<span class="fc" id="L125">  }</span>
+<span class="fc" id="L129">    createHatchTexture();</span>
+<span class="fc" id="L130">    data.dataUpdated();</span>
+<span class="fc" id="L131">  }</span>
 
   /**
    * Changes the mode the the given one.
@@ -131,20 +137,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *          The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
-<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (this.mode != null) {</span>
-<span class="nc" id="L135">      Main.map.mapView.removeMouseListener(this.mode);</span>
-<span class="nc" id="L136">      Main.map.mapView.removeMouseMotionListener(this.mode);</span>
-<span class="nc" id="L137">      NavigatableComponent.removeZoomChangeListener(this.mode);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (this.mode != null) {</span>
+<span class="nc" id="L141">      Main.map.mapView.removeMouseListener(this.mode);</span>
+<span class="nc" id="L142">      Main.map.mapView.removeMouseMotionListener(this.mode);</span>
+<span class="nc" id="L143">      NavigatableComponent.removeZoomChangeListener(this.mode);</span>
     }
-<span class="nc" id="L139">    this.mode = mode;</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (mode != null) {</span>
-<span class="nc" id="L141">      Main.map.mapView.setNewCursor(mode.cursor, this);</span>
-<span class="nc" id="L142">      Main.map.mapView.addMouseListener(mode);</span>
-<span class="nc" id="L143">      Main.map.mapView.addMouseMotionListener(mode);</span>
-<span class="nc" id="L144">      NavigatableComponent.addZoomChangeListener(mode);</span>
-<span class="nc" id="L145">      updateHelpText();</span>
+<span class="nc" id="L145">    this.mode = mode;</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (mode != null) {</span>
+<span class="nc" id="L147">      Main.map.mapView.setNewCursor(mode.cursor, this);</span>
+<span class="nc" id="L148">      Main.map.mapView.addMouseListener(mode);</span>
+<span class="nc" id="L149">      Main.map.mapView.addMouseMotionListener(mode);</span>
+<span class="nc" id="L150">      NavigatableComponent.addZoomChangeListener(mode);</span>
+<span class="nc" id="L151">      updateHelpText();</span>
     }
-<span class="nc" id="L147">  }</span>
+<span class="nc" id="L153">  }</span>
 
   /**
    * Returns the unique instance of this class.
@@ -152,9 +158,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The unique instance of this class.
    */
   public synchronized static MapillaryLayer getInstance() {
-<span class="fc bfc" id="L155" title="All 2 branches covered.">    if (INSTANCE == null)</span>
-<span class="fc" id="L156">      INSTANCE = new MapillaryLayer();</span>
-<span class="fc" id="L157">    return MapillaryLayer.INSTANCE;</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">    if (INSTANCE == null)</span>
+<span class="fc" id="L162">      return new MapillaryLayer();</span>
+<span class="fc" id="L163">    return MapillaryLayer.INSTANCE;</span>
   }
 
   /**
@@ -164,73 +170,73 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The {@link MapillaryData} object that stores the database.
    */
   public MapillaryData getMapillaryData() {
-<span class="fc" id="L167">    return data;</span>
+<span class="fc" id="L173">    return data;</span>
   }
 
   @Override
   public void destroy() {
-<span class="nc" id="L172">    setMode(null);</span>
-<span class="nc" id="L173">    AbstractMode.resetThread();</span>
-<span class="nc" id="L174">    MapillaryDownloader.stopAll();</span>
-<span class="nc" id="L175">    MapillaryMainDialog.getInstance().setImage(null);</span>
-<span class="nc" id="L176">    MapillaryMainDialog.getInstance().updateImage();</span>
-<span class="nc" id="L177">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);</span>
-<span class="nc" id="L178">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
-<span class="nc" id="L179">    Main.map.mapView.removeMouseListener(mode);</span>
-<span class="nc" id="L180">    Main.map.mapView.removeMouseMotionListener(mode);</span>
-<span class="nc" id="L181">    MapView.removeEditLayerChangeListener(this);</span>
-<span class="nc bnc" id="L182" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L183">      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);</span>
-<span class="nc" id="L184">    MapillaryData.clearInstance();</span>
-<span class="nc" id="L185">    clearInstance();</span>
-<span class="nc" id="L186">    super.destroy();</span>
-<span class="nc" id="L187">  }</span>
+<span class="nc" id="L178">    setMode(null);</span>
+<span class="nc" id="L179">    AbstractMode.resetThread();</span>
+<span class="nc" id="L180">    MapillaryDownloader.stopAll();</span>
+<span class="nc" id="L181">    MapillaryMainDialog.getInstance().setImage(null);</span>
+<span class="nc" id="L182">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L183">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);</span>
+<span class="nc" id="L184">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
+<span class="nc" id="L185">    Main.map.mapView.removeMouseListener(mode);</span>
+<span class="nc" id="L186">    Main.map.mapView.removeMouseMotionListener(mode);</span>
+<span class="nc" id="L187">    MapView.removeEditLayerChangeListener(this);</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() != null)</span>
+<span class="nc" id="L189">      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);</span>
+<span class="nc" id="L190">    MapillaryData.clearInstance();</span>
+<span class="nc" id="L191">    clearInstance();</span>
+<span class="nc" id="L192">    super.destroy();</span>
+<span class="nc" id="L193">  }</span>
 
   /**
    * Clears the unique instance of this class.
    */
   public static void clearInstance() {
-<span class="nc" id="L193">    INSTANCE = null;</span>
-<span class="nc" id="L194">  }</span>
+<span class="nc" id="L199">    INSTANCE = null;</span>
+<span class="nc" id="L200">  }</span>
 
   /**
    * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map
    * view.
    */
   public void showAllPictures() {
-<span class="nc" id="L201">    double minLat = 90;</span>
-<span class="nc" id="L202">    double minLon = 180;</span>
-<span class="nc" id="L203">    double maxLat = -90;</span>
-<span class="nc" id="L204">    double maxLon = -180;</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">    for (MapillaryAbstractImage img : data.getImages()) {</span>
-<span class="nc bnc" id="L206" title="All 2 branches missed.">      if (img.getLatLon().lat() &lt; minLat)</span>
-<span class="nc" id="L207">        minLat = img.getLatLon().lat();</span>
-<span class="nc bnc" id="L208" title="All 2 branches missed.">      if (img.getLatLon().lon() &lt; minLon)</span>
-<span class="nc" id="L209">        minLon = img.getLatLon().lon();</span>
-<span class="nc bnc" id="L210" title="All 2 branches missed.">      if (img.getLatLon().lat() &gt; maxLat)</span>
-<span class="nc" id="L211">        maxLat = img.getLatLon().lat();</span>
-<span class="nc bnc" id="L212" title="All 2 branches missed.">      if (img.getLatLon().lon() &gt; maxLon)</span>
-<span class="nc" id="L213">        maxLon = img.getLatLon().lon();</span>
-<span class="nc" id="L214">    }</span>
-<span class="nc" id="L215">    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon(</span>
+<span class="nc" id="L207">    double minLat = 90;</span>
+<span class="nc" id="L208">    double minLon = 180;</span>
+<span class="nc" id="L209">    double maxLat = -90;</span>
+<span class="nc" id="L210">    double maxLon = -180;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    for (MapillaryAbstractImage img : data.getImages()) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">      if (img.getLatLon().lat() &lt; minLat)</span>
+<span class="nc" id="L213">        minLat = img.getLatLon().lat();</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">      if (img.getLatLon().lon() &lt; minLon)</span>
+<span class="nc" id="L215">        minLon = img.getLatLon().lon();</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">      if (img.getLatLon().lat() &gt; maxLat)</span>
+<span class="nc" id="L217">        maxLat = img.getLatLon().lat();</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">      if (img.getLatLon().lon() &gt; maxLon)</span>
+<span class="nc" id="L219">        maxLon = img.getLatLon().lon();</span>
+<span class="nc" id="L220">    }</span>
+<span class="nc" id="L221">    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon(</span>
         maxLat, maxLon)));
-<span class="nc" id="L217">  }</span>
+<span class="nc" id="L223">  }</span>
 
   @Override
   public boolean isModified() {
-<span class="nc bnc" id="L221" title="All 2 branches missed.">    for (MapillaryAbstractImage image : data.getImages())</span>
-<span class="nc bnc" id="L222" title="All 2 branches missed.">      if (image.isModified())</span>
-<span class="nc" id="L223">        return true;</span>
-<span class="nc" id="L224">    return false;</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">    for (MapillaryAbstractImage image : data.getImages())</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">      if (image.isModified())</span>
+<span class="nc" id="L229">        return true;</span>
+<span class="nc" id="L230">    return false;</span>
   }
 
   @Override
   public void setVisible(boolean visible) {
-<span class="nc" id="L229">    super.setVisible(visible);</span>
-<span class="nc bnc" id="L230" title="All 2 branches missed.">    for (MapillaryAbstractImage img : data.getImages())</span>
-<span class="nc" id="L231">      img.setVisible(visible);</span>
-<span class="nc" id="L232">    MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L233">  }</span>
+<span class="nc" id="L235">    super.setVisible(visible);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">    for (MapillaryAbstractImage img : data.getImages())</span>
+<span class="nc" id="L237">      img.setVisible(visible);</span>
+<span class="nc" id="L238">    MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L239">  }</span>
 
   /**
    * Replies background color for downloaded areas.
@@ -238,7 +244,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return background color for downloaded areas. Black by default
    */
   private Color getBackgroundColor() {
-<span class="fc" id="L241">    return Main.pref.getColor(marktr(&quot;background&quot;), Color.BLACK);</span>
+<span class="fc" id="L247">    return Main.pref.getColor(marktr(&quot;background&quot;), Color.BLACK);</span>
   }
 
   /**
@@ -247,120 +253,120 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return background color for non-downloaded areas. Yellow by default
    */
   private Color getOutsideColor() {
-<span class="fc" id="L250">    return Main.pref.getColor(marktr(&quot;outside downloaded area&quot;), Color.YELLOW);</span>
+<span class="fc" id="L256">    return Main.pref.getColor(marktr(&quot;outside downloaded area&quot;), Color.YELLOW);</span>
   }
 
   /**
    * Initialize the hatch pattern used to paint the non-downloaded area
    */
   private void createHatchTexture() {
-<span class="fc" id="L257">    BufferedImage bi = new BufferedImage(15, 15, BufferedImage.TYPE_INT_ARGB);</span>
-<span class="fc" id="L258">    Graphics2D big = bi.createGraphics();</span>
-<span class="fc" id="L259">    big.setColor(getBackgroundColor());</span>
-<span class="fc" id="L260">    Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);</span>
-<span class="fc" id="L261">    big.setComposite(comp);</span>
-<span class="fc" id="L262">    big.fillRect(0, 0, 15, 15);</span>
-<span class="fc" id="L263">    big.setColor(getOutsideColor());</span>
-<span class="fc" id="L264">    big.drawLine(0, 15, 15, 0);</span>
-<span class="fc" id="L265">    Rectangle r = new Rectangle(0, 0, 15, 15);</span>
-<span class="fc" id="L266">    hatched = new TexturePaint(bi, r);</span>
-<span class="fc" id="L267">  }</span>
+<span class="fc" id="L263">    BufferedImage bi = new BufferedImage(15, 15, BufferedImage.TYPE_INT_ARGB);</span>
+<span class="fc" id="L264">    Graphics2D big = bi.createGraphics();</span>
+<span class="fc" id="L265">    big.setColor(getBackgroundColor());</span>
+<span class="fc" id="L266">    Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);</span>
+<span class="fc" id="L267">    big.setComposite(comp);</span>
+<span class="fc" id="L268">    big.fillRect(0, 0, 15, 15);</span>
+<span class="fc" id="L269">    big.setColor(getOutsideColor());</span>
+<span class="fc" id="L270">    big.drawLine(0, 15, 15, 0);</span>
+<span class="fc" id="L271">    Rectangle r = new Rectangle(0, 0, 15, 15);</span>
+<span class="fc" id="L272">    hatched = new TexturePaint(bi, r);</span>
+<span class="fc" id="L273">  }</span>
 
   @Override
   public synchronized void paint(Graphics2D g, MapView mv, Bounds box) {
-<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() == this) {</span>
-<span class="nc" id="L272">      Rectangle b = mv.getBounds();</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() == this) {</span>
+<span class="nc" id="L278">      Rectangle b = mv.getBounds();</span>
       // on some platforms viewport bounds seem to be offset from the
       // left,
       // over-grow it just to be sure
-<span class="nc" id="L276">      b.grow(100, 100);</span>
-<span class="nc" id="L277">      Area a = new Area(b);</span>
+<span class="nc" id="L282">      b.grow(100, 100);</span>
+<span class="nc" id="L283">      Area a = new Area(b);</span>
       // now successively subtract downloaded areas
-<span class="nc bnc" id="L279" title="All 2 branches missed.">      for (Bounds bounds : this.bounds) {</span>
-<span class="nc" id="L280">        Point p1 = mv.getPoint(bounds.getMin());</span>
-<span class="nc" id="L281">        Point p2 = mv.getPoint(bounds.getMax());</span>
-<span class="nc" id="L282">        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
-<span class="nc" id="L283">            Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
-<span class="nc" id="L284">        a.subtract(new Area(r));</span>
-<span class="nc" id="L285">      }</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">      for (Bounds bounds : this.bounds) {</span>
+<span class="nc" id="L286">        Point p1 = mv.getPoint(bounds.getMin());</span>
+<span class="nc" id="L287">        Point p2 = mv.getPoint(bounds.getMax());</span>
+<span class="nc" id="L288">        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
+<span class="nc" id="L289">            Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
+<span class="nc" id="L290">        a.subtract(new Area(r));</span>
+<span class="nc" id="L291">      }</span>
       // paint remainder
-<span class="nc" id="L287">      g.setPaint(hatched);</span>
-<span class="nc" id="L288">      g.fill(a);</span>
+<span class="nc" id="L293">      g.setPaint(hatched);</span>
+<span class="nc" id="L294">      g.fill(a);</span>
     }
 
     // Draw colored lines
-<span class="nc" id="L292">    MapillaryLayer.BLUE = null;</span>
-<span class="nc" id="L293">    MapillaryLayer.RED = null;</span>
-<span class="nc" id="L294">    MapillaryMainDialog.getInstance().blueButton.setEnabled(false);</span>
-<span class="nc" id="L295">    MapillaryMainDialog.getInstance().redButton.setEnabled(false);</span>
+<span class="nc" id="L298">    MapillaryLayer.BLUE = null;</span>
+<span class="nc" id="L299">    MapillaryLayer.RED = null;</span>
+<span class="nc" id="L300">    MapillaryMainDialog.getInstance().blueButton.setEnabled(false);</span>
+<span class="nc" id="L301">    MapillaryMainDialog.getInstance().redButton.setEnabled(false);</span>
 
     // Sets blue and red lines and enables/disables the buttons
-<span class="nc bnc" id="L298" title="All 2 branches missed.">    if (data.getSelectedImage() != null) {</span>
-<span class="nc" id="L299">      MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();</span>
-<span class="nc" id="L300">      Point selected = mv.getPoint(data.getSelectedImage().getLatLon());</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">      if (closestImages[0] != null) {</span>
-<span class="nc" id="L302">        MapillaryLayer.BLUE = closestImages[0];</span>
-<span class="nc" id="L303">        g.setColor(Color.BLUE);</span>
-<span class="nc" id="L304">        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,</span>
-<span class="nc" id="L305">            mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);</span>
-<span class="nc" id="L306">        MapillaryMainDialog.getInstance().blueButton.setEnabled(true);</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">    if (data.getSelectedImage() != null) {</span>
+<span class="nc" id="L305">      MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();</span>
+<span class="nc" id="L306">      Point selected = mv.getPoint(data.getSelectedImage().getLatLon());</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">      if (closestImages[0] != null) {</span>
+<span class="nc" id="L308">        MapillaryLayer.BLUE = closestImages[0];</span>
+<span class="nc" id="L309">        g.setColor(Color.BLUE);</span>
+<span class="nc" id="L310">        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,</span>
+<span class="nc" id="L311">            mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);</span>
+<span class="nc" id="L312">        MapillaryMainDialog.getInstance().blueButton.setEnabled(true);</span>
       }
-<span class="nc bnc" id="L308" title="All 2 branches missed.">      if (closestImages[1] != null) {</span>
-<span class="nc" id="L309">        MapillaryLayer.RED = closestImages[1];</span>
-<span class="nc" id="L310">        g.setColor(Color.RED);</span>
-<span class="nc" id="L311">        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,</span>
-<span class="nc" id="L312">            mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);</span>
-<span class="nc" id="L313">        MapillaryMainDialog.getInstance().redButton.setEnabled(true);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">      if (closestImages[1] != null) {</span>
+<span class="nc" id="L315">        MapillaryLayer.RED = closestImages[1];</span>
+<span class="nc" id="L316">        g.setColor(Color.RED);</span>
+<span class="nc" id="L317">        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,</span>
+<span class="nc" id="L318">            mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);</span>
+<span class="nc" id="L319">        MapillaryMainDialog.getInstance().redButton.setEnabled(true);</span>
       }
     }
-<span class="nc" id="L316">    g.setColor(Color.WHITE);</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">    for (MapillaryAbstractImage imageAbs : data.getImages()) {</span>
-<span class="nc bnc" id="L318" title="All 2 branches missed.">      if (!imageAbs.isVisible())</span>
-<span class="nc" id="L319">        continue;</span>
-<span class="nc" id="L320">      Point p = mv.getPoint(imageAbs.getLatLon());</span>
+<span class="nc" id="L322">    g.setColor(Color.WHITE);</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">    for (MapillaryAbstractImage imageAbs : data.getImages()) {</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">      if (!imageAbs.isVisible())</span>
+<span class="nc" id="L325">        continue;</span>
+<span class="nc" id="L326">      Point p = mv.getPoint(imageAbs.getLatLon());</span>
 
-<span class="nc" id="L322">      Point nextp = null;</span>
+<span class="nc" id="L328">      Point nextp = null;</span>
       // Draw sequence line
-<span class="nc bnc" id="L324" title="All 2 branches missed.">      if (imageAbs.getSequence() != null) {</span>
-<span class="nc" id="L325">        MapillaryAbstractImage tempImage = imageAbs.next();</span>
-<span class="nc bnc" id="L326" title="All 2 branches missed.">        while (tempImage != null) {</span>
-<span class="nc bnc" id="L327" title="All 2 branches missed.">          if (tempImage.isVisible()) {</span>
-<span class="nc" id="L328">            nextp = mv.getPoint(tempImage.getLatLon());</span>
-<span class="nc" id="L329">            break;</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">      if (imageAbs.getSequence() != null) {</span>
+<span class="nc" id="L331">        MapillaryAbstractImage tempImage = imageAbs.next();</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">        while (tempImage != null) {</span>
+<span class="nc bnc" id="L333" title="All 2 branches missed.">          if (tempImage.isVisible()) {</span>
+<span class="nc" id="L334">            nextp = mv.getPoint(tempImage.getLatLon());</span>
+<span class="nc" id="L335">            break;</span>
           }
-<span class="nc" id="L331">          tempImage = tempImage.next();</span>
+<span class="nc" id="L337">          tempImage = tempImage.next();</span>
         }
-<span class="nc bnc" id="L333" title="All 2 branches missed.">        if (nextp != null)</span>
-<span class="nc" id="L334">          g.drawLine(p.x, p.y, nextp.x, nextp.y);</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">        if (nextp != null)</span>
+<span class="nc" id="L340">          g.drawLine(p.x, p.y, nextp.x, nextp.y);</span>
       }
 
-<span class="nc bnc" id="L337" title="All 2 branches missed.">      if (imageAbs instanceof MapillaryImage) {</span>
-<span class="nc" id="L338">        MapillaryImage image = (MapillaryImage) imageAbs;</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">      if (imageAbs instanceof MapillaryImage) {</span>
+<span class="nc" id="L344">        MapillaryImage image = (MapillaryImage) imageAbs;</span>
         ImageIcon icon;
-<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (!data.getMultiSelectedImages().contains(image))</span>
-<span class="nc" id="L341">          icon = MapillaryPlugin.MAP_ICON;</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        if (!data.getMultiSelectedImages().contains(image))</span>
+<span class="nc" id="L347">          icon = MapillaryPlugin.MAP_ICON;</span>
         else
-<span class="nc" id="L343">          icon = MapillaryPlugin.MAP_ICON_SELECTED;</span>
-<span class="nc" id="L344">        draw(g, image, icon, p);</span>
-<span class="nc bnc" id="L345" title="All 2 branches missed.">        if (!image.getSigns().isEmpty()) {</span>
-<span class="nc" id="L346">          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),</span>
-<span class="nc" id="L347">              p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight() / 2,</span>
+<span class="nc" id="L349">          icon = MapillaryPlugin.MAP_ICON_SELECTED;</span>
+<span class="nc" id="L350">        draw(g, image, icon, p);</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">        if (!image.getSigns().isEmpty()) {</span>
+<span class="nc" id="L352">          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),</span>
+<span class="nc" id="L353">              p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight() / 2,</span>
               Main.map.mapView);
         }
-<span class="nc bnc" id="L350" title="All 2 branches missed.">      } else if (imageAbs instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L351">        MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">      } else if (imageAbs instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L357">        MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;</span>
         ImageIcon icon;
-<span class="nc bnc" id="L353" title="All 2 branches missed.">        if (!data.getMultiSelectedImages().contains(image))</span>
-<span class="nc" id="L354">          icon = MapillaryPlugin.MAP_ICON_IMPORTED;</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">        if (!data.getMultiSelectedImages().contains(image))</span>
+<span class="nc" id="L360">          icon = MapillaryPlugin.MAP_ICON_IMPORTED;</span>
         else
-<span class="nc" id="L356">          icon = MapillaryPlugin.MAP_ICON_SELECTED;</span>
-<span class="nc" id="L357">        draw(g, image, icon, p);</span>
+<span class="nc" id="L362">          icon = MapillaryPlugin.MAP_ICON_SELECTED;</span>
+<span class="nc" id="L363">        draw(g, image, icon, p);</span>
       }
-<span class="nc" id="L359">    }</span>
-<span class="nc bnc" id="L360" title="All 2 branches missed.">    if (mode instanceof JoinMode) {</span>
-<span class="nc" id="L361">      mode.paint(g, mv, box);</span>
+<span class="nc" id="L365">    }</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">    if (mode instanceof JoinMode) {</span>
+<span class="nc" id="L367">      mode.paint(g, mv, box);</span>
     }
-<span class="nc" id="L363">  }</span>
+<span class="nc" id="L369">  }</span>
 
   /**
    * Draws the highlight of the icon.
@@ -370,19 +376,19 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @param size
    */
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
-<span class="nc" id="L373">    Color oldColor = g.getColor();</span>
-<span class="nc" id="L374">    Color highlightColor = PaintColors.HIGHLIGHT.get();</span>
-<span class="nc" id="L375">    Color highlightColorTransparent = new Color(highlightColor.getRed(),</span>
-<span class="nc" id="L376">        highlightColor.getGreen(), highlightColor.getBlue(), 100);</span>
-<span class="nc" id="L377">    g.setColor(highlightColorTransparent);</span>
-<span class="nc" id="L378">    int s = size + highlightPointRadius;</span>
-<span class="nc bnc" id="L379" title="All 2 branches missed.">    while (s &gt;= size) {</span>
-<span class="nc" id="L380">      int r = (int) Math.floor(s / 2d);</span>
-<span class="nc" id="L381">      g.fillRoundRect(p.x - r, p.y - r, s, s, r, r);</span>
-<span class="nc" id="L382">      s -= highlightStep;</span>
-<span class="nc" id="L383">    }</span>
-<span class="nc" id="L384">    g.setColor(oldColor);</span>
-<span class="nc" id="L385">  }</span>
+<span class="nc" id="L379">    Color oldColor = g.getColor();</span>
+<span class="nc" id="L380">    Color highlightColor = PaintColors.HIGHLIGHT.get();</span>
+<span class="nc" id="L381">    Color highlightColorTransparent = new Color(highlightColor.getRed(),</span>
+<span class="nc" id="L382">        highlightColor.getGreen(), highlightColor.getBlue(), 100);</span>
+<span class="nc" id="L383">    g.setColor(highlightColorTransparent);</span>
+<span class="nc" id="L384">    int s = size + highlightPointRadius;</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">    while (s &gt;= size) {</span>
+<span class="nc" id="L386">      int r = (int) Math.floor(s / 2d);</span>
+<span class="nc" id="L387">      g.fillRoundRect(p.x - r, p.y - r, s, s, r, r);</span>
+<span class="nc" id="L388">      s -= highlightStep;</span>
+<span class="nc" id="L389">    }</span>
+<span class="nc" id="L390">    g.setColor(oldColor);</span>
+<span class="nc" id="L391">  }</span>
 
   /**
    * Draws the given icon of an image. Also checks if the mouse is over the
@@ -395,122 +401,122 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon,
       Point p) {
-<span class="nc" id="L398">    Image imagetemp = icon.getImage();</span>
-<span class="nc" id="L399">    BufferedImage bi = (BufferedImage) imagetemp;</span>
-<span class="nc" id="L400">    int width = icon.getIconWidth();</span>
-<span class="nc" id="L401">    int height = icon.getIconHeight();</span>
+<span class="nc" id="L404">    Image imagetemp = icon.getImage();</span>
+<span class="nc" id="L405">    BufferedImage bi = (BufferedImage) imagetemp;</span>
+<span class="nc" id="L406">    int width = icon.getIconWidth();</span>
+<span class="nc" id="L407">    int height = icon.getIconHeight();</span>
 
     // Rotate the image
-<span class="nc" id="L404">    double rotationRequired = Math.toRadians(image.getCa());</span>
-<span class="nc" id="L405">    double locationX = width / 2;</span>
-<span class="nc" id="L406">    double locationY = height / 2;</span>
-<span class="nc" id="L407">    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired,</span>
+<span class="nc" id="L410">    double rotationRequired = Math.toRadians(image.getCa());</span>
+<span class="nc" id="L411">    double locationX = width / 2;</span>
+<span class="nc" id="L412">    double locationY = height / 2;</span>
+<span class="nc" id="L413">    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired,</span>
         locationX, locationY);
-<span class="nc" id="L409">    AffineTransformOp op = new AffineTransformOp(tx,</span>
+<span class="nc" id="L415">    AffineTransformOp op = new AffineTransformOp(tx,</span>
         AffineTransformOp.TYPE_BILINEAR);
 
-<span class="nc" id="L412">    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),</span>
+<span class="nc" id="L418">    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),</span>
         Main.map.mapView);
-<span class="nc bnc" id="L414" title="All 2 branches missed.">    if (data.getHighlighted() == image) {</span>
-<span class="nc" id="L415">      drawPointHighlight(g, p, 16);</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">    if (data.getHighlighted() == image) {</span>
+<span class="nc" id="L421">      drawPointHighlight(g, p, 16);</span>
     }
-<span class="nc" id="L417">  }</span>
+<span class="nc" id="L423">  }</span>
 
   @Override
   public Icon getIcon() {
-<span class="nc" id="L421">    return MapillaryPlugin.ICON16;</span>
+<span class="nc" id="L427">    return MapillaryPlugin.ICON16;</span>
   }
 
   @Override
   public boolean isMergable(Layer other) {
-<span class="nc" id="L426">    return false;</span>
+<span class="nc" id="L432">    return false;</span>
   }
 
   @Override
   public void mergeFrom(Layer from) {
-<span class="nc" id="L431">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L437">    throw new UnsupportedOperationException(</span>
         &quot;This layer does not support merging yet&quot;);
   }
 
   @Override
   public Action[] getMenuEntries() {
-<span class="nc" id="L437">    List&lt;Action&gt; actions = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L438">    actions.add(LayerListDialog.getInstance().createShowHideLayerAction());</span>
-<span class="nc" id="L439">    actions.add(LayerListDialog.getInstance().createDeleteLayerAction());</span>
-<span class="nc" id="L440">    actions.add(new LayerListPopup.InfoAction(this));</span>
-<span class="nc" id="L441">    return actions.toArray(new Action[actions.size()]);</span>
+<span class="nc" id="L443">    List&lt;Action&gt; actions = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L444">    actions.add(LayerListDialog.getInstance().createShowHideLayerAction());</span>
+<span class="nc" id="L445">    actions.add(LayerListDialog.getInstance().createDeleteLayerAction());</span>
+<span class="nc" id="L446">    actions.add(new LayerListPopup.InfoAction(this));</span>
+<span class="nc" id="L447">    return actions.toArray(new Action[actions.size()]);</span>
   }
 
   /**
    * Returns the 2 closest images belonging to a different sequence.
    *
-   * @return An array of length 2 containing the two closest images belonging
-   *         to different sequences.
+   * @return An array of length 2 containing the two closest images belonging to
+   *         different sequences.
    */
   private MapillaryImage[] getClosestImagesFromDifferentSequences() {
-<span class="nc bnc" id="L451" title="All 2 branches missed.">    if (!(data.getSelectedImage() instanceof MapillaryImage))</span>
-<span class="nc" id="L452">      return new MapillaryImage[2];</span>
-<span class="nc" id="L453">    MapillaryImage selected = (MapillaryImage) data.getSelectedImage();</span>
-<span class="nc" id="L454">    MapillaryImage[] ret = new MapillaryImage[2];</span>
-<span class="nc" id="L455">    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,</span>
+<span class="nc bnc" id="L457" title="All 2 branches missed.">    if (!(data.getSelectedImage() instanceof MapillaryImage))</span>
+<span class="nc" id="L458">      return new MapillaryImage[2];</span>
+<span class="nc" id="L459">    MapillaryImage selected = (MapillaryImage) data.getSelectedImage();</span>
+<span class="nc" id="L460">    MapillaryImage[] ret = new MapillaryImage[2];</span>
+<span class="nc" id="L461">    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,</span>
         SEQUENCE_MAX_JUMP_DISTANCE };
-<span class="nc" id="L457">    LatLon selectedCoords = data.getSelectedImage().getLatLon();</span>
-<span class="nc bnc" id="L458" title="All 2 branches missed.">    for (MapillaryAbstractImage imagePrev : data.getImages()) {</span>
-<span class="nc bnc" id="L459" title="All 2 branches missed.">      if (!(imagePrev instanceof MapillaryImage))</span>
-<span class="nc" id="L460">        continue;</span>
-<span class="nc bnc" id="L461" title="All 2 branches missed.">      if (!imagePrev.isVisible())</span>
-<span class="nc" id="L462">        continue;</span>
-<span class="nc" id="L463">      MapillaryImage image = (MapillaryImage) imagePrev;</span>
-<span class="nc bnc" id="L464" title="All 2 branches missed.">      if (image.getLatLon().greatCircleDistance(selectedCoords) &lt; SEQUENCE_MAX_JUMP_DISTANCE</span>
-<span class="nc bnc" id="L465" title="All 2 branches missed.">          &amp;&amp; selected.getSequence() != image.getSequence()) {</span>
-<span class="nc bnc" id="L466" title="All 4 branches missed.">        if ((ret[0] == null &amp;&amp; ret[1] == null)</span>
-<span class="nc bnc" id="L467" title="All 4 branches missed.">            || (image.getLatLon().greatCircleDistance(selectedCoords) &lt; distances[0] &amp;&amp; (ret[1] == null || image</span>
-<span class="nc bnc" id="L468" title="All 2 branches missed.">                .getSequence() != ret[1].getSequence()))) {</span>
-<span class="nc" id="L469">          ret[0] = image;</span>
-<span class="nc" id="L470">          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
-<span class="nc bnc" id="L471" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(</span>
+<span class="nc" id="L463">    LatLon selectedCoords = data.getSelectedImage().getLatLon();</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">    for (MapillaryAbstractImage imagePrev : data.getImages()) {</span>
+<span class="nc bnc" id="L465" title="All 2 branches missed.">      if (!(imagePrev instanceof MapillaryImage))</span>
+<span class="nc" id="L466">        continue;</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">      if (!imagePrev.isVisible())</span>
+<span class="nc" id="L468">        continue;</span>
+<span class="nc" id="L469">      MapillaryImage image = (MapillaryImage) imagePrev;</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">      if (image.getLatLon().greatCircleDistance(selectedCoords) &lt; SEQUENCE_MAX_JUMP_DISTANCE</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">          &amp;&amp; selected.getSequence() != image.getSequence()) {</span>
+<span class="nc bnc" id="L472" title="All 4 branches missed.">        if ((ret[0] == null &amp;&amp; ret[1] == null)</span>
+<span class="nc bnc" id="L473" title="All 4 branches missed.">            || (image.getLatLon().greatCircleDistance(selectedCoords) &lt; distances[0] &amp;&amp; (ret[1] == null || image</span>
+<span class="nc bnc" id="L474" title="All 2 branches missed.">                .getSequence() != ret[1].getSequence()))) {</span>
+<span class="nc" id="L475">          ret[0] = image;</span>
+<span class="nc" id="L476">          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc bnc" id="L477" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(</span>
             selectedCoords) &lt; distances[1])
-<span class="nc bnc" id="L473" title="All 2 branches missed.">            &amp;&amp; image.getSequence() != ret[0].getSequence()) {</span>
-<span class="nc" id="L474">          ret[1] = image;</span>
-<span class="nc" id="L475">          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc bnc" id="L479" title="All 2 branches missed.">            &amp;&amp; image.getSequence() != ret[0].getSequence()) {</span>
+<span class="nc" id="L480">          ret[1] = image;</span>
+<span class="nc" id="L481">          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
         }
       }
-<span class="nc" id="L478">    }</span>
+<span class="nc" id="L484">    }</span>
     // Predownloads the thumbnails
-<span class="nc bnc" id="L480" title="All 2 branches missed.">    if (ret[0] != null)</span>
-<span class="nc" id="L481">      Utils.downloadPicture(ret[0]);</span>
-<span class="nc bnc" id="L482" title="All 2 branches missed.">    if (ret[1] != null)</span>
-<span class="nc" id="L483">      Utils.downloadPicture(ret[1]);</span>
-<span class="nc" id="L484">    return ret;</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">    if (ret[0] != null)</span>
+<span class="nc" id="L487">      Utils.downloadPicture(ret[0]);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">    if (ret[1] != null)</span>
+<span class="nc" id="L489">      Utils.downloadPicture(ret[1]);</span>
+<span class="nc" id="L490">    return ret;</span>
   }
 
   @Override
   public Object getInfoComponent() {
-<span class="nc" id="L489">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L490">    sb.append(tr(&quot;Mapillary layer&quot;));</span>
-<span class="nc" id="L491">    sb.append(&quot;\n&quot;);</span>
-<span class="nc" id="L492">    sb.append(tr(&quot;Total images:&quot;));</span>
-<span class="nc" id="L493">    sb.append(&quot; &quot;);</span>
-<span class="nc" id="L494">    sb.append(data.size());</span>
-<span class="nc" id="L495">    sb.append(&quot;\n&quot;);</span>
-<span class="nc" id="L496">    return sb.toString();</span>
+<span class="nc" id="L495">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L496">    sb.append(tr(&quot;Mapillary layer&quot;));</span>
+<span class="nc" id="L497">    sb.append(&quot;\n&quot;);</span>
+<span class="nc" id="L498">    sb.append(tr(&quot;Total images:&quot;));</span>
+<span class="nc" id="L499">    sb.append(&quot; &quot;);</span>
+<span class="nc" id="L500">    sb.append(data.size());</span>
+<span class="nc" id="L501">    sb.append(&quot;\n&quot;);</span>
+<span class="nc" id="L502">    return sb.toString();</span>
   }
 
   @Override
   public String getToolTipText() {
-<span class="nc" id="L501">    return data.size() + &quot; &quot; + tr(&quot;images&quot;);</span>
+<span class="nc" id="L507">    return data.size() + &quot; &quot; + tr(&quot;images&quot;);</span>
   }
 
   // EditDataLayerChanged
   @Override
   public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-<span class="nc bnc" id="L507" title="All 4 branches missed.">    if (oldLayer == null &amp;&amp; newLayer != null) {</span>
-<span class="nc" id="L508">      newLayer.data.addDataSetListener(this);</span>
+<span class="nc bnc" id="L513" title="All 4 branches missed.">    if (oldLayer == null &amp;&amp; newLayer != null) {</span>
+<span class="nc" id="L514">      newLayer.data.addDataSetListener(this);</span>
 
-<span class="nc bnc" id="L510" title="All 4 branches missed.">    } else if (oldLayer != null &amp;&amp; newLayer == null) {</span>
-<span class="nc" id="L511">      oldLayer.data.removeDataSetListener(this);</span>
+<span class="nc bnc" id="L516" title="All 4 branches missed.">    } else if (oldLayer != null &amp;&amp; newLayer == null) {</span>
+<span class="nc" id="L517">      oldLayer.data.removeDataSetListener(this);</span>
     }
-<span class="nc" id="L513">  }</span>
+<span class="nc" id="L519">  }</span>
 
   /**
    * When more data is downloaded, a delayed update is thrown, in order to wait
@@ -520,93 +526,93 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   @Override
   public void dataChanged(DataChangedEvent event) {
-<span class="nc" id="L523">    Main.worker.submit(new delayedDownload());</span>
-<span class="nc" id="L524">  }</span>
+<span class="nc" id="L529">    Main.worker.submit(new delayedDownload());</span>
+<span class="nc" id="L530">  }</span>
 
-<span class="nc" id="L526">  private class delayedDownload extends Thread {</span>
+<span class="nc" id="L532">  private class delayedDownload extends Thread {</span>
 
     @Override
     public void run() {
       try {
-<span class="nc" id="L531">        sleep(1000);</span>
-<span class="nc" id="L532">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L533">        Main.error(e);</span>
-<span class="nc" id="L534">      }</span>
-<span class="nc" id="L535">      MapillaryDownloader.automaticDownload();</span>
-<span class="nc" id="L536">    }</span>
+<span class="nc" id="L537">        sleep(1000);</span>
+<span class="nc" id="L538">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L539">        Main.error(e);</span>
+<span class="nc" id="L540">      }</span>
+<span class="nc" id="L541">      MapillaryDownloader.automaticDownload();</span>
+<span class="nc" id="L542">    }</span>
   }
 
   @Override
   public void primitivesAdded(PrimitivesAddedEvent event) {
     // Nothing
-<span class="nc" id="L542">  }</span>
+<span class="nc" id="L548">  }</span>
 
   @Override
   public void primitivesRemoved(PrimitivesRemovedEvent event) {
     // Nothing
-<span class="nc" id="L547">  }</span>
+<span class="nc" id="L553">  }</span>
 
   @Override
   public void tagsChanged(TagsChangedEvent event) {
     // Nothing
-<span class="nc" id="L552">  }</span>
+<span class="nc" id="L558">  }</span>
 
   @Override
   public void nodeMoved(NodeMovedEvent event) {
     // Nothing
-<span class="nc" id="L557">  }</span>
+<span class="nc" id="L563">  }</span>
 
   @Override
   public void wayNodesChanged(WayNodesChangedEvent event) {
     // Nothing
-<span class="nc" id="L562">  }</span>
+<span class="nc" id="L568">  }</span>
 
   @Override
   public void relationMembersChanged(RelationMembersChangedEvent event) {
     // Nothing
-<span class="nc" id="L567">  }</span>
+<span class="nc" id="L573">  }</span>
 
   @Override
   public void otherDatasetChange(AbstractDatasetChangedEvent event) {
     // Nothing
-<span class="nc" id="L572">  }</span>
+<span class="nc" id="L578">  }</span>
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
     // Nothing
-<span class="nc" id="L577">  }</span>
+<span class="nc" id="L583">  }</span>
 
   @Override
   public void activeLayerChange(Layer oldLayer, Layer newLayer) {
-<span class="nc bnc" id="L581" title="All 2 branches missed.">    if (newLayer == this) {</span>
-<span class="nc" id="L582">      updateHelpText();</span>
-<span class="nc" id="L583">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">    if (newLayer == this) {</span>
+<span class="nc" id="L588">      updateHelpText();</span>
+<span class="nc" id="L589">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);</span>
     } else
-<span class="nc" id="L585">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);</span>
-<span class="nc" id="L586">  }</span>
+<span class="nc" id="L591">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);</span>
+<span class="nc" id="L592">  }</span>
 
   @Override
   public void layerAdded(Layer newLayer) {
     // Nothing
-<span class="nc" id="L591">  }</span>
+<span class="nc" id="L597">  }</span>
 
   @Override
   public void layerRemoved(Layer oldLayer) {
     // Nothing
-<span class="nc" id="L596">  }</span>
+<span class="nc" id="L602">  }</span>
 
   /**
    * Updates the help text at the bottom of the window.
    */
   public void updateHelpText() {
-<span class="nc" id="L602">    String ret = &quot;&quot;;</span>
-<span class="nc bnc" id="L603" title="All 2 branches missed.">    if (data.size() &gt; 0)</span>
-<span class="nc" id="L604">      ret += tr(&quot;Total images: {0}&quot;, data.size());</span>
+<span class="nc" id="L608">    String ret = &quot;&quot;;</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">    if (data.size() &gt; 0)</span>
+<span class="nc" id="L610">      ret += tr(&quot;Total images: {0}&quot;, data.size());</span>
     else
-<span class="nc" id="L606">      ret += tr(&quot;No images found&quot;);</span>
-<span class="nc bnc" id="L607" title="All 2 branches missed.">    if (mode != null)</span>
-<span class="nc" id="L608">      ret += &quot; -- &quot; + tr(mode.toString());</span>
-<span class="nc" id="L609">    Main.map.statusLine.setHelpText(ret);</span>
-<span class="nc" id="L610">  }</span>
+<span class="nc" id="L612">      ret += tr(&quot;No images found&quot;);</span>
+<span class="nc bnc" id="L613" title="All 2 branches missed.">    if (mode != null)</span>
+<span class="nc" id="L614">      ret += &quot; -- &quot; + tr(mode.toString());</span>
+<span class="nc" id="L615">    Main.map.statusLine.setHelpText(ret);</span>
+<span class="nc" id="L616">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
