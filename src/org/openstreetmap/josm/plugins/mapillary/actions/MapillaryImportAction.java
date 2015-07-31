@@ -25,7 +25,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -49,8 +48,7 @@ public class MapillaryImportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportAction() {
-    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.directory
-        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
+    super(tr("Import pictures"), MapillaryPlugin.getProvider("icon24.png"),
         tr("Import local pictures"), Shortcut.registerShortcut(
             "Import Mapillary", tr("Import pictures into Mapillary layer"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryImport",

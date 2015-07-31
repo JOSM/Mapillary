@@ -10,7 +10,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -27,8 +26,7 @@ public class MapillaryJoinAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryJoinAction() {
-    super(tr("Join mode"), new ImageProvider(MapillaryPlugin.directory
-        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"),
+    super(tr("Join mode"), MapillaryPlugin.getProvider("icon24.png"),
         tr("Join/unjoin pictures"), Shortcut.registerShortcut("Mapillary join",
             tr("Join Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryJoin", false);

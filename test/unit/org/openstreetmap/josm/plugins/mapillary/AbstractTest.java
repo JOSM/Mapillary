@@ -18,9 +18,6 @@ public abstract class AbstractTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() {
-    if (!started) {
-      TestUtil.initPlugin();
-      started = true;
-    }
+    TestUtil.initPlugin();
   }
 }

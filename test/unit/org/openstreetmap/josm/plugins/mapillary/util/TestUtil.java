@@ -40,12 +40,6 @@ public class TestUtil {
       Main.pref.init(false);
       I18n.set(Main.pref.get("language", "en"));
       Main.setProjection(Projections.getProjectionByCode("EPSG:3857")); // Mercator
-      try {
-        new MapillaryPlugin(new PluginInformation(new File(
-            "./build/libs/josm-mapillary-plugin.jar")));
-      } catch (PluginException e) {
-        e.printStackTrace();
-      }
       isInitialized = true;
     }
   }

@@ -17,7 +17,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryWalkDialog;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -38,8 +37,7 @@ public class MapillaryWalkAction extends JosmAction implements
    *
    */
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.directory
-        + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"), tr("Walk mode"),
+    super(tr("Walk mode"), MapillaryPlugin.getProvider("icon24.png"), tr("Walk mode"),
         Shortcut.registerShortcut("Mapillary walk", tr("Start walk mode"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryWalk",
         false);

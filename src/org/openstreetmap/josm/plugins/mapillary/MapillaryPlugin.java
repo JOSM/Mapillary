@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -31,8 +30,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin {
 
-  /** Plugin's directory */
-  public static String directory;
   /** OS route separator */
   public static final String SEPARATOR = System.getProperty("file.separator");
   /** 24x24 icon. */
@@ -87,16 +84,12 @@ public class MapillaryPlugin extends Plugin {
   public MapillaryPlugin(PluginInformation info) {
     super(info);
 
-
-    directory = new File("").getAbsolutePath() + SEPARATOR;
-    ICON24 = new ImageProvider(directory + "images" + SEPARATOR + "icon24.png").get();
-    ICON16 = new ImageProvider(directory + "images" + SEPARATOR + "icon16.png").get();
-    MAP_ICON = new ImageProvider(directory + "images" + SEPARATOR + "mapicon.png").get();
-    MAP_ICON_SELECTED = new ImageProvider(directory
-        + "images" + SEPARATOR + "mapiconselected.png").get();
-    MAP_ICON_IMPORTED = new ImageProvider(directory
-        + "images/mapiconimported.png").get();
-    MAP_SIGN = new ImageProvider(directory + "images" + SEPARATOR + "sign.png").get();
+    ICON24 = new ImageProvider("icon24.png").get();
+    ICON16 = new ImageProvider("icon16.png").get();
+    MAP_ICON = new ImageProvider("mapicon.png").get();
+    MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
+    MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
+    MAP_SIGN = new ImageProvider("sign.png").get();
 
     downloadAction = new MapillaryDownloadAction();
     walkAction = new MapillaryWalkAction();
@@ -182,5 +175,18 @@ public class MapillaryPlugin extends Plugin {
   @Override
   public PreferenceSetting getPreferenceSetting() {
     return new MapillaryPreferenceSetting();
+  }
+
+  /**
+   * Returns a ImageProvider for the given string or null if in headless mode.
+   *
+   * @param s
+   * @return A ImageProvider object for the given string or null if in headless mode.
+   */
+  public static ImageProvider getProvider(String s) {
+    if (Main.map == null)
+      return null;
+    else
+      return new ImageProvider(s);
   }
 }

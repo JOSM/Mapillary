@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import java.io.File;
@@ -26,8 +27,8 @@ public class ImportTest extends AbstractTest {
    */
   @Test
   public void importNoTagsTest() {
-    File image = new File(MapillaryPlugin.directory + "images/icon16.png");
-    MapillaryImportedImage img = MapillaryPlugin.importAction.readNoTags(image,
+    File image = new File("images/icon16.png");
+    MapillaryImportedImage img = new MapillaryImportAction().readNoTags(image,
         new LatLon(0, 0));
     assertEquals(0, img.getCa(), 0.01);
     assertTrue(new LatLon(0, 0).equalsEpsilon(img.getLatLon()));

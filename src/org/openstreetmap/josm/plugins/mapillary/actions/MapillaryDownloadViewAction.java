@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -26,7 +25,7 @@ public class MapillaryDownloadViewAction extends JosmAction {
    */
   public MapillaryDownloadViewAction() {
     super(tr("Download Mapillary images in current view"), new ImageProvider(
-        MapillaryPlugin.directory + "images" + MapillaryPlugin.SEPARATOR + "icon24.png"), tr("Download Mapillary images in current view"),
+        "icon24.png"), tr("Download Mapillary images in current view"),
         Shortcut.registerShortcut("Mapillary area",
             tr("Download Mapillary images in current view"),
             KeyEvent.VK_PERIOD, Shortcut.SHIFT), false, "mapillaryArea", false);
