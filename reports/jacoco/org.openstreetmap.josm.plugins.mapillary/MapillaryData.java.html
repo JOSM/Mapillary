@@ -47,7 +47,7 @@ public class MapillaryData {
    * @return The unique instance of the class.
    */
   public static MapillaryData getInstance() {
-<span class="fc bfc" id="L50" title="All 2 branches covered.">    if (INSTANCE == null) {</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (INSTANCE == null) {</span>
 <span class="fc" id="L51">      INSTANCE = new MapillaryData();</span>
     }
 <span class="fc" id="L53">    return INSTANCE;</span>
@@ -112,8 +112,8 @@ public class MapillaryData {
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images,
       boolean update) {
 <span class="fc bfc" id="L114" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images) {</span>
-<span class="fc" id="L115">      add(image, update);</span>
-<span class="fc" id="L116">    }</span>
+<span class="nc" id="L115">      add(image, update);</span>
+<span class="nc" id="L116">    }</span>
 <span class="fc" id="L117">  }</span>
 
   /**
@@ -150,8 +150,8 @@ public class MapillaryData {
     }
 <span class="pc bpc" id="L151" title="1 of 2 branches missed.">    if (update)</span>
 <span class="nc" id="L152">      dataUpdated();</span>
-<span class="fc" id="L153">    fireImagesAdded();</span>
-<span class="fc" id="L154">  }</span>
+<span class="nc" id="L153">    fireImagesAdded();</span>
+<span class="nc" id="L154">  }</span>
 
   /**
    * Repaints mapView object.
@@ -182,9 +182,9 @@ public class MapillaryData {
   private void fireImagesAdded() {
 <span class="pc bpc" id="L183" title="1 of 2 branches missed.">    if (listeners.isEmpty())</span>
 <span class="nc" id="L184">      return;</span>
-<span class="fc bfc" id="L185" title="All 2 branches covered.">    for (MapillaryDataListener lis : listeners)</span>
-<span class="fc" id="L186">      lis.imagesAdded();</span>
-<span class="fc" id="L187">  }</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">    for (MapillaryDataListener lis : listeners)</span>
+<span class="nc" id="L186">      lis.imagesAdded();</span>
+<span class="nc" id="L187">  }</span>
 
   /**
    * If the selected MapillaryImage is part of a MapillarySequence then the

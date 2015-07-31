@@ -17,7 +17,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryWalkDialog;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -31,44 +30,43 @@ public class MapillaryWalkAction extends JosmAction implements
 
   private static final long serialVersionUID = 3454223919402245818L;
 
-<span class="fc" id="L34">  private WalkThread thread = null;</span>
-<span class="fc" id="L35">  private ArrayList&lt;WalkListener&gt; listeners = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L33">  private WalkThread thread = null;</span>
+<span class="nc" id="L34">  private ArrayList&lt;WalkListener&gt; listeners = new ArrayList&lt;&gt;();</span>
 
   /**
    *
    */
   public MapillaryWalkAction() {
-<span class="fc" id="L41">    super(tr(&quot;Walk mode&quot;), new ImageProvider(MapillaryPlugin.directory</span>
-<span class="fc" id="L42">        + &quot;images&quot; + MapillaryPlugin.SEPARATOR + &quot;icon24.png&quot;), tr(&quot;Walk mode&quot;),</span>
-<span class="fc" id="L43">        Shortcut.registerShortcut(&quot;Mapillary walk&quot;, tr(&quot;Start walk mode&quot;),</span>
+<span class="nc" id="L40">    super(tr(&quot;Walk mode&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;), tr(&quot;Walk mode&quot;),</span>
+<span class="nc" id="L41">        Shortcut.registerShortcut(&quot;Mapillary walk&quot;, tr(&quot;Start walk mode&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryWalk&quot;,
         false);
-<span class="fc" id="L46">    this.setEnabled(false);</span>
-<span class="fc" id="L47">  }</span>
+<span class="nc" id="L44">    this.setEnabled(false);</span>
+<span class="nc" id="L45">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L51">    MapillaryWalkDialog dialog = new MapillaryWalkDialog();</span>
-<span class="nc" id="L52">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
+<span class="nc" id="L49">    MapillaryWalkDialog dialog = new MapillaryWalkDialog();</span>
+<span class="nc" id="L50">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
         JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L54">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Walk mode&quot;));</span>
-<span class="nc" id="L55">    dlg.setMinimumSize(new Dimension(400, 150));</span>
-<span class="nc" id="L56">    dlg.setVisible(true);</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">    if (pane.getValue() != null</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
-<span class="nc" id="L59">      thread = new WalkThread((int) dialog.spin.getValue(),</span>
-<span class="nc" id="L60">          dialog.waitForPicture.isSelected(),</span>
-<span class="nc" id="L61">          dialog.followSelection.isSelected(), dialog.goForward.isSelected());</span>
-<span class="nc" id="L62">      fireWalkStarted();</span>
-<span class="nc" id="L63">      thread.start();</span>
-<span class="nc" id="L64">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.WALK);</span>
+<span class="nc" id="L52">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Walk mode&quot;));</span>
+<span class="nc" id="L53">    dlg.setMinimumSize(new Dimension(400, 150));</span>
+<span class="nc" id="L54">    dlg.setVisible(true);</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">    if (pane.getValue() != null</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
+<span class="nc" id="L57">      thread = new WalkThread((int) dialog.spin.getValue(),</span>
+<span class="nc" id="L58">          dialog.waitForPicture.isSelected(),</span>
+<span class="nc" id="L59">          dialog.followSelection.isSelected(), dialog.goForward.isSelected());</span>
+<span class="nc" id="L60">      fireWalkStarted();</span>
+<span class="nc" id="L61">      thread.start();</span>
+<span class="nc" id="L62">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.WALK);</span>
     }
-<span class="nc" id="L66">  }</span>
+<span class="nc" id="L64">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="fc" id="L71">  }</span>
+<span class="nc" id="L69">  }</span>
 
   /**
    * Adds a listener.
@@ -76,8 +74,8 @@ public class MapillaryWalkAction extends JosmAction implements
    * @param lis
    */
   public void addListener(WalkListener lis) {
-<span class="nc" id="L79">    listeners.add(lis);</span>
-<span class="nc" id="L80">  }</span>
+<span class="nc" id="L77">    listeners.add(lis);</span>
+<span class="nc" id="L78">  }</span>
 
   /**
    * Removes a listener.
@@ -85,24 +83,24 @@ public class MapillaryWalkAction extends JosmAction implements
    * @param lis
    */
   public void removeListener(WalkListener lis) {
-<span class="nc" id="L88">    listeners.remove(lis);</span>
-<span class="nc" id="L89">  }</span>
+<span class="nc" id="L86">    listeners.remove(lis);</span>
+<span class="nc" id="L87">  }</span>
 
   private void fireWalkStarted() {
-<span class="nc bnc" id="L92" title="All 2 branches missed.">    if (listeners.isEmpty())</span>
-<span class="nc" id="L93">      return;</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">    for (WalkListener lis : listeners)</span>
-<span class="nc" id="L95">      lis.walkStarted(thread);</span>
-<span class="nc" id="L96">  }</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">    if (listeners.isEmpty())</span>
+<span class="nc" id="L91">      return;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    for (WalkListener lis : listeners)</span>
+<span class="nc" id="L93">      lis.walkStarted(thread);</span>
+<span class="nc" id="L94">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L101" title="All 2 branches missed.">    if (newImage != null)</span>
-<span class="nc" id="L102">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, true);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (newImage != null)</span>
+<span class="nc" id="L100">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, true);</span>
     else
-<span class="nc" id="L104">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, false);</span>
-<span class="nc" id="L105">  }</span>
+<span class="nc" id="L102">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, false);</span>
+<span class="nc" id="L103">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
