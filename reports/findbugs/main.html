@@ -168,7 +168,7 @@
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>3945 lines of code analyzed,
+<p>3947 lines of code analyzed,
 	in 91 classes, 
 	in 9 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
@@ -179,8 +179,8 @@
 </tr>
 <tr class="tablerow0">
 <td>High Priority Warnings</td>
-<td align="right">5</td>
-<td align="right">1.27</td>
+<td align="right">4</td>
+<td align="right">1.01</td>
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
@@ -192,10 +192,10 @@
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>5</b>
+<b>4</b>
 </td>
 <td align="right">
-<b>1.27</b>
+<b>1.01</b>
 </td>
 </tr>
 </table>
@@ -213,9 +213,6 @@
 </li>
 <li>
 <a href="#Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
-</li>
-<li>
-<a href="#Warnings_STYLE">Dodgy code Warnings</a>
 </li>
 <li>
 <a href="#Details">Details</a>
@@ -241,16 +238,10 @@
 </tr>
 <tr class="tablerow0">
 <td>
-<a href="#Warnings_STYLE">Dodgy code Warnings</a>
-</td>
-<td align="right">1</td>
-</tr>
-<tr class="tablerow1">
-<td>
 <b>Total</b>
 </td>
 <td align="right">
-<b>5</b>
+<b>4</b>
 </td>
 </tr>
 </table>
@@ -264,7 +255,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66059');">
+<tr class="tablerow1" onclick="toggleRow('N65992');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -273,7 +264,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66059" style="display: none;">
+<p id="N65992" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils.getWithHeader(URL)<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthUtils.java:[line 40]</p>
 </td>
@@ -287,7 +278,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66007');">
+<tr class="tablerow1" onclick="toggleRow('N65940');">
 <td>
 <span class="priority-1">MS</span>
 </td>
@@ -296,7 +287,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66007" style="display: none;">
+<p id="N65940" style="display: none;">
 <a href="#MS_MUTABLE_ARRAY">Bug type MS_MUTABLE_ARRAY (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader<br/>Field org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader.MODES<br/>At MapillaryDownloader.java:[line 29]</p>
 </td>
@@ -330,29 +321,6 @@
 </td>
 </tr>
 </table>
-<h2>
-<a name="Warnings_STYLE">Dodgy code Warnings</a>
-</h2>
-<table class="warningtable" width="100%" cellspacing="0">
-<tr class="tableheader">
-<th align="left">Code</th>
-<th align="left">Warning</th>
-</tr>
-<tr class="tablerow1" onclick="toggleRow('N65940');">
-<td>
-<span class="priority-1">ST</span>
-</td>
-<td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.directory from instance method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)</td>
-</tr>
-<tr class="detailrow1">
-<td/>
-<td>
-<p id="N65940" style="display: none;">
-<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.directory<br/>At MapillaryPlugin.java:[line 88]</p>
-</td>
-</tr>
-</table>
 <h1>
 <a name="Details">Details</a>
 </h1>
@@ -383,16 +351,6 @@ could be changed by malicious code or
         by accident from another package.
         The field could be made final to avoid
         this vulnerability.</p>
-
-    
-<h2>
-<a name="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD: Write to static field from instance method</a>
-</h2>
-
-  <p> This instance method writes to a static field. This is tricky to get
-correct if multiple instances are being manipulated,
-and generally bad practice.
-</p>
 
     </body>
 </html>

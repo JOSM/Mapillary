@@ -50,9 +50,9 @@ public class MapillaryImportAction extends JosmAction {
    */
   public MapillaryImportAction() {
 <span class="fc" id="L52">    super(tr(&quot;Import pictures&quot;), new ImageProvider(MapillaryPlugin.directory</span>
-<span class="fc" id="L53">        + &quot;images/icon24.png&quot;), tr(&quot;Import local pictures&quot;), Shortcut</span>
-<span class="fc" id="L54">        .registerShortcut(&quot;Import Mapillary&quot;,</span>
-<span class="fc" id="L55">            tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+        + &quot;images&quot; + MapillaryPlugin.SEPARATOR + &quot;icon24.png&quot;),
+<span class="fc" id="L54">        tr(&quot;Import local pictures&quot;), Shortcut.registerShortcut(</span>
+<span class="fc" id="L55">            &quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryImport&quot;,
         false);
 <span class="fc" id="L58">    this.setEnabled(false);</span>
@@ -266,7 +266,7 @@ public class MapillaryImportAction extends JosmAction {
 <span class="fc" id="L266">      result *= -1;</span>
     }
 
-<span class="fc" id="L269">    result = 360*((result+180)/360 - Math.floor((result+180)/360)) - 180;</span>
+<span class="fc" id="L269">    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;</span>
 <span class="fc" id="L270">    return result;</span>
   }
 }

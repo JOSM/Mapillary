@@ -27,20 +27,21 @@ public class MapillaryJoinAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryJoinAction() {
-<span class="fc" id="L30">    super(tr(&quot;Join mode&quot;), new ImageProvider(MapillaryPlugin.directory + &quot;images/icon24.png&quot;),</span>
-<span class="fc" id="L31">        tr(&quot;Join/unjoin pictures&quot;), Shortcut.registerShortcut(&quot;Mapillary join&quot;,</span>
-<span class="fc" id="L32">            tr(&quot;Join Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
+<span class="fc" id="L30">    super(tr(&quot;Join mode&quot;), new ImageProvider(MapillaryPlugin.directory</span>
+        + &quot;images&quot; + MapillaryPlugin.SEPARATOR + &quot;icon24.png&quot;),
+<span class="fc" id="L32">        tr(&quot;Join/unjoin pictures&quot;), Shortcut.registerShortcut(&quot;Mapillary join&quot;,</span>
+<span class="fc" id="L33">            tr(&quot;Join Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
             Shortcut.NONE), false, &quot;mapillaryJoin&quot;, false);
-<span class="fc" id="L34">    this.setEnabled(false);</span>
-<span class="fc" id="L35">  }</span>
+<span class="fc" id="L35">    this.setEnabled(false);</span>
+<span class="fc" id="L36">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {</span>
-<span class="nc" id="L40">      MapillaryLayer.getInstance().setMode(new JoinMode());</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {</span>
+<span class="nc" id="L41">      MapillaryLayer.getInstance().setMode(new JoinMode());</span>
     } else {
-<span class="nc" id="L42">      MapillaryLayer.getInstance().setMode(new SelectMode());</span>
+<span class="nc" id="L43">      MapillaryLayer.getInstance().setMode(new SelectMode());</span>
     }
-<span class="nc" id="L44">  }</span>
+<span class="nc" id="L45">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
