@@ -17,10 +17,6 @@ repositories {
   maven {
     url "https://repository.apache.org/content/repositories/snapshots/"
   }
-  // for scribe-java
-  maven {
-    url "https://raw.github.com/fernandezpablo85/scribe-java/mvn-repo/"
-  }
   //for josm-(latest|tested).jar
   ivy {
     url "https://josm.openstreetmap.de/download/"
@@ -30,12 +26,12 @@ repositories {
   }
 }
 dependencies {
-  // The JOSM-version can be specified as "latest", "tested" or "snapshot-1234" (replace 1234 by the desired version numbers).
+  // The JOSM-version can be specified as "latest", "tested" or "snapshot-1234" (replace 1234 by the desired version number).
   // For revisions older than the last ~60 versions, also append "Archiv" to the repository URL above
-  packIntoJar 'org.scribe:scribe:1.3.7'
-
-  compile 'org.openstreetmap.josm:josm:latest'
+  compile 'org.openstreetmap.josm:josm:tested'
   compile 'org.apache.commons:commons-imaging:1.0-SNAPSHOT'
+
+  packIntoJar 'com.amazonaws:aws-java-sdk-s3:1.10.8'
 
   testCompile 'junit:junit:4.12'
 }
@@ -107,7 +103,7 @@ test {
 }
 
 jar {
-  from zipTree(configurations.packIntoJar.singleFile)
+  from configurations.packIntoJar.collect { it.isDirectory() ? it : zipTree(it) }
   manifest {
     attributes("Plugin-Mainversion": "8433",
                "Plugin-Version": "31395",
@@ -160,4 +156,3 @@ runJosmLatest.dependsOn installPluginToJosmLatest
 task wrapper(type: Wrapper) {
   gradleVersion = '2.5'
 }
-
