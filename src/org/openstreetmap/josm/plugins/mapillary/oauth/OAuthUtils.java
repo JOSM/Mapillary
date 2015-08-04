@@ -14,7 +14,11 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.json.Json;
@@ -154,16 +158,16 @@ public class OAuthUtils {
     for (String key : keys) {
       entityBuilder.addPart(key, new StringBody(hash.get(key),
           ContentType.TEXT_PLAIN));
-      System.out.println(key + " => " + hash.get(key));
     }
     entityBuilder.addPart("file", new FileBody(file));
 
     HttpEntity entity = entityBuilder.build();
     httpPost.setEntity(entity);
 
-    System.out.println(httpPost);
     HttpResponse response = httpClient.execute(httpPost);
-    System.out.println(response.toString());
+    if (response.getStatusLine().toString().contains("204"))
+      System.out.println("Succesfully uploaded image");
+    file.delete();
   }
 
   /**
@@ -176,18 +180,49 @@ public class OAuthUtils {
    * @throws UnsupportedEncodingException
    * @throws InvalidKeyException
    */
-  public static void uploadSequence(MapillarySequence sequence)
-      throws InvalidKeyException, UnsupportedEncodingException,
-      NoSuchAlgorithmException {
-    UUID uuid = UUID.randomUUID();
+  public static void uploadSequence(MapillarySequence sequence) {
+    new SequenceUploadThread(sequence.getImages()).start();
+  }
 
-    for (MapillaryAbstractImage img : sequence.getImages()) {
-      if (!(img instanceof MapillaryImportedImage))
-        throw new IllegalArgumentException(
-            "The sequence contains downloaded images.");
+  private static class SequenceUploadThread extends Thread {
+    private List<MapillaryAbstractImage> images;
+    private UUID uuid;
+    ThreadPoolExecutor ex;
+
+    private SequenceUploadThread(List<MapillaryAbstractImage> images) {
+      this.images = images;
+      this.uuid = UUID.randomUUID();
+      this.ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<Runnable>(5));
+    }
+
+    @Override
+    public void run() {
+      for (MapillaryAbstractImage img : this.images) {
+        if (!(img instanceof MapillaryImportedImage))
+          throw new IllegalArgumentException(
+              "The sequence contains downloaded images.");
+        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
+            this.uuid));
+      }
+    }
+  }
+
+  private static class SingleUploadThread extends Thread {
+
+    private MapillaryImportedImage image;
+    private UUID uuid;
+
+    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {
+      this.image = image;
+      this.uuid = uuid;
+    }
+
+    @Override
+    public void run() {
       try {
-        upload((MapillaryImportedImage) img, uuid);
-      } catch (IOException e) {
+        OAuthUtils.upload(this.image, this.uuid);
+      } catch (InvalidKeyException | NoSuchAlgorithmException | IOException e) {
         Main.error(e);
       }
     }
@@ -225,6 +260,7 @@ public class OAuthUtils {
 
     outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
     File tempFile = new File(c + ".tmp");
+    c++;
     OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
 
     // Transforms the image into a byte array.

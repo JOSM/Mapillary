@@ -3,5 +3,5 @@
 /bin
 /build/
 /.gradle/
-
+/.settings
 /test/data/preferences/

@@ -55,15 +55,8 @@ public class MapillaryUploadAction extends JosmAction implements
     if (pane.getValue() != null
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       if (dialog.sequence.isSelected()) {
-        try {
-          OAuthUtils.uploadSequence(MapillaryData.getInstance().getSelectedImage().getSequence());
-        } catch (InvalidKeyException e) {
-          Main.error(e);
-        } catch (UnsupportedEncodingException e) {
-          Main.error(e);
-        } catch (NoSuchAlgorithmException e) {
-          Main.error(e);
-        }
+        OAuthUtils.uploadSequence(MapillaryData.getInstance()
+            .getSelectedImage().getSequence());
       }
     }
   }
