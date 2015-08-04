@@ -48,25 +48,25 @@ public class MapillaryFilterChooseSigns extends JPanel {
   private static MapillaryFilterChooseSigns INSTANCE;
 
   private MapillaryFilterChooseSigns() {
-    maxSpeed.setSelected(true);
-    stop.setSelected(true);
-    giveWay.setSelected(true);
-    roundabout.setSelected(true);
-    access.setSelected(true);
-    intersection.setSelected(true);
-    direction.setSelected(true);
-    uneven.setSelected(true);
-    noParking.setSelected(true);
-    noOvertaking.setSelected(true);
-    crossing.setSelected(true);
-    noTurn.setSelected(true);
+    this.maxSpeed.setSelected(true);
+    this.stop.setSelected(true);
+    this.giveWay.setSelected(true);
+    this.roundabout.setSelected(true);
+    this.access.setSelected(true);
+    this.intersection.setSelected(true);
+    this.direction.setSelected(true);
+    this.uneven.setSelected(true);
+    this.noParking.setSelected(true);
+    this.noOvertaking.setSelected(true);
+    this.crossing.setSelected(true);
+    this.noTurn.setSelected(true);
 
     // Max speed sign
     JPanel maxspeedPanel = new JPanel();
     JLabel maxspeedLabel = new JLabel(tr("Speed limit"));
     maxspeedLabel.setIcon(new ImageProvider("signs/speed.png").get());
     maxspeedPanel.add(maxspeedLabel);
-    maxspeedPanel.add(maxSpeed);
+    maxspeedPanel.add(this.maxSpeed);
     this.add(maxspeedPanel);
 
     // Stop sign
@@ -74,7 +74,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel stopLabel = new JLabel(tr("Stop"));
     stopLabel.setIcon(new ImageProvider("signs/stop.png").get());
     stopPanel.add(stopLabel);
-    stopPanel.add(stop);
+    stopPanel.add(this.stop);
     this.add(stopPanel);
 
     // Give way sign
@@ -82,7 +82,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel giveWayLabel = new JLabel(tr("Give way"));
     giveWayLabel.setIcon(new ImageProvider("signs/right_of_way.png").get());
     giveWayPanel.add(giveWayLabel);
-    giveWayPanel.add(giveWay);
+    giveWayPanel.add(this.giveWay);
     this.add(giveWayPanel);
 
     // Roundabout sign
@@ -91,7 +91,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     roundaboutLabel.setIcon(new ImageProvider("signs/roundabout_right.png")
         .get());
     roundaboutPanel.add(roundaboutLabel);
-    roundaboutPanel.add(roundabout);
+    roundaboutPanel.add(this.roundabout);
     this.add(roundaboutPanel);
 
     // No entry sign
@@ -99,7 +99,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel noEntryLabel = new JLabel(tr("No entry"));
     noEntryLabel.setIcon(new ImageProvider("signs/no_entry.png").get());
     noEntryPanel.add(noEntryLabel);
-    noEntryPanel.add(access);
+    noEntryPanel.add(this.access);
     this.add(noEntryPanel);
 
     // Danger intersection
@@ -108,7 +108,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     intersectionLabel
         .setIcon(new ImageProvider("signs/intersection_danger.png").get());
     intersectionPanel.add(intersectionLabel);
-    intersectionPanel.add(intersection);
+    intersectionPanel.add(this.intersection);
     this.add(intersectionPanel);
 
     // Mandatory direction
@@ -117,7 +117,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     directionLabel.setIcon(new ImageProvider("signs/only_straight_on.png")
         .get());
     directionPanel.add(directionLabel);
-    directionPanel.add(direction);
+    directionPanel.add(this.direction);
     this.add(directionPanel);
 
     // No turn
@@ -125,7 +125,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel noTurnLabel = new JLabel(tr("No turn"));
     noTurnLabel.setIcon(new ImageProvider("signs/no_turn.png").get());
     noTurnPanel.add(noTurnLabel);
-    noTurnPanel.add(noTurn);
+    noTurnPanel.add(this.noTurn);
     this.add(noTurnPanel);
 
     // Uneven road
@@ -133,7 +133,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel unevenLabel = new JLabel(tr("Uneven road"));
     unevenLabel.setIcon(new ImageProvider("signs/uneaven.png").get());
     unevenPanel.add(unevenLabel);
-    unevenPanel.add(uneven);
+    unevenPanel.add(this.uneven);
     this.add(unevenPanel);
 
     // No parking
@@ -141,7 +141,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel noParkingLabel = new JLabel(tr("No parking"));
     noParkingLabel.setIcon(new ImageProvider("signs/no_parking.png").get());
     noParkingPanel.add(noParkingLabel);
-    noParkingPanel.add(noParking);
+    noParkingPanel.add(this.noParking);
     this.add(noParkingPanel);
 
     // No overtaking
@@ -150,7 +150,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     noOvertakingLabel.setIcon(new ImageProvider("signs/no_overtaking.png")
         .get());
     noOvertakingPanel.add(noOvertakingLabel);
-    noOvertakingPanel.add(noOvertaking);
+    noOvertakingPanel.add(this.noOvertaking);
     this.add(noOvertakingPanel);
 
     // Pedestrian crossing
@@ -158,7 +158,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
     JLabel crossingLabel = new JLabel(tr("Pedestrian crossing"));
     crossingLabel.setIcon(new ImageProvider("signs/crossing.png").get());
     crossingPanel.add(crossingLabel);
-    crossingPanel.add(crossing);
+    crossingPanel.add(this.crossing);
     this.add(crossingPanel);
 
     this.setPreferredSize(new Dimension(600, 150));

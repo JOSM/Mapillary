@@ -6,6 +6,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -22,6 +23,7 @@ import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 
 /**
@@ -51,39 +53,47 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   public void addGui(PreferenceTabbedPane gui) {
     JPanel panel = new JPanel();
 
-    reverseButtons.setSelected(Main.pref
+    this.reverseButtons.setSelected(Main.pref
         .getBoolean("mapillary.reverse-buttons"));
-    displayHour.setSelected(Main.pref
+    this.displayHour.setSelected(Main.pref
         .getBoolean("mapillary.display-hour", true));
-    format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
-    moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+    this.format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
+    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
 
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    panel.add(reverseButtons);
+    panel.add(this.reverseButtons);
 
     // Sets the value of the ComboBox.
     if (Main.pref.get("mapillary.download-mode").equals(
         MapillaryDownloader.MODES[0]))
-      downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);
+      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);
     if (Main.pref.get("mapillary.download-mode").equals(
         MapillaryDownloader.MODES[1]))
-      downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);
+      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);
     if (Main.pref.get("mapillary.download-mode").equals(
         MapillaryDownloader.MODES[2]))
-      downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);
+      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(tr("Download mode: ")));
-    downloadModePanel.add(downloadMode);
+    downloadModePanel.add(this.downloadMode);
     panel.add(downloadModePanel);
 
-    panel.add(displayHour);
-    panel.add(format24);
-    panel.add(moveTo);
+    panel.add(this.displayHour);
+    panel.add(this.format24);
+    panel.add(this.moveTo);
     JButton oauth = new JButton(new OAuthAction());
     if (Main.pref.get("mapillary.access-token") == null)
       oauth.setText("Login");
     else
-      oauth.setText("Logged as: " + Main.pref.get("mapillary.username") + ". Click to relogin.");
+      try {
+        oauth.setText("Logged as: " + MapillaryUser.getUsername() + ". Click to relogin.");
+      } catch (MalformedURLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     panel.add(oauth);
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
   }
@@ -91,21 +101,21 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   @Override
   public boolean ok() {
     boolean mod = false;
-    Main.pref.put("mapillary.reverse-buttons", reverseButtons.isSelected());
+    Main.pref.put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);
-    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[0]))
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[0]))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[0]);
-    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[1]))
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[1]))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[1]);
-    if (downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[2])) {
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[2])) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[2]);
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
     }
 
-    Main.pref.put("mapillary.display-hour", displayHour.isSelected());
-    Main.pref.put("mapillary.format-24", format24.isSelected());
-    Main.pref.put("mapillary.move-to-picture", moveTo.isSelected());
+    Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
+    Main.pref.put("mapillary.format-24", this.format24.isSelected());
+    Main.pref.put("mapillary.move-to-picture", this.moveTo.isSelected());
     return mod;
   }
 

@@ -31,21 +31,21 @@ public class MapillaryWalkDialog extends JPanel {
    */
   public MapillaryWalkDialog() {
     JPanel interval = new JPanel();
-    spin = new SpinnerNumberModel(2000, 500, 10000, 500);
+    this.spin = new SpinnerNumberModel(2000, 500, 10000, 500);
     interval.add(new JLabel("Interval (miliseconds): "));
-    interval.add(new JSpinner(spin));
+    interval.add(new JSpinner(this.spin));
     add(interval);
 
-    waitForPicture = new JCheckBox("Wait for full quality pictures");
-    waitForPicture.setSelected(true);
-    add(waitForPicture);
+    this.waitForPicture = new JCheckBox("Wait for full quality pictures");
+    this.waitForPicture.setSelected(true);
+    add(this.waitForPicture);
 
-    followSelection = new JCheckBox("Follow selected image");
-    followSelection.setSelected(true);
-    add(followSelection);
+    this.followSelection = new JCheckBox("Follow selected image");
+    this.followSelection.setSelected(true);
+    add(this.followSelection);
 
-    goForward = new JCheckBox("Go forward");
-    goForward.setSelected(true);
-    add(goForward);
+    this.goForward = new JCheckBox("Go forward");
+    this.goForward.setSelected(true);
+    add(this.goForward);
   }
 }

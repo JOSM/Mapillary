@@ -62,12 +62,13 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Returns the pictures of the file.
    *
-   * @return A BufferedImage object containing the picture,
-   *           or null if the {@link File} given in the constructor was null.
+   * @return A BufferedImage object containing the picture, or null if the
+   *         {@link File} given in the constructor was null.
    * @throws IOException
+   *           If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
-    return file == null ? null : ImageIO.read(file);
+    return this.file == null ? null : ImageIO.read(this.file);
   }
 
   /**
@@ -76,7 +77,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @return The File object where the picture is located.
    */
   public File getFile() {
-    return file;
+    return this.file;
   }
 
   @Override

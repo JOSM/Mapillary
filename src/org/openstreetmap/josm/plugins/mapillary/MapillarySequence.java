@@ -54,13 +54,14 @@ public class MapillarySequence {
    *
    */
   public long getCreatedAt() {
-    return created_at;
+    return this.created_at;
   }
 
   /**
-   * Adds a new MapillaryImage object to this object.
+   * Adds a new {@link MapillaryAbstractImage} object to the database.
    *
    * @param image
+   *          The {@link MapillaryAbstractImage} object to be added
    */
   public synchronized void add(MapillaryAbstractImage image) {
     this.images.add(image);
@@ -78,9 +79,10 @@ public class MapillarySequence {
   }
 
   /**
-   * Adds a set of MapillaryImage objects to this object.
+   * Adds a set of {@link MapillaryAbstractImage} objects to the database.
    *
    * @param images
+   *          The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images)
@@ -88,9 +90,10 @@ public class MapillarySequence {
   }
 
   /**
-   * Removes a MapillaryImage object from this object.
+   * Removes a {@link MapillaryAbstractImage} object from the database.
    *
    * @param image
+   *          The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
     this.images.remove(image);
@@ -105,12 +108,12 @@ public class MapillarySequence {
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-    if (!images.contains(image))
+    if (!this.images.contains(image))
       throw new IllegalArgumentException();
-    int i = images.indexOf(image);
-    if (i == images.size() - 1)
+    int i = this.images.indexOf(image);
+    if (i == this.images.size() - 1)
       return null;
-    return images.get(i + 1);
+    return this.images.get(i + 1);
   }
 
   /**
@@ -122,12 +125,12 @@ public class MapillarySequence {
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-    if (!images.contains(image))
+    if (!this.images.contains(image))
       throw new IllegalArgumentException();
-    int i = images.indexOf(image);
+    int i = this.images.indexOf(image);
     if (i == 0)
       return null;
-    return images.get(i - 1);
+    return this.images.get(i - 1);
   }
 
   /**
@@ -135,7 +138,9 @@ public class MapillarySequence {
    * objects belonging to the same {@link MapillarySequence}.
    *
    * @param image1
+   *          The first image.
    * @param image2
+   *          The second image.
    * @return The distance between two {@link MapillaryAbstractImage} objects
    *         belonging to the same {@link MapillarySequence}.
    */

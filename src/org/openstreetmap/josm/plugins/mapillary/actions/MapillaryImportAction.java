@@ -58,19 +58,19 @@ public class MapillaryImportAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    chooser = new JFileChooser();
+    this.chooser = new JFileChooser();
     File startDirectory = new File(Main.pref.get("mapillary.start-directory",
         System.getProperty("user.home")));
-    chooser.setCurrentDirectory(startDirectory);
-    chooser.setDialogTitle(tr("Select pictures"));
-    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-    chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg",
-        "jpeg", "png"));
-    chooser.setMultiSelectionEnabled(true);
-    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
-      for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
-        File file = chooser.getSelectedFiles()[i];
+    this.chooser.setCurrentDirectory(startDirectory);
+    this.chooser.setDialogTitle(tr("Select pictures"));
+    this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    this.chooser.setAcceptAllFileFilterUsed(false);
+    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter("images",
+        "jpg", "jpeg", "png"));
+    this.chooser.setMultiSelectionEnabled(true);
+    if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
+      for (int i = 0; i < this.chooser.getSelectedFiles().length; i++) {
+        File file = this.chooser.getSelectedFiles()[i];
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
@@ -120,12 +120,15 @@ public class MapillaryImportAction extends JosmAction {
    * direction) and creates a new icon in that position.
    *
    * @param file
+   *          The file where the picture is located.
    * @return The imported image.
    * @throws ImageReadException
+   *           If the file isn't an image.
    * @throws IOException
+   *           If the file doesn't have the valid metadata.
    */
-  public MapillaryImportedImage readJPG(File file) throws ImageReadException,
-      IOException {
+  public MapillaryImportedImage readJPG(File file) throws IOException,
+      ImageReadException {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
@@ -169,6 +172,7 @@ public class MapillaryImportAction extends JosmAction {
    * creates a new icon in the middle of the map.
    *
    * @param file
+   *          The file where the image is located.
    * @return The imported image.
    */
   public MapillaryImportedImage readNoTags(File file) {
@@ -183,6 +187,7 @@ public class MapillaryImportAction extends JosmAction {
    * creates a new icon in the middle of the map.
    *
    * @param file
+   *          The file where the image is located.
    * @param pos
    *          A {@link LatLon} object indicating the position in the map where
    *          the image must be set.
@@ -191,11 +196,11 @@ public class MapillaryImportAction extends JosmAction {
   public MapillaryImportedImage readNoTags(File file, LatLon pos) {
     double HORIZONTAL_DISTANCE = 0.0001;
     double horDev;
-    if (noTagsPics % 2 == 0)
-      horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
+    if (this.noTagsPics % 2 == 0)
+      horDev = HORIZONTAL_DISTANCE * this.noTagsPics / 2;
     else
-      horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
-    noTagsPics++;
+      horDev = -HORIZONTAL_DISTANCE * ((this.noTagsPics + 1) / 2);
+    this.noTagsPics++;
     return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
   }
 
@@ -203,6 +208,7 @@ public class MapillaryImportAction extends JosmAction {
    * Reads an image in PNG format.
    *
    * @param file
+   *          The file where the image is located.
    * @return The imported image.
    */
   public MapillaryImportedImage readPNG(File file) {

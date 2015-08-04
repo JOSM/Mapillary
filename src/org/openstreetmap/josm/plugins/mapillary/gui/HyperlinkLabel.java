@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.AWTEvent;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
 
@@ -34,11 +35,11 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Creates a new HyperlinlLabel.
    */
   public HyperlinkLabel() {
-    super(tr("View in website"), SwingUtilities.RIGHT);
+    super(tr("View in website"), SwingConstants.RIGHT);
     this.addActionListener(this);
     setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-    enableEvents(MouseEvent.MOUSE_EVENT_MASK);
+    enableEvents(AWTEvent.MOUSE_EVENT_MASK);
   }
 
   /**
@@ -55,6 +56,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Sets a new URL, just pass the key of the image or null if there is none.
    *
    * @param key
+   *          The key of the image that the hyperlink will point to.
    */
   public void setURL(String key) {
     if (key == null) {
@@ -74,7 +76,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @return The plain-text written in the label.
    */
   public String getNormalText() {
-    return text;
+    return this.text;
   }
 
   /**
@@ -93,9 +95,10 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * when the label is clicked.
    *
    * @param listener
+   *          The listener to be added.
    */
   public void addActionListener(ActionListener listener) {
-    listenerList.add(ActionListener.class, listener);
+    this.listenerList.add(ActionListener.class, listener);
   }
 
   /**
@@ -103,9 +106,10 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * notifications when the label is clicked.
    *
    * @param listener
+   *          The listener to be added.
    */
   public void removeActionListener(ActionListener listener) {
-    listenerList.remove(ActionListener.class, listener);
+    this.listenerList.remove(ActionListener.class, listener);
   }
 
   /**
@@ -114,7 +118,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @param evt
    */
   protected void fireActionPerformed(ActionEvent evt) {
-    Object[] listeners = listenerList.getListenerList();
+    Object[] listeners = this.listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i += 2) {
       if (listeners[i] == ActionListener.class) {
         ActionListener listener = (ActionListener) listeners[i + 1];
@@ -130,14 +134,14 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     Desktop desktop = Desktop.getDesktop();
     if (desktop.isSupported(Desktop.Action.BROWSE)) {
       try {
-        desktop.browse(url.toURI());
+        desktop.browse(this.url.toURI());
       } catch (IOException | URISyntaxException e1) {
         Main.error(e1);
       }
     } else {
       Runtime runtime = Runtime.getRuntime();
       try {
-        runtime.exec("xdg-open " + url);
+        runtime.exec("xdg-open " + this.url);
       } catch (IOException exc) {
         exc.printStackTrace();
       }

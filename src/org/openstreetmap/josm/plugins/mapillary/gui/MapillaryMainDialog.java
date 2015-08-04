@@ -98,15 +98,15 @@ public class MapillaryMainDialog extends ToggleDialog implements
         200, false, MapillaryPreferenceSetting.class);
     MapillaryData.getInstance().addListener(this);
     addShortcuts();
-    mapillaryImageDisplay = new MapillaryImageDisplay();
+    this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
-    blueButton.setForeground(Color.BLUE);
-    redButton.setForeground(Color.RED);
+    this.blueButton.setForeground(Color.BLUE);
+    this.redButton.setForeground(Color.RED);
 
     createLayout(
-        mapillaryImageDisplay,
-        Arrays.asList(new SideButton[] { blueButton, previousButton,
-            nextButton, redButton }),
+        this.mapillaryImageDisplay,
+        Arrays.asList(new SideButton[] { this.blueButton, this.previousButton,
+            this.nextButton, this.redButton }),
         Main.pref.getBoolean("mapillary.reverse-buttons"));
     disableAllButtons();
 
@@ -116,18 +116,19 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Adds the shortcuts to the buttons.
    */
   private void addShortcuts() {
-    nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
-    nextButton.getActionMap().put("next", new nextPictureAction());
-    previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    this.nextButton.getActionMap().put("next", new nextPictureAction());
+    this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("PAGE_UP"), "previous");
-    previousButton.getActionMap().put("previous", new previousPictureAction());
-    blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    this.previousButton.getActionMap().put("previous",
+        new previousPictureAction());
+    this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
-    blueButton.getActionMap().put("blue", new blueAction());
-    redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+    this.blueButton.getActionMap().put("blue", new blueAction());
+    this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
-    redButton.getActionMap().put("red", new redAction());
+    this.redButton.getActionMap().put("red", new redAction());
   }
 
   /**
@@ -142,22 +143,25 @@ public class MapillaryMainDialog extends ToggleDialog implements
   }
 
   /**
+   * Sets a new mode for the dialog.
+   *
    * @param mode
+   *          The mode to be set.
    */
   public void setMode(Mode mode) {
     switch (mode) {
       case NORMAL:
         createLayout(
-            mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { blueButton, previousButton,
-                nextButton, redButton }),
+            this.mapillaryImageDisplay,
+            Arrays.asList(new SideButton[] { this.blueButton,
+                this.previousButton, this.nextButton, this.redButton }),
             Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
       case WALK:
         createLayout(
-            mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { playButton, pauseButton,
-                stopButton }),
+            this.mapillaryImageDisplay,
+            Arrays.asList(new SideButton[] { this.playButton, this.pauseButton,
+                this.stopButton }),
             Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
     }
@@ -201,7 +205,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
       if (this.image == null) {
-        mapillaryImageDisplay.setImage(null);
+        this.mapillaryImageDisplay.setImage(null);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -209,8 +213,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
       // Enables/disables next/previous buttons
       this.nextButton.setEnabled(false);
       this.previousButton.setEnabled(false);
-      if (image.getSequence() != null) {
-        MapillaryAbstractImage tempImage = image;
+      if (this.image.getSequence() != null) {
+        MapillaryAbstractImage tempImage = this.image;
         while (tempImage.next() != null) {
           tempImage = tempImage.next();
           if (tempImage.isVisible()) {
@@ -219,8 +223,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
           }
         }
       }
-      if (image.getSequence() != null) {
-        MapillaryAbstractImage tempImage = image;
+      if (this.image.getSequence() != null) {
+        MapillaryAbstractImage tempImage = this.image;
         while (tempImage.previous() != null) {
           tempImage = tempImage.previous();
           if (tempImage.isVisible()) {
@@ -229,32 +233,32 @@ public class MapillaryMainDialog extends ToggleDialog implements
           }
         }
       }
-      if (image instanceof MapillaryImage) {
-        mapillaryImageDisplay.hyperlink.setVisible(true);
+      if (this.image instanceof MapillaryImage) {
+        this.mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+        this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
         // Downloads the thumbnail.
         this.mapillaryImageDisplay.setImage(null);
-        if (thumbnailCache != null)
-          thumbnailCache.cancelOutstandingTasks();
-        thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
+        if (this.thumbnailCache != null)
+          this.thumbnailCache.cancelOutstandingTasks();
+        this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
             MapillaryCache.Type.THUMBNAIL);
-        thumbnailCache.submit(this, false);
+        this.thumbnailCache.submit(this, false);
 
         // Downloads the full resolution image.
         if (fullQuality) {
-          if (imageCache != null)
-            imageCache.cancelOutstandingTasks();
-          imageCache = new MapillaryCache(mapillaryImage.getKey(),
+          if (this.imageCache != null)
+            this.imageCache.cancelOutstandingTasks();
+          this.imageCache = new MapillaryCache(mapillaryImage.getKey(),
               MapillaryCache.Type.FULL_IMAGE);
-          imageCache.submit(this, false);
+          this.imageCache.submit(this, false);
         }
-      } else if (image instanceof MapillaryImportedImage) {
-        mapillaryImageDisplay.hyperlink.setVisible(false);
-        mapillaryImageDisplay.hyperlink.setURL(null);
+      } else if (this.image instanceof MapillaryImportedImage) {
+        this.mapillaryImageDisplay.hyperlink.setVisible(false);
+        this.mapillaryImageDisplay.hyperlink.setURL(null);
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          mapillaryImageDisplay.setImage(mapillaryImage.getImage());
+          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage());
         } catch (IOException e) {
           Main.error(e);
         }
@@ -265,17 +269,18 @@ public class MapillaryMainDialog extends ToggleDialog implements
   }
 
   private void disableAllButtons() {
-    nextButton.setEnabled(false);
-    previousButton.setEnabled(false);
-    blueButton.setEnabled(false);
-    redButton.setEnabled(false);
-    mapillaryImageDisplay.hyperlink.setVisible(false);
+    this.nextButton.setEnabled(false);
+    this.previousButton.setEnabled(false);
+    this.blueButton.setEnabled(false);
+    this.redButton.setEnabled(false);
+    this.mapillaryImageDisplay.hyperlink.setVisible(false);
   }
 
   /**
    * Sets a new MapillaryImage to be shown.
    *
    * @param image
+   *          The image to be shown.
    */
   public synchronized void setImage(MapillaryAbstractImage image) {
     this.image = image;
@@ -428,8 +433,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (thread != null)
-        thread.stopWalk();
+      if (this.thread != null)
+        this.thread.stopWalk();
     }
 
     @Override
@@ -452,8 +457,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (thread != null)
-        thread.play();
+      if (this.thread != null)
+        this.thread.play();
     }
 
     @Override
@@ -478,7 +483,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      thread.pause();
+      this.thread.pause();
     }
 
     @Override
@@ -509,10 +514,10 @@ public class MapillaryMainDialog extends ToggleDialog implements
         if (img == null)
           return;
         if (this.mapillaryImageDisplay.getImage() == null)
-          mapillaryImageDisplay.setImage(img);
+          this.mapillaryImageDisplay.setImage(img);
         else if (img.getHeight() > this.mapillaryImageDisplay.getImage()
             .getHeight()) {
-          mapillaryImageDisplay.setImage(img);
+          this.mapillaryImageDisplay.setImage(img);
         }
       } catch (IOException e) {
         Main.error(e);
@@ -538,20 +543,20 @@ public class MapillaryMainDialog extends ToggleDialog implements
     panel.setLayout(new BorderLayout());
     panel.add(data, BorderLayout.CENTER);
     if (reverse) {
-      buttonsPanel = new JPanel(new GridLayout(1, 1));
+      this.buttonsPanel = new JPanel(new GridLayout(1, 1));
       if (!buttons.isEmpty() && buttons.get(0) != null) {
         final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
             "dialog.align.left", false) ? new FlowLayout(FlowLayout.LEFT)
             : new GridLayout(1, buttons.size()));
-        buttonsPanel.add(buttonRowPanel);
+        this.buttonsPanel.add(buttonRowPanel);
         for (SideButton button : buttons)
           buttonRowPanel.add(button);
       }
-      panel.add(buttonsPanel, BorderLayout.NORTH);
+      panel.add(this.buttonsPanel, BorderLayout.NORTH);
       createLayout(panel, true, null);
     } else
       createLayout(panel, true, buttons);
-    this.add(titleBar, BorderLayout.NORTH);
+    this.add(this.titleBar, BorderLayout.NORTH);
   }
 
   @Override

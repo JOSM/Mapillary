@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
@@ -120,6 +121,7 @@ public class MapillaryDownloader {
    * Gets the images within the given bounds.
    *
    * @param bounds
+   *          A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
     getImages(bounds.getMin(), bounds.getMax());
@@ -155,6 +157,7 @@ public class MapillaryDownloader {
    */
   private static boolean isAreaTooBig() {
     double area = 0;
+    System.out.println(Main.map.mapView.getLayersOfType(OsmDataLayer.class));
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
       area += bounds.getArea();
@@ -171,13 +174,15 @@ public class MapillaryDownloader {
    */
   public static int getMode() {
     if (Main.pref.get("mapillary.download-mode").equals(MODES[0])
-        && !MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC)
+        && (MapillaryLayer.INSTANCE == null || !MapillaryLayer.INSTANCE.TEMP_SEMIAUTOMATIC))
       return 0;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES[1])
-        || MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC)
+        || (MapillaryLayer.INSTANCE != null && MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
       return 1;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES[2]))
       return 2;
+    else if (Main.pref.get("mapillary.download-mode").equals(""))
+      return 0;
     else
       throw new IllegalStateException();
   }

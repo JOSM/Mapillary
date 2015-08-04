@@ -58,6 +58,7 @@ public class MapillaryPlugin extends Plugin {
   private final MapillaryJoinAction joinAction;
   /** Walk action */
   public static MapillaryWalkAction walkAction;
+  private final MapillaryUploadAction uploadAction;
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   public static JMenuItem DOWNLOAD_MENU;
@@ -75,11 +76,14 @@ public class MapillaryPlugin extends Plugin {
   public static JMenuItem JOIN_MENU;
   /** Menu button for the {@link MapillaryWalkAction} action. */
   public static JMenuItem WALK_MENU;
+  /** Menu button for the {@link MapillaryUploadAction} action. */
+  public static JMenuItem UPLOAD_MENU;
 
   /**
    * Main constructor.
    *
    * @param info
+   *          Required information of the plugin. Obtained from the jar file.
    */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
@@ -91,28 +95,32 @@ public class MapillaryPlugin extends Plugin {
     MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
     MAP_SIGN = new ImageProvider("sign.png").get();
 
-    downloadAction = new MapillaryDownloadAction();
+    this.downloadAction = new MapillaryDownloadAction();
     walkAction = new MapillaryWalkAction();
-    exportAction = new MapillaryExportAction();
+    this.exportAction = new MapillaryExportAction();
     importAction = new MapillaryImportAction();
-    zoomAction = new MapillaryZoomAction();
-    downloadViewAction = new MapillaryDownloadViewAction();
-    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
-    joinAction = new MapillaryJoinAction();
+    this.zoomAction = new MapillaryZoomAction();
+    this.downloadViewAction = new MapillaryDownloadViewAction();
+    this.importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
+    this.joinAction = new MapillaryJoinAction();
+    this.uploadAction = new MapillaryUploadAction();
 
     if (Main.main != null) { // important for headless mode
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, downloadAction,
-          false);
-      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, exportAction, false,
-          14);
+      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
+          this.downloadAction, false);
+      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, this.exportAction,
+          false, 14);
       IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu,
-          importIntoSequenceAction, false, 14);
+          this.importIntoSequenceAction, false, 14);
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
           14);
-      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
+      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, this.uploadAction,
+          false, 14);
+      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, this.zoomAction, false,
+          15);
       DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
-          downloadViewAction, false, 14);
-      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
+          this.downloadViewAction, false, 14);
+      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);
       WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
 
       EXPORT_MENU.setEnabled(false);
@@ -181,10 +189,12 @@ public class MapillaryPlugin extends Plugin {
    * Returns a ImageProvider for the given string or null if in headless mode.
    *
    * @param s
-   * @return A ImageProvider object for the given string or null if in headless mode.
+   *          The name of the file where the picture is.
+   * @return A ImageProvider object for the given string or null if in headless
+   *         mode.
    */
   public static ImageProvider getProvider(String s) {
-    if (Main.map == null)
+    if (Main.main == null)
       return null;
     else
       return new ImageProvider(s);

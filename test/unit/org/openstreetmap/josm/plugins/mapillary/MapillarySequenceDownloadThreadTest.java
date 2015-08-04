@@ -27,7 +27,6 @@ public class MapillarySequenceDownloadThreadTest {
      */
     @Before
     public void setUp() {
-        MapillaryData.TEST_MODE = true;
         TestUtil.initPlugin();
     }
 

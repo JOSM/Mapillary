@@ -35,7 +35,9 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
    * @param ex
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
+   *          A String containing the parameter for the download.
    * @param layer
+   *          The layer to store the data.
    */
   public MapillaryTrafficSignDownloaderThread(ExecutorService ex,
       String queryString, MapillaryLayer layer) {
@@ -49,10 +51,10 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
     BufferedReader br;
     try {
       br = new BufferedReader(new InputStreamReader(
-          new URL(URL + queryString).openStream(), "UTF-8"));
+          new URL(URL + this.queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {
-        ex.shutdown();
+        this.ex.shutdown();
       }
       JsonArray jsonarr = jsonobj.getJsonArray("ims");
       for (int i = 0; i < jsonarr.size(); i++) {
@@ -65,7 +67,7 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
             rects = rectversions.getJsonObject(j).getJsonArray("rects");
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : layer.getMapillaryData()
+              for (MapillaryAbstractImage image : this.layer.getMapillaryData()
                   .getImages())
                 if (image instanceof MapillaryImage
                     && ((MapillaryImage) image).getKey().equals(key))
@@ -78,7 +80,7 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
         else if (rects != null) {
           for (int j = 0; j < rects.size(); j++) {
             JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : layer.getMapillaryData()
+            for (MapillaryAbstractImage image : this.layer.getMapillaryData()
                 .getImages())
               if (image instanceof MapillaryImage
                   && ((MapillaryImage) image).getKey().equals(key))

@@ -26,13 +26,14 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A String containing the location where the picture was taken.
    */
   public String getLocation() {
-    return location;
+    return this.location;
   }
 
   /**
    * Sets the location of the image.
    *
    * @param location
+   *          A String object containing the place where the image was taken.
    */
   public void setLocation(String location) {
     this.location = location;
@@ -72,7 +73,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *          A String that identifies the type of sign.
    */
   public void addSign(String sign) {
-    signs.add(sign);
+    this.signs.add(sign);
   }
 
   /**
@@ -81,7 +82,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A List object containing the signs assigned to this image.
    */
   public List<String> getSigns() {
-    return signs;
+    return this.signs;
   }
 
   /**
@@ -101,7 +102,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *         picture.
    */
   public String getUser() {
-    return user;
+    return this.user;
   }
 
   @Override

@@ -19,7 +19,7 @@ public class CommandTurnImage extends MapillaryCommand {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param images
    *          Set of images that is turned.
    * @param ca
@@ -32,8 +32,8 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public void undo() {
-    for (MapillaryAbstractImage image : images) {
-      image.turn(-ca);
+    for (MapillaryAbstractImage image : this.images) {
+      image.turn(-this.ca);
       image.stopMoving();
     }
     checkModified();
@@ -42,8 +42,8 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public void redo() {
-    for (MapillaryAbstractImage image : images) {
-      image.turn(ca);
+    for (MapillaryAbstractImage image : this.images) {
+      image.turn(this.ca);
       image.stopMoving();
     }
     checkModified();

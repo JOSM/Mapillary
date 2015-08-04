@@ -77,12 +77,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       "danger_pedestrian_crossing", "prohibitory_no_u_turn",
       "prohibitory_noturn" };
   /** The the {@link JCheckBox} where the respective tag should be searched */
-  private final JCheckBox[] SIGN_CHECKBOXES = { signFilter.maxSpeed,
-      signFilter.stop, signFilter.giveWay, signFilter.roundabout,
-      signFilter.access, signFilter.access, signFilter.intersection,
-      signFilter.direction, signFilter.direction, signFilter.intersection,
-      signFilter.uneven, signFilter.noParking, signFilter.noOvertaking,
-      signFilter.crossing, signFilter.noTurn, signFilter.noTurn };
+  private final JCheckBox[] SIGN_CHECKBOXES = { this.signFilter.maxSpeed,
+      this.signFilter.stop, this.signFilter.giveWay, this.signFilter.roundabout,
+      this.signFilter.access, this.signFilter.access, this.signFilter.intersection,
+      this.signFilter.direction, this.signFilter.direction, this.signFilter.intersection,
+      this.signFilter.uneven, this.signFilter.noParking, this.signFilter.noOvertaking,
+      this.signFilter.crossing, this.signFilter.noTurn, this.signFilter.noTurn };
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillaryfilter.png",
@@ -90,44 +90,44 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
             KeyEvent.VK_M, Shortcut.NONE), 200);
 
-    signChooser.setEnabled(false);
+    this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
     signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    signChooserPanel.add(signChooser);
+    signChooserPanel.add(this.signChooser);
 
     JPanel fromPanel = new JPanel();
     fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     fromPanel.add(new JLabel("Not older than: "));
-    spinner = new SpinnerNumberModel(1, 0, 10000, 1);
-    fromPanel.add(new JSpinner(spinner));
-    time = new JComboBox<>(TIME_LIST);
-    fromPanel.add(time);
+    this.spinner = new SpinnerNumberModel(1, 0, 10000, 1);
+    fromPanel.add(new JSpinner(this.spinner));
+    this.time = new JComboBox<>(TIME_LIST);
+    fromPanel.add(this.time);
 
     JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    user = new JTextField(10);
-    user.addActionListener(new UpdateAction());
+    this.user = new JTextField(10);
+    this.user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel("User"));
-    userSearchPanel.add(user);
+    userSearchPanel.add(this.user);
 
-    imported.setSelected(true);
-    downloaded.setSelected(true);
+    this.imported.setSelected(true);
+    this.downloaded.setSelected(true);
 
     JPanel col1 = new JPanel(new GridLayout(2, 1));
-    col1.add(downloaded);
+    col1.add(this.downloaded);
     col1.add(fromPanel);
-    panel.add(col1);
+    this.panel.add(col1);
     JPanel col2 = new JPanel(new GridLayout(2, 1));
-    col2.add(imported);
+    col2.add(this.imported);
     col2.add(userSearchPanel);
-    panel.add(col2);
+    this.panel.add(col2);
     JPanel col3 = new JPanel(new GridLayout(2, 1));
-    col3.add(onlySigns);
+    col3.add(this.onlySigns);
     col3.add(signChooserPanel);
-    panel.add(col3);
+    this.panel.add(col3);
 
-    createLayout(panel, true,
-        Arrays.asList(new SideButton[] { updateButton, resetButton }));
+    createLayout(this.panel, true,
+        Arrays.asList(new SideButton[] { this.updateButton, this.resetButton }));
   }
 
   /**
@@ -155,13 +155,13 @@ public class MapillaryFilterDialog extends ToggleDialog implements
    * Resets the dialog to its default state.
    */
   public void reset() {
-    imported.setSelected(true);
-    downloaded.setSelected(true);
-    onlySigns.setEnabled(true);
-    onlySigns.setSelected(false);
-    user.setText("");
-    time.setSelectedItem(TIME_LIST[0]);
-    spinner.setValue(1);
+    this.imported.setSelected(true);
+    this.downloaded.setSelected(true);
+    this.onlySigns.setEnabled(true);
+    this.onlySigns.setSelected(false);
+    this.user.setText("");
+    this.time.setSelectedItem(TIME_LIST[0]);
+    this.spinner.setValue(1);
     refresh();
   }
 
@@ -194,33 +194,33 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             continue;
           }
         }
-        if (!user.getText().equals("")
-            && !user.getText().equals(((MapillaryImage) img).getUser())) {
+        if (!this.user.getText().equals("")
+            && !this.user.getText().equals(((MapillaryImage) img).getUser())) {
           img.setVisible(false);
           continue;
         }
       }
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
-      if (time.getSelectedItem().equals(TIME_LIST[1])) {
+      if (this.time.getSelectedItem().equals(TIME_LIST[1])) {
         if (img.getCapturedAt() < currentTime
-            - ((Integer) spinner.getValue()).longValue() * 365 * 24 * 60 * 60
+            - ((Integer) this.spinner.getValue()).longValue() * 365 * 24 * 60 * 60
             * 1000) {
           img.setVisible(false);
           continue;
         }
       }
-      if (time.getSelectedItem().equals(TIME_LIST[2])) {
+      if (this.time.getSelectedItem().equals(TIME_LIST[2])) {
         if (img.getCapturedAt() < currentTime
-            - ((Integer) spinner.getValue()).longValue() * 30 * 24 * 60 * 60
+            - ((Integer) this.spinner.getValue()).longValue() * 30 * 24 * 60 * 60
             * 1000) {
           img.setVisible(false);
           continue;
         }
       }
-      if (time.getSelectedItem().equals(TIME_LIST[3])) {
+      if (this.time.getSelectedItem().equals(TIME_LIST[3])) {
         if (img.getCapturedAt() < currentTime
-            - ((Integer) spinner.getValue()).longValue() * 60 * 60 * 1000) {
+            - ((Integer) this.spinner.getValue()).longValue() * 60 * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
@@ -239,14 +239,14 @@ public class MapillaryFilterDialog extends ToggleDialog implements
    *         otherwise.
    */
   private boolean checkSigns(MapillaryImage img) {
-    for (int i = 0; i < SIGN_TAGS.length; i++) {
-      if (checkSign(img, SIGN_CHECKBOXES[i], SIGN_TAGS[i]))
+    for (int i = 0; i < this.SIGN_TAGS.length; i++) {
+      if (checkSign(img, this.SIGN_CHECKBOXES[i], this.SIGN_TAGS[i]))
         return true;
     }
     return false;
   }
 
-  private boolean checkSign(MapillaryImage img, JCheckBox signCheckBox,
+  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox,
       String singString) {
     boolean contains = false;
     for (String sign : img.getSigns()) {
@@ -258,7 +258,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     return false;
   }
 
-  private long currentTime() {
+  private static long currentTime() {
     Calendar cal = Calendar.getInstance();
     return cal.getTimeInMillis();
   }
@@ -273,7 +273,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      onlySigns.setEnabled(downloaded.isSelected());
+      MapillaryFilterDialog.this.onlySigns.setEnabled(MapillaryFilterDialog.this.downloaded.isSelected());
     }
   }
 
@@ -317,7 +317,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      signChooser.setEnabled(onlySigns.isSelected());
+      MapillaryFilterDialog.this.signChooser.setEnabled(MapillaryFilterDialog.this.onlySigns.isSelected());
     }
   }
 

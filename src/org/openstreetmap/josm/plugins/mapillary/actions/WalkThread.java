@@ -35,9 +35,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * Main constructor.
    *
    * @param interval
+   *          How often the images switch.
    * @param waitForPicture
+   *          If it must wait for the full resolution picture or just the
+   *          thumbnail.
    * @param followSelected
+   *          Zoom to each image that is selected.
    * @param goForward
+   *          true to go forward; false to go backwards.
    */
   public WalkThread(int interval, boolean waitForPicture,
       boolean followSelected, boolean goForward) {
@@ -45,15 +50,15 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     this.waitForFullQuality = waitForPicture;
     this.followSelected = followSelected;
     this.goForward = goForward;
-    data = MapillaryLayer.getInstance().getMapillaryData();
-    data.addListener(this);
+    this.data = MapillaryLayer.getInstance().getMapillaryData();
+    this.data.addListener(this);
   }
 
   @Override
   public void run() {
     try {
-      while (!end && data.getSelectedImage().next() != null) {
-        MapillaryAbstractImage image = data.getSelectedImage();
+      while (!this.end && this.data.getSelectedImage().next() != null) {
+        MapillaryAbstractImage image = this.data.getSelectedImage();
         if (image instanceof MapillaryImage) {
           // Predownload next 10 thumbnails.
           for (int i = 0; i < 10; i++) {
@@ -63,21 +68,21 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             Utils.downloadPicture((MapillaryImage) image,
                 Utils.PICTURE.THUMBNAIL);
           }
+          if (this.waitForFullQuality)
+            // Start downloading 3 next full images.
+            for (int i = 0; i < 3; i++) {
+              if (image.next() == null)
+                break;
+              image = image.next();
+              Utils.downloadPicture((MapillaryImage) image,
+                  Utils.PICTURE.FULL_IMAGE);
+            }
         }
-        if (waitForFullQuality)
-          // Start downloading 3 next full images.
-          for (int i = 0; i < 3; i++) {
-            if (image.next() == null)
-              break;
-            image = image.next();
-            Utils.downloadPicture((MapillaryImage) image, Utils.PICTURE.FULL_IMAGE);
-          }
         try {
           synchronized (this) {
-            if (waitForFullQuality
-                && data.getSelectedImage() instanceof MapillaryImage) {
+            if (this.waitForFullQuality && image instanceof MapillaryImage) {
               while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                  .getImage() == lastImage
+                  .getImage() == this.lastImage
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
                       .getImage() == null
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
@@ -85,31 +90,32 @@ public class WalkThread extends Thread implements MapillaryDataListener {
                 wait(100);
             } else {
               while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                  .getImage() == lastImage
+                  .getImage() == this.lastImage
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
                       .getImage() == null
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
                       .getImage().getWidth() < 320)
                 wait(100);
             }
-            while (paused)
+            while (this.paused)
               wait(100);
-            wait(interval);
-            while (paused)
+            wait(this.interval);
+            while (this.paused)
               wait(100);
           }
-          lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
+          this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
               .getImage();
-          lock.lock();
-          if (goForward)
-            data.selectNext(followSelected);
-          else
-            data.selectPrevious(followSelected);
-          lock.unlock();
+          this.lock.lock();
+          try {
+            if (this.goForward)
+              this.data.selectNext(this.followSelected);
+            else
+              this.data.selectPrevious(this.followSelected);
+          } finally {
+            this.lock.unlock();
+          }
         } catch (InterruptedException e) {
           return;
-        } finally {
-          lock.unlock();
         }
       }
     } catch (NullPointerException e) {
@@ -120,12 +126,12 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 
   @Override
   public void interrupt() {
-    lock.lock();
+    this.lock.lock();
     try {
       super.interrupt();
     } catch (Exception e) {
     } finally {
-      lock.unlock();
+      this.lock.unlock();
     }
 
   }
@@ -147,14 +153,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * Continues with the execution if paused.
    */
   public void play() {
-    paused = false;
+    this.paused = false;
   }
 
   /**
    * Pauses the execution.
    */
   public void pause() {
-    paused = true;
+    this.paused = true;
   }
 
   /**
@@ -186,8 +192,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
         }
       });
     } else {
-      end = true;
-      data.removeListener(this);
+      this.end = true;
+      this.data.removeListener(this);
       MapillaryMainDialog.getInstance()
           .setMode(MapillaryMainDialog.Mode.NORMAL);
     }

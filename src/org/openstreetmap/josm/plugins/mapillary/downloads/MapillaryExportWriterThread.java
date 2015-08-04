@@ -2,7 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,7 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 
 /**
  * Writes the images from the queue in the file system.
- * 
+ *
  * @author nokutu
  * @see MapillaryExportManager
  */
@@ -45,7 +45,7 @@ public class MapillaryExportWriterThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param path
    *          Path to write the pictures.
    * @param queue
@@ -70,30 +70,31 @@ public class MapillaryExportWriterThread extends Thread {
 
   @Override
   public void run() {
-    monitor.setCustomText("Downloaded 0/" + amount);
-    File tempFile = null;
+    this.monitor.setCustomText("Downloaded 0/" + this.amount);
+    //File tempFile = null;
     BufferedImage img;
     MapillaryAbstractImage mimg = null;
     String finalPath = "";
-    for (int i = 0; i < amount; i++) {
+    for (int i = 0; i < this.amount; i++) {
       try {
-        img = queue.take();
-        mimg = queueImages.take();
+        img = this.queue.take();
+        mimg = this.queueImages.take();
         if (img == null || mimg == null)
           throw new IllegalStateException("Null image");
-        if (path == null && mimg instanceof MapillaryImportedImage) {
+        if (this.path == null && mimg instanceof MapillaryImportedImage) {
           String path = ((MapillaryImportedImage) mimg).getFile().getPath();
           finalPath = path.substring(0, path.lastIndexOf('.'));
         } else if (mimg instanceof MapillaryImage)
-          finalPath = path + "/" + ((MapillaryImage) mimg).getKey();
+          finalPath = this.path + "/" + ((MapillaryImage) mimg).getKey();
         else if (mimg instanceof MapillaryImportedImage)
-          finalPath = path + "/"
+          finalPath = this.path + "/"
               + ((MapillaryImportedImage) mimg).getFile().getName();
         ;
-        // Creates a temporal file that is going to be deleted after
-        // writing the EXIF tags.
-        tempFile = new File(finalPath + ".tmp");
-        ImageIO.write(img, "jpg", tempFile);
+
+        // Transforms the image into a byte array.
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(img, "jpg", outputStream);
+        byte[] imageBytes = outputStream.toByteArray();
 
         // Write EXIF tags
         TiffOutputSet outputSet = null;
@@ -135,8 +136,8 @@ public class MapillaryExportWriterThread extends Thread {
             .lat());
         OutputStream os = new BufferedOutputStream(new FileOutputStream(
             finalPath + ".jpg"));
-        new ExifRewriter().updateExifMetadataLossless(tempFile, os, outputSet);
-        tempFile.delete();
+        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+
         os.close();
       } catch (InterruptedException e) {
         Main.info("Mapillary export cancelled");
@@ -150,8 +151,8 @@ public class MapillaryExportWriterThread extends Thread {
       }
 
       // Increases the progress bar.
-      monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / amount);
-      monitor.setCustomText("Downloaded " + (i + 1) + "/" + amount);
+      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
+      this.monitor.setCustomText("Downloaded " + (i + 1) + "/" + this.amount);
     }
   }
 }

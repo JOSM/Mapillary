@@ -19,8 +19,6 @@ public class MapillaryData {
 
   /** Unique instance of the class */
   public volatile static MapillaryData INSTANCE;
-  /** Enable this if you are using in Unit Tests */
-  public static boolean TEST_MODE = false;
 
   private final List<MapillaryAbstractImage> images;
   private MapillaryAbstractImage selectedImage;
@@ -34,9 +32,9 @@ public class MapillaryData {
    * Main constructor.
    */
   private MapillaryData() {
-    images = new CopyOnWriteArrayList<>();
-    multiSelectedImages = new ArrayList<>();
-    selectedImage = null;
+    this.images = new CopyOnWriteArrayList<>();
+    this.multiSelectedImages = new ArrayList<>();
+    this.selectedImage = null;
 
     addListener(MapillaryPlugin.walkAction);
   }
@@ -87,7 +85,7 @@ public class MapillaryData {
    *          Listener to be added.
    */
   public void addListener(MapillaryDataListener lis) {
-    listeners.add(lis);
+    this.listeners.add(lis);
   }
 
   /**
@@ -97,7 +95,7 @@ public class MapillaryData {
    *          Listener to be removed.
    */
   public void removeListener(MapillaryDataListener lis) {
-    listeners.remove(lis);
+    this.listeners.remove(lis);
   }
 
   /**
@@ -123,7 +121,7 @@ public class MapillaryData {
    *          The image under the cursor.
    */
   public void setHighlightedImage(MapillaryAbstractImage image) {
-    highlightedImage = image;
+    this.highlightedImage = image;
   }
 
   /**
@@ -132,7 +130,7 @@ public class MapillaryData {
    * @return The image under the mouse cursor.
    */
   public MapillaryAbstractImage getHighlighted() {
-    return highlightedImage;
+    return this.highlightedImage;
   }
 
   /**
@@ -145,7 +143,7 @@ public class MapillaryData {
    *          Whether the map must be updated or not.
    */
   public synchronized void add(MapillaryAbstractImage image, boolean update) {
-    if (!images.contains(image)) {
+    if (!this.images.contains(image)) {
       this.images.add(image);
     }
     if (update)
@@ -156,8 +154,8 @@ public class MapillaryData {
   /**
    * Repaints mapView object.
    */
-  public synchronized void dataUpdated() {
-    if (!TEST_MODE)
+  public synchronized static void dataUpdated() {
+    if (Main.main != null)
       Main.map.mapView.repaint();
   }
 
@@ -167,7 +165,7 @@ public class MapillaryData {
    * @return A List object containing all images.
    */
   public List<MapillaryAbstractImage> getImages() {
-    return images;
+    return this.images;
   }
 
   /**
@@ -176,14 +174,15 @@ public class MapillaryData {
    * @return The selected MapillaryImage object.
    */
   public MapillaryAbstractImage getSelectedImage() {
-    return selectedImage;
+    return this.selectedImage;
   }
 
   private void fireImagesAdded() {
-    if (listeners.isEmpty())
+    if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : listeners)
-      lis.imagesAdded();
+    for (MapillaryDataListener lis : this.listeners)
+      if (lis != null)
+        lis.imagesAdded();
   }
 
   /**
@@ -196,7 +195,7 @@ public class MapillaryData {
       return;
     if (getSelectedImage().getSequence() == null)
       return;
-    MapillaryAbstractImage tempImage = selectedImage;
+    MapillaryAbstractImage tempImage = this.selectedImage;
     while (tempImage.next() != null) {
       tempImage = tempImage.next();
       if (tempImage.isVisible()) {
@@ -220,7 +219,7 @@ public class MapillaryData {
       return;
     if (getSelectedImage().getSequence() == null)
       return;
-    MapillaryAbstractImage tempImage = selectedImage;
+    MapillaryAbstractImage tempImage = this.selectedImage;
     while (tempImage.next() != null) {
       tempImage = tempImage.next();
       if (tempImage.isVisible()) {
@@ -240,7 +239,7 @@ public class MapillaryData {
       return;
     if (getSelectedImage().getSequence() == null)
       throw new IllegalStateException();
-    MapillaryAbstractImage tempImage = selectedImage;
+    MapillaryAbstractImage tempImage = this.selectedImage;
     while (tempImage.previous() != null) {
       tempImage = tempImage.previous();
       if (tempImage.isVisible()) {
@@ -264,7 +263,7 @@ public class MapillaryData {
       return;
     if (getSelectedImage().getSequence() == null)
       throw new IllegalStateException();
-    MapillaryAbstractImage tempImage = selectedImage;
+    MapillaryAbstractImage tempImage = this.selectedImage;
     while (tempImage.previous() != null) {
       tempImage = tempImage.previous();
       if (tempImage.isVisible()) {
@@ -294,10 +293,10 @@ public class MapillaryData {
    *          True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
-    MapillaryAbstractImage oldImage = selectedImage;
-    selectedImage = image;
-    multiSelectedImages.clear();
-    multiSelectedImages.add(image);
+    MapillaryAbstractImage oldImage = this.selectedImage;
+    this.selectedImage = image;
+    this.multiSelectedImages.clear();
+    this.multiSelectedImages.add(image);
     if (image != null) {
       if (image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
@@ -319,17 +318,18 @@ public class MapillaryData {
     if (zoom)
       Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
           .getLatLon());
-    if (Main.map != null)
+    if (Main.main != null)
       Main.map.mapView.repaint();
-    fireSelectedImageChanged(oldImage, selectedImage);
+    fireSelectedImageChanged(oldImage, this.selectedImage);
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-    if (listeners.isEmpty())
+    if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : listeners)
-      lis.selectedImageChanged(oldImage, newImage);
+    for (MapillaryDataListener lis : this.listeners)
+      if (lis != null)
+        lis.selectedImageChanged(oldImage, newImage);
   }
 
   /**
@@ -374,7 +374,7 @@ public class MapillaryData {
    * @return A List object containing all the images selected.
    */
   public List<MapillaryAbstractImage> getMultiSelectedImages() {
-    return multiSelectedImages;
+    return this.multiSelectedImages;
   }
 
   /**
@@ -383,6 +383,6 @@ public class MapillaryData {
    * @return The amount of images in stored.
    */
   public int size() {
-    return images.size();
+    return this.images.size();
   }
 }

@@ -11,6 +11,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -30,89 +31,93 @@ public class JoinMode extends AbstractMode {
    * Main constructor.
    */
   public JoinMode() {
-    cursor = Cursor.CROSSHAIR_CURSOR;
+    this.cursor = Cursor.CROSSHAIR_CURSOR;
   }
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (data.getHighlighted() == null)
+    if (this.data.getHighlighted() == null)
       return;
-    if (lastClick == null
-        && data.getHighlighted() instanceof MapillaryImportedImage) {
-      lastClick = (MapillaryImportedImage) data.getHighlighted();
-    } else if (lastClick != null
-        && data.getHighlighted() instanceof MapillaryImportedImage) {
-      if (((data.getHighlighted().previous() == null && lastClick.next() == null) || (data
-          .getHighlighted().next() == null && lastClick.previous() == null))
-          && (data.getHighlighted().getSequence() != lastClick.getSequence() || lastClick
+    if (this.lastClick == null
+        && this.data.getHighlighted() instanceof MapillaryImportedImage) {
+      this.lastClick = (MapillaryImportedImage) this.data.getHighlighted();
+    } else if (this.lastClick != null
+        && this.data.getHighlighted() instanceof MapillaryImportedImage) {
+      if (((this.data.getHighlighted().previous() == null && this.lastClick.next() == null) || (this.data
+          .getHighlighted().next() == null && this.lastClick.previous() == null))
+          && (this.data.getHighlighted().getSequence() != this.lastClick.getSequence() || this.lastClick
               .getSequence() == null)) {
-        join(lastClick, (MapillaryImportedImage) data.getHighlighted());
-      } else if (lastClick.next() == data.getHighlighted()
-          || lastClick.previous() == data.getHighlighted())
-        unjoin(lastClick, (MapillaryImportedImage) data.getHighlighted());
-      lastClick = null;
+        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());
+      } else if (this.lastClick.next() == this.data.getHighlighted()
+          || this.lastClick.previous() == this.data.getHighlighted())
+        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());
+      this.lastClick = null;
     }
-    data.dataUpdated();
+    MapillaryData.dataUpdated();
   }
 
   @Override
   public void mouseMoved(MouseEvent e) {
-    lastPos = e;
+    this.lastPos = e;
     if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer))
       return;
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
-    data.setHighlightedImage(closestTemp);
-    data.dataUpdated();
+    this.data.setHighlightedImage(closestTemp);
+    MapillaryData.dataUpdated();
   }
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-    if (lastClick != null) {
+    if (this.lastClick != null) {
       g.setColor(Color.WHITE);
-      Point p0 = mv.getPoint(lastClick.getLatLon());
-      Point p1 = lastPos.getPoint();
+      Point p0 = mv.getPoint(this.lastClick.getLatLon());
+      Point p1 = this.lastPos.getPoint();
       g.drawLine(p0.x, p0.y, p1.x, p1.y);
     }
   }
 
-  private void join(MapillaryImportedImage img1, MapillaryImportedImage img2) {
+  private static void join(MapillaryImportedImage img1, MapillaryImportedImage img2) {
+    MapillaryImportedImage firstImage = img1;
+    MapillaryImportedImage secondImage = img2;
+
     if (img1.next() != null) {
-      MapillaryImportedImage temp = img1;
-      img1 = img2;
-      img2 = temp;
+      firstImage = img2;
+      secondImage = img1;
     }
-    if (img1.getSequence() == null) {
+    if (firstImage.getSequence() == null) {
       MapillarySequence seq = new MapillarySequence();
-      seq.add(img1);
-      img1.setSequence(seq);
+      seq.add(firstImage);
+      firstImage.setSequence(seq);
     }
-    if (img2.getSequence() == null) {
+    if (secondImage.getSequence() == null) {
       MapillarySequence seq = new MapillarySequence();
-      seq.add(img2);
+      seq.add(secondImage);
       img2.setSequence(seq);
     }
 
-    for (MapillaryAbstractImage img : img2.getSequence().getImages()) {
-      img1.getSequence().add(img);
-      img.setSequence(img1.getSequence());
+    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {
+      firstImage.getSequence().add(img);
+      img.setSequence(firstImage.getSequence());
     }
   }
 
-  private void unjoin(MapillaryImportedImage img1, MapillaryImportedImage img2) {
+  private static void unjoin(MapillaryImportedImage img1, MapillaryImportedImage img2) {
+    MapillaryImportedImage firstImage = img1;
+    MapillaryImportedImage secondImage = img2;
+
     if (img1.next() != img2) {
-      MapillaryImportedImage temp = img1;
-      img1 = img2;
-      img2 = temp;
+      firstImage = img2;
+      secondImage = img1;
     }
 
-    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(img1
+    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(firstImage
         .getSequence().getImages()
-        .subList(0, img1.getSequence().getImages().indexOf(img2)));
-    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(img1
+        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));
+    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(firstImage
         .getSequence()
         .getImages()
-        .subList(img1.getSequence().getImages().indexOf(img2),
-            img1.getSequence().getImages().size()));
+        .subList(firstImage.getSequence().getImages().indexOf(secondImage),
+            firstImage.getSequence().getImages().size()));
 
     MapillarySequence seq1 = new MapillarySequence();
     MapillarySequence seq2 = new MapillarySequence();

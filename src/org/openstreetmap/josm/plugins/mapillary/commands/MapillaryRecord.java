@@ -6,7 +6,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
  * History record system in order to let the user undo and redo commands
- * 
+ *
  * @author nokutu
  *
  */
@@ -25,14 +25,14 @@ public class MapillaryRecord {
    * Main constructor.
    */
   public MapillaryRecord() {
-    commandList = new ArrayList<>();
-    position = -1;
-    listeners = new ArrayList<>();
+    this.commandList = new ArrayList<>();
+    this.position = -1;
+    this.listeners = new ArrayList<>();
   }
 
   /**
    * Returns the unique instance of the class.
-   * 
+   *
    * @return The unique instance of the class.
    */
   public static synchronized MapillaryRecord getInstance() {
@@ -43,8 +43,9 @@ public class MapillaryRecord {
 
   /**
    * Adds a listener.
-   * 
+   *
    * @param lis
+   *          The listener to be added.
    */
   public void addListener(MapillaryRecordListener lis) {
     this.listeners.add(lis);
@@ -52,8 +53,9 @@ public class MapillaryRecord {
 
   /**
    * Removes the given listener.
-   * 
+   *
    * @param lis
+   *          The listener to be removed.
    */
   public void removeListener(MapillaryRecordListener lis) {
     this.listeners.remove(lis);
@@ -61,28 +63,30 @@ public class MapillaryRecord {
 
   /**
    * Adds a new command to the list.
-   * 
+   *
    * @param command
+   *          The command to be added.
    */
   public void addCommand(MapillaryCommand command) {
     // Checks if it is a continuation of last command
-    if (position != -1) {
+    if (this.position != -1) {
       boolean equalSets = true;
-      for (MapillaryAbstractImage img : commandList.get(position).images)
+      for (MapillaryAbstractImage img : this.commandList.get(this.position).images)
         if (!command.images.contains(img))
           equalSets = false;
       if (equalSets
-          && commandList.get(position).getClass() == command.getClass()) {
-        commandList.get(position).sum(command);
+          && this.commandList.get(this.position).getClass() == command
+              .getClass()) {
+        this.commandList.get(this.position).sum(command);
         fireRecordChanged();
         return;
       }
     }
     // Adds the command to the last position of the list.
-    commandList.add(position + 1, command);
-    position++;
-    while (commandList.size() > position + 1) {
-      commandList.remove(position + 1);
+    this.commandList.add(this.position + 1, command);
+    this.position++;
+    while (this.commandList.size() > this.position + 1) {
+      this.commandList.remove(this.position + 1);
     }
     fireRecordChanged();
   }
@@ -91,10 +95,10 @@ public class MapillaryRecord {
    * Undo latest command.
    */
   public void undo() {
-    if (position == -1)
+    if (this.position == -1)
       return;
-    commandList.get(position).undo();
-    position--;
+    this.commandList.get(this.position).undo();
+    this.position--;
     fireRecordChanged();
   }
 
@@ -102,15 +106,15 @@ public class MapillaryRecord {
    * Redo latest undoed action.
    */
   public void redo() {
-    if (position + 1 >= commandList.size())
+    if (this.position + 1 >= this.commandList.size())
       return;
-    position++;
-    commandList.get(position).redo();
+    this.position++;
+    this.commandList.get(this.position).redo();
     fireRecordChanged();
   }
 
   private void fireRecordChanged() {
-    for (MapillaryRecordListener lis : listeners)
+    for (MapillaryRecordListener lis : this.listeners)
       if (lis != null)
         lis.recordChanged();
   }

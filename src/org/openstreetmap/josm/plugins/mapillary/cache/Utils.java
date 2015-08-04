@@ -40,7 +40,7 @@ public class Utils {
    * Downloads the picture of the given image. Does nothing when it is already
    * in cache.
    *
-   * @param img
+   * @param img The image to be downloaded.
    * @param pic
    *          The picture type to be downloaded (full quality, thumbnail or
    *          both.)

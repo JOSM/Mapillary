@@ -12,7 +12,7 @@ public interface WalkListener {
   /**
    * Called when a new walk thread is started.
    *
-   * @param thread
+   * @param thread The thread executing the walk.
    */
   public void walkStarted(WalkThread thread);
 }

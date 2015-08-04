@@ -76,8 +76,8 @@ public class MapillaryImageDisplay extends JComponent {
         image = MapillaryImageDisplay.this.image;
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      mouseIsDragging = false;
-      selectedRect = null;
+      this.mouseIsDragging = false;
+      MapillaryImageDisplay.this.selectedRect = null;
       if (image == null)
         return;
       // Calculate the mouse cursor position in image coordinates, so that
@@ -86,9 +86,9 @@ public class MapillaryImageDisplay extends JComponent {
       // To avoid issues when the user tries to zoom in on the image
       // borders, this point is not calculated
       // again if there was less than 1.5seconds since the last event.
-      if (e.getWhen() - lastTimeForMousePoint > 1500 || mousePointInImg == null) {
-        lastTimeForMousePoint = e.getWhen();
-        mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+      if (e.getWhen() - this.lastTimeForMousePoint > 1500 || this.mousePointInImg == null) {
+        this.lastTimeForMousePoint = e.getWhen();
+        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
       }
       // Applicate the zoom to the visible rectangle in image coordinates
       if (e.getWheelRotation() > 0) {
@@ -118,9 +118,9 @@ public class MapillaryImageDisplay extends JComponent {
       // Set the position of the visible rectangle, so that the mouse
       // cursor doesn't move on the image.
       Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-      visibleRect.x = mousePointInImg.x
+      visibleRect.x = this.mousePointInImg.x
           + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
-      visibleRect.y = mousePointInImg.y
+      visibleRect.y = this.mousePointInImg.y
           + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
       // The position is also limited by the image size
       checkVisibleRectPos(image, visibleRect);
@@ -177,9 +177,9 @@ public class MapillaryImageDisplay extends JComponent {
      */
     @Override
     public void mousePressed(MouseEvent e) {
-      if (image == null) {
-        mouseIsDragging = false;
-        selectedRect = null;
+      if (MapillaryImageDisplay.this.image == null) {
+        this.mouseIsDragging = false;
+        MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
       Image image;
@@ -191,24 +191,24 @@ public class MapillaryImageDisplay extends JComponent {
       if (image == null)
         return;
       if (e.getButton() == DRAG_BUTTON) {
-        mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        mouseIsDragging = true;
-        selectedRect = null;
+        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        this.mouseIsDragging = true;
+        MapillaryImageDisplay.this.selectedRect = null;
       } else if (e.getButton() == ZOOM_BUTTON) {
-        mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        checkPointInVisibleRect(mousePointInImg, visibleRect);
-        mouseIsDragging = false;
-        selectedRect = new Rectangle(mousePointInImg.x, mousePointInImg.y, 0, 0);
+        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        checkPointInVisibleRect(this.mousePointInImg, visibleRect);
+        this.mouseIsDragging = false;
+        MapillaryImageDisplay.this.selectedRect = new Rectangle(this.mousePointInImg.x, this.mousePointInImg.y, 0, 0);
         MapillaryImageDisplay.this.repaint();
       } else {
-        mouseIsDragging = false;
-        selectedRect = null;
+        this.mouseIsDragging = false;
+        MapillaryImageDisplay.this.selectedRect = null;
       }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (!mouseIsDragging && selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
       Image image;
       Rectangle visibleRect;
@@ -217,28 +217,28 @@ public class MapillaryImageDisplay extends JComponent {
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image == null) {
-        mouseIsDragging = false;
-        selectedRect = null;
+        this.mouseIsDragging = false;
+        MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
-      if (mouseIsDragging) {
+      if (this.mouseIsDragging) {
         Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        visibleRect.x += mousePointInImg.x - p.x;
-        visibleRect.y += mousePointInImg.y - p.y;
+        visibleRect.x += this.mousePointInImg.x - p.x;
+        visibleRect.y += this.mousePointInImg.y - p.y;
         checkVisibleRectPos(image, visibleRect);
         synchronized (MapillaryImageDisplay.this) {
           MapillaryImageDisplay.this.visibleRect = visibleRect;
         }
         MapillaryImageDisplay.this.repaint();
-      } else if (selectedRect != null) {
+      } else if (MapillaryImageDisplay.this.selectedRect != null) {
         Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
         checkPointInVisibleRect(p, visibleRect);
-        Rectangle rect = new Rectangle(p.x < mousePointInImg.x ? p.x
-            : mousePointInImg.x, p.y < mousePointInImg.y ? p.y
-            : mousePointInImg.y, p.x < mousePointInImg.x ? mousePointInImg.x
-            - p.x : p.x - mousePointInImg.x,
-            p.y < mousePointInImg.y ? mousePointInImg.y - p.y : p.y
-                - mousePointInImg.y);
+        Rectangle rect = new Rectangle(p.x < this.mousePointInImg.x ? p.x
+            : this.mousePointInImg.x, p.y < this.mousePointInImg.y ? p.y
+            : this.mousePointInImg.y, p.x < this.mousePointInImg.x ? this.mousePointInImg.x
+            - p.x : p.x - this.mousePointInImg.x,
+            p.y < this.mousePointInImg.y ? this.mousePointInImg.y - p.y : p.y
+                - this.mousePointInImg.y);
         checkVisibleRectSize(image, rect);
         checkVisibleRectPos(image, rect);
         MapillaryImageDisplay.this.selectedRect = rect;
@@ -248,51 +248,51 @@ public class MapillaryImageDisplay extends JComponent {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (!mouseIsDragging && selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
       Image image;
       synchronized (MapillaryImageDisplay.this) {
         image = MapillaryImageDisplay.this.image;
       }
       if (image == null) {
-        mouseIsDragging = false;
-        selectedRect = null;
+        this.mouseIsDragging = false;
+        MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
-      if (mouseIsDragging) {
-        mouseIsDragging = false;
-      } else if (selectedRect != null) {
-        int oldWidth = selectedRect.width;
-        int oldHeight = selectedRect.height;
+      if (this.mouseIsDragging) {
+        this.mouseIsDragging = false;
+      } else if (MapillaryImageDisplay.this.selectedRect != null) {
+        int oldWidth = MapillaryImageDisplay.this.selectedRect.width;
+        int oldHeight = MapillaryImageDisplay.this.selectedRect.height;
         // Check that the zoom doesn't exceed 2:1
-        if (selectedRect.width < getSize().width / 2) {
-          selectedRect.width = getSize().width / 2;
+        if (MapillaryImageDisplay.this.selectedRect.width < getSize().width / 2) {
+          MapillaryImageDisplay.this.selectedRect.width = getSize().width / 2;
         }
-        if (selectedRect.height < getSize().height / 2) {
-          selectedRect.height = getSize().height / 2;
+        if (MapillaryImageDisplay.this.selectedRect.height < getSize().height / 2) {
+          MapillaryImageDisplay.this.selectedRect.height = getSize().height / 2;
         }
         // Set the same ratio for the visible rectangle and the display
         // area
-        int hFact = selectedRect.height * getSize().width;
-        int wFact = selectedRect.width * getSize().height;
+        int hFact = MapillaryImageDisplay.this.selectedRect.height * getSize().width;
+        int wFact = MapillaryImageDisplay.this.selectedRect.width * getSize().height;
         if (hFact > wFact) {
-          selectedRect.width = hFact / getSize().height;
+          MapillaryImageDisplay.this.selectedRect.width = hFact / getSize().height;
         } else {
-          selectedRect.height = wFact / getSize().width;
+          MapillaryImageDisplay.this.selectedRect.height = wFact / getSize().width;
         }
         // Keep the center of the selection
-        if (selectedRect.width != oldWidth) {
-          selectedRect.x -= (selectedRect.width - oldWidth) / 2;
+        if (MapillaryImageDisplay.this.selectedRect.width != oldWidth) {
+          MapillaryImageDisplay.this.selectedRect.x -= (MapillaryImageDisplay.this.selectedRect.width - oldWidth) / 2;
         }
-        if (selectedRect.height != oldHeight) {
-          selectedRect.y -= (selectedRect.height - oldHeight) / 2;
+        if (MapillaryImageDisplay.this.selectedRect.height != oldHeight) {
+          MapillaryImageDisplay.this.selectedRect.y -= (MapillaryImageDisplay.this.selectedRect.height - oldHeight) / 2;
         }
-        checkVisibleRectSize(image, selectedRect);
-        checkVisibleRectPos(image, selectedRect);
+        checkVisibleRectSize(image, MapillaryImageDisplay.this.selectedRect);
+        checkVisibleRectPos(image, MapillaryImageDisplay.this.selectedRect);
         synchronized (MapillaryImageDisplay.this) {
-          MapillaryImageDisplay.this.visibleRect = selectedRect;
+          MapillaryImageDisplay.this.visibleRect = MapillaryImageDisplay.this.selectedRect;
         }
-        selectedRect = null;
+        MapillaryImageDisplay.this.selectedRect = null;
         MapillaryImageDisplay.this.repaint();
       }
     }
@@ -336,8 +336,8 @@ public class MapillaryImageDisplay extends JComponent {
     this.setLayout(new BorderLayout());
     JPanel southPanel = new JPanel();
     southPanel.setLayout(new BorderLayout());
-    hyperlink = new HyperlinkLabel();
-    southPanel.add(hyperlink, BorderLayout.EAST);
+    this.hyperlink = new HyperlinkLabel();
+    southPanel.add(this.hyperlink, BorderLayout.EAST);
     southPanel.setOpaque(false);
 
     add(southPanel, BorderLayout.SOUTH);
@@ -346,12 +346,12 @@ public class MapillaryImageDisplay extends JComponent {
   /**
    * Sets a new picture to be displayed.
    *
-   * @param image
+   * @param image The picture to be displayed.
    */
   public void setImage(BufferedImage image) {
     synchronized (this) {
       this.image = image;
-      selectedRect = null;
+      this.selectedRect = null;
       if (image != null)
         this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
             image.getHeight(null));
@@ -393,11 +393,11 @@ public class MapillaryImageDisplay extends JComponent {
       g.drawImage(image, target.x, target.y, target.x + target.width, target.y
           + target.height, visibleRect.x, visibleRect.y, visibleRect.x
           + visibleRect.width, visibleRect.y + visibleRect.height, null);
-      if (selectedRect != null) {
-        Point topLeft = img2compCoord(visibleRect, selectedRect.x,
-            selectedRect.y);
-        Point bottomRight = img2compCoord(visibleRect, selectedRect.x
-            + selectedRect.width, selectedRect.y + selectedRect.height);
+      if (this.selectedRect != null) {
+        Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
+            this.selectedRect.y);
+        Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x
+            + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
         g.setColor(new Color(128, 128, 128, 180));
         g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);
         g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);
@@ -426,7 +426,7 @@ public class MapillaryImageDisplay extends JComponent {
         + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
   }
 
-  private final Point getCenterImgCoord(Rectangle visibleRect) {
+  private final static Point getCenterImgCoord(Rectangle visibleRect) {
     return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y
         + visibleRect.height / 2);
   }
@@ -497,7 +497,7 @@ public class MapillaryImageDisplay extends JComponent {
     repaint();
   }
 
-  private final void checkVisibleRectPos(Image image, Rectangle visibleRect) {
+  private final static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
     if (visibleRect.x < 0) {
       visibleRect.x = 0;
     }
@@ -512,7 +512,7 @@ public class MapillaryImageDisplay extends JComponent {
     }
   }
 
-  private void checkVisibleRectSize(Image image, Rectangle visibleRect) {
+  private static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
     if (visibleRect.width > image.getWidth(null)) {
       visibleRect.width = image.getWidth(null);
     }

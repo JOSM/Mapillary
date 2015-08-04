@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.util.Scanner;
 
 import org.openstreetmap.josm.Main;
@@ -53,21 +52,14 @@ public class OAuthPortListener extends Thread {
       in.close();
       serverSocket.close();
 
+      MapillaryUser.reset();
+
       Main.info("Successful login with Mapillary, the access token is: "
           + accessToken);
       // Saves the access token in preferences.
       Main.pref.put("mapillary.access-token", accessToken);
-      // Sets the logged username in preferences.
-      Main.pref
-          .put(
-              "mapillary.username",
-              OAuthUtils
-                  .getWithHeader(
-                      new URL(
-                          "https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
-                  .getString("username"));
 
-      Main.info("The username is: " + Main.pref.get("mapillary.username"));
+      Main.info("The username is: " + MapillaryUser.getUsername());
 
     } catch (BindException e) {
       return;
@@ -76,7 +68,7 @@ public class OAuthPortListener extends Thread {
     }
   }
 
-  private void writeContent(PrintWriter out) {
+  private static void writeContent(PrintWriter out) {
     String response = "<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>";
     out.println("HTTP/1.1 200 OK");
     out.println("Content-Length: " + response.length());

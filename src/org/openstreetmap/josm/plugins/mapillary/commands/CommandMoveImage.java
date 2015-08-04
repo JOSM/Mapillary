@@ -20,7 +20,7 @@ public class CommandMoveImage extends MapillaryCommand {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param images
    *          Set of images that are going to be moved.
    * @param x
@@ -37,8 +37,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public void undo() {
-    for (MapillaryAbstractImage image : images) {
-      image.move(-x, -y);
+    for (MapillaryAbstractImage image : this.images) {
+      image.move(-this.x, -this.y);
       image.stopMoving();
     }
     checkModified();
@@ -47,8 +47,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public void redo() {
-    for (MapillaryAbstractImage image : images) {
-      image.move(x, y);
+    for (MapillaryAbstractImage image : this.images) {
+      image.move(this.x, this.y);
       image.stopMoving();
     }
     checkModified();
@@ -57,8 +57,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public String toString() {
-    return trn("Moved {0} image", "Moved {0} images", images.size(),
-        images.size());
+    return trn("Moved {0} image", "Moved {0} images", this.images.size(),
+        this.images.size());
   }
 
   @Override

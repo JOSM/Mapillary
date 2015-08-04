@@ -7,20 +7,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.TimeZone;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.util.TestUtil;
 
 /**
  *
  */
-public class MapillaryAbstractImageTest {
-
-  @Before
-  public void init() {
-    TestUtil.initPlugin();
-  }
+public class MapillaryAbstractImageTest extends AbstractTest{
 
   /**
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.

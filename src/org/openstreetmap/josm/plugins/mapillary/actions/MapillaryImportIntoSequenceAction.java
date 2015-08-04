@@ -49,9 +49,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportIntoSequenceAction() {
-    super(tr("Import pictures into sequence"), MapillaryPlugin.getProvider("icon24.png"),
-        tr("Import local pictures"), Shortcut.registerShortcut(
-            "Import Mapillary Sequence",
+    super(tr("Import pictures into sequence"), MapillaryPlugin
+        .getProvider("icon24.png"), tr("Import local pictures"), Shortcut
+        .registerShortcut("Import Mapillary Sequence",
             tr("Import pictures into Mapillary layer in a sequence"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
         "mapillaryImportSequence", false);
@@ -60,22 +60,22 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    images = new LinkedList<>();
+    this.images = new LinkedList<>();
 
-    chooser = new JFileChooser();
+    this.chooser = new JFileChooser();
     File startDirectory = new File(Main.pref.get("mapillary.start-directory",
         System.getProperty("user.home")));
-    chooser.setCurrentDirectory(startDirectory);
-    chooser.setDialogTitle(tr("Select pictures"));
-    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-    chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg",
-        "jpeg"));
-    chooser.setMultiSelectionEnabled(true);
+    this.chooser.setCurrentDirectory(startDirectory);
+    this.chooser.setDialogTitle(tr("Select pictures"));
+    this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    this.chooser.setAcceptAllFileFilterUsed(false);
+    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter("images",
+        "jpg", "jpeg"));
+    this.chooser.setMultiSelectionEnabled(true);
 
-    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
-      for (int i = 0; i < chooser.getSelectedFiles().length; i++) {
-        File file = chooser.getSelectedFiles()[i];
+    if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
+      for (int i = 0; i < this.chooser.getSelectedFiles().length; i++) {
+        File file = this.chooser.getSelectedFiles()[i];
         if (file == null)
           break;
         Main.pref.put("mapillary.start-directory", file.getParent());
@@ -116,12 +116,15 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
   }
 
   /**
-   * Reads a jpg pictures that contains the needed GPS information (position and
+   * Reads a JPG pictures that contains the needed GPS information (position and
    * direction) and creates a new icon in that position.
    *
    * @param file
+   *          The file where the image is located.
    * @throws ImageReadException
+   *           If the file doesn't contain an image.
    * @throws IOException
+   *           If the file doesn't contain valid metadata.
    */
   public void readJPG(File file) throws ImageReadException, IOException {
     final ImageMetadata metadata = Imaging.getMetadata(file);
@@ -161,7 +164,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       MapillaryData.getInstance().add(image);
       image.getCapturedAt();
 
-      images.add(image);
+      this.images.add(image);
     }
   }
 
@@ -169,9 +172,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Joins all the images in a unique {@link MapillarySequence}.
    */
   public void joinImages() {
-    Collections.sort(images, new MapillaryEpochComparator());
+    Collections.sort(this.images, new MapillaryEpochComparator());
     MapillarySequence seq = new MapillarySequence();
-    for (MapillaryImportedImage img : images) {
+    for (MapillaryImportedImage img : this.images) {
       seq.add(img);
       img.setSequence(seq);
     }

@@ -4,6 +4,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -49,8 +50,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
       new DefaultMutableTreeNode());
   private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(
       new DefaultMutableTreeNode());
-  private final JTree undoTree = new JTree(undoTreeModel);
-  private final JTree redoTree = new JTree(redoTreeModel);
+  private final JTree undoTree = new JTree(this.undoTreeModel);
+  private final JTree redoTree = new JTree(this.redoTreeModel);
 
   private JSeparator separator = new JSeparator();
   private Component spacer = Box.createRigidArea(new Dimension(0, 3));
@@ -66,31 +67,31 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     MapillaryRecord.getInstance().addListener(this);
 
-    undoTree.expandRow(0);
-    undoTree.setShowsRootHandles(true);
-    undoTree.setRootVisible(false);
-    undoTree.setCellRenderer(new MapillaryCellRenderer());
-    redoTree.expandRow(0);
-    redoTree.setCellRenderer(new MapillaryCellRenderer());
-    redoTree.setShowsRootHandles(true);
-    redoTree.setRootVisible(false);
+    this.undoTree.expandRow(0);
+    this.undoTree.setShowsRootHandles(true);
+    this.undoTree.setRootVisible(false);
+    this.undoTree.setCellRenderer(new MapillaryCellRenderer());
+    this.redoTree.expandRow(0);
+    this.redoTree.setCellRenderer(new MapillaryCellRenderer());
+    this.redoTree.setShowsRootHandles(true);
+    this.redoTree.setRootVisible(false);
 
     JPanel treesPanel = new JPanel(new GridBagLayout());
-    treesPanel.add(spacer, GBC.eol());
-    spacer.setVisible(false);
-    treesPanel.add(undoTree, GBC.eol().fill(GBC.HORIZONTAL));
-    separator.setVisible(false);
-    treesPanel.add(separator, GBC.eol().fill(GBC.HORIZONTAL));
-    treesPanel.add(redoTree, GBC.eol().fill(GBC.HORIZONTAL));
+    treesPanel.add(this.spacer, GBC.eol());
+    this.spacer.setVisible(false);
+    treesPanel.add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    this.separator.setVisible(false);
+    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),
         GBC.std().weight(0, 1));
-    treesPanel.setBackground(redoTree.getBackground());
+    treesPanel.setBackground(this.redoTree.getBackground());
 
-    undoButton = new SideButton(new UndoAction());
-    redoButton = new SideButton(new RedoAction());
+    this.undoButton = new SideButton(new UndoAction());
+    this.redoButton = new SideButton(new RedoAction());
 
     createLayout(treesPanel, true,
-        Arrays.asList(new SideButton[] { undoButton, redoButton }));
+        Arrays.asList(new SideButton[] { this.undoButton, this.redoButton }));
   }
 
   /**
@@ -105,21 +106,21 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   }
 
   private void buildTree() {
-    redoButton.setEnabled(true);
-    undoButton.setEnabled(true);
+    this.redoButton.setEnabled(true);
+    this.undoButton.setEnabled(true);
     ArrayList<MapillaryCommand> commands = MapillaryRecord.getInstance().commandList;
     int position = MapillaryRecord.getInstance().position;
     ArrayList<MapillaryCommand> undoCommands = new ArrayList<>();
     if (position >= 0)
       undoCommands = new ArrayList<>(commands.subList(0, position + 1));
     else
-      undoButton.setEnabled(false);
+      this.undoButton.setEnabled(false);
     ArrayList<MapillaryCommand> redoCommands = new ArrayList<>();
     if (commands.size() > 0 && position + 1 < commands.size())
       redoCommands = new ArrayList<>(commands.subList(position + 1,
           commands.size()));
     else
-      redoButton.setEnabled(false);
+      this.redoButton.setEnabled(false);
 
     DefaultMutableTreeNode redoRoot = new DefaultMutableTreeNode();
     DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();
@@ -133,11 +134,11 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
         redoRoot.add(new DefaultMutableTreeNode(command.toString()));
     }
 
-    separator.setVisible(!undoCommands.isEmpty() || !redoCommands.isEmpty());
-    spacer.setVisible(undoCommands.isEmpty() && !redoCommands.isEmpty());
+    this.separator.setVisible(!undoCommands.isEmpty() || !redoCommands.isEmpty());
+    this.spacer.setVisible(undoCommands.isEmpty() && !redoCommands.isEmpty());
 
-    undoTreeModel.setRoot(undoRoot);
-    redoTreeModel.setRoot(redoRoot);
+    this.undoTreeModel.setRoot(undoRoot);
+    this.redoTreeModel.setRoot(redoRoot);
   }
 
   @Override

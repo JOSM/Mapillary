@@ -37,10 +37,10 @@ public class MapillaryWalkAction extends JosmAction implements
    *
    */
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), MapillaryPlugin.getProvider("icon24.png"), tr("Walk mode"),
-        Shortcut.registerShortcut("Mapillary walk", tr("Start walk mode"),
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryWalk",
-        false);
+    super(tr("Walk mode"), MapillaryPlugin.getProvider("icon24.png"),
+        tr("Walk mode"), Shortcut.registerShortcut("Mapillary walk",
+            tr("Start walk mode"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        false, "mapillaryWalk", false);
     this.setEnabled(false);
   }
 
@@ -54,11 +54,11 @@ public class MapillaryWalkAction extends JosmAction implements
     dlg.setVisible(true);
     if (pane.getValue() != null
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
-      thread = new WalkThread((int) dialog.spin.getValue(),
+      this.thread = new WalkThread((int) dialog.spin.getValue(),
           dialog.waitForPicture.isSelected(),
           dialog.followSelection.isSelected(), dialog.goForward.isSelected());
       fireWalkStarted();
-      thread.start();
+      this.thread.start();
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.WALK);
     }
   }
@@ -72,25 +72,27 @@ public class MapillaryWalkAction extends JosmAction implements
    * Adds a listener.
    *
    * @param lis
+   *          The listener to be added.
    */
   public void addListener(WalkListener lis) {
-    listeners.add(lis);
+    this.listeners.add(lis);
   }
 
   /**
    * Removes a listener.
    *
    * @param lis
+   *          The listener to be added.
    */
   public void removeListener(WalkListener lis) {
-    listeners.remove(lis);
+    this.listeners.remove(lis);
   }
 
   private void fireWalkStarted() {
-    if (listeners.isEmpty())
+    if (this.listeners.isEmpty())
       return;
-    for (WalkListener lis : listeners)
-      lis.walkStarted(thread);
+    for (WalkListener lis : this.listeners)
+      lis.walkStarted(this.thread);
   }
 
   @Override

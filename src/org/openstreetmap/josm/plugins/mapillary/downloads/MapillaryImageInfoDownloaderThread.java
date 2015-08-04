@@ -30,11 +30,13 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param ex
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
+   *          A String containing the parameters for the download.
    * @param layer
+   *          The layer to store the data.
    */
   public MapillaryImageInfoDownloaderThread(ExecutorService ex,
       String queryString, MapillaryLayer layer) {
@@ -47,16 +49,16 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
   public void run() {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(new URL(URL
-          + queryString).openStream(), "UTF-8"));
+          + this.queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))
-        ex.shutdown();
+        this.ex.shutdown();
       JsonArray jsonarr = jsonobj.getJsonArray("ims");
       JsonObject data;
       for (int i = 0; i < jsonarr.size(); i++) {
         data = jsonarr.getJsonObject(i);
         String key = data.getString("key");
-        for (MapillaryAbstractImage image : layer.getMapillaryData()
+        for (MapillaryAbstractImage image : this.layer.getMapillaryData()
             .getImages()) {
           if (image instanceof MapillaryImage) {
             if (((MapillaryImage) image).getKey().equals(key)

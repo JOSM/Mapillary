@@ -87,7 +87,7 @@ public abstract class MapillaryAbstractImage {
    * @return The LatLon object with the position of the object.
    */
   public LatLon getLatLon() {
-    return movingLatLon;
+    return this.movingLatLon;
   }
 
   /**
@@ -96,7 +96,7 @@ public abstract class MapillaryAbstractImage {
    * @return True if the image is visible; false otherwise.
    */
   public boolean isVisible() {
-    return visible;
+    return this.visible;
   }
 
   /**
@@ -115,7 +115,7 @@ public abstract class MapillaryAbstractImage {
    * @return A LatLon object containing.
    */
   public LatLon getTempLatLon() {
-    return tempLatLon;
+    return this.tempLatLon;
   }
 
   /**
@@ -158,7 +158,7 @@ public abstract class MapillaryAbstractImage {
    * @return The direction of the image (0 means north and goes clockwise).
    */
   public double getCa() {
-    return movingCa;
+    return this.movingCa;
   }
 
   /**
@@ -167,7 +167,7 @@ public abstract class MapillaryAbstractImage {
    * @return The last fixed direction of the object. 0 means north.
    */
   public double getTempCa() {
-    return tempCa;
+    return this.tempCa;
   }
 
   /**
@@ -194,6 +194,7 @@ public abstract class MapillaryAbstractImage {
    * Sets the Epoch time when the picture was captured.
    *
    * @param capturedAt
+   *          Epoch time when the image was captured.
    */
   public void setCapturedAt(long capturedAt) {
     this.capturedAt = capturedAt;
@@ -205,13 +206,13 @@ public abstract class MapillaryAbstractImage {
    * @return The long containing the Epoch time when the image was captured.
    */
   public long getCapturedAt() {
-    return capturedAt;
+    return this.capturedAt;
   }
 
   /**
    * Returns the date the picture was taken in the given format.
    *
-   * @param format
+   * @param format Format of the date. See {@link SimpleDateFormat}.
    * @return A String containing the date the picture was taken using the given
    *         format.
    */
@@ -232,7 +233,7 @@ public abstract class MapillaryAbstractImage {
    *          The format of the date.
    * @return The date in Epoch format.
    */
-  public long getEpoch(String date, String format) {
+  public static long getEpoch(String date, String format) {
 
     SimpleDateFormat formatter = new SimpleDateFormat(format);
     try {
@@ -249,7 +250,7 @@ public abstract class MapillaryAbstractImage {
    *
    * @return The current date in Epoch format.
    */
-  private long currentTime() {
+  private static long currentTime() {
     Calendar cal = Calendar.getInstance();
     return cal.getTimeInMillis();
   }
@@ -270,6 +271,11 @@ public abstract class MapillaryAbstractImage {
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
+    if (this.sequence == null) {
+      this.sequence = new MapillarySequence();
+      this.sequence.add(this);
+    }
+
     return this.sequence;
   }
 

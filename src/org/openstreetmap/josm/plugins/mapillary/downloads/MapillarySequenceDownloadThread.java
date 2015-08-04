@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -43,7 +44,9 @@ public class MapillarySequenceDownloadThread extends Thread {
    * Main constructor.
    *
    * @param ex
+   *          {@link ExecutorService} executing this thread.
    * @param queryString
+   *          String containing the parameters for the download.
    */
   public MapillarySequenceDownloadThread(ExecutorService ex, String queryString) {
     this.queryString = queryString;
@@ -56,11 +59,11 @@ public class MapillarySequenceDownloadThread extends Thread {
     try {
       BufferedReader br;
       br = new BufferedReader(new InputStreamReader(
-          new URL(URL + queryString).openStream(), "UTF-8"));
+          new URL(URL + this.queryString).openStream(), "UTF-8"));
       JsonObject jsonall = Json.createReader(br).readObject();
 
-      if (!jsonall.getBoolean("more") && !ex.isShutdown())
-        ex.shutdown();
+      if (!jsonall.getBoolean("more") && !this.ex.isShutdown())
+        this.ex.shutdown();
       JsonArray jsonseq = jsonall.getJsonArray("ss");
       boolean isSequenceWrong = false;
       for (int i = 0; i < jsonseq.size(); i++) {
@@ -76,7 +79,7 @@ public class MapillarySequenceDownloadThread extends Thread {
                 .getJsonArray(j).getJsonNumber(0).doubleValue(), cas
                 .getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
-            Main.warn("Mapillary bug at " + URL + queryString);
+            Main.warn("Mapillary bug at " + URL + this.queryString);
             isSequenceWrong = true;
           }
         }
@@ -94,17 +97,17 @@ public class MapillarySequenceDownloadThread extends Thread {
         }
 
         LOCK.lock();
-        MapillaryImage.LOCK.lock();
+        MapillaryAbstractImage.LOCK.lock();
         try {
           for (MapillaryImage img : finalImages) {
-            if (layer.getMapillaryData().getImages().contains(img)) {
+            if (this.layer.getMapillaryData().getImages().contains(img)) {
               // The image in finalImages is substituted by the one in the
               // database, as they represent the same picture.
-              img = (MapillaryImage) layer.getMapillaryData().getImages()
-                  .get(layer.getMapillaryData().getImages().indexOf(img));
+              img = (MapillaryImage) this.layer.getMapillaryData().getImages()
+                  .get(this.layer.getMapillaryData().getImages().indexOf(img));
               sequence.add(img);
-              ((MapillaryImage) layer.getMapillaryData().getImages()
-                  .get(layer.getMapillaryData().getImages().indexOf(img)))
+              ((MapillaryImage) this.layer.getMapillaryData().getImages()
+                  .get(this.layer.getMapillaryData().getImages().indexOf(img)))
                   .setSequence(sequence);
               finalImages.set(finalImages.indexOf(img), img);
             } else {
@@ -113,23 +116,23 @@ public class MapillarySequenceDownloadThread extends Thread {
             }
           }
         } finally {
-          MapillaryImage.LOCK.unlock();
+          MapillaryAbstractImage.LOCK.unlock();
           LOCK.unlock();
         }
 
-        layer.getMapillaryData().add(
+        this.layer.getMapillaryData().add(
             new ArrayList<MapillaryAbstractImage>(finalImages), false);
       }
     } catch (IOException e) {
-      Main.error("Error reading the url " + URL + queryString
+      Main.error("Error reading the url " + URL + this.queryString
           + " might be a Mapillary problem.");
     }
-    layer.getMapillaryData().dataUpdated();
+    MapillaryData.dataUpdated();
   }
 
   private boolean isInside(MapillaryAbstractImage image) {
-    for (int i = 0; i < layer.bounds.size(); i++)
-      if (layer.bounds.get(i).contains(image.getLatLon()))
+    for (int i = 0; i < this.layer.bounds.size(); i++)
+      if (this.layer.bounds.get(i).contains(image.getLatLon()))
         return true;
     return false;
   }

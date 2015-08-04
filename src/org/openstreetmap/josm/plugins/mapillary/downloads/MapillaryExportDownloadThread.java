@@ -19,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 /**
  * This is the thread that downloads one of the images that are going to be
  * exported and writes them in a {@link ArrayBlockingQueue}.
- * 
+ *
  * @author nokutu
  * @see MapillaryExportManager
  * @see MapillaryExportWriterThread
@@ -36,7 +36,7 @@ public class MapillaryExportDownloadThread extends Thread implements
 
   /**
    * Main constructor.
-   * 
+   *
    * @param image
    *          Image to be downloaded.
    * @param queue
@@ -49,7 +49,7 @@ public class MapillaryExportDownloadThread extends Thread implements
   public MapillaryExportDownloadThread(MapillaryImage image,
       ArrayBlockingQueue<BufferedImage> queue,
       ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
-    url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
+    this.url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
         + "/thumb-2048.jpg";
     this.queue = queue;
     this.image = image;
@@ -58,7 +58,7 @@ public class MapillaryExportDownloadThread extends Thread implements
 
   @Override
   public void run() {
-    new MapillaryCache(image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
+    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
         this, false);
   }
 
@@ -66,8 +66,8 @@ public class MapillaryExportDownloadThread extends Thread implements
   public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
       LoadResult result) {
     try {
-      queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
-      queueImages.put(image);
+      this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+      this.queueImages.put(this.image);
     } catch (InterruptedException e) {
       Main.error(e);
     } catch (IOException e) {

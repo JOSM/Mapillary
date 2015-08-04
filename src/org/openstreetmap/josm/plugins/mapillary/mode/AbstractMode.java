@@ -39,7 +39,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     double snapDistance = 10;
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
-    for (MapillaryAbstractImage image : data.getImages()) {
+    for (MapillaryAbstractImage image : this.data.getImages()) {
       Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
@@ -53,10 +53,9 @@ public abstract class AbstractMode extends MouseAdapter implements
   }
 
   /**
-   * Paints whatever the mode needs.
-   *
+   * Paint the dataset using the engine set.
    * @param g
-   * @param mv
+   * @param mv The object that can translate GeoPoints to screen coordinates.
    * @param box
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
@@ -88,12 +87,12 @@ public abstract class AbstractMode extends MouseAdapter implements
     @Override
     public void run() {
       while (true) {
-        if (moved
-            && Calendar.getInstance().getTimeInMillis() - lastDownload >= DOWNLOAD_COOLDOWN) {
-          lastDownload = Calendar.getInstance().getTimeInMillis();
+        if (this.moved
+            && Calendar.getInstance().getTimeInMillis() - this.lastDownload >= DOWNLOAD_COOLDOWN) {
+          this.lastDownload = Calendar.getInstance().getTimeInMillis();
           MapillaryDownloader.completeView();
-          moved = false;
-          MapillaryData.getInstance().dataUpdated();
+          this.moved = false;
+          MapillaryData.dataUpdated();
         }
         synchronized (this) {
           try {
@@ -105,7 +104,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     }
 
     public void moved() {
-      moved = true;
+      this.moved = true;
     }
   }
 }

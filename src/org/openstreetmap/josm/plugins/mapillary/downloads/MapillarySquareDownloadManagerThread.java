@@ -11,6 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -35,7 +36,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
    * Main constructor.
    *
    * @param queryStringParts
+   *          The query data.
    * @param layer
+   *          The layer to store the images.
    *
    */
   public MapillarySquareDownloadManagerThread(
@@ -45,13 +48,13 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     this.signQueryString = buildQueryString(queryStringParts);
 
     // TODO: Move this line to the appropriate place, here's no GET-request
-    Main.info("GET " + sequenceQueryString + " (Mapillary plugin)");
+    Main.info("GET " + this.sequenceQueryString + " (Mapillary plugin)");
 
     this.layer = layer;
   }
 
   // TODO: Maybe move into a separate utility class?
-  private String buildQueryString(ConcurrentHashMap<String, Double> hash) {
+  private static String buildQueryString(ConcurrentHashMap<String, Double> hash) {
     StringBuilder ret = new StringBuilder("?client_id="
         + MapillaryDownloader.CLIENT_ID);
     for (String key : hash.keySet())
@@ -80,8 +83,8 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     } catch (InterruptedException e) {
       Main.error("Mapillary download interrupted (probably because of closing the layer).");
     }
-    layer.updateHelpText();
-    layer.getMapillaryData().dataUpdated();
+    this.layer.updateHelpText();
+    MapillaryData.dataUpdated();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();
   }
@@ -91,14 +94,14 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillarySequenceDownloadThread(ex, sequenceQueryString
-          + "&page=" + page + "&limit=10"));
+      ex.execute(new MapillarySequenceDownloadThread(ex,
+          this.sequenceQueryString + "&page=" + page + "&limit=10"));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
     }
     ex.awaitTermination(15, TimeUnit.SECONDS);
-    layer.getMapillaryData().dataUpdated();
+    MapillaryData.dataUpdated();
   }
 
   private void completeImages() throws InterruptedException {
@@ -106,8 +109,8 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillaryImageInfoDownloaderThread(ex, imageQueryString
-          + "&page=" + page + "&limit=20", layer));
+      ex.execute(new MapillaryImageInfoDownloaderThread(ex,
+          this.imageQueryString + "&page=" + page + "&limit=20", this.layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
@@ -120,8 +123,8 @@ public class MapillarySquareDownloadManagerThread extends Thread {
         new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
     while (!ex.isShutdown()) {
-      ex.execute(new MapillaryTrafficSignDownloaderThread(ex, signQueryString
-          + "&page=" + page + "&limit=20", layer));
+      ex.execute(new MapillaryTrafficSignDownloaderThread(ex,
+          this.signQueryString + "&page=" + page + "&limit=20", this.layer));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;

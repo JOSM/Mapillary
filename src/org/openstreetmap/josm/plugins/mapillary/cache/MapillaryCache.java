@@ -38,7 +38,10 @@ public class MapillaryCache extends
    * Main constructor.
    *
    * @param key
+   *          The key of the image.
    * @param type
+   *          The type of image that must be downloaded (THUMNAIL or
+   *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
     super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap<String, String>());
@@ -46,12 +49,12 @@ public class MapillaryCache extends
     try {
       switch (type) {
         case FULL_IMAGE:
-          url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+          this.url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
               + "/thumb-2048.jpg");
           this.key += ".FULL_IMAGE";
           break;
         case THUMBNAIL:
-          url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
+          this.url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
               + "/thumb-320.jpg");
           this.key += ".THUMBNAIL";
           break;
@@ -63,12 +66,12 @@ public class MapillaryCache extends
 
   @Override
   public String getCacheKey() {
-    return key;
+    return this.key;
   }
 
   @Override
   public URL getUrl() {
-    return url;
+    return this.url;
   }
 
   @Override
@@ -78,14 +81,9 @@ public class MapillaryCache extends
 
   @Override
   protected boolean isObjectLoadable() {
-    if (cacheData == null)
+    if (this.cacheData == null)
       return false;
-    byte[] content = cacheData.getContent();
+    byte[] content = this.cacheData.getContent();
     return content != null && content.length > 0;
-  }
-
-  // @Override
-  protected boolean handleNotFound() {
-    return false;
   }
 }
