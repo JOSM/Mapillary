@@ -30,49 +30,51 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param ex
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
+   *          A String containing the parameters for the download.
    * @param layer
+   *          The layer to store the data.
    */
   public MapillaryImageInfoDownloaderThread(ExecutorService ex,
-<span class="nc" id="L40">      String queryString, MapillaryLayer layer) {</span>
-<span class="nc" id="L41">    this.ex = ex;</span>
-<span class="nc" id="L42">    this.queryString = queryString;</span>
-<span class="nc" id="L43">    this.layer = layer;</span>
-<span class="nc" id="L44">  }</span>
+<span class="nc" id="L42">      String queryString, MapillaryLayer layer) {</span>
+<span class="nc" id="L43">    this.ex = ex;</span>
+<span class="nc" id="L44">    this.queryString = queryString;</span>
+<span class="nc" id="L45">    this.layer = layer;</span>
+<span class="nc" id="L46">  }</span>
 
   @Override
   public void run() {
     try {
-<span class="nc" id="L49">      BufferedReader br = new BufferedReader(new InputStreamReader(new URL(URL</span>
-<span class="nc" id="L50">          + queryString).openStream(), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L51">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;))</span>
-<span class="nc" id="L53">        ex.shutdown();</span>
-<span class="nc" id="L54">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
+<span class="nc" id="L51">      BufferedReader br = new BufferedReader(new InputStreamReader(new URL(URL</span>
+<span class="nc" id="L52">          + this.queryString).openStream(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L53">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;))</span>
+<span class="nc" id="L55">        this.ex.shutdown();</span>
+<span class="nc" id="L56">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
       JsonObject data;
-<span class="nc bnc" id="L56" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
-<span class="nc" id="L57">        data = jsonarr.getJsonObject(i);</span>
-<span class="nc" id="L58">        String key = data.getString(&quot;key&quot;);</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (MapillaryAbstractImage image : layer.getMapillaryData()</span>
-<span class="nc" id="L60">            .getImages()) {</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">          if (image instanceof MapillaryImage) {</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (((MapillaryImage) image).getKey().equals(key)</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">                &amp;&amp; ((MapillaryImage) image).getUser() == null) {</span>
-<span class="nc" id="L64">              ((MapillaryImage) image).setUser(data.getString(&quot;user&quot;));</span>
-<span class="nc" id="L65">              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(</span>
-<span class="nc" id="L66">                  &quot;captured_at&quot;).longValue());</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
+<span class="nc" id="L59">        data = jsonarr.getJsonObject(i);</span>
+<span class="nc" id="L60">        String key = data.getString(&quot;key&quot;);</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (MapillaryAbstractImage image : this.layer.getMapillaryData()</span>
+<span class="nc" id="L62">            .getImages()) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">          if (image instanceof MapillaryImage) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            if (((MapillaryImage) image).getKey().equals(key)</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">                &amp;&amp; ((MapillaryImage) image).getUser() == null) {</span>
+<span class="nc" id="L66">              ((MapillaryImage) image).setUser(data.getString(&quot;user&quot;));</span>
+<span class="nc" id="L67">              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(</span>
+<span class="nc" id="L68">                  &quot;captured_at&quot;).longValue());</span>
             }
           }
-<span class="nc" id="L69">        }</span>
+<span class="nc" id="L71">        }</span>
       }
-<span class="nc" id="L71">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L72">      Main.error(e);</span>
-<span class="nc" id="L73">    } catch (IOException e) {</span>
+<span class="nc" id="L73">    } catch (MalformedURLException e) {</span>
 <span class="nc" id="L74">      Main.error(e);</span>
-<span class="nc" id="L75">    }</span>
-<span class="nc" id="L76">  }</span>
+<span class="nc" id="L75">    } catch (IOException e) {</span>
+<span class="nc" id="L76">      Main.error(e);</span>
+<span class="nc" id="L77">    }</span>
+<span class="nc" id="L78">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

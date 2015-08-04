@@ -20,7 +20,7 @@ public class CommandMoveImage extends MapillaryCommand {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param images
    *          Set of images that are going to be moved.
    * @param x
@@ -37,8 +37,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public void undo() {
-<span class="nc bnc" id="L40" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images) {</span>
-<span class="nc" id="L41">      image.move(-x, -y);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc" id="L41">      image.move(-this.x, -this.y);</span>
 <span class="nc" id="L42">      image.stopMoving();</span>
 <span class="nc" id="L43">    }</span>
 <span class="nc" id="L44">    checkModified();</span>
@@ -47,8 +47,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public void redo() {
-<span class="nc bnc" id="L50" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images) {</span>
-<span class="nc" id="L51">      image.move(x, y);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc" id="L51">      image.move(this.x, this.y);</span>
 <span class="nc" id="L52">      image.stopMoving();</span>
 <span class="nc" id="L53">    }</span>
 <span class="nc" id="L54">    checkModified();</span>
@@ -57,8 +57,8 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public String toString() {
-<span class="nc" id="L60">    return trn(&quot;Moved {0} image&quot;, &quot;Moved {0} images&quot;, images.size(),</span>
-<span class="nc" id="L61">        images.size());</span>
+<span class="nc" id="L60">    return trn(&quot;Moved {0} image&quot;, &quot;Moved {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L61">        this.images.size());</span>
   }
 
   @Override

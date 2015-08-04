@@ -35,62 +35,64 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
    * @param ex
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
+   *          A String containing the parameter for the download.
    * @param layer
+   *          The layer to store the data.
    */
   public MapillaryTrafficSignDownloaderThread(ExecutorService ex,
-<span class="nc" id="L41">      String queryString, MapillaryLayer layer) {</span>
-<span class="nc" id="L42">    this.ex = ex;</span>
-<span class="nc" id="L43">    this.queryString = queryString;</span>
-<span class="nc" id="L44">    this.layer = layer;</span>
-<span class="nc" id="L45">  }</span>
+<span class="nc" id="L43">      String queryString, MapillaryLayer layer) {</span>
+<span class="nc" id="L44">    this.ex = ex;</span>
+<span class="nc" id="L45">    this.queryString = queryString;</span>
+<span class="nc" id="L46">    this.layer = layer;</span>
+<span class="nc" id="L47">  }</span>
 
   @Override
   public void run() {
     BufferedReader br;
     try {
-<span class="nc" id="L51">      br = new BufferedReader(new InputStreamReader(</span>
-<span class="nc" id="L52">          new URL(URL + queryString).openStream(), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L53">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;)) {</span>
-<span class="nc" id="L55">        ex.shutdown();</span>
+<span class="nc" id="L53">      br = new BufferedReader(new InputStreamReader(</span>
+<span class="nc" id="L54">          new URL(URL + this.queryString).openStream(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L55">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;)) {</span>
+<span class="nc" id="L57">        this.ex.shutdown();</span>
       }
-<span class="nc" id="L57">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
-<span class="nc" id="L59">        JsonArray rects = jsonarr.getJsonObject(i).getJsonArray(&quot;rects&quot;);</span>
-<span class="nc" id="L60">        JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(</span>
+<span class="nc" id="L59">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
+<span class="nc" id="L61">        JsonArray rects = jsonarr.getJsonObject(i).getJsonArray(&quot;rects&quot;);</span>
+<span class="nc" id="L62">        JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(</span>
             &quot;rectversions&quot;);
-<span class="nc" id="L62">        String key = jsonarr.getJsonObject(i).getString(&quot;key&quot;);</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (rectversions != null) {</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">          for (int j = 0; j &lt; rectversions.size(); j++) {</span>
-<span class="nc" id="L65">            rects = rectversions.getJsonObject(j).getJsonArray(&quot;rects&quot;);</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">            for (int k = 0; k &lt; rects.size(); k++) {</span>
-<span class="nc" id="L67">              JsonObject data = rects.getJsonObject(k);</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">              for (MapillaryAbstractImage image : layer.getMapillaryData()</span>
-<span class="nc" id="L69">                  .getImages())</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">                if (image instanceof MapillaryImage</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">                    &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
-<span class="nc" id="L72">                  ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+<span class="nc" id="L64">        String key = jsonarr.getJsonObject(i).getString(&quot;key&quot;);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (rectversions != null) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">          for (int j = 0; j &lt; rectversions.size(); j++) {</span>
+<span class="nc" id="L67">            rects = rectversions.getJsonObject(j).getJsonArray(&quot;rects&quot;);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            for (int k = 0; k &lt; rects.size(); k++) {</span>
+<span class="nc" id="L69">              JsonObject data = rects.getJsonObject(k);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">              for (MapillaryAbstractImage image : this.layer.getMapillaryData()</span>
+<span class="nc" id="L71">                  .getImages())</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                if (image instanceof MapillaryImage</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                    &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
+<span class="nc" id="L74">                  ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
             }
           }
         }
 
         // Just one sign on the picture
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        else if (rects != null) {</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">          for (int j = 0; j &lt; rects.size(); j++) {</span>
-<span class="nc" id="L80">            JsonObject data = rects.getJsonObject(j);</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">            for (MapillaryAbstractImage image : layer.getMapillaryData()</span>
-<span class="nc" id="L82">                .getImages())</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">              if (image instanceof MapillaryImage</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                  &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
-<span class="nc" id="L85">                ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        else if (rects != null) {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">          for (int j = 0; j &lt; rects.size(); j++) {</span>
+<span class="nc" id="L82">            JsonObject data = rects.getJsonObject(j);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            for (MapillaryAbstractImage image : this.layer.getMapillaryData()</span>
+<span class="nc" id="L84">                .getImages())</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">              if (image instanceof MapillaryImage</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                  &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
+<span class="nc" id="L87">                ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
           }
         }
       }
-<span class="nc" id="L89">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L90">      Main.error(e);</span>
-<span class="nc" id="L91">    } catch (IOException e) {</span>
+<span class="nc" id="L91">    } catch (MalformedURLException e) {</span>
 <span class="nc" id="L92">      Main.error(e);</span>
-<span class="nc" id="L93">    }</span>
-<span class="nc" id="L94">  }</span>
+<span class="nc" id="L93">    } catch (IOException e) {</span>
+<span class="nc" id="L94">      Main.error(e);</span>
+<span class="nc" id="L95">    }</span>
+<span class="nc" id="L96">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

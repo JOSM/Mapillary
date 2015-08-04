@@ -39,7 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 <span class="nc" id="L39">    double snapDistance = 10;</span>
 <span class="nc" id="L40">    double minDistance = Double.MAX_VALUE;</span>
 <span class="nc" id="L41">    MapillaryAbstractImage closest = null;</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    for (MapillaryAbstractImage image : data.getImages()) {</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.data.getImages()) {</span>
 <span class="nc" id="L43">      Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());</span>
 <span class="nc" id="L44">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
 <span class="nc" id="L45">      double dist = clickPoint.distanceSq(imagePoint);</span>
@@ -53,60 +53,59 @@ import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
   }
 
   /**
-   * Paints whatever the mode needs.
-   *
+   * Paint the dataset using the engine set.
    * @param g
-   * @param mv
+   * @param mv The object that can translate GeoPoints to screen coordinates.
    * @param box
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
 
   @Override
   public void zoomChanged() {
-<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC) {</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
-<span class="nc" id="L68">        semiautomaticThread.start();</span>
-<span class="nc" id="L69">      semiautomaticThread.moved();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
+<span class="nc" id="L67">        semiautomaticThread.start();</span>
+<span class="nc" id="L68">      semiautomaticThread.moved();</span>
     }
-<span class="nc" id="L71">  }</span>
+<span class="nc" id="L70">  }</span>
 
   /**
    * Resets the semiautomatic mode thread.
    */
   public static void resetThread() {
-<span class="nc" id="L77">    semiautomaticThread.interrupt();</span>
-<span class="nc" id="L78">    semiautomaticThread = new SemiautomaticThread();</span>
-<span class="nc" id="L79">  }</span>
+<span class="nc" id="L76">    semiautomaticThread.interrupt();</span>
+<span class="nc" id="L77">    semiautomaticThread = new SemiautomaticThread();</span>
+<span class="nc" id="L78">  }</span>
 
-<span class="nc" id="L81">  private static class SemiautomaticThread extends Thread {</span>
+<span class="nc" id="L80">  private static class SemiautomaticThread extends Thread {</span>
 
     /** If in semiautomatic mode, the last Epoch time when there was a download */
     private long lastDownload;
 
-<span class="nc" id="L86">    private boolean moved = false;</span>
+<span class="nc" id="L85">    private boolean moved = false;</span>
 
     @Override
     public void run() {
       while (true) {
-<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (moved</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">            &amp;&amp; Calendar.getInstance().getTimeInMillis() - lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
-<span class="nc" id="L93">          lastDownload = Calendar.getInstance().getTimeInMillis();</span>
-<span class="nc" id="L94">          MapillaryDownloader.completeView();</span>
-<span class="nc" id="L95">          moved = false;</span>
-<span class="nc" id="L96">          MapillaryData.getInstance().dataUpdated();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (this.moved</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">            &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
+<span class="nc" id="L92">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
+<span class="nc" id="L93">          MapillaryDownloader.completeView();</span>
+<span class="nc" id="L94">          this.moved = false;</span>
+<span class="nc" id="L95">          MapillaryData.dataUpdated();</span>
         }
-<span class="nc" id="L98">        synchronized (this) {</span>
+<span class="nc" id="L97">        synchronized (this) {</span>
           try {
-<span class="nc" id="L100">            wait(100);</span>
-<span class="nc" id="L101">          } catch (InterruptedException e) {</span>
-<span class="nc" id="L102">          }</span>
-<span class="nc" id="L103">        }</span>
+<span class="nc" id="L99">            wait(100);</span>
+<span class="nc" id="L100">          } catch (InterruptedException e) {</span>
+<span class="nc" id="L101">          }</span>
+<span class="nc" id="L102">        }</span>
       }
     }
 
     public void moved() {
-<span class="nc" id="L108">      moved = true;</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L107">      this.moved = true;</span>
+<span class="nc" id="L108">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

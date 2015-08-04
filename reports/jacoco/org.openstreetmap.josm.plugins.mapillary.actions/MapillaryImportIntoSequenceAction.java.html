@@ -49,9 +49,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportIntoSequenceAction() {
-<span class="nc" id="L52">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L53">        tr(&quot;Import local pictures&quot;), Shortcut.registerShortcut(</span>
-            &quot;Import Mapillary Sequence&quot;,
+<span class="nc" id="L52">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin</span>
+<span class="nc" id="L53">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Import local pictures&quot;), Shortcut</span>
+<span class="nc" id="L54">        .registerShortcut(&quot;Import Mapillary Sequence&quot;,</span>
 <span class="nc" id="L55">            tr(&quot;Import pictures into Mapillary layer in a sequence&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
         &quot;mapillaryImportSequence&quot;, false);
@@ -60,22 +60,22 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L63">    images = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L63">    this.images = new LinkedList&lt;&gt;();</span>
 
-<span class="nc" id="L65">    chooser = new JFileChooser();</span>
+<span class="nc" id="L65">    this.chooser = new JFileChooser();</span>
 <span class="nc" id="L66">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
 <span class="nc" id="L67">        System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L68">    chooser.setCurrentDirectory(startDirectory);</span>
-<span class="nc" id="L69">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
-<span class="nc" id="L70">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
-<span class="nc" id="L71">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L72">    chooser.addChoosableFileFilter(new FileNameExtensionFilter(&quot;images&quot;, &quot;jpg&quot;,</span>
-        &quot;jpeg&quot;));
-<span class="nc" id="L74">    chooser.setMultiSelectionEnabled(true);</span>
+<span class="nc" id="L68">    this.chooser.setCurrentDirectory(startDirectory);</span>
+<span class="nc" id="L69">    this.chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L70">    this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L71">    this.chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L72">    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter(&quot;images&quot;,</span>
+        &quot;jpg&quot;, &quot;jpeg&quot;));
+<span class="nc" id="L74">    this.chooser.setMultiSelectionEnabled(true);</span>
 
-<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">      for (int i = 0; i &lt; chooser.getSelectedFiles().length; i++) {</span>
-<span class="nc" id="L78">        File file = chooser.getSelectedFiles()[i];</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">      for (int i = 0; i &lt; this.chooser.getSelectedFiles().length; i++) {</span>
+<span class="nc" id="L78">        File file = this.chooser.getSelectedFiles()[i];</span>
 <span class="nc bnc" id="L79" title="All 2 branches missed.">        if (file == null)</span>
 <span class="nc" id="L80">          break;</span>
 <span class="nc" id="L81">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
@@ -116,66 +116,69 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 <span class="nc" id="L116">  }</span>
 
   /**
-   * Reads a jpg pictures that contains the needed GPS information (position and
+   * Reads a JPG pictures that contains the needed GPS information (position and
    * direction) and creates a new icon in that position.
    *
    * @param file
+   *          The file where the image is located.
    * @throws ImageReadException
+   *           If the file doesn't contain an image.
    * @throws IOException
+   *           If the file doesn't contain valid metadata.
    */
   public void readJPG(File file) throws ImageReadException, IOException {
-<span class="nc" id="L127">    final ImageMetadata metadata = Imaging.getMetadata(file);</span>
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (metadata instanceof JpegImageMetadata) {</span>
-<span class="nc" id="L129">      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
-<span class="nc" id="L130">      final TiffField lat_ref = jpegMetadata</span>
-<span class="nc" id="L131">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);</span>
-<span class="nc" id="L132">      final TiffField lat = jpegMetadata</span>
-<span class="nc" id="L133">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);</span>
-<span class="nc" id="L134">      final TiffField lon_ref = jpegMetadata</span>
-<span class="nc" id="L135">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);</span>
-<span class="nc" id="L136">      final TiffField lon = jpegMetadata</span>
-<span class="nc" id="L137">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);</span>
-<span class="nc" id="L138">      final TiffField ca = jpegMetadata</span>
-<span class="nc" id="L139">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
-<span class="nc" id="L140">      final TiffField datetimeOriginal = jpegMetadata</span>
-<span class="nc" id="L141">          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
-<span class="nc bnc" id="L142" title="All 10 branches missed.">      if (lat_ref == null || lat == null || lon == null || lon_ref == null</span>
+<span class="nc" id="L130">    final ImageMetadata metadata = Imaging.getMetadata(file);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (metadata instanceof JpegImageMetadata) {</span>
+<span class="nc" id="L132">      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="nc" id="L133">      final TiffField lat_ref = jpegMetadata</span>
+<span class="nc" id="L134">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);</span>
+<span class="nc" id="L135">      final TiffField lat = jpegMetadata</span>
+<span class="nc" id="L136">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);</span>
+<span class="nc" id="L137">      final TiffField lon_ref = jpegMetadata</span>
+<span class="nc" id="L138">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);</span>
+<span class="nc" id="L139">      final TiffField lon = jpegMetadata</span>
+<span class="nc" id="L140">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);</span>
+<span class="nc" id="L141">      final TiffField ca = jpegMetadata</span>
+<span class="nc" id="L142">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="nc" id="L143">      final TiffField datetimeOriginal = jpegMetadata</span>
+<span class="nc" id="L144">          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="nc bnc" id="L145" title="All 10 branches missed.">      if (lat_ref == null || lat == null || lon == null || lon_ref == null</span>
           || datetimeOriginal == null)
-<span class="nc" id="L144">        throw new IllegalArgumentException(</span>
+<span class="nc" id="L147">        throw new IllegalArgumentException(</span>
             &quot;The picture has not correct EXIF tags&quot;);
 
-<span class="nc" id="L147">      double latValue = 0;</span>
-<span class="nc" id="L148">      double lonValue = 0;</span>
-<span class="nc" id="L149">      double caValue = 0;</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">      if (lat.getValue() instanceof RationalNumber[])</span>
-<span class="nc" id="L151">        latValue = MapillaryImportAction.degMinSecToDouble(</span>
-<span class="nc" id="L152">            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">      if (lon.getValue() instanceof RationalNumber[])</span>
-<span class="nc" id="L154">        lonValue = MapillaryImportAction.degMinSecToDouble(</span>
-<span class="nc" id="L155">            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());</span>
-<span class="nc bnc" id="L156" title="All 4 branches missed.">      if (ca != null &amp;&amp; ca.getValue() instanceof RationalNumber)</span>
-<span class="nc" id="L157">        caValue = ((RationalNumber) ca.getValue()).doubleValue();</span>
+<span class="nc" id="L150">      double latValue = 0;</span>
+<span class="nc" id="L151">      double lonValue = 0;</span>
+<span class="nc" id="L152">      double caValue = 0;</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">      if (lat.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L154">        latValue = MapillaryImportAction.degMinSecToDouble(</span>
+<span class="nc" id="L155">            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (lon.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L157">        lonValue = MapillaryImportAction.degMinSecToDouble(</span>
+<span class="nc" id="L158">            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">      if (ca != null &amp;&amp; ca.getValue() instanceof RationalNumber)</span>
+<span class="nc" id="L160">        caValue = ((RationalNumber) ca.getValue()).doubleValue();</span>
 
-<span class="nc" id="L159">      MapillaryImportedImage image = new MapillaryImportedImage(latValue,</span>
-<span class="nc" id="L160">          lonValue, caValue, file, datetimeOriginal.getStringValue());</span>
-<span class="nc" id="L161">      MapillaryData.getInstance().add(image);</span>
-<span class="nc" id="L162">      image.getCapturedAt();</span>
+<span class="nc" id="L162">      MapillaryImportedImage image = new MapillaryImportedImage(latValue,</span>
+<span class="nc" id="L163">          lonValue, caValue, file, datetimeOriginal.getStringValue());</span>
+<span class="nc" id="L164">      MapillaryData.getInstance().add(image);</span>
+<span class="nc" id="L165">      image.getCapturedAt();</span>
 
-<span class="nc" id="L164">      images.add(image);</span>
+<span class="nc" id="L167">      this.images.add(image);</span>
     }
-<span class="nc" id="L166">  }</span>
+<span class="nc" id="L169">  }</span>
 
   /**
    * Joins all the images in a unique {@link MapillarySequence}.
    */
   public void joinImages() {
-<span class="nc" id="L172">    Collections.sort(images, new MapillaryEpochComparator());</span>
-<span class="nc" id="L173">    MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc bnc" id="L174" title="All 2 branches missed.">    for (MapillaryImportedImage img : images) {</span>
-<span class="nc" id="L175">      seq.add(img);</span>
-<span class="nc" id="L176">      img.setSequence(seq);</span>
-<span class="nc" id="L177">    }</span>
-<span class="nc" id="L178">  }</span>
+<span class="nc" id="L175">    Collections.sort(this.images, new MapillaryEpochComparator());</span>
+<span class="nc" id="L176">    MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">    for (MapillaryImportedImage img : this.images) {</span>
+<span class="nc" id="L178">      seq.add(img);</span>
+<span class="nc" id="L179">      img.setSequence(seq);</span>
+<span class="nc" id="L180">    }</span>
+<span class="nc" id="L181">  }</span>
 
   /**
    * Comparator that comperes two {@link MapillaryAbstractImage} objects
@@ -184,16 +187,16 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * @author nokutu
    *
    */
-<span class="nc" id="L187">  public class MapillaryEpochComparator implements</span>
+<span class="nc" id="L190">  public class MapillaryEpochComparator implements</span>
       Comparator&lt;MapillaryAbstractImage&gt; {
 
     @Override
     public int compare(MapillaryAbstractImage arg0, MapillaryAbstractImage arg1) {
-<span class="nc bnc" id="L192" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
-<span class="nc" id="L193">        return -1;</span>
-<span class="nc bnc" id="L194" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
-<span class="nc" id="L195">        return 1;</span>
-<span class="nc" id="L196">      return 0;</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
+<span class="nc" id="L196">        return -1;</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
+<span class="nc" id="L198">        return 1;</span>
+<span class="nc" id="L199">      return 0;</span>
     }
   }
 }

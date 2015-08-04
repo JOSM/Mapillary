@@ -54,17 +54,18 @@ public class MapillarySequence {
    *
    */
   public long getCreatedAt() {
-<span class="nc" id="L57">    return created_at;</span>
+<span class="nc" id="L57">    return this.created_at;</span>
   }
 
   /**
-   * Adds a new MapillaryImage object to this object.
+   * Adds a new {@link MapillaryAbstractImage} object to the database.
    *
    * @param image
+   *          The {@link MapillaryAbstractImage} object to be added
    */
   public synchronized void add(MapillaryAbstractImage image) {
-<span class="fc" id="L66">    this.images.add(image);</span>
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L67">    this.images.add(image);</span>
+<span class="fc" id="L68">  }</span>
 
   /**
    * Returns the unique identifier of the sequence.
@@ -74,27 +75,29 @@ public class MapillarySequence {
    *         images.
    */
   public String getKey() {
-<span class="nc" id="L77">    return this.key;</span>
+<span class="nc" id="L78">    return this.key;</span>
   }
 
   /**
-   * Adds a set of MapillaryImage objects to this object.
+   * Adds a set of {@link MapillaryAbstractImage} objects to the database.
    *
    * @param images
+   *          The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc bnc" id="L86" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
-<span class="nc" id="L87">      add(image);</span>
-<span class="nc" id="L88">  }</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
+<span class="nc" id="L89">      add(image);</span>
+<span class="nc" id="L90">  }</span>
 
   /**
-   * Removes a MapillaryImage object from this object.
+   * Removes a {@link MapillaryAbstractImage} object from the database.
    *
    * @param image
+   *          The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
-<span class="nc" id="L96">    this.images.remove(image);</span>
-<span class="nc" id="L97">  }</span>
+<span class="nc" id="L99">    this.images.remove(image);</span>
+<span class="nc" id="L100">  }</span>
 
   /**
    * Returns the next {@link MapillaryAbstractImage} in the sequence.
@@ -105,12 +108,12 @@ public class MapillarySequence {
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (!images.contains(image))</span>
-<span class="nc" id="L109">      throw new IllegalArgumentException();</span>
-<span class="nc" id="L110">    int i = images.indexOf(image);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (i == images.size() - 1)</span>
-<span class="nc" id="L112">      return null;</span>
-<span class="nc" id="L113">    return images.get(i + 1);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (!this.images.contains(image))</span>
+<span class="nc" id="L112">      throw new IllegalArgumentException();</span>
+<span class="nc" id="L113">    int i = this.images.indexOf(image);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">    if (i == this.images.size() - 1)</span>
+<span class="nc" id="L115">      return null;</span>
+<span class="nc" id="L116">    return this.images.get(i + 1);</span>
   }
 
   /**
@@ -122,12 +125,12 @@ public class MapillarySequence {
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (!images.contains(image))</span>
-<span class="nc" id="L126">      throw new IllegalArgumentException();</span>
-<span class="nc" id="L127">    int i = images.indexOf(image);</span>
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (i == 0)</span>
-<span class="nc" id="L129">      return null;</span>
-<span class="nc" id="L130">    return images.get(i - 1);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (!this.images.contains(image))</span>
+<span class="nc" id="L129">      throw new IllegalArgumentException();</span>
+<span class="nc" id="L130">    int i = this.images.indexOf(image);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (i == 0)</span>
+<span class="nc" id="L132">      return null;</span>
+<span class="nc" id="L133">    return this.images.get(i - 1);</span>
   }
 
   /**
@@ -135,15 +138,17 @@ public class MapillarySequence {
    * objects belonging to the same {@link MapillarySequence}.
    *
    * @param image1
+   *          The first image.
    * @param image2
+   *          The second image.
    * @return The distance between two {@link MapillaryAbstractImage} objects
    *         belonging to the same {@link MapillarySequence}.
    */
   public int getDistance(MapillaryAbstractImage image1,
       MapillaryAbstractImage image2) {
-<span class="nc bnc" id="L144" title="All 4 branches missed.">    if (!this.images.contains(image1) || !this.images.contains(image2))</span>
-<span class="nc" id="L145">      throw new IllegalArgumentException();</span>
-<span class="nc" id="L146">    return Math.abs(this.images.indexOf(image1) - this.images.indexOf(image2));</span>
+<span class="nc bnc" id="L149" title="All 4 branches missed.">    if (!this.images.contains(image1) || !this.images.contains(image2))</span>
+<span class="nc" id="L150">      throw new IllegalArgumentException();</span>
+<span class="nc" id="L151">    return Math.abs(this.images.indexOf(image1) - this.images.indexOf(image2));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

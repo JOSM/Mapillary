@@ -6,7 +6,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
  * Abstract class for any Mapillary command.
- * 
+ *
  * @author nokutu
  *
  */
@@ -26,8 +26,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
   /**
    * If two equal commands are applied consecutively to the same set of images,
    * they are summed in order to reduce them to just one command.
-   * 
-   * @param command
+   *
+   * @param command The command to be summed to last command.
    */
   public abstract void sum(MapillaryCommand command);
 
@@ -35,7 +35,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
    * Checks if the image has been modified, comparing with its original values.
    */
   public void checkModified() {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images)</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images)</span>
 <span class="nc bnc" id="L39" title="All 4 branches missed.">      image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);</span>
 <span class="nc" id="L40">  }</span>
 }

@@ -31,22 +31,22 @@ public class MapillaryWalkDialog extends JPanel {
    */
 <span class="nc" id="L32">  public MapillaryWalkDialog() {</span>
 <span class="nc" id="L33">    JPanel interval = new JPanel();</span>
-<span class="nc" id="L34">    spin = new SpinnerNumberModel(2000, 500, 10000, 500);</span>
+<span class="nc" id="L34">    this.spin = new SpinnerNumberModel(2000, 500, 10000, 500);</span>
 <span class="nc" id="L35">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
-<span class="nc" id="L36">    interval.add(new JSpinner(spin));</span>
+<span class="nc" id="L36">    interval.add(new JSpinner(this.spin));</span>
 <span class="nc" id="L37">    add(interval);</span>
 
-<span class="nc" id="L39">    waitForPicture = new JCheckBox(&quot;Wait for full quality pictures&quot;);</span>
-<span class="nc" id="L40">    waitForPicture.setSelected(true);</span>
-<span class="nc" id="L41">    add(waitForPicture);</span>
+<span class="nc" id="L39">    this.waitForPicture = new JCheckBox(&quot;Wait for full quality pictures&quot;);</span>
+<span class="nc" id="L40">    this.waitForPicture.setSelected(true);</span>
+<span class="nc" id="L41">    add(this.waitForPicture);</span>
 
-<span class="nc" id="L43">    followSelection = new JCheckBox(&quot;Follow selected image&quot;);</span>
-<span class="nc" id="L44">    followSelection.setSelected(true);</span>
-<span class="nc" id="L45">    add(followSelection);</span>
+<span class="nc" id="L43">    this.followSelection = new JCheckBox(&quot;Follow selected image&quot;);</span>
+<span class="nc" id="L44">    this.followSelection.setSelected(true);</span>
+<span class="nc" id="L45">    add(this.followSelection);</span>
 
-<span class="nc" id="L47">    goForward = new JCheckBox(&quot;Go forward&quot;);</span>
-<span class="nc" id="L48">    goForward.setSelected(true);</span>
-<span class="nc" id="L49">    add(goForward);</span>
+<span class="nc" id="L47">    this.goForward = new JCheckBox(&quot;Go forward&quot;);</span>
+<span class="nc" id="L48">    this.goForward.setSelected(true);</span>
+<span class="nc" id="L49">    add(this.goForward);</span>
 <span class="nc" id="L50">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

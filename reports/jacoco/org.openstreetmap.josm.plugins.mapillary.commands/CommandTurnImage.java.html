@@ -19,7 +19,7 @@ public class CommandTurnImage extends MapillaryCommand {
 
   /**
    * Main constructor.
-   * 
+   *
    * @param images
    *          Set of images that is turned.
    * @param ca
@@ -32,8 +32,8 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public void undo() {
-<span class="nc bnc" id="L35" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images) {</span>
-<span class="nc" id="L36">      image.turn(-ca);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc" id="L36">      image.turn(-this.ca);</span>
 <span class="nc" id="L37">      image.stopMoving();</span>
 <span class="nc" id="L38">    }</span>
 <span class="nc" id="L39">    checkModified();</span>
@@ -42,8 +42,8 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public void redo() {
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    for (MapillaryAbstractImage image : images) {</span>
-<span class="nc" id="L46">      image.turn(ca);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc" id="L46">      image.turn(this.ca);</span>
 <span class="nc" id="L47">      image.stopMoving();</span>
 <span class="nc" id="L48">    }</span>
 <span class="nc" id="L49">    checkModified();</span>
