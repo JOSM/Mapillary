@@ -110,8 +110,6 @@ public class OAuthUtils {
    * @param image
    * @param uuid
    *          The UUID used to create the sequence.
-   * @param username
-   *          The username who is going to upload the picture.
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeyException
    * @throws IOException
@@ -176,9 +174,6 @@ public class OAuthUtils {
    * @param sequence
    *          The sequence to upload. It must contain only
    *          {@link MapillaryImportedImage} objects.
-   * @throws NoSuchAlgorithmException
-   * @throws UnsupportedEncodingException
-   * @throws InvalidKeyException
    */
   public static void uploadSequence(MapillarySequence sequence) {
     new SequenceUploadThread(sequence.getImages()).start();
