@@ -16,7 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryUploadDialog;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -51,7 +51,7 @@ public class MapillaryUploadAction extends JosmAction implements
 <span class="nc bnc" id="L51" title="All 2 branches missed.">    if (pane.getValue() != null</span>
 <span class="nc bnc" id="L52" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
 <span class="nc bnc" id="L53" title="All 2 branches missed.">      if (dialog.sequence.isSelected()) {</span>
-<span class="nc" id="L54">        OAuthUtils.uploadSequence(MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L54">        UploadUtils.uploadSequence(MapillaryLayer.getInstance().getData()</span>
 <span class="nc" id="L55">            .getSelectedImage().getSequence());</span>
       }
     }

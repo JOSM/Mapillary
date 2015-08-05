@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryUtils.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryUtils.java</span></div><h1>MapillaryUtils.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.utils;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+
+/**
+ * Set of utilities.
+ *
+ * @author nokutu
+ *
+ */
+<span class="nc" id="L16">public class MapillaryUtils {</span>
+  /**
+   * Updates the help text at the bottom of the window.
+   */
+  public static void updateHelpText() {
+<span class="nc" id="L21">    String ret = &quot;&quot;;</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">    if (PluginState.isDownloading())</span>
+<span class="nc" id="L23">      ret += tr(&quot;Downloading&quot;);</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">    else if (MapillaryLayer.getInstance().getData().size() &gt; 0)</span>
+<span class="nc" id="L25">      ret += tr(&quot;Total images: {0}&quot;, MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L26">          .size());</span>
+    else
+<span class="nc" id="L28">      ret += tr(&quot;No images found&quot;);</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null)</span>
+<span class="nc" id="L30">      ret += &quot; -- &quot; + tr(MapillaryLayer.getInstance().mode.toString());</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">    if (PluginState.isUploading())</span>
+<span class="nc" id="L32">      ret += &quot; -- &quot; + PluginState.getUploadString();</span>
+<span class="nc" id="L33">    Main.map.statusLine.setHelpText(ret);</span>
+<span class="nc" id="L34">  }</span>
+
+  /**
+   * Calculates the decimal degree-value from a degree value given in
+   * degrees-minutes-seconds-format
+   *
+   * @param degMinSec
+   *          an array of length 3, the values in there are (in this order)
+   *          degrees, minutes and seconds
+   * @param ref
+   *          the latitude or longitude reference determining if the given value
+   *          is:
+   *          &lt;ul&gt;
+   *          &lt;li&gt;north (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
+   *          south (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
+   *          the equator&lt;/li&gt;
+   *          &lt;li&gt;east (
+   *          {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
+   *          west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
+   *          ) of the equator&lt;/li&gt;
+   *          &lt;/ul&gt;
+   * @return the decimal degree-value for the given input, negative when west of
+   *         0-meridian or south of equator, positive otherwise
+   * @throws IllegalArgumentException
+   *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
+   *           not one of the values mentioned above
+   */
+  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
+<span class="pc bpc" id="L64" title="2 of 4 branches missed.">    if (degMinSec == null || degMinSec.length != 3) {</span>
+<span class="nc" id="L65">      throw new IllegalArgumentException(&quot;Array's length must be 3.&quot;);</span>
+    }
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    for (int i = 0; i &lt; 3; i++)</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (degMinSec[i] == null)</span>
+<span class="nc" id="L69">        throw new IllegalArgumentException(&quot;Null value in array.&quot;);</span>
+
+<span class="pc bpc" id="L71" title="8 of 15 branches missed.">    switch (ref) {</span>
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
+<span class="fc" id="L76">        break;</span>
+      default:
+<span class="nc" id="L78">        throw new IllegalArgumentException(&quot;Invalid ref.&quot;);</span>
+    }
+
+<span class="fc" id="L81">    double result = degMinSec[0].doubleValue(); // degrees</span>
+<span class="fc" id="L82">    result += degMinSec[1].doubleValue() / 60; // minutes</span>
+<span class="fc" id="L83">    result += degMinSec[2].doubleValue() / 3600; // seconds</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {</span>
+<span class="fc" id="L87">      result *= -1;</span>
+    }
+
+<span class="fc" id="L90">    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;</span>
+<span class="fc" id="L91">    return result;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

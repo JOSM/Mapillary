@@ -68,7 +68,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *           If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
-<span class="fc bfc" id="L71" title="All 2 branches covered.">    return this.file == null ? null : ImageIO.read(this.file);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (this.file != null)</span>
+<span class="fc" id="L72">      return ImageIO.read(this.file);</span>
+<span class="fc" id="L73">    return null;</span>
   }
 
   /**
@@ -77,25 +79,25 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @return The File object where the picture is located.
    */
   public File getFile() {
-<span class="fc" id="L80">    return this.file;</span>
+<span class="fc" id="L82">    return this.file;</span>
   }
 
   @Override
   public boolean equals(Object object) {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (object instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L86">      return this.file.equals(((MapillaryImportedImage) object).file);</span>
-<span class="nc" id="L87">    return false;</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (object instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L88">      return this.file.equals(((MapillaryImportedImage) object).file);</span>
+<span class="nc" id="L89">    return false;</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L92">    return this.file.hashCode();</span>
+<span class="nc" id="L94">    return this.file.hashCode();</span>
   }
 
   private static String currentDate() {
-<span class="fc" id="L96">    Calendar cal = Calendar.getInstance();</span>
-<span class="fc" id="L97">    SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
-<span class="fc" id="L98">    return formatter.format(cal.getTime());</span>
+<span class="fc" id="L98">    Calendar cal = Calendar.getInstance();</span>
+<span class="fc" id="L99">    SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
+<span class="fc" id="L100">    return formatter.format(cal.getTime());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

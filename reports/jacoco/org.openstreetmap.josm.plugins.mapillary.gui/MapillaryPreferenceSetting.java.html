@@ -6,7 +6,6 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -32,17 +31,18 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
  * @author nokutu
  *
  */
-<span class="nc" id="L35">public class MapillaryPreferenceSetting implements SubPreferenceSetting {</span>
+<span class="nc" id="L34">public class MapillaryPreferenceSetting implements SubPreferenceSetting {</span>
 
-<span class="nc" id="L37">  private JCheckBox reverseButtons = new JCheckBox(</span>
-<span class="nc" id="L38">      tr(&quot;Reverse buttons position when displaying images.&quot;));</span>
-<span class="nc" id="L39">  private JComboBox&lt;String&gt; downloadMode = new JComboBox&lt;&gt;(</span>
+<span class="nc" id="L36">  private JCheckBox reverseButtons = new JCheckBox(</span>
+<span class="nc" id="L37">      tr(&quot;Reverse buttons position when displaying images.&quot;));</span>
+<span class="nc" id="L38">  private JComboBox&lt;String&gt; downloadMode = new JComboBox&lt;&gt;(</span>
       MapillaryDownloader.MODES);
-<span class="nc" id="L41">  private JCheckBox displayHour = new JCheckBox(</span>
-<span class="nc" id="L42">      tr(&quot;Display hour when the picture was taken&quot;));</span>
-<span class="nc" id="L43">  private JCheckBox format24 = new JCheckBox(tr(&quot;Use 24 hour format&quot;));</span>
-<span class="nc" id="L44">  private JCheckBox moveTo = new JCheckBox(</span>
-<span class="nc" id="L45">      tr(&quot;Move to picture's location with next/previous buttons&quot;));</span>
+<span class="nc" id="L40">  private JCheckBox displayHour = new JCheckBox(</span>
+<span class="nc" id="L41">      tr(&quot;Display hour when the picture was taken&quot;));</span>
+<span class="nc" id="L42">  private JCheckBox format24 = new JCheckBox(tr(&quot;Use 24 hour format&quot;));</span>
+<span class="nc" id="L43">  private JCheckBox moveTo = new JCheckBox(</span>
+<span class="nc" id="L44">      tr(&quot;Move to picture's location with next/previous buttons&quot;));</span>
+  private JButton login;
 
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -55,73 +55,78 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 
 <span class="nc" id="L56">    this.reverseButtons.setSelected(Main.pref</span>
 <span class="nc" id="L57">        .getBoolean(&quot;mapillary.reverse-buttons&quot;));</span>
-<span class="nc" id="L58">    this.displayHour.setSelected(Main.pref</span>
-<span class="nc" id="L59">        .getBoolean(&quot;mapillary.display-hour&quot;, true));</span>
+<span class="nc" id="L58">    this.displayHour.setSelected(Main.pref.getBoolean(&quot;mapillary.display-hour&quot;,</span>
+        true));
 <span class="nc" id="L60">    this.format24.setSelected(Main.pref.getBoolean(&quot;mapillary.format-24&quot;));</span>
-<span class="nc" id="L61">    this.moveTo.setSelected(Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;, true));</span>
+<span class="nc" id="L61">    this.moveTo.setSelected(Main.pref.getBoolean(&quot;mapillary.move-to-picture&quot;,</span>
+        true));
 
-<span class="nc" id="L63">    panel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="nc" id="L64">    panel.add(this.reverseButtons);</span>
+<span class="nc" id="L64">    panel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="nc" id="L65">    panel.add(this.reverseButtons);</span>
 
     // Sets the value of the ComboBox.
-<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
         MapillaryDownloader.MODES[0]))
-<span class="nc" id="L69">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
+<span class="nc" id="L70">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
         MapillaryDownloader.MODES[1]))
-<span class="nc" id="L72">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
+<span class="nc" id="L73">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(</span>
         MapillaryDownloader.MODES[2]))
-<span class="nc" id="L75">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);</span>
-<span class="nc" id="L76">    JPanel downloadModePanel = new JPanel();</span>
-<span class="nc" id="L77">    downloadModePanel.add(new JLabel(tr(&quot;Download mode: &quot;)));</span>
-<span class="nc" id="L78">    downloadModePanel.add(this.downloadMode);</span>
-<span class="nc" id="L79">    panel.add(downloadModePanel);</span>
+<span class="nc" id="L76">      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);</span>
+<span class="nc" id="L77">    JPanel downloadModePanel = new JPanel();</span>
+<span class="nc" id="L78">    downloadModePanel.add(new JLabel(tr(&quot;Download mode: &quot;)));</span>
+<span class="nc" id="L79">    downloadModePanel.add(this.downloadMode);</span>
+<span class="nc" id="L80">    panel.add(downloadModePanel);</span>
 
-<span class="nc" id="L81">    panel.add(this.displayHour);</span>
-<span class="nc" id="L82">    panel.add(this.format24);</span>
-<span class="nc" id="L83">    panel.add(this.moveTo);</span>
-<span class="nc" id="L84">    JButton oauth = new JButton(new OAuthAction());</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.access-token&quot;) == null)</span>
-<span class="nc" id="L86">      oauth.setText(&quot;Login&quot;);</span>
+<span class="nc" id="L82">    panel.add(this.displayHour);</span>
+<span class="nc" id="L83">    panel.add(this.format24);</span>
+<span class="nc" id="L84">    panel.add(this.moveTo);</span>
+<span class="nc" id="L85">    this.login = new JButton(new LoginAction());</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.access-token&quot;) == null)</span>
+<span class="nc" id="L87">      this.login.setText(&quot;Login&quot;);</span>
     else
-      try {
-<span class="nc" id="L89">        oauth.setText(&quot;Logged as: &quot; + MapillaryUser.getUsername() + &quot;. Click to relogin.&quot;);</span>
-<span class="nc" id="L90">      } catch (MalformedURLException e) {</span>
-        // TODO Auto-generated catch block
-<span class="nc" id="L92">        e.printStackTrace();</span>
-<span class="nc" id="L93">      } catch (IOException e) {</span>
-        // TODO Auto-generated catch block
-<span class="nc" id="L95">        e.printStackTrace();</span>
-<span class="nc" id="L96">      }</span>
-<span class="nc" id="L97">    panel.add(oauth);</span>
-<span class="nc" id="L98">    gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, panel);</span>
-<span class="nc" id="L99">  }</span>
+<span class="nc" id="L89">      this.login.setText(&quot;Logged as: &quot; + MapillaryUser.getUsername()</span>
+          + &quot;. Click to relogin.&quot;);
+
+<span class="nc" id="L92">    panel.add(this.login);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">    if (MapillaryUser.getUsername() != null) {</span>
+<span class="nc" id="L94">      JButton logout = new JButton(new LogoutAction());</span>
+<span class="nc" id="L95">      logout.setText(&quot;Logout&quot;);</span>
+
+<span class="nc" id="L97">      panel.add(logout);</span>
+    }
+<span class="nc" id="L99">    gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, panel);</span>
+<span class="nc" id="L100">  }</span>
 
   @Override
   public boolean ok() {
-<span class="nc" id="L103">    boolean mod = false;</span>
-<span class="nc" id="L104">    Main.pref.put(&quot;mapillary.reverse-buttons&quot;, this.reverseButtons.isSelected());</span>
+<span class="nc" id="L104">    boolean mod = false;</span>
+<span class="nc" id="L105">    Main.pref</span>
+<span class="nc" id="L106">        .put(&quot;mapillary.reverse-buttons&quot;, this.reverseButtons.isSelected());</span>
 
-<span class="nc" id="L106">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[0]))</span>
-<span class="nc" id="L108">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[0]);</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[1]))</span>
-<span class="nc" id="L110">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[1]);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[2])) {</span>
-<span class="nc" id="L112">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[2]);</span>
-<span class="nc" id="L113">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);</span>
+<span class="nc" id="L108">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);</span>
+<span class="nc" id="L109">    if (this.downloadMode.getSelectedItem()</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        .equals(MapillaryDownloader.MODES[0]))</span>
+<span class="nc" id="L111">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[0]);</span>
+<span class="nc" id="L112">    if (this.downloadMode.getSelectedItem()</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        .equals(MapillaryDownloader.MODES[1]))</span>
+<span class="nc" id="L114">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[1]);</span>
+<span class="nc" id="L115">    if (this.downloadMode.getSelectedItem()</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        .equals(MapillaryDownloader.MODES[2])) {</span>
+<span class="nc" id="L117">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES[2]);</span>
+<span class="nc" id="L118">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);</span>
     }
 
-<span class="nc" id="L116">    Main.pref.put(&quot;mapillary.display-hour&quot;, this.displayHour.isSelected());</span>
-<span class="nc" id="L117">    Main.pref.put(&quot;mapillary.format-24&quot;, this.format24.isSelected());</span>
-<span class="nc" id="L118">    Main.pref.put(&quot;mapillary.move-to-picture&quot;, this.moveTo.isSelected());</span>
-<span class="nc" id="L119">    return mod;</span>
+<span class="nc" id="L121">    Main.pref.put(&quot;mapillary.display-hour&quot;, this.displayHour.isSelected());</span>
+<span class="nc" id="L122">    Main.pref.put(&quot;mapillary.format-24&quot;, this.format24.isSelected());</span>
+<span class="nc" id="L123">    Main.pref.put(&quot;mapillary.move-to-picture&quot;, this.moveTo.isSelected());</span>
+<span class="nc" id="L124">    return mod;</span>
   }
 
   @Override
   public boolean isExpert() {
-<span class="nc" id="L124">    return false;</span>
+<span class="nc" id="L129">    return false;</span>
   }
 
   /**
@@ -130,32 +135,51 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
    * @author nokutu
    *
    */
-<span class="nc" id="L133">  public class OAuthAction extends AbstractAction {</span>
+<span class="nc" id="L138">  public class LoginAction extends AbstractAction {</span>
 
     private static final long serialVersionUID = -3908477563072057344L;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L139">      OAuthPortListener portListener = new OAuthPortListener();</span>
-<span class="nc" id="L140">      portListener.start();</span>
+<span class="nc" id="L144">      OAuthPortListener portListener = new OAuthPortListener();</span>
+<span class="nc" id="L145">      portListener.start();</span>
 
-<span class="nc" id="L142">      String url = &quot;http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&amp;response_type=token&amp;scope=user:read%20public:upload%20public:write&quot;;</span>
-<span class="nc" id="L143">      Desktop desktop = Desktop.getDesktop();</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">      if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
+<span class="nc" id="L147">      String url = &quot;http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&amp;response_type=token&amp;scope=user:read%20public:upload%20public:write&quot;;</span>
+<span class="nc" id="L148">      Desktop desktop = Desktop.getDesktop();</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">      if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
         try {
-<span class="nc" id="L146">          desktop.browse(new URI(url));</span>
-<span class="nc" id="L147">        } catch (IOException | URISyntaxException e1) {</span>
-<span class="nc" id="L148">          Main.error(e1);</span>
-<span class="nc" id="L149">        }</span>
+<span class="nc" id="L151">          desktop.browse(new URI(url));</span>
+<span class="nc" id="L152">        } catch (IOException | URISyntaxException e1) {</span>
+<span class="nc" id="L153">          Main.error(e1);</span>
+<span class="nc" id="L154">        }</span>
       } else {
-<span class="nc" id="L151">        Runtime runtime = Runtime.getRuntime();</span>
+<span class="nc" id="L156">        Runtime runtime = Runtime.getRuntime();</span>
         try {
-<span class="nc" id="L153">          runtime.exec(&quot;xdg-open &quot; + url);</span>
-<span class="nc" id="L154">        } catch (IOException exc) {</span>
-<span class="nc" id="L155">          exc.printStackTrace();</span>
-<span class="nc" id="L156">        }</span>
+<span class="nc" id="L158">          runtime.exec(&quot;xdg-open &quot; + url);</span>
+<span class="nc" id="L159">        } catch (IOException exc) {</span>
+<span class="nc" id="L160">          exc.printStackTrace();</span>
+<span class="nc" id="L161">        }</span>
       }
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L163">    }</span>
   }
+
+  /**
+   * Logs the user out.
+   *
+   * @author nokutu
+   *
+   */
+<span class="nc" id="L172">  public class LogoutAction extends AbstractAction {</span>
+
+    private static final long serialVersionUID = 3434780936404707219L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+<span class="nc" id="L178">      MapillaryUser.reset();</span>
+<span class="nc" id="L179">      Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
+<span class="nc" id="L180">      MapillaryPreferenceSetting.this.login.setText(&quot;Login&quot;);</span>
+<span class="nc" id="L181">    }</span>
+  }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

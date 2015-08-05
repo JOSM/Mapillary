@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 /**
@@ -65,8 +65,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc bnc" id="L65" title="All 2 branches missed.">            if (image.next() == null)</span>
 <span class="nc" id="L66">              break;</span>
 <span class="nc" id="L67">            image = image.next();</span>
-<span class="nc" id="L68">            Utils.downloadPicture((MapillaryImage) image,</span>
-                Utils.PICTURE.THUMBNAIL);
+<span class="nc" id="L68">            CacheUtils.downloadPicture((MapillaryImage) image,</span>
+                CacheUtils.PICTURE.THUMBNAIL);
           }
 <span class="nc bnc" id="L71" title="All 2 branches missed.">          if (this.waitForFullQuality)</span>
             // Start downloading 3 next full images.
@@ -74,8 +74,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc bnc" id="L74" title="All 2 branches missed.">              if (image.next() == null)</span>
 <span class="nc" id="L75">                break;</span>
 <span class="nc" id="L76">              image = image.next();</span>
-<span class="nc" id="L77">              Utils.downloadPicture((MapillaryImage) image,</span>
-                  Utils.PICTURE.FULL_IMAGE);
+<span class="nc" id="L77">              CacheUtils.downloadPicture((MapillaryImage) image,</span>
+                  CacheUtils.PICTURE.FULL_IMAGE);
             }
         }
         try {
