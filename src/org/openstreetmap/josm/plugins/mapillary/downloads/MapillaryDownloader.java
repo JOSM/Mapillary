@@ -63,8 +63,7 @@ public class MapillaryDownloader {
     queryStringParts.put("min_lon", minLatLon.lon());
     queryStringParts.put("max_lat", maxLatLon.lat());
     queryStringParts.put("max_lon", maxLatLon.lon());
-    run(new MapillarySquareDownloadManagerThread(queryStringParts,
-        MapillaryLayer.getInstance()));
+    run(new MapillarySquareDownloadManagerThread(queryStringParts));
   }
 
   private static void run(Thread t) {

@@ -58,7 +58,7 @@ public class MapillarySequenceDownloadThreadTest {
         MapillaryLayer.getInstance().bounds.add(new Bounds(minLatLon, maxLatLon));
 
         int page = 1;
-        while (!ex.isShutdown() && MapillaryLayer.getInstance().getMapillaryData().getImages().size() <= 0 && page < 50) {
+        while (!ex.isShutdown() && MapillaryLayer.getInstance().getData().getImages().size() <= 0 && page < 50) {
             System.out.println("Sending sequence-request "+page+" to Mapillary-servers…");
             Thread downloadThread = new MapillarySequenceDownloadThread(ex, queryString+"&page="+page);
             downloadThread.start();
@@ -66,7 +66,7 @@ public class MapillarySequenceDownloadThreadTest {
             page++;
             Thread.sleep(500);
         }
-        assertTrue(MapillaryLayer.getInstance().getMapillaryData().getImages().size() >= 1);
+        assertTrue(MapillaryLayer.getInstance().getData().getImages().size() >= 1);
         System.out.println("One or more images were added to the MapillaryLayer within the given bounds.");
     }
 

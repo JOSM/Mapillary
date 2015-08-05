@@ -26,7 +26,6 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL + "search/im/";
   private final String queryString;
   private final ExecutorService ex;
-  private final MapillaryLayer layer;
 
   /**
    * Main constructor.
@@ -35,14 +34,11 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
    *          A String containing the parameters for the download.
-   * @param layer
-   *          The layer to store the data.
    */
   public MapillaryImageInfoDownloaderThread(ExecutorService ex,
-      String queryString, MapillaryLayer layer) {
+      String queryString) {
     this.ex = ex;
     this.queryString = queryString;
-    this.layer = layer;
   }
 
   @Override
@@ -58,7 +54,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
       for (int i = 0; i < jsonarr.size(); i++) {
         data = jsonarr.getJsonObject(i);
         String key = data.getString("key");
-        for (MapillaryAbstractImage image : this.layer.getMapillaryData()
+        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData()
             .getImages()) {
           if (image instanceof MapillaryImage) {
             if (((MapillaryImage) image).getKey().equals(key)

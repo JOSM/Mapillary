@@ -37,7 +37,7 @@ public class MapillaryUploadAction extends JosmAction implements
             tr("Upload Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryUpload", false);
     this.setEnabled(false);
-    MapillaryLayer.getInstance().data.addListener(this);
+    MapillaryLayer.getInstance().getData().addListener(this);
   }
 
   @Override
@@ -52,7 +52,7 @@ public class MapillaryUploadAction extends JosmAction implements
     if (pane.getValue() != null
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       if (dialog.sequence.isSelected()) {
-        OAuthUtils.uploadSequence(MapillaryLayer.getInstance().data
+        OAuthUtils.uploadSequence(MapillaryLayer.getInstance().getData()
             .getSelectedImage().getSequence());
       }
     }

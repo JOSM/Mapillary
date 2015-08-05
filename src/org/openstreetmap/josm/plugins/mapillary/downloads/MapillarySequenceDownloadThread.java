@@ -100,14 +100,14 @@ public class MapillarySequenceDownloadThread extends Thread {
         MapillaryAbstractImage.LOCK.lock();
         try {
           for (MapillaryImage img : finalImages) {
-            if (this.layer.getMapillaryData().getImages().contains(img)) {
+            if (this.layer.getData().getImages().contains(img)) {
               // The image in finalImages is substituted by the one in the
               // database, as they represent the same picture.
-              img = (MapillaryImage) this.layer.getMapillaryData().getImages()
-                  .get(this.layer.getMapillaryData().getImages().indexOf(img));
+              img = (MapillaryImage) this.layer.getData().getImages()
+                  .get(this.layer.getData().getImages().indexOf(img));
               sequence.add(img);
-              ((MapillaryImage) this.layer.getMapillaryData().getImages()
-                  .get(this.layer.getMapillaryData().getImages().indexOf(img)))
+              ((MapillaryImage) this.layer.getData().getImages()
+                  .get(this.layer.getData().getImages().indexOf(img)))
                   .setSequence(sequence);
               finalImages.set(finalImages.indexOf(img), img);
             } else {
@@ -120,7 +120,7 @@ public class MapillarySequenceDownloadThread extends Thread {
           LOCK.unlock();
         }
 
-        this.layer.getMapillaryData().add(
+        this.layer.getData().add(
             new ArrayList<MapillaryAbstractImage>(finalImages), false);
       }
     } catch (IOException e) {

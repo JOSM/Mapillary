@@ -175,7 +175,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     boolean downloaded = this.downloaded.isSelected();
     boolean onlySigns = this.onlySigns.isSelected();
 
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().data
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData()
         .getImages()) {
       img.setVisible(true);
       if (img instanceof MapillaryImportedImage) {

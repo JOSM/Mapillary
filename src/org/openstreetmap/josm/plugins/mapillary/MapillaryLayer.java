@@ -81,7 +81,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public static MapillaryImage RED;
 
   /** {@link MapillaryData} object that stores the database */
-  public final MapillaryData data;
+  private final MapillaryData data;
 
   /** The bounds of the areas for which the pictures have been downloaded */
   public CopyOnWriteArrayList<Bounds> bounds;
@@ -171,7 +171,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
-  public MapillaryData getMapillaryData() {
+  public MapillaryData getData() {
     return this.data;
   }
 

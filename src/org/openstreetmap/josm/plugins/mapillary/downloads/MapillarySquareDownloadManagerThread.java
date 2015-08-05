@@ -29,27 +29,22 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String imageQueryString;
   private final String sequenceQueryString;
   private final String signQueryString;
-  private final MapillaryLayer layer;
 
   /**
    * Main constructor.
    *
    * @param queryStringParts
    *          The query data.
-   * @param layer
-   *          The layer to store the images.
    *
    */
   public MapillarySquareDownloadManagerThread(
-      ConcurrentHashMap<String, Double> queryStringParts, MapillaryLayer layer) {
+      ConcurrentHashMap<String, Double> queryStringParts) {
     this.imageQueryString = buildQueryString(queryStringParts);
     this.sequenceQueryString = buildQueryString(queryStringParts);
     this.signQueryString = buildQueryString(queryStringParts);
 
     // TODO: Move this line to the appropriate place, here's no GET-request
     Main.info("GET " + this.sequenceQueryString + " (Mapillary plugin)");
-
-    this.layer = layer;
   }
 
   // TODO: Maybe move into a separate utility class?
@@ -84,7 +79,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       PluginState.finishDownload();
       MapillaryLayer.getInstance().updateHelpText();
     }
-    this.layer.updateHelpText();
+    MapillaryLayer.getInstance().updateHelpText();
     MapillaryData.dataUpdated();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();
@@ -111,7 +106,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!ex.isShutdown()) {
       ex.execute(new MapillaryImageInfoDownloaderThread(ex,
-          this.imageQueryString + "&page=" + page + "&limit=20", this.layer));
+          this.imageQueryString + "&page=" + page + "&limit=20"));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
@@ -125,7 +120,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!ex.isShutdown()) {
       ex.execute(new MapillaryTrafficSignDownloaderThread(ex,
-          this.signQueryString + "&page=" + page + "&limit=20", this.layer));
+          this.signQueryString + "&page=" + page + "&limit=20"));
       while (ex.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;

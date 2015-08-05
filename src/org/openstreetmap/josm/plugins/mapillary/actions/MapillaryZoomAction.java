@@ -34,15 +34,15 @@ public class MapillaryZoomAction extends JosmAction implements
             tr("Zoom to the currently selected Mapillary image"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryZoom",
         false);
-    MapillaryLayer.getInstance().data.addListener(this);
+    MapillaryLayer.getInstance().getData().addListener(this);
     this.setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryLayer.getInstance().data.getSelectedImage() == null)
+    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)
       throw new IllegalStateException();
-    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().data
+    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()
         .getSelectedImage().getLatLon());
   }
 

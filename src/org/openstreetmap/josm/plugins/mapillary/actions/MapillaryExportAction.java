@@ -70,11 +70,11 @@ public class MapillaryExportAction extends JosmAction {
         && (int) pane.getValue() == JOptionPane.OK_OPTION
         && this.dialog.chooser != null) {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
-        export(MapillaryLayer.getInstance().data.getImages());
+        export(MapillaryLayer.getInstance().getData().getImages());
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
         ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
-        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().data
-            .getMultiSelectedImages())
+        for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
+            .getData().getMultiSelectedImages())
           if (image instanceof MapillaryImage) {
             if (!images.contains(image))
               images.addAll(((MapillaryImage) image).getSequence().getImages());
@@ -82,13 +82,13 @@ public class MapillaryExportAction extends JosmAction {
             images.add(image);
         export(images);
       } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
-        export(MapillaryLayer.getInstance().data.getMultiSelectedImages());
+        export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());
       }
       // This option ignores the selected directory.
     } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
-      for (MapillaryAbstractImage image : MapillaryLayer.getInstance().data
-          .getImages())
+      for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
+          .getData().getImages())
         if (image instanceof MapillaryImportedImage) {
           images.add(((MapillaryImportedImage) image));
         }

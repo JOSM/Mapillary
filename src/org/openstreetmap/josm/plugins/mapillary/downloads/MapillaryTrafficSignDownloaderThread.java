@@ -27,7 +27,6 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
       + "search/im/or/";
   private final String queryString;
   private final ExecutorService ex;
-  private final MapillaryLayer layer;
 
   /**
    * Main constructor.
@@ -36,22 +35,19 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
    *          {@link ExecutorService} object that is executing this thread.
    * @param queryString
    *          A String containing the parameter for the download.
-   * @param layer
-   *          The layer to store the data.
    */
   public MapillaryTrafficSignDownloaderThread(ExecutorService ex,
-      String queryString, MapillaryLayer layer) {
+      String queryString) {
     this.ex = ex;
     this.queryString = queryString;
-    this.layer = layer;
   }
 
   @Override
   public void run() {
     BufferedReader br;
     try {
-      br = new BufferedReader(new InputStreamReader(
-          new URL(URL + this.queryString).openStream(), "UTF-8"));
+      br = new BufferedReader(new InputStreamReader(new URL(URL
+          + this.queryString).openStream(), "UTF-8"));
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {
         this.ex.shutdown();
@@ -67,8 +63,8 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
             rects = rectversions.getJsonObject(j).getJsonArray("rects");
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : this.layer.getMapillaryData()
-                  .getImages())
+              for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
+                  .getData().getImages())
                 if (image instanceof MapillaryImage
                     && ((MapillaryImage) image).getKey().equals(key))
                   ((MapillaryImage) image).addSign(data.getString("type"));
@@ -80,8 +76,8 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
         else if (rects != null) {
           for (int j = 0; j < rects.size(); j++) {
             JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : this.layer.getMapillaryData()
-                .getImages())
+            for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
+                .getData().getImages())
               if (image instanceof MapillaryImage
                   && ((MapillaryImage) image).getKey().equals(key))
                 ((MapillaryImage) image).addSign(data.getString("type"));

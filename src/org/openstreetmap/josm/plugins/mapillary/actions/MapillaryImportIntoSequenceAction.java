@@ -160,7 +160,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
       MapillaryImportedImage image = new MapillaryImportedImage(latValue,
           lonValue, caValue, file, datetimeOriginal.getStringValue());
-      MapillaryLayer.getInstance().data.add(image);
+      MapillaryLayer.getInstance().getData().add(image);
       image.getCapturedAt();
 
       this.images.add(image);

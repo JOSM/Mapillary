@@ -50,7 +50,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     this.waitForFullQuality = waitForPicture;
     this.followSelected = followSelected;
     this.goForward = goForward;
-    this.data = MapillaryLayer.getInstance().getMapillaryData();
+    this.data = MapillaryLayer.getInstance().getData();
     this.data.addListener(this);
   }
 

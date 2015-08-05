@@ -27,7 +27,7 @@ public abstract class AbstractMode extends MouseAdapter implements
 
   private final static int DOWNLOAD_COOLDOWN = 2000;
 
-  protected MapillaryData data = MapillaryLayer.getInstance().data;
+  protected MapillaryData data = MapillaryLayer.getInstance().getData();
   private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
 
   /**
@@ -54,8 +54,10 @@ public abstract class AbstractMode extends MouseAdapter implements
 
   /**
    * Paint the dataset using the engine set.
+   *
    * @param g
-   * @param mv The object that can translate GeoPoints to screen coordinates.
+   * @param mv
+   *          The object that can translate GeoPoints to screen coordinates.
    * @param box
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);

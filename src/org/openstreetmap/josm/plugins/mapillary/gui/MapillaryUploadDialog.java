@@ -27,8 +27,8 @@ public class MapillaryUploadDialog extends JPanel {
     this.group = new ButtonGroup();
 
     this.sequence = new JRadioButton("Upload selected sequence.");
-    if (MapillaryLayer.getInstance().data.getSelectedImage() == null
-        || !(MapillaryLayer.getInstance().data.getSelectedImage() instanceof MapillaryImportedImage))
+    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null
+        || !(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage))
       this.sequence.setEnabled(false);
     this.group.add(this.sequence);
     add(this.sequence);

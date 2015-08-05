@@ -95,7 +95,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         Shortcut.registerShortcut(tr("Mapillary dialog"),
             tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
         200, false, MapillaryPreferenceSetting.class);
-    MapillaryLayer.getInstance().data.addListener(this);
+    MapillaryLayer.getInstance().getData().addListener(this);
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
@@ -343,7 +343,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryLayer.getInstance().data.selectNext();
+      MapillaryLayer.getInstance().getData().selectNext();
     }
   }
 
@@ -365,7 +365,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryLayer.getInstance().data.selectPrevious();
+      MapillaryLayer.getInstance().getData().selectPrevious();
     }
   }
 
@@ -388,8 +388,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryLayer.getInstance().data.setSelectedImage(MapillaryLayer.RED,
-            true);
+        MapillaryLayer.getInstance().getData()
+            .setSelectedImage(MapillaryLayer.RED, true);
       }
     }
   }
@@ -413,8 +413,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryLayer.getInstance().data.setSelectedImage(MapillaryLayer.BLUE,
-            true);
+        MapillaryLayer.getInstance().getData()
+            .setSelectedImage(MapillaryLayer.BLUE, true);
       }
     }
   }

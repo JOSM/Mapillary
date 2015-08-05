@@ -83,10 +83,12 @@ public class MapillaryImportAction extends JosmAction {
             }
             try {
               if (extension.equals("jpg") || extension.equals("jpeg"))
-                MapillaryLayer.getInstance().data.add(readJPG(file.listFiles()[j]));
+                MapillaryLayer.getInstance().getData()
+                    .add(readJPG(file.listFiles()[j]));
 
               else if (extension.equals("png"))
-                MapillaryLayer.getInstance().data.add(readPNG(file.listFiles()[j]));
+                MapillaryLayer.getInstance().getData()
+                    .add(readPNG(file.listFiles()[j]));
             } catch (ImageReadException | IOException | NullPointerException e1) {
               Main.error(e1);
             }
@@ -97,7 +99,7 @@ public class MapillaryImportAction extends JosmAction {
               || file.getPath().substring(file.getPath().length() - 5)
                   .equals(".jpeg")) {
             try {
-              MapillaryLayer.getInstance().data.add(readJPG(file));
+              MapillaryLayer.getInstance().getData().add(readJPG(file));
             } catch (ImageReadException ex) {
               Main.error(ex);
             } catch (IOException ex) {
@@ -105,7 +107,7 @@ public class MapillaryImportAction extends JosmAction {
             }
           } else if (file.getPath().substring(file.getPath().length() - 4)
               .equals(".png")) {
-            MapillaryLayer.getInstance().data.add(readPNG(file));
+            MapillaryLayer.getInstance().getData().add(readPNG(file));
           }
         }
       }
