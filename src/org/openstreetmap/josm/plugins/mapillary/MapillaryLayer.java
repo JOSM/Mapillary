@@ -10,7 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
-import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
@@ -150,7 +150,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       Main.map.mapView.addMouseListener(mode);
       Main.map.mapView.addMouseMotionListener(mode);
       NavigatableComponent.addZoomChangeListener(mode);
-      updateHelpText();
+      MapillaryUtils.updateHelpText();
     }
   }
 
@@ -582,7 +582,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void activeLayerChange(Layer oldLayer, Layer newLayer) {
     if (newLayer == this) {
-      updateHelpText();
+      MapillaryUtils.updateHelpText();
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);
     } else
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);
@@ -596,23 +596,5 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void layerRemoved(Layer oldLayer) {
     // Nothing
-  }
-
-  /**
-   * Updates the help text at the bottom of the window.
-   */
-  public void updateHelpText() {
-    String ret = "";
-    if (PluginState.isDownloading())
-      ret += tr("Downloading");
-    else if (this.data.size() > 0)
-      ret += tr("Total images: {0}", this.data.size());
-    else
-      ret += tr("No images found");
-    if (this.mode != null)
-      ret += " -- " + tr(this.mode.toString());
-    if (PluginState.isUploading())
-      ret += " -- " + PluginState.getUploadString();
-    Main.map.statusLine.setHelpText(ret);
   }
 }

@@ -18,7 +18,8 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 public class UploadTest extends AbstractTest {
 
@@ -32,7 +33,7 @@ public class UploadTest extends AbstractTest {
         new LatLon(0, 0));
     File updatedFile = null;
     try {
-      updatedFile = OAuthUtils.updateFile(img);
+      updatedFile = UploadUtils.updateFile(img);
       ImageMetadata metadata = Imaging.getMetadata(updatedFile);
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
       assertTrue(jpegMetadata
@@ -47,14 +48,14 @@ public class UploadTest extends AbstractTest {
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION) != null);
       assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL) != null);
-      assertEquals(0, MapillaryImportAction.degMinSecToDouble(
+      assertEquals(0, MapillaryUtils.degMinSecToDouble(
           (RationalNumber[]) jpegMetadata.findEXIFValueWithExactMatch(
               GpsTagConstants.GPS_TAG_GPS_LATITUDE).getValue(),
           jpegMetadata
               .findEXIFValueWithExactMatch(
                   GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF).getValue()
               .toString()), 0.01);
-      assertEquals(0, MapillaryImportAction.degMinSecToDouble(
+      assertEquals(0, MapillaryUtils.degMinSecToDouble(
           (RationalNumber[]) jpegMetadata.findEXIFValueWithExactMatch(
               GpsTagConstants.GPS_TAG_GPS_LONGITUDE).getValue(),
           jpegMetadata

@@ -24,6 +24,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -152,10 +153,10 @@ public class MapillaryImportAction extends JosmAction {
       double lonValue = 0;
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
-        latValue = degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref
+        latValue = MapillaryUtils.degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref
             .getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
-        lonValue = degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref
+        lonValue = MapillaryUtils.degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref
             .getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
@@ -214,64 +215,5 @@ public class MapillaryImportAction extends JosmAction {
    */
   public MapillaryImportedImage readPNG(File file) {
     return readNoTags(file);
-  }
-
-  /**
-   * Calculates the decimal degree-value from a degree value given in
-   * degrees-minutes-seconds-format
-   *
-   * @param degMinSec
-   *          an array of length 3, the values in there are (in this order)
-   *          degrees, minutes and seconds
-   * @param ref
-   *          the latitude or longitude reference determining if the given value
-   *          is:
-   *          <ul>
-   *          <li>north (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
-   *          south (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
-   *          the equator</li>
-   *          <li>east (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
-   *          west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
-   *          ) of the equator</li>
-   *          </ul>
-   * @return the decimal degree-value for the given input, negative when west of
-   *         0-meridian or south of equator, positive otherwise
-   * @throws IllegalArgumentException
-   *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
-   *           not one of the values mentioned above
-   */
-  // TODO: Maybe move into a separate utility class?
-  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
-    if (degMinSec == null || degMinSec.length != 3) {
-      throw new IllegalArgumentException("Array's length must be 3.");
-    }
-    for (int i = 0; i < 3; i++)
-      if (degMinSec[i] == null)
-        throw new IllegalArgumentException("Null value in array.");
-
-    switch (ref) {
-      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
-      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
-      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
-      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
-        break;
-      default:
-        throw new IllegalArgumentException("Invalid ref.");
-    }
-
-    double result = degMinSec[0].doubleValue(); // degrees
-    result += degMinSec[1].doubleValue() / 60; // minutes
-    result += degMinSec[2].doubleValue() / 3600; // seconds
-
-    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
-        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
-      result *= -1;
-    }
-
-    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
-    return result;
   }
 }

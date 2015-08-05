@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.util;
+package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.File;
 

@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
 /**
@@ -68,7 +68,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   public void run() {
     try {
       PluginState.startDownload();
-      MapillaryLayer.getInstance().updateHelpText();
+      MapillaryUtils.updateHelpText();
       downloadSequences();
       completeImages();
       MapillaryMainDialog.getInstance().updateTitle();
@@ -77,9 +77,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       Main.error("Mapillary download interrupted (probably because of closing the layer).");
     } finally {
       PluginState.finishDownload();
-      MapillaryLayer.getInstance().updateHelpText();
+      MapillaryUtils.updateHelpText();
     }
-    MapillaryLayer.getInstance().updateHelpText();
+    MapillaryUtils.updateHelpText();
     MapillaryData.dataUpdated();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();

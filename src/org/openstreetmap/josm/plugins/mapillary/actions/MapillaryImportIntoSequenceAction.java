@@ -28,6 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -150,10 +151,10 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       double lonValue = 0;
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
-        latValue = MapillaryImportAction.degMinSecToDouble(
+        latValue = MapillaryUtils.degMinSecToDouble(
             (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
-        lonValue = MapillaryImportAction.degMinSecToDouble(
+        lonValue = MapillaryUtils.degMinSecToDouble(
             (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();

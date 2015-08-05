@@ -13,6 +13,7 @@ import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Test the importation of images.
@@ -60,13 +61,12 @@ public class ImportTest extends AbstractTest {
     num[1] = new RationalNumber(0, 1);
     num[2] = new RationalNumber(0, 1);
     String ref = GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH;
-    assertEquals(1, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    assertEquals(1, MapillaryUtils.degMinSecToDouble(num, ref), 0.01);
     ref = GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH;
-    assertEquals(-1, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    assertEquals(-1, MapillaryUtils.degMinSecToDouble(num, ref), 0.01);
     num[0] = new RationalNumber(180, 1);
-    assertEquals(-180, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    assertEquals(-180, MapillaryUtils.degMinSecToDouble(num, ref), 0.01);
     num[0] = new RationalNumber(190, 1);
-    assertEquals(170, MapillaryImportAction.degMinSecToDouble(num, ref), 0.01);
+    assertEquals(170, MapillaryUtils.degMinSecToDouble(num, ref), 0.01);
   }
-
 }
