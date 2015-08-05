@@ -100,14 +100,14 @@ public class MapillarySequenceDownloadThread extends Thread {
 <span class="fc" id="L100">        MapillaryAbstractImage.LOCK.lock();</span>
         try {
 <span class="fc bfc" id="L102" title="All 2 branches covered.">          for (MapillaryImage img : finalImages) {</span>
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (this.layer.getMapillaryData().getImages().contains(img)) {</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (this.layer.getData().getImages().contains(img)) {</span>
               // The image in finalImages is substituted by the one in the
               // database, as they represent the same picture.
-<span class="nc" id="L106">              img = (MapillaryImage) this.layer.getMapillaryData().getImages()</span>
-<span class="nc" id="L107">                  .get(this.layer.getMapillaryData().getImages().indexOf(img));</span>
+<span class="nc" id="L106">              img = (MapillaryImage) this.layer.getData().getImages()</span>
+<span class="nc" id="L107">                  .get(this.layer.getData().getImages().indexOf(img));</span>
 <span class="nc" id="L108">              sequence.add(img);</span>
-<span class="nc" id="L109">              ((MapillaryImage) this.layer.getMapillaryData().getImages()</span>
-<span class="nc" id="L110">                  .get(this.layer.getMapillaryData().getImages().indexOf(img)))</span>
+<span class="nc" id="L109">              ((MapillaryImage) this.layer.getData().getImages()</span>
+<span class="nc" id="L110">                  .get(this.layer.getData().getImages().indexOf(img)))</span>
 <span class="nc" id="L111">                  .setSequence(sequence);</span>
 <span class="nc" id="L112">              finalImages.set(finalImages.indexOf(img), img);</span>
             } else {
@@ -120,7 +120,7 @@ public class MapillarySequenceDownloadThread extends Thread {
 <span class="pc" id="L120">          LOCK.unlock();</span>
 <span class="fc" id="L121">        }</span>
 
-<span class="fc" id="L123">        this.layer.getMapillaryData().add(</span>
+<span class="fc" id="L123">        this.layer.getData().add(</span>
             new ArrayList&lt;MapillaryAbstractImage&gt;(finalImages), false);
       }
 <span class="nc" id="L126">    } catch (IOException e) {</span>

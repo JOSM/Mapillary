@@ -5,9 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -15,8 +12,8 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryUploadDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -35,45 +32,44 @@ public class MapillaryUploadAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryUploadAction() {
-<span class="nc" id="L38">    super(tr(&quot;Upload pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L39">        tr(&quot;Upload pictures&quot;), Shortcut.registerShortcut(&quot;Upload Mapillary&quot;,</span>
-<span class="nc" id="L40">            tr(&quot;Upload Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
+<span class="nc" id="L35">    super(tr(&quot;Upload pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="nc" id="L36">        tr(&quot;Upload pictures&quot;), Shortcut.registerShortcut(&quot;Upload Mapillary&quot;,</span>
+<span class="nc" id="L37">            tr(&quot;Upload Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
             Shortcut.NONE), false, &quot;mapillaryUpload&quot;, false);
-<span class="nc" id="L42">    this.setEnabled(false);</span>
-<span class="nc" id="L43">    MapillaryData.getInstance().addListener(this);</span>
-<span class="nc" id="L44">  }</span>
+<span class="nc" id="L39">    this.setEnabled(false);</span>
+<span class="nc" id="L40">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L48">    MapillaryUploadDialog dialog = new MapillaryUploadDialog();</span>
-<span class="nc" id="L49">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
+<span class="nc" id="L44">    MapillaryUploadDialog dialog = new MapillaryUploadDialog();</span>
+<span class="nc" id="L45">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
         JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L51">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Upload pictures.&quot;));</span>
-<span class="nc" id="L52">    dlg.setMinimumSize(new Dimension(400, 150));</span>
-<span class="nc" id="L53">    dlg.setVisible(true);</span>
+<span class="nc" id="L47">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Upload pictures.&quot;));</span>
+<span class="nc" id="L48">    dlg.setMinimumSize(new Dimension(400, 150));</span>
+<span class="nc" id="L49">    dlg.setVisible(true);</span>
 
-<span class="nc bnc" id="L55" title="All 2 branches missed.">    if (pane.getValue() != null</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">      if (dialog.sequence.isSelected()) {</span>
-<span class="nc" id="L58">        OAuthUtils.uploadSequence(MapillaryData.getInstance()</span>
-<span class="nc" id="L59">            .getSelectedImage().getSequence());</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (pane.getValue() != null</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">      if (dialog.sequence.isSelected()) {</span>
+<span class="nc" id="L54">        OAuthUtils.uploadSequence(MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L55">            .getSelectedImage().getSequence());</span>
       }
     }
-<span class="nc" id="L62">  }</span>
+<span class="nc" id="L58">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="nc" id="L67">  }</span>
+<span class="nc" id="L63">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L72" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="nc" id="L73">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, true);</span>
-<span class="nc bnc" id="L74" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="nc" id="L75">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, false);</span>
-<span class="nc" id="L76">  }</span>
+<span class="nc bnc" id="L68" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
+<span class="nc" id="L69">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, true);</span>
+<span class="nc bnc" id="L70" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
+<span class="nc" id="L71">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, false);</span>
+<span class="nc" id="L72">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

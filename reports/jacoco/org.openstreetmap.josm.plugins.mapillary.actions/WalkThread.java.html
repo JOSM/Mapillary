@@ -50,7 +50,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc" id="L50">    this.waitForFullQuality = waitForPicture;</span>
 <span class="nc" id="L51">    this.followSelected = followSelected;</span>
 <span class="nc" id="L52">    this.goForward = goForward;</span>
-<span class="nc" id="L53">    this.data = MapillaryLayer.getInstance().getMapillaryData();</span>
+<span class="nc" id="L53">    this.data = MapillaryLayer.getInstance().getData();</span>
 <span class="nc" id="L54">    this.data.addListener(this);</span>
 <span class="nc" id="L55">  }</span>
 
@@ -195,7 +195,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc" id="L195">      this.end = true;</span>
 <span class="nc" id="L196">      this.data.removeListener(this);</span>
 <span class="nc" id="L197">      MapillaryMainDialog.getInstance()</span>
-<span class="nc" id="L198">          .setMode(MapillaryMainDialog.Mode.NORMAL);</span>
+<span class="nc" id="L198">          .setMode(MapillaryMainDialog.MODE.NORMAL);</span>
     }
 <span class="nc" id="L200">  }</span>
 }

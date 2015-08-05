@@ -96,7 +96,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     // Start iterating the images
 <span class="nc" id="L97">    g.setColor(Color.MAGENTA);</span>
 <span class="nc bnc" id="L98" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance()</span>
-<span class="nc" id="L99">        .getMapillaryData().getImages()) {</span>
+<span class="nc" id="L99">        .getData().getImages()) {</span>
 <span class="nc bnc" id="L100" title="All 2 branches missed.">      if (img instanceof MapillaryImage) {</span>
 <span class="nc" id="L101">        g.fillOval(mv.getPoint(img.getLatLon()).x - 3,</span>
 <span class="nc" id="L102">            mv.getPoint(img.getLatLon()).y - 3, 6, 6);</span>

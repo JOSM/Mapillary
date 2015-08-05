@@ -17,9 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * GUI for exporting images.
@@ -80,57 +80,59 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 <span class="nc" id="L80">    this.group.add(this.selected);</span>
 <span class="nc" id="L81">    this.group.add(this.rewrite);</span>
     // Some options are disabled depending on the circumstances
-<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (MapillaryData.getInstance().getSelectedImage() == null</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        || !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage &amp;&amp; ((MapillaryImage) MapillaryData</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">            .getInstance().getSelectedImage()).getSequence() != null)) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        || !(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage &amp;&amp; ((MapillaryImage) MapillaryLayer</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            .getInstance().getData().getSelectedImage()).getSequence() != null)) {</span>
 <span class="nc" id="L86">      this.sequence.setEnabled(false);</span>
     }
-<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {</span>
-<span class="nc" id="L89">      this.selected.setEnabled(false);</span>
+<span class="nc" id="L88">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages()</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        .isEmpty()) {</span>
+<span class="nc" id="L90">      this.selected.setEnabled(false);</span>
     }
-<span class="nc" id="L91">    this.rewrite.setEnabled(false);</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryData.getInstance().getImages())</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">      if (img instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L94">        this.rewrite.setEnabled(true);</span>
+<span class="nc" id="L92">    this.rewrite.setEnabled(false);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L94">        .getImages())</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">      if (img instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L96">        this.rewrite.setEnabled(true);</span>
 
-<span class="nc" id="L96">    this.path = new JLabel(tr(&quot;Select a folder&quot;));</span>
-<span class="nc" id="L97">    this.choose = new JButton(tr(&quot;Explore&quot;));</span>
-<span class="nc" id="L98">    this.choose.addActionListener(this);</span>
+<span class="nc" id="L98">    this.path = new JLabel(tr(&quot;Select a folder&quot;));</span>
+<span class="nc" id="L99">    this.choose = new JButton(tr(&quot;Explore&quot;));</span>
+<span class="nc" id="L100">    this.choose.addActionListener(this);</span>
 
     // All options belong to the same jpanel so the are in line.
-<span class="nc" id="L101">    JPanel jpanel = new JPanel();</span>
-<span class="nc" id="L102">    jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));</span>
-<span class="nc" id="L103">    jpanel.add(this.all);</span>
-<span class="nc" id="L104">    jpanel.add(this.sequence);</span>
-<span class="nc" id="L105">    jpanel.add(this.selected);</span>
-<span class="nc" id="L106">    jpanel.add(this.rewrite);</span>
-<span class="nc" id="L107">    jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L108">    this.path.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L109">    this.choose.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L103">    JPanel jpanel = new JPanel();</span>
+<span class="nc" id="L104">    jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));</span>
+<span class="nc" id="L105">    jpanel.add(this.all);</span>
+<span class="nc" id="L106">    jpanel.add(this.sequence);</span>
+<span class="nc" id="L107">    jpanel.add(this.selected);</span>
+<span class="nc" id="L108">    jpanel.add(this.rewrite);</span>
+<span class="nc" id="L109">    jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L110">    this.path.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L111">    this.choose.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
 
-<span class="nc" id="L111">    add(jpanel);</span>
-<span class="nc" id="L112">    add(this.path);</span>
-<span class="nc" id="L113">    add(this.choose);</span>
-<span class="nc" id="L114">  }</span>
+<span class="nc" id="L113">    add(jpanel);</span>
+<span class="nc" id="L114">    add(this.path);</span>
+<span class="nc" id="L115">    add(this.choose);</span>
+<span class="nc" id="L116">  }</span>
 
   /**
    * Creates the folder chooser GUI.
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L121">    this.chooser = new JFileChooser();</span>
-<span class="nc" id="L122">    this.chooser.setCurrentDirectory(new java.io.File(System</span>
-<span class="nc" id="L123">        .getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L124">    this.chooser.setDialogTitle(tr(&quot;Select a directory&quot;));</span>
-<span class="nc" id="L125">    this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
-<span class="nc" id="L126">    this.chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L123">    this.chooser = new JFileChooser();</span>
+<span class="nc" id="L124">    this.chooser.setCurrentDirectory(new java.io.File(System</span>
+<span class="nc" id="L125">        .getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L126">    this.chooser.setDialogTitle(tr(&quot;Select a directory&quot;));</span>
+<span class="nc" id="L127">    this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+<span class="nc" id="L128">    this.chooser.setAcceptAllFileFilterUsed(false);</span>
 
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (this.chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc" id="L129">      this.path.setText(this.chooser.getSelectedFile().toString());</span>
-<span class="nc" id="L130">      this.updateUI();</span>
-<span class="nc" id="L131">      this.ok.setEnabled(true);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (this.chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc" id="L131">      this.path.setText(this.chooser.getSelectedFile().toString());</span>
+<span class="nc" id="L132">      this.updateUI();</span>
+<span class="nc" id="L133">      this.ok.setEnabled(true);</span>
     }
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L135">  }</span>
 
   /**
    * Enables/disables some parts of the panel depending if the rewrite button is
@@ -151,21 +153,22 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
      * @param dlg
      *          Parent dialog.
      */
-<span class="nc" id="L154">    public RewriteButtonAction(MapillaryExportDialog dlg) {</span>
-<span class="nc" id="L155">      this.dlg = dlg;</span>
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L156">    public RewriteButtonAction(MapillaryExportDialog dlg) {</span>
+<span class="nc" id="L157">      this.dlg = dlg;</span>
+<span class="nc" id="L158">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L160" title="All 2 branches missed.">      MapillaryExportDialog.this.choose.setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());</span>
-<span class="nc bnc" id="L161" title="All 2 branches missed.">      if (MapillaryExportDialog.this.rewrite.isSelected()) {</span>
-<span class="nc" id="L162">        this.lastPath = this.dlg.path.getText();</span>
-<span class="nc" id="L163">        this.dlg.path.setText(&quot; &quot;);</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">      } else if (this.lastPath != null) {</span>
-<span class="nc" id="L165">        this.dlg.path.setText(this.lastPath);</span>
+<span class="nc" id="L162">      MapillaryExportDialog.this.choose</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">          .setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">      if (MapillaryExportDialog.this.rewrite.isSelected()) {</span>
+<span class="nc" id="L165">        this.lastPath = this.dlg.path.getText();</span>
+<span class="nc" id="L166">        this.dlg.path.setText(&quot; &quot;);</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">      } else if (this.lastPath != null) {</span>
+<span class="nc" id="L168">        this.dlg.path.setText(this.lastPath);</span>
       }
 
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L171">    }</span>
 
   }
 }

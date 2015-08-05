@@ -10,6 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
@@ -66,11 +67,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-<span class="fc" id="L69">  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(</span>
+<span class="fc" id="L70">  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(</span>
       &quot;mapillary.sequence-max-jump-distance&quot;, 100);
 
   /** If the download is in semiautomatic during this object lifetime. */
-<span class="fc" id="L73">  public boolean TEMP_SEMIAUTOMATIC = false;</span>
+<span class="fc" id="L74">  public boolean TEMP_SEMIAUTOMATIC = false;</span>
 
   /** Unique instance of the class */
   public static MapillaryLayer INSTANCE;
@@ -80,7 +81,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public static MapillaryImage RED;
 
   /** {@link MapillaryData} object that stores the database */
-  public final MapillaryData data;
+  private final MapillaryData data;
 
   /** The bounds of the areas for which the pictures have been downloaded */
   public CopyOnWriteArrayList&lt;Bounds&gt; bounds;
@@ -88,48 +89,48 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /** Mode of the layer */
   public AbstractMode mode;
 
-<span class="fc" id="L91">  private int highlightPointRadius = Main.pref.getInteger(</span>
+<span class="fc" id="L92">  private int highlightPointRadius = Main.pref.getInteger(</span>
       &quot;mappaint.highlight.radius&quot;, 7);
-<span class="fc" id="L93">  private int highlightStep = Main.pref</span>
-<span class="fc" id="L94">      .getInteger(&quot;mappaint.highlight.step&quot;, 4);</span>
+<span class="fc" id="L94">  private int highlightStep = Main.pref</span>
+<span class="fc" id="L95">      .getInteger(&quot;mappaint.highlight.step&quot;, 4);</span>
 
   private volatile TexturePaint hatched;
 
   private MapillaryLayer() {
-<span class="fc" id="L99">    super(tr(&quot;Mapillary Images&quot;));</span>
-<span class="fc" id="L100">    this.data = MapillaryData.getInstance();</span>
-<span class="fc" id="L101">    this.bounds = new CopyOnWriteArrayList&lt;&gt;();</span>
-<span class="fc" id="L102">    init();</span>
-<span class="fc" id="L103">  }</span>
+<span class="fc" id="L100">    super(tr(&quot;Mapillary Images&quot;));</span>
+<span class="fc" id="L101">    this.data = new MapillaryData();</span>
+<span class="fc" id="L102">    this.bounds = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L103">    init();</span>
+<span class="fc" id="L104">  }</span>
 
   /**
    * Initializes the Layer.
    */
   private void init() {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (INSTANCE == null)</span>
-<span class="fc" id="L110">      INSTANCE = this;</span>
-<span class="pc bpc" id="L111" title="3 of 4 branches missed.">    if (Main.main != null &amp;&amp; Main.map.mapView != null) {</span>
-<span class="nc" id="L112">      setMode(new SelectMode());</span>
-<span class="nc" id="L113">      Main.map.mapView.addLayer(this);</span>
-<span class="nc" id="L114">      MapView.addEditLayerChangeListener(this, false);</span>
-<span class="nc" id="L115">      MapView.addLayerChangeListener(this);</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L117">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)</span>
-<span class="nc" id="L119">        MapillaryDownloader.automaticDownload();</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)</span>
-<span class="nc" id="L121">        this.mode.zoomChanged();</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    if (INSTANCE == null)</span>
+<span class="fc" id="L111">      INSTANCE = this;</span>
+<span class="pc bpc" id="L112" title="3 of 4 branches missed.">    if (Main.main != null &amp;&amp; Main.map.mapView != null) {</span>
+<span class="nc" id="L113">      setMode(new SelectMode());</span>
+<span class="nc" id="L114">      Main.map.mapView.addLayer(this);</span>
+<span class="nc" id="L115">      MapView.addEditLayerChangeListener(this, false);</span>
+<span class="nc" id="L116">      MapView.addLayerChangeListener(this);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
+<span class="nc" id="L118">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)</span>
+<span class="nc" id="L120">        MapillaryDownloader.automaticDownload();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)</span>
+<span class="nc" id="L122">        this.mode.zoomChanged();</span>
     }
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in</span>
                                                // headless mode
-<span class="nc" id="L125">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (!MapillaryMainDialog.getInstance().isShowing())</span>
-<span class="nc" id="L127">        MapillaryMainDialog.getInstance().getButton().doClick();</span>
+<span class="nc" id="L126">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">      if (!MapillaryMainDialog.getInstance().isShowing())</span>
+<span class="nc" id="L128">        MapillaryMainDialog.getInstance().getButton().doClick();</span>
     }
-<span class="fc" id="L129">    createHatchTexture();</span>
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L131">      MapillaryData.dataUpdated();</span>
-<span class="fc" id="L132">  }</span>
+<span class="fc" id="L130">    createHatchTexture();</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L132">      MapillaryData.dataUpdated();</span>
+<span class="fc" id="L133">  }</span>
 
   /**
    * Changes the mode the the given one.
@@ -138,20 +139,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *          The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
-<span class="nc bnc" id="L141" title="All 2 branches missed.">    if (this.mode != null) {</span>
-<span class="nc" id="L142">      Main.map.mapView.removeMouseListener(this.mode);</span>
-<span class="nc" id="L143">      Main.map.mapView.removeMouseMotionListener(this.mode);</span>
-<span class="nc" id="L144">      NavigatableComponent.removeZoomChangeListener(this.mode);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">    if (this.mode != null) {</span>
+<span class="nc" id="L143">      Main.map.mapView.removeMouseListener(this.mode);</span>
+<span class="nc" id="L144">      Main.map.mapView.removeMouseMotionListener(this.mode);</span>
+<span class="nc" id="L145">      NavigatableComponent.removeZoomChangeListener(this.mode);</span>
     }
-<span class="nc" id="L146">    this.mode = mode;</span>
-<span class="nc bnc" id="L147" title="All 2 branches missed.">    if (mode != null) {</span>
-<span class="nc" id="L148">      Main.map.mapView.setNewCursor(mode.cursor, this);</span>
-<span class="nc" id="L149">      Main.map.mapView.addMouseListener(mode);</span>
-<span class="nc" id="L150">      Main.map.mapView.addMouseMotionListener(mode);</span>
-<span class="nc" id="L151">      NavigatableComponent.addZoomChangeListener(mode);</span>
-<span class="nc" id="L152">      updateHelpText();</span>
+<span class="nc" id="L147">    this.mode = mode;</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    if (mode != null) {</span>
+<span class="nc" id="L149">      Main.map.mapView.setNewCursor(mode.cursor, this);</span>
+<span class="nc" id="L150">      Main.map.mapView.addMouseListener(mode);</span>
+<span class="nc" id="L151">      Main.map.mapView.addMouseMotionListener(mode);</span>
+<span class="nc" id="L152">      NavigatableComponent.addZoomChangeListener(mode);</span>
+<span class="nc" id="L153">      updateHelpText();</span>
     }
-<span class="nc" id="L154">  }</span>
+<span class="nc" id="L155">  }</span>
 
   /**
    * Returns the unique instance of this class.
@@ -159,9 +160,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The unique instance of this class.
    */
   public synchronized static MapillaryLayer getInstance() {
-<span class="fc bfc" id="L162" title="All 2 branches covered.">    if (INSTANCE == null)</span>
-<span class="fc" id="L163">      return new MapillaryLayer();</span>
-<span class="fc" id="L164">    return MapillaryLayer.INSTANCE;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (INSTANCE == null)</span>
+<span class="fc" id="L164">      return new MapillaryLayer();</span>
+<span class="fc" id="L165">    return MapillaryLayer.INSTANCE;</span>
   }
 
   /**
@@ -170,25 +171,24 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
-  public MapillaryData getMapillaryData() {
-<span class="fc" id="L174">    return this.data;</span>
+  public MapillaryData getData() {
+<span class="fc" id="L175">    return this.data;</span>
   }
 
   @Override
   public void destroy() {
-<span class="nc" id="L179">    setMode(null);</span>
-<span class="nc" id="L180">    AbstractMode.resetThread();</span>
-<span class="nc" id="L181">    MapillaryDownloader.stopAll();</span>
-<span class="nc" id="L182">    MapillaryMainDialog.getInstance().setImage(null);</span>
-<span class="nc" id="L183">    MapillaryMainDialog.getInstance().updateImage();</span>
-<span class="nc" id="L184">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);</span>
-<span class="nc" id="L185">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
-<span class="nc" id="L186">    Main.map.mapView.removeMouseListener(this.mode);</span>
-<span class="nc" id="L187">    Main.map.mapView.removeMouseMotionListener(this.mode);</span>
-<span class="nc" id="L188">    MapView.removeEditLayerChangeListener(this);</span>
-<span class="nc bnc" id="L189" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L190">      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);</span>
-<span class="nc" id="L191">    MapillaryData.clearInstance();</span>
+<span class="nc" id="L180">    setMode(null);</span>
+<span class="nc" id="L181">    AbstractMode.resetThread();</span>
+<span class="nc" id="L182">    MapillaryDownloader.stopAll();</span>
+<span class="nc" id="L183">    MapillaryMainDialog.getInstance().setImage(null);</span>
+<span class="nc" id="L184">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L185">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);</span>
+<span class="nc" id="L186">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
+<span class="nc" id="L187">    Main.map.mapView.removeMouseListener(this.mode);</span>
+<span class="nc" id="L188">    Main.map.mapView.removeMouseMotionListener(this.mode);</span>
+<span class="nc" id="L189">    MapView.removeEditLayerChangeListener(this);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() != null)</span>
+<span class="nc" id="L191">      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);</span>
 <span class="nc" id="L192">    clearInstance();</span>
 <span class="nc" id="L193">    super.destroy();</span>
 <span class="nc" id="L194">  }</span>
@@ -603,13 +603,17 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public void updateHelpText() {
 <span class="nc" id="L605">    String ret = &quot;&quot;;</span>
-<span class="nc bnc" id="L606" title="All 2 branches missed.">    if (this.data.size() &gt; 0)</span>
-<span class="nc" id="L607">      ret += tr(&quot;Total images: {0}&quot;, this.data.size());</span>
+<span class="nc bnc" id="L606" title="All 2 branches missed.">    if (PluginState.isDownloading())</span>
+<span class="nc" id="L607">      ret += tr(&quot;Downloading&quot;);</span>
+<span class="nc bnc" id="L608" title="All 2 branches missed.">    else if (this.data.size() &gt; 0)</span>
+<span class="nc" id="L609">      ret += tr(&quot;Total images: {0}&quot;, this.data.size());</span>
     else
-<span class="nc" id="L609">      ret += tr(&quot;No images found&quot;);</span>
-<span class="nc bnc" id="L610" title="All 2 branches missed.">    if (this.mode != null)</span>
-<span class="nc" id="L611">      ret += &quot; -- &quot; + tr(this.mode.toString());</span>
-<span class="nc" id="L612">    Main.map.statusLine.setHelpText(ret);</span>
-<span class="nc" id="L613">  }</span>
+<span class="nc" id="L611">      ret += tr(&quot;No images found&quot;);</span>
+<span class="nc bnc" id="L612" title="All 2 branches missed.">    if (this.mode != null)</span>
+<span class="nc" id="L613">      ret += &quot; -- &quot; + tr(this.mode.toString());</span>
+<span class="nc bnc" id="L614" title="All 2 branches missed.">    if (PluginState.isUploading())</span>
+<span class="nc" id="L615">      ret += &quot; -- &quot; + PluginState.getUploadString();</span>
+<span class="nc" id="L616">    Main.map.statusLine.setHelpText(ret);</span>
+<span class="nc" id="L617">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

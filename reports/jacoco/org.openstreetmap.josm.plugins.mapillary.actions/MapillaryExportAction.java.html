@@ -17,9 +17,9 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryExportManager;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
@@ -70,11 +70,11 @@ public class MapillaryExportAction extends JosmAction {
 <span class="nc bnc" id="L70" title="All 4 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION</span>
         &amp;&amp; this.dialog.chooser != null) {
 <span class="nc bnc" id="L72" title="All 2 branches missed.">      if (this.dialog.group.isSelected(this.dialog.all.getModel())) {</span>
-<span class="nc" id="L73">        export(MapillaryData.getInstance().getImages());</span>
+<span class="nc" id="L73">        export(MapillaryLayer.getInstance().getData().getImages());</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">      } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {</span>
 <span class="nc" id="L75">        ArrayList&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        for (MapillaryAbstractImage image : MapillaryData.getInstance()</span>
-<span class="nc" id="L77">            .getMultiSelectedImages())</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
+<span class="nc" id="L77">            .getData().getMultiSelectedImages())</span>
 <span class="nc bnc" id="L78" title="All 2 branches missed.">          if (image instanceof MapillaryImage) {</span>
 <span class="nc bnc" id="L79" title="All 2 branches missed.">            if (!images.contains(image))</span>
 <span class="nc" id="L80">              images.addAll(((MapillaryImage) image).getSequence().getImages());</span>
@@ -82,13 +82,13 @@ public class MapillaryExportAction extends JosmAction {
 <span class="nc" id="L82">            images.add(image);</span>
 <span class="nc" id="L83">        export(images);</span>
 <span class="nc bnc" id="L84" title="All 2 branches missed.">      } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {</span>
-<span class="nc" id="L85">        export(MapillaryData.getInstance().getMultiSelectedImages());</span>
+<span class="nc" id="L85">        export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());</span>
       }
       // This option ignores the selected directory.
 <span class="nc bnc" id="L88" title="All 2 branches missed.">    } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {</span>
 <span class="nc" id="L89">      ArrayList&lt;MapillaryImportedImage&gt; images = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">      for (MapillaryAbstractImage image : MapillaryData.getInstance()</span>
-<span class="nc" id="L91">          .getImages())</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">      for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
+<span class="nc" id="L91">          .getData().getImages())</span>
 <span class="nc bnc" id="L92" title="All 2 branches missed.">        if (image instanceof MapillaryImportedImage) {</span>
 <span class="nc" id="L93">          images.add(((MapillaryImportedImage) image));</span>
         }

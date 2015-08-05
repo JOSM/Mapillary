@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -28,36 +28,35 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-<span class="nc" id="L31">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L32">        tr(&quot;Zoom to selected image&quot;), Shortcut.registerShortcut(</span>
-            &quot;Zoom Mapillary&quot;,
+<span class="nc" id="L31">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin</span>
+<span class="nc" id="L32">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Zoom to selected image&quot;), Shortcut</span>
+<span class="nc" id="L33">        .registerShortcut(&quot;Zoom Mapillary&quot;,</span>
 <span class="nc" id="L34">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryZoom&quot;,
         false);
-<span class="nc" id="L37">    MapillaryData.getInstance().addListener(this);</span>
-<span class="nc" id="L38">    this.setEnabled(false);</span>
-<span class="nc" id="L39">  }</span>
+<span class="nc" id="L37">    this.setEnabled(false);</span>
+<span class="nc" id="L38">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (MapillaryData.getInstance().getSelectedImage() == null)</span>
-<span class="nc" id="L44">      throw new IllegalStateException();</span>
-<span class="nc" id="L45">    Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()</span>
-<span class="nc" id="L46">        .getLatLon());</span>
-<span class="nc" id="L47">  }</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
+<span class="nc" id="L43">      throw new IllegalStateException();</span>
+<span class="nc" id="L44">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L45">        .getSelectedImage().getLatLon());</span>
+<span class="nc" id="L46">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L52" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="nc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);</span>
-<span class="nc bnc" id="L54" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="nc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
-<span class="nc" id="L56">  }</span>
+<span class="nc bnc" id="L51" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
+<span class="nc" id="L52">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);</span>
+<span class="nc bnc" id="L53" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
+<span class="nc" id="L54">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
+<span class="nc" id="L55">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="nc" id="L61">  }</span>
+<span class="nc" id="L60">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

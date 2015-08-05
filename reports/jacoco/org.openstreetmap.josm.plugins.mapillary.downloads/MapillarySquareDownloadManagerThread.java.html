@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillarySquareDownloadManagerThread.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.downloads</a> &gt; <span class="el_source">MapillarySquareDownloadManagerThread.java</span></div><h1>MapillarySquareDownloadManagerThread.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.downloads;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
 /**
  * This Class is needed to create an indeterminate amount of downloads, because
@@ -30,106 +29,103 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String imageQueryString;
   private final String sequenceQueryString;
   private final String signQueryString;
-  private final MapillaryLayer layer;
 
   /**
    * Main constructor.
    *
    * @param queryStringParts
    *          The query data.
-   * @param layer
-   *          The layer to store the images.
    *
    */
   public MapillarySquareDownloadManagerThread(
-<span class="nc" id="L45">      ConcurrentHashMap&lt;String, Double&gt; queryStringParts, MapillaryLayer layer) {</span>
-<span class="nc" id="L46">    this.imageQueryString = buildQueryString(queryStringParts);</span>
-<span class="nc" id="L47">    this.sequenceQueryString = buildQueryString(queryStringParts);</span>
-<span class="nc" id="L48">    this.signQueryString = buildQueryString(queryStringParts);</span>
+<span class="nc" id="L41">      ConcurrentHashMap&lt;String, Double&gt; queryStringParts) {</span>
+<span class="nc" id="L42">    this.imageQueryString = buildQueryString(queryStringParts);</span>
+<span class="nc" id="L43">    this.sequenceQueryString = buildQueryString(queryStringParts);</span>
+<span class="nc" id="L44">    this.signQueryString = buildQueryString(queryStringParts);</span>
 
     // TODO: Move this line to the appropriate place, here's no GET-request
-<span class="nc" id="L51">    Main.info(&quot;GET &quot; + this.sequenceQueryString + &quot; (Mapillary plugin)&quot;);</span>
-
-<span class="nc" id="L53">    this.layer = layer;</span>
-<span class="nc" id="L54">  }</span>
+<span class="nc" id="L47">    Main.info(&quot;GET &quot; + this.sequenceQueryString + &quot; (Mapillary plugin)&quot;);</span>
+<span class="nc" id="L48">  }</span>
 
   // TODO: Maybe move into a separate utility class?
   private static String buildQueryString(ConcurrentHashMap&lt;String, Double&gt; hash) {
-<span class="nc" id="L58">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;</span>
+<span class="nc" id="L52">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;</span>
         + MapillaryDownloader.CLIENT_ID);
-<span class="nc bnc" id="L60" title="All 2 branches missed.">    for (String key : hash.keySet())</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">      if (key != null)</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">    for (String key : hash.keySet())</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">      if (key != null)</span>
         try {
-<span class="nc" id="L63">          ret.append(&quot;&amp;&quot; + URLEncoder.encode(key, &quot;UTF-8&quot;)).append(</span>
+<span class="nc" id="L57">          ret.append(&quot;&amp;&quot; + URLEncoder.encode(key, &quot;UTF-8&quot;)).append(</span>
               &quot;=&quot;
-<span class="nc" id="L65">                  + URLEncoder.encode(</span>
-<span class="nc" id="L66">                      String.format(Locale.UK, &quot;%f&quot;, hash.get(key)), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L67">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L59">                  + URLEncoder.encode(</span>
+<span class="nc" id="L60">                      String.format(Locale.UK, &quot;%f&quot;, hash.get(key)), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L61">        } catch (UnsupportedEncodingException e) {</span>
           // This should not happen, as the encoding is hard-coded
-<span class="nc" id="L69">        }</span>
-<span class="nc" id="L70">    return ret.toString();</span>
+<span class="nc" id="L63">        }</span>
+<span class="nc" id="L64">    return ret.toString();</span>
   }
 
   @Override
   public void run() {
-<span class="nc" id="L75">    Main.map.statusLine.setHelpText(tr(&quot;Downloading images from Mapillary&quot;));</span>
     try {
-<span class="nc" id="L77">      downloadSequences();</span>
-<span class="nc" id="L78">      Main.map.statusLine.setHelpText(tr(&quot;Downloading image's information&quot;));</span>
-<span class="nc" id="L79">      completeImages();</span>
-<span class="nc" id="L80">      MapillaryMainDialog.getInstance().updateTitle();</span>
-<span class="nc" id="L81">      Main.map.statusLine.setHelpText(tr(&quot;Downloading traffic signs&quot;));</span>
-<span class="nc" id="L82">      downloadSigns();</span>
-<span class="nc" id="L83">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L84">      Main.error(&quot;Mapillary download interrupted (probably because of closing the layer).&quot;);</span>
-<span class="nc" id="L85">    }</span>
-<span class="nc" id="L86">    this.layer.updateHelpText();</span>
-<span class="nc" id="L87">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L88">    MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L89">    MapillaryMainDialog.getInstance().updateImage();</span>
-<span class="nc" id="L90">  }</span>
+<span class="nc" id="L70">      PluginState.startDownload();</span>
+<span class="nc" id="L71">      MapillaryLayer.getInstance().updateHelpText();</span>
+<span class="nc" id="L72">      downloadSequences();</span>
+<span class="nc" id="L73">      completeImages();</span>
+<span class="nc" id="L74">      MapillaryMainDialog.getInstance().updateTitle();</span>
+<span class="nc" id="L75">      downloadSigns();</span>
+<span class="nc" id="L76">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L77">      Main.error(&quot;Mapillary download interrupted (probably because of closing the layer).&quot;);</span>
+    } finally {
+<span class="nc" id="L79">      PluginState.finishDownload();</span>
+<span class="nc" id="L80">      MapillaryLayer.getInstance().updateHelpText();</span>
+<span class="nc" id="L81">    }</span>
+<span class="nc" id="L82">    MapillaryLayer.getInstance().updateHelpText();</span>
+<span class="nc" id="L83">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L84">    MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L85">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L86">  }</span>
 
   private void downloadSequences() throws InterruptedException {
-<span class="nc" id="L93">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
+<span class="nc" id="L89">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
         new ArrayBlockingQueue&lt;Runnable&gt;(5));
-<span class="nc" id="L95">    int page = 0;</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
-<span class="nc" id="L97">      ex.execute(new MapillarySequenceDownloadThread(ex,</span>
+<span class="nc" id="L91">    int page = 0;</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
+<span class="nc" id="L93">      ex.execute(new MapillarySequenceDownloadThread(ex,</span>
           this.sequenceQueryString + &quot;&amp;page=&quot; + page + &quot;&amp;limit=10&quot;));
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
-<span class="nc" id="L100">        Thread.sleep(500);</span>
-<span class="nc" id="L101">      page++;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L96">        Thread.sleep(500);</span>
+<span class="nc" id="L97">      page++;</span>
     }
-<span class="nc" id="L103">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L104">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L105">  }</span>
+<span class="nc" id="L99">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L100">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L101">  }</span>
 
   private void completeImages() throws InterruptedException {
-<span class="nc" id="L108">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
+<span class="nc" id="L104">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
         new ArrayBlockingQueue&lt;Runnable&gt;(5));
-<span class="nc" id="L110">    int page = 0;</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
-<span class="nc" id="L112">      ex.execute(new MapillaryImageInfoDownloaderThread(ex,</span>
-          this.imageQueryString + &quot;&amp;page=&quot; + page + &quot;&amp;limit=20&quot;, this.layer));
-<span class="nc bnc" id="L114" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
-<span class="nc" id="L115">        Thread.sleep(100);</span>
-<span class="nc" id="L116">      page++;</span>
+<span class="nc" id="L106">    int page = 0;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
+<span class="nc" id="L108">      ex.execute(new MapillaryImageInfoDownloaderThread(ex,</span>
+          this.imageQueryString + &quot;&amp;page=&quot; + page + &quot;&amp;limit=20&quot;));
+<span class="nc bnc" id="L110" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L111">        Thread.sleep(100);</span>
+<span class="nc" id="L112">      page++;</span>
     }
-<span class="nc" id="L118">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L119">  }</span>
+<span class="nc" id="L114">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L115">  }</span>
 
   private void downloadSigns() throws InterruptedException {
-<span class="nc" id="L122">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
+<span class="nc" id="L118">    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,</span>
         new ArrayBlockingQueue&lt;Runnable&gt;(5));
-<span class="nc" id="L124">    int page = 0;</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
-<span class="nc" id="L126">      ex.execute(new MapillaryTrafficSignDownloaderThread(ex,</span>
-          this.signQueryString + &quot;&amp;page=&quot; + page + &quot;&amp;limit=20&quot;, this.layer));
-<span class="nc bnc" id="L128" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
-<span class="nc" id="L129">        Thread.sleep(100);</span>
-<span class="nc" id="L130">      page++;</span>
+<span class="nc" id="L120">    int page = 0;</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">    while (!ex.isShutdown()) {</span>
+<span class="nc" id="L122">      ex.execute(new MapillaryTrafficSignDownloaderThread(ex,</span>
+          this.signQueryString + &quot;&amp;page=&quot; + page + &quot;&amp;limit=20&quot;));
+<span class="nc bnc" id="L124" title="All 2 branches missed.">      while (ex.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L125">        Thread.sleep(100);</span>
+<span class="nc" id="L126">      page++;</span>
     }
-<span class="nc" id="L132">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L128">    ex.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L129">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -105,6 +105,9 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkListener.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog$RewriteButtonAction.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp$copyAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$1.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$downloadCheckBoxAction.class</li>
@@ -121,7 +124,7 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay$ImgDisplayMouseListener.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay$1.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.class</li>
-<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$Mode.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$MODE.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$1.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$2.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$nextPictureAction.class</li>
@@ -168,15 +171,16 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoGlyph.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSign.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSignElement.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.class</li>
 </ul>
 <p>
 <br/>
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>4149 lines of code analyzed,
-	in 97 classes, 
-	in 9 packages.</p>
+<p>4225 lines of code analyzed,
+	in 101 classes, 
+	in 10 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
 <tr class="tableheader">
 <th align="left">Metric</th>
@@ -185,8 +189,8 @@
 </tr>
 <tr class="tablerow0">
 <td>High Priority Warnings</td>
-<td align="right">11</td>
-<td align="right">2.65</td>
+<td align="right">13</td>
+<td align="right">3.08</td>
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
@@ -198,10 +202,10 @@
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>11</b>
+<b>13</b>
 </td>
 <td align="right">
-<b>2.65</b>
+<b>3.08</b>
 </td>
 </tr>
 </table>
@@ -249,14 +253,14 @@
 <td>
 <a href="#Warnings_STYLE">Dodgy code Warnings</a>
 </td>
-<td align="right">8</td>
+<td align="right">10</td>
 </tr>
 <tr class="tablerow1">
 <td>
 <b>Total</b>
 </td>
 <td align="right">
-<b>11</b>
+<b>13</b>
 </td>
 </tr>
 </table>
@@ -270,7 +274,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66516');">
+<tr class="tablerow1" onclick="toggleRow('N66660');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -279,9 +283,9 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66516" style="display: none;">
+<p id="N66660" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils.getWithHeader(URL)<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthUtils.java:[line 85]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils.getWithHeader(URL)<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthUtils.java:[line 87]</p>
 </td>
 </tr>
 </table>
@@ -293,7 +297,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66464');">
+<tr class="tablerow1" onclick="toggleRow('N66608');">
 <td>
 <span class="priority-1">MS</span>
 </td>
@@ -302,12 +306,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66464" style="display: none;">
+<p id="N66608" style="display: none;">
 <a href="#MS_MUTABLE_ARRAY">Bug type MS_MUTABLE_ARRAY (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader<br/>Field org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader.MODES<br/>At MapillaryDownloader.java:[line 30]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader<br/>Field org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader.MODES<br/>At MapillaryDownloader.java:[line 29]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65876');">
+<tr class="tablerow0" onclick="toggleRow('N65886');">
 <td>
 <span class="priority-1">MS</span>
 </td>
@@ -316,7 +320,7 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N65876" style="display: none;">
+<p id="N65886" style="display: none;">
 <a href="#MS_SHOULD_BE_FINAL">Bug type MS_SHOULD_BE_FINAL (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.LOCK<br/>At MapillaryAbstractImage.java:[line 26]</p>
 </td>
@@ -330,7 +334,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65928');">
+<tr class="tablerow1" onclick="toggleRow('N65938');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -339,12 +343,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N65928" style="display: none;">
+<p id="N65938" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.ICON16<br/>At MapillaryPlugin.java:[line 92]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.ICON16<br/>At MapillaryPlugin.java:[line 94]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65995');">
+<tr class="tablerow0" onclick="toggleRow('N66005');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -353,12 +357,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N65995" style="display: none;">
+<p id="N66005" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.ICON24<br/>At MapillaryPlugin.java:[line 91]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.ICON24<br/>At MapillaryPlugin.java:[line 93]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66062');">
+<tr class="tablerow1" onclick="toggleRow('N66072');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -367,12 +371,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66062" style="display: none;">
+<p id="N66072" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON<br/>At MapillaryPlugin.java:[line 93]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON<br/>At MapillaryPlugin.java:[line 95]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66129');">
+<tr class="tablerow0" onclick="toggleRow('N66139');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -381,12 +385,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66129" style="display: none;">
+<p id="N66139" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON_IMPORTED<br/>At MapillaryPlugin.java:[line 95]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON_IMPORTED<br/>At MapillaryPlugin.java:[line 97]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66196');">
+<tr class="tablerow1" onclick="toggleRow('N66206');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -395,12 +399,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66196" style="display: none;">
+<p id="N66206" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON_SELECTED<br/>At MapillaryPlugin.java:[line 94]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_ICON_SELECTED<br/>At MapillaryPlugin.java:[line 96]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66263');">
+<tr class="tablerow0" onclick="toggleRow('N66273');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -409,12 +413,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66263" style="display: none;">
+<p id="N66273" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_SIGN<br/>At MapillaryPlugin.java:[line 96]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.MAP_SIGN<br/>At MapillaryPlugin.java:[line 98]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66330');">
+<tr class="tablerow1" onclick="toggleRow('N66340');">
 <td>
 <span class="priority-1">ST</span>
 </td>
@@ -423,23 +427,51 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66330" style="display: none;">
+<p id="N66340" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.importAction<br/>At MapillaryPlugin.java:[line 101]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.importAction<br/>At MapillaryPlugin.java:[line 103]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66397');">
+<tr class="tablerow0" onclick="toggleRow('N66407');">
+<td>
+<span class="priority-1">ST</span>
+</td>
+<td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.uploadAction from instance method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N66407" style="display: none;">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.uploadAction<br/>At MapillaryPlugin.java:[line 108]</p>
+</td>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66474');">
 <td>
 <span class="priority-1">ST</span>
 </td>
 <td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.walkAction from instance method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)</td>
 </tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66474" style="display: none;">
+<a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.walkAction<br/>At MapillaryPlugin.java:[line 101]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66541');">
+<td>
+<span class="priority-1">ST</span>
+</td>
+<td>Write to static field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.zoomAction from instance method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)</td>
+</tr>
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66397" style="display: none;">
+<p id="N66541" style="display: none;">
 <a href="#ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD">Bug type ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.walkAction<br/>At MapillaryPlugin.java:[line 99]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method new org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin(PluginInformation)<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.zoomAction<br/>At MapillaryPlugin.java:[line 104]</p>
 </td>
 </tr>
 </table>
