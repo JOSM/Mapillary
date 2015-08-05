@@ -75,7 +75,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  public static enum Mode {
+  public static enum MODE {
     /** Standard mode to view pictures. */
     NORMAL,
     /** Mode when in walk. */
@@ -95,7 +95,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
         Shortcut.registerShortcut(tr("Mapillary dialog"),
             tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
         200, false, MapillaryPreferenceSetting.class);
-    MapillaryLayer.getInstance().getData().addListener(this);
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
@@ -147,7 +146,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @param mode
    *          The mode to be set.
    */
-  public void setMode(Mode mode) {
+  public void setMode(MODE mode) {
     switch (mode) {
       case NORMAL:
         createLayout(
@@ -165,6 +164,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
         break;
     }
     disableAllButtons();
+    if (mode.equals(MODE.NORMAL))
+      updateImage();
 
   }
 

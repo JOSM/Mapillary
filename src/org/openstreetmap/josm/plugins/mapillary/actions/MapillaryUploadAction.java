@@ -37,7 +37,6 @@ public class MapillaryUploadAction extends JosmAction implements
             tr("Upload Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryUpload", false);
     this.setEnabled(false);
-    MapillaryLayer.getInstance().getData().addListener(this);
   }
 
   @Override

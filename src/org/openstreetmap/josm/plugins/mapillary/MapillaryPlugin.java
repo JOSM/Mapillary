@@ -52,13 +52,15 @@ public class MapillaryPlugin extends Plugin {
   private final MapillaryExportAction exportAction;
   /** Import action */
   public static MapillaryImportAction importAction;
-  private final MapillaryZoomAction zoomAction;
+  /** Zoom action */
+  public static MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
   private final MapillaryJoinAction joinAction;
   /** Walk action */
   public static MapillaryWalkAction walkAction;
-  private final MapillaryUploadAction uploadAction;
+  /** Upload action */
+  public static MapillaryUploadAction uploadAction;
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   public static JMenuItem DOWNLOAD_MENU;
@@ -99,11 +101,11 @@ public class MapillaryPlugin extends Plugin {
     walkAction = new MapillaryWalkAction();
     this.exportAction = new MapillaryExportAction();
     importAction = new MapillaryImportAction();
-    this.zoomAction = new MapillaryZoomAction();
+    zoomAction = new MapillaryZoomAction();
     this.downloadViewAction = new MapillaryDownloadViewAction();
     this.importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
     this.joinAction = new MapillaryJoinAction();
-    this.uploadAction = new MapillaryUploadAction();
+    uploadAction = new MapillaryUploadAction();
 
     if (Main.main != null) { // important for headless mode
       DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
@@ -114,9 +116,9 @@ public class MapillaryPlugin extends Plugin {
           this.importIntoSequenceAction, false, 14);
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
           14);
-      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, this.uploadAction,
+      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, uploadAction,
           false, 14);
-      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, this.zoomAction, false,
+      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false,
           15);
       DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
           this.downloadViewAction, false, 14);

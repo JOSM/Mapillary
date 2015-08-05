@@ -195,7 +195,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
       this.end = true;
       this.data.removeListener(this);
       MapillaryMainDialog.getInstance()
-          .setMode(MapillaryMainDialog.Mode.NORMAL);
+          .setMode(MapillaryMainDialog.MODE.NORMAL);
     }
   }
 }

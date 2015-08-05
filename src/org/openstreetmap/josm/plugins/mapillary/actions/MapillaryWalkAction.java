@@ -59,7 +59,7 @@ public class MapillaryWalkAction extends JosmAction implements
           dialog.followSelection.isSelected(), dialog.goForward.isSelected());
       fireWalkStarted();
       this.thread.start();
-      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.Mode.WALK);
+      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.WALK);
     }
   }
 

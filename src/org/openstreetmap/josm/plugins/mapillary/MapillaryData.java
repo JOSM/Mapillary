@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,9 @@ public class MapillaryData {
     this.selectedImage = null;
 
     addListener(MapillaryPlugin.walkAction);
+    addListener(MapillaryPlugin.zoomAction);
+    addListener(MapillaryPlugin.uploadAction);
+    addListener(MapillaryMainDialog.getInstance());
   }
 
   /**
