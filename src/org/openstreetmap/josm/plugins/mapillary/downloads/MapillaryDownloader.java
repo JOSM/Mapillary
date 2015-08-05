@@ -156,7 +156,6 @@ public class MapillaryDownloader {
    */
   private static boolean isAreaTooBig() {
     double area = 0;
-    System.out.println(Main.map.mapView.getLayersOfType(OsmDataLayer.class));
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
       area += bounds.getArea();

@@ -4,6 +4,9 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.AWTEvent;
 import java.awt.Cursor;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -13,9 +16,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 import java.awt.Desktop;
 
@@ -83,11 +89,49 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Processes mouse events and responds to clicks.
    */
   @Override
-  protected void processMouseEvent(MouseEvent evt) {
-    super.processMouseEvent(evt);
-    if (evt.getID() == MouseEvent.MOUSE_CLICKED)
-      fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-          getNormalText()));
+  protected void processMouseEvent(MouseEvent e) {
+    super.processMouseEvent(e);
+    if (e.getID() == MouseEvent.MOUSE_CLICKED) {
+      if (e.getButton() == MouseEvent.BUTTON1)
+        fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+            getNormalText()));
+      if (e.getButton() == MouseEvent.BUTTON3) {
+        LinkPopUp menu = new LinkPopUp();
+        menu.show(e.getComponent(), e.getX(), e.getY());
+      }
+    }
+  }
+
+  /**
+   * PopUp shown when right click on the label.
+   *
+   * @author nokutu
+   *
+   */
+  private class LinkPopUp extends JPopupMenu {
+
+    private static final long serialVersionUID = 1384054752970921552L;
+
+    JMenuItem copy;
+
+    public LinkPopUp() {
+      this.copy = new JMenuItem("Copy key");
+      this.copy.addActionListener(new copyAction());
+      add(this.copy);
+    }
+
+    private class copyAction implements ActionListener {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        StringSelection stringSelection = new StringSelection(
+            ((MapillaryImage) MapillaryMainDialog.getInstance().getImage())
+                .getKey());
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(stringSelection, null);
+      }
+
+    }
   }
 
   /**

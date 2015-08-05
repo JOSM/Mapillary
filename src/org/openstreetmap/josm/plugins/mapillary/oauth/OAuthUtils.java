@@ -166,7 +166,6 @@ public class OAuthUtils {
 
     HttpResponse response = httpClient.execute(httpPost);
     if (response.getStatusLine().toString().contains("204")) {
-      System.out.println("Succesfully uploaded image");
       PluginState.imageUploaded();
     }
     file.delete();
@@ -233,7 +232,18 @@ public class OAuthUtils {
     }
   }
 
-  private static File updateFile(MapillaryImportedImage image)
+  /**
+   * Returns a file containing the picture and an updated version of the EXIF
+   * tags.
+   *
+   * @param image
+   * @return A File object containing the picture and an updated version of the
+   *         EXIF tags.
+   * @throws ImageReadException
+   * @throws IOException
+   * @throws ImageWriteException
+   */
+  public static File updateFile(MapillaryImportedImage image)
       throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory = null;

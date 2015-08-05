@@ -509,7 +509,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
       });
     } else if (data != null && result == LoadResult.SUCCESS) {
-      System.out.println(attributes.getMetadata());
       try {
         BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
             .getContent()));
