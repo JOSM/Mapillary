@@ -10,6 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.data.Bounds;
@@ -603,12 +604,16 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public void updateHelpText() {
     String ret = "";
-    if (this.data.size() > 0)
+    if (PluginState.isDownloading())
+      ret += tr("Downloading");
+    else if (this.data.size() > 0)
       ret += tr("Total images: {0}", this.data.size());
     else
       ret += tr("No images found");
     if (this.mode != null)
       ret += " -- " + tr(this.mode.toString());
+    if (PluginState.isUploading())
+      ret += " -- " + PluginState.getUploadString();
     Main.map.statusLine.setHelpText(ret);
   }
 }

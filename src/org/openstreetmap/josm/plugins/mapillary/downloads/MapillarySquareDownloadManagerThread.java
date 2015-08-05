@@ -1,7 +1,5 @@
 package org.openstreetmap.josm.plugins.mapillary.downloads;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
 /**
  * This Class is needed to create an indeterminate amount of downloads, because
@@ -72,16 +71,18 @@ public class MapillarySquareDownloadManagerThread extends Thread {
 
   @Override
   public void run() {
-    Main.map.statusLine.setHelpText(tr("Downloading images from Mapillary"));
     try {
+      PluginState.startDownload();
+      MapillaryLayer.getInstance().updateHelpText();
       downloadSequences();
-      Main.map.statusLine.setHelpText(tr("Downloading image's information"));
       completeImages();
       MapillaryMainDialog.getInstance().updateTitle();
-      Main.map.statusLine.setHelpText(tr("Downloading traffic signs"));
       downloadSigns();
     } catch (InterruptedException e) {
       Main.error("Mapillary download interrupted (probably because of closing the layer).");
+    } finally {
+      PluginState.finishDownload();
+      MapillaryLayer.getInstance().updateHelpText();
     }
     this.layer.updateHelpText();
     MapillaryData.dataUpdated();

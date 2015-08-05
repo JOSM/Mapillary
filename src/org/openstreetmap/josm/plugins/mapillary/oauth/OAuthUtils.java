@@ -48,7 +48,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
 /**
  * A set of utilities related to OAuth.
@@ -163,9 +165,12 @@ public class OAuthUtils {
     httpPost.setEntity(entity);
 
     HttpResponse response = httpClient.execute(httpPost);
-    if (response.getStatusLine().toString().contains("204"))
+    if (response.getStatusLine().toString().contains("204")) {
       System.out.println("Succesfully uploaded image");
+      PluginState.imageUploaded();
+    }
     file.delete();
+    MapillaryLayer.getInstance().updateHelpText();
   }
 
   /**
@@ -193,6 +198,9 @@ public class OAuthUtils {
 
     @Override
     public void run() {
+      PluginState.startUpload();
+      PluginState.imagesToUpload(this.images.size());
+      MapillaryLayer.getInstance().updateHelpText();
       for (MapillaryAbstractImage img : this.images) {
         if (!(img instanceof MapillaryImportedImage))
           throw new IllegalArgumentException(
@@ -200,6 +208,8 @@ public class OAuthUtils {
         this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
             this.uuid));
       }
+      this.ex.shutdown();
+      PluginState.finishUpload();
     }
   }
 
