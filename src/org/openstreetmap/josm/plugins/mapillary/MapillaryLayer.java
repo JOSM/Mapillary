@@ -98,7 +98,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
-    this.data = MapillaryData.getInstance();
+    this.data = new MapillaryData();
     this.bounds = new CopyOnWriteArrayList<>();
     init();
   }
@@ -189,7 +189,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapView.removeEditLayerChangeListener(this);
     if (Main.map.mapView.getEditLayer() != null)
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
-    MapillaryData.clearInstance();
     clearInstance();
     super.destroy();
   }

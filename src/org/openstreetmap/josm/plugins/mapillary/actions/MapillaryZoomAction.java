@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -28,22 +28,22 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-    super(tr("Zoom to selected image"), MapillaryPlugin.getProvider("icon24.png"),
-        tr("Zoom to selected image"), Shortcut.registerShortcut(
-            "Zoom Mapillary",
+    super(tr("Zoom to selected image"), MapillaryPlugin
+        .getProvider("icon24.png"), tr("Zoom to selected image"), Shortcut
+        .registerShortcut("Zoom Mapillary",
             tr("Zoom to the currently selected Mapillary image"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryZoom",
         false);
-    MapillaryData.getInstance().addListener(this);
+    MapillaryLayer.getInstance().data.addListener(this);
     this.setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryData.getInstance().getSelectedImage() == null)
+    if (MapillaryLayer.getInstance().data.getSelectedImage() == null)
       throw new IllegalStateException();
-    Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
-        .getLatLon());
+    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().data
+        .getSelectedImage().getLatLon());
   }
 
   @Override

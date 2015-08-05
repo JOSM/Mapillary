@@ -12,8 +12,8 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryUploadDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -37,7 +37,7 @@ public class MapillaryUploadAction extends JosmAction implements
             tr("Upload Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryUpload", false);
     this.setEnabled(false);
-    MapillaryData.getInstance().addListener(this);
+    MapillaryLayer.getInstance().data.addListener(this);
   }
 
   @Override
@@ -52,7 +52,7 @@ public class MapillaryUploadAction extends JosmAction implements
     if (pane.getValue() != null
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       if (dialog.sequence.isSelected()) {
-        OAuthUtils.uploadSequence(MapillaryData.getInstance()
+        OAuthUtils.uploadSequence(MapillaryLayer.getInstance().data
             .getSelectedImage().getSequence());
       }
     }

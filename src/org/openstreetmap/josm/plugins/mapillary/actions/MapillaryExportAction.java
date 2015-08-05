@@ -17,9 +17,9 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryExportManager;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
@@ -70,10 +70,10 @@ public class MapillaryExportAction extends JosmAction {
         && (int) pane.getValue() == JOptionPane.OK_OPTION
         && this.dialog.chooser != null) {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
-        export(MapillaryData.getInstance().getImages());
+        export(MapillaryLayer.getInstance().data.getImages());
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
         ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
-        for (MapillaryAbstractImage image : MapillaryData.getInstance()
+        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().data
             .getMultiSelectedImages())
           if (image instanceof MapillaryImage) {
             if (!images.contains(image))
@@ -82,12 +82,12 @@ public class MapillaryExportAction extends JosmAction {
             images.add(image);
         export(images);
       } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
-        export(MapillaryData.getInstance().getMultiSelectedImages());
+        export(MapillaryLayer.getInstance().data.getMultiSelectedImages());
       }
       // This option ignores the selected directory.
     } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
-      for (MapillaryAbstractImage image : MapillaryData.getInstance()
+      for (MapillaryAbstractImage image : MapillaryLayer.getInstance().data
           .getImages())
         if (image instanceof MapillaryImportedImage) {
           images.add(((MapillaryImportedImage) image));

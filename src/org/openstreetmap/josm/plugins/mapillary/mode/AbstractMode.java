@@ -27,7 +27,7 @@ public abstract class AbstractMode extends MouseAdapter implements
 
   private final static int DOWNLOAD_COOLDOWN = 2000;
 
-  protected MapillaryData data = MapillaryData.getInstance();
+  protected MapillaryData data = MapillaryLayer.getInstance().data;
   private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
 
   /**

@@ -22,7 +22,6 @@ import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -96,7 +95,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         Shortcut.registerShortcut(tr("Mapillary dialog"),
             tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
         200, false, MapillaryPreferenceSetting.class);
-    MapillaryData.getInstance().addListener(this);
+    MapillaryLayer.getInstance().data.addListener(this);
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
@@ -344,7 +343,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryData.getInstance().selectNext();
+      MapillaryLayer.getInstance().data.selectNext();
     }
   }
 
@@ -366,7 +365,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryData.getInstance().selectPrevious();
+      MapillaryLayer.getInstance().data.selectPrevious();
     }
   }
 
@@ -389,7 +388,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryData.getInstance().setSelectedImage(MapillaryLayer.RED, true);
+        MapillaryLayer.getInstance().data.setSelectedImage(MapillaryLayer.RED,
+            true);
       }
     }
   }
@@ -413,7 +413,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryData.getInstance().setSelectedImage(MapillaryLayer.BLUE, true);
+        MapillaryLayer.getInstance().data.setSelectedImage(MapillaryLayer.BLUE,
+            true);
       }
     }
   }

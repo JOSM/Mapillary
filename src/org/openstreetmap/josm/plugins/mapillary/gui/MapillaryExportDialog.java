@@ -17,9 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * GUI for exporting images.
@@ -80,16 +80,17 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     this.group.add(this.selected);
     this.group.add(this.rewrite);
     // Some options are disabled depending on the circumstances
-    if (MapillaryData.getInstance().getSelectedImage() == null
-        || !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryData
-            .getInstance().getSelectedImage()).getSequence() != null)) {
+    if (MapillaryLayer.getInstance().data.getSelectedImage() == null
+        || !(MapillaryLayer.getInstance().data.getSelectedImage() instanceof MapillaryImage && ((MapillaryImage) MapillaryLayer
+            .getInstance().data.getSelectedImage()).getSequence() != null)) {
       this.sequence.setEnabled(false);
     }
-    if (MapillaryData.getInstance().getMultiSelectedImages().isEmpty()) {
+    if (MapillaryLayer.getInstance().data.getMultiSelectedImages().isEmpty()) {
       this.selected.setEnabled(false);
     }
     this.rewrite.setEnabled(false);
-    for (MapillaryAbstractImage img : MapillaryData.getInstance().getImages())
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().data
+        .getImages())
       if (img instanceof MapillaryImportedImage)
         this.rewrite.setEnabled(true);
 
@@ -157,7 +158,8 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryExportDialog.this.choose.setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());
+      MapillaryExportDialog.this.choose
+          .setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());
       if (MapillaryExportDialog.this.rewrite.isSelected()) {
         this.lastPath = this.dlg.path.getText();
         this.dlg.path.setText(" ");

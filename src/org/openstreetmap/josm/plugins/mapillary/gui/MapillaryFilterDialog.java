@@ -25,10 +25,10 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -78,10 +78,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       "prohibitory_noturn" };
   /** The the {@link JCheckBox} where the respective tag should be searched */
   private final JCheckBox[] SIGN_CHECKBOXES = { this.signFilter.maxSpeed,
-      this.signFilter.stop, this.signFilter.giveWay, this.signFilter.roundabout,
-      this.signFilter.access, this.signFilter.access, this.signFilter.intersection,
-      this.signFilter.direction, this.signFilter.direction, this.signFilter.intersection,
-      this.signFilter.uneven, this.signFilter.noParking, this.signFilter.noOvertaking,
+      this.signFilter.stop, this.signFilter.giveWay,
+      this.signFilter.roundabout, this.signFilter.access,
+      this.signFilter.access, this.signFilter.intersection,
+      this.signFilter.direction, this.signFilter.direction,
+      this.signFilter.intersection, this.signFilter.uneven,
+      this.signFilter.noParking, this.signFilter.noOvertaking,
       this.signFilter.crossing, this.signFilter.noTurn, this.signFilter.noTurn };
 
   private MapillaryFilterDialog() {
@@ -173,7 +175,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     boolean downloaded = this.downloaded.isSelected();
     boolean onlySigns = this.onlySigns.isSelected();
 
-    for (MapillaryAbstractImage img : MapillaryData.getInstance().getImages()) {
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().data
+        .getImages()) {
       img.setVisible(true);
       if (img instanceof MapillaryImportedImage) {
         if (!imported)
@@ -204,16 +207,16 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       Long currentTime = currentTime();
       if (this.time.getSelectedItem().equals(TIME_LIST[1])) {
         if (img.getCapturedAt() < currentTime
-            - ((Integer) this.spinner.getValue()).longValue() * 365 * 24 * 60 * 60
-            * 1000) {
+            - ((Integer) this.spinner.getValue()).longValue() * 365 * 24 * 60
+            * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
       }
       if (this.time.getSelectedItem().equals(TIME_LIST[2])) {
         if (img.getCapturedAt() < currentTime
-            - ((Integer) this.spinner.getValue()).longValue() * 30 * 24 * 60 * 60
-            * 1000) {
+            - ((Integer) this.spinner.getValue()).longValue() * 30 * 24 * 60
+            * 60 * 1000) {
           img.setVisible(false);
           continue;
         }
@@ -273,7 +276,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryFilterDialog.this.onlySigns.setEnabled(MapillaryFilterDialog.this.downloaded.isSelected());
+      MapillaryFilterDialog.this.onlySigns
+          .setEnabled(MapillaryFilterDialog.this.downloaded.isSelected());
     }
   }
 
@@ -317,7 +321,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryFilterDialog.this.signChooser.setEnabled(MapillaryFilterDialog.this.onlySigns.isSelected());
+      MapillaryFilterDialog.this.signChooser
+          .setEnabled(MapillaryFilterDialog.this.onlySigns.isSelected());
     }
   }
 

@@ -17,9 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MapillaryData {
 
-  /** Unique instance of the class */
-  public volatile static MapillaryData INSTANCE;
-
   private final List<MapillaryAbstractImage> images;
   private MapillaryAbstractImage selectedImage;
   /** The image under the cursor */
@@ -31,31 +28,12 @@ public class MapillaryData {
   /**
    * Main constructor.
    */
-  private MapillaryData() {
+  protected MapillaryData() {
     this.images = new CopyOnWriteArrayList<>();
     this.multiSelectedImages = new ArrayList<>();
     this.selectedImage = null;
 
     addListener(MapillaryPlugin.walkAction);
-  }
-
-  /**
-   * Returns the unique instance of the class.
-   *
-   * @return The unique instance of the class.
-   */
-  public static MapillaryData getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new MapillaryData();
-    }
-    return INSTANCE;
-  }
-
-  /**
-   * Destroys the unique instance.
-   */
-  public static void clearInstance() {
-    INSTANCE = null;
   }
 
   /**
@@ -316,8 +294,7 @@ public class MapillaryData {
       }
     }
     if (zoom)
-      Main.map.mapView.zoomTo(MapillaryData.getInstance().getSelectedImage()
-          .getLatLon());
+      Main.map.mapView.zoomTo(getSelectedImage().getLatLon());
     if (Main.main != null)
       Main.map.mapView.repaint();
     fireSelectedImageChanged(oldImage, this.selectedImage);

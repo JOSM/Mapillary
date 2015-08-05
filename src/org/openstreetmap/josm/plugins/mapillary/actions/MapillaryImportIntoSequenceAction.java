@@ -24,7 +24,6 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -161,7 +160,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
       MapillaryImportedImage image = new MapillaryImportedImage(latValue,
           lonValue, caValue, file, datetimeOriginal.getStringValue());
-      MapillaryData.getInstance().add(image);
+      MapillaryLayer.getInstance().data.add(image);
       image.getCapturedAt();
 
       this.images.add(image);

@@ -4,8 +4,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * @author nokutu
@@ -27,8 +27,8 @@ public class MapillaryUploadDialog extends JPanel {
     this.group = new ButtonGroup();
 
     this.sequence = new JRadioButton("Upload selected sequence.");
-    if (MapillaryData.getInstance().getSelectedImage() == null
-        || !(MapillaryData.getInstance().getSelectedImage() instanceof MapillaryImportedImage))
+    if (MapillaryLayer.getInstance().data.getSelectedImage() == null
+        || !(MapillaryLayer.getInstance().data.getSelectedImage() instanceof MapillaryImportedImage))
       this.sequence.setEnabled(false);
     this.group.add(this.sequence);
     add(this.sequence);
