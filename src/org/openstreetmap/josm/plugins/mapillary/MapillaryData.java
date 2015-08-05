@@ -37,7 +37,8 @@ public class MapillaryData {
     addListener(MapillaryPlugin.walkAction);
     addListener(MapillaryPlugin.zoomAction);
     addListener(MapillaryPlugin.uploadAction);
-    addListener(MapillaryMainDialog.getInstance());
+    if (Main.main != null)
+      addListener(MapillaryMainDialog.getInstance());
   }
 
   /**

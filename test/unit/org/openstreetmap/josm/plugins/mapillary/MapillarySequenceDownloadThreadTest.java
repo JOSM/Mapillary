@@ -20,15 +20,7 @@ import org.openstreetmap.josm.plugins.mapillary.util.TestUtil;
 /**
  *
  */
-public class MapillarySequenceDownloadThreadTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() {
-        TestUtil.initPlugin();
-    }
+public class MapillarySequenceDownloadThreadTest extends AbstractTest {
 
     /**
      * Test method for {@link org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread#run()}.
