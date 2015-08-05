@@ -247,6 +247,7 @@ public class OAuthUtils {
       throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory = null;
+    TiffOutputDirectory gpsDirectory = null;
     // If the image is imported, loads the rest of the EXIF data.
     ImageMetadata metadata = Imaging.getMetadata(image.getFile());
     final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
@@ -259,14 +260,15 @@ public class OAuthUtils {
     if (null == outputSet) {
       outputSet = new TiffOutputSet();
     }
+    gpsDirectory = outputSet.getOrCreateGPSDirectory();
     exifDirectory = outputSet.getOrCreateExifDirectory();
 
-    exifDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
-    exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
+    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
+    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
         GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
-    exifDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-    exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
         RationalNumber.valueOf(image.getCa()));
 
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);

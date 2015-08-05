@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -34,17 +35,17 @@ public class UploadTest extends AbstractTest {
       updatedFile = OAuthUtils.updateFile(img);
       ImageMetadata metadata = Imaging.getMetadata(updatedFile);
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF) != null);
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE) != null);
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF) != null);
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE) != null);
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION) != null);
-      assert (jpegMetadata
+      assertTrue(jpegMetadata
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL) != null);
       assertEquals(0, MapillaryImportAction.degMinSecToDouble(
           (RationalNumber[]) jpegMetadata.findEXIFValueWithExactMatch(

@@ -71,7 +71,7 @@ public class MapillaryExportWriterThread extends Thread {
   @Override
   public void run() {
     this.monitor.setCustomText("Downloaded 0/" + this.amount);
-    //File tempFile = null;
+    // File tempFile = null;
     BufferedImage img;
     MapillaryAbstractImage mimg = null;
     String finalPath = "";
@@ -99,6 +99,7 @@ public class MapillaryExportWriterThread extends Thread {
         // Write EXIF tags
         TiffOutputSet outputSet = null;
         TiffOutputDirectory exifDirectory = null;
+        TiffOutputDirectory gpsDirectory = null;
         // If the image is imported, loads the rest of the EXIF data.
         if (mimg instanceof MapillaryImportedImage) {
           final ImageMetadata metadata = Imaging
@@ -115,14 +116,14 @@ public class MapillaryExportWriterThread extends Thread {
           outputSet = new TiffOutputSet();
         }
         exifDirectory = outputSet.getOrCreateExifDirectory();
+        gpsDirectory = outputSet.getOrCreateGPSDirectory();
 
-        exifDirectory
-            .removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
-        exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
+        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
+        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
             GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
-        exifDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-        exifDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
             RationalNumber.valueOf(mimg.getCa()));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
@@ -136,7 +137,8 @@ public class MapillaryExportWriterThread extends Thread {
             .lat());
         OutputStream os = new BufferedOutputStream(new FileOutputStream(
             finalPath + ".jpg"));
-        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+        new ExifRewriter()
+            .updateExifMetadataLossless(imageBytes, os, outputSet);
 
         os.close();
       } catch (InterruptedException e) {
@@ -151,7 +153,8 @@ public class MapillaryExportWriterThread extends Thread {
       }
 
       // Increases the progress bar.
-      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
+      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX
+          / this.amount);
       this.monitor.setCustomText("Downloaded " + (i + 1) + "/" + this.amount);
     }
   }
