@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
-import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -277,8 +277,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public synchronized void paint(Graphics2D g, MapView mv, Bounds box) {
     if (Main.map.mapView.getActiveLayer() == this) {
       Rectangle b = mv.getBounds();
-      // on some platforms viewport bounds seem to be offset from the
-      // left,
+      // on some platforms viewport bounds seem to be offset from the left,
       // over-grow it just to be sure
       b.grow(100, 100);
       Area a = new Area(b);
@@ -485,9 +484,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     }
     // Predownloads the thumbnails
     if (ret[0] != null)
-      Utils.downloadPicture(ret[0]);
+      CacheUtils.downloadPicture(ret[0]);
     if (ret[1] != null)
-      Utils.downloadPicture(ret[1]);
+      CacheUtils.downloadPicture(ret[1]);
     return ret;
   }
 

@@ -106,6 +106,9 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object whose next image is
    *          going to be returned.
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
+   * @throws IllegalArgumentException
+   *           if the given {@link MapillaryAbstractImage} object doesn't belong
+   *           the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     if (!this.images.contains(image))
@@ -123,6 +126,9 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object whose previous image is
    *          going to be returned.
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
+   * @throws IllegalArgumentException
+   *           if the given {@link MapillaryAbstractImage} object doesn't belong
+   *           the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     if (!this.images.contains(image))

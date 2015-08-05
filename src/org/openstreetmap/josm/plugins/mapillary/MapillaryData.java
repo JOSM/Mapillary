@@ -1,7 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 import java.util.ArrayList;
@@ -172,21 +172,13 @@ public class MapillaryData {
    * If the selected MapillaryImage is part of a MapillarySequence then the
    * following visible MapillaryImage is selected. In case there is none, does
    * nothing.
+   *
+   * @throws IllegalStateException
+   *           if the selected image is null or the selected image doesn't
+   *           belong to a sequence.
    */
   public void selectNext() {
-    if (getSelectedImage() == null)
-      return;
-    if (getSelectedImage().getSequence() == null)
-      return;
-    MapillaryAbstractImage tempImage = this.selectedImage;
-    while (tempImage.next() != null) {
-      tempImage = tempImage.next();
-      if (tempImage.isVisible()) {
-        setSelectedImage(tempImage,
-            Main.pref.getBoolean("mapillary.move-to-picture", true));
-        break;
-      }
-    }
+    selectNext(Main.pref.getBoolean("mapillary.move-to-picture", true));
   }
 
   /**
@@ -196,12 +188,15 @@ public class MapillaryData {
    *
    * @param moveToPicture
    *          True if the view must me moved to the next picture.
+   * @throws IllegalStateException
+   *           if the selected image is null or the selected image doesn't
+   *           belong to a sequence.
    */
   public void selectNext(boolean moveToPicture) {
     if (getSelectedImage() == null)
-      return;
+      throw new IllegalStateException();
     if (getSelectedImage().getSequence() == null)
-      return;
+      throw new IllegalStateException();
     MapillaryAbstractImage tempImage = this.selectedImage;
     while (tempImage.next() != null) {
       tempImage = tempImage.next();
@@ -216,30 +211,26 @@ public class MapillaryData {
    * If the selected MapillaryImage is part of a MapillarySequence then the
    * previous visible MapillaryImage is selected. In case there is none, does
    * nothing.
+   *
+   * @throws IllegalStateException
+   *           if the selected image is null or the selected image doesn't
+   *           belong to a sequence.
    */
   public void selectPrevious() {
-    if (getSelectedImage() == null)
-      return;
-    if (getSelectedImage().getSequence() == null)
-      throw new IllegalStateException();
-    MapillaryAbstractImage tempImage = this.selectedImage;
-    while (tempImage.previous() != null) {
-      tempImage = tempImage.previous();
-      if (tempImage.isVisible()) {
-        setSelectedImage(tempImage,
-            Main.pref.getBoolean("mapillary.move-to-picture", true));
-        break;
-      }
-    }
+    selectPrevious(Main.pref.getBoolean("mapillary.move-to-picture", true));
   }
 
   /**
    * If the selected MapillaryImage is part of a MapillarySequence then the
    * previous visible MapillaryImage is selected. In case there is none, does
-   * nothing.
+   * nothing. * @throws IllegalStateException if the selected image is null or
+   * the selected image doesn't belong to a sequence.
    *
    * @param moveToPicture
    *          True if the view must me moved to the previous picture.
+   * @throws IllegalStateException
+   *           if the selected image is null or the selected image doesn't
+   *           belong to a sequence.
    */
   public void selectPrevious(boolean moveToPicture) {
     if (getSelectedImage() == null)
@@ -261,6 +252,7 @@ public class MapillaryData {
    *
    * @param image
    *          The MapillaryImage which is going to be selected
+   *
    */
   public void setSelectedImage(MapillaryAbstractImage image) {
     setSelectedImage(image, false);
@@ -285,15 +277,15 @@ public class MapillaryData {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Downloading thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
-          Utils.downloadPicture((MapillaryImage) mapillaryImage.next());
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
           if (mapillaryImage.next().next() != null)
-            Utils
+            CacheUtils
                 .downloadPicture((MapillaryImage) mapillaryImage.next().next());
         }
         if (mapillaryImage.previous() != null) {
-          Utils.downloadPicture((MapillaryImage) mapillaryImage.previous());
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
           if (mapillaryImage.previous().previous() != null)
-            Utils.downloadPicture((MapillaryImage) mapillaryImage.previous()
+            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous()
                 .previous());
         }
       }

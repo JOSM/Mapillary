@@ -60,7 +60,6 @@ public class MapillaryUtils {
    *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
    *           not one of the values mentioned above
    */
-  // TODO: Maybe move into a separate utility class?
   public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
     if (degMinSec == null || degMinSec.length != 3) {
       throw new IllegalArgumentException("Array's length must be 3.");

@@ -268,6 +268,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   }
 
+  /** Disables all the buttons in the dialog */
   private void disableAllButtons() {
     this.nextButton.setEnabled(false);
     this.previousButton.setEnabled(false);

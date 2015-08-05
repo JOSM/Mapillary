@@ -6,7 +6,6 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,6 +42,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
   private JCheckBox moveTo = new JCheckBox(
       tr("Move to picture's location with next/previous buttons"));
+  private JButton login;
 
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -55,10 +55,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
     this.reverseButtons.setSelected(Main.pref
         .getBoolean("mapillary.reverse-buttons"));
-    this.displayHour.setSelected(Main.pref
-        .getBoolean("mapillary.display-hour", true));
+    this.displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour",
+        true));
     this.format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
-    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture",
+        true));
 
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     panel.add(this.reverseButtons);
@@ -81,34 +82,38 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.add(this.displayHour);
     panel.add(this.format24);
     panel.add(this.moveTo);
-    JButton oauth = new JButton(new OAuthAction());
+    this.login = new JButton(new LoginAction());
     if (Main.pref.get("mapillary.access-token") == null)
-      oauth.setText("Login");
+      this.login.setText("Login");
     else
-      try {
-        oauth.setText("Logged as: " + MapillaryUser.getUsername() + ". Click to relogin.");
-      } catch (MalformedURLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    panel.add(oauth);
+      this.login.setText("Logged as: " + MapillaryUser.getUsername()
+          + ". Click to relogin.");
+
+    panel.add(this.login);
+    if (MapillaryUser.getUsername() != null) {
+      JButton logout = new JButton(new LogoutAction());
+      logout.setText("Logout");
+
+      panel.add(logout);
+    }
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
   }
 
   @Override
   public boolean ok() {
     boolean mod = false;
-    Main.pref.put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
+    Main.pref
+        .put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[0]))
+    if (this.downloadMode.getSelectedItem()
+        .equals(MapillaryDownloader.MODES[0]))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[0]);
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[1]))
+    if (this.downloadMode.getSelectedItem()
+        .equals(MapillaryDownloader.MODES[1]))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[1]);
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES[2])) {
+    if (this.downloadMode.getSelectedItem()
+        .equals(MapillaryDownloader.MODES[2])) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[2]);
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
     }
@@ -130,7 +135,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
    * @author nokutu
    *
    */
-  public class OAuthAction extends AbstractAction {
+  public class LoginAction extends AbstractAction {
 
     private static final long serialVersionUID = -3908477563072057344L;
 
@@ -157,4 +162,23 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       }
     }
   }
+
+  /**
+   * Logs the user out.
+   *
+   * @author nokutu
+   *
+   */
+  public class LogoutAction extends AbstractAction {
+
+    private static final long serialVersionUID = 3434780936404707219L;
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      MapillaryUser.reset();
+      Main.pref.put("mapillary.access-token", null);
+      MapillaryPreferenceSetting.this.login.setText("Login");
+    }
+  }
+
 }

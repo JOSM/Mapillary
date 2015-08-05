@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -54,8 +51,10 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  */
 public class UploadUtils {
 
+  /** Required keys for POST */
   private static final String[] keys = { "key", "AWSAccessKeyId", "acl",
       "policy", "signature", "Content-Type" };
+  /** Mapillary upload URL */
   private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
   /** Count to name temporal files. */
   private static int c = 0;
@@ -65,31 +64,18 @@ public class UploadUtils {
    *
    * @param image
    *
-   * @throws NoSuchAlgorithmException
-   * @throws UnsupportedEncodingException
-   * @throws InvalidKeyException
-   *
    */
-  public static void upload(MapillaryImportedImage image)
-      throws InvalidKeyException, UnsupportedEncodingException,
-      NoSuchAlgorithmException {
-    try {
-      upload(image, UUID.randomUUID());
-    } catch (IOException e) {
-      Main.error(e);
-    }
+  public static void upload(MapillaryImportedImage image) {
+    upload(image, UUID.randomUUID());
+
   }
 
   /**
    * @param image
    * @param uuid
    *          The UUID used to create the sequence.
-   * @throws NoSuchAlgorithmException
-   * @throws InvalidKeyException
-   * @throws IOException
    */
-  public static void upload(MapillaryImportedImage image, UUID uuid)
-      throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+  public static void upload(MapillaryImportedImage image, UUID uuid) {
     String key = MapillaryUser.getUsername() + "/" + uuid.toString() + "/"
         + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
         + image.getCa() + "_" + image.datetimeOriginal + ".jpg";
@@ -109,16 +95,17 @@ public class UploadUtils {
 
     try {
       uploadFile(updateFile(image), hash);
-    } catch (ImageReadException | ImageWriteException e) {
+    } catch (ImageReadException | ImageWriteException | IOException e) {
       Main.error(e);
     }
-
   }
 
   /**
    * @param file
    * @param hash
    * @throws IOException
+   * @throws IllegalArgumentException
+   *           if the hash doesn't contain all the needed keys.
    */
   public static void uploadFile(File file, HashMap<String, String> hash)
       throws IOException {
@@ -128,6 +115,8 @@ public class UploadUtils {
 
     MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
     for (String key : keys) {
+      if (hash.get(key) == null)
+        throw new IllegalArgumentException();
       entityBuilder.addPart(key, new StringBody(hash.get(key),
           ContentType.TEXT_PLAIN));
     }
@@ -152,7 +141,7 @@ public class UploadUtils {
    *          {@link MapillaryImportedImage} objects.
    */
   public static void uploadSequence(MapillarySequence sequence) {
-    new SequenceUploadThread(sequence.getImages()).start();
+    Main.worker.submit(new SequenceUploadThread(sequence.getImages()));
   }
 
   private static class SequenceUploadThread extends Thread {
@@ -196,11 +185,8 @@ public class UploadUtils {
 
     @Override
     public void run() {
-      try {
-        upload(this.image, this.uuid);
-      } catch (InvalidKeyException | NoSuchAlgorithmException | IOException e) {
-        Main.error(e);
-      }
+      upload(this.image, this.uuid);
+
     }
   }
 
@@ -212,8 +198,12 @@ public class UploadUtils {
    * @return A File object containing the picture and an updated version of the
    *         EXIF tags.
    * @throws ImageReadException
+   *           if there are errors reading the image from the file.
    * @throws IOException
+   *           if there are errors getting the metadata from the file or writing
+   *           the output.
    * @throws ImageWriteException
+   *           if there are errors writing the image in the file.
    */
   public static File updateFile(MapillaryImportedImage image)
       throws ImageReadException, IOException, ImageWriteException {

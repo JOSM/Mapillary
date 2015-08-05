@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  * @author nokutu
  *
  */
-public class Utils {
+public class CacheUtils {
 
   private static IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
 

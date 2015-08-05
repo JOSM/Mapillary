@@ -19,6 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.actions.*;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -141,6 +142,9 @@ public class MapillaryPlugin extends Plugin {
     } catch (IOException e) {
       Main.error(e);
     }
+
+    if (Main.pref.get("mapillary.access-token") == null)
+      MapillaryUser.isTokenValid = false;
   }
 
   /**

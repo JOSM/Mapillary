@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.cache.Utils;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
 /**
@@ -65,8 +65,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             if (image.next() == null)
               break;
             image = image.next();
-            Utils.downloadPicture((MapillaryImage) image,
-                Utils.PICTURE.THUMBNAIL);
+            CacheUtils.downloadPicture((MapillaryImage) image,
+                CacheUtils.PICTURE.THUMBNAIL);
           }
           if (this.waitForFullQuality)
             // Start downloading 3 next full images.
@@ -74,8 +74,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
               if (image.next() == null)
                 break;
               image = image.next();
-              Utils.downloadPicture((MapillaryImage) image,
-                  Utils.PICTURE.FULL_IMAGE);
+              CacheUtils.downloadPicture((MapillaryImage) image,
+                  CacheUtils.PICTURE.FULL_IMAGE);
             }
         }
         try {

@@ -68,7 +68,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *           If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
-    return this.file == null ? null : ImageIO.read(this.file);
+    return ImageIO.read(this.file);
   }
 
   /**
