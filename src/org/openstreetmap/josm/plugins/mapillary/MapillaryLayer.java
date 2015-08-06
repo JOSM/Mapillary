@@ -73,20 +73,17 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /** If the download is in semiautomatic during this object lifetime. */
   public boolean TEMP_SEMIAUTOMATIC = false;
 
-  /** Unique instance of the class */
+  /** Unique instance of the class. */
   public static MapillaryLayer INSTANCE;
-  /** The image pointed by the blue line */
+  /** The image pointed by the blue line. */
   public static MapillaryImage BLUE;
-  /** The image pointed by the red line */
+  /** The image pointed by the red line. */
   public static MapillaryImage RED;
 
-  /** {@link MapillaryData} object that stores the database */
+  /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
-  /** The bounds of the areas for which the pictures have been downloaded */
-  public CopyOnWriteArrayList<Bounds> bounds;
-
-  /** Mode of the layer */
+  /** Mode of the layer. */
   public AbstractMode mode;
 
   private int highlightPointRadius = Main.pref.getInteger(
@@ -99,7 +96,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
     this.data = new MapillaryData();
-    this.bounds = new CopyOnWriteArrayList<>();
+    this.data.bounds = new CopyOnWriteArrayList<>();
     init();
   }
 
@@ -242,7 +239,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Replies background color for downloaded areas.
    *
-   * @return background color for downloaded areas. Black by default
+   * @return background color for downloaded areas. Black by default.
    */
   private static Color getBackgroundColor() {
     return Main.pref.getColor(marktr("background"), Color.BLACK);
@@ -251,14 +248,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Replies background color for non-downloaded areas.
    *
-   * @return background color for non-downloaded areas. Yellow by default
+   * @return background color for non-downloaded areas. Yellow by default.
    */
   private static Color getOutsideColor() {
     return Main.pref.getColor(marktr("outside downloaded area"), Color.YELLOW);
   }
 
   /**
-   * Initialize the hatch pattern used to paint the non-downloaded area
+   * Initialize the hatch pattern used to paint the non-downloaded area.
    */
   private void createHatchTexture() {
     BufferedImage bi = new BufferedImage(15, 15, BufferedImage.TYPE_INT_ARGB);
@@ -282,7 +279,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       b.grow(100, 100);
       Area a = new Area(b);
       // now successively subtract downloaded areas
-      for (Bounds bounds : this.bounds) {
+      for (Bounds bounds : this.data.bounds) {
         Point p1 = mv.getPoint(bounds.getMin());
         Point p2 = mv.getPoint(bounds.getMax());
         Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),
@@ -507,7 +504,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     return this.data.size() + " " + tr("images");
   }
 
-  // EditDataLayerChanged
   @Override
   public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
     if (oldLayer == null && newLayer != null) {

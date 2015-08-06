@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 
@@ -25,6 +26,9 @@ public class MapillaryData {
   private final List<MapillaryAbstractImage> multiSelectedImages;
 
   private CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
+
+  /** The bounds of the areas for which the pictures have been downloaded. */
+  public CopyOnWriteArrayList<Bounds> bounds;
 
   /**
    * Main constructor.

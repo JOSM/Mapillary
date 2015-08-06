@@ -81,7 +81,7 @@ public class MapillaryDownloader {
       return;
     if (isViewDownloaded(view))
       return;
-    MapillaryLayer.getInstance().bounds.add(view);
+    MapillaryLayer.getInstance().getData().bounds.add(view);
     getImages(view);
   }
 
@@ -107,8 +107,15 @@ public class MapillaryDownloader {
     return true;
   }
 
+  /**
+   * Checks if the given {@LatLon} object lies inside the bounds of the
+   * image.
+   *
+   * @param latlon
+   * @return true if it lies inside the bounds; false otherwise;
+   */
   private static boolean isInBounds(LatLon latlon) {
-    for (Bounds bounds : MapillaryLayer.getInstance().bounds) {
+    for (Bounds bounds : MapillaryLayer.getInstance().getData().bounds) {
       if (bounds.contains(latlon))
         return true;
     }
@@ -140,8 +147,8 @@ public class MapillaryDownloader {
       throw new IllegalStateException("Must be in automatic mode.");
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
-      if (!layer.bounds.contains(bounds)) {
-        layer.bounds.add(bounds);
+      if (!layer.getData().bounds.contains(bounds)) {
+        layer.getData().bounds.add(bounds);
         MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
       }
     }
