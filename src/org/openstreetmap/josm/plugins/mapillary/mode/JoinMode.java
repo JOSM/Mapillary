@@ -36,21 +36,21 @@ public class JoinMode extends AbstractMode {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (this.data.getHighlighted() == null)
+    if (this.data.getHighlightedImage() == null)
       return;
     if (this.lastClick == null
-        && this.data.getHighlighted() instanceof MapillaryImportedImage) {
-      this.lastClick = (MapillaryImportedImage) this.data.getHighlighted();
+        && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
+      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();
     } else if (this.lastClick != null
-        && this.data.getHighlighted() instanceof MapillaryImportedImage) {
-      if (((this.data.getHighlighted().previous() == null && this.lastClick.next() == null) || (this.data
-          .getHighlighted().next() == null && this.lastClick.previous() == null))
-          && (this.data.getHighlighted().getSequence() != this.lastClick.getSequence() || this.lastClick
+        && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
+      if (((this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null) || (this.data
+          .getHighlightedImage().next() == null && this.lastClick.previous() == null))
+          && (this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence() || this.lastClick
               .getSequence() == null)) {
-        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());
-      } else if (this.lastClick.next() == this.data.getHighlighted()
-          || this.lastClick.previous() == this.data.getHighlighted())
-        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());
+        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());
+      } else if (this.lastClick.next() == this.data.getHighlightedImage()
+          || this.lastClick.previous() == this.data.getHighlightedImage())
+        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());
       this.lastClick = null;
     }
     MapillaryData.dataUpdated();

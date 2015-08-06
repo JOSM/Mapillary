@@ -138,22 +138,4 @@ public class MapillarySequence {
       return null;
     return this.images.get(i - 1);
   }
-
-  /**
-   * Returns the difference of index between two {@link MapillaryAbstractImage}
-   * objects belonging to the same {@link MapillarySequence}.
-   *
-   * @param image1
-   *          The first image.
-   * @param image2
-   *          The second image.
-   * @return The distance between two {@link MapillaryAbstractImage} objects
-   *         belonging to the same {@link MapillarySequence}.
-   */
-  public int getDistance(MapillaryAbstractImage image1,
-      MapillaryAbstractImage image2) {
-    if (!this.images.contains(image1) || !this.images.contains(image2))
-      throw new IllegalArgumentException();
-    return Math.abs(this.images.indexOf(image1) - this.images.indexOf(image2));
-  }
 }

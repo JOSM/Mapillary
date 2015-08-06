@@ -11,8 +11,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
  */
 public abstract class AbstractTest {
 
-  private static boolean started = false;
-
   /**
    * Initiates the basic parts of JOSM.
    */

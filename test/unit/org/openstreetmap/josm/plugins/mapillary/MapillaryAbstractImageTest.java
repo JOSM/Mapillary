@@ -41,7 +41,7 @@ public class MapillaryAbstractImageTest extends AbstractTest{
     testGetDate("27/08/2015 - 09:13:42 (GMT-01:23)", mai, false, true, true);
   }
 
-  private void testGetDate(String expected, MapillaryAbstractImage img,
+  private static void testGetDate(String expected, MapillaryAbstractImage img,
       boolean isoDates, boolean displayHour, boolean format24) {
     Main.pref.put("iso.dates", isoDates);
     Main.pref.put("mapillary.display-hour", displayHour);

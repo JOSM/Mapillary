@@ -20,8 +20,9 @@ import org.openstreetmap.josm.data.coor.LatLon;
 public abstract class MapillaryAbstractImage {
 
   /**
-   * Lock that locks next() and previous() methods. Used when downloading images
-   * to prevent concurrency problems.
+   * Lock that locks {@link MapillaryAbstractImage#next()} and
+   * {@link MapillaryAbstractImage#previous()} methods. Used when downloading
+   * images to prevent concurrency problems.
    */
   public static Lock LOCK = new ReentrantLock();
 
@@ -212,7 +213,8 @@ public abstract class MapillaryAbstractImage {
   /**
    * Returns the date the picture was taken in the given format.
    *
-   * @param format Format of the date. See {@link SimpleDateFormat}.
+   * @param format
+   *          Format of the date. See {@link SimpleDateFormat}.
    * @return A String containing the date the picture was taken using the given
    *         format.
    */

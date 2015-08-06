@@ -116,7 +116,7 @@ public class MapillaryData {
    *
    * @return The image under the mouse cursor.
    */
-  public MapillaryAbstractImage getHighlighted() {
+  public MapillaryAbstractImage getHighlightedImage() {
     return this.highlightedImage;
   }
 
@@ -238,7 +238,7 @@ public class MapillaryData {
    */
   public void selectPrevious(boolean moveToPicture) {
     if (getSelectedImage() == null)
-      return;
+      throw new IllegalStateException();
     if (getSelectedImage().getSequence() == null)
       throw new IllegalStateException();
     MapillaryAbstractImage tempImage = this.selectedImage;
@@ -276,25 +276,26 @@ public class MapillaryData {
     this.selectedImage = image;
     this.multiSelectedImages.clear();
     this.multiSelectedImages.add(image);
-    if (image != null) {
+    if (image != null && Main.main != null) {
       if (image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         // Downloading thumbnails of surrounding pictures.
         if (mapillaryImage.next() != null) {
           CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
           if (mapillaryImage.next().next() != null)
-            CacheUtils
-                .downloadPicture((MapillaryImage) mapillaryImage.next().next());
+            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next()
+                .next());
         }
         if (mapillaryImage.previous() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
+          CacheUtils
+              .downloadPicture((MapillaryImage) mapillaryImage.previous());
           if (mapillaryImage.previous().previous() != null)
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous()
-                .previous());
+            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage
+                .previous().previous());
         }
       }
     }
-    if (zoom)
+    if (zoom && Main.main != null)
       Main.map.mapView.zoomTo(getSelectedImage().getLatLon());
     if (Main.main != null)
       Main.map.mapView.repaint();
@@ -324,7 +325,8 @@ public class MapillaryData {
       else
         this.setSelectedImage(image);
     }
-    Main.map.mapView.repaint();
+    if (Main.main != null)
+      Main.map.mapView.repaint();
   }
 
   /**

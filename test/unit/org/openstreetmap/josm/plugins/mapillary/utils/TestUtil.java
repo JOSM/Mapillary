@@ -1,13 +1,9 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.io.File;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.projection.Projections;
-import org.openstreetmap.josm.plugins.PluginException;
-import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.I18n;
 
 /**

@@ -56,6 +56,7 @@ public class MapillaryImageDisplay extends JComponent {
    */
   private Rectangle selectedRect = null;
 
+  /** HyperlinkLabel shown in the bottom right corner. */
   protected HyperlinkLabel hyperlink;
 
   private class ImgDisplayMouseListener implements MouseListener,

@@ -44,8 +44,7 @@ public class MapillaryDownloader {
   /** Client ID for the app */
   public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
-      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
+  private static ThreadPoolExecutor EXECUTOR;
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -62,6 +61,8 @@ public class MapillaryDownloader {
     queryStringParts.put("min_lon", minLatLon.lon());
     queryStringParts.put("max_lat", maxLatLon.lat());
     queryStringParts.put("max_lon", maxLatLon.lon());
+    EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<Runnable>(50));
     run(new MapillarySquareDownloadManagerThread(queryStringParts));
   }
 

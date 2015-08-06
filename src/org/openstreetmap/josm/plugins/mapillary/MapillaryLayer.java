@@ -414,7 +414,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
         Main.map.mapView);
-    if (this.data.getHighlighted() == image) {
+    if (this.data.getHighlightedImage() == image) {
       drawPointHighlight(g, p, 16);
     }
   }

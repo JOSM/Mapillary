@@ -21,9 +21,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  *
  */
 public class WalkThread extends Thread implements MapillaryDataListener {
-  private int interval;
-  private MapillaryData data;
-  private Lock lock = new ReentrantLock();
+  private final int interval;
+  private final MapillaryData data;
+  private final Lock lock;
   private boolean end = false;
   private final boolean waitForFullQuality;
   private final boolean followSelected;
@@ -52,6 +52,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     this.goForward = goForward;
     this.data = MapillaryLayer.getInstance().getData();
     this.data.addListener(this);
+    this.lock = new ReentrantLock();
   }
 
   @Override

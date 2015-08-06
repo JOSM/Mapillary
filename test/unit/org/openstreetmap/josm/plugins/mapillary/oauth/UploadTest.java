@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,14 +17,22 @@ import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
+/**
+ * Tests the {@link UploadUtils} class.
+ *
+ * @author nokutu
+ * @see UploadUtils
+ */
 public class UploadTest extends AbstractTest {
 
   /**
-   * Tests the updateFile method from {@link MapillaryImportAction} class.
+   * Tests the {@link UploadUtils#updateFile(MapillaryImportedImage)} method.
    */
   @Test
   public void updateFileTest() {

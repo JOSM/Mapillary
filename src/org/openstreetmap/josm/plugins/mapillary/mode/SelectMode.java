@@ -181,11 +181,11 @@ public class SelectMode extends AbstractMode {
       this.nothingHighlighted = true;
     }
 
-    if (this.data.getHighlighted() != closestTemp && closestTemp != null) {
+    if (this.data.getHighlightedImage() != closestTemp && closestTemp != null) {
       this.data.setHighlightedImage(closestTemp);
       MapillaryMainDialog.getInstance().setImage(closestTemp);
       MapillaryMainDialog.getInstance().updateImage(false);
-    } else if (this.data.getHighlighted() != closestTemp && closestTemp == null) {
+    } else if (this.data.getHighlightedImage() != closestTemp && closestTemp == null) {
       this.data.setHighlightedImage(null);
       MapillaryMainDialog.getInstance().setImage(this.data.getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();
