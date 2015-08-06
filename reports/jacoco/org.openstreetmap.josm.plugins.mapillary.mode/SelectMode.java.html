@@ -181,11 +181,11 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L181">      this.nothingHighlighted = true;</span>
     }
 
-<span class="nc bnc" id="L184" title="All 4 branches missed.">    if (this.data.getHighlighted() != closestTemp &amp;&amp; closestTemp != null) {</span>
+<span class="nc bnc" id="L184" title="All 4 branches missed.">    if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp != null) {</span>
 <span class="nc" id="L185">      this.data.setHighlightedImage(closestTemp);</span>
 <span class="nc" id="L186">      MapillaryMainDialog.getInstance().setImage(closestTemp);</span>
 <span class="nc" id="L187">      MapillaryMainDialog.getInstance().updateImage(false);</span>
-<span class="nc bnc" id="L188" title="All 4 branches missed.">    } else if (this.data.getHighlighted() != closestTemp &amp;&amp; closestTemp == null) {</span>
+<span class="nc bnc" id="L188" title="All 4 branches missed.">    } else if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp == null) {</span>
 <span class="nc" id="L189">      this.data.setHighlightedImage(null);</span>
 <span class="nc" id="L190">      MapillaryMainDialog.getInstance().setImage(this.data.getSelectedImage());</span>
 <span class="nc" id="L191">      MapillaryMainDialog.getInstance().updateImage();</span>

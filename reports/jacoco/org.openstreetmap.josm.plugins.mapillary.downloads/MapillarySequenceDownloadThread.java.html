@@ -131,8 +131,8 @@ public class MapillarySequenceDownloadThread extends Thread {
 <span class="fc" id="L131">  }</span>
 
   private boolean isInside(MapillaryAbstractImage image) {
-<span class="fc bfc" id="L134" title="All 2 branches covered.">    for (int i = 0; i &lt; this.layer.bounds.size(); i++)</span>
-<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (this.layer.bounds.get(i).contains(image.getLatLon()))</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    for (int i = 0; i &lt; this.layer.getData().bounds.size(); i++)</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (this.layer.getData().bounds.get(i).contains(image.getLatLon()))</span>
 <span class="fc" id="L136">        return true;</span>
 <span class="fc" id="L137">    return false;</span>
   }

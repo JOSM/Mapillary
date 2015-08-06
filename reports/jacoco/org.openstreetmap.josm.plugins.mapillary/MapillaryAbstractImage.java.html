@@ -20,10 +20,11 @@ import org.openstreetmap.josm.data.coor.LatLon;
 public abstract class MapillaryAbstractImage {
 
   /**
-   * Lock that locks next() and previous() methods. Used when downloading images
-   * to prevent concurrency problems.
+   * Lock that locks {@link MapillaryAbstractImage#next()} and
+   * {@link MapillaryAbstractImage#previous()} methods. Used when downloading
+   * images to prevent concurrency problems.
    */
-<span class="fc" id="L26">  public static Lock LOCK = new ReentrantLock();</span>
+<span class="fc" id="L27">  public static Lock LOCK = new ReentrantLock();</span>
 
   /** The time the image was captured, in Epoch format. */
   private long capturedAt;
@@ -34,7 +35,7 @@ public abstract class MapillaryAbstractImage {
   /** Direction of the picture. */
   public final double ca;
   /** If the image has been modified from its initial values. */
-<span class="fc" id="L37">  public boolean isModified = false;</span>
+<span class="fc" id="L38">  public boolean isModified = false;</span>
   /** Temporal position of the picture until it is uploaded. */
   public LatLon tempLatLon;
   /**
@@ -61,15 +62,15 @@ public abstract class MapillaryAbstractImage {
    * @param ca
    *          The direction of the picture (0 means north).
    */
-<span class="fc" id="L64">  public MapillaryAbstractImage(double lat, double lon, double ca) {</span>
-<span class="fc" id="L65">    this.latLon = new LatLon(lat, lon);</span>
-<span class="fc" id="L66">    this.tempLatLon = this.latLon;</span>
-<span class="fc" id="L67">    this.movingLatLon = this.latLon;</span>
-<span class="fc" id="L68">    this.ca = ca;</span>
-<span class="fc" id="L69">    this.tempCa = ca;</span>
-<span class="fc" id="L70">    this.movingCa = ca;</span>
-<span class="fc" id="L71">    this.visible = true;</span>
-<span class="fc" id="L72">  }</span>
+<span class="fc" id="L65">  public MapillaryAbstractImage(double lat, double lon, double ca) {</span>
+<span class="fc" id="L66">    this.latLon = new LatLon(lat, lon);</span>
+<span class="fc" id="L67">    this.tempLatLon = this.latLon;</span>
+<span class="fc" id="L68">    this.movingLatLon = this.latLon;</span>
+<span class="fc" id="L69">    this.ca = ca;</span>
+<span class="fc" id="L70">    this.tempCa = ca;</span>
+<span class="fc" id="L71">    this.movingCa = ca;</span>
+<span class="fc" id="L72">    this.visible = true;</span>
+<span class="fc" id="L73">  }</span>
 
   /**
    * Returns whether the object has been modified or not.
@@ -77,7 +78,7 @@ public abstract class MapillaryAbstractImage {
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-<span class="nc" id="L80">    return this.isModified;</span>
+<span class="nc" id="L81">    return this.isModified;</span>
   }
 
   /**
@@ -87,7 +88,7 @@ public abstract class MapillaryAbstractImage {
    * @return The LatLon object with the position of the object.
    */
   public LatLon getLatLon() {
-<span class="fc" id="L90">    return this.movingLatLon;</span>
+<span class="fc" id="L91">    return this.movingLatLon;</span>
   }
 
   /**
@@ -96,7 +97,7 @@ public abstract class MapillaryAbstractImage {
    * @return True if the image is visible; false otherwise.
    */
   public boolean isVisible() {
-<span class="nc" id="L99">    return this.visible;</span>
+<span class="fc" id="L100">    return this.visible;</span>
   }
 
   /**
@@ -106,8 +107,8 @@ public abstract class MapillaryAbstractImage {
    *          true if the image is set to be visible; false otherwise.
    */
   public void setVisible(boolean visible) {
-<span class="nc" id="L109">    this.visible = visible;</span>
-<span class="nc" id="L110">  }</span>
+<span class="nc" id="L110">    this.visible = visible;</span>
+<span class="nc" id="L111">  }</span>
 
   /**
    * Returns the last fixed coordinates of the object.
@@ -115,7 +116,7 @@ public abstract class MapillaryAbstractImage {
    * @return A LatLon object containing.
    */
   public LatLon getTempLatLon() {
-<span class="nc" id="L118">    return this.tempLatLon;</span>
+<span class="nc" id="L119">    return this.tempLatLon;</span>
   }
 
   /**
@@ -127,10 +128,10 @@ public abstract class MapillaryAbstractImage {
    *          The movement of the image in latitude units.
    */
   public void move(double x, double y) {
-<span class="nc" id="L130">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,</span>
-<span class="nc" id="L131">        this.tempLatLon.getX() + x);</span>
-<span class="nc" id="L132">    this.isModified = true;</span>
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L131">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,</span>
+<span class="nc" id="L132">        this.tempLatLon.getX() + x);</span>
+<span class="nc" id="L133">    this.isModified = true;</span>
+<span class="nc" id="L134">  }</span>
 
   /**
    * Turns the image direction.
@@ -139,18 +140,18 @@ public abstract class MapillaryAbstractImage {
    *          The angle the image is moving.
    */
   public void turn(double ca) {
-<span class="nc" id="L142">    this.movingCa = this.tempCa + ca;</span>
-<span class="nc" id="L143">    this.isModified = true;</span>
-<span class="nc" id="L144">  }</span>
+<span class="nc" id="L143">    this.movingCa = this.tempCa + ca;</span>
+<span class="nc" id="L144">    this.isModified = true;</span>
+<span class="nc" id="L145">  }</span>
 
   /**
    * Called when the mouse button is released, meaning that the picture has
    * stopped being dragged.
    */
   public void stopMoving() {
-<span class="nc" id="L151">    this.tempLatLon = this.movingLatLon;</span>
-<span class="nc" id="L152">    this.tempCa = this.movingCa;</span>
-<span class="nc" id="L153">  }</span>
+<span class="nc" id="L152">    this.tempLatLon = this.movingLatLon;</span>
+<span class="nc" id="L153">    this.tempCa = this.movingCa;</span>
+<span class="nc" id="L154">  }</span>
 
   /**
    * Returns the direction towards the image has been taken.
@@ -158,7 +159,7 @@ public abstract class MapillaryAbstractImage {
    * @return The direction of the image (0 means north and goes clockwise).
    */
   public double getCa() {
-<span class="fc" id="L161">    return this.movingCa;</span>
+<span class="fc" id="L162">    return this.movingCa;</span>
   }
 
   /**
@@ -167,7 +168,7 @@ public abstract class MapillaryAbstractImage {
    * @return The last fixed direction of the object. 0 means north.
    */
   public double getTempCa() {
-<span class="nc" id="L170">    return this.tempCa;</span>
+<span class="nc" id="L171">    return this.tempCa;</span>
   }
 
   /**
@@ -176,18 +177,18 @@ public abstract class MapillaryAbstractImage {
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-<span class="fc" id="L179">    String format = &quot;&quot;;</span>
-<span class="fc bfc" id="L180" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;))</span>
-<span class="fc" id="L181">      format += &quot;yyyy-MM-dd&quot;;</span>
+<span class="fc" id="L180">    String format = &quot;&quot;;</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;))</span>
+<span class="fc" id="L182">      format += &quot;yyyy-MM-dd&quot;;</span>
     else
-<span class="fc" id="L183">      format += &quot;dd/MM/yyyy&quot;;</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
-<span class="fc bfc" id="L185" title="All 2 branches covered.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;))</span>
-<span class="fc" id="L186">        format += &quot; - HH:mm:ss (z)&quot;;</span>
+<span class="fc" id="L184">      format += &quot;dd/MM/yyyy&quot;;</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;))</span>
+<span class="fc" id="L187">        format += &quot; - HH:mm:ss (z)&quot;;</span>
       else
-<span class="fc" id="L188">        format += &quot; - h:mm:ss a (z)&quot;;</span>
+<span class="fc" id="L189">        format += &quot; - h:mm:ss a (z)&quot;;</span>
     }
-<span class="fc" id="L190">    return getDate(format);</span>
+<span class="fc" id="L191">    return getDate(format);</span>
   }
 
   /**
@@ -197,8 +198,8 @@ public abstract class MapillaryAbstractImage {
    *          Epoch time when the image was captured.
    */
   public void setCapturedAt(long capturedAt) {
-<span class="fc" id="L200">    this.capturedAt = capturedAt;</span>
-<span class="fc" id="L201">  }</span>
+<span class="fc" id="L201">    this.capturedAt = capturedAt;</span>
+<span class="fc" id="L202">  }</span>
 
   /**
    * Returns the Epoch time when the image was captured.
@@ -206,22 +207,23 @@ public abstract class MapillaryAbstractImage {
    * @return The long containing the Epoch time when the image was captured.
    */
   public long getCapturedAt() {
-<span class="fc" id="L209">    return this.capturedAt;</span>
+<span class="fc" id="L210">    return this.capturedAt;</span>
   }
 
   /**
    * Returns the date the picture was taken in the given format.
    *
-   * @param format Format of the date. See {@link SimpleDateFormat}.
+   * @param format
+   *          Format of the date. See {@link SimpleDateFormat}.
    * @return A String containing the date the picture was taken using the given
    *         format.
    */
   public String getDate(String format) {
-<span class="fc" id="L220">    Date date = new Date(getCapturedAt());</span>
+<span class="fc" id="L222">    Date date = new Date(getCapturedAt());</span>
 
-<span class="fc" id="L222">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
-<span class="fc" id="L223">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
-<span class="fc" id="L224">    return formatter.format(date);</span>
+<span class="fc" id="L224">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="fc" id="L225">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
+<span class="fc" id="L226">    return formatter.format(date);</span>
   }
 
   /**
@@ -235,14 +237,14 @@ public abstract class MapillaryAbstractImage {
    */
   public static long getEpoch(String date, String format) {
 
-<span class="fc" id="L238">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="fc" id="L240">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
     try {
-<span class="fc" id="L240">      Date dateTime = formatter.parse(date);</span>
-<span class="fc" id="L241">      return dateTime.getTime();</span>
-<span class="nc" id="L242">    } catch (ParseException e) {</span>
-<span class="nc" id="L243">      Main.error(e);</span>
+<span class="fc" id="L242">      Date dateTime = formatter.parse(date);</span>
+<span class="fc" id="L243">      return dateTime.getTime();</span>
+<span class="nc" id="L244">    } catch (ParseException e) {</span>
+<span class="nc" id="L245">      Main.error(e);</span>
     }
-<span class="nc" id="L245">    return currentTime();</span>
+<span class="nc" id="L247">    return currentTime();</span>
   }
 
   /**
@@ -251,8 +253,8 @@ public abstract class MapillaryAbstractImage {
    * @return The current date in Epoch format.
    */
   private static long currentTime() {
-<span class="nc" id="L254">    Calendar cal = Calendar.getInstance();</span>
-<span class="nc" id="L255">    return cal.getTimeInMillis();</span>
+<span class="nc" id="L256">    Calendar cal = Calendar.getInstance();</span>
+<span class="nc" id="L257">    return cal.getTimeInMillis();</span>
   }
 
   /**
@@ -262,8 +264,8 @@ public abstract class MapillaryAbstractImage {
    *          The MapillarySequence that contains the MapillaryImage.
    */
   public void setSequence(MapillarySequence sequence) {
-<span class="fc" id="L265">    this.sequence = sequence;</span>
-<span class="fc" id="L266">  }</span>
+<span class="fc" id="L267">    this.sequence = sequence;</span>
+<span class="fc" id="L268">  }</span>
 
   /**
    * Returns the sequence which contains this image.
@@ -271,12 +273,12 @@ public abstract class MapillaryAbstractImage {
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-<span class="nc bnc" id="L274" title="All 2 branches missed.">    if (this.sequence == null) {</span>
-<span class="nc" id="L275">      this.sequence = new MapillarySequence();</span>
-<span class="nc" id="L276">      this.sequence.add(this);</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">    if (this.sequence == null) {</span>
+<span class="nc" id="L277">      this.sequence = new MapillarySequence();</span>
+<span class="nc" id="L278">      this.sequence.add(this);</span>
     }
 
-<span class="nc" id="L279">    return this.sequence;</span>
+<span class="fc" id="L281">    return this.sequence;</span>
   }
 
   /**
@@ -286,14 +288,14 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-<span class="nc" id="L289">    LOCK.lock();</span>
+<span class="fc" id="L291">    LOCK.lock();</span>
     try {
-<span class="nc bnc" id="L291" title="All 2 branches missed.">      if (this.getSequence() == null) {</span>
-<span class="nc" id="L292">        return null;</span>
+<span class="pc bpc" id="L293" title="1 of 2 branches missed.">      if (this.getSequence() == null) {</span>
+<span class="nc" id="L294">        return null;</span>
       }
-<span class="nc" id="L294">      return this.getSequence().next(this);</span>
+<span class="fc" id="L296">      return this.getSequence().next(this);</span>
     } finally {
-<span class="nc" id="L296">      LOCK.unlock();</span>
+<span class="pc" id="L298">      LOCK.unlock();</span>
     }
   }
 
@@ -304,14 +306,14 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-<span class="nc" id="L307">    LOCK.lock();</span>
+<span class="fc" id="L309">    LOCK.lock();</span>
     try {
-<span class="nc bnc" id="L309" title="All 2 branches missed.">      if (this.getSequence() == null) {</span>
-<span class="nc" id="L310">        return null;</span>
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">      if (this.getSequence() == null) {</span>
+<span class="nc" id="L312">        return null;</span>
       }
-<span class="nc" id="L312">      return this.getSequence().previous(this);</span>
+<span class="fc" id="L314">      return this.getSequence().previous(this);</span>
     } finally {
-<span class="nc" id="L314">      LOCK.unlock();</span>
+<span class="pc" id="L316">      LOCK.unlock();</span>
     }
 
   }

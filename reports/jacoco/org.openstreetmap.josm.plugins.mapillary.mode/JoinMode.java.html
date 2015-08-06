@@ -36,21 +36,21 @@ public class JoinMode extends AbstractMode {
 
   @Override
   public void mousePressed(MouseEvent e) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (this.data.getHighlighted() == null)</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (this.data.getHighlightedImage() == null)</span>
 <span class="nc" id="L40">      return;</span>
 <span class="nc bnc" id="L41" title="All 2 branches missed.">    if (this.lastClick == null</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlighted() instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L43">      this.lastClick = (MapillaryImportedImage) this.data.getHighlighted();</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L43">      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();</span>
 <span class="nc bnc" id="L44" title="All 2 branches missed.">    } else if (this.lastClick != null</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlighted() instanceof MapillaryImportedImage) {</span>
-<span class="nc bnc" id="L46" title="All 4 branches missed.">      if (((this.data.getHighlighted().previous() == null &amp;&amp; this.lastClick.next() == null) || (this.data</span>
-<span class="nc bnc" id="L47" title="All 4 branches missed.">          .getHighlighted().next() == null &amp;&amp; this.lastClick.previous() == null))</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">          &amp;&amp; (this.data.getHighlighted().getSequence() != this.lastClick.getSequence() || this.lastClick</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc bnc" id="L46" title="All 4 branches missed.">      if (((this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick.next() == null) || (this.data</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">          .getHighlightedImage().next() == null &amp;&amp; this.lastClick.previous() == null))</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">          &amp;&amp; (this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence() || this.lastClick</span>
 <span class="nc bnc" id="L49" title="All 2 branches missed.">              .getSequence() == null)) {</span>
-<span class="nc" id="L50">        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">      } else if (this.lastClick.next() == this.data.getHighlighted()</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">          || this.lastClick.previous() == this.data.getHighlighted())</span>
-<span class="nc" id="L53">        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlighted());</span>
+<span class="nc" id="L50">        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">      } else if (this.lastClick.next() == this.data.getHighlightedImage()</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">          || this.lastClick.previous() == this.data.getHighlightedImage())</span>
+<span class="nc" id="L53">        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());</span>
 <span class="nc" id="L54">      this.lastClick = null;</span>
     }
 <span class="nc" id="L56">    MapillaryData.dataUpdated();</span>

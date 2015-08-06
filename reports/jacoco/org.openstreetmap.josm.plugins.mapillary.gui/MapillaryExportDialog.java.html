@@ -32,26 +32,26 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   private static final long serialVersionUID = 8675637080225099248L;
   protected JOptionPane optionPane;
   /** Button to export all downloaded images. */
-  public JRadioButton all;
+  public final JRadioButton all;
   /**
    * Button to export all images in the sequence of the selected MapillaryImage.
    */
-  public JRadioButton sequence;
+  public final JRadioButton sequence;
   /**
    * Button to export all images belonging to the selected
    * {@link MapillaryImage} objects.
    */
-  public JRadioButton selected;
+  public final JRadioButton selected;
   /** Button to rewrite all imported images. */
-  public JRadioButton rewrite;
+  public final JRadioButton rewrite;
   /** Group of button containing all the options. */
-  public ButtonGroup group;
-  private JButton choose;
-  private JLabel path;
+  public final ButtonGroup group;
+  private final JButton choose;
+  private final JLabel path;
   /** File chooser. */
   public JFileChooser chooser;
   protected String exportDirectory;
-  private JButton ok;
+  private final JButton ok;
 
   /**
    * Main constructor.
