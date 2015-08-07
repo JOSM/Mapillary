@@ -41,7 +41,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       tr("Display hour when the picture was taken"));
   private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
   private JCheckBox moveTo = new JCheckBox(
-      tr("Move to picture's location with next/previous buttons"));
+      tr("Move to picture''s location with next/previous buttons"));
   private JButton login;
 
   @Override
