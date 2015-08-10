@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
- * History record system in order to let the user undo and redo commands
+ * History record system in order to let the user undo and redo commands.
  *
  * @author nokutu
  *
@@ -24,11 +24,11 @@ public class MapillaryRecord {
   /**
    * Main constructor.
    */
-<span class="nc" id="L27">  public MapillaryRecord() {</span>
-<span class="nc" id="L28">    this.commandList = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L29">    this.position = -1;</span>
-<span class="nc" id="L30">    this.listeners = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L27">  public MapillaryRecord() {</span>
+<span class="fc" id="L28">    this.commandList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L29">    this.position = -1;</span>
+<span class="fc" id="L30">    this.listeners = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L31">  }</span>
 
   /**
    * Returns the unique instance of the class.
@@ -69,54 +69,54 @@ public class MapillaryRecord {
    */
   public void addCommand(MapillaryCommand command) {
     // Checks if it is a continuation of last command
-<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (this.position != -1) {</span>
-<span class="nc" id="L73">      boolean equalSets = true;</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">      for (MapillaryAbstractImage img : this.commandList.get(this.position).images)</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (!command.images.contains(img))</span>
-<span class="nc" id="L76">          equalSets = false;</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">      if (equalSets</span>
-<span class="nc" id="L78">          &amp;&amp; this.commandList.get(this.position).getClass() == command</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">              .getClass()) {</span>
-<span class="nc" id="L80">        this.commandList.get(this.position).sum(command);</span>
-<span class="nc" id="L81">        fireRecordChanged();</span>
-<span class="nc" id="L82">        return;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (this.position != -1) {</span>
+<span class="fc" id="L73">      boolean equalSets = true;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      for (MapillaryAbstractImage img : this.commandList.get(this.position).images)</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (!command.images.contains(img))</span>
+<span class="fc" id="L76">          equalSets = false;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">      if (equalSets</span>
+<span class="fc" id="L78">          &amp;&amp; this.commandList.get(this.position).getClass() == command</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">              .getClass()) {</span>
+<span class="fc" id="L80">        this.commandList.get(this.position).sum(command);</span>
+<span class="fc" id="L81">        fireRecordChanged();</span>
+<span class="fc" id="L82">        return;</span>
       }
     }
     // Adds the command to the last position of the list.
-<span class="nc" id="L86">    this.commandList.add(this.position + 1, command);</span>
-<span class="nc" id="L87">    this.position++;</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">    while (this.commandList.size() &gt; this.position + 1) {</span>
-<span class="nc" id="L89">      this.commandList.remove(this.position + 1);</span>
+<span class="fc" id="L86">    this.commandList.add(this.position + 1, command);</span>
+<span class="fc" id="L87">    this.position++;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    while (this.commandList.size() &gt; this.position + 1) {</span>
+<span class="fc" id="L89">      this.commandList.remove(this.position + 1);</span>
     }
-<span class="nc" id="L91">    fireRecordChanged();</span>
-<span class="nc" id="L92">  }</span>
+<span class="fc" id="L91">    fireRecordChanged();</span>
+<span class="fc" id="L92">  }</span>
 
   /**
    * Undo latest command.
    */
   public void undo() {
-<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (this.position == -1)</span>
-<span class="nc" id="L99">      return;</span>
-<span class="nc" id="L100">    this.commandList.get(this.position).undo();</span>
-<span class="nc" id="L101">    this.position--;</span>
-<span class="nc" id="L102">    fireRecordChanged();</span>
-<span class="nc" id="L103">  }</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">    if (this.position == -1)</span>
+<span class="nc" id="L99">      throw new IllegalStateException();</span>
+<span class="fc" id="L100">    this.commandList.get(this.position).undo();</span>
+<span class="fc" id="L101">    this.position--;</span>
+<span class="fc" id="L102">    fireRecordChanged();</span>
+<span class="fc" id="L103">  }</span>
 
   /**
-   * Redo latest undoed action.
+   * Redoes latest undone action.
    */
   public void redo() {
-<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (this.position + 1 &gt;= this.commandList.size())</span>
-<span class="nc" id="L110">      return;</span>
-<span class="nc" id="L111">    this.position++;</span>
-<span class="nc" id="L112">    this.commandList.get(this.position).redo();</span>
-<span class="nc" id="L113">    fireRecordChanged();</span>
-<span class="nc" id="L114">  }</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (this.position + 1 &gt;= this.commandList.size())</span>
+<span class="nc" id="L110">      throw new IllegalStateException();</span>
+<span class="fc" id="L111">    this.position++;</span>
+<span class="fc" id="L112">    this.commandList.get(this.position).redo();</span>
+<span class="fc" id="L113">    fireRecordChanged();</span>
+<span class="fc" id="L114">  }</span>
 
   private void fireRecordChanged() {
-<span class="nc bnc" id="L117" title="All 2 branches missed.">    for (MapillaryRecordListener lis : this.listeners)</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    for (MapillaryRecordListener lis : this.listeners)</span>
 <span class="nc bnc" id="L118" title="All 2 branches missed.">      if (lis != null)</span>
 <span class="nc" id="L119">        lis.recordChanged();</span>
-<span class="nc" id="L120">  }</span>
+<span class="fc" id="L120">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

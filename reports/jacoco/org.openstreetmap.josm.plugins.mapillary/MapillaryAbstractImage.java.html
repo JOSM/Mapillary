@@ -128,10 +128,10 @@ public abstract class MapillaryAbstractImage {
    *          The movement of the image in latitude units.
    */
   public void move(double x, double y) {
-<span class="nc" id="L131">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,</span>
-<span class="nc" id="L132">        this.tempLatLon.getX() + x);</span>
-<span class="nc" id="L133">    this.isModified = true;</span>
-<span class="nc" id="L134">  }</span>
+<span class="fc" id="L131">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,</span>
+<span class="fc" id="L132">        this.tempLatLon.getX() + x);</span>
+<span class="fc" id="L133">    this.isModified = true;</span>
+<span class="fc" id="L134">  }</span>
 
   /**
    * Turns the image direction.
@@ -140,18 +140,18 @@ public abstract class MapillaryAbstractImage {
    *          The angle the image is moving.
    */
   public void turn(double ca) {
-<span class="nc" id="L143">    this.movingCa = this.tempCa + ca;</span>
-<span class="nc" id="L144">    this.isModified = true;</span>
-<span class="nc" id="L145">  }</span>
+<span class="fc" id="L143">    this.movingCa = this.tempCa + ca;</span>
+<span class="fc" id="L144">    this.isModified = true;</span>
+<span class="fc" id="L145">  }</span>
 
   /**
    * Called when the mouse button is released, meaning that the picture has
    * stopped being dragged.
    */
   public void stopMoving() {
-<span class="nc" id="L152">    this.tempLatLon = this.movingLatLon;</span>
-<span class="nc" id="L153">    this.tempCa = this.movingCa;</span>
-<span class="nc" id="L154">  }</span>
+<span class="fc" id="L152">    this.tempLatLon = this.movingLatLon;</span>
+<span class="fc" id="L153">    this.tempCa = this.movingCa;</span>
+<span class="fc" id="L154">  }</span>
 
   /**
    * Returns the direction towards the image has been taken.
