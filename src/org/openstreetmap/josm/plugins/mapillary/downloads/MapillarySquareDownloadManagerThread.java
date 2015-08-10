@@ -30,6 +30,13 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String sequenceQueryString;
   private final String signQueryString;
 
+  private ThreadPoolExecutor downloadExecutor = new ThreadPoolExecutor(3, 5,
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+  private ThreadPoolExecutor completeExecutor = new ThreadPoolExecutor(3, 5,
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+  private ThreadPoolExecutor signsExecutor = new ThreadPoolExecutor(3, 5, 25,
+      TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+
   /**
    * Main constructor.
    *
@@ -77,7 +84,6 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       Main.error("Mapillary download interrupted (probably because of closing the layer).");
     } finally {
       PluginState.finishDownload();
-      MapillaryUtils.updateHelpText();
     }
     MapillaryUtils.updateHelpText();
     MapillaryData.dataUpdated();
@@ -86,45 +92,57 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   private void downloadSequences() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
-    while (!ex.isShutdown()) {
-      ex.execute(new MapillarySequenceDownloadThread(ex,
-          this.sequenceQueryString + "&page=" + page + "&limit=10"));
-      while (ex.getQueue().remainingCapacity() == 0)
+    while (!this.downloadExecutor.isShutdown()) {
+      this.downloadExecutor.execute(new MapillarySequenceDownloadThread(
+          this.downloadExecutor, this.sequenceQueryString + "&page=" + page
+              + "&limit=10"));
+      while (this.downloadExecutor.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;
     }
-    ex.awaitTermination(15, TimeUnit.SECONDS);
+    this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);
     MapillaryData.dataUpdated();
   }
 
   private void completeImages() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
-    while (!ex.isShutdown()) {
-      ex.execute(new MapillaryImageInfoDownloaderThread(ex,
-          this.imageQueryString + "&page=" + page + "&limit=20"));
-      while (ex.getQueue().remainingCapacity() == 0)
+    while (!this.completeExecutor.isShutdown()) {
+      this.completeExecutor.execute(new MapillaryImageInfoDownloaderThread(
+          this.completeExecutor, this.imageQueryString + "&page=" + page
+              + "&limit=20"));
+      while (this.completeExecutor.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
     }
-    ex.awaitTermination(15, TimeUnit.SECONDS);
+    this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
   }
 
   private void downloadSigns() throws InterruptedException {
-    ThreadPoolExecutor ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(5));
     int page = 0;
-    while (!ex.isShutdown()) {
-      ex.execute(new MapillaryTrafficSignDownloaderThread(ex,
-          this.signQueryString + "&page=" + page + "&limit=20"));
-      while (ex.getQueue().remainingCapacity() == 0)
+    while (!this.signsExecutor.isShutdown()) {
+      this.signsExecutor.execute(new MapillaryTrafficSignDownloaderThread(
+          this.signsExecutor, this.signQueryString + "&page=" + page
+              + "&limit=20"));
+      while (this.signsExecutor.getQueue().remainingCapacity() == 0)
         Thread.sleep(100);
       page++;
     }
-    ex.awaitTermination(15, TimeUnit.SECONDS);
+    this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);
+  }
+
+  @Override
+  public void interrupt() {
+    super.interrupt();
+    this.downloadExecutor.shutdownNow();
+    this.completeExecutor.shutdownNow();
+    this.signsExecutor.shutdownNow();
+    try {
+      this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);
+      this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
+      this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      Main.error(e);
+    }
   }
 }

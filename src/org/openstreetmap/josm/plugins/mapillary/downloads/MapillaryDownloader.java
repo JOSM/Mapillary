@@ -2,6 +2,7 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -35,6 +36,9 @@ public class MapillaryDownloader {
   /** Manual mode. */
   public static final int MANUAL = 2;
 
+  /** All the Threads that have been run. Used to interrupt them properly. */
+  private static ArrayList<Thread> threads = new ArrayList<>();
+
   /** Max area to be downloaded */
   public static final double MAX_AREA = Main.pref.getDouble(
       "mapillary.max-download-area", 0.015);
@@ -44,7 +48,8 @@ public class MapillaryDownloader {
   /** Client ID for the app */
   public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor EXECUTOR;
+  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
+      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -61,12 +66,11 @@ public class MapillaryDownloader {
     queryStringParts.put("min_lon", minLatLon.lon());
     queryStringParts.put("max_lat", maxLatLon.lat());
     queryStringParts.put("max_lon", maxLatLon.lon());
-    EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(50));
     run(new MapillarySquareDownloadManagerThread(queryStringParts));
   }
 
   private static void run(Thread t) {
+    threads.add(t);
     EXECUTOR.execute(t);
   }
 
@@ -214,7 +218,19 @@ public class MapillaryDownloader {
    * Stops all running threads.
    */
   public static void stopAll() {
+    for (Thread t : threads) {
+      if (t.isAlive())
+        System.out.println(t);
+      t.interrupt();
+    }
+    threads.clear();
     EXECUTOR.shutdownNow();
+    try {
+      EXECUTOR.awaitTermination(30, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
         new ArrayBlockingQueue<Runnable>(50));
   }
