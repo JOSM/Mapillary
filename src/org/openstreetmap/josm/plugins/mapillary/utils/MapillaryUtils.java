@@ -97,7 +97,10 @@ public class MapillaryUtils {
   }
 
   /**
+   * Open the default browser in the given URL.
+   *
    * @param url
+   *          The URL that is going to be opened.
    */
   public static void browse(URL url) {
     Desktop desktop = Desktop.getDesktop();

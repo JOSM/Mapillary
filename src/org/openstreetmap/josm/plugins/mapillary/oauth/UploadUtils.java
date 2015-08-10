@@ -153,8 +153,8 @@ public class UploadUtils {
     private SequenceUploadThread(List<MapillaryAbstractImage> images) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(1, 1, 25, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<Runnable>(100));
+      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<Runnable>(15));
     }
 
     @Override
@@ -175,6 +175,7 @@ public class UploadUtils {
           }
       }
       this.ex.shutdown();
+      PluginState.finishUpload();
     }
   }
 
