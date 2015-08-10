@@ -67,7 +67,11 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
                   .getData().getImages())
                 if (image instanceof MapillaryImage
                     && ((MapillaryImage) image).getKey().equals(key))
-                  ((MapillaryImage) image).addSign(data.getString("type"));
+                  try {
+                    ((MapillaryImage) image).addSign(data.getString("type"));
+                  } catch (Exception e) {
+                    Main.error("Error when downloading sign.");
+                  }
             }
           }
         }
