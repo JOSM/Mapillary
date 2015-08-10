@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
- * History record system in order to let the user undo and redo commands
+ * History record system in order to let the user undo and redo commands.
  *
  * @author nokutu
  *
@@ -96,18 +96,18 @@ public class MapillaryRecord {
    */
   public void undo() {
     if (this.position == -1)
-      return;
+      throw new IllegalStateException();
     this.commandList.get(this.position).undo();
     this.position--;
     fireRecordChanged();
   }
 
   /**
-   * Redo latest undoed action.
+   * Redoes latest undone action.
    */
   public void redo() {
     if (this.position + 1 >= this.commandList.size())
-      return;
+      throw new IllegalStateException();
     this.position++;
     this.commandList.get(this.position).redo();
     fireRecordChanged();

@@ -86,5 +86,4 @@ public class MapillaryUser {
     images_hash = null;
     isTokenValid = true;
   }
-
 }
