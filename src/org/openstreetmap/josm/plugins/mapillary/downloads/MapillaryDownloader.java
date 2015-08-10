@@ -48,8 +48,8 @@ public class MapillaryDownloader {
   /** Client ID for the app */
   public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
-      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
+  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
+      new ArrayBlockingQueue<Runnable>(100));;
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -228,10 +228,9 @@ public class MapillaryDownloader {
     try {
       EXECUTOR.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      Main.error(e);
     }
     EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(50));
+        new ArrayBlockingQueue<Runnable>(100));
   }
 }

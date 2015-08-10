@@ -10,9 +10,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JLabel;
@@ -22,8 +20,7 @@ import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-
-import java.awt.Desktop;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * JLabel that acts as a hyperlink.
@@ -175,20 +172,6 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (this.url == null)
       return;
-    Desktop desktop = Desktop.getDesktop();
-    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-      try {
-        desktop.browse(this.url.toURI());
-      } catch (IOException | URISyntaxException e1) {
-        Main.error(e1);
-      }
-    } else {
-      Runtime runtime = Runtime.getRuntime();
-      try {
-        runtime.exec("xdg-open " + this.url);
-      } catch (IOException exc) {
-        exc.printStackTrace();
-      }
-    }
+    MapillaryUtils.browse(this.url);
   }
 }

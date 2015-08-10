@@ -144,8 +144,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null
           || datetimeOriginal == null)
-        throw new IllegalArgumentException(
-            "The picture has not correct EXIF tags");
+        return;
 
       double latValue = 0;
       double lonValue = 0;
@@ -181,7 +180,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
   }
 
   /**
-   * Comparator that comperes two {@link MapillaryAbstractImage} objects
+   * Comparator that compares two {@link MapillaryAbstractImage} objects
    * depending on the time they were taken.
    *
    * @author nokutu

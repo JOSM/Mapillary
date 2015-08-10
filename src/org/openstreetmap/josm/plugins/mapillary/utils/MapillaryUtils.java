@@ -2,6 +2,11 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
@@ -89,5 +94,26 @@ public class MapillaryUtils {
 
     result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
     return result;
+  }
+
+  /**
+   * @param url
+   */
+  public static void browse(URL url) {
+    Desktop desktop = Desktop.getDesktop();
+    if (desktop.isSupported(Desktop.Action.BROWSE)) {
+      try {
+        desktop.browse(url.toURI());
+      } catch (IOException | URISyntaxException e1) {
+        Main.error(e1);
+      }
+    } else {
+      Runtime runtime = Runtime.getRuntime();
+      try {
+        runtime.exec("xdg-open " + url);
+      } catch (IOException exc) {
+        exc.printStackTrace();
+      }
+    }
   }
 }

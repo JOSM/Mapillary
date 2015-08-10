@@ -2,12 +2,10 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -24,6 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -145,20 +144,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       portListener.start();
 
       String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&response_type=token&scope=user:read%20public:upload%20public:write";
-      Desktop desktop = Desktop.getDesktop();
-      if (desktop.isSupported(Desktop.Action.BROWSE)) {
-        try {
-          desktop.browse(new URI(url));
-        } catch (IOException | URISyntaxException e1) {
-          Main.error(e1);
-        }
-      } else {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-          runtime.exec("xdg-open " + url);
-        } catch (IOException exc) {
-          exc.printStackTrace();
-        }
+      try {
+        MapillaryUtils.browse(new URL(url));
+      } catch (MalformedURLException e) {
+        Main.error(e);
       }
     }
   }

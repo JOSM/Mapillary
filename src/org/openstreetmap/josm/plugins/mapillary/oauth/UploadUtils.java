@@ -124,11 +124,12 @@ public class UploadUtils {
 
     HttpEntity entity = entityBuilder.build();
     httpPost.setEntity(entity);
-
     HttpResponse response = httpClient.execute(httpPost);
     if (response.getStatusLine().toString().contains("204")) {
       PluginState.imageUploaded();
-    }
+      Main.info(PluginState.getUploadString() + " (Mapillary)");
+    } else
+      Main.info("Upload error");
     file.delete();
     MapillaryUtils.updateHelpText();
   }
@@ -152,13 +153,12 @@ public class UploadUtils {
     private SequenceUploadThread(List<MapillaryAbstractImage> images) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<Runnable>(5));
+      this.ex = new ThreadPoolExecutor(1, 1, 25, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<Runnable>(100));
     }
 
     @Override
     public void run() {
-      PluginState.startUpload();
       PluginState.imagesToUpload(this.images.size());
       MapillaryUtils.updateHelpText();
       for (MapillaryAbstractImage img : this.images) {
@@ -167,9 +167,14 @@ public class UploadUtils {
               "The sequence contains downloaded images.");
         this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
             this.uuid));
+        while (this.ex.getQueue().remainingCapacity() == 0)
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            Main.error(e);
+          }
       }
       this.ex.shutdown();
-      PluginState.finishUpload();
     }
   }
 
@@ -186,7 +191,6 @@ public class UploadUtils {
     @Override
     public void run() {
       upload(this.image, this.uuid);
-
     }
   }
 
@@ -211,8 +215,12 @@ public class UploadUtils {
     TiffOutputDirectory exifDirectory = null;
     TiffOutputDirectory gpsDirectory = null;
     // If the image is imported, loads the rest of the EXIF data.
-    ImageMetadata metadata = Imaging.getMetadata(image.getFile());
-    final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+    JpegImageMetadata jpegMetadata = null;
+    try {
+      ImageMetadata metadata = Imaging.getMetadata(image.getFile());
+      jpegMetadata = (JpegImageMetadata) metadata;
+    } catch (Exception e) {
+    }
     if (null != jpegMetadata) {
       final TiffImageMetadata exif = jpegMetadata.getExif();
       if (null != exif) {
@@ -238,7 +246,7 @@ public class UploadUtils {
         ((MapillaryImportedImage) image).getDate("yyyy/MM/dd hh:mm:ss"));
 
     outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
-    File tempFile = new File(c + ".tmp");
+    File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");
     c++;
     OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
 

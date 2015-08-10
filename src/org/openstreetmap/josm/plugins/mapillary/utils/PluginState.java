@@ -2,6 +2,15 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Dimension;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
+
 /**
  * @author nokutu
  *
@@ -9,9 +18,10 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 public class PluginState {
 
   private static int runningDownloads = 0;
-  private static int runningUploads = 0;
-  private static int imagesToUpload = 0;
-  private static int imagesUploaded = 0;
+  /** Images that have to be uploaded. */
+  public static int imagesToUpload = 0;
+  /** Images that have been uploaded. */
+  public static int imagesUploaded = 0;
 
   /**
    * Called when a download is started.
@@ -37,17 +47,9 @@ public class PluginState {
   }
 
   /**
-   * Called when an upload is starting.
-   */
-  public static void startUpload() {
-    runningUploads++;
-  }
-
-  /**
    * Called when an upload is finished.
    */
   public static void finishUpload() {
-    runningUploads--;
     if (imagesUploaded >= imagesToUpload) {
       imagesUploaded = 0;
       imagesToUpload = 0;
@@ -60,7 +62,7 @@ public class PluginState {
    * @return true if the plugin is uploading; false otherwise.
    */
   public static boolean isUploading() {
-    return runningUploads > 0;
+    return imagesToUpload > imagesUploaded;
   }
 
   /**
@@ -78,6 +80,25 @@ public class PluginState {
    */
   public static void imageUploaded() {
     imagesUploaded++;
+    if (imagesToUpload == imagesUploaded) {
+      finishedUploadDialog();
+    }
+  }
+
+  private static void finishedUploadDialog() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          finishedUploadDialog();
+        }
+      });
+    } else {
+      JOptionPane pane = new JOptionPane();
+      pane.setMessage(new FinishedUploadDialog());
+      JDialog dlg = pane.createDialog(Main.parent, tr("Finished upload"));
+      dlg.setVisible(true);
+    }
   }
 
   /**
@@ -86,7 +107,7 @@ public class PluginState {
    * @return The String that is going to be written in the status bar.
    */
   public static String getUploadString() {
-    return tr("Downloading: {0}", "(" + imagesUploaded + "/" + imagesToUpload
+    return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload
         + ")");
   }
 }
