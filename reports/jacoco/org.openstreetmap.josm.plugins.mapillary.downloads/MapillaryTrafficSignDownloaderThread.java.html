@@ -67,28 +67,32 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
 <span class="nc" id="L67">                  .getData().getImages())</span>
 <span class="nc bnc" id="L68" title="All 2 branches missed.">                if (image instanceof MapillaryImage</span>
 <span class="nc bnc" id="L69" title="All 2 branches missed.">                    &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
-<span class="nc" id="L70">                  ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+                  try {
+<span class="nc" id="L71">                    ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+<span class="nc" id="L72">                  } catch (Exception e) {</span>
+<span class="nc" id="L73">                    Main.error(&quot;Error when downloading sign.&quot;);</span>
+<span class="nc" id="L74">                  }</span>
             }
           }
         }
 
         // Just one sign on the picture
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        else if (rects != null) {</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">          for (int j = 0; j &lt; rects.size(); j++) {</span>
-<span class="nc" id="L78">            JsonObject data = rects.getJsonObject(j);</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">            for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
-<span class="nc" id="L80">                .getData().getImages())</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">              if (image instanceof MapillaryImage</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">                  &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
-<span class="nc" id="L83">                ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        else if (rects != null) {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">          for (int j = 0; j &lt; rects.size(); j++) {</span>
+<span class="nc" id="L82">            JsonObject data = rects.getJsonObject(j);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
+<span class="nc" id="L84">                .getData().getImages())</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">              if (image instanceof MapillaryImage</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">                  &amp;&amp; ((MapillaryImage) image).getKey().equals(key))</span>
+<span class="nc" id="L87">                ((MapillaryImage) image).addSign(data.getString(&quot;type&quot;));</span>
           }
         }
       }
-<span class="nc" id="L87">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L88">      Main.error(e);</span>
-<span class="nc" id="L89">    } catch (IOException e) {</span>
-<span class="nc" id="L90">      Main.error(e);</span>
-<span class="nc" id="L91">    }</span>
-<span class="nc" id="L92">  }</span>
+<span class="nc" id="L91">    } catch (MalformedURLException e) {</span>
+<span class="nc" id="L92">      Main.error(e);</span>
+<span class="nc" id="L93">    } catch (IOException e) {</span>
+<span class="nc" id="L94">      Main.error(e);</span>
+<span class="nc" id="L95">    }</span>
+<span class="nc" id="L96">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

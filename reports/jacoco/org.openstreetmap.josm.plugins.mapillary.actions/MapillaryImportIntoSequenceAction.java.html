@@ -144,59 +144,58 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 <span class="nc" id="L144">          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
 <span class="nc bnc" id="L145" title="All 10 branches missed.">      if (lat_ref == null || lat == null || lon == null || lon_ref == null</span>
           || datetimeOriginal == null)
-<span class="nc" id="L147">        throw new IllegalArgumentException(</span>
-            &quot;The picture has not correct EXIF tags&quot;);
+<span class="nc" id="L147">        return;</span>
 
-<span class="nc" id="L150">      double latValue = 0;</span>
-<span class="nc" id="L151">      double lonValue = 0;</span>
-<span class="nc" id="L152">      double caValue = 0;</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">      if (lat.getValue() instanceof RationalNumber[])</span>
-<span class="nc" id="L154">        latValue = MapillaryUtils.degMinSecToDouble(</span>
-<span class="nc" id="L155">            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());</span>
-<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (lon.getValue() instanceof RationalNumber[])</span>
-<span class="nc" id="L157">        lonValue = MapillaryUtils.degMinSecToDouble(</span>
-<span class="nc" id="L158">            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());</span>
-<span class="nc bnc" id="L159" title="All 4 branches missed.">      if (ca != null &amp;&amp; ca.getValue() instanceof RationalNumber)</span>
-<span class="nc" id="L160">        caValue = ((RationalNumber) ca.getValue()).doubleValue();</span>
+<span class="nc" id="L149">      double latValue = 0;</span>
+<span class="nc" id="L150">      double lonValue = 0;</span>
+<span class="nc" id="L151">      double caValue = 0;</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">      if (lat.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L153">        latValue = MapillaryUtils.degMinSecToDouble(</span>
+<span class="nc" id="L154">            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (lon.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L156">        lonValue = MapillaryUtils.degMinSecToDouble(</span>
+<span class="nc" id="L157">            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());</span>
+<span class="nc bnc" id="L158" title="All 4 branches missed.">      if (ca != null &amp;&amp; ca.getValue() instanceof RationalNumber)</span>
+<span class="nc" id="L159">        caValue = ((RationalNumber) ca.getValue()).doubleValue();</span>
 
-<span class="nc" id="L162">      MapillaryImportedImage image = new MapillaryImportedImage(latValue,</span>
-<span class="nc" id="L163">          lonValue, caValue, file, datetimeOriginal.getStringValue());</span>
-<span class="nc" id="L164">      MapillaryLayer.getInstance().getData().add(image);</span>
-<span class="nc" id="L165">      image.getCapturedAt();</span>
+<span class="nc" id="L161">      MapillaryImportedImage image = new MapillaryImportedImage(latValue,</span>
+<span class="nc" id="L162">          lonValue, caValue, file, datetimeOriginal.getStringValue());</span>
+<span class="nc" id="L163">      MapillaryLayer.getInstance().getData().add(image);</span>
+<span class="nc" id="L164">      image.getCapturedAt();</span>
 
-<span class="nc" id="L167">      this.images.add(image);</span>
+<span class="nc" id="L166">      this.images.add(image);</span>
     }
-<span class="nc" id="L169">  }</span>
+<span class="nc" id="L168">  }</span>
 
   /**
    * Joins all the images in a unique {@link MapillarySequence}.
    */
   public void joinImages() {
-<span class="nc" id="L175">    Collections.sort(this.images, new MapillaryEpochComparator());</span>
-<span class="nc" id="L176">    MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc bnc" id="L177" title="All 2 branches missed.">    for (MapillaryImportedImage img : this.images) {</span>
-<span class="nc" id="L178">      seq.add(img);</span>
-<span class="nc" id="L179">      img.setSequence(seq);</span>
-<span class="nc" id="L180">    }</span>
-<span class="nc" id="L181">  }</span>
+<span class="nc" id="L174">    Collections.sort(this.images, new MapillaryEpochComparator());</span>
+<span class="nc" id="L175">    MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    for (MapillaryImportedImage img : this.images) {</span>
+<span class="nc" id="L177">      seq.add(img);</span>
+<span class="nc" id="L178">      img.setSequence(seq);</span>
+<span class="nc" id="L179">    }</span>
+<span class="nc" id="L180">  }</span>
 
   /**
-   * Comparator that comperes two {@link MapillaryAbstractImage} objects
+   * Comparator that compares two {@link MapillaryAbstractImage} objects
    * depending on the time they were taken.
    *
    * @author nokutu
    *
    */
-<span class="nc" id="L190">  public class MapillaryEpochComparator implements</span>
+<span class="nc" id="L189">  public class MapillaryEpochComparator implements</span>
       Comparator&lt;MapillaryAbstractImage&gt; {
 
     @Override
     public int compare(MapillaryAbstractImage arg0, MapillaryAbstractImage arg1) {
-<span class="nc bnc" id="L195" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
-<span class="nc" id="L196">        return -1;</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
-<span class="nc" id="L198">        return 1;</span>
-<span class="nc" id="L199">      return 0;</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
+<span class="nc" id="L195">        return -1;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
+<span class="nc" id="L197">        return 1;</span>
+<span class="nc" id="L198">      return 0;</span>
     }
   }
 }

@@ -2,30 +2,38 @@
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
+
 /**
  * @author nokutu
  *
  */
-<span class="nc" id="L9">public class PluginState {</span>
+<span class="nc" id="L16">public class PluginState {</span>
 
-<span class="nc" id="L11">  private static int runningDownloads = 0;</span>
-<span class="nc" id="L12">  private static int runningUploads = 0;</span>
-<span class="nc" id="L13">  private static int imagesToUpload = 0;</span>
-<span class="nc" id="L14">  private static int imagesUploaded = 0;</span>
+<span class="nc" id="L18">  private static int runningDownloads = 0;</span>
+  /** Images that have to be uploaded. */
+<span class="nc" id="L20">  public static int imagesToUpload = 0;</span>
+  /** Images that have been uploaded. */
+<span class="nc" id="L22">  public static int imagesUploaded = 0;</span>
 
   /**
    * Called when a download is started.
    */
   public static void startDownload() {
-<span class="nc" id="L20">    runningDownloads++;</span>
-<span class="nc" id="L21">  }</span>
+<span class="nc" id="L28">    runningDownloads++;</span>
+<span class="nc" id="L29">  }</span>
 
   /**
    * Called when a download is finished.
    */
   public static void finishDownload() {
-<span class="nc" id="L27">    runningDownloads--;</span>
-<span class="nc" id="L28">  }</span>
+<span class="nc" id="L35">    runningDownloads--;</span>
+<span class="nc" id="L36">  }</span>
 
   /**
    * Checks if there is any running download.
@@ -33,21 +41,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
    * @return true if the plugin is downloading; false otherwise.
    */
   public static boolean isDownloading() {
-<span class="nc bnc" id="L36" title="All 2 branches missed.">    return runningDownloads &gt; 0;</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    return runningDownloads &gt; 0;</span>
   }
-
-  /**
-   * Called when an upload is starting.
-   */
-  public static void startUpload() {
-<span class="nc" id="L43">    runningUploads++;</span>
-<span class="nc" id="L44">  }</span>
 
   /**
    * Called when an upload is finished.
    */
   public static void finishUpload() {
-<span class="nc" id="L50">    runningUploads--;</span>
 <span class="nc bnc" id="L51" title="All 2 branches missed.">    if (imagesUploaded &gt;= imagesToUpload) {</span>
 <span class="nc" id="L52">      imagesUploaded = 0;</span>
 <span class="nc" id="L53">      imagesToUpload = 0;</span>
@@ -60,7 +60,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
    * @return true if the plugin is uploading; false otherwise.
    */
   public static boolean isUploading() {
-<span class="nc bnc" id="L63" title="All 2 branches missed.">    return runningUploads &gt; 0;</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    return imagesToUpload &gt; imagesUploaded;</span>
   }
 
   /**
@@ -78,7 +78,26 @@ import static org.openstreetmap.josm.tools.I18n.tr;
    */
   public static void imageUploaded() {
 <span class="nc" id="L80">    imagesUploaded++;</span>
-<span class="nc" id="L81">  }</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (imagesToUpload == imagesUploaded) {</span>
+<span class="nc" id="L82">      finishedUploadDialog();</span>
+    }
+<span class="nc" id="L84">  }</span>
+
+  private static void finishedUploadDialog() {
+<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L88">      SwingUtilities.invokeLater(new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L91">          finishedUploadDialog();</span>
+<span class="nc" id="L92">        }</span>
+      });
+    } else {
+<span class="nc" id="L95">      JOptionPane pane = new JOptionPane();</span>
+<span class="nc" id="L96">      pane.setMessage(new FinishedUploadDialog());</span>
+<span class="nc" id="L97">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
+<span class="nc" id="L98">      dlg.setVisible(true);</span>
+    }
+<span class="nc" id="L100">  }</span>
 
   /**
    * Returns the string to be written in the status bar.
@@ -86,7 +105,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
    * @return The String that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L89">    return tr(&quot;Downloading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
+<span class="nc" id="L108">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
         + &quot;)&quot;);
   }
 }
