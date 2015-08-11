@@ -43,7 +43,7 @@ public class PluginStateTest {
     assertEquals(true, PluginState.isUploading());
     PluginState.imageUploaded();
     assertEquals(false, PluginState.isUploading());
-    assertEquals(0, PluginState.imagesToUpload);
-    assertEquals(0, PluginState.imagesUploaded);
+    assertEquals(2, PluginState.imagesToUpload);
+    assertEquals(2, PluginState.imagesUploaded);
   }
 }
