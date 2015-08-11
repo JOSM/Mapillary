@@ -15,25 +15,28 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
  */
 <span class="nc" id="L16">public class PluginState {</span>
 
-<span class="nc" id="L18">  private static int runningDownloads = 0;</span>
+<span class="fc" id="L18">  private static int runningDownloads = 0;</span>
   /** Images that have to be uploaded. */
-<span class="nc" id="L20">  public static int imagesToUpload = 0;</span>
+<span class="fc" id="L20">  protected static int imagesToUpload = 0;</span>
   /** Images that have been uploaded. */
-<span class="nc" id="L22">  public static int imagesUploaded = 0;</span>
+<span class="fc" id="L22">  public static int imagesUploaded = 0;</span>
 
   /**
    * Called when a download is started.
    */
   public static void startDownload() {
-<span class="nc" id="L28">    runningDownloads++;</span>
-<span class="nc" id="L29">  }</span>
+<span class="fc" id="L28">    runningDownloads++;</span>
+<span class="fc" id="L29">  }</span>
 
   /**
    * Called when a download is finished.
    */
   public static void finishDownload() {
-<span class="nc" id="L35">    runningDownloads--;</span>
-<span class="nc" id="L36">  }</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">    if (runningDownloads == 0)</span>
+<span class="nc" id="L36">      throw new IllegalStateException(</span>
+          &quot;The amount of running downlaods is less or equals to 0&quot;);
+<span class="fc" id="L38">    runningDownloads--;</span>
+<span class="fc" id="L39">  }</span>
 
   /**
    * Checks if there is any running download.
@@ -41,18 +44,8 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return true if the plugin is downloading; false otherwise.
    */
   public static boolean isDownloading() {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    return runningDownloads &gt; 0;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    return runningDownloads &gt; 0;</span>
   }
-
-  /**
-   * Called when an upload is finished.
-   */
-  public static void finishUpload() {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (imagesUploaded &gt;= imagesToUpload) {</span>
-<span class="nc" id="L52">      imagesUploaded = 0;</span>
-<span class="nc" id="L53">      imagesToUpload = 0;</span>
-    }
-<span class="nc" id="L55">  }</span>
 
   /**
    * Checks if there is any running upload.
@@ -60,7 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return true if the plugin is uploading; false otherwise.
    */
   public static boolean isUploading() {
-<span class="nc bnc" id="L63" title="All 2 branches missed.">    return imagesToUpload &gt; imagesUploaded;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    return imagesToUpload &gt; imagesUploaded;</span>
   }
 
   /**
@@ -70,34 +63,39 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    *          The amount of images that are going to be uploaded.
    */
   public static void imagesToUpload(int amount) {
-<span class="nc" id="L73">    imagesToUpload += amount;</span>
-<span class="nc" id="L74">  }</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
+<span class="fc" id="L67">      imagesToUpload = 0;</span>
+<span class="fc" id="L68">      imagesUploaded = 0;</span>
+    }
+<span class="fc" id="L70">    imagesToUpload += amount;</span>
+<span class="fc" id="L71">  }</span>
 
   /**
    * Called when an image is uploaded.
    */
   public static void imageUploaded() {
-<span class="nc" id="L80">    imagesUploaded++;</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (imagesToUpload == imagesUploaded) {</span>
-<span class="nc" id="L82">      finishedUploadDialog();</span>
+<span class="fc" id="L77">    imagesUploaded++;</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (imagesToUpload == imagesUploaded) {</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">      if (Main.main != null)</span>
+<span class="nc" id="L80">        finishedUploadDialog();</span>
     }
-<span class="nc" id="L84">  }</span>
+<span class="fc" id="L82">  }</span>
 
   private static void finishedUploadDialog() {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L88">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L86">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L91">          finishedUploadDialog();</span>
-<span class="nc" id="L92">        }</span>
+<span class="nc" id="L89">          finishedUploadDialog();</span>
+<span class="nc" id="L90">        }</span>
       });
     } else {
-<span class="nc" id="L95">      JOptionPane pane = new JOptionPane();</span>
-<span class="nc" id="L96">      pane.setMessage(new FinishedUploadDialog());</span>
-<span class="nc" id="L97">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
-<span class="nc" id="L98">      dlg.setVisible(true);</span>
+<span class="nc" id="L93">      JOptionPane pane = new JOptionPane();</span>
+<span class="nc" id="L94">      pane.setMessage(new FinishedUploadDialog());</span>
+<span class="nc" id="L95">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
+<span class="nc" id="L96">      dlg.setVisible(true);</span>
     }
-<span class="nc" id="L100">  }</span>
+<span class="nc" id="L98">  }</span>
 
   /**
    * Returns the string to be written in the status bar.
@@ -105,7 +103,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return The String that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L108">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
+<span class="nc" id="L106">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
         + &quot;)&quot;);
   }
 }

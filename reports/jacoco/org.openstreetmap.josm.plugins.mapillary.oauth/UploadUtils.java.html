@@ -175,24 +175,23 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 <span class="nc" id="L175">          }</span>
 <span class="nc" id="L176">      }</span>
 <span class="nc" id="L177">      this.ex.shutdown();</span>
-<span class="nc" id="L178">      PluginState.finishUpload();</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L178">    }</span>
   }
 
-<span class="nc" id="L182">  private static class SingleUploadThread extends Thread {</span>
+<span class="nc" id="L181">  private static class SingleUploadThread extends Thread {</span>
 
     private MapillaryImportedImage image;
     private UUID uuid;
 
-<span class="nc" id="L187">    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {</span>
-<span class="nc" id="L188">      this.image = image;</span>
-<span class="nc" id="L189">      this.uuid = uuid;</span>
-<span class="nc" id="L190">    }</span>
+<span class="nc" id="L186">    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {</span>
+<span class="nc" id="L187">      this.image = image;</span>
+<span class="nc" id="L188">      this.uuid = uuid;</span>
+<span class="nc" id="L189">    }</span>
 
     @Override
     public void run() {
-<span class="nc" id="L194">      upload(this.image, this.uuid);</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L193">      upload(this.image, this.uuid);</span>
+<span class="nc" id="L194">    }</span>
   }
 
   /**
@@ -212,53 +211,53 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
    */
   public static File updateFile(MapillaryImportedImage image)
       throws ImageReadException, IOException, ImageWriteException {
-<span class="fc" id="L215">    TiffOutputSet outputSet = null;</span>
-<span class="fc" id="L216">    TiffOutputDirectory exifDirectory = null;</span>
-<span class="fc" id="L217">    TiffOutputDirectory gpsDirectory = null;</span>
+<span class="fc" id="L214">    TiffOutputSet outputSet = null;</span>
+<span class="fc" id="L215">    TiffOutputDirectory exifDirectory = null;</span>
+<span class="fc" id="L216">    TiffOutputDirectory gpsDirectory = null;</span>
     // If the image is imported, loads the rest of the EXIF data.
-<span class="fc" id="L219">    JpegImageMetadata jpegMetadata = null;</span>
+<span class="fc" id="L218">    JpegImageMetadata jpegMetadata = null;</span>
     try {
-<span class="fc" id="L221">      ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
-<span class="fc" id="L222">      jpegMetadata = (JpegImageMetadata) metadata;</span>
-<span class="nc" id="L223">    } catch (Exception e) {</span>
-<span class="fc" id="L224">    }</span>
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">    if (null != jpegMetadata) {</span>
-<span class="nc" id="L226">      final TiffImageMetadata exif = jpegMetadata.getExif();</span>
-<span class="nc bnc" id="L227" title="All 2 branches missed.">      if (null != exif) {</span>
-<span class="nc" id="L228">        outputSet = exif.getOutputSet();</span>
+<span class="fc" id="L220">      ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
+<span class="fc" id="L221">      jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="nc" id="L222">    } catch (Exception e) {</span>
+<span class="fc" id="L223">    }</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">    if (null != jpegMetadata) {</span>
+<span class="nc" id="L225">      final TiffImageMetadata exif = jpegMetadata.getExif();</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">      if (null != exif) {</span>
+<span class="nc" id="L227">        outputSet = exif.getOutputSet();</span>
       }
     }
-<span class="pc bpc" id="L231" title="1 of 2 branches missed.">    if (null == outputSet) {</span>
-<span class="fc" id="L232">      outputSet = new TiffOutputSet();</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">    if (null == outputSet) {</span>
+<span class="fc" id="L231">      outputSet = new TiffOutputSet();</span>
     }
-<span class="fc" id="L234">    gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
-<span class="fc" id="L235">    exifDirectory = outputSet.getOrCreateExifDirectory();</span>
+<span class="fc" id="L233">    gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
+<span class="fc" id="L234">    exifDirectory = outputSet.getOrCreateExifDirectory();</span>
 
-<span class="fc" id="L237">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
-<span class="fc" id="L238">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
+<span class="fc" id="L236">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
+<span class="fc" id="L237">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
         GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
-<span class="fc" id="L241">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
-<span class="fc" id="L242">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
-<span class="fc" id="L243">        RationalNumber.valueOf(image.getCa()));</span>
+<span class="fc" id="L240">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="fc" id="L241">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
+<span class="fc" id="L242">        RationalNumber.valueOf(image.getCa()));</span>
 
-<span class="fc" id="L245">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
-<span class="fc" id="L246">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="fc" id="L247">        ((MapillaryImportedImage) image).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
+<span class="fc" id="L244">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="fc" id="L245">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="fc" id="L246">        ((MapillaryImportedImage) image).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
 
-<span class="fc" id="L249">    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());</span>
-<span class="fc" id="L250">    File tempFile = File.createTempFile(&quot;imagetoupload_&quot; + c, &quot;.tmp&quot;);</span>
-<span class="fc" id="L251">    c++;</span>
-<span class="fc" id="L252">    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));</span>
+<span class="fc" id="L248">    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());</span>
+<span class="fc" id="L249">    File tempFile = File.createTempFile(&quot;imagetoupload_&quot; + c, &quot;.tmp&quot;);</span>
+<span class="fc" id="L250">    c++;</span>
+<span class="fc" id="L251">    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));</span>
 
     // Transforms the image into a byte array.
-<span class="fc" id="L255">    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
-<span class="fc" id="L256">    ImageIO.write(image.getImage(), &quot;jpg&quot;, outputStream);</span>
-<span class="fc" id="L257">    byte[] imageBytes = outputStream.toByteArray();</span>
+<span class="fc" id="L254">    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+<span class="fc" id="L255">    ImageIO.write(image.getImage(), &quot;jpg&quot;, outputStream);</span>
+<span class="fc" id="L256">    byte[] imageBytes = outputStream.toByteArray();</span>
 
-<span class="fc" id="L259">    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
+<span class="fc" id="L258">    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
 
-<span class="fc" id="L261">    return tempFile;</span>
+<span class="fc" id="L260">    return tempFile;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
