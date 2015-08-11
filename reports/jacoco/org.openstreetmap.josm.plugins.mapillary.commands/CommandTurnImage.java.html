@@ -2,6 +2,7 @@
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.Main;
@@ -24,44 +25,44 @@ public class CommandTurnImage extends MapillaryCommand {
    * @param ca
    *          How much the images turn.
    */
-<span class="fc" id="L27">  public CommandTurnImage(List&lt;MapillaryAbstractImage&gt; images, double ca) {</span>
-<span class="fc" id="L28">    this.images = images;</span>
-<span class="fc" id="L29">    this.ca = ca;</span>
-<span class="fc" id="L30">  }</span>
+<span class="fc" id="L28">  public CommandTurnImage(List&lt;MapillaryAbstractImage&gt; images, double ca) {</span>
+<span class="fc" id="L29">    this.images = new ArrayList&lt;MapillaryAbstractImage&gt;(images);</span>
+<span class="fc" id="L30">    this.ca = ca;</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="fc" id="L35">      image.turn(-this.ca);</span>
-<span class="fc" id="L36">      image.stopMoving();</span>
-<span class="fc" id="L37">    }</span>
-<span class="fc" id="L38">    checkModified();</span>
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L40">      Main.map.repaint();</span>
-<span class="fc" id="L41">  }</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="fc" id="L36">      image.turn(-this.ca);</span>
+<span class="fc" id="L37">      image.stopMoving();</span>
+<span class="fc" id="L38">    }</span>
+<span class="fc" id="L39">    checkModified();</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L41">      Main.map.repaint();</span>
+<span class="fc" id="L42">  }</span>
 
   @Override
   public void redo() {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="fc" id="L46">      image.turn(this.ca);</span>
-<span class="fc" id="L47">      image.stopMoving();</span>
-<span class="fc" id="L48">    }</span>
-<span class="fc" id="L49">    checkModified();</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L51">      Main.map.repaint();</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="fc" id="L47">      image.turn(this.ca);</span>
+<span class="fc" id="L48">      image.stopMoving();</span>
+<span class="fc" id="L49">    }</span>
+<span class="fc" id="L50">    checkModified();</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L52">      Main.map.repaint();</span>
+<span class="fc" id="L53">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L56">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L57">        this.images.size());</span>
+<span class="nc" id="L57">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L58">        this.images.size());</span>
   }
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (command instanceof CommandTurnImage) {</span>
-<span class="fc" id="L63">      this.ca += ((CommandTurnImage) command).ca;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">    if (command instanceof CommandTurnImage) {</span>
+<span class="fc" id="L64">      this.ca += ((CommandTurnImage) command).ca;</span>
     }
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L66">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
