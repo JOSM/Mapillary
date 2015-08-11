@@ -40,20 +40,23 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandTest() {
-    MapillaryCommand cmd1 = new CommandMoveImage(
+    MapillaryCommand cmd12 = new CommandMoveImage(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.1, 0.1);
-    MapillaryCommand cmd2 = new CommandMoveImage(
+    MapillaryCommand cmd23 = new CommandMoveImage(
         Arrays.asList(new MapillaryAbstractImage[] { this.img2, this.img3 }),
         0.1, 0.1);
-    MapillaryCommand cmd3 = new CommandMoveImage(
+    MapillaryCommand cmd13 = new CommandMoveImage(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img3 }),
+        0.1, 0.1);
+    MapillaryCommand cmd1 = new CommandMoveImage(
+        Arrays.asList(new MapillaryAbstractImage[] { this.img1 }),
         0.1, 0.1);
     MapillaryCommand cmd31 = new CommandMoveImage(
         Arrays.asList(new MapillaryAbstractImage[] { this.img3, this.img1 }),
         0.2, 0.2);
-    this.record.addCommand(cmd1);
-    this.record.addCommand(cmd2);
+    this.record.addCommand(cmd12);
+    this.record.addCommand(cmd23);
 
     assertEquals(1, this.record.position);
     assertEquals(2, this.record.commandList.size());
@@ -63,21 +66,30 @@ public class MapillaryRecordTest extends AbstractTest {
     assertEquals(0, this.record.position);
     assertEquals(2, this.record.commandList.size());
 
-    this.record.addCommand(cmd3);
+    this.record.addCommand(cmd1);
 
     assertEquals(1, this.record.position);
-    assertEquals(2, this.record.commandList.size());
+
+    this.record.addCommand(cmd13);
+
+    assertEquals(2, this.record.position);
+    assertEquals(3, this.record.commandList.size());
 
     this.record.undo();
     this.record.redo();
 
-    assertEquals(1, this.record.position);
-    assertEquals(2, this.record.commandList.size());
+    assertEquals(2, this.record.position);
+    assertEquals(3, this.record.commandList.size());
 
     this.record.addCommand(cmd31);
 
-    assertEquals(1, this.record.position);
-    assertEquals(2, this.record.commandList.size());
+    assertEquals(2, this.record.position);
+    assertEquals(3, this.record.commandList.size());
+
+    this.record.addCommand(cmd1);
+
+    assertEquals(3, this.record.position);
+    assertEquals(4, this.record.commandList.size());
   }
 
   /**

@@ -17,7 +17,7 @@ public class PluginState {
 
   private static int runningDownloads = 0;
   /** Images that have to be uploaded. */
-  public static int imagesToUpload = 0;
+  protected static int imagesToUpload = 0;
   /** Images that have been uploaded. */
   public static int imagesUploaded = 0;
 
@@ -32,6 +32,9 @@ public class PluginState {
    * Called when a download is finished.
    */
   public static void finishDownload() {
+    if (runningDownloads == 0)
+      throw new IllegalStateException(
+          "The amount of running downlaods is less or equals to 0");
     runningDownloads--;
   }
 
@@ -42,16 +45,6 @@ public class PluginState {
    */
   public static boolean isDownloading() {
     return runningDownloads > 0;
-  }
-
-  /**
-   * Called when an upload is finished.
-   */
-  public static void finishUpload() {
-    if (imagesUploaded >= imagesToUpload) {
-      imagesUploaded = 0;
-      imagesToUpload = 0;
-    }
   }
 
   /**
@@ -70,6 +63,10 @@ public class PluginState {
    *          The amount of images that are going to be uploaded.
    */
   public static void imagesToUpload(int amount) {
+    if (imagesToUpload <= imagesUploaded) {
+      imagesToUpload = 0;
+      imagesUploaded = 0;
+    }
     imagesToUpload += amount;
   }
 
@@ -79,7 +76,8 @@ public class PluginState {
   public static void imageUploaded() {
     imagesUploaded++;
     if (imagesToUpload == imagesUploaded) {
-      finishedUploadDialog();
+      if (Main.main != null)
+        finishedUploadDialog();
     }
   }
 

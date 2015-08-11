@@ -175,7 +175,6 @@ public class UploadUtils {
           }
       }
       this.ex.shutdown();
-      PluginState.finishUpload();
     }
   }
 

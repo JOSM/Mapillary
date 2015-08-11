@@ -4,7 +4,7 @@
     <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
     <property name="plugin.main.version" value="8433"/>
     <property name="plugin.canloadatruntime" value="true"/>
-    <property name="plugin.version" value="0.9.1"/>
+    <property name="plugin.version" value="0.9.2"/>
     <property name="plugin.author" value="nokutu &lt;nokutu@openmailbox.org&gt;"/>
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin"/>
     <property name="plugin.description" value="Allows the user to work with pictures hosted at mapillary.com"/>
