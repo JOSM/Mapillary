@@ -74,6 +74,9 @@ public class MapillaryRecord {
       for (MapillaryAbstractImage img : this.commandList.get(this.position).images)
         if (!command.images.contains(img))
           equalSets = false;
+      for (MapillaryAbstractImage img : command.images)
+        if (!this.commandList.get(this.position).images.contains(img))
+          equalSets = false;
       if (equalSets
           && this.commandList.get(this.position).getClass() == command
               .getClass()) {
