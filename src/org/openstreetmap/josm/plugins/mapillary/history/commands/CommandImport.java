@@ -28,7 +28,7 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void execute() {
-    this.redo();
+    MapillaryLayer.getInstance().getData().add(this.images);
   }
 
   @Override
@@ -41,7 +41,7 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void redo() {
-    MapillaryLayer.getInstance().getData().add(this.images);
+    this.execute();
   }
 
   @Override

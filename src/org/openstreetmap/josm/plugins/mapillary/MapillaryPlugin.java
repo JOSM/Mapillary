@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
@@ -117,10 +118,9 @@ public class MapillaryPlugin extends Plugin {
           this.importIntoSequenceAction, false, 14);
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
           14);
-      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, uploadAction,
-          false, 14);
-      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false,
-          15);
+      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false,
+          14);
+      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
       DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
           this.downloadViewAction, false, 14);
       JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);
@@ -181,9 +181,18 @@ public class MapillaryPlugin extends Plugin {
    * @param value
    *          true to enable the JMenuItem; false to disable it.
    */
-  public static void setMenuEnabled(JMenuItem menu, boolean value) {
-    menu.setEnabled(value);
-    menu.getAction().setEnabled(value);
+  public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          setMenuEnabled(menu, value);
+        }
+      });
+    } else {
+      menu.setEnabled(value);
+      menu.getAction().setEnabled(value);
+    }
   }
 
   @Override

@@ -52,7 +52,7 @@ public class MapillaryUploadAction extends JosmAction implements
         && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       if (dialog.sequence.isSelected()) {
         UploadUtils.uploadSequence(MapillaryLayer.getInstance().getData()
-            .getSelectedImage().getSequence());
+            .getSelectedImage().getSequence(), dialog.delete.isSelected());
       }
     }
   }

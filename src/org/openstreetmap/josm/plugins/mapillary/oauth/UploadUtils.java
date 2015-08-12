@@ -40,6 +40,8 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
@@ -140,21 +142,26 @@ public class UploadUtils {
    * @param sequence
    *          The sequence to upload. It must contain only
    *          {@link MapillaryImportedImage} objects.
+   * @param delete
+   *          Whether the images must be deleted after upload or not.
    */
-  public static void uploadSequence(MapillarySequence sequence) {
-    Main.worker.submit(new SequenceUploadThread(sequence.getImages()));
+  public static void uploadSequence(MapillarySequence sequence, boolean delete) {
+    Main.worker.submit(new SequenceUploadThread(sequence.getImages(), delete));
   }
 
   private static class SequenceUploadThread extends Thread {
     private List<MapillaryAbstractImage> images;
     private UUID uuid;
+    private boolean delete;
     ThreadPoolExecutor ex;
 
-    private SequenceUploadThread(List<MapillaryAbstractImage> images) {
+    private SequenceUploadThread(List<MapillaryAbstractImage> images,
+        boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
       this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS,
           new ArrayBlockingQueue<Runnable>(15));
+      this.delete = delete;
     }
 
     @Override
@@ -175,6 +182,14 @@ public class UploadUtils {
           }
       }
       this.ex.shutdown();
+      try {
+        this.ex.awaitTermination(15, TimeUnit.SECONDS);
+      } catch (InterruptedException e) {
+        Main.error(e);
+      }
+      System.out.println(this.images.size());
+      if (this.delete)
+        MapillaryRecord.getInstance().addCommand(new CommandDelete(this.images));
     }
   }
 
