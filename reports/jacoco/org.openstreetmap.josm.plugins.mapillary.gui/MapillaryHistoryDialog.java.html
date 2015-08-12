@@ -8,8 +8,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -17,14 +20,19 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -47,56 +55,76 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private static MapillaryHistoryDialog INSTANCE;
 
-<span class="nc" id="L50">  private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(</span>
-      new DefaultMutableTreeNode());
-<span class="nc" id="L52">  private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(</span>
-      new DefaultMutableTreeNode());
-<span class="nc" id="L54">  private final JTree undoTree = new JTree(this.undoTreeModel);</span>
-<span class="nc" id="L55">  private final JTree redoTree = new JTree(this.redoTreeModel);</span>
+  private transient UndoRedoSelectionListener undoSelectionListener;
+  private transient UndoRedoSelectionListener redoSelectionListener;
 
-<span class="nc" id="L57">  private JSeparator separator = new JSeparator();</span>
-<span class="nc" id="L58">  private Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
+<span class="nc" id="L61">  private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(</span>
+      new DefaultMutableTreeNode());
+<span class="nc" id="L63">  private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(</span>
+      new DefaultMutableTreeNode());
+<span class="nc" id="L65">  private final JTree undoTree = new JTree(this.undoTreeModel);</span>
+<span class="nc" id="L66">  private final JTree redoTree = new JTree(this.redoTreeModel);</span>
+
+<span class="nc" id="L68">  private JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L69">  private Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
 
   private SideButton undoButton;
   private SideButton redoButton;
 
+  private ConcurrentHashMap&lt;Object, MapillaryCommand&gt; map;
+
   private MapillaryHistoryDialog() {
-<span class="nc" id="L64">    super(tr(&quot;Mapillary history&quot;), &quot;mapillaryhistory.png&quot;,</span>
-<span class="nc" id="L65">        tr(&quot;Open Mapillary history dialog&quot;), Shortcut.registerShortcut(</span>
-<span class="nc" id="L66">            tr(&quot;Mapillary history&quot;), tr(&quot;Open Mapillary history dialog&quot;),</span>
+<span class="nc" id="L77">    super(tr(&quot;Mapillary history&quot;), &quot;mapillaryhistory.png&quot;,</span>
+<span class="nc" id="L78">        tr(&quot;Open Mapillary history dialog&quot;), Shortcut.registerShortcut(</span>
+<span class="nc" id="L79">            tr(&quot;Mapillary history&quot;), tr(&quot;Open Mapillary history dialog&quot;),</span>
             KeyEvent.VK_M, Shortcut.NONE), 200);
 
-<span class="nc" id="L69">    MapillaryRecord.getInstance().addListener(this);</span>
+<span class="nc" id="L82">    MapillaryRecord.getInstance().addListener(this);</span>
 
-<span class="nc" id="L71">    this.undoTree.expandRow(0);</span>
-<span class="nc" id="L72">    this.undoTree.setShowsRootHandles(true);</span>
-<span class="nc" id="L73">    this.undoTree.setRootVisible(false);</span>
-<span class="nc" id="L74">    this.undoTree.setCellRenderer(new MapillaryCellRenderer());</span>
-<span class="nc" id="L75">    this.redoTree.expandRow(0);</span>
-<span class="nc" id="L76">    this.redoTree.setCellRenderer(new MapillaryCellRenderer());</span>
-<span class="nc" id="L77">    this.redoTree.setShowsRootHandles(true);</span>
-<span class="nc" id="L78">    this.redoTree.setRootVisible(false);</span>
+<span class="nc" id="L84">    this.map = new ConcurrentHashMap&lt;&gt;();</span>
 
-<span class="nc" id="L80">    JPanel treesPanel = new JPanel(new GridBagLayout());</span>
-<span class="nc" id="L81">    treesPanel.add(this.spacer, GBC.eol());</span>
-<span class="nc" id="L82">    this.spacer.setVisible(false);</span>
-<span class="nc" id="L83">    treesPanel</span>
-<span class="nc" id="L84">        .add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
-<span class="nc" id="L85">    this.separator.setVisible(false);</span>
-<span class="nc" id="L86">    treesPanel.add(this.separator, GBC.eol()</span>
-<span class="nc" id="L87">        .fill(GridBagConstraints.HORIZONTAL));</span>
-<span class="nc" id="L88">    treesPanel</span>
-<span class="nc" id="L89">        .add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
-<span class="nc" id="L90">    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),</span>
-<span class="nc" id="L91">        GBC.std().weight(0, 1));</span>
-<span class="nc" id="L92">    treesPanel.setBackground(this.redoTree.getBackground());</span>
+<span class="nc" id="L86">    this.undoTree.expandRow(0);</span>
+<span class="nc" id="L87">    this.undoTree.setShowsRootHandles(true);</span>
+<span class="nc" id="L88">    this.undoTree.setRootVisible(false);</span>
+<span class="nc" id="L89">    this.undoTree.setCellRenderer(new MapillaryCellRenderer());</span>
+<span class="nc" id="L90">    this.undoTree.getSelectionModel().setSelectionMode(</span>
+        TreeSelectionModel.SINGLE_TREE_SELECTION);
+<span class="nc" id="L92">    this.undoTree.addMouseListener(new MouseEventHandler());</span>
+<span class="nc" id="L93">    this.undoSelectionListener = new UndoRedoSelectionListener(this.undoTree);</span>
+<span class="nc" id="L94">    this.undoTree.getSelectionModel().addTreeSelectionListener(</span>
+        this.undoSelectionListener);
 
-<span class="nc" id="L94">    this.undoButton = new SideButton(new UndoAction());</span>
-<span class="nc" id="L95">    this.redoButton = new SideButton(new RedoAction());</span>
+<span class="nc" id="L97">    this.redoTree.expandRow(0);</span>
+<span class="nc" id="L98">    this.redoTree.setCellRenderer(new MapillaryCellRenderer());</span>
+<span class="nc" id="L99">    this.redoTree.setShowsRootHandles(true);</span>
+<span class="nc" id="L100">    this.redoTree.setRootVisible(false);</span>
+<span class="nc" id="L101">    this.redoTree.getSelectionModel().setSelectionMode(</span>
+        TreeSelectionModel.SINGLE_TREE_SELECTION);
+<span class="nc" id="L103">    this.redoTree.addMouseListener(new MouseEventHandler());</span>
+<span class="nc" id="L104">    this.redoSelectionListener = new UndoRedoSelectionListener(this.redoTree);</span>
+<span class="nc" id="L105">    this.redoTree.getSelectionModel().addTreeSelectionListener(</span>
+        this.redoSelectionListener);
 
-<span class="nc" id="L97">    createLayout(treesPanel, true,</span>
-<span class="nc" id="L98">        Arrays.asList(new SideButton[] { this.undoButton, this.redoButton }));</span>
-<span class="nc" id="L99">  }</span>
+<span class="nc" id="L108">    JPanel treesPanel = new JPanel(new GridBagLayout());</span>
+<span class="nc" id="L109">    treesPanel.add(this.spacer, GBC.eol());</span>
+<span class="nc" id="L110">    this.spacer.setVisible(false);</span>
+<span class="nc" id="L111">    treesPanel</span>
+<span class="nc" id="L112">        .add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
+<span class="nc" id="L113">    this.separator.setVisible(false);</span>
+<span class="nc" id="L114">    treesPanel.add(this.separator, GBC.eol()</span>
+<span class="nc" id="L115">        .fill(GridBagConstraints.HORIZONTAL));</span>
+<span class="nc" id="L116">    treesPanel</span>
+<span class="nc" id="L117">        .add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
+<span class="nc" id="L118">    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),</span>
+<span class="nc" id="L119">        GBC.std().weight(0, 1));</span>
+<span class="nc" id="L120">    treesPanel.setBackground(this.redoTree.getBackground());</span>
+
+<span class="nc" id="L122">    this.undoButton = new SideButton(new UndoAction());</span>
+<span class="nc" id="L123">    this.redoButton = new SideButton(new RedoAction());</span>
+
+<span class="nc" id="L125">    createLayout(treesPanel, true,</span>
+<span class="nc" id="L126">        Arrays.asList(new SideButton[] { this.undoButton, this.redoButton }));</span>
+<span class="nc" id="L127">  }</span>
 
   /**
    * Returns the unique instance of the class.
@@ -104,75 +132,84 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    * @return The unique instance of the class.
    */
   public static MapillaryHistoryDialog getInstance() {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (INSTANCE == null)</span>
-<span class="nc" id="L108">      INSTANCE = new MapillaryHistoryDialog();</span>
-<span class="nc" id="L109">    return INSTANCE;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (INSTANCE == null)</span>
+<span class="nc" id="L136">      INSTANCE = new MapillaryHistoryDialog();</span>
+<span class="nc" id="L137">    return INSTANCE;</span>
   }
 
   private void buildTree() {
-<span class="nc" id="L113">    this.redoButton.setEnabled(true);</span>
-<span class="nc" id="L114">    this.undoButton.setEnabled(true);</span>
-<span class="nc" id="L115">    ArrayList&lt;MapillaryCommand&gt; commands = MapillaryRecord.getInstance().commandList;</span>
-<span class="nc" id="L116">    int position = MapillaryRecord.getInstance().position;</span>
-<span class="nc" id="L117">    ArrayList&lt;MapillaryCommand&gt; undoCommands = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">    if (position &gt;= 0)</span>
-<span class="nc" id="L119">      undoCommands = new ArrayList&lt;&gt;(commands.subList(0, position + 1));</span>
+<span class="nc" id="L141">    this.redoButton.setEnabled(true);</span>
+<span class="nc" id="L142">    this.undoButton.setEnabled(true);</span>
+<span class="nc" id="L143">    ArrayList&lt;MapillaryCommand&gt; commands = MapillaryRecord.getInstance().commandList;</span>
+<span class="nc" id="L144">    int position = MapillaryRecord.getInstance().position;</span>
+<span class="nc" id="L145">    ArrayList&lt;MapillaryCommand&gt; undoCommands = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (position &gt;= 0)</span>
+<span class="nc" id="L147">      undoCommands = new ArrayList&lt;&gt;(commands.subList(0, position + 1));</span>
     else
-<span class="nc" id="L121">      this.undoButton.setEnabled(false);</span>
-<span class="nc" id="L122">    ArrayList&lt;MapillaryCommand&gt; redoCommands = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L123" title="All 4 branches missed.">    if (commands.size() &gt; 0 &amp;&amp; position + 1 &lt; commands.size())</span>
-<span class="nc" id="L124">      redoCommands = new ArrayList&lt;&gt;(commands.subList(position + 1,</span>
-<span class="nc" id="L125">          commands.size()));</span>
+<span class="nc" id="L149">      this.undoButton.setEnabled(false);</span>
+<span class="nc" id="L150">    ArrayList&lt;MapillaryCommand&gt; redoCommands = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L151" title="All 4 branches missed.">    if (commands.size() &gt; 0 &amp;&amp; position + 1 &lt; commands.size())</span>
+<span class="nc" id="L152">      redoCommands = new ArrayList&lt;&gt;(commands.subList(position + 1,</span>
+<span class="nc" id="L153">          commands.size()));</span>
     else
-<span class="nc" id="L127">      this.redoButton.setEnabled(false);</span>
+<span class="nc" id="L155">      this.redoButton.setEnabled(false);</span>
 
-<span class="nc" id="L129">    DefaultMutableTreeNode redoRoot = new DefaultMutableTreeNode();</span>
-<span class="nc" id="L130">    DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();</span>
+<span class="nc" id="L157">    DefaultMutableTreeNode redoRoot = new DefaultMutableTreeNode();</span>
+<span class="nc" id="L158">    DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();</span>
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">    for (MapillaryCommand command : undoCommands) {</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (command != null)</span>
-<span class="nc" id="L134">        undoRoot.add(new DefaultMutableTreeNode(command.toString()));</span>
-<span class="nc" id="L135">    }</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">    for (MapillaryCommand command : redoCommands) {</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (command != null)</span>
-<span class="nc" id="L138">        redoRoot.add(new DefaultMutableTreeNode(command.toString()));</span>
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L160">    this.map.clear();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">    for (MapillaryCommand command : undoCommands) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">      if (command != null) {</span>
+<span class="nc" id="L163">        DefaultMutableTreeNode node = new DefaultMutableTreeNode(</span>
+<span class="nc" id="L164">            command.toString());</span>
+<span class="nc" id="L165">        this.map.put(node, command);</span>
+<span class="nc" id="L166">        undoRoot.add(node);</span>
+      }
+<span class="nc" id="L168">    }</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    for (MapillaryCommand command : redoCommands) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">      if (command != null) {</span>
+<span class="nc" id="L171">        DefaultMutableTreeNode node = new DefaultMutableTreeNode(</span>
+<span class="nc" id="L172">            command.toString());</span>
+<span class="nc" id="L173">        this.map.put(node, command);</span>
+<span class="nc" id="L174">        redoRoot.add(node);</span>
+      }
+<span class="nc" id="L176">    }</span>
 
-<span class="nc bnc" id="L141" title="All 2 branches missed.">    this.separator.setVisible(!undoCommands.isEmpty()</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        || !redoCommands.isEmpty());</span>
-<span class="nc bnc" id="L143" title="All 4 branches missed.">    this.spacer.setVisible(undoCommands.isEmpty() &amp;&amp; !redoCommands.isEmpty());</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">    this.separator.setVisible(!undoCommands.isEmpty()</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        || !redoCommands.isEmpty());</span>
+<span class="nc bnc" id="L180" title="All 4 branches missed.">    this.spacer.setVisible(undoCommands.isEmpty() &amp;&amp; !redoCommands.isEmpty());</span>
 
-<span class="nc" id="L145">    this.undoTreeModel.setRoot(undoRoot);</span>
-<span class="nc" id="L146">    this.redoTreeModel.setRoot(redoRoot);</span>
-<span class="nc" id="L147">  }</span>
+<span class="nc" id="L182">    this.undoTreeModel.setRoot(undoRoot);</span>
+<span class="nc" id="L183">    this.redoTreeModel.setRoot(redoRoot);</span>
+<span class="nc" id="L184">  }</span>
 
   @Override
   public void recordChanged() {
-<span class="nc bnc" id="L151" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L152">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L189">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L155">          recordChanged();</span>
-<span class="nc" id="L156">        }</span>
+<span class="nc" id="L192">          recordChanged();</span>
+<span class="nc" id="L193">        }</span>
       });
     } else {
-<span class="nc" id="L159">      buildTree();</span>
+<span class="nc" id="L196">      buildTree();</span>
     }
-<span class="nc" id="L161">  }</span>
+<span class="nc" id="L198">  }</span>
 
   private class UndoAction extends AbstractAction {
 
     private static final long serialVersionUID = -6435832206342007269L;
 
-<span class="nc" id="L167">    public UndoAction() {</span>
-<span class="nc" id="L168">      putValue(NAME, tr(&quot;Undo&quot;));</span>
-<span class="nc" id="L169">      putValue(SMALL_ICON, ImageProvider.get(&quot;undo&quot;));</span>
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L204">    public UndoAction() {</span>
+<span class="nc" id="L205">      putValue(NAME, tr(&quot;Undo&quot;));</span>
+<span class="nc" id="L206">      putValue(SMALL_ICON, ImageProvider.get(&quot;undo&quot;));</span>
+<span class="nc" id="L207">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L174">      MapillaryRecord.getInstance().undo();</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L211">      MapillaryRecord.getInstance().undo();</span>
+<span class="nc" id="L212">    }</span>
 
   }
 
@@ -180,29 +217,29 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     private static final long serialVersionUID = -2761935780353053512L;
 
-<span class="nc" id="L183">    public RedoAction() {</span>
-<span class="nc" id="L184">      putValue(NAME, tr(&quot;Redo&quot;));</span>
-<span class="nc" id="L185">      putValue(SMALL_ICON, ImageProvider.get(&quot;redo&quot;));</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L220">    public RedoAction() {</span>
+<span class="nc" id="L221">      putValue(NAME, tr(&quot;Redo&quot;));</span>
+<span class="nc" id="L222">      putValue(SMALL_ICON, ImageProvider.get(&quot;redo&quot;));</span>
+<span class="nc" id="L223">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L190">      MapillaryRecord.getInstance().redo();</span>
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L227">      MapillaryRecord.getInstance().redo();</span>
+<span class="nc" id="L228">    }</span>
 
   }
 
-<span class="nc" id="L195">  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {</span>
+<span class="nc" id="L232">  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {</span>
 
     private static final long serialVersionUID = -3129520241562296901L;
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
         boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-<span class="nc" id="L202">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,</span>
+<span class="nc" id="L239">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,</span>
           hasFocus);
-<span class="nc" id="L204">      setIcon(ImageProvider.get(&quot;data/node.png&quot;));</span>
-<span class="nc" id="L205">      return this;</span>
+<span class="nc" id="L241">      setIcon(ImageProvider.get(&quot;data/node.png&quot;));</span>
+<span class="nc" id="L242">      return this;</span>
     }
   }
 
@@ -210,7 +247,73 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    * Destroys the unique instance of the class.
    */
   public static void destroyInstance() {
-<span class="nc" id="L213">    MapillaryHistoryDialog.INSTANCE = null;</span>
-<span class="nc" id="L214">  }</span>
+<span class="nc" id="L250">    MapillaryHistoryDialog.INSTANCE = null;</span>
+<span class="nc" id="L251">  }</span>
+
+<span class="nc" id="L253">  private class MouseEventHandler implements MouseListener {</span>
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+<span class="nc" id="L257">    }</span>
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+<span class="nc" id="L261">    }</span>
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+<span class="nc" id="L265">    }</span>
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+<span class="nc bnc" id="L269" title="All 2 branches missed.">      if (e.getClickCount() == 2) {</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {</span>
+<span class="nc" id="L271">          MapillaryCommand cmd = MapillaryHistoryDialog.this.map</span>
+<span class="nc" id="L272">              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()</span>
+<span class="nc" id="L273">                  .getLastPathComponent());</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">          if (!(cmd instanceof CommandDelete))</span>
+<span class="nc" id="L275">            MapillaryUtils.showPictures(cmd.images, true);</span>
+<span class="nc" id="L276">        } else</span>
+<span class="nc" id="L277">          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map</span>
+<span class="nc" id="L278">              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()</span>
+<span class="nc" id="L279">                  .getLastPathComponent()).images, true);</span>
+      }
+<span class="nc" id="L281">    }</span>
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+<span class="nc" id="L285">    }</span>
+  }
+
+  private class UndoRedoSelectionListener implements TreeSelectionListener {
+
+    private JTree source;
+
+<span class="nc" id="L292">    private UndoRedoSelectionListener(JTree source) {</span>
+<span class="nc" id="L293">      this.source = source;</span>
+<span class="nc" id="L294">    }</span>
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+<span class="nc bnc" id="L298" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.undoTree) {</span>
+<span class="nc" id="L299">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
+<span class="nc" id="L300">            .removeTreeSelectionListener(</span>
+<span class="nc" id="L301">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
+<span class="nc" id="L302">        MapillaryHistoryDialog.this.redoTree.clearSelection();</span>
+<span class="nc" id="L303">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
+<span class="nc" id="L304">            .addTreeSelectionListener(</span>
+<span class="nc" id="L305">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
+      }
+<span class="nc bnc" id="L307" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.redoTree) {</span>
+<span class="nc" id="L308">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
+<span class="nc" id="L309">            .removeTreeSelectionListener(</span>
+<span class="nc" id="L310">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
+<span class="nc" id="L311">        MapillaryHistoryDialog.this.undoTree.clearSelection();</span>
+<span class="nc" id="L312">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
+<span class="nc" id="L313">            .addTreeSelectionListener(</span>
+<span class="nc" id="L314">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
+      }
+<span class="nc" id="L316">    }</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
