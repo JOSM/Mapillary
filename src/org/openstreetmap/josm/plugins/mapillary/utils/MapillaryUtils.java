@@ -6,11 +6,16 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
 /**
  * Set of utilities.
@@ -118,5 +123,79 @@ public class MapillaryUtils {
         exc.printStackTrace();
       }
     }
+  }
+
+  /**
+   * Joins two images into the same sequence.
+   *
+   * @param img1
+   * @param img2
+   */
+  public synchronized static void join(MapillaryImportedImage img1,
+      MapillaryImportedImage img2) {
+    MapillaryImportedImage firstImage = img1;
+    MapillaryImportedImage secondImage = img2;
+
+    if (img1.next() != null) {
+      firstImage = img2;
+      secondImage = img1;
+    }
+    if (firstImage.getSequence() == null) {
+      MapillarySequence seq = new MapillarySequence();
+      seq.add(firstImage);
+      firstImage.setSequence(seq);
+    }
+    if (secondImage.getSequence() == null) {
+      MapillarySequence seq = new MapillarySequence();
+      seq.add(secondImage);
+      img2.setSequence(seq);
+    }
+
+    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {
+      firstImage.getSequence().add(img);
+      img.setSequence(firstImage.getSequence());
+    }
+    if (Main.main != null)
+      MapillaryData.dataUpdated();
+  }
+
+  /**
+   * Separates two images belonging to the same sequence.
+   *
+   * @param img1
+   * @param img2
+   */
+  public synchronized static void unjoin(MapillaryImportedImage img1,
+      MapillaryImportedImage img2) {
+    MapillaryImportedImage firstImage = img1;
+    MapillaryImportedImage secondImage = img2;
+
+    if (img1.next() != img2) {
+      firstImage = img2;
+      secondImage = img1;
+    }
+
+    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(firstImage
+        .getSequence().getImages()
+        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));
+    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(firstImage
+        .getSequence()
+        .getImages()
+        .subList(firstImage.getSequence().getImages().indexOf(secondImage),
+            firstImage.getSequence().getImages().size()));
+
+    MapillarySequence seq1 = new MapillarySequence();
+    MapillarySequence seq2 = new MapillarySequence();
+
+    for (MapillaryAbstractImage img : firstHalf) {
+      img.setSequence(seq1);
+      seq1.add(img);
+    }
+    for (MapillaryAbstractImage img : secondHalf) {
+      img.setSequence(seq2);
+      seq2.add(img);
+    }
+    if (Main.main != null)
+      MapillaryData.dataUpdated();
   }
 }
