@@ -126,4 +126,12 @@ public class MapillaryRecord {
       if (lis != null)
         lis.recordChanged();
   }
+
+  /**
+   * Resets the object to its start state.
+   */
+  public void reset() {
+    this.commandList.clear();
+    this.position = -1;
+  }
 }

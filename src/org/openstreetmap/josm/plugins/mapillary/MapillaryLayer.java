@@ -189,7 +189,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void destroy() {
     setMode(null);
-
+    MapillaryRecord.getInstance().reset();
     AbstractMode.resetThread();
     MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
@@ -210,29 +210,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public static void clearInstance() {
     INSTANCE = null;
-  }
-
-  /**
-   * Zooms to fit all the {@link MapillaryAbstractImage} icons into the map
-   * view.
-   */
-  public void showAllPictures() {
-    double minLat = 90;
-    double minLon = 180;
-    double maxLat = -90;
-    double maxLon = -180;
-    for (MapillaryAbstractImage img : this.data.getImages()) {
-      if (img.getLatLon().lat() < minLat)
-        minLat = img.getLatLon().lat();
-      if (img.getLatLon().lon() < minLon)
-        minLon = img.getLatLon().lon();
-      if (img.getLatLon().lat() > maxLat)
-        maxLat = img.getLatLon().lat();
-      if (img.getLatLon().lon() > maxLon)
-        maxLon = img.getLatLon().lon();
-    }
-    Main.map.mapView.zoomTo(new Bounds(new LatLon(minLat, minLon), new LatLon(
-        maxLat, maxLon)));
   }
 
   @Override

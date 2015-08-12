@@ -115,7 +115,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       joinImages();
       MapillaryRecord.getInstance().addCommand(new CommandImport(this.images));
     }
-    MapillaryLayer.getInstance().showAllPictures();
+    MapillaryUtils.showAllPictures();
   }
 
   /**

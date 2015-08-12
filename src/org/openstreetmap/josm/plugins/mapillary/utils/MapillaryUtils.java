@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -24,6 +29,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  *
  */
 public class MapillaryUtils {
+
+  private static double MIN_ZOOM_SQUARE_SIDE = 0.002;
+
   /**
    * Updates the help text at the bottom of the window.
    */
@@ -197,5 +205,65 @@ public class MapillaryUtils {
     }
     if (Main.main != null)
       MapillaryData.dataUpdated();
+  }
+
+  /**
+   * Zooms to fit all the given {@link MapillaryAbstractImage} objects.
+   *
+   * @param images
+   *          The images your are zooming to.
+   * @param select
+   *          Whether the added images must be selected or not.
+   */
+  public static void showPictures(final List<MapillaryAbstractImage> images,
+      final boolean select) {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          showPictures(images, select);
+        }
+      });
+    } else {
+      double minLat = 90;
+      double minLon = 180;
+      double maxLat = -90;
+      double maxLon = -180;
+      for (MapillaryAbstractImage img : images) {
+        if (img.getLatLon().lat() < minLat)
+          minLat = img.getLatLon().lat();
+        if (img.getLatLon().lon() < minLon)
+          minLon = img.getLatLon().lon();
+        if (img.getLatLon().lat() > maxLat)
+          maxLat = img.getLatLon().lat();
+        if (img.getLatLon().lon() > maxLon)
+          maxLon = img.getLatLon().lon();
+      }
+      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon), new LatLon(
+          maxLat, maxLon));
+      // The zoom rectangle must have a minimum size.
+      double latExtent = zoomBounds.getMaxLat() - zoomBounds.getMinLat() >= MIN_ZOOM_SQUARE_SIDE ? zoomBounds
+          .getMaxLat() - zoomBounds.getMinLat()
+          : MIN_ZOOM_SQUARE_SIDE;
+      double lonExtent = zoomBounds.getMaxLon() - zoomBounds.getMinLon() >= MIN_ZOOM_SQUARE_SIDE ? zoomBounds
+          .getMaxLon() - zoomBounds.getMinLon()
+          : MIN_ZOOM_SQUARE_SIDE;
+      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
+
+      Main.map.mapView.zoomTo(zoomBounds);
+      MapillaryLayer.getInstance().getData().setSelectedImage(null);
+      if (select)
+        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);
+      if (Main.main != null)
+        MapillaryData.dataUpdated();
+    }
+  }
+
+  /**
+   * Zooms to fit all the {@link MapillaryAbstractImage} objects stored in the
+   * database.
+   */
+  public static void showAllPictures() {
+    showPictures(MapillaryLayer.getInstance().getData().getImages(), false);
   }
 }

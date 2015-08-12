@@ -8,8 +8,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -17,14 +20,19 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -47,6 +55,9 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private static MapillaryHistoryDialog INSTANCE;
 
+  private transient UndoRedoSelectionListener undoSelectionListener;
+  private transient UndoRedoSelectionListener redoSelectionListener;
+
   private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(
       new DefaultMutableTreeNode());
   private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(
@@ -60,6 +71,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   private SideButton undoButton;
   private SideButton redoButton;
 
+  private ConcurrentHashMap<Object, MapillaryCommand> map;
+
   private MapillaryHistoryDialog() {
     super(tr("Mapillary history"), "mapillaryhistory.png",
         tr("Open Mapillary history dialog"), Shortcut.registerShortcut(
@@ -68,14 +81,29 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     MapillaryRecord.getInstance().addListener(this);
 
+    this.map = new ConcurrentHashMap<>();
+
     this.undoTree.expandRow(0);
     this.undoTree.setShowsRootHandles(true);
     this.undoTree.setRootVisible(false);
     this.undoTree.setCellRenderer(new MapillaryCellRenderer());
+    this.undoTree.getSelectionModel().setSelectionMode(
+        TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.undoTree.addMouseListener(new MouseEventHandler());
+    this.undoSelectionListener = new UndoRedoSelectionListener(this.undoTree);
+    this.undoTree.getSelectionModel().addTreeSelectionListener(
+        this.undoSelectionListener);
+
     this.redoTree.expandRow(0);
     this.redoTree.setCellRenderer(new MapillaryCellRenderer());
     this.redoTree.setShowsRootHandles(true);
     this.redoTree.setRootVisible(false);
+    this.redoTree.getSelectionModel().setSelectionMode(
+        TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.redoTree.addMouseListener(new MouseEventHandler());
+    this.redoSelectionListener = new UndoRedoSelectionListener(this.redoTree);
+    this.redoTree.getSelectionModel().addTreeSelectionListener(
+        this.redoSelectionListener);
 
     JPanel treesPanel = new JPanel(new GridBagLayout());
     treesPanel.add(this.spacer, GBC.eol());
@@ -129,13 +157,22 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     DefaultMutableTreeNode redoRoot = new DefaultMutableTreeNode();
     DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();
 
+    this.map.clear();
     for (MapillaryCommand command : undoCommands) {
-      if (command != null)
-        undoRoot.add(new DefaultMutableTreeNode(command.toString()));
+      if (command != null) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(
+            command.toString());
+        this.map.put(node, command);
+        undoRoot.add(node);
+      }
     }
     for (MapillaryCommand command : redoCommands) {
-      if (command != null)
-        redoRoot.add(new DefaultMutableTreeNode(command.toString()));
+      if (command != null) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(
+            command.toString());
+        this.map.put(node, command);
+        redoRoot.add(node);
+      }
     }
 
     this.separator.setVisible(!undoCommands.isEmpty()
@@ -211,5 +248,71 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    */
   public static void destroyInstance() {
     MapillaryHistoryDialog.INSTANCE = null;
+  }
+
+  private class MouseEventHandler implements MouseListener {
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+      if (e.getClickCount() == 2) {
+        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {
+          MapillaryCommand cmd = MapillaryHistoryDialog.this.map
+              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()
+                  .getLastPathComponent());
+          if (!(cmd instanceof CommandDelete))
+            MapillaryUtils.showPictures(cmd.images, true);
+        } else
+          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map
+              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()
+                  .getLastPathComponent()).images, true);
+      }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+  }
+
+  private class UndoRedoSelectionListener implements TreeSelectionListener {
+
+    private JTree source;
+
+    private UndoRedoSelectionListener(JTree source) {
+      this.source = source;
+    }
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+      if (this.source == MapillaryHistoryDialog.this.undoTree) {
+        MapillaryHistoryDialog.this.redoTree.getSelectionModel()
+            .removeTreeSelectionListener(
+                MapillaryHistoryDialog.this.redoSelectionListener);
+        MapillaryHistoryDialog.this.redoTree.clearSelection();
+        MapillaryHistoryDialog.this.redoTree.getSelectionModel()
+            .addTreeSelectionListener(
+                MapillaryHistoryDialog.this.redoSelectionListener);
+      }
+      if (this.source == MapillaryHistoryDialog.this.redoTree) {
+        MapillaryHistoryDialog.this.undoTree.getSelectionModel()
+            .removeTreeSelectionListener(
+                MapillaryHistoryDialog.this.undoSelectionListener);
+        MapillaryHistoryDialog.this.undoTree.clearSelection();
+        MapillaryHistoryDialog.this.undoTree.getSelectionModel()
+            .addTreeSelectionListener(
+                MapillaryHistoryDialog.this.undoSelectionListener);
+      }
+    }
   }
 }

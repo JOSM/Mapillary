@@ -117,7 +117,7 @@ public class MapillaryImportAction extends JosmAction {
         }
       }
       MapillaryRecord.getInstance().addCommand(new CommandImport(images));
-      MapillaryLayer.getInstance().showAllPictures();
+      MapillaryUtils.showAllPictures();
     }
   }
 
