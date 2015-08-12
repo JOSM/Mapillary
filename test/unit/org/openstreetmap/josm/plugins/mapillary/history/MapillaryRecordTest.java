@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history;
 
 import static org.junit.Assert.assertEquals;
 

@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -79,10 +80,13 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     JPanel treesPanel = new JPanel(new GridBagLayout());
     treesPanel.add(this.spacer, GBC.eol());
     this.spacer.setVisible(false);
-    treesPanel.add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel
+        .add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     this.separator.setVisible(false);
-    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    treesPanel.add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(this.separator, GBC.eol()
+        .fill(GridBagConstraints.HORIZONTAL));
+    treesPanel
+        .add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),
         GBC.std().weight(0, 1));
     treesPanel.setBackground(this.redoTree.getBackground());
@@ -134,7 +138,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
         redoRoot.add(new DefaultMutableTreeNode(command.toString()));
     }
 
-    this.separator.setVisible(!undoCommands.isEmpty() || !redoCommands.isEmpty());
+    this.separator.setVisible(!undoCommands.isEmpty()
+        || !redoCommands.isEmpty());
     this.spacer.setVisible(undoCommands.isEmpty() && !redoCommands.isEmpty());
 
     this.undoTreeModel.setRoot(undoRoot);
@@ -143,7 +148,16 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   @Override
   public void recordChanged() {
-    buildTree();
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          recordChanged();
+        }
+      });
+    } else {
+      buildTree();
+    }
   }
 
   private class UndoAction extends AbstractAction {

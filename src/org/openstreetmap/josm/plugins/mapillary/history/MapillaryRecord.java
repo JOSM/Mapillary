@@ -2,8 +2,6 @@ package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
 
-import javax.swing.SwingUtilities;
-
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryExecutableCommand;
@@ -72,41 +70,33 @@ public class MapillaryRecord {
    *          The command to be added.
    */
   public void addCommand(final MapillaryCommand command) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          addCommand(command);
-        }
-      });
-    } else {
-      if (command instanceof MapillaryExecutableCommand)
-        ((MapillaryExecutableCommand) command).execute();
-      // Checks if it is a continuation of last command
-      if (this.position != -1) {
-        boolean equalSets = true;
-        for (MapillaryAbstractImage img : this.commandList.get(this.position).images)
-          if (!command.images.contains(img))
-            equalSets = false;
-        for (MapillaryAbstractImage img : command.images)
-          if (!this.commandList.get(this.position).images.contains(img))
-            equalSets = false;
-        if (equalSets
-            && this.commandList.get(this.position).getClass() == command
-                .getClass()) {
-          this.commandList.get(this.position).sum(command);
-          fireRecordChanged();
-          return;
-        }
+
+    if (command instanceof MapillaryExecutableCommand)
+      ((MapillaryExecutableCommand) command).execute();
+    // Checks if it is a continuation of last command
+    if (this.position != -1) {
+      boolean equalSets = true;
+      for (MapillaryAbstractImage img : this.commandList.get(this.position).images)
+        if (!command.images.contains(img))
+          equalSets = false;
+      for (MapillaryAbstractImage img : command.images)
+        if (!this.commandList.get(this.position).images.contains(img))
+          equalSets = false;
+      if (equalSets
+          && this.commandList.get(this.position).getClass() == command
+              .getClass()) {
+        this.commandList.get(this.position).sum(command);
+        fireRecordChanged();
+        return;
       }
-      // Adds the command to the last position of the list.
-      this.commandList.add(this.position + 1, command);
-      this.position++;
-      while (this.commandList.size() > this.position + 1) {
-        this.commandList.remove(this.position + 1);
-      }
-      fireRecordChanged();
     }
+    // Adds the command to the last position of the list.
+    this.commandList.add(this.position + 1, command);
+    this.position++;
+    while (this.commandList.size() > this.position + 1) {
+      this.commandList.remove(this.position + 1);
+    }
+    fireRecordChanged();
   }
 
   /**
