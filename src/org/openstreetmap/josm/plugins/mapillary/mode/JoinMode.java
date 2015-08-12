@@ -14,9 +14,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandJoin;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandUnjoin;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandJoin;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
 
 /**
  * In this mode the user can join pictures to make sequences or unjoin them.

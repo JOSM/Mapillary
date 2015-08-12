@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 

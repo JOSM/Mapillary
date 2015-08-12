@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -21,9 +23,12 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -69,6 +74,7 @@ public class MapillaryImportAction extends JosmAction {
         "jpg", "jpeg", "png"));
     this.chooser.setMultiSelectionEnabled(true);
     if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
+      List<MapillaryAbstractImage> images = new ArrayList<>();
       for (int i = 0; i < this.chooser.getSelectedFiles().length; i++) {
         File file = this.chooser.getSelectedFiles()[i];
         Main.pref.put("mapillary.start-directory", file.getParent());
@@ -84,12 +90,10 @@ public class MapillaryImportAction extends JosmAction {
             }
             try {
               if (extension.equals("jpg") || extension.equals("jpeg"))
-                MapillaryLayer.getInstance().getData()
-                    .add(readJPG(file.listFiles()[j]));
+                images.add(readJPG(file.listFiles()[j]));
 
               else if (extension.equals("png"))
-                MapillaryLayer.getInstance().getData()
-                    .add(readPNG(file.listFiles()[j]));
+                images.add(readPNG(file.listFiles()[j]));
             } catch (ImageReadException | IOException | NullPointerException e1) {
               Main.error(e1);
             }
@@ -100,7 +104,7 @@ public class MapillaryImportAction extends JosmAction {
               || file.getPath().substring(file.getPath().length() - 5)
                   .equals(".jpeg")) {
             try {
-              MapillaryLayer.getInstance().getData().add(readJPG(file));
+              images.add(readJPG(file));
             } catch (ImageReadException ex) {
               Main.error(ex);
             } catch (IOException ex) {
@@ -108,12 +112,12 @@ public class MapillaryImportAction extends JosmAction {
             }
           } else if (file.getPath().substring(file.getPath().length() - 4)
               .equals(".png")) {
-            MapillaryLayer.getInstance().getData().add(readPNG(file));
+            images.add(readPNG(file));
           }
         }
       }
+      MapillaryRecord.getInstance().addCommand(new CommandImport(images));
       MapillaryLayer.getInstance().showAllPictures();
-
     }
   }
 
@@ -153,11 +157,11 @@ public class MapillaryImportAction extends JosmAction {
       double lonValue = 0;
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
-        latValue = MapillaryUtils.degMinSecToDouble((RationalNumber[]) lat.getValue(), lat_ref
-            .getValue().toString());
+        latValue = MapillaryUtils.degMinSecToDouble(
+            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
-        lonValue = MapillaryUtils.degMinSecToDouble((RationalNumber[]) lon.getValue(), lon_ref
-            .getValue().toString());
+        lonValue = MapillaryUtils.degMinSecToDouble(
+            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)

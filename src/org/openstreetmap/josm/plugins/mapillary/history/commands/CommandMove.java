@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
@@ -13,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  * @author nokutu
  *
  */
-public class CommandMoveImage extends MapillaryCommand {
+public class CommandMove extends MapillaryCommand {
   private double x;
   private double y;
 
@@ -27,7 +27,7 @@ public class CommandMoveImage extends MapillaryCommand {
    * @param y
    *          How much the y coordinate increases.
    */
-  public CommandMoveImage(List<MapillaryAbstractImage> images, double x,
+  public CommandMove(List<MapillaryAbstractImage> images, double x,
       double y) {
     super(images);
     this.x = x;
@@ -64,9 +64,9 @@ public class CommandMoveImage extends MapillaryCommand {
 
   @Override
   public void sum(MapillaryCommand command) {
-    if (command instanceof CommandMoveImage) {
-      this.x += ((CommandMoveImage) command).x;
-      this.y += ((CommandMoveImage) command).y;
+    if (command instanceof CommandMove) {
+      this.x += ((CommandMove) command).x;
+      this.y += ((CommandMove) command).y;
     }
   }
 }

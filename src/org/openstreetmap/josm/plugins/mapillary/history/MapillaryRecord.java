@@ -1,8 +1,10 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryExecutableCommand;
 
 /**
  * History record system in order to let the user undo and redo commands.

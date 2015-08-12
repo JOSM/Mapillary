@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -28,6 +29,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -43,7 +46,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   private JFileChooser chooser;
 
-  private LinkedList<MapillaryImportedImage> images;
+  private List<MapillaryAbstractImage> images;
 
   /**
    * Main constructor.
@@ -110,8 +113,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         }
       }
       joinImages();
+      MapillaryRecord.getInstance().addCommand(new CommandImport(this.images));
     }
-
     MapillaryLayer.getInstance().showAllPictures();
   }
 
@@ -160,9 +163,6 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
       MapillaryImportedImage image = new MapillaryImportedImage(latValue,
           lonValue, caValue, file, datetimeOriginal.getStringValue());
-      MapillaryLayer.getInstance().getData().add(image);
-      image.getCapturedAt();
-
       this.images.add(image);
     }
   }
@@ -173,7 +173,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
   public void joinImages() {
     Collections.sort(this.images, new MapillaryEpochComparator());
     MapillarySequence seq = new MapillarySequence();
-    for (MapillaryImportedImage img : this.images) {
+    for (MapillaryAbstractImage img : this.images) {
       seq.add(img);
       img.setSequence(seq);
     }

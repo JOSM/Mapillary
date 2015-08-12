@@ -4,11 +4,11 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandDeleteImage;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
@@ -622,7 +622,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     public void actionPerformed(ActionEvent e) {
       if (INSTANCE != null) {
         MapillaryRecord.getInstance().addCommand(
-            new CommandDeleteImage(getData().getMultiSelectedImages()));
+            new CommandDelete(getData().getMultiSelectedImages()));
       }
     }
   }

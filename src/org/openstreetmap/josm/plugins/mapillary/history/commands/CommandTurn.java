@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
@@ -13,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  * @author nokutu
  *
  */
-public class CommandTurnImage extends MapillaryCommand {
+public class CommandTurn extends MapillaryCommand {
   private double ca;
 
   /**
@@ -24,7 +24,7 @@ public class CommandTurnImage extends MapillaryCommand {
    * @param ca
    *          How much the images turn.
    */
-  public CommandTurnImage(List<MapillaryAbstractImage> images, double ca) {
+  public CommandTurn(List<MapillaryAbstractImage> images, double ca) {
     super(images);
     this.ca = ca;
   }
@@ -59,8 +59,8 @@ public class CommandTurnImage extends MapillaryCommand {
 
   @Override
   public void sum(MapillaryCommand command) {
-    if (command instanceof CommandTurnImage) {
-      this.ca += ((CommandTurnImage) command).ca;
+    if (command instanceof CommandTurn) {
+      this.ca += ((CommandTurn) command).ca;
     }
   }
 }

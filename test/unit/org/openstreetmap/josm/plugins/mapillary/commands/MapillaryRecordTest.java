@@ -9,6 +9,10 @@ import org.junit.Test;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 
 /**
  * Tests the command record system.
@@ -40,19 +44,19 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandTest() {
-    MapillaryCommand cmd12 = new CommandMoveImage(
+    MapillaryCommand cmd12 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.1, 0.1);
-    MapillaryCommand cmd23 = new CommandMoveImage(
+    MapillaryCommand cmd23 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img2, this.img3 }),
         0.1, 0.1);
-    MapillaryCommand cmd13 = new CommandMoveImage(
+    MapillaryCommand cmd13 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img3 }),
         0.1, 0.1);
-    MapillaryCommand cmd1 = new CommandMoveImage(
+    MapillaryCommand cmd1 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1 }),
         0.1, 0.1);
-    MapillaryCommand cmd31 = new CommandMoveImage(
+    MapillaryCommand cmd31 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img3, this.img1 }),
         0.2, 0.2);
     this.record.addCommand(cmd12);
@@ -97,10 +101,10 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandMoveTest() {
-    CommandMoveImage cmd1 = new CommandMoveImage(
+    CommandMove cmd1 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.1, 0.1);
-    CommandMoveImage cmd2 = new CommandMoveImage(
+    CommandMove cmd2 = new CommandMove(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.1, 0.1);
 
@@ -131,10 +135,10 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandTurnTest() {
-    CommandTurnImage cmd1 = new CommandTurnImage(
+    CommandTurn cmd1 = new CommandTurn(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.2);
-    CommandTurnImage cmd2 = new CommandTurnImage(
+    CommandTurn cmd2 = new CommandTurn(
         Arrays.asList(new MapillaryAbstractImage[] { this.img1, this.img2 }),
         0.1);
 

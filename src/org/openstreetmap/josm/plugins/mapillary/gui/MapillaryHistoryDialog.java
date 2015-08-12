@@ -21,9 +21,9 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryCommand;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;

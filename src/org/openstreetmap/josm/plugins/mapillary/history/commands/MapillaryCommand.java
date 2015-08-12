@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.commands;
+package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  *
  */
 public abstract class MapillaryCommand {
-  protected List<MapillaryAbstractImage> images;
+  /** Set of {@link MapillaryAbstractImage} objects affected by the command */
+  public List<MapillaryAbstractImage> images;
 
   /**
    * Main constructor.

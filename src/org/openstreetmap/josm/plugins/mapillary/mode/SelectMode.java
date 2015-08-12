@@ -16,10 +16,10 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
@@ -133,13 +133,13 @@ public class SelectMode extends AbstractMode {
     if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getCa()) {
       double from = this.data.getSelectedImage().getTempCa();
       double to = this.data.getSelectedImage().getCa();
-      this.record.addCommand(new CommandTurnImage(this.data.getMultiSelectedImages(), to
+      this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to
           - from));
     } else if (this.data.getSelectedImage().getTempLatLon() != this.data
         .getSelectedImage().getLatLon()) {
       LatLon from = this.data.getSelectedImage().getTempLatLon();
       LatLon to = this.data.getSelectedImage().getLatLon();
-      this.record.addCommand(new CommandMoveImage(this.data.getMultiSelectedImages(), to
+      this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to
           .getX() - from.getX(), to.getY() - from.getY()));
     }
     for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {

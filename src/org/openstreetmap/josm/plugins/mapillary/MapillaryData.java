@@ -70,7 +70,7 @@ public class MapillaryData {
    *
    * @param image
    */
-  public synchronized void delete(MapillaryAbstractImage image) {
+  public synchronized void remove(MapillaryAbstractImage image) {
     if (MapillaryMainDialog.getInstance().getImage() != null) {
       MapillaryMainDialog.getInstance().setImage(null);
       MapillaryMainDialog.getInstance().updateImage();
@@ -88,9 +88,9 @@ public class MapillaryData {
    *
    * @param images
    */
-  public synchronized void delete(List<MapillaryAbstractImage> images) {
+  public synchronized void remove(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage img : images)
-      delete(img);
+      remove(img);
   }
 
   /**
