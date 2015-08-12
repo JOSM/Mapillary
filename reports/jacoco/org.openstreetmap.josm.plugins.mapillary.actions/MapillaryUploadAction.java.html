@@ -52,7 +52,7 @@ public class MapillaryUploadAction extends JosmAction implements
 <span class="nc bnc" id="L52" title="All 2 branches missed.">        &amp;&amp; (int) pane.getValue() == JOptionPane.OK_OPTION) {</span>
 <span class="nc bnc" id="L53" title="All 2 branches missed.">      if (dialog.sequence.isSelected()) {</span>
 <span class="nc" id="L54">        UploadUtils.uploadSequence(MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L55">            .getSelectedImage().getSequence());</span>
+<span class="nc" id="L55">            .getSelectedImage().getSequence(), dialog.delete.isSelected());</span>
       }
     }
 <span class="nc" id="L58">  }</span>

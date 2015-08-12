@@ -16,10 +16,10 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandMoveImage;
-import org.openstreetmap.josm.plugins.mapillary.commands.CommandTurnImage;
-import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
@@ -133,13 +133,13 @@ public class SelectMode extends AbstractMode {
 <span class="nc bnc" id="L133" title="All 2 branches missed.">    if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getCa()) {</span>
 <span class="nc" id="L134">      double from = this.data.getSelectedImage().getTempCa();</span>
 <span class="nc" id="L135">      double to = this.data.getSelectedImage().getCa();</span>
-<span class="nc" id="L136">      this.record.addCommand(new CommandTurnImage(this.data.getMultiSelectedImages(), to</span>
+<span class="nc" id="L136">      this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to</span>
           - from));
 <span class="nc" id="L138">    } else if (this.data.getSelectedImage().getTempLatLon() != this.data</span>
 <span class="nc bnc" id="L139" title="All 2 branches missed.">        .getSelectedImage().getLatLon()) {</span>
 <span class="nc" id="L140">      LatLon from = this.data.getSelectedImage().getTempLatLon();</span>
 <span class="nc" id="L141">      LatLon to = this.data.getSelectedImage().getLatLon();</span>
-<span class="nc" id="L142">      this.record.addCommand(new CommandMoveImage(this.data.getMultiSelectedImages(), to</span>
+<span class="nc" id="L142">      this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to</span>
 <span class="nc" id="L143">          .getX() - from.getX(), to.getY() - from.getY()));</span>
     }
 <span class="nc bnc" id="L145" title="All 2 branches missed.">    for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {</span>

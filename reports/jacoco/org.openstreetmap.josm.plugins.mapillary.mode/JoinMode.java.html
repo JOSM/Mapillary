@@ -5,7 +5,7 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -14,7 +14,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandJoin;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
 
 /**
  * In this mode the user can join pictures to make sequences or unjoin them.
@@ -30,111 +32,62 @@ public class JoinMode extends AbstractMode {
   /**
    * Main constructor.
    */
-<span class="nc" id="L33">  public JoinMode() {</span>
-<span class="nc" id="L34">    this.cursor = Cursor.CROSSHAIR_CURSOR;</span>
-<span class="nc" id="L35">  }</span>
+<span class="nc" id="L35">  public JoinMode() {</span>
+<span class="nc" id="L36">    this.cursor = Cursor.CROSSHAIR_CURSOR;</span>
+<span class="nc" id="L37">  }</span>
 
   @Override
   public void mousePressed(MouseEvent e) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (this.data.getHighlightedImage() == null)</span>
-<span class="nc" id="L40">      return;</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (this.lastClick == null</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L43">      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    } else if (this.lastClick != null</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
-<span class="nc bnc" id="L46" title="All 4 branches missed.">      if (((this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick.next() == null) || (this.data</span>
-<span class="nc bnc" id="L47" title="All 4 branches missed.">          .getHighlightedImage().next() == null &amp;&amp; this.lastClick.previous() == null))</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">          &amp;&amp; (this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence() || this.lastClick</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">              .getSequence() == null)) {</span>
-<span class="nc" id="L50">        join(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">      } else if (this.lastClick.next() == this.data.getHighlightedImage()</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">          || this.lastClick.previous() == this.data.getHighlightedImage())</span>
-<span class="nc" id="L53">        unjoin(this.lastClick, (MapillaryImportedImage) this.data.getHighlightedImage());</span>
-<span class="nc" id="L54">      this.lastClick = null;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (this.data.getHighlightedImage() == null)</span>
+<span class="nc" id="L42">      return;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (this.lastClick == null</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L45">      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    } else if (this.lastClick != null</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">      if (((this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">          .next() == null) || (this.data.getHighlightedImage().next() == null &amp;&amp; this.lastClick</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">          .previous() == null))</span>
+<span class="nc" id="L51">          &amp;&amp; (this.data.getHighlightedImage().getSequence() != this.lastClick</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">              .getSequence() || this.lastClick.getSequence() == null)) {</span>
+
+<span class="nc" id="L54">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L55">            new CommandJoin(Arrays.asList(new MapillaryAbstractImage[] {</span>
+<span class="nc" id="L56">                this.lastClick, this.data.getHighlightedImage() })));</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">      } else if (this.lastClick.next() == this.data.getHighlightedImage()</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">          || this.lastClick.previous() == this.data.getHighlightedImage())</span>
+<span class="nc" id="L59">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L60">            new CommandUnjoin(Arrays.asList(new MapillaryAbstractImage[] {</span>
+<span class="nc" id="L61">                this.lastClick, this.data.getHighlightedImage() })));</span>
+<span class="nc" id="L62">      this.lastClick = null;</span>
     }
-<span class="nc" id="L56">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L57">  }</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L65">      MapillaryData.dataUpdated();</span>
+<span class="nc" id="L66">  }</span>
 
   @Override
   public void mouseMoved(MouseEvent e) {
-<span class="nc" id="L61">    this.lastPos = e;</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer))</span>
-<span class="nc" id="L63">      return;</span>
-<span class="nc" id="L64">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
-<span class="nc" id="L65">    this.data.setHighlightedImage(closestTemp);</span>
-<span class="nc" id="L66">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L67">  }</span>
+<span class="nc" id="L70">    this.lastPos = e;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer))</span>
+<span class="nc" id="L72">      return;</span>
+<span class="nc" id="L73">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
+<span class="nc" id="L74">    this.data.setHighlightedImage(closestTemp);</span>
+<span class="nc" id="L75">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L76">  }</span>
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
-<span class="nc" id="L72">      g.setColor(Color.WHITE);</span>
-<span class="nc" id="L73">      Point p0 = mv.getPoint(this.lastClick.getLatLon());</span>
-<span class="nc" id="L74">      Point p1 = this.lastPos.getPoint();</span>
-<span class="nc" id="L75">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
+<span class="nc" id="L81">      g.setColor(Color.WHITE);</span>
+<span class="nc" id="L82">      Point p0 = mv.getPoint(this.lastClick.getLatLon());</span>
+<span class="nc" id="L83">      Point p1 = this.lastPos.getPoint();</span>
+<span class="nc" id="L84">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
     }
-<span class="nc" id="L77">  }</span>
-
-  private static void join(MapillaryImportedImage img1, MapillaryImportedImage img2) {
-<span class="nc" id="L80">    MapillaryImportedImage firstImage = img1;</span>
-<span class="nc" id="L81">    MapillaryImportedImage secondImage = img2;</span>
-
-<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (img1.next() != null) {</span>
-<span class="nc" id="L84">      firstImage = img2;</span>
-<span class="nc" id="L85">      secondImage = img1;</span>
-    }
-<span class="nc bnc" id="L87" title="All 2 branches missed.">    if (firstImage.getSequence() == null) {</span>
-<span class="nc" id="L88">      MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L89">      seq.add(firstImage);</span>
-<span class="nc" id="L90">      firstImage.setSequence(seq);</span>
-    }
-<span class="nc bnc" id="L92" title="All 2 branches missed.">    if (secondImage.getSequence() == null) {</span>
-<span class="nc" id="L93">      MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L94">      seq.add(secondImage);</span>
-<span class="nc" id="L95">      img2.setSequence(seq);</span>
-    }
-
-<span class="nc bnc" id="L98" title="All 2 branches missed.">    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {</span>
-<span class="nc" id="L99">      firstImage.getSequence().add(img);</span>
-<span class="nc" id="L100">      img.setSequence(firstImage.getSequence());</span>
-<span class="nc" id="L101">    }</span>
-<span class="nc" id="L102">  }</span>
-
-  private static void unjoin(MapillaryImportedImage img1, MapillaryImportedImage img2) {
-<span class="nc" id="L105">    MapillaryImportedImage firstImage = img1;</span>
-<span class="nc" id="L106">    MapillaryImportedImage secondImage = img2;</span>
-
-<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (img1.next() != img2) {</span>
-<span class="nc" id="L109">      firstImage = img2;</span>
-<span class="nc" id="L110">      secondImage = img1;</span>
-    }
-
-<span class="nc" id="L113">    ArrayList&lt;MapillaryAbstractImage&gt; firstHalf = new ArrayList&lt;&gt;(firstImage</span>
-<span class="nc" id="L114">        .getSequence().getImages()</span>
-<span class="nc" id="L115">        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));</span>
-<span class="nc" id="L116">    ArrayList&lt;MapillaryAbstractImage&gt; secondHalf = new ArrayList&lt;&gt;(firstImage</span>
-<span class="nc" id="L117">        .getSequence()</span>
-<span class="nc" id="L118">        .getImages()</span>
-<span class="nc" id="L119">        .subList(firstImage.getSequence().getImages().indexOf(secondImage),</span>
-<span class="nc" id="L120">            firstImage.getSequence().getImages().size()));</span>
-
-<span class="nc" id="L122">    MapillarySequence seq1 = new MapillarySequence();</span>
-<span class="nc" id="L123">    MapillarySequence seq2 = new MapillarySequence();</span>
-
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    for (MapillaryAbstractImage img : firstHalf) {</span>
-<span class="nc" id="L126">      img.setSequence(seq1);</span>
-<span class="nc" id="L127">      seq1.add(img);</span>
-<span class="nc" id="L128">    }</span>
-<span class="nc bnc" id="L129" title="All 2 branches missed.">    for (MapillaryAbstractImage img : secondHalf) {</span>
-<span class="nc" id="L130">      img.setSequence(seq2);</span>
-<span class="nc" id="L131">      seq2.add(img);</span>
-<span class="nc" id="L132">    }</span>
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L86">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L137">    return &quot;Join mode&quot;;</span>
+<span class="nc" id="L90">    return &quot;Join mode&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
