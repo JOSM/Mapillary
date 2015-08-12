@@ -2,7 +2,6 @@ package org.openstreetmap.josm.plugins.mapillary.commands;
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.Main;
@@ -26,7 +25,7 @@ public class CommandTurnImage extends MapillaryCommand {
    *          How much the images turn.
    */
   public CommandTurnImage(List<MapillaryAbstractImage> images, double ca) {
-    this.images = new ArrayList<MapillaryAbstractImage>(images);
+    super(images);
     this.ca = ca;
   }
 

@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -12,6 +13,16 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  */
 public abstract class MapillaryCommand {
   protected List<MapillaryAbstractImage> images;
+
+  /**
+   * Main constructor.
+   *
+   * @param images
+   *          The images that are affected by the command.
+   */
+  public MapillaryCommand(List<MapillaryAbstractImage> images) {
+    this.images = new ArrayList<MapillaryAbstractImage>(images);
+  }
 
   /**
    * Undoes the action.
@@ -27,7 +38,8 @@ public abstract class MapillaryCommand {
    * If two equal commands are applied consecutively to the same set of images,
    * they are summed in order to reduce them to just one command.
    *
-   * @param command The command to be summed to last command.
+   * @param command
+   *          The command to be summed to last command.
    */
   public abstract void sum(MapillaryCommand command);
 
@@ -38,4 +50,7 @@ public abstract class MapillaryCommand {
     for (MapillaryAbstractImage image : this.images)
       image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);
   }
+
+  @Override
+  public abstract String toString();
 }

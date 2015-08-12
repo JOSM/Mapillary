@@ -2,7 +2,6 @@ package org.openstreetmap.josm.plugins.mapillary.commands;
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.Main;
@@ -30,7 +29,7 @@ public class CommandMoveImage extends MapillaryCommand {
    */
   public CommandMoveImage(List<MapillaryAbstractImage> images, double x,
       double y) {
-    this.images = new ArrayList<MapillaryAbstractImage>(images);
+    super(images);
     this.x = x;
     this.y = y;
   }

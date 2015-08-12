@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MapillaryData {
 
-  private final List<MapillaryAbstractImage> images;
+  private List<MapillaryAbstractImage> images;
   private MapillaryAbstractImage selectedImage;
   /** The image under the cursor */
   private MapillaryAbstractImage highlightedImage;
@@ -63,6 +63,34 @@ public class MapillaryData {
    */
   public synchronized void add(MapillaryAbstractImage image) {
     add(image, true);
+  }
+
+  /**
+   * Removes an image from the database.
+   *
+   * @param image
+   */
+  public synchronized void delete(MapillaryAbstractImage image) {
+    if (MapillaryMainDialog.getInstance().getImage() != null) {
+      MapillaryMainDialog.getInstance().setImage(null);
+      MapillaryMainDialog.getInstance().updateImage();
+    }
+    setSelectedImage(null);
+    this.images.remove(image);
+    if (image.getSequence() != null)
+      image.getSequence().remove(image);
+    if (Main.main != null)
+      dataUpdated();
+  }
+
+  /**
+   * Removes a set of images from the database.
+   *
+   * @param images
+   */
+  public synchronized void delete(List<MapillaryAbstractImage> images) {
+    for (MapillaryAbstractImage img : images)
+      delete(img);
   }
 
   /**
@@ -355,6 +383,15 @@ public class MapillaryData {
    */
   public List<MapillaryAbstractImage> getMultiSelectedImages() {
     return this.multiSelectedImages;
+  }
+
+  /**
+   * Sets a new ArrayList object as the used set of images.
+   *
+   * @param images
+   */
+  public synchronized void setImages(List<MapillaryAbstractImage> images) {
+    this.images = new ArrayList<>(images);
   }
 
   /**

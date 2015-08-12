@@ -68,6 +68,8 @@ public class MapillaryRecord {
    *          The command to be added.
    */
   public void addCommand(MapillaryCommand command) {
+    if (command instanceof MapillaryExecutableCommand)
+      ((MapillaryExecutableCommand) command).execute();
     // Checks if it is a continuation of last command
     if (this.position != -1) {
       boolean equalSets = true;

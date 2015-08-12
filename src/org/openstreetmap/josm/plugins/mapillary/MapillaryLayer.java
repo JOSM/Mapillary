@@ -4,6 +4,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.commands.CommandDeleteImage;
+import org.openstreetmap.josm.plugins.mapillary.commands.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -43,14 +45,18 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -125,6 +131,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         MapillaryMainDialog.getInstance().getButton().doClick();
     }
     createHatchTexture();
+
+    MapillaryMainDialog.getInstance()
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
+    MapillaryMainDialog.getInstance().getActionMap()
+        .put("MapillaryDel", new DeleteImageAction());
+
     if (Main.main != null)
       MapillaryData.dataUpdated();
   }
@@ -175,6 +188,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void destroy() {
     setMode(null);
+
     AbstractMode.resetThread();
     MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
@@ -591,5 +605,24 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void layerRemoved(Layer oldLayer) {
     // Nothing
+  }
+
+  /**
+   * Action used to delete images.
+   *
+   * @author nokutu
+   *
+   */
+  private class DeleteImageAction extends AbstractAction {
+
+    private static final long serialVersionUID = -982809854631863962L;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (INSTANCE != null) {
+        MapillaryRecord.getInstance().addCommand(
+            new CommandDeleteImage(getData().getMultiSelectedImages()));
+      }
+    }
   }
 }
