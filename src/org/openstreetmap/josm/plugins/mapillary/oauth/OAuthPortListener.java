@@ -19,6 +19,8 @@ import org.openstreetmap.josm.Main;
  */
 public class OAuthPortListener extends Thread {
 
+  protected static String RESPONSE = "<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>";
+
   @Override
   public void run() {
     try {
@@ -57,9 +59,10 @@ public class OAuthPortListener extends Thread {
       Main.info("Successful login with Mapillary, the access token is: "
           + accessToken);
       // Saves the access token in preferences.
-      Main.pref.put("mapillary.access-token", accessToken);
-
-      Main.info("The username is: " + MapillaryUser.getUsername());
+      if (Main.main != null) {
+        Main.pref.put("mapillary.access-token", accessToken);
+        Main.info("The username is: " + MapillaryUser.getUsername());
+      }
 
     } catch (BindException e) {
       return;
@@ -69,10 +72,9 @@ public class OAuthPortListener extends Thread {
   }
 
   private static void writeContent(PrintWriter out) {
-    String response = "<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>";
     out.println("HTTP/1.1 200 OK");
-    out.println("Content-Length: " + response.length());
+    out.println("Content-Length: " + RESPONSE.length());
     out.println("Content-Type: text/html" + "\r\n\r\n");
-    out.println(response);
+    out.println(RESPONSE);
   }
 }
