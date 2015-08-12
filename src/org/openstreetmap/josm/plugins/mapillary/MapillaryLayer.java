@@ -131,12 +131,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         MapillaryMainDialog.getInstance().getButton().doClick();
     }
     createHatchTexture();
-
-    MapillaryMainDialog.getInstance()
-        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
-    MapillaryMainDialog.getInstance().getActionMap()
-        .put("MapillaryDel", new DeleteImageAction());
+    if (Main.main != null) {
+      MapillaryMainDialog.getInstance()
+          .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+          .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
+      MapillaryMainDialog.getInstance().getActionMap()
+          .put("MapillaryDel", new DeleteImageAction());
+    }
 
     if (Main.main != null)
       MapillaryData.dataUpdated();
