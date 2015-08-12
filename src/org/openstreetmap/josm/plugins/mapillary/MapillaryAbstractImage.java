@@ -234,17 +234,14 @@ public abstract class MapillaryAbstractImage {
    * @param format
    *          The format of the date.
    * @return The date in Epoch format.
+   * @throws ParseException
    */
-  public static long getEpoch(String date, String format) {
+  public static long getEpoch(String date, String format) throws ParseException {
 
     SimpleDateFormat formatter = new SimpleDateFormat(format);
-    try {
-      Date dateTime = formatter.parse(date);
-      return dateTime.getTime();
-    } catch (ParseException e) {
-      Main.error(e);
-    }
-    return currentTime();
+    Date dateTime = formatter.parse(date);
+    return dateTime.getTime();
+
   }
 
   /**
@@ -252,7 +249,7 @@ public abstract class MapillaryAbstractImage {
    *
    * @return The current date in Epoch format.
    */
-  private static long currentTime() {
+  protected static long currentTime() {
     Calendar cal = Calendar.getInstance();
     return cal.getTimeInMillis();
   }

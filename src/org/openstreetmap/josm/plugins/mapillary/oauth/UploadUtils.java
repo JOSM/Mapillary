@@ -25,6 +25,7 @@ import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 import org.apache.http.HttpEntity;
@@ -187,9 +188,9 @@ public class UploadUtils {
       } catch (InterruptedException e) {
         Main.error(e);
       }
-      System.out.println(this.images.size());
       if (this.delete)
-        MapillaryRecord.getInstance().addCommand(new CommandDelete(this.images));
+        MapillaryRecord.getInstance()
+            .addCommand(new CommandDelete(this.images));
     }
   }
 
@@ -229,6 +230,8 @@ public class UploadUtils {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory = null;
     TiffOutputDirectory gpsDirectory = null;
+    TiffOutputDirectory rootDirectory = null;
+
     // If the image is imported, loads the rest of the EXIF data.
     JpegImageMetadata jpegMetadata = null;
     try {
@@ -247,6 +250,7 @@ public class UploadUtils {
     }
     gpsDirectory = outputSet.getOrCreateGPSDirectory();
     exifDirectory = outputSet.getOrCreateExifDirectory();
+    rootDirectory = outputSet.getOrCreateRootDirectory();
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
     gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
@@ -259,6 +263,8 @@ public class UploadUtils {
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
     exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
         ((MapillaryImportedImage) image).getDate("yyyy/MM/dd hh:mm:ss"));
+
+    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
 
     outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
     File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -19,7 +20,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /** The picture file. */
   protected File file;
   /** The date when the picture was taken. */
-  public final long datetimeOriginal;
+  public long datetimeOriginal;
 
   /**
    * Creates a new MapillaryImportedImage object using as date the current date,
@@ -56,7 +57,16 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
       String datetimeOriginal) {
     super(lat, lon, ca);
     this.file = file;
-    this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
+    try {
+      this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
+    } catch (ParseException e) {
+      try {
+        this.datetimeOriginal = getEpoch(datetimeOriginal,
+            "yyyy/MM/dd hh:mm:ss");
+      } catch (ParseException e1) {
+        this.datetimeOriginal = currentTime();
+      }
+    }
   }
 
   /**
