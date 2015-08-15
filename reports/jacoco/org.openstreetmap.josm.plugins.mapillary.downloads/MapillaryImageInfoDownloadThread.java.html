@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryImageInfoDownloaderThread.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.downloads</a> &gt; <span class="el_source">MapillaryImageInfoDownloaderThread.java</span></div><h1>MapillaryImageInfoDownloaderThread.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.downloads;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryImageInfoDownloadThread.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.downloads</a> &gt; <span class="el_source">MapillaryImageInfoDownloadThread.java</span></div><h1>MapillaryImageInfoDownloadThread.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @author nokutu
  * @see MapillarySquareDownloadManagerThread
  */
-public class MapillaryImageInfoDownloaderThread extends Thread {
+public class MapillaryImageInfoDownloadThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL + &quot;search/im/&quot;;
   private final String queryString;
   private final ExecutorService ex;
@@ -35,7 +35,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
    * @param queryString
    *          A String containing the parameters for the download.
    */
-  public MapillaryImageInfoDownloaderThread(ExecutorService ex,
+  public MapillaryImageInfoDownloadThread(ExecutorService ex,
 <span class="nc" id="L39">      String queryString) {</span>
 <span class="nc" id="L40">    this.ex = ex;</span>
 <span class="nc" id="L41">    this.queryString = queryString;</span>

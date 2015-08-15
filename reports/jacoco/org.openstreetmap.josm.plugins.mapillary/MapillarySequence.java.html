@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class that stores a sequence of MapillaryImage objects.
+ * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
  *
  * @author nokutu
- * @see MapillaryImage
+ * @see MapillaryAbstractImage
  *
  */
 public class MapillarySequence {
@@ -24,7 +24,7 @@ public class MapillarySequence {
 <span class="fc" id="L24">  }</span>
 
   /**
-   * Creates a sequence object with the given parameters
+   * Creates a sequence object with the given parameters.
    *
    * @param key
    *          The unique identifier of the sequence.
@@ -38,13 +38,14 @@ public class MapillarySequence {
 <span class="fc" id="L38">  }</span>
 
   /**
-   * Returns all MapillaryImages objects contained by this object.
+   * Returns all {@link MapillaryAbstractImage} objects contained by this
+   * object.
    *
    * @return A List object containing all the {@link MapillaryAbstractImage}
    *         objects that are part of the sequence.
    */
   public List&lt;MapillaryAbstractImage&gt; getImages() {
-<span class="fc" id="L47">    return this.images;</span>
+<span class="fc" id="L48">    return this.images;</span>
   }
 
   /**
@@ -54,7 +55,7 @@ public class MapillarySequence {
    *
    */
   public long getCreatedAt() {
-<span class="nc" id="L57">    return this.created_at;</span>
+<span class="nc" id="L58">    return this.created_at;</span>
   }
 
   /**
@@ -64,8 +65,8 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object to be added
    */
   public synchronized void add(MapillaryAbstractImage image) {
-<span class="fc" id="L67">    this.images.add(image);</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L68">    this.images.add(image);</span>
+<span class="fc" id="L69">  }</span>
 
   /**
    * Returns the unique identifier of the sequence.
@@ -75,7 +76,7 @@ public class MapillarySequence {
    *         images.
    */
   public String getKey() {
-<span class="nc" id="L78">    return this.key;</span>
+<span class="nc" id="L79">    return this.key;</span>
   }
 
   /**
@@ -85,9 +86,9 @@ public class MapillarySequence {
    *          The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
-<span class="fc" id="L89">      add(image);</span>
-<span class="fc" id="L90">  }</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
+<span class="fc" id="L90">      add(image);</span>
+<span class="fc" id="L91">  }</span>
 
   /**
    * Removes a {@link MapillaryAbstractImage} object from the database.
@@ -96,11 +97,12 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
-<span class="nc" id="L99">    this.images.remove(image);</span>
-<span class="nc" id="L100">  }</span>
+<span class="fc" id="L100">    this.images.remove(image);</span>
+<span class="fc" id="L101">  }</span>
 
   /**
-   * Returns the next {@link MapillaryAbstractImage} in the sequence.
+   * Returns the next {@link MapillaryAbstractImage} in the sequence of a given
+   * {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose next image is
@@ -111,16 +113,17 @@ public class MapillarySequence {
    *           the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
-<span class="fc" id="L115">      throw new IllegalArgumentException();</span>
-<span class="fc" id="L116">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (i == this.images.size() - 1)</span>
-<span class="fc" id="L118">      return null;</span>
-<span class="fc" id="L119">    return this.images.get(i + 1);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
+<span class="fc" id="L117">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L118">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (i == this.images.size() - 1)</span>
+<span class="fc" id="L120">      return null;</span>
+<span class="fc" id="L121">    return this.images.get(i + 1);</span>
   }
 
   /**
-   * Returns the previous {@link MapillaryAbstractImage} in the sequence.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a given
+   * {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose previous image is
@@ -131,12 +134,12 @@ public class MapillarySequence {
    *           the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
-<span class="fc" id="L135">      throw new IllegalArgumentException();</span>
-<span class="fc" id="L136">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (i == 0)</span>
-<span class="fc" id="L138">      return null;</span>
-<span class="fc" id="L139">    return this.images.get(i - 1);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
+<span class="fc" id="L138">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L139">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (i == 0)</span>
+<span class="fc" id="L141">      return null;</span>
+<span class="fc" id="L142">    return this.images.get(i - 1);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

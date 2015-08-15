@@ -43,9 +43,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * Toggle dialog that shows you the latest {@link MapillaryCommand} done and
  * allows the user to revert them.
  *
+ * @author nokutu
  * @see MapillaryRecord
  * @see MapillaryCommand
- * @author nokutu
  *
  */
 public class MapillaryHistoryDialog extends ToggleDialog implements
@@ -210,36 +210,34 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent arg0) {
 <span class="nc" id="L211">      MapillaryRecord.getInstance().undo();</span>
 <span class="nc" id="L212">    }</span>
-
   }
 
   private class RedoAction extends AbstractAction {
 
     private static final long serialVersionUID = -2761935780353053512L;
 
-<span class="nc" id="L220">    public RedoAction() {</span>
-<span class="nc" id="L221">      putValue(NAME, tr(&quot;Redo&quot;));</span>
-<span class="nc" id="L222">      putValue(SMALL_ICON, ImageProvider.get(&quot;redo&quot;));</span>
-<span class="nc" id="L223">    }</span>
+<span class="nc" id="L219">    public RedoAction() {</span>
+<span class="nc" id="L220">      putValue(NAME, tr(&quot;Redo&quot;));</span>
+<span class="nc" id="L221">      putValue(SMALL_ICON, ImageProvider.get(&quot;redo&quot;));</span>
+<span class="nc" id="L222">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L227">      MapillaryRecord.getInstance().redo();</span>
-<span class="nc" id="L228">    }</span>
-
+<span class="nc" id="L226">      MapillaryRecord.getInstance().redo();</span>
+<span class="nc" id="L227">    }</span>
   }
 
-<span class="nc" id="L232">  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {</span>
+<span class="nc" id="L230">  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {</span>
 
     private static final long serialVersionUID = -3129520241562296901L;
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
         boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-<span class="nc" id="L239">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,</span>
+<span class="nc" id="L237">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,</span>
           hasFocus);
-<span class="nc" id="L241">      setIcon(ImageProvider.get(&quot;data/node.png&quot;));</span>
-<span class="nc" id="L242">      return this;</span>
+<span class="nc" id="L239">      setIcon(ImageProvider.get(&quot;data/node.png&quot;));</span>
+<span class="nc" id="L240">      return this;</span>
     }
   }
 
@@ -247,73 +245,73 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    * Destroys the unique instance of the class.
    */
   public static void destroyInstance() {
-<span class="nc" id="L250">    MapillaryHistoryDialog.INSTANCE = null;</span>
-<span class="nc" id="L251">  }</span>
+<span class="nc" id="L248">    MapillaryHistoryDialog.INSTANCE = null;</span>
+<span class="nc" id="L249">  }</span>
 
-<span class="nc" id="L253">  private class MouseEventHandler implements MouseListener {</span>
+<span class="nc" id="L251">  private class MouseEventHandler implements MouseListener {</span>
 
     @Override
     public void mouseClicked(MouseEvent e) {
-<span class="nc" id="L257">    }</span>
+<span class="nc" id="L255">    }</span>
 
     @Override
     public void mouseEntered(MouseEvent e) {
-<span class="nc" id="L261">    }</span>
+<span class="nc" id="L259">    }</span>
 
     @Override
     public void mouseExited(MouseEvent e) {
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L263">    }</span>
 
     @Override
     public void mousePressed(MouseEvent e) {
-<span class="nc bnc" id="L269" title="All 2 branches missed.">      if (e.getClickCount() == 2) {</span>
-<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {</span>
-<span class="nc" id="L271">          MapillaryCommand cmd = MapillaryHistoryDialog.this.map</span>
-<span class="nc" id="L272">              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()</span>
-<span class="nc" id="L273">                  .getLastPathComponent());</span>
-<span class="nc bnc" id="L274" title="All 2 branches missed.">          if (!(cmd instanceof CommandDelete))</span>
-<span class="nc" id="L275">            MapillaryUtils.showPictures(cmd.images, true);</span>
-<span class="nc" id="L276">        } else</span>
-<span class="nc" id="L277">          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map</span>
-<span class="nc" id="L278">              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()</span>
-<span class="nc" id="L279">                  .getLastPathComponent()).images, true);</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">      if (e.getClickCount() == 2) {</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {</span>
+<span class="nc" id="L269">          MapillaryCommand cmd = MapillaryHistoryDialog.this.map</span>
+<span class="nc" id="L270">              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()</span>
+<span class="nc" id="L271">                  .getLastPathComponent());</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">          if (!(cmd instanceof CommandDelete))</span>
+<span class="nc" id="L273">            MapillaryUtils.showPictures(cmd.images, true);</span>
+<span class="nc" id="L274">        } else</span>
+<span class="nc" id="L275">          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map</span>
+<span class="nc" id="L276">              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()</span>
+<span class="nc" id="L277">                  .getLastPathComponent()).images, true);</span>
       }
-<span class="nc" id="L281">    }</span>
+<span class="nc" id="L279">    }</span>
 
     @Override
     public void mouseReleased(MouseEvent e) {
-<span class="nc" id="L285">    }</span>
+<span class="nc" id="L283">    }</span>
   }
 
   private class UndoRedoSelectionListener implements TreeSelectionListener {
 
     private JTree source;
 
-<span class="nc" id="L292">    private UndoRedoSelectionListener(JTree source) {</span>
-<span class="nc" id="L293">      this.source = source;</span>
-<span class="nc" id="L294">    }</span>
+<span class="nc" id="L290">    private UndoRedoSelectionListener(JTree source) {</span>
+<span class="nc" id="L291">      this.source = source;</span>
+<span class="nc" id="L292">    }</span>
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-<span class="nc bnc" id="L298" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.undoTree) {</span>
-<span class="nc" id="L299">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
-<span class="nc" id="L300">            .removeTreeSelectionListener(</span>
-<span class="nc" id="L301">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
-<span class="nc" id="L302">        MapillaryHistoryDialog.this.redoTree.clearSelection();</span>
-<span class="nc" id="L303">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
-<span class="nc" id="L304">            .addTreeSelectionListener(</span>
-<span class="nc" id="L305">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.undoTree) {</span>
+<span class="nc" id="L297">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
+<span class="nc" id="L298">            .removeTreeSelectionListener(</span>
+<span class="nc" id="L299">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
+<span class="nc" id="L300">        MapillaryHistoryDialog.this.redoTree.clearSelection();</span>
+<span class="nc" id="L301">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
+<span class="nc" id="L302">            .addTreeSelectionListener(</span>
+<span class="nc" id="L303">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
       }
-<span class="nc bnc" id="L307" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.redoTree) {</span>
-<span class="nc" id="L308">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
-<span class="nc" id="L309">            .removeTreeSelectionListener(</span>
-<span class="nc" id="L310">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
-<span class="nc" id="L311">        MapillaryHistoryDialog.this.undoTree.clearSelection();</span>
-<span class="nc" id="L312">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
-<span class="nc" id="L313">            .addTreeSelectionListener(</span>
-<span class="nc" id="L314">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.redoTree) {</span>
+<span class="nc" id="L306">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
+<span class="nc" id="L307">            .removeTreeSelectionListener(</span>
+<span class="nc" id="L308">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
+<span class="nc" id="L309">        MapillaryHistoryDialog.this.undoTree.clearSelection();</span>
+<span class="nc" id="L310">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
+<span class="nc" id="L311">            .addTreeSelectionListener(</span>
+<span class="nc" id="L312">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
       }
-<span class="nc" id="L316">    }</span>
+<span class="nc" id="L314">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

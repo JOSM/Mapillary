@@ -11,7 +11,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
@@ -27,12 +26,10 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 public class MapillaryExportDownloadThread extends Thread implements
     ICachedLoaderListener {
 
-  String url;
-  ArrayBlockingQueue&lt;BufferedImage&gt; queue;
-  ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages;
+  private ArrayBlockingQueue&lt;BufferedImage&gt; queue;
+  private ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages;
 
-  ProgressMonitor monitor;
-  MapillaryImage image;
+  private MapillaryImage image;
 
   /**
    * Main constructor.
@@ -48,31 +45,32 @@ public class MapillaryExportDownloadThread extends Thread implements
    */
   public MapillaryExportDownloadThread(MapillaryImage image,
       ArrayBlockingQueue&lt;BufferedImage&gt; queue,
-<span class="nc" id="L51">      ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages) {</span>
-<span class="nc" id="L52">    this.url = &quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + image.getKey()</span>
-        + &quot;/thumb-2048.jpg&quot;;
-<span class="nc" id="L54">    this.queue = queue;</span>
-<span class="nc" id="L55">    this.image = image;</span>
-<span class="nc" id="L56">    this.queueImages = queueImages;</span>
-<span class="nc" id="L57">  }</span>
+<span class="nc" id="L48">      ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages) {</span>
+<span class="nc" id="L49">    this.queue = queue;</span>
+<span class="nc" id="L50">    this.image = image;</span>
+<span class="nc" id="L51">    this.queueImages = queueImages;</span>
+<span class="nc" id="L52">  }</span>
 
   @Override
   public void run() {
-<span class="nc" id="L61">    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(</span>
-        this, false);
-<span class="nc" id="L63">  }</span>
+<span class="nc" id="L56">    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE)</span>
+<span class="nc" id="L57">        .submit(this, false);</span>
+<span class="nc" id="L58">  }</span>
 
   @Override
-  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
-      LoadResult result) {
+  public synchronized void loadingFinished(CacheEntry data,
+      CacheEntryAttributes attributes, LoadResult result) {
     try {
-<span class="nc" id="L69">      this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));</span>
-<span class="nc" id="L70">      this.queueImages.put(this.image);</span>
-<span class="nc" id="L71">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L64">      synchronized (this.getClass()) {</span>
+<span class="nc" id="L65">        this.queue</span>
+<span class="nc" id="L66">            .put(ImageIO.read(new ByteArrayInputStream(data.getContent())));</span>
+<span class="nc" id="L67">        this.queueImages.put(this.image);</span>
+<span class="nc" id="L68">      }</span>
+<span class="nc" id="L69">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L70">      Main.error(e);</span>
+<span class="nc" id="L71">    } catch (IOException e) {</span>
 <span class="nc" id="L72">      Main.error(e);</span>
-<span class="nc" id="L73">    } catch (IOException e) {</span>
-<span class="nc" id="L74">      Main.error(e);</span>
-<span class="nc" id="L75">    }</span>
-<span class="nc" id="L76">  }</span>
+<span class="nc" id="L73">    }</span>
+<span class="nc" id="L74">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

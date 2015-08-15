@@ -270,9 +270,9 @@ public abstract class MapillaryAbstractImage {
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-<span class="pc bpc" id="L273" title="1 of 2 branches missed.">    if (this.sequence == null) {</span>
-<span class="nc" id="L274">      this.sequence = new MapillarySequence();</span>
-<span class="nc" id="L275">      this.sequence.add(this);</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">    if (this.sequence == null) {</span>
+<span class="fc" id="L274">      this.sequence = new MapillarySequence();</span>
+<span class="fc" id="L275">      this.sequence.add(this);</span>
     }
 
 <span class="fc" id="L278">    return this.sequence;</span>

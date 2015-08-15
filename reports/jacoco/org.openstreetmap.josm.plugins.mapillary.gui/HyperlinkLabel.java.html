@@ -23,7 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
- * JLabel that acts as a hyperlink.
+ * {@link JLabel} that acts as a hyperlink.
  *
  * @author nokutu
  *

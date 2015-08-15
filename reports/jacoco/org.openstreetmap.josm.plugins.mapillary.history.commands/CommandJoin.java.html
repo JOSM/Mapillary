@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -20,37 +19,39 @@ public class CommandJoin extends MapillaryExecutableCommand {
    * Main constructor.
    *
    * @param images
+   *          The two images that are going to be joined. Must be of exactly
+   *          size 2. The first one joins to the second one.
+   * @throws IllegalArgumentException
+   *           if the List size is different from 2.
    */
   public CommandJoin(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc" id="L25">    super(images);</span>
-<span class="nc" id="L26">  }</span>
+<span class="fc" id="L28">    super(images);</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">    if (images.size() != 2)</span>
+<span class="fc" id="L30">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
   public void execute() {
-<span class="nc" id="L30">    this.redo();</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L35">    this.redo();</span>
+<span class="fc" id="L36">  }</span>
 
   @Override
   public void undo() {
-<span class="nc" id="L35">    MapillaryUtils.unjoin((MapillaryImportedImage) this.images.get(0),</span>
-<span class="nc" id="L36">        (MapillaryImportedImage) this.images.get(1));</span>
-<span class="nc" id="L37">  }</span>
+<span class="fc" id="L40">    MapillaryUtils.unjoin(this.images.get(0), this.images.get(1));</span>
+<span class="fc" id="L41">  }</span>
 
   @Override
   public void redo() {
-<span class="nc" id="L41">    MapillaryUtils.join((MapillaryImportedImage) this.images.get(0),</span>
-<span class="nc" id="L42">        (MapillaryImportedImage) this.images.get(1));</span>
-<span class="nc" id="L43">  }</span>
+<span class="fc" id="L45">    MapillaryUtils.join(this.images.get(0), this.images.get(1));</span>
+<span class="fc" id="L46">  }</span>
 
   @Override
   public void sum(MapillaryCommand command) {
-    // TODO Auto-generated method stub
-
-<span class="nc" id="L49">  }</span>
+<span class="nc" id="L50">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L53">    return tr(&quot;2 images joined&quot;);</span>
+<span class="nc" id="L54">    return tr(&quot;2 images joined&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
