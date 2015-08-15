@@ -43,9 +43,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * Toggle dialog that shows you the latest {@link MapillaryCommand} done and
  * allows the user to revert them.
  *
+ * @author nokutu
  * @see MapillaryRecord
  * @see MapillaryCommand
- * @author nokutu
  *
  */
 public class MapillaryHistoryDialog extends ToggleDialog implements
@@ -210,7 +210,6 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent arg0) {
       MapillaryRecord.getInstance().undo();
     }
-
   }
 
   private class RedoAction extends AbstractAction {
@@ -226,7 +225,6 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent arg0) {
       MapillaryRecord.getInstance().redo();
     }
-
   }
 
   private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {

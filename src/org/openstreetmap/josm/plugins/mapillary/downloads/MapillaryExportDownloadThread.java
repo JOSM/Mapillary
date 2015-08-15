@@ -11,7 +11,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
@@ -27,12 +26,10 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 public class MapillaryExportDownloadThread extends Thread implements
     ICachedLoaderListener {
 
-  String url;
-  ArrayBlockingQueue<BufferedImage> queue;
-  ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private ArrayBlockingQueue<BufferedImage> queue;
+  private ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
-  ProgressMonitor monitor;
-  MapillaryImage image;
+  private MapillaryImage image;
 
   /**
    * Main constructor.
@@ -49,8 +46,6 @@ public class MapillaryExportDownloadThread extends Thread implements
   public MapillaryExportDownloadThread(MapillaryImage image,
       ArrayBlockingQueue<BufferedImage> queue,
       ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
-    this.url = "https://d1cuyjsrcm0gby.cloudfront.net/" + image.getKey()
-        + "/thumb-2048.jpg";
     this.queue = queue;
     this.image = image;
     this.queueImages = queueImages;
@@ -58,16 +53,19 @@ public class MapillaryExportDownloadThread extends Thread implements
 
   @Override
   public void run() {
-    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE).submit(
-        this, false);
+    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE)
+        .submit(this, false);
   }
 
   @Override
-  public void loadingFinished(CacheEntry data, CacheEntryAttributes attributes,
-      LoadResult result) {
+  public synchronized void loadingFinished(CacheEntry data,
+      CacheEntryAttributes attributes, LoadResult result) {
     try {
-      this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
-      this.queueImages.put(this.image);
+      synchronized (this.getClass()) {
+        this.queue
+            .put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+        this.queueImages.put(this.image);
+      }
     } catch (InterruptedException e) {
       Main.error(e);
     } catch (IOException e) {

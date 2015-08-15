@@ -4,10 +4,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import javax.imageio.ImageIO;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * A MapillaryImoprtedImage object represents a picture imported locally.
@@ -23,8 +23,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   public long datetimeOriginal;
 
   /**
-   * Creates a new MapillaryImportedImage object using as date the current date,
-   * because it is missing in the file.
+   * Creates a new MapillaryImportedImage object using as date the current date.
+   * Using when the EXIF tags doesn't contain that info.
    *
    * @param lat
    *          Latitude where the picture was taken.
@@ -36,7 +36,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *          The file containing the picture.
    */
   public MapillaryImportedImage(double lat, double lon, double ca, File file) {
-    this(lat, lon, ca, file, currentDate());
+    this(lat, lon, ca, file, MapillaryUtils.currentDate());
   }
 
   /**
@@ -72,8 +72,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Returns the pictures of the file.
    *
-   * @return A BufferedImage object containing the picture, or null if the
-   *         {@link File} given in the constructor was null.
+   * @return A {@link BufferedImage} object containing the picture, or null if
+   *         the {@link File} given in the constructor was null.
    * @throws IOException
    *           If the file parameter of the object isn't an image.
    */
@@ -84,9 +84,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   /**
-   * Returns the File object where the picture is located.
+   * Returns the {@link File} object where the picture is located.
    *
-   * @return The File object where the picture is located.
+   * @return The {@link File} object where the picture is located.
    */
   public File getFile() {
     return this.file;
@@ -102,11 +102,5 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   @Override
   public int hashCode() {
     return this.file.hashCode();
-  }
-
-  private static String currentDate() {
-    Calendar cal = Calendar.getInstance();
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
-    return formatter.format(cal.getTime());
   }
 }

@@ -48,8 +48,8 @@ public class MapillaryDownloader {
   /** Client ID for the app */
   public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<Runnable>(100));;
+  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
+      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));;
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -113,10 +113,11 @@ public class MapillaryDownloader {
   }
 
   /**
-   * Checks if the given {@LatLon} object lies inside the bounds of the
+   * Checks if the given {@link LatLon} object lies inside the bounds of the
    * image.
    *
    * @param latlon
+   *          The coordinates to check.
    * @return true if it lies inside the bounds; false otherwise;
    */
   private static boolean isInBounds(LatLon latlon) {

@@ -23,6 +23,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  * @author nokutu
  *
  * @see MapillaryDownloader
+ * @see MapillarySequenceDownloadThread
+ * @see MapillaryImageInfoDownloadThread
+ * @see MapillaryTrafficSignDownloadThread
  */
 public class MapillarySquareDownloadManagerThread extends Thread {
 
@@ -108,7 +111,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private void completeImages() throws InterruptedException {
     int page = 0;
     while (!this.completeExecutor.isShutdown()) {
-      this.completeExecutor.execute(new MapillaryImageInfoDownloaderThread(
+      this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(
           this.completeExecutor, this.imageQueryString + "&page=" + page
               + "&limit=20"));
       while (this.completeExecutor.getQueue().remainingCapacity() == 0)
@@ -121,7 +124,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private void downloadSigns() throws InterruptedException {
     int page = 0;
     while (!this.signsExecutor.isShutdown()) {
-      this.signsExecutor.execute(new MapillaryTrafficSignDownloaderThread(
+      this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(
           this.signsExecutor, this.signQueryString + "&page=" + page
               + "&limit=20"));
       while (this.signsExecutor.getQueue().remainingCapacity() == 0)

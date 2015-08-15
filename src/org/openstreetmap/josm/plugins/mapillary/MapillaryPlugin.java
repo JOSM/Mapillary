@@ -174,7 +174,7 @@ public class MapillaryPlugin extends Plugin {
   }
 
   /**
-   * Enables/disables a JMenuItem.
+   * Enables/disables a {@link JMenuItem}.
    *
    * @param menu
    *          The JMenuItem object that is going to be enabled or disabled.

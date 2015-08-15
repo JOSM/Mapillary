@@ -13,7 +13,6 @@ import java.util.List;
 public class MapillaryImage extends MapillaryAbstractImage {
   /** Unique identifier of the object */
   private final String key;
-
   /** The user that made the image */
   private String user;
   /** Set of traffic signs in the image */
@@ -23,7 +22,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Returns the location where the image was taken.
    *
-   * @return A String containing the location where the picture was taken.
+   * @return A {@code String} containing the location where the picture was taken.
    */
   public String getLocation() {
     return this.location;
@@ -33,7 +32,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Sets the location of the image.
    *
    * @param location
-   *          A String object containing the place where the image was taken.
+   *          A {@code String} object containing the place where the image was taken.
    */
   public void setLocation(String location) {
     this.location = location;
@@ -60,7 +59,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Returns the unique identifier of the object.
    *
-   * @return A String containing the unique identifier of the object.
+   * @return A {@code String} containing the unique identifier of the object.
    */
   public String getKey() {
     return this.key;
@@ -70,16 +69,16 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Adds a new sign to the set of signs.
    *
    * @param sign
-   *          A String that identifies the type of sign.
+   *          A {@code String} that identifies the type of sign.
    */
   public void addSign(String sign) {
     this.signs.add(sign);
   }
 
   /**
-   * Returns a List containing the signs assigned to this image.
+   * Returns a {@link List} containing the signs assigned to this image.
    *
-   * @return A List object containing the signs assigned to this image.
+   * @return A {@link List} object containing the signs assigned to this image.
    */
   public List<String> getSigns() {
     return this.signs;
@@ -89,7 +88,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Sets the username of the person who took the image.
    *
    * @param user
-   *          A String containing the username of the person who took the image.
+   *          A {@code String} containing the username of the person who took the image.
    */
   public void setUser(String user) {
     this.user = user;
@@ -98,7 +97,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Returns the username of the person who took the picture.
    *
-   * @return A String containing the username of the person who took the
+   * @return A {@code String} containing the username of the person who took the
    *         picture.
    */
   public String getUser() {

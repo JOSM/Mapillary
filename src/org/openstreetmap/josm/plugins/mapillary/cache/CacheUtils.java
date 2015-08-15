@@ -73,7 +73,6 @@ public class CacheUtils {
     @Override
     public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1,
         LoadResult arg2) {
-      // Nothing
     }
   }
 }

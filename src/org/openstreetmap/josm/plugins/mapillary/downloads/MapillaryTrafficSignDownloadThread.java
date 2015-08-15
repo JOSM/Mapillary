@@ -22,7 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @author nokutu
  *
  */
-public class MapillaryTrafficSignDownloaderThread extends Thread {
+public class MapillaryTrafficSignDownloadThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL
       + "search/im/or/";
   private final String queryString;
@@ -36,7 +36,7 @@ public class MapillaryTrafficSignDownloaderThread extends Thread {
    * @param queryString
    *          A String containing the parameter for the download.
    */
-  public MapillaryTrafficSignDownloaderThread(ExecutorService ex,
+  public MapillaryTrafficSignDownloadThread(ExecutorService ex,
       String queryString) {
     this.ex = ex;
     this.queryString = queryString;

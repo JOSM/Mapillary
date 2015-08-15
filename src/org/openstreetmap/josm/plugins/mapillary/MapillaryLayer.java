@@ -85,7 +85,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public static MapillaryImage BLUE;
   /** The image pointed by the red line. */
   public static MapillaryImage RED;
-
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
@@ -518,7 +517,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     @Override
     public void run() {
       try {
-        sleep(1000);
+        sleep(1500);
       } catch (InterruptedException e) {
         Main.error(e);
       }
@@ -528,42 +527,34 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void primitivesAdded(PrimitivesAddedEvent event) {
-    // Nothing
   }
 
   @Override
   public void primitivesRemoved(PrimitivesRemovedEvent event) {
-    // Nothing
   }
 
   @Override
   public void tagsChanged(TagsChangedEvent event) {
-    // Nothing
   }
 
   @Override
   public void nodeMoved(NodeMovedEvent event) {
-    // Nothing
   }
 
   @Override
   public void wayNodesChanged(WayNodesChangedEvent event) {
-    // Nothing
   }
 
   @Override
   public void relationMembersChanged(RelationMembersChangedEvent event) {
-    // Nothing
   }
 
   @Override
   public void otherDatasetChange(AbstractDatasetChangedEvent event) {
-    // Nothing
   }
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
-    // Nothing
   }
 
   @Override
@@ -597,10 +588,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (INSTANCE != null) {
+      if (INSTANCE != null)
         MapillaryRecord.getInstance().addCommand(
             new CommandDelete(getData().getMultiSelectedImages()));
-      }
     }
   }
 }

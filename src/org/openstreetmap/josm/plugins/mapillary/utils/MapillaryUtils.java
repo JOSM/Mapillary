@@ -6,7 +6,9 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -264,5 +266,15 @@ public class MapillaryUtils {
    */
   public static void showAllPictures() {
     showPictures(MapillaryLayer.getInstance().getData().getImages(), false);
+  }
+
+  /**
+   * Returns the current date.
+   * @return A {@code String} object containing the current date.
+   */
+  public static String currentDate() {
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+    return formatter.format(cal.getTime());
   }
 }

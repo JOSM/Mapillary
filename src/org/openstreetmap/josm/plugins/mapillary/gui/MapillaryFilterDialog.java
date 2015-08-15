@@ -48,7 +48,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   private final static String[] TIME_LIST = { tr("All"), tr("Years"),
       tr("Months"), tr("Days") };
 
-  private final JPanel panel = new JPanel();
+  private final JPanel panel;
 
   /** Spinner to choose the range of dates. */
   public SpinnerNumberModel spinner;
@@ -91,6 +91,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
         tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
             tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
             KeyEvent.VK_M, Shortcut.NONE), 200);
+
+    this.panel = new JPanel();
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();

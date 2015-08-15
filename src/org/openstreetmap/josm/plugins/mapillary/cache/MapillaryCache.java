@@ -29,7 +29,6 @@ public class MapillaryCache extends
   public static enum Type {
     /** Full quality image */
     FULL_IMAGE,
-
     /** Low quality image */
     THUMBNAIL
   }
@@ -40,7 +39,7 @@ public class MapillaryCache extends
    * @param key
    *          The key of the image.
    * @param type
-   *          The type of image that must be downloaded (THUMNAIL or
+   *          The type of image that must be downloaded (THUMBNAIL or
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Database class for all the MapillaryImage objects.
+ * Database class for all the {@link MapillaryAbstractImage} objects.
  *
  * @author nokutu
  * @see MapillaryAbstractImage
@@ -20,11 +20,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MapillaryData {
 
   private List<MapillaryAbstractImage> images;
+  /** The image currently selected, this is the one being shown. */
   private MapillaryAbstractImage selectedImage;
-  /** The image under the cursor */
+  /** The image under the cursor. */
   private MapillaryAbstractImage highlightedImage;
+  /** All the images selected, can be more than one. */
   private final List<MapillaryAbstractImage> multiSelectedImages;
-
+  /** Listeners of the class. */
   private CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
 
   /** The bounds of the areas for which the pictures have been downloaded. */
@@ -38,6 +40,7 @@ public class MapillaryData {
     this.multiSelectedImages = new ArrayList<>();
     this.selectedImage = null;
 
+    // Adds the basic set of listeners.
     addListener(MapillaryPlugin.walkAction);
     addListener(MapillaryPlugin.zoomAction);
     addListener(MapillaryPlugin.uploadAction);
@@ -66,8 +69,8 @@ public class MapillaryData {
   }
 
   /**
-   * Removes an image from the database. From the ArrayList in this object and
-   * from its {@link MapillarySequence}.
+   * Removes an image from the database. From the {@link List} in this object
+   * and from its {@link MapillarySequence}.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} that is going to be deleted.
@@ -119,13 +122,12 @@ public class MapillaryData {
   }
 
   /**
-   * Adds a set of MapillaryImages to the object, but doesn't repaint mapView.
-   * This is needed for concurrency.
+   * Adds a set of {link MapillaryAbstractImage} objects to this object.
    *
    * @param images
    *          The set of images to be added.
    * @param update
-   *          Whether the map must be updated or no.
+   *          Whether the map must be updated or not.
    */
   public synchronized void add(List<MapillaryAbstractImage> images,
       boolean update) {

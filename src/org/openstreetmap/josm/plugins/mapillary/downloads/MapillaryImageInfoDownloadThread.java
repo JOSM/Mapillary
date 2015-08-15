@@ -22,7 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @author nokutu
  * @see MapillarySquareDownloadManagerThread
  */
-public class MapillaryImageInfoDownloaderThread extends Thread {
+public class MapillaryImageInfoDownloadThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL + "search/im/";
   private final String queryString;
   private final ExecutorService ex;
@@ -35,7 +35,7 @@ public class MapillaryImageInfoDownloaderThread extends Thread {
    * @param queryString
    *          A String containing the parameters for the download.
    */
-  public MapillaryImageInfoDownloaderThread(ExecutorService ex,
+  public MapillaryImageInfoDownloadThread(ExecutorService ex,
       String queryString) {
     this.ex = ex;
     this.queryString = queryString;

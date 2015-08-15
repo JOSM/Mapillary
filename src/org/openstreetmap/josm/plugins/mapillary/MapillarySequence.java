@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class that stores a sequence of MapillaryImage objects.
+ * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
  *
  * @author nokutu
- * @see MapillaryImage
+ * @see MapillaryAbstractImage
  *
  */
 public class MapillarySequence {
@@ -24,7 +24,7 @@ public class MapillarySequence {
   }
 
   /**
-   * Creates a sequence object with the given parameters
+   * Creates a sequence object with the given parameters.
    *
    * @param key
    *          The unique identifier of the sequence.
@@ -38,7 +38,8 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns all MapillaryImages objects contained by this object.
+   * Returns all {@link MapillaryAbstractImage} objects contained by this
+   * object.
    *
    * @return A List object containing all the {@link MapillaryAbstractImage}
    *         objects that are part of the sequence.
@@ -100,7 +101,8 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the next {@link MapillaryAbstractImage} in the sequence.
+   * Returns the next {@link MapillaryAbstractImage} in the sequence of a given
+   * {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose next image is
@@ -120,7 +122,8 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the previous {@link MapillaryAbstractImage} in the sequence.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a given
+   * {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose previous image is

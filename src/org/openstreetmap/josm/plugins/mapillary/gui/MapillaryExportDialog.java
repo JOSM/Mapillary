@@ -167,8 +167,6 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
       } else if (this.lastPath != null) {
         this.dlg.path.setText(this.lastPath);
       }
-
     }
-
   }
 }

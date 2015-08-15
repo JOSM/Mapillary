@@ -27,16 +27,17 @@ import org.xml.sax.SAXException;
  * the selected folder. Each image will be named by its key.
  *
  * @author nokutu
- *
+ * @see MapillaryExportWriterThread
+ * @see MapillaryExportDownloadThread
  */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
-  ArrayBlockingQueue<BufferedImage> queue;
-  ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private ArrayBlockingQueue<BufferedImage> queue;
+  private ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
-  final int amount;
-  List<MapillaryAbstractImage> images;
-  String path;
+  private final int amount;
+  private List<MapillaryAbstractImage> images;
+  private String path;
 
   private Thread writer;
   private ThreadPoolExecutor ex;
@@ -136,11 +137,9 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
     } catch (InterruptedException e) {
       Main.error(e);
     }
-
   }
 
   @Override
   protected void finish() {
-    // TODO Auto-generated method stub
   }
 }

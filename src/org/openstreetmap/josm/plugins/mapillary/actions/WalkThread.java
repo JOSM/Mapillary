@@ -81,6 +81,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
         }
         try {
           synchronized (this) {
+            // Waits for full quality picture.
             if (this.waitForFullQuality && image instanceof MapillaryImage) {
               while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
                   .getImage() == this.lastImage
@@ -89,7 +90,9 @@ public class WalkThread extends Thread implements MapillaryDataListener {
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
                       .getImage().getWidth() < 2048)
                 wait(100);
-            } else {
+            }
+            // Waits for thumbnail.
+            else {
               while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
                   .getImage() == this.lastImage
                   || MapillaryMainDialog.getInstance().mapillaryImageDisplay
@@ -134,7 +137,6 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     } finally {
       this.lock.unlock();
     }
-
   }
 
   @Override
