@@ -148,6 +148,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
     if (newImage != oldImage.next()) {
+      end();
       interrupt();
     }
   }
