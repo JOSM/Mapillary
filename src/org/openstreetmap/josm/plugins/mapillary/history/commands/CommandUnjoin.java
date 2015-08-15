@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -20,9 +19,15 @@ public class CommandUnjoin extends MapillaryExecutableCommand {
    * Main constructor.
    *
    * @param images
+   *          The two images that are going to be unjoined. Must be of exactly
+   *          size 2.
+   * @throws IllegalArgumentException
+   *           if the List size is different from 2.
    */
   public CommandUnjoin(List<MapillaryAbstractImage> images) {
     super(images);
+    if (images.size() != 2)
+      throw new IllegalArgumentException();
   }
 
   @Override
@@ -32,19 +37,16 @@ public class CommandUnjoin extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-    MapillaryUtils.join((MapillaryImportedImage) this.images.get(0),
-        (MapillaryImportedImage) this.images.get(1));
+    MapillaryUtils.join(this.images.get(0), this.images.get(1));
   }
 
   @Override
   public void redo() {
-    MapillaryUtils.unjoin((MapillaryImportedImage) this.images.get(0),
-        (MapillaryImportedImage) this.images.get(1));
+    MapillaryUtils.unjoin(this.images.get(0), this.images.get(1));
   }
 
   @Override
   public void sum(MapillaryCommand command) {
-    // IGNORE
   }
 
   @Override

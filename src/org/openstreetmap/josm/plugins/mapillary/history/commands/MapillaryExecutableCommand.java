@@ -16,13 +16,15 @@ public abstract class MapillaryExecutableCommand extends MapillaryCommand {
    * Main constructor.
    *
    * @param images
+   *          The set of images affected by the command.
    */
   public MapillaryExecutableCommand(List<MapillaryAbstractImage> images) {
     super(images);
   }
 
   /**
-   * Executes the command.
+   * Executes the command. It is run when the command is added to the history
+   * record.
    */
   public abstract void execute();
 }

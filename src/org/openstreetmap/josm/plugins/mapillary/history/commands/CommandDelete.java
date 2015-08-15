@@ -9,6 +9,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
+ * Command used to delete a set of images.
+ *
  * @author nokutu
  *
  */
@@ -17,7 +19,10 @@ public class CommandDelete extends MapillaryExecutableCommand {
   private HashMap<MapillaryAbstractImage, Integer> changesHash;
 
   /**
+   * Main constructor.
+   *
    * @param images
+   *          The set of images that are going to be deleted.
    */
   public CommandDelete(List<MapillaryAbstractImage> images) {
     super(images);
@@ -26,7 +31,6 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void sum(MapillaryCommand command) {
-    // Ignored
   }
 
   @Override

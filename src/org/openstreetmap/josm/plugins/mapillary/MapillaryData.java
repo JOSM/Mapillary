@@ -66,12 +66,15 @@ public class MapillaryData {
   }
 
   /**
-   * Removes an image from the database.
+   * Removes an image from the database. From the ArrayList in this object and
+   * from its {@link MapillarySequence}.
    *
    * @param image
+   *          The {@link MapillaryAbstractImage} that is going to be deleted.
    */
   public synchronized void remove(MapillaryAbstractImage image) {
-    if (MapillaryMainDialog.getInstance().getImage() != null) {
+    if (Main.main != null
+        && MapillaryMainDialog.getInstance().getImage() != null) {
       MapillaryMainDialog.getInstance().setImage(null);
       MapillaryMainDialog.getInstance().updateImage();
     }
@@ -87,6 +90,8 @@ public class MapillaryData {
    * Removes a set of images from the database.
    *
    * @param images
+   *          The set of {@link MapillaryAbstractImage} objects that are going
+   *          to be removed.
    */
   public synchronized void remove(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage img : images)

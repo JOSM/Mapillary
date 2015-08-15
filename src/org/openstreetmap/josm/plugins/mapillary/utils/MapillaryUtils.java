@@ -18,7 +18,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
@@ -136,17 +135,17 @@ public class MapillaryUtils {
   /**
    * Joins two images into the same sequence.
    *
-   * @param img1
-   * @param img2
+   * @param mapillaryAbstractImage
+   * @param mapillaryAbstractImage2
    */
-  public synchronized static void join(MapillaryImportedImage img1,
-      MapillaryImportedImage img2) {
-    MapillaryImportedImage firstImage = img1;
-    MapillaryImportedImage secondImage = img2;
+  public synchronized static void join(MapillaryAbstractImage mapillaryAbstractImage,
+      MapillaryAbstractImage mapillaryAbstractImage2) {
+    MapillaryAbstractImage firstImage = mapillaryAbstractImage;
+    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
 
-    if (img1.next() != null) {
-      firstImage = img2;
-      secondImage = img1;
+    if (mapillaryAbstractImage.next() != null) {
+      firstImage = mapillaryAbstractImage2;
+      secondImage = mapillaryAbstractImage;
     }
     if (firstImage.getSequence() == null) {
       MapillarySequence seq = new MapillarySequence();
@@ -156,7 +155,7 @@ public class MapillaryUtils {
     if (secondImage.getSequence() == null) {
       MapillarySequence seq = new MapillarySequence();
       seq.add(secondImage);
-      img2.setSequence(seq);
+      mapillaryAbstractImage2.setSequence(seq);
     }
 
     for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {
@@ -170,17 +169,17 @@ public class MapillaryUtils {
   /**
    * Separates two images belonging to the same sequence.
    *
-   * @param img1
-   * @param img2
+   * @param mapillaryAbstractImage
+   * @param mapillaryAbstractImage2
    */
-  public synchronized static void unjoin(MapillaryImportedImage img1,
-      MapillaryImportedImage img2) {
-    MapillaryImportedImage firstImage = img1;
-    MapillaryImportedImage secondImage = img2;
+  public synchronized static void unjoin(MapillaryAbstractImage mapillaryAbstractImage,
+      MapillaryAbstractImage mapillaryAbstractImage2) {
+    MapillaryAbstractImage firstImage = mapillaryAbstractImage;
+    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
 
-    if (img1.next() != img2) {
-      firstImage = img2;
-      secondImage = img1;
+    if (mapillaryAbstractImage.next() != mapillaryAbstractImage2) {
+      firstImage = mapillaryAbstractImage2;
+      secondImage = mapillaryAbstractImage;
     }
 
     ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(firstImage

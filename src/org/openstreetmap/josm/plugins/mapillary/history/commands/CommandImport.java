@@ -21,6 +21,8 @@ public class CommandImport extends MapillaryExecutableCommand {
    * Main constructor.
    *
    * @param images
+   *          The set of images that are going to be added. Might be in the same
+   *          sequence or not.
    */
   public CommandImport(List<MapillaryAbstractImage> images) {
     super(images);
@@ -46,7 +48,6 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void sum(MapillaryCommand command) {
-    // IGNORE
   }
 
   @Override
