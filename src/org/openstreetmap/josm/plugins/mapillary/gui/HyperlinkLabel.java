@@ -33,6 +33,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   private static final long serialVersionUID = -8965989079294159405L;
   private String text;
   private URL url;
+  private String key;
 
   /**
    * Creates a new HyperlinlLabel.
@@ -62,6 +63,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    *          The key of the image that the hyperlink will point to.
    */
   public void setURL(String key) {
+    this.key = key;
     if (key == null) {
       this.url = null;
       return;
@@ -109,12 +111,22 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
     private static final long serialVersionUID = 1384054752970921552L;
 
-    JMenuItem copy;
+    private JMenuItem copy;
+    private JMenuItem copyTag;
+    private JMenuItem edit;
 
     public LinkPopUp() {
-      this.copy = new JMenuItem("Copy key");
+      this.copy = new JMenuItem(tr("Copy key"));
       this.copy.addActionListener(new copyAction());
       add(this.copy);
+
+      this.copyTag = new JMenuItem(tr("Copy key tag"));
+      this.copyTag.addActionListener(new copyTagAction());
+      add(this.copyTag);
+
+      this.edit = new JMenuItem(tr("Edit on webpage"));
+      this.edit.addActionListener(new editAction());
+      add(this.edit);
     }
 
     private class copyAction implements ActionListener {
@@ -127,7 +139,32 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         clpbrd.setContents(stringSelection, null);
       }
+    }
 
+    private class copyTagAction implements ActionListener {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        StringSelection stringSelection = new StringSelection(
+            "mapillary="
+                + ((MapillaryImage) MapillaryMainDialog.getInstance()
+                    .getImage()).getKey());
+        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clpbrd.setContents(stringSelection, null);
+      }
+    }
+
+    private class editAction implements ActionListener {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        try {
+          MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/"
+              + HyperlinkLabel.this.key));
+        } catch (MalformedURLException e) {
+          Main.error(e);
+        }
+      }
     }
   }
 

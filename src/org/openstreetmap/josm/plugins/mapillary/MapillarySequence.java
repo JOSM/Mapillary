@@ -11,8 +11,11 @@ import java.util.List;
  *
  */
 public class MapillarySequence {
+  /** The images in the sequence. */
   private final List<MapillaryAbstractImage> images;
+  /** Unique identifier. Used only for {@link MapillaryImage} sequences. */
   private String key;
+  /** Epoch time when the sequence was created */
   private long created_at;
 
   /**
@@ -41,8 +44,9 @@ public class MapillarySequence {
    * Returns all {@link MapillaryAbstractImage} objects contained by this
    * object.
    *
-   * @return A List object containing all the {@link MapillaryAbstractImage}
-   *         objects that are part of the sequence.
+   * @return A {@link List} object containing all the
+   *         {@link MapillaryAbstractImage} objects that are part of the
+   *         sequence.
    */
   public List<MapillaryAbstractImage> getImages() {
     return this.images;
@@ -71,8 +75,8 @@ public class MapillarySequence {
   /**
    * Returns the unique identifier of the sequence.
    *
-   * @return A String containing the unique identifier of the sequence. null
-   *         means that the sequence has been created locally for imported
+   * @return A {@code String} containing the unique identifier of the sequence.
+   *         null means that the sequence has been created locally for imported
    *         images.
    */
   public String getKey() {
@@ -122,8 +126,8 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a given
-   * {@link MapillaryAbstractImage} object.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a
+   * given {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose previous image is

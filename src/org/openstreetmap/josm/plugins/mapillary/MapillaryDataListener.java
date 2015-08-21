@@ -24,5 +24,4 @@ public interface MapillaryDataListener {
    */
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage);
-
 }

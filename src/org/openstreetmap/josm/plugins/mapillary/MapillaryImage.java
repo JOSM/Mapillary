@@ -11,12 +11,13 @@ import java.util.List;
  * @see MapillaryData
  */
 public class MapillaryImage extends MapillaryAbstractImage {
-  /** Unique identifier of the object */
+  /** Unique identifier of the object. */
   private final String key;
-  /** The user that made the image */
+  /** The user that made the image. */
   private String user;
-  /** Set of traffic signs in the image */
+  /** Set of traffic signs in the image. */
   private List<String> signs;
+  /** Where the picture was taken. */
   private String location;
 
   /**

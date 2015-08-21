@@ -15,17 +15,9 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.ImageMetadata;
-import org.apache.commons.imaging.common.RationalNumber;
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
-import org.apache.commons.imaging.formats.tiff.TiffField;
-import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
-import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -85,29 +77,25 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
           for (int j = 0; j < file.listFiles().length; j++) {
-            int k = file.listFiles()[j].getName().lastIndexOf('.');
-            String extension = null;
-            if (k > 0) {
-              extension = file.listFiles()[j].getName().substring(k + 1);
-            }
+            String extension = MapillaryUtils.getExtension(file.listFiles()[j]);
             try {
               if (extension.equals("jpg") || extension.equals("jpeg"))
-                readJPG(file.listFiles()[j]);
+                MapillaryUtils.readJPG(file.listFiles()[j], true);
             } catch (ImageReadException | NullPointerException | IOException e) {
               Main.error(e);
             }
           }
         } else {
-          if (file.getPath().substring(file.getPath().length() - 4)
-              .equals(".jpg")
-              || file.getPath().substring(file.getPath().length() - 5)
-                  .equals(".jpeg")) {
+          String extension = MapillaryUtils.getExtension(file);
+          if (extension.equals("jpg") || extension.equals("jpeg")) {
             try {
-              readJPG(file);
+              this.images.add(MapillaryUtils.readJPG(file, true));
             } catch (ImageReadException ex) {
               Main.error(ex);
             } catch (IOException ex) {
               Main.error(ex);
+            } catch (IllegalArgumentException ex) {
+              // Ignored image.
             }
           }
         }
@@ -116,55 +104,6 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
       MapillaryRecord.getInstance().addCommand(new CommandImport(this.images));
     }
     MapillaryUtils.showAllPictures();
-  }
-
-  /**
-   * Reads a JPG pictures that contains the needed GPS information (position and
-   * direction) and creates a new icon in that position.
-   *
-   * @param file
-   *          The file where the image is located.
-   * @throws ImageReadException
-   *           If the file doesn't contain an image.
-   * @throws IOException
-   *           If the file doesn't contain valid metadata.
-   */
-  public void readJPG(File file) throws ImageReadException, IOException {
-    final ImageMetadata metadata = Imaging.getMetadata(file);
-    if (metadata instanceof JpegImageMetadata) {
-      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      final TiffField lat_ref = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
-      final TiffField lat = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
-      final TiffField lon_ref = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
-      final TiffField lon = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
-      final TiffField ca = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-      final TiffField datetimeOriginal = jpegMetadata
-          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-      if (lat_ref == null || lat == null || lon == null || lon_ref == null
-          || datetimeOriginal == null)
-        return;
-
-      double latValue = 0;
-      double lonValue = 0;
-      double caValue = 0;
-      if (lat.getValue() instanceof RationalNumber[])
-        latValue = MapillaryUtils.degMinSecToDouble(
-            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
-      if (lon.getValue() instanceof RationalNumber[])
-        lonValue = MapillaryUtils.degMinSecToDouble(
-            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
-      if (ca != null && ca.getValue() instanceof RationalNumber)
-        caValue = ((RationalNumber) ca.getValue()).doubleValue();
-
-      MapillaryImportedImage image = new MapillaryImportedImage(latValue,
-          lonValue, caValue, file, datetimeOriginal.getStringValue());
-      this.images.add(image);
-    }
   }
 
   /**

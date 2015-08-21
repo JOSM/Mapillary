@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
@@ -37,7 +36,7 @@ public class UploadTest extends AbstractTest {
   @Test
   public void updateFileTest() {
     File image = new File("images/icon16.png");
-    MapillaryImportedImage img = new MapillaryImportAction().readNoTags(image,
+    MapillaryImportedImage img = MapillaryUtils.readNoTags(image,
         new LatLon(0, 0));
     File updatedFile = null;
     try {

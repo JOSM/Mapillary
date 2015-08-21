@@ -20,6 +20,9 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
+ * Action called when an upload to the Mapillary servers is going to be
+ * performed. It lets you select a couple of options.
+ *
  * @author nokutu
  *
  */
@@ -59,7 +62,6 @@ public class MapillaryUploadAction extends JosmAction implements
 
   @Override
   public void imagesAdded() {
-    // Nothing
   }
 
   @Override
@@ -70,5 +72,4 @@ public class MapillaryUploadAction extends JosmAction implements
     else if (oldImage != null && newImage == null)
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, false);
   }
-
 }

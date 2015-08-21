@@ -264,6 +264,7 @@ public class UploadUtils {
     exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
         ((MapillaryImportedImage) image).getDate("yyyy/MM/dd hh:mm:ss"));
 
+    // Removes the ImageDescription tag, that causes problems in the upload.
     rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
 
     outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());

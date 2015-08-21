@@ -123,8 +123,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)
         this.mode.zoomChanged();
     }
-    if (MapillaryPlugin.EXPORT_MENU != null) { // Does not execute when in
-                                               // headless mode
+    // Does not execute when in headless mode
+    if (MapillaryPlugin.EXPORT_MENU != null) {
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
       if (!MapillaryMainDialog.getInstance().isShowing())
         MapillaryMainDialog.getInstance().getButton().doClick();
@@ -361,7 +361,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @param g
    * @param p
+   *          The {@link Point} where the image must be set.
    * @param size
+   *          The width in pixels of the highlight.
    */
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
     Color oldColor = g.getColor();
@@ -384,8 +386,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @param g
    * @param image
+   *          The {@link MapillaryAbstractImage} which is being drown.
    * @param icon
+   *          The {@link ImageIcon} that represents the image.
    * @param p
+   *          The P¡{@link Point} when the image lies.
    */
   private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon,
       Point p) {
@@ -436,7 +441,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Returns the 2 closest images belonging to a different sequence.
+   * Returns the 2 closest images belonging to a different sequence and
+   * different from the currently selected one.
    *
    * @return An array of length 2 containing the two closest images belonging to
    *         different sequences.
@@ -499,7 +505,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
     if (oldLayer == null && newLayer != null) {
       newLayer.data.addDataSetListener(this);
-
     } else if (oldLayer != null && newLayer == null) {
       oldLayer.data.removeDataSetListener(this);
     }
@@ -512,6 +517,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     Main.worker.submit(new delayedDownload());
   }
 
+  /**
+   * Threads that runs a delayed Mapillary download.
+   *
+   * @author nokutu
+   *
+   */
   private class delayedDownload extends Thread {
 
     @Override
@@ -568,12 +579,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void layerAdded(Layer newLayer) {
-    // Nothing
   }
 
   @Override
   public void layerRemoved(Layer oldLayer) {
-    // Nothing
   }
 
   /**

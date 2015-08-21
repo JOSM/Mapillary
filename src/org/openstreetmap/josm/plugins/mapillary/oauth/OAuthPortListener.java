@@ -14,7 +14,8 @@ import java.util.Scanner;
 import org.openstreetmap.josm.Main;
 
 /**
- * Listens to the OAuth port in order to get the access token.
+ * Listens to the OAuth port (8763) in order to get the access token and sends
+ * back a simple reply.
  *
  * @author nokutu
  *
@@ -65,7 +66,6 @@ public class OAuthPortListener extends Thread {
         Main.pref.put("mapillary.access-token", accessToken);
         Main.info("The username is: " + MapillaryUser.getUsername());
       }
-
     } catch (BindException e) {
       return;
     } catch (IOException e) {

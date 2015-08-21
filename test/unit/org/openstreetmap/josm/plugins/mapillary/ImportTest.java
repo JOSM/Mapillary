@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.imageio.IIOException;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Test the importation of images.
@@ -26,7 +26,7 @@ public class ImportTest extends AbstractTest {
   @Test
   public void importNoTagsTest() {
     File image = new File("images/icon16.png");
-    MapillaryImportedImage img = new MapillaryImportAction().readNoTags(image,
+    MapillaryImportedImage img = MapillaryUtils.readNoTags(image,
         new LatLon(0, 0));
     assertEquals(0, img.getCa(), 0.01);
     assertTrue(new LatLon(0, 0).equalsEpsilon(img.getLatLon()));

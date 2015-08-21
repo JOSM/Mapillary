@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -13,13 +14,20 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
@@ -32,6 +40,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 public class MapillaryUtils {
 
   private static double MIN_ZOOM_SQUARE_SIDE = 0.002;
+
+  private static int noTagsPics = 0;
 
   /**
    * Updates the help text at the bottom of the window.
@@ -279,5 +289,150 @@ public class MapillaryUtils {
     Calendar cal = Calendar.getInstance();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
     return formatter.format(cal.getTime());
+  }
+
+  /**
+   * Reads a JPG pictures that contains the needed GPS information (position and
+   * direction) and creates a new icon in that position.
+   *
+   * @param file
+   *          The file where the picture is located.
+   * @return The imported image.
+   * @throws ImageReadException
+   *           If the file isn't an image.
+   * @throws IOException
+   *           If the file doesn't have the valid metadata.
+   */
+  public static MapillaryImportedImage readJPG(File file) throws IOException,
+      ImageReadException {
+    return readJPG(file, false);
+  }
+
+  /**
+   * Reads a JPG pictures that contains the needed GPS information (position and
+   * direction) and creates a new icon in that position.
+   *
+   * @param file
+   *          The {@link File} where the picture is located.
+   * @param exceptionNoTags
+   *          {@code true} if an exception must be thrown if the image doesn't
+   *          have all the needed EXIF tags; {@code false} returns an image in
+   *          the center of the screen.
+   * @return The imported image.
+   * @throws ImageReadException
+   *           If the {@link File} isn't an image.
+   * @throws IOException
+   *           If the {@link File} doesn't have the valid metadata.
+   * @throws IllegalArgumentException
+   *           if exceptionNoTags is set to {@code true} and the image doesn't
+   *           have the needed EXIF tags.
+   */
+  public static MapillaryImportedImage readJPG(File file,
+      boolean exceptionNoTags) throws IOException, ImageReadException {
+    final ImageMetadata metadata = Imaging.getMetadata(file);
+    if (metadata instanceof JpegImageMetadata) {
+      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+      final TiffField lat_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
+      final TiffField lat = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
+      final TiffField lon_ref = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
+      final TiffField lon = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
+      final TiffField ca = jpegMetadata
+          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+      final TiffField datetimeOriginal = jpegMetadata
+          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+      if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
+        if (exceptionNoTags)
+          throw new IllegalArgumentException(
+              "The image doesn't have the needed EXIF tags.");
+        else
+          return readNoTags(file);
+      }
+      double latValue = 0;
+      double lonValue = 0;
+      double caValue = 0;
+      if (lat.getValue() instanceof RationalNumber[])
+        latValue = MapillaryUtils.degMinSecToDouble(
+            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+      if (lon.getValue() instanceof RationalNumber[])
+        lonValue = MapillaryUtils.degMinSecToDouble(
+            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
+      if (ca != null && ca.getValue() instanceof RationalNumber)
+        caValue = ((RationalNumber) ca.getValue()).doubleValue();
+      if (datetimeOriginal != null)
+        return new MapillaryImportedImage(latValue, lonValue, caValue, file,
+            datetimeOriginal.getStringValue());
+      else
+        return new MapillaryImportedImage(latValue, lonValue, caValue, file);
+    }
+    throw new IllegalStateException("Invalid format.");
+  }
+
+  /**
+   * Reads a image file that doesn't contain the needed GPS information. And
+   * creates a new icon in the middle of the map.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @param pos
+   *          A {@link LatLon} object indicating the position in the map where
+   *          the image must be set.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readNoTags(File file, LatLon pos) {
+    double HORIZONTAL_DISTANCE = 0.0001;
+    double horDev;
+    if (noTagsPics % 2 == 0)
+      horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
+    else
+      horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
+    noTagsPics++;
+    return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
+  }
+
+  /**
+   * Reads an image in PNG format.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readPNG(File file) {
+    return readNoTags(file);
+  }
+
+  /**
+   * Reads a image file that doesn't contain the needed GPS information. And
+   * creates a new icon in the middle of the map.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readNoTags(File file) {
+    return readNoTags(
+        file,
+        Main.map.mapView.getProjection().eastNorth2latlon(
+            Main.map.mapView.getCenter()));
+  }
+
+  /**
+   * Returns the extension of a {@link File} object.
+   *
+   * @param file
+   *          The {@link File} object whose extension is going to be returned.
+   * @return A {@code String} object containing the extension.
+   */
+  public static String getExtension(File file) {
+    if (file.isDirectory())
+      throw new IllegalArgumentException("The file is a directory");
+    int k = file.getName().lastIndexOf('.');
+    if (k > 0) {
+      return file.getName().substring(k + 1).toLowerCase();
+    }
+    throw new IllegalArgumentException("Error parsing the extension");
   }
 }

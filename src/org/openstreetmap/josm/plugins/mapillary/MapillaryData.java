@@ -28,7 +28,6 @@ public class MapillaryData {
   private final List<MapillaryAbstractImage> multiSelectedImages;
   /** Listeners of the class. */
   private CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
-
   /** The bounds of the areas for which the pictures have been downloaded. */
   public CopyOnWriteArrayList<Bounds> bounds;
 
@@ -93,7 +92,7 @@ public class MapillaryData {
    * Removes a set of images from the database.
    *
    * @param images
-   *          The set of {@link MapillaryAbstractImage} objects that are going
+   *          A {@link List} of {@link MapillaryAbstractImage} objects that are going
    *          to be removed.
    */
   public synchronized void remove(List<MapillaryAbstractImage> images) {
@@ -347,11 +346,11 @@ public class MapillaryData {
   }
 
   /**
-   * Adds a MapillaryImage object to the list of selected images, (when ctrl +
+   * Adds a {@link MapillaryImage} object to the list of selected images, (when ctrl +
    * click)
    *
    * @param image
-   *          The MapillaryImage object to be added.
+   *          The {@link MapillaryImage} object to be added.
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {

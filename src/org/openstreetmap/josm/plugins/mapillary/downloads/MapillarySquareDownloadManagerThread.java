@@ -94,6 +94,12 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     MapillaryMainDialog.getInstance().updateImage();
   }
 
+  /**
+   * Downloads the sequence positions, directions and keys.
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
   private void downloadSequences() throws InterruptedException {
     int page = 0;
     while (!this.downloadExecutor.isShutdown()) {
@@ -108,6 +114,12 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     MapillaryData.dataUpdated();
   }
 
+  /**
+   * Downloads the image's author's username and the image's location.
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
   private void completeImages() throws InterruptedException {
     int page = 0;
     while (!this.completeExecutor.isShutdown()) {
@@ -121,6 +133,12 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
   }
 
+  /**
+   * Downloads the traffic signs in the images.
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
   private void downloadSigns() throws InterruptedException {
     int page = 0;
     while (!this.signsExecutor.isShutdown()) {

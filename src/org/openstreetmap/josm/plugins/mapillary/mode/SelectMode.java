@@ -52,7 +52,7 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1)
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer)
         && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       this.data.setSelectedImage(closest);

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import org.openstreetmap.josm.Main;
 
 /**
+ * Represents the current logged in user and stores its data.
+ *
  * @author nokutu
  *
  */
@@ -37,7 +39,6 @@ public class MapillaryUser {
         Main.error(e);
         isTokenValid = false;
       }
-
     return username;
   }
 

@@ -13,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Changes the mode of the Layer, from Select mode to Join mode and viceversa.
+ * Changes the mode of the Layer, from Select mode to Join mode and vice versa.
  *
  * @author nokutu
  *
@@ -35,10 +35,9 @@ public class MapillaryJoinAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {
+    if (MapillaryLayer.getInstance().mode instanceof SelectMode)
       MapillaryLayer.getInstance().setMode(new JoinMode());
-    } else {
+    else
       MapillaryLayer.getInstance().setMode(new SelectMode());
-    }
   }
 }
