@@ -28,7 +28,7 @@ repositories {
 dependencies {
   // The JOSM-version can be specified as "latest", "tested" or "snapshot-1234" (replace 1234 by the desired version number).
   // For revisions older than the last ~60 versions, also append "Archiv" to the repository URL above
-  compile 'org.openstreetmap.josm:josm:tested'
+  compile 'org.openstreetmap.josm:josm:latest'
   compile 'org.apache.commons:commons-imaging:1.0-SNAPSHOT'
 
   packIntoJar 'com.amazonaws:aws-java-sdk-s3:1.10.8'

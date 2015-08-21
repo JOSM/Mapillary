@@ -243,7 +243,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
             MapillaryCache.Type.THUMBNAIL);
-        this.thumbnailCache.submit(this, false);
+        try {
+          this.thumbnailCache.submit(this, false);
+        } catch (IOException e) {
+          Main.error(e);
+        }
 
         // Downloads the full resolution image.
         if (fullQuality) {
@@ -251,7 +255,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(),
               MapillaryCache.Type.FULL_IMAGE);
-          this.imageCache.submit(this, false);
+          try {
+            this.imageCache.submit(this, false);
+          } catch (IOException e) {
+            Main.error(e);
+          }
         }
       } else if (this.image instanceof MapillaryImportedImage) {
         this.mapillaryImageDisplay.hyperlink.setVisible(false);

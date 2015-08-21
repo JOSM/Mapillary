@@ -13,6 +13,7 @@ import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 /**
@@ -53,8 +54,7 @@ public class MapillaryExportDownloadThread extends Thread implements
 
   @Override
   public void run() {
-    new MapillaryCache(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE)
-        .submit(this, false);
+    CacheUtils.submit(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE, this);
   }
 
   @Override

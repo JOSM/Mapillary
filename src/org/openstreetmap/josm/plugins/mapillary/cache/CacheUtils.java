@@ -1,5 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
+import java.io.IOException;
+
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -40,7 +43,8 @@ public class CacheUtils {
    * Downloads the picture of the given image. Does nothing when it is already
    * in cache.
    *
-   * @param img The image to be downloaded.
+   * @param img
+   *          The image to be downloaded.
    * @param pic
    *          The picture type to be downloaded (full quality, thumbnail or
    *          both.)
@@ -50,21 +54,37 @@ public class CacheUtils {
       case BOTH:
         if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
             .get() == null)
-          new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
-              .submit(IGNORE_DOWNLOAD, false);
+          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
         if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
             .get() == null)
-          new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
-              .submit(IGNORE_DOWNLOAD, false);
+          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
         break;
       case THUMBNAIL:
-        new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).submit(
-            IGNORE_DOWNLOAD, false);
+        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
         break;
       case FULL_IMAGE:
-        new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
-            .submit(IGNORE_DOWNLOAD, false);
+        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
         break;
+    }
+  }
+
+  /**
+   * Requests the picture with the given key and quality and uses the given
+   * listener.
+   *
+   * @param key
+   *          The key of the picture to be requested.
+   * @param type
+   *          The quality of the picture to be requested.
+   * @param lis
+   *          The listener that is going to receive the picture.
+   */
+  public static void submit(String key, MapillaryCache.Type type,
+      ICachedLoaderListener lis) {
+    try {
+      new MapillaryCache(key, type).submit(lis, false);
+    } catch (IOException e) {
+      Main.error(e);
     }
   }
 
