@@ -19,13 +19,13 @@ public class TrafficoSignElement {
    * @return the color
    */
   public Color getColor() {
-    return color;
+    return this.color;
   }
 
   /**
    * @return the glyph
    */
   public char getGlyph() {
-    return glyph;
+    return this.glyph;
   }
 }

@@ -60,7 +60,6 @@ public class MapillaryUser {
       } catch (IOException e) {
         Main.error(e);
         isTokenValid = false;
-        isTokenValid = false;
       }
     hash.put("images_hash", images_hash);
     if (images_policy == null)

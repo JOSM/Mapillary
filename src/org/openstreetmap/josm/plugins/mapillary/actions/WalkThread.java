@@ -1,8 +1,6 @@
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingUtilities;
 
@@ -23,7 +21,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 public class WalkThread extends Thread implements MapillaryDataListener {
   private final int interval;
   private final MapillaryData data;
-  private final Lock lock;
   private boolean end = false;
   private final boolean waitForFullQuality;
   private final boolean followSelected;
@@ -52,7 +49,6 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     this.goForward = goForward;
     this.data = MapillaryLayer.getInstance().getData();
     this.data.addListener(this);
-    this.lock = new ReentrantLock();
   }
 
   @Override
@@ -109,14 +105,11 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           }
           this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
               .getImage();
-          this.lock.lock();
-          try {
+          synchronized (this) {
             if (this.goForward)
               this.data.selectNext(this.followSelected);
             else
               this.data.selectPrevious(this.followSelected);
-          } finally {
-            this.lock.unlock();
           }
         } catch (InterruptedException e) {
           return;
@@ -129,14 +122,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   }
 
   @Override
-  public void interrupt() {
-    this.lock.lock();
-    try {
-      super.interrupt();
-    } catch (Exception e) {
-    } finally {
-      this.lock.unlock();
-    }
+  public synchronized void interrupt() {
+    super.interrupt();
   }
 
   @Override

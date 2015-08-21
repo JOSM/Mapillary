@@ -7,8 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -32,9 +30,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 public class MapillarySequenceDownloadThread extends Thread {
   private static final String URL = MapillaryDownloader.BASE_URL + "search/s/";
 
-  /** Lock to prevent multiple downloads to be imported at the same time. */
-  private static final Lock LOCK = new ReentrantLock();
-
   private final String queryString;
   private final ExecutorService ex;
   private final MapillaryLayer layer;
@@ -57,8 +52,8 @@ public class MapillarySequenceDownloadThread extends Thread {
   public void run() {
     try {
       BufferedReader br;
-      br = new BufferedReader(new InputStreamReader(
-          new URL(URL + this.queryString).openStream(), "UTF-8"));
+      br = new BufferedReader(new InputStreamReader(new URL(URL
+          + this.queryString).openStream(), "UTF-8"));
       JsonObject jsonall = Json.createReader(br).readObject();
 
       if (!jsonall.getBoolean("more") && !this.ex.isShutdown())
@@ -94,29 +89,25 @@ public class MapillarySequenceDownloadThread extends Thread {
           if (!isInside(img))
             finalImages.remove(img);
         }
-
-        LOCK.lock();
-        MapillaryAbstractImage.LOCK.lock();
-        try {
-          for (MapillaryImage img : finalImages) {
-            if (this.layer.getData().getImages().contains(img)) {
-              // The image in finalImages is substituted by the one in the
-              // database, as they represent the same picture.
-              img = (MapillaryImage) this.layer.getData().getImages()
-                  .get(this.layer.getData().getImages().indexOf(img));
-              sequence.add(img);
-              ((MapillaryImage) this.layer.getData().getImages()
-                  .get(this.layer.getData().getImages().indexOf(img)))
-                  .setSequence(sequence);
-              finalImages.set(finalImages.indexOf(img), img);
-            } else {
-              img.setSequence(sequence);
-              sequence.add(img);
+        synchronized (this.getClass()) {
+          synchronized (MapillaryAbstractImage.class) {
+            for (MapillaryImage img : finalImages) {
+              if (this.layer.getData().getImages().contains(img)) {
+                // The image in finalImages is substituted by the one in the
+                // database, as they represent the same picture.
+                img = (MapillaryImage) this.layer.getData().getImages()
+                    .get(this.layer.getData().getImages().indexOf(img));
+                sequence.add(img);
+                ((MapillaryImage) this.layer.getData().getImages()
+                    .get(this.layer.getData().getImages().indexOf(img)))
+                    .setSequence(sequence);
+                finalImages.set(finalImages.indexOf(img), img);
+              } else {
+                img.setSequence(sequence);
+                sequence.add(img);
+              }
             }
           }
-        } finally {
-          MapillaryAbstractImage.LOCK.unlock();
-          LOCK.unlock();
         }
 
         this.layer.getData().add(

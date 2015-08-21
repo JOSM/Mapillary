@@ -52,7 +52,8 @@ public class MapillaryUploadAction extends JosmAction implements
     dlg.setVisible(true);
 
     if (pane.getValue() != null
-        && (int) pane.getValue() == JOptionPane.OK_OPTION) {
+        && (int) pane.getValue() == JOptionPane.OK_OPTION
+        && dialog.delete != null) {
       if (dialog.sequence.isSelected()) {
         UploadUtils.uploadSequence(MapillaryLayer.getInstance().getData()
             .getSelectedImage().getSequence(), dialog.delete.isSelected());

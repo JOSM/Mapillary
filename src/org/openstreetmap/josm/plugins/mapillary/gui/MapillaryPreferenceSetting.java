@@ -82,7 +82,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.add(this.format24);
     panel.add(this.moveTo);
     this.login = new JButton(new LoginAction());
-    if (Main.pref.get("mapillary.access-token") == null)
+    if (MapillaryUser.getUsername() == null)
       this.login.setText("Login");
     else
       this.login.setText("Logged as: " + MapillaryUser.getUsername()

@@ -3,8 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -17,13 +15,6 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public abstract class MapillaryAbstractImage {
-
-  /**
-   * Lock that locks {@link MapillaryAbstractImage#next()} and
-   * {@link MapillaryAbstractImage#previous()} methods. Used when downloading
-   * images to prevent concurrency problems.
-   */
-  public static final Lock LOCK = new ReentrantLock();
 
   /** The time the image was captured, in Epoch format. */
   private long capturedAt;
@@ -204,14 +195,10 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-    LOCK.lock();
-    try {
-      if (this.getSequence() == null) {
+    synchronized (this.getClass()) {
+      if (this.getSequence() == null)
         return null;
-      }
       return this.getSequence().next(this);
-    } finally {
-      LOCK.unlock();
     }
   }
 
@@ -222,16 +209,11 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-    LOCK.lock();
-    try {
-      if (this.getSequence() == null) {
+    synchronized (this.getClass()) {
+      if (this.getSequence() == null)
         return null;
-      }
       return this.getSequence().previous(this);
-    } finally {
-      LOCK.unlock();
     }
-
   }
 
   /**
