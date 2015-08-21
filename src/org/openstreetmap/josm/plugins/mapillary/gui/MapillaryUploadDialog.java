@@ -15,6 +15,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 
 /**
+ * JPanel used when uploading pictures.
+ *
  * @author nokutu
  *
  */
@@ -30,13 +32,12 @@ public class MapillaryUploadDialog extends JPanel {
   public JCheckBox delete;
 
   /**
-   * Main constructor.
+   * Creates the JPanel and adds the needed elements.
    */
   public MapillaryUploadDialog() {
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     if (MapillaryUser.getUsername() != null) {
       this.group = new ButtonGroup();
-
       this.sequence = new JRadioButton(tr("Upload selected sequence"));
       if (MapillaryLayer.getInstance().getData().getSelectedImage() == null
           || !(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage))
@@ -44,13 +45,12 @@ public class MapillaryUploadDialog extends JPanel {
       this.group.add(this.sequence);
       add(this.sequence);
       this.group.setSelected(this.sequence.getModel(), true);
-
       this.delete = new JCheckBox(tr("Delete after upload"));
       this.delete.setSelected(Main.pref.getBoolean(
           "mapillary.delete-after-upload", true));
       add(this.delete);
-    } else {
-      this.add(new JLabel("Go to setting and log in to Mapillary before uploading."));
-    }
+    } else
+      this.add(new JLabel(
+          "Go to setting and log in to Mapillary before uploading."));
   }
 }

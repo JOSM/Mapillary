@@ -51,11 +51,11 @@ import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
@@ -311,7 +311,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (!imageAbs.isVisible())
         continue;
       Point p = mv.getPoint(imageAbs.getLatLon());
-
       Point nextp = null;
       // Draw sequence line
       if (imageAbs.getSequence() != null) {
@@ -326,7 +325,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         if (nextp != null)
           g.drawLine(p.x, p.y, nextp.x, nextp.y);
       }
-
+      // Draws icons
       if (imageAbs instanceof MapillaryImage) {
         MapillaryImage image = (MapillaryImage) imageAbs;
         ImageIcon icon;

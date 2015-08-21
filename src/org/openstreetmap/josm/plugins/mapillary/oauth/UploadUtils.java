@@ -188,9 +188,7 @@ public class UploadUtils {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ImageIO.write(image.getImage(), "jpg", outputStream);
     byte[] imageBytes = outputStream.toByteArray();
-
     new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
-
     return tempFile;
   }
 
@@ -202,7 +200,6 @@ public class UploadUtils {
    */
   public static void upload(MapillaryImportedImage image) {
     upload(image, UUID.randomUUID());
-
   }
 
   /**
@@ -227,7 +224,6 @@ public class UploadUtils {
     hash.put("policy", policy);
     hash.put("signature", signature);
     hash.put("Content-Type", "image/jpeg");
-
     try {
       uploadFile(updateFile(image), hash);
     } catch (ImageReadException | ImageWriteException | IOException e) {
@@ -256,7 +252,6 @@ public class UploadUtils {
           ContentType.TEXT_PLAIN));
     }
     entityBuilder.addPart("file", new FileBody(file));
-
     HttpEntity entity = entityBuilder.build();
     httpPost.setEntity(entity);
     HttpResponse response = httpClient.execute(httpPost);

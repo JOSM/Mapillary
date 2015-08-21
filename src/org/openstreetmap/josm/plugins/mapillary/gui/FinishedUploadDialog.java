@@ -51,7 +51,5 @@ public class FinishedUploadDialog extends JPanel {
         Main.error(e1);
       }
     }
-
   }
-
 }

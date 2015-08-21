@@ -8,7 +8,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
- * Abstract superclass for all image objects. At the moment there is just 2,
+ * Abstract superclass for all image objects. At the moment there are just 2,
  * {@link MapillaryImportedImage} and {@link MapillaryImage}.
  *
  * @author nokutu

@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.downloads;
+package org.openstreetmap.josm.plugins.mapillary.io.export;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

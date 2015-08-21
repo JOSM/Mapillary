@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.mapillary.downloads;
+package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 

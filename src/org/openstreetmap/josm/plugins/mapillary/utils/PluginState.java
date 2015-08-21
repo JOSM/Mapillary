@@ -98,9 +98,9 @@ public class PluginState {
   }
 
   /**
-   * Returns the string to be written in the status bar.
+   * Returns the text to be written in the status bar.
    *
-   * @return The String that is going to be written in the status bar.
+   * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
     return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload

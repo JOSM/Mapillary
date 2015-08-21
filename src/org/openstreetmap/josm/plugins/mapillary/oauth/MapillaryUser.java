@@ -50,29 +50,24 @@ public class MapillaryUser {
     if (!isTokenValid)
       return null;
     HashMap<String, String> hash = new HashMap<>();
-    if (images_hash == null)
-      try {
+    try {
+      if (images_hash == null)
         images_hash = OAuthUtils
             .getWithHeader(
                 new URL(
                     "https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
             .getString("images_hash");
-      } catch (IOException e) {
-        Main.error(e);
-        isTokenValid = false;
-      }
-    hash.put("images_hash", images_hash);
-    if (images_policy == null)
-      try {
+      hash.put("images_hash", images_hash);
+      if (images_policy == null)
         images_policy = OAuthUtils
             .getWithHeader(
                 new URL(
                     "https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
             .getString("images_policy");
-      } catch (IOException e) {
-        Main.error(e);
-        isTokenValid = false;
-      }
+    } catch (IOException e) {
+      Main.error(e);
+      isTokenValid = false;
+    }
     hash.put("images_policy", images_policy);
     return hash;
   }
@@ -84,6 +79,7 @@ public class MapillaryUser {
     username = null;
     images_policy = null;
     images_hash = null;
-    isTokenValid = true;
+    isTokenValid = false;
+    Main.pref.put("mapillary.access-token", null);
   }
 }

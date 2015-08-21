@@ -19,7 +19,7 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -51,7 +51,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   @Override
   public void addGui(PreferenceTabbedPane gui) {
     JPanel panel = new JPanel();
-
     this.reverseButtons.setSelected(Main.pref
         .getBoolean("mapillary.reverse-buttons"));
     this.displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour",
@@ -59,10 +58,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     this.format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
     this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture",
         true));
-
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     panel.add(this.reverseButtons);
-
     // Sets the value of the ComboBox.
     if (Main.pref.get("mapillary.download-mode").equals(
         MapillaryDownloader.MODES[0]))
@@ -77,7 +74,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     downloadModePanel.add(new JLabel(tr("Download mode: ")));
     downloadModePanel.add(this.downloadMode);
     panel.add(downloadModePanel);
-
     panel.add(this.displayHour);
     panel.add(this.format24);
     panel.add(this.moveTo);
@@ -87,12 +83,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     else
       this.login.setText("Logged as: " + MapillaryUser.getUsername()
           + ". Click to relogin.");
-
     panel.add(this.login);
     if (MapillaryUser.getUsername() != null) {
       JButton logout = new JButton(new LogoutAction());
       logout.setText("Logout");
-
       panel.add(logout);
     }
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
@@ -116,7 +110,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[2]);
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
     }
-
     Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
     Main.pref.put("mapillary.format-24", this.format24.isSelected());
     Main.pref.put("mapillary.move-to-picture", this.moveTo.isSelected());
@@ -142,7 +135,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     public void actionPerformed(ActionEvent arg0) {
       OAuthPortListener portListener = new OAuthPortListener();
       portListener.start();
-
       String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&response_type=token&scope=user:read%20public:upload%20public:write";
       try {
         MapillaryUtils.browse(new URL(url));
@@ -169,5 +161,4 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
       MapillaryPreferenceSetting.this.login.setText("Login");
     }
   }
-
 }

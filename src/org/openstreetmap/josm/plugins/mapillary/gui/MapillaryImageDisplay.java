@@ -91,7 +91,7 @@ public class MapillaryImageDisplay extends JComponent {
         this.lastTimeForMousePoint = e.getWhen();
         this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
       }
-      // Applicate the zoom to the visible rectangle in image coordinates
+      // Set the zoom to the visible rectangle in image coordinates
       if (e.getWheelRotation() > 0) {
         visibleRect.width = visibleRect.width * 3 / 2;
         visibleRect.height = visibleRect.height * 3 / 2;

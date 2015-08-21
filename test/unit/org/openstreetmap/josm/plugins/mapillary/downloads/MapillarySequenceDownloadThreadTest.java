@@ -14,8 +14,8 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySequenceDownloadThread;
 
 /**
  *
@@ -24,7 +24,7 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
 
   /**
    * Test method for
-   * {@link org.openstreetmap.josm.plugins.mapillary.downloads.MapillarySequenceDownloadThread#run()}
+   * {@link org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySequenceDownloadThread#run()}
    * .
    *
    * This downloads a small area of mapillary-sequences where we know that
