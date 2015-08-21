@@ -99,7 +99,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     this.choose = new JButton(tr("Explore"));
     this.choose.addActionListener(this);
 
-    // All options belong to the same jpanel so the are in line.
+    // All options belong to the same JPanel so the are in line.
     JPanel jpanel = new JPanel();
     jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));
     jpanel.add(this.all);

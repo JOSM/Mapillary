@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -87,6 +89,6 @@ public class JoinMode extends AbstractMode {
 
   @Override
   public String toString() {
-    return "Join mode";
+    return tr("Join mode");
   }
 }

@@ -39,10 +39,10 @@ public class MapillaryUtils {
   public static void updateHelpText() {
     String ret = "";
     if (PluginState.isDownloading())
-      ret += tr("Downloading");
+      ret += tr("Downloading Mapillary images");
     else if (MapillaryLayer.getInstance().getData().size() > 0)
-      ret += tr("Total images: {0}", MapillaryLayer.getInstance().getData()
-          .size());
+      ret += tr("Total Mapillary images: {0}", MapillaryLayer.getInstance()
+          .getData().size());
     else
       ret += tr("No images found");
     if (MapillaryLayer.getInstance().mode != null)
@@ -140,7 +140,8 @@ public class MapillaryUtils {
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void join(MapillaryAbstractImage mapillaryAbstractImage,
+  public synchronized static void join(
+      MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;
     MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
@@ -174,7 +175,8 @@ public class MapillaryUtils {
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void unjoin(MapillaryAbstractImage mapillaryAbstractImage,
+  public synchronized static void unjoin(
+      MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;
     MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
@@ -270,6 +272,7 @@ public class MapillaryUtils {
 
   /**
    * Returns the current date.
+   *
    * @return A {@code String} object containing the current date.
    */
   public static String currentDate() {

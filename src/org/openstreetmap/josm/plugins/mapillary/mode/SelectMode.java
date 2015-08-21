@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.mode;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -199,6 +201,6 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public String toString() {
-    return "Select mode";
+    return tr("Select mode");
   }
 }

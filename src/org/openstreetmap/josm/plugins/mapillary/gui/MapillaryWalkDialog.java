@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,15 +38,15 @@ public class MapillaryWalkDialog extends JPanel {
     interval.add(new JSpinner(this.spin));
     add(interval);
 
-    this.waitForPicture = new JCheckBox("Wait for full quality pictures");
+    this.waitForPicture = new JCheckBox(tr("Wait for full quality pictures"));
     this.waitForPicture.setSelected(true);
     add(this.waitForPicture);
 
-    this.followSelection = new JCheckBox("Follow selected image");
+    this.followSelection = new JCheckBox(tr("Follow selected image"));
     this.followSelection.setSelected(true);
     add(this.followSelection);
 
-    this.goForward = new JCheckBox("Go forward");
+    this.goForward = new JCheckBox(tr("Go forward"));
     this.goForward.setSelected(true);
     add(this.goForward);
   }

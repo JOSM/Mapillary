@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -33,7 +35,7 @@ public class MapillaryUploadDialog extends JPanel {
 
     this.group = new ButtonGroup();
 
-    this.sequence = new JRadioButton("Upload selected sequence.");
+    this.sequence = new JRadioButton(tr("Upload selected sequence"));
     if (MapillaryLayer.getInstance().getData().getSelectedImage() == null
         || !(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage))
       this.sequence.setEnabled(false);
@@ -41,7 +43,7 @@ public class MapillaryUploadDialog extends JPanel {
     add(this.sequence);
     this.group.setSelected(this.sequence.getModel(), true);
 
-    this.delete = new JCheckBox("Delete after uplaod");
+    this.delete = new JCheckBox(tr("Delete after upload"));
     this.delete.setSelected(Main.pref.getBoolean(
         "mapillary.delete-after-upload", true));
     add(this.delete);

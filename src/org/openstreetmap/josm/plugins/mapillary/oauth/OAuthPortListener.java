@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -19,7 +21,7 @@ import org.openstreetmap.josm.Main;
  */
 public class OAuthPortListener extends Thread {
 
-  protected static String RESPONSE = "<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>";
+  protected static String RESPONSE = tr("<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>");
 
   @Override
   public void run() {
