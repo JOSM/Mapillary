@@ -2,18 +2,17 @@ package org.openstreetmap.josm.plugins.mapillary.downloads;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
 import java.io.InputStreamReader;
-
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.Json;
-
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;

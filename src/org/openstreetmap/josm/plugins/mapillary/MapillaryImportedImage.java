@@ -58,13 +58,13 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     super(lat, lon, ca);
     this.file = file;
     try {
-      this.datetimeOriginal = getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
+      this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
     } catch (ParseException e) {
       try {
-        this.datetimeOriginal = getEpoch(datetimeOriginal,
+        this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal,
             "yyyy/MM/dd hh:mm:ss");
       } catch (ParseException e1) {
-        this.datetimeOriginal = currentTime();
+        this.datetimeOriginal = MapillaryUtils.currentTime();
       }
     }
   }

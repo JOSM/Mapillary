@@ -1,41 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.marktr;
-
-import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
-import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
-import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
-import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
-import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
-import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
-import org.openstreetmap.josm.gui.NavigatableComponent;
-import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
-import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
-import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
-import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
-import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
-import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
-import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
-import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
-import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
-import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataSetListener;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -50,17 +16,50 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataSetListener;
+import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
+import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
+import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
+import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
+import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
+import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
+import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
+import org.openstreetmap.josm.gui.NavigatableComponent;
+import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
+import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
+import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
+import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
+import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -514,26 +513,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public void dataChanged(DataChangedEvent event) {
     // When more data is downloaded, a delayed update is thrown, in order to
     // wait for the data bounds to be set.
-    Main.worker.submit(new delayedDownload());
-  }
-
-  /**
-   * Threads that runs a delayed Mapillary download.
-   *
-   * @author nokutu
-   *
-   */
-  private class delayedDownload extends Thread {
-
-    @Override
-    public void run() {
-      try {
-        sleep(1500);
-      } catch (InterruptedException e) {
-        Main.error(e);
-      }
-      MapillaryDownloader.automaticDownload();
-    }
+    Main.worker.submit(new DelayedDownload());
   }
 
   @Override
@@ -583,6 +563,25 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void layerRemoved(Layer oldLayer) {
+  }
+
+  /**
+   * Threads that runs a delayed Mapillary download.
+   *
+   * @author nokutu
+   *
+   */
+  private class DelayedDownload extends Thread {
+
+    @Override
+    public void run() {
+      try {
+        sleep(1500);
+      } catch (InterruptedException e) {
+        Main.error(e);
+      }
+      MapillaryDownloader.automaticDownload();
+    }
   }
 
   /**

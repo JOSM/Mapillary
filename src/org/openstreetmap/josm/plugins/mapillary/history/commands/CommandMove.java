@@ -40,7 +40,6 @@ public class CommandMove extends MapillaryCommand {
       image.move(-this.x, -this.y);
       image.stopMoving();
     }
-    checkModified();
     if (Main.main != null)
       Main.map.repaint();
   }
@@ -51,7 +50,6 @@ public class CommandMove extends MapillaryCommand {
       image.move(this.x, this.y);
       image.stopMoving();
     }
-    checkModified();
     if (Main.main != null)
       Main.map.repaint();
   }

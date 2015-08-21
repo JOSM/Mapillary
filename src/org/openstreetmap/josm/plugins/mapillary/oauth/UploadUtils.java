@@ -54,13 +54,145 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  */
 public class UploadUtils {
 
+  private static class SequenceUploadThread extends Thread {
+    private List<MapillaryAbstractImage> images;
+    private UUID uuid;
+    private boolean delete;
+    ThreadPoolExecutor ex;
+
+    private SequenceUploadThread(List<MapillaryAbstractImage> images,
+        boolean delete) {
+      this.images = images;
+      this.uuid = UUID.randomUUID();
+      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<Runnable>(15));
+      this.delete = delete;
+    }
+
+    @Override
+    public void run() {
+      PluginState.imagesToUpload(this.images.size());
+      MapillaryUtils.updateHelpText();
+      for (MapillaryAbstractImage img : this.images) {
+        if (!(img instanceof MapillaryImportedImage))
+          throw new IllegalArgumentException(
+              "The sequence contains downloaded images.");
+        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
+            this.uuid));
+        while (this.ex.getQueue().remainingCapacity() == 0)
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            Main.error(e);
+          }
+      }
+      this.ex.shutdown();
+      try {
+        this.ex.awaitTermination(15, TimeUnit.SECONDS);
+      } catch (InterruptedException e) {
+        Main.error(e);
+      }
+      if (this.delete)
+        MapillaryRecord.getInstance()
+            .addCommand(new CommandDelete(this.images));
+    }
+  }
+  private static class SingleUploadThread extends Thread {
+
+    private MapillaryImportedImage image;
+    private UUID uuid;
+
+    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {
+      this.image = image;
+      this.uuid = uuid;
+    }
+
+    @Override
+    public void run() {
+      upload(this.image, this.uuid);
+    }
+  }
   /** Required keys for POST */
   private static final String[] keys = { "key", "AWSAccessKeyId", "acl",
       "policy", "signature", "Content-Type" };
+
   /** Mapillary upload URL */
   private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
+
   /** Count to name temporal files. */
   private static int c = 0;
+
+  /**
+   * Returns a file containing the picture and an updated version of the EXIF
+   * tags.
+   *
+   * @param image
+   * @return A File object containing the picture and an updated version of the
+   *         EXIF tags.
+   * @throws ImageReadException
+   *           if there are errors reading the image from the file.
+   * @throws IOException
+   *           if there are errors getting the metadata from the file or writing
+   *           the output.
+   * @throws ImageWriteException
+   *           if there are errors writing the image in the file.
+   */
+  public static File updateFile(MapillaryImportedImage image)
+      throws ImageReadException, IOException, ImageWriteException {
+    TiffOutputSet outputSet = null;
+    TiffOutputDirectory exifDirectory = null;
+    TiffOutputDirectory gpsDirectory = null;
+    TiffOutputDirectory rootDirectory = null;
+
+    // If the image is imported, loads the rest of the EXIF data.
+    JpegImageMetadata jpegMetadata = null;
+    try {
+      ImageMetadata metadata = Imaging.getMetadata(image.getFile());
+      jpegMetadata = (JpegImageMetadata) metadata;
+    } catch (Exception e) {
+    }
+    if (null != jpegMetadata) {
+      final TiffImageMetadata exif = jpegMetadata.getExif();
+      if (null != exif) {
+        outputSet = exif.getOutputSet();
+      }
+    }
+    if (null == outputSet) {
+      outputSet = new TiffOutputSet();
+    }
+    gpsDirectory = outputSet.getOrCreateGPSDirectory();
+    exifDirectory = outputSet.getOrCreateExifDirectory();
+    rootDirectory = outputSet.getOrCreateRootDirectory();
+
+    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
+    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
+        GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+
+    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+        RationalNumber.valueOf(image.getCa()));
+
+    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
+        ((MapillaryImportedImage) image).getDate("yyyy/MM/dd hh:mm:ss"));
+
+    // Removes the ImageDescription tag, that causes problems in the upload.
+    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
+
+    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
+    File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");
+    c++;
+    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
+
+    // Transforms the image into a byte array.
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ImageIO.write(image.getImage(), "jpg", outputStream);
+    byte[] imageBytes = outputStream.toByteArray();
+
+    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+
+    return tempFile;
+  }
 
   /**
    * Uploads the given MapillaryImportedImage object.
@@ -148,137 +280,5 @@ public class UploadUtils {
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
     Main.worker.submit(new SequenceUploadThread(sequence.getImages(), delete));
-  }
-
-  private static class SequenceUploadThread extends Thread {
-    private List<MapillaryAbstractImage> images;
-    private UUID uuid;
-    private boolean delete;
-    ThreadPoolExecutor ex;
-
-    private SequenceUploadThread(List<MapillaryAbstractImage> images,
-        boolean delete) {
-      this.images = images;
-      this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<Runnable>(15));
-      this.delete = delete;
-    }
-
-    @Override
-    public void run() {
-      PluginState.imagesToUpload(this.images.size());
-      MapillaryUtils.updateHelpText();
-      for (MapillaryAbstractImage img : this.images) {
-        if (!(img instanceof MapillaryImportedImage))
-          throw new IllegalArgumentException(
-              "The sequence contains downloaded images.");
-        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
-            this.uuid));
-        while (this.ex.getQueue().remainingCapacity() == 0)
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            Main.error(e);
-          }
-      }
-      this.ex.shutdown();
-      try {
-        this.ex.awaitTermination(15, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        Main.error(e);
-      }
-      if (this.delete)
-        MapillaryRecord.getInstance()
-            .addCommand(new CommandDelete(this.images));
-    }
-  }
-
-  private static class SingleUploadThread extends Thread {
-
-    private MapillaryImportedImage image;
-    private UUID uuid;
-
-    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {
-      this.image = image;
-      this.uuid = uuid;
-    }
-
-    @Override
-    public void run() {
-      upload(this.image, this.uuid);
-    }
-  }
-
-  /**
-   * Returns a file containing the picture and an updated version of the EXIF
-   * tags.
-   *
-   * @param image
-   * @return A File object containing the picture and an updated version of the
-   *         EXIF tags.
-   * @throws ImageReadException
-   *           if there are errors reading the image from the file.
-   * @throws IOException
-   *           if there are errors getting the metadata from the file or writing
-   *           the output.
-   * @throws ImageWriteException
-   *           if there are errors writing the image in the file.
-   */
-  public static File updateFile(MapillaryImportedImage image)
-      throws ImageReadException, IOException, ImageWriteException {
-    TiffOutputSet outputSet = null;
-    TiffOutputDirectory exifDirectory = null;
-    TiffOutputDirectory gpsDirectory = null;
-    TiffOutputDirectory rootDirectory = null;
-
-    // If the image is imported, loads the rest of the EXIF data.
-    JpegImageMetadata jpegMetadata = null;
-    try {
-      ImageMetadata metadata = Imaging.getMetadata(image.getFile());
-      jpegMetadata = (JpegImageMetadata) metadata;
-    } catch (Exception e) {
-    }
-    if (null != jpegMetadata) {
-      final TiffImageMetadata exif = jpegMetadata.getExif();
-      if (null != exif) {
-        outputSet = exif.getOutputSet();
-      }
-    }
-    if (null == outputSet) {
-      outputSet = new TiffOutputSet();
-    }
-    gpsDirectory = outputSet.getOrCreateGPSDirectory();
-    exifDirectory = outputSet.getOrCreateExifDirectory();
-    rootDirectory = outputSet.getOrCreateRootDirectory();
-
-    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
-    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
-        GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
-
-    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-        RationalNumber.valueOf(image.getCa()));
-
-    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-        ((MapillaryImportedImage) image).getDate("yyyy/MM/dd hh:mm:ss"));
-
-    // Removes the ImageDescription tag, that causes problems in the upload.
-    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
-
-    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
-    File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");
-    c++;
-    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
-
-    // Transforms the image into a byte array.
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ImageIO.write(image.getImage(), "jpg", outputStream);
-    byte[] imageBytes = outputStream.toByteArray();
-
-    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
-
-    return tempFile;
   }
 }

@@ -35,7 +35,6 @@ public class CommandTurn extends MapillaryCommand {
       image.turn(-this.ca);
       image.stopMoving();
     }
-    checkModified();
     if (Main.main != null)
       Main.map.repaint();
   }
@@ -46,7 +45,6 @@ public class CommandTurn extends MapillaryCommand {
       image.turn(this.ca);
       image.stopMoving();
     }
-    checkModified();
     if (Main.main != null)
       Main.map.repaint();
   }

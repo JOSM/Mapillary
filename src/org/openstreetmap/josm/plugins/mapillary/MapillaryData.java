@@ -1,13 +1,13 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -32,7 +32,7 @@ public class MapillaryData {
   public CopyOnWriteArrayList<Bounds> bounds;
 
   /**
-   * Main constructor.
+   * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
     this.images = new CopyOnWriteArrayList<>();
@@ -92,8 +92,8 @@ public class MapillaryData {
    * Removes a set of images from the database.
    *
    * @param images
-   *          A {@link List} of {@link MapillaryAbstractImage} objects that are going
-   *          to be removed.
+   *          A {@link List} of {@link MapillaryAbstractImage} objects that are
+   *          going to be removed.
    */
   public synchronized void remove(List<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage img : images)
@@ -346,8 +346,8 @@ public class MapillaryData {
   }
 
   /**
-   * Adds a {@link MapillaryImage} object to the list of selected images, (when ctrl +
-   * click)
+   * Adds a {@link MapillaryImage} object to the list of selected images, (when
+   * ctrl + click)
    *
    * @param image
    *          The {@link MapillaryImage} object to be added.

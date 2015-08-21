@@ -7,21 +7,29 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportIntoSequenceAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryJoinAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryUploadAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
 import org.openstreetmap.josm.plugins.mapillary.downloads.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.actions.*;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**

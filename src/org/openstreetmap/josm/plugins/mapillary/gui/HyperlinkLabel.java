@@ -124,7 +124,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
       this.copyTag.addActionListener(new copyTagAction());
       add(this.copyTag);
 
-      this.edit = new JMenuItem(tr("Edit on webpage"));
+      this.edit = new JMenuItem(tr("Edit on website"));
       this.edit.addActionListener(new editAction());
       add(this.edit);
     }

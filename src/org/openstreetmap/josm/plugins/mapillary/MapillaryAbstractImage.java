@@ -1,9 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.util.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,7 +23,7 @@ public abstract class MapillaryAbstractImage {
    * {@link MapillaryAbstractImage#previous()} methods. Used when downloading
    * images to prevent concurrency problems.
    */
-  public static Lock LOCK = new ReentrantLock();
+  public static final Lock LOCK = new ReentrantLock();
 
   /** The time the image was captured, in Epoch format. */
   private long capturedAt;
@@ -34,8 +33,6 @@ public abstract class MapillaryAbstractImage {
   public final LatLon latLon;
   /** Direction of the picture. */
   public final double ca;
-  /** If the image has been modified from its initial values. */
-  public boolean isModified = false;
   /** Temporal position of the picture until it is uploaded. */
   public LatLon tempLatLon;
   /**
@@ -50,10 +47,11 @@ public abstract class MapillaryAbstractImage {
    * is stored here
    */
   protected double movingCa;
+  /** Whether the image must be drown in the map or not */
   private boolean visible;
 
   /**
-   * Main constructor of the class.
+   * Creates a new object in the given position and with the given direction.
    *
    * @param lat
    *          The latitude where the picture was taken.
@@ -73,87 +71,6 @@ public abstract class MapillaryAbstractImage {
   }
 
   /**
-   * Returns whether the object has been modified or not.
-   *
-   * @return true if the object has been modified; false otherwise.
-   */
-  public boolean isModified() {
-    return this.isModified;
-  }
-
-  /**
-   * Returns a LatLon object containing the current coordinates of the object.
-   * When you are dragging the image this changes.
-   *
-   * @return The LatLon object with the position of the object.
-   */
-  public LatLon getLatLon() {
-    return this.movingLatLon;
-  }
-
-  /**
-   * Returns whether the image is visible on the map or not.
-   *
-   * @return True if the image is visible; false otherwise.
-   */
-  public boolean isVisible() {
-    return this.visible;
-  }
-
-  /**
-   * Set's whether the image should be visible on the map or not.
-   *
-   * @param visible
-   *          true if the image is set to be visible; false otherwise.
-   */
-  public void setVisible(boolean visible) {
-    this.visible = visible;
-  }
-
-  /**
-   * Returns the last fixed coordinates of the object.
-   *
-   * @return A LatLon object containing.
-   */
-  public LatLon getTempLatLon() {
-    return this.tempLatLon;
-  }
-
-  /**
-   * Moves the image temporally to another position
-   *
-   * @param x
-   *          The movement of the image in longitude units.
-   * @param y
-   *          The movement of the image in latitude units.
-   */
-  public void move(double x, double y) {
-    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
-        this.tempLatLon.getX() + x);
-    this.isModified = true;
-  }
-
-  /**
-   * Turns the image direction.
-   *
-   * @param ca
-   *          The angle the image is moving.
-   */
-  public void turn(double ca) {
-    this.movingCa = this.tempCa + ca;
-    this.isModified = true;
-  }
-
-  /**
-   * Called when the mouse button is released, meaning that the picture has
-   * stopped being dragged.
-   */
-  public void stopMoving() {
-    this.tempLatLon = this.movingLatLon;
-    this.tempCa = this.movingCa;
-  }
-
-  /**
    * Returns the direction towards the image has been taken.
    *
    * @return The direction of the image (0 means north and goes clockwise).
@@ -163,12 +80,12 @@ public abstract class MapillaryAbstractImage {
   }
 
   /**
-   * Returns the last fixed direction of the object.
+   * Returns the Epoch time when the image was captured.
    *
-   * @return The last fixed direction of the object. 0 means north.
+   * @return The long containing the Epoch time when the image was captured.
    */
-  public double getTempCa() {
-    return this.tempCa;
+  public long getCapturedAt() {
+    return this.capturedAt;
   }
 
   /**
@@ -192,25 +109,6 @@ public abstract class MapillaryAbstractImage {
   }
 
   /**
-   * Sets the Epoch time when the picture was captured.
-   *
-   * @param capturedAt
-   *          Epoch time when the image was captured.
-   */
-  public void setCapturedAt(long capturedAt) {
-    this.capturedAt = capturedAt;
-  }
-
-  /**
-   * Returns the Epoch time when the image was captured.
-   *
-   * @return The long containing the Epoch time when the image was captured.
-   */
-  public long getCapturedAt() {
-    return this.capturedAt;
-  }
-
-  /**
    * Returns the date the picture was taken in the given format.
    *
    * @param format
@@ -227,41 +125,13 @@ public abstract class MapillaryAbstractImage {
   }
 
   /**
-   * Parses a string with a given format and returns the Epoch time.
+   * Returns a LatLon object containing the current coordinates of the object.
+   * When you are dragging the image this changes.
    *
-   * @param date
-   *          The string containing the date.
-   * @param format
-   *          The format of the date.
-   * @return The date in Epoch format.
-   * @throws ParseException
+   * @return The LatLon object with the position of the object.
    */
-  public static long getEpoch(String date, String format) throws ParseException {
-
-    SimpleDateFormat formatter = new SimpleDateFormat(format);
-    Date dateTime = formatter.parse(date);
-    return dateTime.getTime();
-
-  }
-
-  /**
-   * Returns current time in Epoch format
-   *
-   * @return The current date in Epoch format.
-   */
-  protected static long currentTime() {
-    Calendar cal = Calendar.getInstance();
-    return cal.getTimeInMillis();
-  }
-
-  /**
-   * Sets the MapillarySequence object which contains the MapillaryImage.
-   *
-   * @param sequence
-   *          The MapillarySequence that contains the MapillaryImage.
-   */
-  public void setSequence(MapillarySequence sequence) {
-    this.sequence = sequence;
+  public LatLon getLatLon() {
+    return this.movingLatLon;
   }
 
   /**
@@ -276,6 +146,55 @@ public abstract class MapillaryAbstractImage {
     }
 
     return this.sequence;
+  }
+
+  /**
+   * Returns the last fixed direction of the object.
+   *
+   * @return The last fixed direction of the object. 0 means north.
+   */
+  public double getTempCa() {
+    return this.tempCa;
+  }
+
+  /**
+   * Returns the last fixed coordinates of the object.
+   *
+   * @return A LatLon object containing.
+   */
+  public LatLon getTempLatLon() {
+    return this.tempLatLon;
+  }
+
+  /**
+   * Returns whether the object has been modified or not.
+   *
+   * @return true if the object has been modified; false otherwise.
+   */
+  public boolean isModified() {
+    return (this.getLatLon() != this.latLon || this.getCa() != this.ca);
+  }
+
+  /**
+   * Returns whether the image is visible on the map or not.
+   *
+   * @return True if the image is visible; false otherwise.
+   */
+  public boolean isVisible() {
+    return this.visible;
+  }
+
+  /**
+   * Moves the image temporally to another position
+   *
+   * @param x
+   *          The movement of the image in longitude units.
+   * @param y
+   *          The movement of the image in latitude units.
+   */
+  public void move(double x, double y) {
+    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
+        this.tempLatLon.getX() + x);
   }
 
   /**
@@ -313,5 +232,54 @@ public abstract class MapillaryAbstractImage {
       LOCK.unlock();
     }
 
+  }
+
+  /**
+   * Sets the Epoch time when the picture was captured.
+   *
+   * @param capturedAt
+   *          Epoch time when the image was captured.
+   */
+  public void setCapturedAt(long capturedAt) {
+    this.capturedAt = capturedAt;
+  }
+
+  /**
+   * Sets the MapillarySequence object which contains the MapillaryImage.
+   *
+   * @param sequence
+   *          The MapillarySequence that contains the MapillaryImage.
+   */
+  public void setSequence(MapillarySequence sequence) {
+    this.sequence = sequence;
+  }
+
+  /**
+   * Set's whether the image should be visible on the map or not.
+   *
+   * @param visible
+   *          true if the image is set to be visible; false otherwise.
+   */
+  public void setVisible(boolean visible) {
+    this.visible = visible;
+  }
+
+  /**
+   * Called when the mouse button is released, meaning that the picture has
+   * stopped being dragged, so the temporal values are saved.
+   */
+  public void stopMoving() {
+    this.tempLatLon = this.movingLatLon;
+    this.tempCa = this.movingCa;
+  }
+
+  /**
+   * Turns the image direction.
+   *
+   * @param ca
+   *          The angle the image is moving.
+   */
+  public void turn(double ca) {
+    this.movingCa = this.tempCa + ca;
   }
 }
