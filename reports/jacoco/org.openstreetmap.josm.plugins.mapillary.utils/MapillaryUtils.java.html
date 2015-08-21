@@ -3,23 +3,33 @@
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
 import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
@@ -29,28 +39,56 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * @author nokutu
  *
  */
-<span class="nc" id="L32">public class MapillaryUtils {</span>
+<span class="nc" id="L42">public class MapillaryUtils {</span>
 
-<span class="fc" id="L34">  private static double MIN_ZOOM_SQUARE_SIDE = 0.002;</span>
+<span class="fc" id="L44">  private static double MIN_ZOOM_SQUARE_SIDE = 0.002;</span>
+
+<span class="fc" id="L46">  private static int noTagsPics = 0;</span>
 
   /**
-   * Updates the help text at the bottom of the window.
+   * Open the default browser in the given URL.
+   *
+   * @param url
+   *          The URL that is going to be opened.
    */
-  public static void updateHelpText() {
-<span class="nc" id="L40">    String ret = &quot;&quot;;</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (PluginState.isDownloading())</span>
-<span class="nc" id="L42">      ret += tr(&quot;Downloading&quot;);</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">    else if (MapillaryLayer.getInstance().getData().size() &gt; 0)</span>
-<span class="nc" id="L44">      ret += tr(&quot;Total images: {0}&quot;, MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L45">          .size());</span>
-    else
-<span class="nc" id="L47">      ret += tr(&quot;No images found&quot;);</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null)</span>
-<span class="nc" id="L49">      ret += &quot; -- &quot; + tr(MapillaryLayer.getInstance().mode.toString());</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">    if (PluginState.isUploading())</span>
-<span class="nc" id="L51">      ret += &quot; -- &quot; + PluginState.getUploadString();</span>
-<span class="nc" id="L52">    Main.map.statusLine.setHelpText(ret);</span>
-<span class="nc" id="L53">  }</span>
+  public static void browse(URL url) {
+<span class="nc" id="L55">    Desktop desktop = Desktop.getDesktop();</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
+      try {
+<span class="nc" id="L58">        desktop.browse(url.toURI());</span>
+<span class="nc" id="L59">      } catch (IOException | URISyntaxException e1) {</span>
+<span class="nc" id="L60">        Main.error(e1);</span>
+<span class="nc" id="L61">      }</span>
+    } else {
+<span class="nc" id="L63">      Runtime runtime = Runtime.getRuntime();</span>
+      try {
+<span class="nc" id="L65">        runtime.exec(&quot;xdg-open &quot; + url);</span>
+<span class="nc" id="L66">      } catch (IOException exc) {</span>
+<span class="nc" id="L67">        exc.printStackTrace();</span>
+<span class="nc" id="L68">      }</span>
+    }
+<span class="nc" id="L70">  }</span>
+
+  /**
+   * Returns the current date.
+   *
+   * @return A {@code String} object containing the current date.
+   */
+  public static String currentDate() {
+<span class="fc" id="L78">    Calendar cal = Calendar.getInstance();</span>
+<span class="fc" id="L79">    SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
+<span class="fc" id="L80">    return formatter.format(cal.getTime());</span>
+  }
+
+  /**
+   * Returns current time in Epoch format
+   *
+   * @return The current date in Epoch format.
+   */
+  public static long currentTime() {
+<span class="nc" id="L89">    Calendar cal = Calendar.getInstance();</span>
+<span class="nc" id="L90">    return cal.getTimeInMillis();</span>
+  }
 
   /**
    * Calculates the decimal degree-value from a degree value given in
@@ -80,59 +118,68 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
    *           not one of the values mentioned above
    */
   public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
-<span class="pc bpc" id="L83" title="2 of 4 branches missed.">    if (degMinSec == null || degMinSec.length != 3) {</span>
-<span class="nc" id="L84">      throw new IllegalArgumentException(&quot;Array's length must be 3.&quot;);</span>
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">    if (degMinSec == null || degMinSec.length != 3) {</span>
+<span class="nc" id="L122">      throw new IllegalArgumentException(&quot;Array's length must be 3.&quot;);</span>
     }
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    for (int i = 0; i &lt; 3; i++)</span>
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">      if (degMinSec[i] == null)</span>
-<span class="nc" id="L88">        throw new IllegalArgumentException(&quot;Null value in array.&quot;);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    for (int i = 0; i &lt; 3; i++)</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">      if (degMinSec[i] == null)</span>
+<span class="nc" id="L126">        throw new IllegalArgumentException(&quot;Null value in array.&quot;);</span>
 
-<span class="pc bpc" id="L90" title="8 of 15 branches missed.">    switch (ref) {</span>
+<span class="pc bpc" id="L128" title="8 of 15 branches missed.">    switch (ref) {</span>
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
       case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
       case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
-<span class="fc" id="L95">        break;</span>
+<span class="fc" id="L133">        break;</span>
       default:
-<span class="nc" id="L97">        throw new IllegalArgumentException(&quot;Invalid ref.&quot;);</span>
+<span class="nc" id="L135">        throw new IllegalArgumentException(&quot;Invalid ref.&quot;);</span>
     }
 
-<span class="fc" id="L100">    double result = degMinSec[0].doubleValue(); // degrees</span>
-<span class="fc" id="L101">    result += degMinSec[1].doubleValue() / 60; // minutes</span>
-<span class="fc" id="L102">    result += degMinSec[2].doubleValue() / 3600; // seconds</span>
+<span class="fc" id="L138">    double result = degMinSec[0].doubleValue(); // degrees</span>
+<span class="fc" id="L139">    result += degMinSec[1].doubleValue() / 60; // minutes</span>
+<span class="fc" id="L140">    result += degMinSec[2].doubleValue() / 3600; // seconds</span>
 
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)</span>
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {</span>
-<span class="fc" id="L106">      result *= -1;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {</span>
+<span class="fc" id="L144">      result *= -1;</span>
     }
 
-<span class="fc" id="L109">    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;</span>
-<span class="fc" id="L110">    return result;</span>
+<span class="fc" id="L147">    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;</span>
+<span class="fc" id="L148">    return result;</span>
   }
 
   /**
-   * Open the default browser in the given URL.
+   * Parses a string with a given format and returns the Epoch time.
    *
-   * @param url
-   *          The URL that is going to be opened.
+   * @param date
+   *          The string containing the date.
+   * @param format
+   *          The format of the date.
+   * @return The date in Epoch format.
+   * @throws ParseException
    */
-  public static void browse(URL url) {
-<span class="nc" id="L120">    Desktop desktop = Desktop.getDesktop();</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">    if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
-      try {
-<span class="nc" id="L123">        desktop.browse(url.toURI());</span>
-<span class="nc" id="L124">      } catch (IOException | URISyntaxException e1) {</span>
-<span class="nc" id="L125">        Main.error(e1);</span>
-<span class="nc" id="L126">      }</span>
-    } else {
-<span class="nc" id="L128">      Runtime runtime = Runtime.getRuntime();</span>
-      try {
-<span class="nc" id="L130">        runtime.exec(&quot;xdg-open &quot; + url);</span>
-<span class="nc" id="L131">      } catch (IOException exc) {</span>
-<span class="nc" id="L132">        exc.printStackTrace();</span>
-<span class="nc" id="L133">      }</span>
+  public static long getEpoch(String date, String format) throws ParseException {
+<span class="fc" id="L162">    SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="fc" id="L163">    Date dateTime = formatter.parse(date);</span>
+<span class="fc" id="L164">    return dateTime.getTime();</span>
+  }
+
+  /**
+   * Returns the extension of a {@link File} object.
+   *
+   * @param file
+   *          The {@link File} object whose extension is going to be returned.
+   * @return A {@code String} object containing the extension in lowercase.
+   */
+  public static String getExtension(File file) {
+<span class="nc bnc" id="L175" title="All 2 branches missed.">    if (file.isDirectory())</span>
+<span class="nc" id="L176">      throw new IllegalArgumentException(&quot;The file is a directory&quot;);</span>
+<span class="nc" id="L177">    int k = file.getName().lastIndexOf('.');</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (k &gt; 0) {</span>
+<span class="nc" id="L179">      return file.getName().substring(k + 1).toLowerCase();</span>
     }
-<span class="nc" id="L135">  }</span>
+<span class="nc" id="L181">    throw new IllegalArgumentException(&quot;Error parsing the extension&quot;);</span>
+  }
 
   /**
    * Joins two images into the same sequence.
@@ -140,73 +187,171 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void join(MapillaryAbstractImage mapillaryAbstractImage,
+  public synchronized static void join(
+      MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
-<span class="fc" id="L145">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>
-<span class="fc" id="L146">    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;</span>
+<span class="fc" id="L193">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>
+<span class="fc" id="L194">    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;</span>
 
-<span class="pc bpc" id="L148" title="1 of 2 branches missed.">    if (mapillaryAbstractImage.next() != null) {</span>
-<span class="nc" id="L149">      firstImage = mapillaryAbstractImage2;</span>
-<span class="nc" id="L150">      secondImage = mapillaryAbstractImage;</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">    if (mapillaryAbstractImage.next() != null) {</span>
+<span class="nc" id="L197">      firstImage = mapillaryAbstractImage2;</span>
+<span class="nc" id="L198">      secondImage = mapillaryAbstractImage;</span>
     }
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (firstImage.getSequence() == null) {</span>
-<span class="nc" id="L153">      MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L154">      seq.add(firstImage);</span>
-<span class="nc" id="L155">      firstImage.setSequence(seq);</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">    if (firstImage.getSequence() == null) {</span>
+<span class="nc" id="L201">      MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L202">      seq.add(firstImage);</span>
+<span class="nc" id="L203">      firstImage.setSequence(seq);</span>
     }
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    if (secondImage.getSequence() == null) {</span>
-<span class="nc" id="L158">      MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L159">      seq.add(secondImage);</span>
-<span class="nc" id="L160">      mapillaryAbstractImage2.setSequence(seq);</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">    if (secondImage.getSequence() == null) {</span>
+<span class="nc" id="L206">      MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L207">      seq.add(secondImage);</span>
+<span class="nc" id="L208">      mapillaryAbstractImage2.setSequence(seq);</span>
     }
 
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {</span>
-<span class="fc" id="L164">      firstImage.getSequence().add(img);</span>
-<span class="fc" id="L165">      img.setSequence(firstImage.getSequence());</span>
-<span class="fc" id="L166">    }</span>
-<span class="pc bpc" id="L167" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L168">      MapillaryData.dataUpdated();</span>
-<span class="fc" id="L169">  }</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {</span>
+<span class="fc" id="L212">      firstImage.getSequence().add(img);</span>
+<span class="fc" id="L213">      img.setSequence(firstImage.getSequence());</span>
+<span class="fc" id="L214">    }</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L216">      MapillaryData.dataUpdated();</span>
+<span class="fc" id="L217">  }</span>
 
   /**
-   * Separates two images belonging to the same sequence.
+   * Reads a JPG pictures that contains the needed GPS information (position and
+   * direction) and creates a new icon in that position.
    *
-   * @param mapillaryAbstractImage
-   * @param mapillaryAbstractImage2
+   * @param file
+   *          The file where the picture is located.
+   * @return The imported image.
+   * @throws ImageReadException
+   *           If the file isn't an image.
+   * @throws IOException
+   *           If the file doesn't have the valid metadata.
    */
-  public synchronized static void unjoin(MapillaryAbstractImage mapillaryAbstractImage,
-      MapillaryAbstractImage mapillaryAbstractImage2) {
-<span class="fc" id="L179">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>
-<span class="fc" id="L180">    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;</span>
+  public static MapillaryImportedImage readJPG(File file) throws IOException,
+      ImageReadException {
+<span class="nc" id="L233">    return readJPG(file, false);</span>
+  }
 
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (mapillaryAbstractImage.next() != mapillaryAbstractImage2) {</span>
-<span class="nc" id="L183">      firstImage = mapillaryAbstractImage2;</span>
-<span class="nc" id="L184">      secondImage = mapillaryAbstractImage;</span>
+  /**
+   * Reads a JPG pictures that contains the needed GPS information (position and
+   * direction) and creates a new icon in that position.
+   *
+   * @param file
+   *          The {@link File} where the picture is located.
+   * @param exceptionNoTags
+   *          {@code true} if an exception must be thrown if the image doesn't
+   *          have all the needed EXIF tags; {@code false} returns an image in
+   *          the center of the screen.
+   * @return The imported image, whose data has been extracted from the
+   *         picture's metadata.
+   * @throws ImageReadException
+   *           If the {@link File} isn't an image.
+   * @throws IOException
+   *           If the {@link File} doesn't have the valid metadata.
+   * @throws IllegalArgumentException
+   *           if exceptionNoTags is set to {@code true} and the image doesn't
+   *           have the needed EXIF tags.
+   */
+  public static MapillaryImportedImage readJPG(File file,
+      boolean exceptionNoTags) throws IOException, ImageReadException {
+<span class="nc" id="L258">    final ImageMetadata metadata = Imaging.getMetadata(file);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (metadata instanceof JpegImageMetadata) {</span>
+<span class="nc" id="L260">      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="nc" id="L261">      final TiffField lat_ref = jpegMetadata</span>
+<span class="nc" id="L262">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);</span>
+<span class="nc" id="L263">      final TiffField lat = jpegMetadata</span>
+<span class="nc" id="L264">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);</span>
+<span class="nc" id="L265">      final TiffField lon_ref = jpegMetadata</span>
+<span class="nc" id="L266">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);</span>
+<span class="nc" id="L267">      final TiffField lon = jpegMetadata</span>
+<span class="nc" id="L268">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);</span>
+<span class="nc" id="L269">      final TiffField ca = jpegMetadata</span>
+<span class="nc" id="L270">          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="nc" id="L271">      final TiffField datetimeOriginal = jpegMetadata</span>
+<span class="nc" id="L272">          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="nc bnc" id="L273" title="All 8 branches missed.">      if (lat_ref == null || lat == null || lon == null || lon_ref == null) {</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (exceptionNoTags)</span>
+<span class="nc" id="L275">          throw new IllegalArgumentException(</span>
+              &quot;The image doesn't have the needed EXIF tags.&quot;);
+        else
+<span class="nc" id="L278">          return readNoTags(file);</span>
+      }
+<span class="nc" id="L280">      double latValue = 0;</span>
+<span class="nc" id="L281">      double lonValue = 0;</span>
+<span class="nc" id="L282">      double caValue = 0;</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">      if (lat.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L284">        latValue = MapillaryUtils.degMinSecToDouble(</span>
+<span class="nc" id="L285">            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">      if (lon.getValue() instanceof RationalNumber[])</span>
+<span class="nc" id="L287">        lonValue = MapillaryUtils.degMinSecToDouble(</span>
+<span class="nc" id="L288">            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());</span>
+<span class="nc bnc" id="L289" title="All 4 branches missed.">      if (ca != null &amp;&amp; ca.getValue() instanceof RationalNumber)</span>
+<span class="nc" id="L290">        caValue = ((RationalNumber) ca.getValue()).doubleValue();</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">      if (datetimeOriginal != null)</span>
+<span class="nc" id="L292">        return new MapillaryImportedImage(latValue, lonValue, caValue, file,</span>
+<span class="nc" id="L293">            datetimeOriginal.getStringValue());</span>
+      else
+<span class="nc" id="L295">        return new MapillaryImportedImage(latValue, lonValue, caValue, file);</span>
     }
+<span class="nc" id="L297">    throw new IllegalStateException(&quot;Invalid format.&quot;);</span>
+  }
 
-<span class="fc" id="L187">    ArrayList&lt;MapillaryAbstractImage&gt; firstHalf = new ArrayList&lt;&gt;(firstImage</span>
-<span class="fc" id="L188">        .getSequence().getImages()</span>
-<span class="fc" id="L189">        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));</span>
-<span class="fc" id="L190">    ArrayList&lt;MapillaryAbstractImage&gt; secondHalf = new ArrayList&lt;&gt;(firstImage</span>
-<span class="fc" id="L191">        .getSequence()</span>
-<span class="fc" id="L192">        .getImages()</span>
-<span class="fc" id="L193">        .subList(firstImage.getSequence().getImages().indexOf(secondImage),</span>
-<span class="fc" id="L194">            firstImage.getSequence().getImages().size()));</span>
+  /**
+   * Reads a image file that doesn't contain the needed GPS information. And
+   * creates a new icon in the middle of the map.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readNoTags(File file) {
+<span class="nc" id="L309">    return readNoTags(</span>
+        file,
+<span class="nc" id="L311">        Main.map.mapView.getProjection().eastNorth2latlon(</span>
+<span class="nc" id="L312">            Main.map.mapView.getCenter()));</span>
+  }
 
-<span class="fc" id="L196">    MapillarySequence seq1 = new MapillarySequence();</span>
-<span class="fc" id="L197">    MapillarySequence seq2 = new MapillarySequence();</span>
+  /**
+   * Reads a image file that doesn't contain the needed GPS information. And
+   * creates a new icon in the middle of the map.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @param pos
+   *          A {@link LatLon} object indicating the position in the map where
+   *          the image must be set.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readNoTags(File file, LatLon pos) {
+<span class="fc" id="L327">    double HORIZONTAL_DISTANCE = 0.0001;</span>
+    double horDev;
+<span class="fc bfc" id="L329" title="All 2 branches covered.">    if (noTagsPics % 2 == 0)</span>
+<span class="fc" id="L330">      horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;</span>
+    else
+<span class="fc" id="L332">      horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);</span>
+<span class="fc" id="L333">    noTagsPics++;</span>
+<span class="fc" id="L334">    return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);</span>
+  }
 
-<span class="fc bfc" id="L199" title="All 2 branches covered.">    for (MapillaryAbstractImage img : firstHalf) {</span>
-<span class="fc" id="L200">      img.setSequence(seq1);</span>
-<span class="fc" id="L201">      seq1.add(img);</span>
-<span class="fc" id="L202">    }</span>
-<span class="fc bfc" id="L203" title="All 2 branches covered.">    for (MapillaryAbstractImage img : secondHalf) {</span>
-<span class="fc" id="L204">      img.setSequence(seq2);</span>
-<span class="fc" id="L205">      seq2.add(img);</span>
-<span class="fc" id="L206">    }</span>
-<span class="pc bpc" id="L207" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L208">      MapillaryData.dataUpdated();</span>
-<span class="fc" id="L209">  }</span>
+  /**
+   * Reads an image in PNG format.
+   *
+   * @param file
+   *          The file where the image is located.
+   * @return The imported image.
+   */
+  public static MapillaryImportedImage readPNG(File file) {
+<span class="nc" id="L345">    return readNoTags(file);</span>
+  }
+
+  /**
+   * Zooms to fit all the {@link MapillaryAbstractImage} objects stored in the
+   * database.
+   */
+  public static void showAllPictures() {
+<span class="nc" id="L353">    showPictures(MapillaryLayer.getInstance().getData().getImages(), false);</span>
+<span class="nc" id="L354">  }</span>
 
   /**
    * Zooms to fit all the given {@link MapillaryAbstractImage} objects.
@@ -218,64 +363,108 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
    */
   public static void showPictures(final List&lt;MapillaryAbstractImage&gt; images,
       final boolean select) {
-<span class="nc bnc" id="L221" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L222">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L367">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L225">          showPictures(images, select);</span>
-<span class="nc" id="L226">        }</span>
+<span class="nc" id="L370">          showPictures(images, select);</span>
+<span class="nc" id="L371">        }</span>
       });
     } else {
-<span class="nc" id="L229">      double minLat = 90;</span>
-<span class="nc" id="L230">      double minLon = 180;</span>
-<span class="nc" id="L231">      double maxLat = -90;</span>
-<span class="nc" id="L232">      double maxLon = -180;</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">      for (MapillaryAbstractImage img : images) {</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (img.getLatLon().lat() &lt; minLat)</span>
-<span class="nc" id="L235">          minLat = img.getLatLon().lat();</span>
-<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (img.getLatLon().lon() &lt; minLon)</span>
-<span class="nc" id="L237">          minLon = img.getLatLon().lon();</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">        if (img.getLatLon().lat() &gt; maxLat)</span>
-<span class="nc" id="L239">          maxLat = img.getLatLon().lat();</span>
-<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (img.getLatLon().lon() &gt; maxLon)</span>
-<span class="nc" id="L241">          maxLon = img.getLatLon().lon();</span>
-<span class="nc" id="L242">      }</span>
-<span class="nc" id="L243">      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon), new LatLon(</span>
+<span class="nc" id="L374">      double minLat = 90;</span>
+<span class="nc" id="L375">      double minLon = 180;</span>
+<span class="nc" id="L376">      double maxLat = -90;</span>
+<span class="nc" id="L377">      double maxLon = -180;</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">      for (MapillaryAbstractImage img : images) {</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (img.getLatLon().lat() &lt; minLat)</span>
+<span class="nc" id="L380">          minLat = img.getLatLon().lat();</span>
+<span class="nc bnc" id="L381" title="All 2 branches missed.">        if (img.getLatLon().lon() &lt; minLon)</span>
+<span class="nc" id="L382">          minLon = img.getLatLon().lon();</span>
+<span class="nc bnc" id="L383" title="All 2 branches missed.">        if (img.getLatLon().lat() &gt; maxLat)</span>
+<span class="nc" id="L384">          maxLat = img.getLatLon().lat();</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">        if (img.getLatLon().lon() &gt; maxLon)</span>
+<span class="nc" id="L386">          maxLon = img.getLatLon().lon();</span>
+<span class="nc" id="L387">      }</span>
+<span class="nc" id="L388">      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon), new LatLon(</span>
           maxLat, maxLon));
       // The zoom rectangle must have a minimum size.
-<span class="nc bnc" id="L246" title="All 2 branches missed.">      double latExtent = zoomBounds.getMaxLat() - zoomBounds.getMinLat() &gt;= MIN_ZOOM_SQUARE_SIDE ? zoomBounds</span>
-<span class="nc" id="L247">          .getMaxLat() - zoomBounds.getMinLat()</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">      double latExtent = zoomBounds.getMaxLat() - zoomBounds.getMinLat() &gt;= MIN_ZOOM_SQUARE_SIDE ? zoomBounds</span>
+<span class="nc" id="L392">          .getMaxLat() - zoomBounds.getMinLat()</span>
           : MIN_ZOOM_SQUARE_SIDE;
-<span class="nc bnc" id="L249" title="All 2 branches missed.">      double lonExtent = zoomBounds.getMaxLon() - zoomBounds.getMinLon() &gt;= MIN_ZOOM_SQUARE_SIDE ? zoomBounds</span>
-<span class="nc" id="L250">          .getMaxLon() - zoomBounds.getMinLon()</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">      double lonExtent = zoomBounds.getMaxLon() - zoomBounds.getMinLon() &gt;= MIN_ZOOM_SQUARE_SIDE ? zoomBounds</span>
+<span class="nc" id="L395">          .getMaxLon() - zoomBounds.getMinLon()</span>
           : MIN_ZOOM_SQUARE_SIDE;
-<span class="nc" id="L252">      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);</span>
+<span class="nc" id="L397">      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);</span>
 
-<span class="nc" id="L254">      Main.map.mapView.zoomTo(zoomBounds);</span>
-<span class="nc" id="L255">      MapillaryLayer.getInstance().getData().setSelectedImage(null);</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">      if (select)</span>
-<span class="nc" id="L257">        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);</span>
-<span class="nc bnc" id="L258" title="All 2 branches missed.">      if (Main.main != null)</span>
-<span class="nc" id="L259">        MapillaryData.dataUpdated();</span>
+<span class="nc" id="L399">      Main.map.mapView.zoomTo(zoomBounds);</span>
+<span class="nc" id="L400">      MapillaryLayer.getInstance().getData().setSelectedImage(null);</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">      if (select)</span>
+<span class="nc" id="L402">        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);</span>
+<span class="nc bnc" id="L403" title="All 2 branches missed.">      if (Main.main != null)</span>
+<span class="nc" id="L404">        MapillaryData.dataUpdated();</span>
     }
-<span class="nc" id="L261">  }</span>
+<span class="nc" id="L406">  }</span>
 
   /**
-   * Zooms to fit all the {@link MapillaryAbstractImage} objects stored in the
-   * database.
+   * Separates two images belonging to the same sequence.
+   *
+   * @param mapillaryAbstractImage
+   * @param mapillaryAbstractImage2
    */
-  public static void showAllPictures() {
-<span class="nc" id="L268">    showPictures(MapillaryLayer.getInstance().getData().getImages(), false);</span>
-<span class="nc" id="L269">  }</span>
+  public synchronized static void unjoin(
+      MapillaryAbstractImage mapillaryAbstractImage,
+      MapillaryAbstractImage mapillaryAbstractImage2) {
+<span class="fc" id="L417">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>
+<span class="fc" id="L418">    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;</span>
+
+<span class="pc bpc" id="L420" title="1 of 2 branches missed.">    if (mapillaryAbstractImage.next() != mapillaryAbstractImage2) {</span>
+<span class="nc" id="L421">      firstImage = mapillaryAbstractImage2;</span>
+<span class="nc" id="L422">      secondImage = mapillaryAbstractImage;</span>
+    }
+
+<span class="fc" id="L425">    ArrayList&lt;MapillaryAbstractImage&gt; firstHalf = new ArrayList&lt;&gt;(firstImage</span>
+<span class="fc" id="L426">        .getSequence().getImages()</span>
+<span class="fc" id="L427">        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));</span>
+<span class="fc" id="L428">    ArrayList&lt;MapillaryAbstractImage&gt; secondHalf = new ArrayList&lt;&gt;(firstImage</span>
+<span class="fc" id="L429">        .getSequence()</span>
+<span class="fc" id="L430">        .getImages()</span>
+<span class="fc" id="L431">        .subList(firstImage.getSequence().getImages().indexOf(secondImage),</span>
+<span class="fc" id="L432">            firstImage.getSequence().getImages().size()));</span>
+
+<span class="fc" id="L434">    MapillarySequence seq1 = new MapillarySequence();</span>
+<span class="fc" id="L435">    MapillarySequence seq2 = new MapillarySequence();</span>
+
+<span class="fc bfc" id="L437" title="All 2 branches covered.">    for (MapillaryAbstractImage img : firstHalf) {</span>
+<span class="fc" id="L438">      img.setSequence(seq1);</span>
+<span class="fc" id="L439">      seq1.add(img);</span>
+<span class="fc" id="L440">    }</span>
+<span class="fc bfc" id="L441" title="All 2 branches covered.">    for (MapillaryAbstractImage img : secondHalf) {</span>
+<span class="fc" id="L442">      img.setSequence(seq2);</span>
+<span class="fc" id="L443">      seq2.add(img);</span>
+<span class="fc" id="L444">    }</span>
+<span class="pc bpc" id="L445" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L446">      MapillaryData.dataUpdated();</span>
+<span class="fc" id="L447">  }</span>
 
   /**
-   * Returns the current date.
-   * @return A {@code String} object containing the current date.
+   * Updates the help text at the bottom of the window.
    */
-  public static String currentDate() {
-<span class="fc" id="L276">    Calendar cal = Calendar.getInstance();</span>
-<span class="fc" id="L277">    SimpleDateFormat formatter = new SimpleDateFormat(&quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
-<span class="fc" id="L278">    return formatter.format(cal.getTime());</span>
-  }
+  public static void updateHelpText() {
+<span class="nc" id="L453">    String ret = &quot;&quot;;</span>
+<span class="nc bnc" id="L454" title="All 2 branches missed.">    if (PluginState.isDownloading())</span>
+<span class="nc" id="L455">      ret += tr(&quot;Downloading Mapillary images&quot;);</span>
+<span class="nc bnc" id="L456" title="All 2 branches missed.">    else if (MapillaryLayer.getInstance().getData().size() &gt; 0)</span>
+<span class="nc" id="L457">      ret += tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance()</span>
+<span class="nc" id="L458">          .getData().size());</span>
+    else
+<span class="nc" id="L460">      ret += tr(&quot;No images found&quot;);</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null)</span>
+<span class="nc" id="L462">      ret += &quot; -- &quot; + tr(MapillaryLayer.getInstance().mode.toString());</span>
+<span class="nc bnc" id="L463" title="All 2 branches missed.">    if (PluginState.isUploading())</span>
+<span class="nc" id="L464">      ret += &quot; -- &quot; + PluginState.getUploadString();</span>
+<span class="nc" id="L465">    synchronized (MapillaryUtils.class) {</span>
+<span class="nc" id="L466">      Main.map.statusLine.setHelpText(ret);</span>
+<span class="nc" id="L467">    }</span>
+<span class="nc" id="L468">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

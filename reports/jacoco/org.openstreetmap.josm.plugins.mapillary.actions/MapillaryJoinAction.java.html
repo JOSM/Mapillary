@@ -13,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Changes the mode of the Layer, from Select mode to Join mode and viceversa.
+ * Changes the mode of the Layer, from Select mode to Join mode and vice versa.
  *
  * @author nokutu
  *
@@ -35,11 +35,10 @@ public class MapillaryJoinAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode)</span>
 <span class="nc" id="L39">      MapillaryLayer.getInstance().setMode(new JoinMode());</span>
-    } else {
+    else
 <span class="nc" id="L41">      MapillaryLayer.getInstance().setMode(new SelectMode());</span>
-    }
-<span class="nc" id="L43">  }</span>
+<span class="nc" id="L42">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

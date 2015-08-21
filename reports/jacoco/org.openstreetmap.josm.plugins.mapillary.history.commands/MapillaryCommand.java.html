@@ -44,14 +44,6 @@ public abstract class MapillaryCommand {
    */
   public abstract void sum(MapillaryCommand command);
 
-  /**
-   * Checks if the image has been modified, comparing with its original values.
-   */
-  public void checkModified() {
-<span class="fc bfc" id="L51" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images)</span>
-<span class="pc bpc" id="L52" title="1 of 4 branches missed.">      image.isModified = (image.tempLatLon == image.latLon || image.tempCa == image.ca);</span>
-<span class="fc" id="L53">  }</span>
-
   @Override
   public abstract String toString();
 }

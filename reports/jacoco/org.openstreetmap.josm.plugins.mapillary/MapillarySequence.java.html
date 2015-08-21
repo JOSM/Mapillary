@@ -11,17 +11,20 @@ import java.util.List;
  *
  */
 public class MapillarySequence {
+  /** The images in the sequence. */
   private final List&lt;MapillaryAbstractImage&gt; images;
+  /** Unique identifier. Used only for {@link MapillaryImage} sequences. */
   private String key;
+  /** Epoch time when the sequence was created */
   private long created_at;
 
   /**
    * Creates a sequence without key or timestamp. Used for
    * {@link MapillaryImportedImage} sequences.
    */
-<span class="fc" id="L22">  public MapillarySequence() {</span>
-<span class="fc" id="L23">    this.images = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L24">  }</span>
+<span class="fc" id="L25">  public MapillarySequence() {</span>
+<span class="fc" id="L26">    this.images = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L27">  }</span>
 
   /**
    * Creates a sequence object with the given parameters.
@@ -31,21 +34,22 @@ public class MapillarySequence {
    * @param created_at
    *          The date the sequence was created.
    */
-<span class="fc" id="L34">  public MapillarySequence(String key, long created_at) {</span>
-<span class="fc" id="L35">    this.images = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L36">    this.key = key;</span>
-<span class="fc" id="L37">    this.created_at = created_at;</span>
-<span class="fc" id="L38">  }</span>
+<span class="fc" id="L37">  public MapillarySequence(String key, long created_at) {</span>
+<span class="fc" id="L38">    this.images = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">    this.key = key;</span>
+<span class="fc" id="L40">    this.created_at = created_at;</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * Returns all {@link MapillaryAbstractImage} objects contained by this
    * object.
    *
-   * @return A List object containing all the {@link MapillaryAbstractImage}
-   *         objects that are part of the sequence.
+   * @return A {@link List} object containing all the
+   *         {@link MapillaryAbstractImage} objects that are part of the
+   *         sequence.
    */
   public List&lt;MapillaryAbstractImage&gt; getImages() {
-<span class="fc" id="L48">    return this.images;</span>
+<span class="fc" id="L52">    return this.images;</span>
   }
 
   /**
@@ -55,7 +59,7 @@ public class MapillarySequence {
    *
    */
   public long getCreatedAt() {
-<span class="nc" id="L58">    return this.created_at;</span>
+<span class="nc" id="L62">    return this.created_at;</span>
   }
 
   /**
@@ -65,18 +69,18 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object to be added
    */
   public synchronized void add(MapillaryAbstractImage image) {
-<span class="fc" id="L68">    this.images.add(image);</span>
-<span class="fc" id="L69">  }</span>
+<span class="fc" id="L72">    this.images.add(image);</span>
+<span class="fc" id="L73">  }</span>
 
   /**
    * Returns the unique identifier of the sequence.
    *
-   * @return A String containing the unique identifier of the sequence. null
-   *         means that the sequence has been created locally for imported
+   * @return A {@code String} containing the unique identifier of the sequence.
+   *         null means that the sequence has been created locally for imported
    *         images.
    */
   public String getKey() {
-<span class="nc" id="L79">    return this.key;</span>
+<span class="nc" id="L83">    return this.key;</span>
   }
 
   /**
@@ -86,9 +90,9 @@ public class MapillarySequence {
    *          The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
-<span class="fc" id="L90">      add(image);</span>
-<span class="fc" id="L91">  }</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
+<span class="fc" id="L94">      add(image);</span>
+<span class="fc" id="L95">  }</span>
 
   /**
    * Removes a {@link MapillaryAbstractImage} object from the database.
@@ -97,8 +101,8 @@ public class MapillarySequence {
    *          The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
-<span class="fc" id="L100">    this.images.remove(image);</span>
-<span class="fc" id="L101">  }</span>
+<span class="fc" id="L104">    this.images.remove(image);</span>
+<span class="fc" id="L105">  }</span>
 
   /**
    * Returns the next {@link MapillaryAbstractImage} in the sequence of a given
@@ -113,17 +117,17 @@ public class MapillarySequence {
    *           the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
-<span class="fc" id="L117">      throw new IllegalArgumentException();</span>
-<span class="fc" id="L118">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (i == this.images.size() - 1)</span>
-<span class="fc" id="L120">      return null;</span>
-<span class="fc" id="L121">    return this.images.get(i + 1);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
+<span class="fc" id="L121">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L122">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (i == this.images.size() - 1)</span>
+<span class="fc" id="L124">      return null;</span>
+<span class="fc" id="L125">    return this.images.get(i + 1);</span>
   }
 
   /**
-   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a given
-   * {@link MapillaryAbstractImage} object.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a
+   * given {@link MapillaryAbstractImage} object.
    *
    * @param image
    *          The {@link MapillaryAbstractImage} object whose previous image is
@@ -134,12 +138,12 @@ public class MapillarySequence {
    *           the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
-<span class="fc" id="L138">      throw new IllegalArgumentException();</span>
-<span class="fc" id="L139">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (i == 0)</span>
-<span class="fc" id="L141">      return null;</span>
-<span class="fc" id="L142">    return this.images.get(i - 1);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (!this.images.contains(image))</span>
+<span class="fc" id="L142">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L143">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (i == 0)</span>
+<span class="fc" id="L145">      return null;</span>
+<span class="fc" id="L146">    return this.images.get(i - 1);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

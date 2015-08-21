@@ -35,33 +35,31 @@ public class CommandTurn extends MapillaryCommand {
 <span class="fc" id="L35">      image.turn(-this.ca);</span>
 <span class="fc" id="L36">      image.stopMoving();</span>
 <span class="fc" id="L37">    }</span>
-<span class="fc" id="L38">    checkModified();</span>
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L40">      Main.map.repaint();</span>
-<span class="fc" id="L41">  }</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L39">      Main.map.repaint();</span>
+<span class="fc" id="L40">  }</span>
 
   @Override
   public void redo() {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="fc" id="L46">      image.turn(this.ca);</span>
-<span class="fc" id="L47">      image.stopMoving();</span>
-<span class="fc" id="L48">    }</span>
-<span class="fc" id="L49">    checkModified();</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L51">      Main.map.repaint();</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="fc" id="L45">      image.turn(this.ca);</span>
+<span class="fc" id="L46">      image.stopMoving();</span>
+<span class="fc" id="L47">    }</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L49">      Main.map.repaint();</span>
+<span class="fc" id="L50">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L56">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L57">        this.images.size());</span>
+<span class="nc" id="L54">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L55">        this.images.size());</span>
   }
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (command instanceof CommandTurn) {</span>
-<span class="fc" id="L63">      this.ca += ((CommandTurn) command).ca;</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    if (command instanceof CommandTurn) {</span>
+<span class="fc" id="L61">      this.ca += ((CommandTurn) command).ca;</span>
     }
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L63">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
