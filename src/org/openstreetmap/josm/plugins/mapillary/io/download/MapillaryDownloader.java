@@ -76,7 +76,6 @@ public class MapillaryDownloader {
 
   /**
    * If some part of the current view has not been downloaded, it is downloaded.
-   *
    */
   public static void completeView() {
     if (getMode() != SEMIAUTOMATIC && getMode() != MANUAL)
@@ -144,11 +143,12 @@ public class MapillaryDownloader {
    */
   public static void automaticDownload() {
     MapillaryLayer layer = MapillaryLayer.getInstance();
+    if (Main.map.mapView.getEditLayer() == null)
+      return;
     if (isAreaTooBig()) {
       tooBigErrorDialog();
       return;
     }
-
     if (getMode() != AUTOMATIC)
       throw new IllegalStateException("Must be in automatic mode.");
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
