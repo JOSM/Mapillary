@@ -20,7 +20,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /** The picture file. */
   protected File file;
   /** The date when the picture was taken. */
-  public long datetimeOriginal;
 
   /**
    * Creates a new MapillaryImportedImage object using as date the current date.
@@ -36,8 +35,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *          The file containing the picture.
    */
   public MapillaryImportedImage(double lat, double lon, double ca, File file) {
-<span class="fc" id="L39">    this(lat, lon, ca, file, MapillaryUtils.currentDate());</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L38">    this(lat, lon, ca, file, MapillaryUtils.currentDate());</span>
+<span class="fc" id="L39">  }</span>
 
   /**
    * Main constructor of the class.
@@ -55,16 +54,17 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    */
   public MapillaryImportedImage(double lat, double lon, double ca, File file,
       String datetimeOriginal) {
-<span class="fc" id="L58">    super(lat, lon, ca);</span>
-<span class="fc" id="L59">    this.file = file;</span>
+<span class="fc" id="L57">    super(lat, lon, ca);</span>
+<span class="fc" id="L58">    this.file = file;</span>
     try {
-<span class="fc" id="L61">      this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal, &quot;yyyy:MM:dd hh:mm:ss&quot;);</span>
+<span class="fc" id="L60">      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,</span>
+          &quot;yyyy:MM:dd hh:mm:ss&quot;);
 <span class="nc" id="L62">    } catch (ParseException e) {</span>
       try {
-<span class="nc" id="L64">        this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal,</span>
+<span class="nc" id="L64">        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,</span>
             &quot;yyyy/MM/dd hh:mm:ss&quot;);
 <span class="nc" id="L66">      } catch (ParseException e1) {</span>
-<span class="nc" id="L67">        this.datetimeOriginal = MapillaryUtils.currentTime();</span>
+<span class="nc" id="L67">        this.capturedAt = MapillaryUtils.currentTime();</span>
 <span class="nc" id="L68">      }</span>
 <span class="fc" id="L69">    }</span>
 <span class="fc" id="L70">  }</span>

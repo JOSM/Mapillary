@@ -17,7 +17,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 public abstract class MapillaryAbstractImage {
 
   /** The time the image was captured, in Epoch format. */
-  private long capturedAt;
+  protected long capturedAt;
   /** Sequence of pictures containing this object. */
   private MapillarySequence sequence;
   /** Position of the picture. */

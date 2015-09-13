@@ -210,7 +210,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
   public static void upload(MapillaryImportedImage image, UUID uuid) {
 <span class="nc" id="L211">    String key = MapillaryUser.getUsername() + &quot;/&quot; + uuid.toString() + &quot;/&quot;</span>
 <span class="nc" id="L212">        + image.getLatLon().lat() + &quot;_&quot; + image.getLatLon().lon() + &quot;_&quot;</span>
-<span class="nc" id="L213">        + image.getCa() + &quot;_&quot; + image.datetimeOriginal + &quot;.jpg&quot;;</span>
+<span class="nc" id="L213">        + image.getCa() + &quot;_&quot; + image.getCapturedAt() + &quot;.jpg&quot;;</span>
 
 <span class="nc" id="L215">    String policy = null;</span>
 <span class="nc" id="L216">    String signature = null;</span>

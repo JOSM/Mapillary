@@ -36,8 +36,8 @@ import org.openstreetmap.josm.Main;
                     &quot;https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
 <span class="nc" id="L37">            .getString(&quot;username&quot;);</span>
 <span class="nc" id="L38">      } catch (IOException e) {</span>
-<span class="nc" id="L39">        Main.error(e);</span>
-<span class="nc" id="L40">        isTokenValid = false;</span>
+<span class="nc" id="L39">        Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
+<span class="nc" id="L40">        reset();</span>
 <span class="nc" id="L41">      }</span>
 <span class="nc" id="L42">    return username;</span>
   }
@@ -65,8 +65,8 @@ import org.openstreetmap.josm.Main;
                     &quot;https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
 <span class="nc" id="L66">            .getString(&quot;images_policy&quot;);</span>
 <span class="nc" id="L67">    } catch (IOException e) {</span>
-<span class="nc" id="L68">      Main.error(e);</span>
-<span class="nc" id="L69">      isTokenValid = false;</span>
+<span class="nc" id="L68">      Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
+<span class="nc" id="L69">      reset();</span>
 <span class="nc" id="L70">    }</span>
 <span class="nc" id="L71">    hash.put(&quot;images_policy&quot;, images_policy);</span>
 <span class="nc" id="L72">    return hash;</span>
