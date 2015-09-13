@@ -36,8 +36,8 @@ public class MapillaryUser {
                     "https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
             .getString("username");
       } catch (IOException e) {
-        Main.error(e);
-        isTokenValid = false;
+        Main.info("Invalid Mapillary token, reseting field");
+        reset();
       }
     return username;
   }
@@ -65,8 +65,8 @@ public class MapillaryUser {
                     "https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
             .getString("images_policy");
     } catch (IOException e) {
-      Main.error(e);
-      isTokenValid = false;
+      Main.info("Invalid Mapillary token, reseting field");
+      reset();
     }
     hash.put("images_policy", images_policy);
     return hash;

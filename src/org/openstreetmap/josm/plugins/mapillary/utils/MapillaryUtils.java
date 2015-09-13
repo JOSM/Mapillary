@@ -117,7 +117,8 @@ public class MapillaryUtils {
    *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
    *           not one of the values mentioned above
    */
-  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
+  public static double degMinSecToDouble(RationalNumber[] degMinSec,
+      String ref) {
     if (degMinSec == null || degMinSec.length != 3) {
       throw new IllegalArgumentException("Array's length must be 3.");
     }
@@ -144,7 +145,8 @@ public class MapillaryUtils {
       result *= -1;
     }
 
-    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
+    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360))
+        - 180;
     return result;
   }
 
@@ -158,7 +160,8 @@ public class MapillaryUtils {
    * @return The date in Epoch format.
    * @throws ParseException
    */
-  public static long getEpoch(String date, String format) throws ParseException {
+  public static long getEpoch(String date, String format)
+      throws ParseException {
     SimpleDateFormat formatter = new SimpleDateFormat(format);
     Date dateTime = formatter.parse(date);
     return dateTime.getTime();
@@ -228,8 +231,8 @@ public class MapillaryUtils {
    * @throws IOException
    *           If the file doesn't have the valid metadata.
    */
-  public static MapillaryImportedImage readJPG(File file) throws IOException,
-      ImageReadException {
+  public static MapillaryImportedImage readJPG(File file)
+      throws IOException, ImageReadException {
     return readJPG(file, false);
   }
 
@@ -258,18 +261,19 @@ public class MapillaryUtils {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      final TiffField lat_ref = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
+      final TiffField lat_ref = jpegMetadata.findEXIFValueWithExactMatch(
+          GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
       final TiffField lat = jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
-      final TiffField lon_ref = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
+      final TiffField lon_ref = jpegMetadata.findEXIFValueWithExactMatch(
+          GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
       final TiffField lon = jpegMetadata
           .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
-      final TiffField ca = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+      final TiffField ca = jpegMetadata.findEXIFValueWithExactMatch(
+          GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
-          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+          .findEXIFValueWithExactMatch(
+              ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
         if (exceptionNoTags)
           throw new IllegalArgumentException(
@@ -306,10 +310,8 @@ public class MapillaryUtils {
    * @return The imported image.
    */
   public static MapillaryImportedImage readNoTags(File file) {
-    return readNoTags(
-        file,
-        Main.map.mapView.getProjection().eastNorth2latlon(
-            Main.map.mapView.getCenter()));
+    return readNoTags(file, Main.map.mapView.getProjection()
+        .eastNorth2latlon(Main.map.mapView.getCenter()));
   }
 
   /**
@@ -326,11 +328,38 @@ public class MapillaryUtils {
   public static MapillaryImportedImage readNoTags(File file, LatLon pos) {
     double HORIZONTAL_DISTANCE = 0.0001;
     double horDev;
+
     if (noTagsPics % 2 == 0)
       horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
     else
       horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
     noTagsPics++;
+
+    ImageMetadata metadata = null;
+    try {
+      metadata = Imaging.getMetadata(file);
+    } catch (IOException e) {
+      Main.error(e);
+    } catch (ImageReadException e) {
+      Main.error(e);
+    }
+    if (metadata instanceof JpegImageMetadata) {
+      final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+      final TiffField datetimeOriginal = jpegMetadata
+          .findEXIFValueWithExactMatch(
+              ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+      if (datetimeOriginal == null)
+        return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
+            file);
+      else {
+        try {
+          return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
+              file, datetimeOriginal.getStringValue());
+        } catch (ImageReadException e) {
+          Main.error(e);
+        }
+      }
+    }
     return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
   }
 
@@ -385,15 +414,17 @@ public class MapillaryUtils {
         if (img.getLatLon().lon() > maxLon)
           maxLon = img.getLatLon().lon();
       }
-      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon), new LatLon(
-          maxLat, maxLon));
+      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon),
+          new LatLon(maxLat, maxLon));
       // The zoom rectangle must have a minimum size.
-      double latExtent = zoomBounds.getMaxLat() - zoomBounds.getMinLat() >= MIN_ZOOM_SQUARE_SIDE ? zoomBounds
-          .getMaxLat() - zoomBounds.getMinLat()
-          : MIN_ZOOM_SQUARE_SIDE;
-      double lonExtent = zoomBounds.getMaxLon() - zoomBounds.getMinLon() >= MIN_ZOOM_SQUARE_SIDE ? zoomBounds
-          .getMaxLon() - zoomBounds.getMinLon()
-          : MIN_ZOOM_SQUARE_SIDE;
+      double latExtent = zoomBounds.getMaxLat()
+          - zoomBounds.getMinLat() >= MIN_ZOOM_SQUARE_SIDE
+              ? zoomBounds.getMaxLat() - zoomBounds.getMinLat()
+              : MIN_ZOOM_SQUARE_SIDE;
+      double lonExtent = zoomBounds.getMaxLon()
+          - zoomBounds.getMinLon() >= MIN_ZOOM_SQUARE_SIDE
+              ? zoomBounds.getMaxLon() - zoomBounds.getMinLon()
+              : MIN_ZOOM_SQUARE_SIDE;
       zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
 
       Main.map.mapView.zoomTo(zoomBounds);
@@ -422,13 +453,12 @@ public class MapillaryUtils {
       secondImage = mapillaryAbstractImage;
     }
 
-    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(firstImage
-        .getSequence().getImages()
-        .subList(0, firstImage.getSequence().getImages().indexOf(secondImage)));
-    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(firstImage
-        .getSequence()
-        .getImages()
-        .subList(firstImage.getSequence().getImages().indexOf(secondImage),
+    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(
+        firstImage.getSequence().getImages().subList(0,
+            firstImage.getSequence().getImages().indexOf(secondImage)));
+    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(
+        firstImage.getSequence().getImages().subList(
+            firstImage.getSequence().getImages().indexOf(secondImage),
             firstImage.getSequence().getImages().size()));
 
     MapillarySequence seq1 = new MapillarySequence();
@@ -454,8 +484,8 @@ public class MapillaryUtils {
     if (PluginState.isDownloading())
       ret += tr("Downloading Mapillary images");
     else if (MapillaryLayer.getInstance().getData().size() > 0)
-      ret += tr("Total Mapillary images: {0}", MapillaryLayer.getInstance()
-          .getData().size());
+      ret += tr("Total Mapillary images: {0}",
+          MapillaryLayer.getInstance().getData().size());
     else
       ret += tr("No images found");
     if (MapillaryLayer.getInstance().mode != null)

@@ -210,7 +210,7 @@ public class UploadUtils {
   public static void upload(MapillaryImportedImage image, UUID uuid) {
     String key = MapillaryUser.getUsername() + "/" + uuid.toString() + "/"
         + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
-        + image.getCa() + "_" + image.datetimeOriginal + ".jpg";
+        + image.getCa() + "_" + image.getCapturedAt() + ".jpg";
 
     String policy = null;
     String signature = null;

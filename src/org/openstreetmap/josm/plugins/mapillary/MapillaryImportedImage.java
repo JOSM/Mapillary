@@ -20,7 +20,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /** The picture file. */
   protected File file;
   /** The date when the picture was taken. */
-  public long datetimeOriginal;
 
   /**
    * Creates a new MapillaryImportedImage object using as date the current date.
@@ -58,13 +57,14 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     super(lat, lon, ca);
     this.file = file;
     try {
-      this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy:MM:dd hh:mm:ss");
+      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,
+          "yyyy:MM:dd hh:mm:ss");
     } catch (ParseException e) {
       try {
-        this.datetimeOriginal = MapillaryUtils.getEpoch(datetimeOriginal,
+        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,
             "yyyy/MM/dd hh:mm:ss");
       } catch (ParseException e1) {
-        this.datetimeOriginal = MapillaryUtils.currentTime();
+        this.capturedAt = MapillaryUtils.currentTime();
       }
     }
   }
