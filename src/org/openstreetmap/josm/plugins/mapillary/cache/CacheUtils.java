@@ -81,11 +81,7 @@ public class CacheUtils {
    */
   public static void submit(String key, MapillaryCache.Type type,
       ICachedLoaderListener lis) {
-    try {
-      new MapillaryCache(key, type).submit(lis, false);
-    } catch (IOException e) {
-      Main.error(e);
-    }
+    new MapillaryCache(key, type).submit(lis, false);
   }
 
   private static class IgnoreDownload implements ICachedLoaderListener {
