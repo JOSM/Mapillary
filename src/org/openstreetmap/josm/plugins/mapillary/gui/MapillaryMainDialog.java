@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.marktr;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -51,7 +52,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private static final long serialVersionUID = 6856496736429480600L;
 
-  private final static String BASE_TITLE = "Mapillary picture";
+  private final static String BASE_TITLE = marktr("Mapillary picture");
 
   private static MapillaryMainDialog INSTANCE;
 
