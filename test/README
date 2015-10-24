@@ -1,5 +1,5 @@
 
-This directory includes the test resources for the turnrestictions plugin.
+This directory includes the test resources for the mapillary plugin.
 
 
 unit/            test sources (Unit tests, functional tests)
