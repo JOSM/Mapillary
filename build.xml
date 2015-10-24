@@ -11,7 +11,7 @@
     <property name="plugin.icon" value="images/icon24.png"/>
     <property name="plugin.link" value="https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary"/>
     <!--<property name="plugin.early" value="..."/>-->
-    <property name="plugin.requires" value="commons-imaging"/>
+    <property name="plugin.requires" value="apache-commons"/>
     <!--<property name="plugin.stage" value="..."/>-->
     
 	<property name="josm" location="../../core/dist/josm-custom.jar"/>
@@ -22,6 +22,6 @@
     <import file="../build-common.xml"/>
     
     <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
-        <include name="commons-imaging.jar"/>
+        <include name="apache-commons.jar"/>
     </fileset>
 </project>

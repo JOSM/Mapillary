@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="lib/httpclient-4.5.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.5.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-commons-imaging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-apache-commons"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
