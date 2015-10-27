@@ -53,7 +53,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   /** Spinner to choose the range of dates. */
   public SpinnerNumberModel spinner;
 
-  private final JCheckBox imported = new JCheckBox("Imported images");
+  private final JCheckBox imported = new JCheckBox(tr("Imported images"));
   private final JCheckBox downloaded = new JCheckBox(
       new downloadCheckBoxAction());
   private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
@@ -101,7 +101,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     JPanel fromPanel = new JPanel();
     fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    fromPanel.add(new JLabel("Not older than: "));
+    fromPanel.add(new JLabel(tr("Not older than: ")));
     this.spinner = new SpinnerNumberModel(1, 0, 10000, 1);
     fromPanel.add(new JSpinner(this.spinner));
     this.time = new JComboBox<>(TIME_LIST);
@@ -111,7 +111,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.user = new JTextField(10);
     this.user.addActionListener(new UpdateAction());
-    userSearchPanel.add(new JLabel("User"));
+    userSearchPanel.add(new JLabel(tr("User")));
     userSearchPanel.add(this.user);
 
     this.imported.setSelected(true);
