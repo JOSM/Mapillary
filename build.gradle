@@ -31,8 +31,8 @@ dependencies {
   compile 'org.openstreetmap.josm:josm:latest'
   compile 'org.apache.commons:commons-imaging:1.0-SNAPSHOT'
 
-  packIntoJar 'com.amazonaws:aws-java-sdk-s3:1.10.8'
-  packIntoJar 'org.apache.httpcomponents:httpmime:4.5'
+  packIntoJar 'com.amazonaws:aws-java-sdk-s3:1.10.37'
+  packIntoJar 'org.apache.httpcomponents:httpmime:4.5.1'
 
   testCompile 'junit:junit:4.12'
 }
@@ -149,11 +149,3 @@ task runJosmLatest(type: Exec) {
   commandLine 'josm-latest'
 }
 runJosmLatest.dependsOn installPluginToJosmLatest
-
-/** Wrapper task:
- * This only needs to be run once when the Gradle version changes.
- * The changed files (probably in the gradle/-folder) should then be commited to CVS.
- */
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.5'
-}
