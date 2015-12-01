@@ -106,16 +106,16 @@ test {
 jar {
   from configurations.packIntoJar.collect { it.isDirectory() ? it : zipTree(it) }
   manifest {
-    attributes("Plugin-Mainversion": "8433",
+    attributes("Plugin-Mainversion": project.property('plugin.main.version'),
                "Plugin-Version": "31395",
-               "Plugin-Class": "org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin",
-               "Plugin-Description": "Enables user to work with pictures hosted at mapillary.com",
+               "Plugin-Class": project.property('plugin.class'),
+               "Plugin-Description": project.property('plugin.description'),
                "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
-               "Author": "nokutu <nokutu@openmailbox.org>",
-               "Plugin-Link": "https://wiki.openstreetmap.org/wiki/JOSM/Plugins/Mapillary",
-               "Plugin-Icon": "images/icon24.png",
-               "Plugin-Requires": "commons-imaging",
-               "Plugin-Canloadatruntime": "true")
+               "Author": project.property('plugin.author'),
+               "Plugin-Link": project.property('plugin.link'),
+               "Plugin-Icon": project.property("plugin.icon"),
+               "Plugin-Requires": project.property("plugin.requires"),
+               "Plugin-Canloadatruntime": project.property('plugin.canloadatruntime'))
   }
 }
 
