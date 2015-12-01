@@ -6,33 +6,32 @@ apply plugin: 'project-report'
 
 sourceCompatibility = '1.7'
 
-configurations {
-  packIntoJar
-  compile.extendsFrom packIntoJar
-}
 repositories {
   // for JUnit
   mavenCentral()
-  // for commons-imaging
-  maven {
-    url "https://repository.apache.org/content/repositories/snapshots/"
-  }
   //for josm-(latest|tested).jar
   ivy {
-    url "https://josm.openstreetmap.de/download/"
-    layout "pattern", {
+    url 'https://josm.openstreetmap.de/download'
+    layout 'pattern', {
       artifact "[artifact]-[revision].jar"
+      artifact "[artifact]-snapshot-[revision].jar"
+      artifact "Archiv/[artifact]-snapshot-[revision].jar"
+    }
+  }
+  //for josm-plugins
+  ivy {
+    url "https://svn.openstreetmap.org/applications/editors/josm/dist/"
+    layout "pattern", {
+      artifact "[artifact].jar"
     }
   }
 }
 dependencies {
-  // The JOSM-version can be specified as "latest", "tested" or "snapshot-1234" (replace 1234 by the desired version number).
-  // For revisions older than the last ~60 versions, also append "Archiv" to the repository URL above
-  compile 'org.openstreetmap.josm:josm:latest'
-  compile 'org.apache.commons:commons-imaging:1.0-SNAPSHOT'
-
-  packIntoJar 'com.amazonaws:aws-java-sdk-s3:1.10.37'
-  packIntoJar 'org.apache.httpcomponents:httpmime:4.5.1'
+  // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
+  compile ':josm:latest'
+  // For plugins it's irrelevant, which version is specified, always the latest version is used.
+  compile ':apache-commons:latest'
+  compile ':apache-http:latest'
 
   testCompile 'junit:junit:4.12'
 }
@@ -62,14 +61,6 @@ sourceSets {
 
 build.dependsOn jacocoTestReport
 build.dependsOn projectReport
-
-/** Eclipse configuration */
-eclipse {
-   classpath {
-    downloadSources=true
-    downloadJavadoc=true
-  }
-}
 
 /** FindBugs configuration */
 findbugs {
@@ -104,10 +95,9 @@ test {
 }
 
 jar {
-  from configurations.packIntoJar.collect { it.isDirectory() ? it : zipTree(it) }
   manifest {
     attributes("Plugin-Mainversion": project.property('plugin.main.version'),
-               "Plugin-Version": "31395",
+               "Plugin-Version": "31784",
                "Plugin-Class": project.property('plugin.class'),
                "Plugin-Description": project.property('plugin.description'),
                "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
@@ -119,33 +109,32 @@ jar {
   }
 }
 
+task activatePlugin(type: Copy) {
+  from "gradle/josm-preferences.xml"
+  into "$buildDir/.josm"
+  rename 'josm-preferences.xml', 'preferences.xml'
+}
+
+task installPlugin(type: Copy) {
+ from "$buildDir/libs/${project.name}.jar"
+ from configurations.runtime
+ into "$buildDir/.josm/plugins"
+ include 'apache*.jar'
+ include "${project.name}.jar"
+ rename "${project.name}.jar", 'Mapillary.jar'
+ rename 'apache-(.*)-.*.jar', 'apache-$1.jar'
+}
+installPlugin.dependsOn jar
+installPlugin.dependsOn activatePlugin
+
 /**
- * The following are tasks to directly run JOSM with the freshly-built
- * Mapillary-plugin already installed.
- * Only prerequisite is to have JOSM (or JOSM-latest) installed on your machine.
- * Previously installed versions of the plugin are overridden by executions of these tasks.
- **/
-
-task installPluginToJosm(type: Copy) {
- from "$buildDir/libs/josm-mapillary-plugin.jar"
- into "$System.env.HOME/.josm/plugins"
- rename '.*', 'Mapillary.jar'
+ * This runs the JOSM-version specified in the dependency configuration above.
+ * The home-directory of this JOSM is located in $buildDir/.josm, so it doesn't interfere with any other JOSM-installations.
+ */
+task runJosm(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'JOSM'
+  args '--offline=josm_website'
+  jvmArgs "-Djosm.home=$buildDir/.josm"
 }
-installPluginToJosm.dependsOn jar
-
-task runJosm(type: Exec) {
- commandLine 'josm'
-}
-runJosm.dependsOn installPluginToJosm
-
-task installPluginToJosmLatest(type: Copy) {
-  from "$buildDir/libs/josm-mapillary-plugin.jar"
-  into "$System.env.HOME/.josm-latest/plugins"
-  rename '.*', 'Mapillary.jar'
-}
-installPluginToJosmLatest.dependsOn jar
-
-task runJosmLatest(type: Exec) {
-  commandLine 'josm-latest'
-}
-runJosmLatest.dependsOn installPluginToJosmLatest
+runJosm.dependsOn installPlugin
