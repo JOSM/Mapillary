@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 /**
@@ -9,6 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
  * @author nokutu
  *
  */
+@Ignore
 public abstract class AbstractTest {
 
   /**
