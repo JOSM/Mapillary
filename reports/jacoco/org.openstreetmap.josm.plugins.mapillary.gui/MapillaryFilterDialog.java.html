@@ -53,7 +53,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   /** Spinner to choose the range of dates. */
   public SpinnerNumberModel spinner;
 
-<span class="nc" id="L56">  private final JCheckBox imported = new JCheckBox(&quot;Imported images&quot;);</span>
+<span class="nc" id="L56">  private final JCheckBox imported = new JCheckBox(tr(&quot;Imported images&quot;));</span>
 <span class="nc" id="L57">  private final JCheckBox downloaded = new JCheckBox(</span>
       new downloadCheckBoxAction());
 <span class="nc" id="L59">  private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());</span>
@@ -101,7 +101,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
 <span class="nc" id="L102">    JPanel fromPanel = new JPanel();</span>
 <span class="nc" id="L103">    fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="nc" id="L104">    fromPanel.add(new JLabel(&quot;Not older than: &quot;));</span>
+<span class="nc" id="L104">    fromPanel.add(new JLabel(tr(&quot;Not older than: &quot;)));</span>
 <span class="nc" id="L105">    this.spinner = new SpinnerNumberModel(1, 0, 10000, 1);</span>
 <span class="nc" id="L106">    fromPanel.add(new JSpinner(this.spinner));</span>
 <span class="nc" id="L107">    this.time = new JComboBox&lt;&gt;(TIME_LIST);</span>
@@ -111,7 +111,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 <span class="nc" id="L111">    userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
 <span class="nc" id="L112">    this.user = new JTextField(10);</span>
 <span class="nc" id="L113">    this.user.addActionListener(new UpdateAction());</span>
-<span class="nc" id="L114">    userSearchPanel.add(new JLabel(&quot;User&quot;));</span>
+<span class="nc" id="L114">    userSearchPanel.add(new JLabel(tr(&quot;User&quot;)));</span>
 <span class="nc" id="L115">    userSearchPanel.add(this.user);</span>
 
 <span class="nc" id="L117">    this.imported.setSelected(true);</span>
