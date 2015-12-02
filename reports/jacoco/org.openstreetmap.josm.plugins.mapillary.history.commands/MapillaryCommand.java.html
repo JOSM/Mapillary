@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryCommand.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.history.commands</a> &gt; <span class="el_source">MapillaryCommand.java</span></div><h1>MapillaryCommand.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.history.commands;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryCommand.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.history.commands</a> &gt; <span class="el_source">MapillaryCommand.java</span></div><h1>MapillaryCommand.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,9 @@ public abstract class MapillaryCommand {
    * @param images
    *          The images that are affected by the command.
    */
-<span class="fc" id="L24">  public MapillaryCommand(List&lt;MapillaryAbstractImage&gt; images) {</span>
-<span class="fc" id="L25">    this.images = new ArrayList&lt;MapillaryAbstractImage&gt;(images);</span>
-<span class="fc" id="L26">  }</span>
+<span class="fc" id="L25">  public MapillaryCommand(List&lt;MapillaryAbstractImage&gt; images) {</span>
+<span class="fc" id="L26">    this.images = new ArrayList&lt;MapillaryAbstractImage&gt;(images);</span>
+<span class="fc" id="L27">  }</span>
 
   /**
    * Undoes the action.
