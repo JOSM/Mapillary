@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PluginState.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">PluginState.java</span></div><h1>PluginState.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.utils;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PluginState.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">PluginState.java</span></div><h1>PluginState.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -13,30 +14,30 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
  * @author nokutu
  *
  */
-<span class="nc" id="L16">public class PluginState {</span>
+<span class="nc" id="L17">public class PluginState {</span>
 
-<span class="fc" id="L18">  private static int runningDownloads = 0;</span>
+<span class="fc" id="L19">  private static int runningDownloads = 0;</span>
   /** Images that have to be uploaded. */
-<span class="fc" id="L20">  protected static int imagesToUpload = 0;</span>
+<span class="fc" id="L21">  protected static int imagesToUpload = 0;</span>
   /** Images that have been uploaded. */
-<span class="fc" id="L22">  public static int imagesUploaded = 0;</span>
+<span class="fc" id="L23">  public static int imagesUploaded = 0;</span>
 
   /**
    * Called when a download is started.
    */
   public static void startDownload() {
-<span class="fc" id="L28">    runningDownloads++;</span>
-<span class="fc" id="L29">  }</span>
+<span class="fc" id="L29">    runningDownloads++;</span>
+<span class="fc" id="L30">  }</span>
 
   /**
    * Called when a download is finished.
    */
   public static void finishDownload() {
-<span class="pc bpc" id="L35" title="1 of 2 branches missed.">    if (runningDownloads == 0)</span>
-<span class="nc" id="L36">      throw new IllegalStateException(</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">    if (runningDownloads == 0)</span>
+<span class="nc" id="L37">      throw new IllegalStateException(</span>
           &quot;The amount of running downlaods is less or equals to 0&quot;);
-<span class="fc" id="L38">    runningDownloads--;</span>
-<span class="fc" id="L39">  }</span>
+<span class="fc" id="L39">    runningDownloads--;</span>
+<span class="fc" id="L40">  }</span>
 
   /**
    * Checks if there is any running download.
@@ -44,7 +45,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return true if the plugin is downloading; false otherwise.
    */
   public static boolean isDownloading() {
-<span class="fc bfc" id="L47" title="All 2 branches covered.">    return runningDownloads &gt; 0;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    return runningDownloads &gt; 0;</span>
   }
 
   /**
@@ -53,7 +54,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return true if the plugin is uploading; false otherwise.
    */
   public static boolean isUploading() {
-<span class="fc bfc" id="L56" title="All 2 branches covered.">    return imagesToUpload &gt; imagesUploaded;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    return imagesToUpload &gt; imagesUploaded;</span>
   }
 
   /**
@@ -63,39 +64,39 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    *          The amount of images that are going to be uploaded.
    */
   public static void imagesToUpload(int amount) {
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
-<span class="fc" id="L67">      imagesToUpload = 0;</span>
-<span class="fc" id="L68">      imagesUploaded = 0;</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
+<span class="fc" id="L68">      imagesToUpload = 0;</span>
+<span class="fc" id="L69">      imagesUploaded = 0;</span>
     }
-<span class="fc" id="L70">    imagesToUpload += amount;</span>
-<span class="fc" id="L71">  }</span>
+<span class="fc" id="L71">    imagesToUpload += amount;</span>
+<span class="fc" id="L72">  }</span>
 
   /**
    * Called when an image is uploaded.
    */
   public static void imageUploaded() {
-<span class="fc" id="L77">    imagesUploaded++;</span>
-<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (imagesToUpload == imagesUploaded) {</span>
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">      if (Main.main != null)</span>
-<span class="nc" id="L80">        finishedUploadDialog();</span>
+<span class="fc" id="L78">    imagesUploaded++;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    if (imagesToUpload == imagesUploaded) {</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">      if (Main.main != null)</span>
+<span class="nc" id="L81">        finishedUploadDialog();</span>
     }
-<span class="fc" id="L82">  }</span>
+<span class="fc" id="L83">  }</span>
 
   private static void finishedUploadDialog() {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L86">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L87">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L89">          finishedUploadDialog();</span>
-<span class="nc" id="L90">        }</span>
+<span class="nc" id="L90">          finishedUploadDialog();</span>
+<span class="nc" id="L91">        }</span>
       });
     } else {
-<span class="nc" id="L93">      JOptionPane pane = new JOptionPane();</span>
-<span class="nc" id="L94">      pane.setMessage(new FinishedUploadDialog());</span>
-<span class="nc" id="L95">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
-<span class="nc" id="L96">      dlg.setVisible(true);</span>
+<span class="nc" id="L94">      JOptionPane pane = new JOptionPane();</span>
+<span class="nc" id="L95">      pane.setMessage(new FinishedUploadDialog());</span>
+<span class="nc" id="L96">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
+<span class="nc" id="L97">      dlg.setVisible(true);</span>
     }
-<span class="nc" id="L98">  }</span>
+<span class="nc" id="L99">  }</span>
 
   /**
    * Returns the text to be written in the status bar.
@@ -103,7 +104,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L106">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
+<span class="nc" id="L107">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload</span>
         + &quot;)&quot;);
   }
 }
