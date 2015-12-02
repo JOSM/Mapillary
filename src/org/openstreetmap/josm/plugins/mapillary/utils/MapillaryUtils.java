@@ -44,8 +44,6 @@ public class MapillaryUtils {
 
   private static double MIN_ZOOM_SQUARE_SIDE = 0.002;
 
-  private static int noTagsPics = 0;
-
   /**
    * Open the default browser in the given URL.
    *
@@ -327,15 +325,6 @@ public class MapillaryUtils {
    * @return The imported image.
    */
   public static MapillaryImportedImage readNoTags(File file, LatLon pos) {
-    double HORIZONTAL_DISTANCE = 0.0001;
-    double horDev;
-
-    if (noTagsPics % 2 == 0)
-      horDev = HORIZONTAL_DISTANCE * noTagsPics / 2;
-    else
-      horDev = -HORIZONTAL_DISTANCE * ((noTagsPics + 1) / 2);
-    noTagsPics++;
-
     ImageMetadata metadata = null;
     try {
       metadata = Imaging.getMetadata(file);
@@ -350,18 +339,18 @@ public class MapillaryUtils {
           .findEXIFValueWithExactMatch(
               ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (datetimeOriginal == null)
-        return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
+        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
             file);
       else {
         try {
-          return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0,
+          return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
               file, datetimeOriginal.getStringValue());
         } catch (ImageReadException e) {
           Main.error(e);
         }
       }
     }
-    return new MapillaryImportedImage(pos.lat(), pos.lon() + horDev, 0, file);
+    return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file);
   }
 
   /**
