@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import static org.openstreetmap.josm.tools.I18n.tr;

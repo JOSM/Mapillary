@@ -1,6 +1,4 @@
-/**
- *
- */
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
@@ -24,15 +22,12 @@ import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSignElement;
 
-/**
- *
- */
 public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
   private static MapillaryTrafficSignLayer instance;
 
   /**
    * Returns and when needed instantiates the Mapillary traffic sign layer.
-   * 
+   *
    * @return the only instance of the traffic sign layer
    */
   public static MapillaryTrafficSignLayer getInstance() {
@@ -49,7 +44,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.AbstractModifiableLayer#isModified()
    */
   @Override
@@ -59,7 +54,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.Layer#paint(java.awt.Graphics2D,
    * org.openstreetmap.josm.gui.MapView, org.openstreetmap.josm.data.Bounds)
    */
@@ -114,7 +109,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.Layer#getIcon()
    */
   @Override
@@ -124,7 +119,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.Layer#getToolTipText()
    */
   @Override
@@ -134,7 +129,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.openstreetmap.josm.gui.layer.Layer#mergeFrom(org.openstreetmap.josm
    * .gui.layer.Layer)
@@ -147,7 +142,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.openstreetmap.josm.gui.layer.Layer#isMergable(org.openstreetmap.josm
    * .gui.layer.Layer)
@@ -159,7 +154,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.openstreetmap.josm.gui.layer.Layer#visitBoundingBox(org.openstreetmap
    * .josm.data.osm.visitor.BoundingXYVisitor)
@@ -172,7 +167,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.Layer#getInfoComponent()
    */
   @Override
@@ -183,7 +178,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.openstreetmap.josm.gui.layer.Layer#getMenuEntries()
    */
   @Override
