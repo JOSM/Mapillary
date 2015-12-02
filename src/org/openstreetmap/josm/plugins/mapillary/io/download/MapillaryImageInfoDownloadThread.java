@@ -44,9 +44,11 @@ public class MapillaryImageInfoDownloadThread extends Thread {
 
   @Override
   public void run() {
-    try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(new URL(URL
-          + this.queryString).openStream(), "UTF-8"));
+    try (
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+        new URL(URL + this.queryString).openStream(), "UTF-8")
+      );
+    ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))
         this.ex.shutdown();
@@ -55,15 +57,14 @@ public class MapillaryImageInfoDownloadThread extends Thread {
       for (int i = 0; i < jsonarr.size(); i++) {
         data = jsonarr.getJsonObject(i);
         String key = data.getString("key");
-        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData()
-            .getImages()) {
-          if (image instanceof MapillaryImage) {
-            if (((MapillaryImage) image).getKey().equals(key)
-                && ((MapillaryImage) image).getUser() == null) {
-              ((MapillaryImage) image).setUser(data.getString("user"));
-              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(
-                  "captured_at").longValue());
-            }
+        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
+          if (
+            image instanceof MapillaryImage
+              && ((MapillaryImage) image).getKey().equals(key)
+              && ((MapillaryImage) image).getUser() == null
+          ) {
+            ((MapillaryImage) image).setUser(data.getString("user"));
+            ((MapillaryImage) image).setCapturedAt(data.getJsonNumber("captured_at").longValue());
           }
         }
       }

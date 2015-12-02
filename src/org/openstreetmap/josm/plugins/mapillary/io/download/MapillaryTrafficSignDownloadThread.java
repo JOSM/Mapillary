@@ -45,10 +45,12 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
 
   @Override
   public void run() {
-    BufferedReader br;
-    try {
-      br = new BufferedReader(new InputStreamReader(new URL(URL
-          + this.queryString).openStream(), "UTF-8"));
+
+    try (
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+        new URL(URL + this.queryString).openStream(), "UTF-8"
+      ));
+    ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {
         this.ex.shutdown();

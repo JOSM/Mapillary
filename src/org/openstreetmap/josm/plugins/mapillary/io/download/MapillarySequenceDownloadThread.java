@@ -51,10 +51,11 @@ public class MapillarySequenceDownloadThread extends Thread {
 
   @Override
   public void run() {
-    try {
-      BufferedReader br;
-      br = new BufferedReader(new InputStreamReader(new URL(URL
-          + this.queryString).openStream(), "UTF-8"));
+    try (
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+        new URL(URL + this.queryString).openStream(), "UTF-8"
+      ));
+    ) {
       JsonObject jsonall = Json.createReader(br).readObject();
 
       if (!jsonall.getBoolean("more") && !this.ex.isShutdown())

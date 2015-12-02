@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
