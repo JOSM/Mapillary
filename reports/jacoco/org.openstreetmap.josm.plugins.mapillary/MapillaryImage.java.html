@@ -22,25 +22,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
   private String location;
 
   /**
-   * Returns the location where the image was taken.
-   *
-   * @return A {@code String} containing the location where the picture was taken.
-   */
-  public String getLocation() {
-<span class="nc" id="L30">    return this.location;</span>
-  }
-
-  /**
-   * Sets the location of the image.
-   *
-   * @param location
-   *          A {@code String} object containing the place where the image was taken.
-   */
-  public void setLocation(String location) {
-<span class="nc" id="L40">    this.location = location;</span>
-<span class="nc" id="L41">  }</span>
-
-  /**
    * Main constructor of the class MapillaryImage
    *
    * @param key
@@ -53,10 +34,29 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *          The direction of the images in degrees, meaning 0 north.
    */
   public MapillaryImage(String key, double lat, double lon, double ca) {
-<span class="fc" id="L56">    super(lat, lon, ca);</span>
-<span class="fc" id="L57">    this.key = key;</span>
-<span class="fc" id="L58">    this.signs = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L59">  }</span>
+<span class="fc" id="L37">    super(lat, lon, ca);</span>
+<span class="fc" id="L38">    this.key = key;</span>
+<span class="fc" id="L39">    this.signs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">  }</span>
+
+  /**
+   * Returns the location where the image was taken.
+   *
+   * @return A {@code String} containing the location where the picture was taken.
+   */
+  public String getLocation() {
+<span class="nc" id="L48">    return this.location;</span>
+  }
+
+  /**
+   * Sets the location of the image.
+   *
+   * @param location
+   *          A {@code String} object containing the place where the image was taken.
+   */
+  public void setLocation(String location) {
+<span class="nc" id="L58">    this.location = location;</span>
+<span class="nc" id="L59">  }</span>
 
   /**
    * Returns the unique identifier of the object.

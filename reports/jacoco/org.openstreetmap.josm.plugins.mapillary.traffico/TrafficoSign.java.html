@@ -8,90 +8,80 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-<span class="nc" id="L17">public class TrafficoSign {</span>
-<span class="nc" id="L18">  private static final Map&lt;String, String&gt; isIn = new TreeMap&lt;&gt;();</span>
+public final class TrafficoSign {
+<span class="fc" id="L17">  private TrafficoSign() {</span>
+    // private constructor to avoid instantiation
+<span class="fc" id="L19">  }</span>
 
-  static {
-<span class="nc" id="L21">    isIn.put(&quot;be&quot;, &quot;europe&quot;);</span>
-<span class="nc" id="L22">    isIn.put(&quot;de&quot;, &quot;europe&quot;);</span>
-<span class="nc" id="L23">    isIn.put(&quot;dk&quot;, &quot;europe&quot;);</span>
-<span class="nc" id="L24">    isIn.put(&quot;es&quot;, &quot;europe&quot;);</span>
-  }
-
-<span class="nc" id="L27">  private static Map&lt;String, Map&lt;String, TrafficoSignElement[]&gt;&gt; signs = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L21">  private static Map&lt;String, Map&lt;String, TrafficoSignElement[]&gt;&gt; signs = new HashMap&lt;&gt;();</span>
 
   public static TrafficoSignElement[] getSign(String country, String signName) {
-<span class="nc bnc" id="L30" title="All 2 branches missed.">    if (signs.get(country) == null) {</span>
-<span class="nc" id="L31">      System.out.println(&quot;Read signs for &quot; + country);</span>
-<span class="nc" id="L32">      InputStream countryStream = TrafficoSign.class</span>
-<span class="nc" id="L33">          .getResourceAsStream(&quot;/data/fonts/traffico/signs/&quot; + country</span>
-              + &quot;.json&quot;);
-<span class="nc bnc" id="L35" title="All 2 branches missed.">      if (countryStream == null) {</span>
-<span class="nc" id="L36">        return null;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    if (signs.get(country) == null) {</span>
+<span class="fc" id="L25">      System.out.println(&quot;Read signs for &quot; + country);</span>
+<span class="fc" id="L26">      InputStream countryStream = TrafficoSign.class</span>
+<span class="fc" id="L27">          .getResourceAsStream(&quot;/data/fonts/traffico/signs/&quot; + country + &quot;.json&quot;);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">      if (countryStream == null) {</span>
+<span class="fc" id="L29">        return null;</span>
       }
-<span class="nc" id="L38">      JsonObject countrySigns = Json.createReader(countryStream).readObject();</span>
-<span class="nc" id="L39">      Set&lt;String&gt; countrySignNames = countrySigns.keySet();</span>
-<span class="nc" id="L40">      System.out.println(countrySignNames.size() + &quot; signs found&quot;);</span>
-<span class="nc" id="L41">      Map&lt;String, TrafficoSignElement[]&gt; countryMap = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">      for (String name : countrySignNames) {</span>
-<span class="nc" id="L43">        System.out.println(&quot; * sign &quot; + name);</span>
-<span class="nc" id="L44">        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(</span>
+<span class="fc" id="L31">      JsonObject countrySigns = Json.createReader(countryStream).readObject();</span>
+<span class="fc" id="L32">      Set&lt;String&gt; countrySignNames = countrySigns.keySet();</span>
+<span class="fc" id="L33">      System.out.println(countrySignNames.size() + &quot; signs found&quot;);</span>
+<span class="fc" id="L34">      Map&lt;String, TrafficoSignElement[]&gt; countryMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">      for (String name : countrySignNames) {</span>
+<span class="fc" id="L36">        System.out.println(&quot; * sign &quot; + name);</span>
+<span class="fc" id="L37">        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(</span>
             &quot;elements&quot;);
 
         // TODO: Replace by an array when all types of sign elements (text!) are
         // supported
-<span class="nc" id="L49">        List&lt;TrafficoSignElement&gt; layers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L42">        List&lt;TrafficoSignElement&gt; layers = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
-<span class="nc" id="L52">          System.out.println(&quot;   - &quot;</span>
-<span class="nc" id="L53">              + elements.getJsonObject(i).getString(&quot;color&quot;) + &quot; layer &quot;</span>
-<span class="nc" id="L54">              + elements.getJsonObject(i).getString(&quot;type&quot;));</span>
-<span class="nc" id="L55">          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i)</span>
-<span class="nc" id="L56">              .getString(&quot;type&quot;));</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">          if (glyph != null) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
+<span class="fc" id="L45">          System.out.println(&quot;   - &quot;</span>
+<span class="fc" id="L46">              + elements.getJsonObject(i).getString(&quot;color&quot;) + &quot; layer &quot;</span>
+<span class="fc" id="L47">              + elements.getJsonObject(i).getString(&quot;type&quot;));</span>
+<span class="fc" id="L48">          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i)</span>
+<span class="fc" id="L49">              .getString(&quot;type&quot;));</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">          if (glyph != null) {</span>
             Color c;
-<span class="nc bnc" id="L59" title="All 26 branches missed.">            switch (elements.getJsonObject(i).getString(&quot;color&quot;).toLowerCase()) {</span>
+<span class="pc bpc" id="L52" title="6 of 26 branches missed.">            switch (elements.getJsonObject(i).getString(&quot;color&quot;).toLowerCase()) {</span>
               case &quot;black&quot;:
-<span class="nc" id="L61">                c = Color.BLACK;</span>
-<span class="nc" id="L62">                break;</span>
+<span class="fc" id="L54">                c = Color.BLACK;</span>
+<span class="fc" id="L55">                break;</span>
               case &quot;red&quot;:
-<span class="nc" id="L64">                c = Color.RED;</span>
-<span class="nc" id="L65">                break;</span>
+<span class="fc" id="L57">                c = Color.RED;</span>
+<span class="fc" id="L58">                break;</span>
               case &quot;blue&quot;:
-<span class="nc" id="L67">                c = Color.BLUE;</span>
-<span class="nc" id="L68">                break;</span>
+<span class="fc" id="L60">                c = Color.BLUE;</span>
+<span class="fc" id="L61">                break;</span>
               case &quot;white&quot;:
-<span class="nc" id="L70">                c = Color.WHITE;</span>
-<span class="nc" id="L71">                break;</span>
+<span class="fc" id="L63">                c = Color.WHITE;</span>
+<span class="fc" id="L64">                break;</span>
               case &quot;green&quot;:
-<span class="nc" id="L73">                c = Color.GREEN;</span>
-<span class="nc" id="L74">                break;</span>
+<span class="fc" id="L66">                c = Color.GREEN;</span>
+<span class="fc" id="L67">                break;</span>
               case &quot;yellow&quot;:
-<span class="nc" id="L76">                c = Color.YELLOW;</span>
-<span class="nc" id="L77">                break;</span>
+<span class="fc" id="L69">                c = Color.YELLOW;</span>
+<span class="fc" id="L70">                break;</span>
               default:
-<span class="nc" id="L79">                c = Color.MAGENTA;</span>
+<span class="fc" id="L72">                c = Color.MAGENTA;</span>
             }
-<span class="nc" id="L81">            layers.add(new TrafficoSignElement(glyph, c));</span>
+<span class="fc" id="L74">            layers.add(new TrafficoSignElement(glyph, c));</span>
           }
         }
-<span class="nc" id="L84">        countryMap.put(name, layers.toArray(new TrafficoSignElement[0]));</span>
-<span class="nc" id="L85">      }</span>
-<span class="nc" id="L86">      signs.put(country, countryMap);</span>
+<span class="fc" id="L77">        countryMap.put(name, layers.toArray(new TrafficoSignElement[0]));</span>
+<span class="fc" id="L78">      }</span>
+<span class="fc" id="L79">      signs.put(country, countryMap);</span>
     }
-<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (signs.get(country).get(signName) != null) {</span>
-<span class="nc" id="L89">      return signs.get(country).get(signName);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (signs.get(country).get(signName) != null) {</span>
+<span class="fc" id="L82">      return signs.get(country).get(signName);</span>
     }
-<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (isIn.containsKey(country)) {</span>
-<span class="nc" id="L92">      return TrafficoSign.getSign(isIn.get(country), signName);</span>
-    }
-<span class="nc" id="L94">    return null;</span>
+<span class="fc" id="L84">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

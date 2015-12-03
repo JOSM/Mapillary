@@ -118,9 +118,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L118">      MapView.addLayerChangeListener(this);</span>
 <span class="nc bnc" id="L119" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
 <span class="nc" id="L120">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)</span>
 <span class="nc" id="L122">        MapillaryDownloader.automaticDownload();</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic)</span>
 <span class="nc" id="L124">        this.mode.zoomChanged();</span>
     }
     // Does not execute when in headless mode

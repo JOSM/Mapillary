@@ -9,31 +9,29 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-<span class="nc" id="L12">public class TrafficoGlyph {</span>
+public final class TrafficoGlyph {
+<span class="fc" id="L13">  private TrafficoGlyph() {</span>
+    // private constructor to avoid instantiation
+<span class="fc" id="L15">  }</span>
   private static Map&lt;String, Character&gt; glyphs;
 
   private static Map&lt;String, Character&gt; readGlyphsFromResources() {
-<span class="nc" id="L16">    JsonReader reader = Json.createReader(TrafficoSignElement.class</span>
-<span class="nc" id="L17">        .getResourceAsStream(&quot;/data/fonts/traffico/glyphs.json&quot;));</span>
-<span class="nc" id="L18">    JsonObject glyphObject = reader.readObject().getJsonObject(&quot;glyphs&quot;);</span>
-<span class="nc" id="L19">    Set&lt;String&gt; glyphNames = glyphObject.keySet();</span>
-<span class="nc" id="L20">    glyphs = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L21" title="All 2 branches missed.">    for (String name : glyphNames) {</span>
-<span class="nc" id="L22">      glyphs.put(name, glyphObject.getString(name).charAt(0));</span>
-<span class="nc" id="L23">    }</span>
-<span class="nc" id="L24">    return glyphs;</span>
+<span class="fc" id="L19">    JsonReader reader = Json.createReader(TrafficoSignElement.class</span>
+<span class="fc" id="L20">        .getResourceAsStream(&quot;/data/fonts/traffico/glyphs.json&quot;));</span>
+<span class="fc" id="L21">    JsonObject glyphObject = reader.readObject().getJsonObject(&quot;glyphs&quot;);</span>
+<span class="fc" id="L22">    Set&lt;String&gt; glyphNames = glyphObject.keySet();</span>
+<span class="fc" id="L23">    glyphs = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    for (String name : glyphNames) {</span>
+<span class="fc" id="L25">      glyphs.put(name, glyphObject.getString(name).charAt(0));</span>
+<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">    return glyphs;</span>
   }
 
   public static Character getGlyph(String key) {
-<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (glyphs == null) {</span>
-<span class="nc" id="L29">      glyphs = readGlyphsFromResources();</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">    if (glyphs == null) {</span>
+<span class="fc" id="L32">      glyphs = readGlyphsFromResources();</span>
     }
-<span class="nc" id="L31">    return glyphs.get(key);</span>
+<span class="fc" id="L34">    return glyphs.get(key);</span>
   }
-
-  public static void main(String[] args) {
-<span class="nc" id="L35">    System.out.println(TrafficoGlyph.getGlyph(&quot;h&quot;));</span>
-<span class="nc" id="L36">    System.out.println(TrafficoGlyph.getGlyph(&quot;DE-arrow-up&quot;));</span>
-<span class="nc" id="L37">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

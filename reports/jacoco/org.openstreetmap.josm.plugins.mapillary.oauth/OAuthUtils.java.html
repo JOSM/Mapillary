@@ -36,9 +36,11 @@ import org.openstreetmap.josm.Main;
 <span class="nc" id="L36">    con.setRequestProperty(&quot;Authorization&quot;,</span>
 <span class="nc" id="L37">        &quot;Bearer &quot; + Main.pref.get(&quot;mapillary.access-token&quot;));</span>
 
-<span class="nc" id="L39">    BufferedReader in = new BufferedReader(new InputStreamReader(</span>
-<span class="nc" id="L40">        con.getInputStream()));</span>
-<span class="nc" id="L41">    return Json.createReader(in).readObject();</span>
+<span class="nc" id="L39">    try (</span>
+<span class="nc" id="L40">      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;))</span>
+    ) {
+<span class="nc" id="L42">      return Json.createReader(in).readObject();</span>
+<span class="nc bnc" id="L43" title="All 8 branches missed.">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

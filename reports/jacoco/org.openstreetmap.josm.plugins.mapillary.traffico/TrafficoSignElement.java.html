@@ -8,26 +8,26 @@ public class TrafficoSignElement {
   private Color color;
   private char glyph;
 
-<span class="nc" id="L11">  public TrafficoSignElement(char glyph, Color c) {</span>
-<span class="nc bnc" id="L12" title="All 2 branches missed.">    if (c == null) {</span>
-<span class="nc" id="L13">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L11">  public TrafficoSignElement(char glyph, Color c) {</span>
+<span class="fc bfc" id="L12" title="All 2 branches covered.">    if (c == null) {</span>
+<span class="fc" id="L13">      throw new IllegalArgumentException();</span>
     }
-<span class="nc" id="L15">    this.color = c;</span>
-<span class="nc" id="L16">    this.glyph = glyph;</span>
-<span class="nc" id="L17">  }</span>
+<span class="fc" id="L15">    this.color = c;</span>
+<span class="fc" id="L16">    this.glyph = glyph;</span>
+<span class="fc" id="L17">  }</span>
 
   /**
    * @return the color
    */
   public Color getColor() {
-<span class="nc" id="L23">    return this.color;</span>
+<span class="fc" id="L23">    return this.color;</span>
   }
 
   /**
    * @return the glyph
    */
   public char getGlyph() {
-<span class="nc" id="L30">    return this.glyph;</span>
+<span class="fc" id="L30">    return this.glyph;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

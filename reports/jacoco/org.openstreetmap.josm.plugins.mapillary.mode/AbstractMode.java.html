@@ -65,7 +65,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
   @Override
   public void zoomChanged() {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC) {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic) {</span>
 <span class="nc bnc" id="L69" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
 <span class="nc" id="L70">        semiautomaticThread.start();</span>
 <span class="nc" id="L71">      semiautomaticThread.moved();</span>
