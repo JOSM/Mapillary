@@ -2,9 +2,8 @@ package org.openstreetmap.josm.plugins.mapillary.traffico;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Constructor;
-
 import org.junit.Test;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class TrafficoGlyphTest {
 
@@ -16,14 +15,9 @@ public class TrafficoGlyphTest {
     assertEquals(null, TrafficoGlyph.getGlyph(null));
   }
 
-  /**
-   * The following test has the only purpose to provide code coverage for the private constructor.
-   */
   @Test
-  public void testPrivateConstructor() throws Exception {
-    Constructor<?> c = TrafficoGlyph.class.getDeclaredConstructors()[0];
-    c.setAccessible(true);
-    c.newInstance();
+  public void testUtilityClass() {
+    TestUtil.testUtilityClass(TrafficoGlyph.class);
   }
 
 }

@@ -8,20 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-public class TrafficoSign {
-  private static final Map<String, String> isIn = new TreeMap<>();
-
-  static {
-    isIn.put("be", "europe");
-    isIn.put("de", "europe");
-    isIn.put("dk", "europe");
-    isIn.put("es", "europe");
+public final class TrafficoSign {
+  private TrafficoSign() {
+    // private constructor to avoid instantiation
   }
 
   private static Map<String, Map<String, TrafficoSignElement[]>> signs = new HashMap<>();
@@ -30,8 +24,7 @@ public class TrafficoSign {
     if (signs.get(country) == null) {
       System.out.println("Read signs for " + country);
       InputStream countryStream = TrafficoSign.class
-          .getResourceAsStream("/data/fonts/traffico/signs/" + country
-              + ".json");
+          .getResourceAsStream("/data/fonts/traffico/signs/" + country + ".json");
       if (countryStream == null) {
         return null;
       }
@@ -87,9 +80,6 @@ public class TrafficoSign {
     }
     if (signs.get(country).get(signName) != null) {
       return signs.get(country).get(signName);
-    }
-    if (isIn.containsKey(country)) {
-      return TrafficoSign.getSign(isIn.get(country), signName);
     }
     return null;
   }

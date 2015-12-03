@@ -9,7 +9,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-public class TrafficoGlyph {
+public final class TrafficoGlyph {
   private TrafficoGlyph() {
     // private constructor to avoid instantiation
   }

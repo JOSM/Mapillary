@@ -36,8 +36,10 @@ public class OAuthUtils {
     con.setRequestProperty("Authorization",
         "Bearer " + Main.pref.get("mapillary.access-token"));
 
-    BufferedReader in = new BufferedReader(new InputStreamReader(
-        con.getInputStream()));
-    return Json.createReader(in).readObject();
+    try (
+      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))
+    ) {
+      return Json.createReader(in).readObject();
+    }
   }
 }
