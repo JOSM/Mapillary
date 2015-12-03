@@ -22,6 +22,24 @@ public class MapillaryImage extends MapillaryAbstractImage {
   private String location;
 
   /**
+   * Main constructor of the class MapillaryImage
+   *
+   * @param key
+   *          The unique identifier of the image.
+   * @param lat
+   *          The latitude where it is positioned.
+   * @param lon
+   *          The longitude where it is positioned.
+   * @param ca
+   *          The direction of the images in degrees, meaning 0 north.
+   */
+  public MapillaryImage(String key, double lat, double lon, double ca) {
+    super(lat, lon, ca);
+    this.key = key;
+    this.signs = new ArrayList<>();
+  }
+
+  /**
    * Returns the location where the image was taken.
    *
    * @return A {@code String} containing the location where the picture was taken.
@@ -38,24 +56,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
    */
   public void setLocation(String location) {
     this.location = location;
-  }
-
-  /**
-   * Main constructor of the class MapillaryImage
-   *
-   * @param key
-   *          The unique identifier of the image.
-   * @param lat
-   *          The latitude where it is positioned.
-   * @param lon
-   *          The longitude where it is positioned.
-   * @param ca
-   *          The direction of the images in degrees, meaning 0 north.
-   */
-  public MapillaryImage(String key, double lat, double lon, double ca) {
-    super(lat, lon, ca);
-    this.key = key;
-    this.signs = new ArrayList<>();
   }
 
   /**

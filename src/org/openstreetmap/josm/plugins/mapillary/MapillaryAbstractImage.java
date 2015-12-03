@@ -86,18 +86,18 @@ public abstract class MapillaryAbstractImage {
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-    String format = "";
+    StringBuilder format = new StringBuilder("");
     if (Main.pref.getBoolean("iso.dates"))
-      format += "yyyy-MM-dd";
+      format.append("yyyy-MM-dd");
     else
-      format += "dd/MM/yyyy";
+      format.append("dd/MM/yyyy");
     if (Main.pref.getBoolean("mapillary.display-hour", true)) {
       if (Main.pref.getBoolean("mapillary.format-24"))
-        format += " - HH:mm:ss (z)";
+        format.append(" - HH:mm:ss (z)");
       else
-        format += " - h:mm:ss a (z)";
+        format.append(" - h:mm:ss a (z)");
     }
-    return getDate(format);
+    return getDate(format.toString());
   }
 
   /**

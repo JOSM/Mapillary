@@ -118,9 +118,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       MapView.addLayerChangeListener(this);
       if (Main.map.mapView.getEditLayer() != null)
         Main.map.mapView.getEditLayer().data.addDataSetListener(this);
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.AUTOMATIC)
+      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)
         MapillaryDownloader.automaticDownload();
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.SEMIAUTOMATIC)
+      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic)
         this.mode.zoomChanged();
     }
     // Does not execute when in headless mode

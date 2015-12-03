@@ -23,7 +23,7 @@ import org.openstreetmap.josm.Main;
  */
 public class OAuthPortListener extends Thread {
 
-  protected static String RESPONSE = tr("<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>");
+  protected static final String RESPONSE = tr("<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>");
 
   @Override
   public void run() {

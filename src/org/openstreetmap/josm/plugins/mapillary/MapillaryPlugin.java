@@ -44,17 +44,17 @@ public class MapillaryPlugin extends Plugin {
   /** OS route separator */
   public static final String SEPARATOR = System.getProperty("file.separator");
   /** 24x24 icon. */
-  public static ImageIcon ICON24;
+  public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
   /** 16x16 icon. */
-  public static ImageIcon ICON16;
+  public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
   /** Icon representing an image in the map. */
-  public static ImageIcon MAP_ICON;
+  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png").get();
   /** Icon representing a selected image in the map. */
-  public static ImageIcon MAP_ICON_SELECTED;
+  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
   /** Icon representing an imported image in the map. */
-  public static ImageIcon MAP_ICON_IMPORTED;
+  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
   /** Icon used to identify which images have signs on them */
-  public static ImageIcon MAP_SIGN;
+  public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
 
   /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
@@ -100,13 +100,6 @@ public class MapillaryPlugin extends Plugin {
    */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
-
-    ICON24 = new ImageProvider("icon24.png").get();
-    ICON16 = new ImageProvider("icon16.png").get();
-    MAP_ICON = new ImageProvider("mapicon.png").get();
-    MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
-    MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
-    MAP_SIGN = new ImageProvider("sign.png").get();
 
     this.downloadAction = new MapillaryDownloadAction();
     walkAction = new MapillaryWalkAction();
@@ -166,7 +159,7 @@ public class MapillaryPlugin extends Plugin {
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       setMenuEnabled(DOWNLOAD_MENU, true);
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.MANUAL)
+      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)
         setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
       setMenuEnabled(IMPORT_MENU, true);
       setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);

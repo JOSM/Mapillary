@@ -28,7 +28,7 @@ public class MapillaryData {
   /** All the images selected, can be more than one. */
   private final List<MapillaryAbstractImage> multiSelectedImages;
   /** Listeners of the class. */
-  private CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
+  private final CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
   /** The bounds of the areas for which the pictures have been downloaded. */
   public CopyOnWriteArrayList<Bounds> bounds;
 
@@ -176,7 +176,7 @@ public class MapillaryData {
   /**
    * Repaints mapView object.
    */
-  public synchronized static void dataUpdated() {
+  public static synchronized void dataUpdated() {
     if (Main.main != null)
       Main.map.mapView.repaint();
   }
@@ -311,23 +311,18 @@ public class MapillaryData {
     this.selectedImage = image;
     this.multiSelectedImages.clear();
     this.multiSelectedImages.add(image);
-    if (image != null && Main.main != null) {
-      if (image instanceof MapillaryImage) {
-        MapillaryImage mapillaryImage = (MapillaryImage) image;
-        // Downloading thumbnails of surrounding pictures.
-        if (mapillaryImage.next() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
-          if (mapillaryImage.next().next() != null)
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next()
-                .next());
-        }
-        if (mapillaryImage.previous() != null) {
-          CacheUtils
-              .downloadPicture((MapillaryImage) mapillaryImage.previous());
-          if (mapillaryImage.previous().previous() != null)
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage
-                .previous().previous());
-        }
+    if (image != null && Main.main != null && image instanceof MapillaryImage) {
+      MapillaryImage mapillaryImage = (MapillaryImage) image;
+      // Downloading thumbnails of surrounding pictures.
+      if (mapillaryImage.next() != null) {
+        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
+        if (mapillaryImage.next().next() != null)
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());
+      }
+      if (mapillaryImage.previous() != null) {
+        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
+        if (mapillaryImage.previous().previous() != null)
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());
       }
     }
     if (zoom && Main.main != null)
@@ -395,7 +390,7 @@ public class MapillaryData {
   /**
    * Sets a new ArrayList object as the used set of images.
    *
-   * @param images
+   * @param images the new image list (previously set images are completely replaced)
    */
   public synchronized void setImages(List<MapillaryAbstractImage> images) {
     this.images = new ArrayList<>(images);

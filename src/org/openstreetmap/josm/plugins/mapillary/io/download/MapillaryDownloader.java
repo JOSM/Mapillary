@@ -28,14 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 public class MapillaryDownloader {
 
   /** Possible download modes. */
-  public static final String[] MODES = new String[] { "Automatic",
-      "Semiautomatic", "Manual" };
-  /** Automatic mode. */
-  public static final int AUTOMATIC = 0;
-  /** Semiautomatic mode. */
-  public static final int SEMIAUTOMATIC = 1;
-  /** Manual mode. */
-  public static final int MANUAL = 2;
+  public enum MODES {Automatic, Semiautomatic, Manual};
 
   /** All the Threads that have been run. Used to interrupt them properly. */
   private static ArrayList<Thread> threads = new ArrayList<>();
@@ -79,7 +72,7 @@ public class MapillaryDownloader {
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void completeView() {
-    if (getMode() != SEMIAUTOMATIC && getMode() != MANUAL)
+    if (getMode() != MODES.Semiautomatic && getMode() != MODES.Manual)
       throw new IllegalStateException("Must be in semiautomatic or manual mode");
     Bounds view = Main.map.mapView.getRealBounds();
     if (view.getArea() > MAX_AREA)
@@ -150,7 +143,7 @@ public class MapillaryDownloader {
       tooBigErrorDialog();
       return;
     }
-    if (getMode() != AUTOMATIC)
+    if (getMode() != MODES.Automatic)
       throw new IllegalStateException("Must be in automatic mode.");
     for (Bounds bounds : Main.map.mapView.getEditLayer().data
         .getDataSourceBounds()) {
@@ -183,17 +176,17 @@ public class MapillaryDownloader {
    *
    * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
    */
-  public static int getMode() {
-    if (Main.pref.get("mapillary.download-mode").equals(MODES[0])
+  public static MapillaryDownloader.MODES getMode() {
+    if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
         && (MapillaryLayer.INSTANCE == null || !MapillaryLayer.INSTANCE.TEMP_SEMIAUTOMATIC))
-      return 0;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES[1])
+      return MODES.Automatic;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
         || (MapillaryLayer.INSTANCE != null && MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
-      return 1;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES[2]))
-      return 2;
+      return MODES.Semiautomatic;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
+      return MODES.Manual;
     else if (Main.pref.get("mapillary.download-mode").equals(""))
-      return 0;
+      return MODES.Automatic;
     else
       throw new IllegalStateException();
   }

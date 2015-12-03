@@ -35,8 +35,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
 
   private JCheckBox reverseButtons = new JCheckBox(
       tr("Reverse buttons position when displaying images."));
-  private JComboBox<String> downloadMode = new JComboBox<>(
-      MapillaryDownloader.MODES);
+  private JComboBox<String> downloadMode = new JComboBox<>(new String[]{
+      MapillaryDownloader.MODES.Automatic.toString(),
+      MapillaryDownloader.MODES.Semiautomatic.toString(),
+      MapillaryDownloader.MODES.Manual.toString()
+  });
   private JCheckBox displayHour = new JCheckBox(
       tr("Display hour when the picture was taken"));
   private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
@@ -62,15 +65,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.setLayout(new FlowLayout(FlowLayout.LEFT));
     panel.add(this.reverseButtons);
     // Sets the value of the ComboBox.
-    if (Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[0]))
-      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[0]);
-    if (Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[1]))
-      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[1]);
-    if (Main.pref.get("mapillary.download-mode").equals(
-        MapillaryDownloader.MODES[2]))
-      this.downloadMode.setSelectedItem(MapillaryDownloader.MODES[2]);
+    if (Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Automatic.toString())
+        || Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Semiautomatic.toString())
+        || Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Manual.toString())) {
+      this.downloadMode.setSelectedItem(Main.pref.get("mapillary.download-mode"));
+    }
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(tr("Download mode: ")));
     downloadModePanel.add(this.downloadMode);
@@ -100,15 +99,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
         .put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);
-    if (this.downloadMode.getSelectedItem()
-        .equals(MapillaryDownloader.MODES[0]))
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[0]);
-    if (this.downloadMode.getSelectedItem()
-        .equals(MapillaryDownloader.MODES[1]))
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[1]);
-    if (this.downloadMode.getSelectedItem()
-        .equals(MapillaryDownloader.MODES[2])) {
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES[2]);
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Automatic.toString());
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Semiautomatic.toString());
+    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
+      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Manual.toString());
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
     }
     Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
