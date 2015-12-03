@@ -10,6 +10,9 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 public class TrafficoGlyph {
+  private TrafficoGlyph() {
+    // private constructor to avoid instantiation
+  }
   private static Map<String, Character> glyphs;
 
   private static Map<String, Character> readGlyphsFromResources() {
@@ -29,10 +32,5 @@ public class TrafficoGlyph {
       glyphs = readGlyphsFromResources();
     }
     return glyphs.get(key);
-  }
-
-  public static void main(String[] args) {
-    System.out.println(TrafficoGlyph.getGlyph("h"));
-    System.out.println(TrafficoGlyph.getGlyph("DE-arrow-up"));
   }
 }
