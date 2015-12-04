@@ -38,9 +38,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
       &quot;mapillary.max-download-area&quot;, 0.015);
 
   /** Base URL of the Mapillary API. */
-  public final static String BASE_URL = &quot;https://a.mapillary.com/v2/&quot;;
+  public static final String BASE_URL = &quot;https://a.mapillary.com/v2/&quot;;
   /** Client ID for the app */
-  public final static String CLIENT_ID = &quot;T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;;
+  public static final String CLIENT_ID = &quot;T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;;
   /** Executor that will run the petitions. */
 <span class="nc" id="L45">  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,</span>
       100, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;Runnable&gt;(100));;
@@ -177,15 +177,15 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
    * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
    */
   public static MapillaryDownloader.MODES getMode() {
-<span class="nc bnc" id="L180" title="All 6 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Automatic.toString())</span>
-        &amp;&amp; (MapillaryLayer.INSTANCE == null || !MapillaryLayer.INSTANCE.TEMP_SEMIAUTOMATIC))
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Automatic.toString())</span>
+<span class="nc bnc" id="L181" title="All 4 branches missed.">        &amp;&amp; (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))</span>
 <span class="nc" id="L182">      return MODES.Automatic;</span>
-<span class="nc bnc" id="L183" title="All 4 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Semiautomatic.toString())</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">        || (MapillaryLayer.INSTANCE != null &amp;&amp; MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Semiautomatic.toString())</span>
+<span class="nc bnc" id="L184" title="All 4 branches missed.">        || (MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))</span>
 <span class="nc" id="L185">      return MODES.Semiautomatic;</span>
 <span class="nc bnc" id="L186" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Manual.toString()))</span>
 <span class="nc" id="L187">      return MODES.Manual;</span>
-<span class="nc bnc" id="L188" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(&quot;&quot;))</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    else if (&quot;&quot;.equals(Main.pref.get(&quot;mapillary.download-mode&quot;)))</span>
 <span class="nc" id="L189">      return MODES.Automatic;</span>
     else
 <span class="nc" id="L191">      throw new IllegalStateException();</span>

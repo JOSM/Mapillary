@@ -72,92 +72,86 @@ public class MapillaryExportWriterThread extends Thread {
   @Override
   public void run() {
 <span class="nc" id="L74">    this.monitor.setCustomText(&quot;Downloaded 0/&quot; + this.amount);</span>
-    // File tempFile = null;
     BufferedImage img;
-<span class="nc" id="L77">    MapillaryAbstractImage mimg = null;</span>
-<span class="nc" id="L78">    String finalPath = &quot;&quot;;</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">    for (int i = 0; i &lt; this.amount; i++) {</span>
+    MapillaryAbstractImage mimg;
+<span class="nc" id="L77">    String finalPath = &quot;&quot;;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    for (int i = 0; i &lt; this.amount; i++) {</span>
       try {
-<span class="nc" id="L81">        img = this.queue.take();</span>
-<span class="nc" id="L82">        mimg = this.queueImages.take();</span>
-<span class="nc bnc" id="L83" title="All 4 branches missed.">        if (img == null || mimg == null)</span>
-<span class="nc" id="L84">          throw new IllegalStateException(&quot;Null image&quot;);</span>
-<span class="nc bnc" id="L85" title="All 4 branches missed.">        if (this.path == null &amp;&amp; mimg instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L86">          String path = ((MapillaryImportedImage) mimg).getFile().getPath();</span>
-<span class="nc" id="L87">          finalPath = path.substring(0, path.lastIndexOf('.'));</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImage)</span>
-<span class="nc" id="L89">          finalPath = this.path + &quot;/&quot; + ((MapillaryImage) mimg).getKey();</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L91">          finalPath = this.path + &quot;/&quot;</span>
-<span class="nc" id="L92">              + ((MapillaryImportedImage) mimg).getFile().getName();</span>
-        ;
+<span class="nc" id="L80">        img = this.queue.take();</span>
+<span class="nc" id="L81">        mimg = this.queueImages.take();</span>
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        if (img == null || mimg == null)</span>
+<span class="nc" id="L83">          throw new IllegalStateException(&quot;Null image&quot;);</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">        if (this.path == null &amp;&amp; mimg instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L85">          String path = ((MapillaryImportedImage) mimg).getFile().getPath();</span>
+<span class="nc" id="L86">          finalPath = path.substring(0, path.lastIndexOf('.'));</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImage)</span>
+<span class="nc" id="L88">          finalPath = this.path + &quot;/&quot; + ((MapillaryImage) mimg).getKey();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L90">          finalPath = this.path + &quot;/&quot;</span>
+<span class="nc" id="L91">              + ((MapillaryImportedImage) mimg).getFile().getName();</span>
 
         // Transforms the image into a byte array.
-<span class="nc" id="L96">        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
-<span class="nc" id="L97">        ImageIO.write(img, &quot;jpg&quot;, outputStream);</span>
-<span class="nc" id="L98">        byte[] imageBytes = outputStream.toByteArray();</span>
+<span class="nc" id="L94">        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+<span class="nc" id="L95">        ImageIO.write(img, &quot;jpg&quot;, outputStream);</span>
+<span class="nc" id="L96">        byte[] imageBytes = outputStream.toByteArray();</span>
 
         // Write EXIF tags
-<span class="nc" id="L101">        TiffOutputSet outputSet = null;</span>
-<span class="nc" id="L102">        TiffOutputDirectory exifDirectory = null;</span>
-<span class="nc" id="L103">        TiffOutputDirectory gpsDirectory = null;</span>
+<span class="nc" id="L99">        TiffOutputSet outputSet = null;</span>
+        TiffOutputDirectory exifDirectory;
+        TiffOutputDirectory gpsDirectory;
         // If the image is imported, loads the rest of the EXIF data.
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L106">          final ImageMetadata metadata = Imaging</span>
-<span class="nc" id="L107">              .getMetadata(((MapillaryImportedImage) mimg).getFile());</span>
-<span class="nc" id="L108">          final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">          if (null != jpegMetadata) {</span>
-<span class="nc" id="L110">            final TiffImageMetadata exif = jpegMetadata.getExif();</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (null != exif) {</span>
-<span class="nc" id="L112">              outputSet = exif.getOutputSet();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L104">          final ImageMetadata metadata = Imaging</span>
+<span class="nc" id="L105">              .getMetadata(((MapillaryImportedImage) mimg).getFile());</span>
+<span class="nc" id="L106">          final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">          if (null != jpegMetadata) {</span>
+<span class="nc" id="L108">            final TiffImageMetadata exif = jpegMetadata.getExif();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (null != exif) {</span>
+<span class="nc" id="L110">              outputSet = exif.getOutputSet();</span>
             }
           }
         }
-<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (null == outputSet) {</span>
-<span class="nc" id="L117">          outputSet = new TiffOutputSet();</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (null == outputSet) {</span>
+<span class="nc" id="L115">          outputSet = new TiffOutputSet();</span>
         }
-<span class="nc" id="L119">        exifDirectory = outputSet.getOrCreateExifDirectory();</span>
-<span class="nc" id="L120">        gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
+<span class="nc" id="L117">        exifDirectory = outputSet.getOrCreateExifDirectory();</span>
+<span class="nc" id="L118">        gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
 
-<span class="nc" id="L122">        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
-<span class="nc" id="L123">        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
+<span class="nc" id="L120">        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
+<span class="nc" id="L121">        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
             GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
-<span class="nc" id="L126">        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
-<span class="nc" id="L127">        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
-<span class="nc" id="L128">            RationalNumber.valueOf(mimg.getCa()));</span>
+<span class="nc" id="L124">        gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="nc" id="L125">        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
+<span class="nc" id="L126">            RationalNumber.valueOf(mimg.getCa()));</span>
 
-<span class="nc" id="L130">        exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L132">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="nc" id="L133">              ((MapillaryImportedImage) mimg).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImage)</span>
-<span class="nc" id="L135">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="nc" id="L136">              ((MapillaryImage) mimg).getDate(&quot;yyyy/MM/dd hh/mm/ss&quot;));</span>
-<span class="nc" id="L137">        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon()</span>
-<span class="nc" id="L138">            .lat());</span>
-<span class="nc" id="L139">        OutputStream os = new BufferedOutputStream(new FileOutputStream(</span>
-            finalPath + &quot;.jpg&quot;));
-<span class="nc" id="L141">        new ExifRewriter()</span>
-<span class="nc" id="L142">            .updateExifMetadataLossless(imageBytes, os, outputSet);</span>
+<span class="nc" id="L128">        exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L130">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="nc" id="L131">              ((MapillaryImportedImage) mimg).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImage)</span>
+<span class="nc" id="L133">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="nc" id="L134">              ((MapillaryImage) mimg).getDate(&quot;yyyy/MM/dd hh/mm/ss&quot;));</span>
+<span class="nc" id="L135">        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon().lat());</span>
+<span class="nc" id="L136">        OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + &quot;.jpg&quot;));</span>
+<span class="nc" id="L137">        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
 
-<span class="nc" id="L144">        os.close();</span>
-<span class="nc" id="L145">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L146">        Main.info(&quot;Mapillary export cancelled&quot;);</span>
-<span class="nc" id="L147">        return;</span>
-<span class="nc" id="L148">      } catch (IOException e) {</span>
-<span class="nc" id="L149">        Main.error(e);</span>
-<span class="nc" id="L150">      } catch (ImageWriteException e) {</span>
-<span class="nc" id="L151">        Main.error(e);</span>
-<span class="nc" id="L152">      } catch (ImageReadException e) {</span>
-<span class="nc" id="L153">        Main.error(e);</span>
-<span class="nc" id="L154">      }</span>
+<span class="nc" id="L139">        os.close();</span>
+<span class="nc" id="L140">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L141">        Main.info(&quot;Mapillary export cancelled&quot;);</span>
+<span class="nc" id="L142">        return;</span>
+<span class="nc" id="L143">      } catch (IOException e) {</span>
+<span class="nc" id="L144">        Main.error(e);</span>
+<span class="nc" id="L145">      } catch (ImageWriteException e) {</span>
+<span class="nc" id="L146">        Main.error(e);</span>
+<span class="nc" id="L147">      } catch (ImageReadException e) {</span>
+<span class="nc" id="L148">        Main.error(e);</span>
+<span class="nc" id="L149">      }</span>
 
       // Increases the progress bar.
-<span class="nc" id="L157">      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX</span>
-          / this.amount);
-<span class="nc" id="L159">      this.monitor.setCustomText(&quot;Downloaded &quot; + (i + 1) + &quot;/&quot; + this.amount);</span>
+<span class="nc" id="L152">      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);</span>
+<span class="nc" id="L153">      this.monitor.setCustomText(&quot;Downloaded &quot; + (i + 1) + &quot;/&quot; + this.amount);</span>
     }
-<span class="nc" id="L161">  }</span>
+<span class="nc" id="L155">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -189,7 +189,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void join(
+  public static synchronized void join(
       MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
 <span class="fc" id="L195">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>
@@ -432,7 +432,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void unjoin(
+  public static synchronized void unjoin(
       MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
 <span class="fc" id="L438">    MapillaryAbstractImage firstImage = mapillaryAbstractImage;</span>

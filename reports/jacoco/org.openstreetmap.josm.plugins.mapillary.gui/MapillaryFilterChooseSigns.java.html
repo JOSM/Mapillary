@@ -46,7 +46,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
   /** Forbidden turn signs */
 <span class="nc" id="L47">  public final JCheckBox noTurn = new JCheckBox();</span>
 
-  private static MapillaryFilterChooseSigns INSTANCE;
+  private static MapillaryFilterChooseSigns instance;
 
 <span class="nc" id="L51">  private MapillaryFilterChooseSigns() {</span>
 <span class="nc" id="L52">    this.maxSpeed.setSelected(true);</span>
@@ -171,9 +171,9 @@ public class MapillaryFilterChooseSigns extends JPanel {
    * @return THe unique instance of the class.
    */
   public static MapillaryFilterChooseSigns getInstance() {
-<span class="nc bnc" id="L174" title="All 2 branches missed.">    if (INSTANCE == null)</span>
-<span class="nc" id="L175">      INSTANCE = new MapillaryFilterChooseSigns();</span>
-<span class="nc" id="L176">    return INSTANCE;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">    if (instance == null)</span>
+<span class="nc" id="L175">      instance = new MapillaryFilterChooseSigns();</span>
+<span class="nc" id="L176">    return instance;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

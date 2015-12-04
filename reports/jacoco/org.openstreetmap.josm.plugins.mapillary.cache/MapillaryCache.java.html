@@ -16,22 +16,21 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
  * @author nokutu
  *
  */
-public class MapillaryCache extends
-    JCSCachedTileLoaderJob&lt;String, BufferedImageCacheEntry&gt; {
+public class MapillaryCache extends JCSCachedTileLoaderJob&lt;String, BufferedImageCacheEntry&gt; {
 
-  private volatile URL url;
-  private volatile String key;
+  private final URL url;
+  private final String key;
 
   /**
    * Types of images.
    *
    * @author nokutu
    */
-<span class="nc" id="L30">  public static enum Type {</span>
+<span class="pc" id="L29">  public enum Type {</span>
     /** Full quality image */
-<span class="nc" id="L32">    FULL_IMAGE,</span>
+<span class="fc" id="L31">    FULL_IMAGE,</span>
     /** Low quality image */
-<span class="nc" id="L34">    THUMBNAIL</span>
+<span class="fc" id="L33">    THUMBNAIL</span>
   }
 
   /**
@@ -44,47 +43,52 @@ public class MapillaryCache extends
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-<span class="nc" id="L47">    super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap&lt;String, String&gt;());</span>
-<span class="nc" id="L48">    this.key = key;</span>
-    try {
-<span class="nc bnc" id="L50" title="All 3 branches missed.">      switch (type) {</span>
-        case FULL_IMAGE:
-<span class="nc" id="L52">          this.url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
-              + &quot;/thumb-2048.jpg&quot;);
-<span class="nc" id="L54">          this.key += &quot;.FULL_IMAGE&quot;;</span>
-<span class="nc" id="L55">          break;</span>
-        case THUMBNAIL:
-<span class="nc" id="L57">          this.url = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key</span>
-              + &quot;/thumb-320.jpg&quot;);
-<span class="nc" id="L59">          this.key += &quot;.THUMBNAIL&quot;;</span>
-          break;
-      }
-<span class="nc" id="L62">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L63">      Main.error(e);</span>
-<span class="nc" id="L64">    }</span>
-<span class="nc" id="L65">  }</span>
+<span class="fc" id="L46">    super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap&lt;String, String&gt;());</span>
+<span class="fc" id="L47">    String k = null;</span>
+<span class="fc" id="L48">    URL u = null;</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">    if (key != null &amp;&amp; type != null) {</span>
+      try {
+<span class="pc bfc" id="L51" title="All 2 branches covered.">        switch (type) {</span>
+          case FULL_IMAGE:
+<span class="fc" id="L53">            k = key + &quot;.FULL_IMAGE&quot;;</span>
+<span class="fc" id="L54">            u = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key + &quot;/thumb-2048.jpg&quot;);</span>
+<span class="fc" id="L55">            break;</span>
+          case THUMBNAIL:
+          default:
+<span class="fc" id="L58">            k = key + &quot;.THUMBNAIL&quot;;</span>
+<span class="fc" id="L59">            u = new URL(&quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot; + key + &quot;/thumb-320.jpg&quot;);</span>
+            break;
+        }
+<span class="nc" id="L62">      } catch (MalformedURLException e) {</span>
+        // TODO: Throw exception, so that a MapillaryCache with malformed URL can't be instantiated.
+<span class="nc" id="L64">        Main.error(e);</span>
+<span class="fc" id="L65">      }</span>
+    }
+<span class="fc" id="L67">    this.key = k;</span>
+<span class="fc" id="L68">    this.url = u;</span>
+<span class="fc" id="L69">  }</span>
 
   @Override
   public String getCacheKey() {
-<span class="nc" id="L69">    return this.key;</span>
+<span class="fc" id="L73">    return this.key;</span>
   }
 
   @Override
   public URL getUrl() {
-<span class="nc" id="L74">    return this.url;</span>
+<span class="fc" id="L78">    return this.url;</span>
   }
 
   @Override
   protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
-<span class="nc" id="L79">    return new BufferedImageCacheEntry(content);</span>
+<span class="nc" id="L83">    return new BufferedImageCacheEntry(content);</span>
   }
 
   @Override
   protected boolean isObjectLoadable() {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (this.cacheData == null)</span>
-<span class="nc" id="L85">      return false;</span>
-<span class="nc" id="L86">    byte[] content = this.cacheData.getContent();</span>
-<span class="nc bnc" id="L87" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (this.cacheData == null)</span>
+<span class="fc" id="L89">      return false;</span>
+<span class="nc" id="L90">    byte[] content = this.cacheData.getContent();</span>
+<span class="nc bnc" id="L91" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

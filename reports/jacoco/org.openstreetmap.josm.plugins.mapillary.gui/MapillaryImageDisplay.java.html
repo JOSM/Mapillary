@@ -428,7 +428,7 @@ public class MapillaryImageDisplay extends JComponent {
         + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
   }
 
-  private final static Point getCenterImgCoord(Rectangle visibleRect) {
+  private static final Point getCenterImgCoord(Rectangle visibleRect) {
 <span class="nc" id="L432">    return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y</span>
         + visibleRect.height / 2);
   }
@@ -499,7 +499,7 @@ public class MapillaryImageDisplay extends JComponent {
 <span class="nc" id="L499">    repaint();</span>
 <span class="nc" id="L500">  }</span>
 
-  private final static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
+  private static final void checkVisibleRectPos(Image image, Rectangle visibleRect) {
 <span class="nc bnc" id="L503" title="All 2 branches missed.">    if (visibleRect.x &lt; 0) {</span>
 <span class="nc" id="L504">      visibleRect.x = 0;</span>
     }

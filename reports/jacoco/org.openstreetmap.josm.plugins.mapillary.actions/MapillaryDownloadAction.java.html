@@ -36,14 +36,11 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryLayer.INSTANCE == null) {</span>
-<span class="nc" id="L40">      MapillaryLayer.getInstance();</span>
-    } else {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">      if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())</span>
-<span class="nc" id="L43">        Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());</span>
-      else
-<span class="nc" id="L45">        Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());</span>
-    }
-<span class="nc" id="L47">  }</span>
+<span class="nc" id="L39">    MapillaryLayer.getInstance();</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())</span>
+<span class="nc" id="L41">      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());</span>
+    else
+<span class="nc" id="L43">      Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());</span>
+<span class="nc" id="L44">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
