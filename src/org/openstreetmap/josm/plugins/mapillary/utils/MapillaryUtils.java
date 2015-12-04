@@ -40,31 +40,34 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * @author nokutu
  *
  */
-public class MapillaryUtils {
+public final class MapillaryUtils {
 
-  private static double MIN_ZOOM_SQUARE_SIDE = 0.002;
+  private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
+
+  private MapillaryUtils() {
+    // Private constructor to avoid instantiation
+  }
 
   /**
    * Open the default browser in the given URL.
    *
-   * @param url
-   *          The URL that is going to be opened.
+   * @param url The (not-null) URL that is going to be opened.
+   * @throws IOException when the URL could not be opened
    */
-  public static void browse(URL url) {
+  public static void browse(URL url) throws IOException {
+    if (url == null) {
+      throw new IllegalArgumentException();
+    }
     Desktop desktop = Desktop.getDesktop();
     if (desktop.isSupported(Desktop.Action.BROWSE)) {
       try {
         desktop.browse(url.toURI());
-      } catch (IOException | URISyntaxException e1) {
-        Main.error(e1);
+      } catch (URISyntaxException e1) {
+        throw new IOException(e1);
       }
     } else {
       Runtime runtime = Runtime.getRuntime();
-      try {
-        runtime.exec("xdg-open " + url);
-      } catch (IOException exc) {
-        exc.printStackTrace();
-      }
+      runtime.exec("xdg-open " + url);
     }
   }
 

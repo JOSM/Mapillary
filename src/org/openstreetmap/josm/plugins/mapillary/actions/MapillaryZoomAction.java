@@ -50,9 +50,9 @@ public class MapillaryZoomAction extends JosmAction implements
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
     if (oldImage == null && newImage != null)
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);
     else if (oldImage != null && newImage == null)
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
   }
 
   @Override

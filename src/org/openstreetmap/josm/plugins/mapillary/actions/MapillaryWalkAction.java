@@ -100,9 +100,9 @@ public class MapillaryWalkAction extends JosmAction implements
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
     if (newImage != null)
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, true);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), true);
     else
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, false);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), false);
   }
 
 }

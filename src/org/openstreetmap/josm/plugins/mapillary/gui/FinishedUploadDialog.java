@@ -6,7 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.BoxLayout;
@@ -48,7 +48,7 @@ public class FinishedUploadDialog extends JPanel {
     public void actionPerformed(ActionEvent e) {
       try {
         MapillaryUtils.browse(new URL("http://www.mapillary.com/map/upload/im"));
-      } catch (MalformedURLException e1) {
+      } catch (IOException e1) {
         Main.error(e1);
       }
     }

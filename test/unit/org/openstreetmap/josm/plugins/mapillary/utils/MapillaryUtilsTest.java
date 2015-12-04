@@ -15,6 +15,11 @@ import org.junit.Test;
  */
 public class MapillaryUtilsTest {
 
+  @Test
+  public void testUtilityClass() {
+    TestUtil.testUtilityClass(MapillaryUtils.class);
+  }
+
   /**
    * Test {@link MapillaryUtils#degMinSecToDouble(RationalNumber[], String)}
    * method.

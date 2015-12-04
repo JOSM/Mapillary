@@ -438,7 +438,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
       putValue(NAME, tr("Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryStop.png"));
-      MapillaryPlugin.walkAction.addListener(this);
+      MapillaryPlugin.getWalkAction().addListener(this);
     }
 
     @Override
@@ -456,13 +456,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   private class PlayAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -17943404752082788L;
-    private WalkThread thread;
+    private transient WalkThread thread;
 
     public PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPlay.png"));
-      MapillaryPlugin.walkAction.addListener(this);
+      MapillaryPlugin.getWalkAction().addListener(this);
     }
 
     @Override
@@ -488,7 +488,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPause.png"));
-      MapillaryPlugin.walkAction.addListener(this);
+      MapillaryPlugin.getWalkAction().addListener(this);
     }
 
     @Override

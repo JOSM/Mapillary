@@ -5,7 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -98,14 +98,14 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     Main.pref
         .put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
     if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Automatic.toString());
     if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Semiautomatic.toString());
     if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Manual.toString());
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
     }
     Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
     Main.pref.put("mapillary.format-24", this.format24.isSelected());
@@ -132,10 +132,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     public void actionPerformed(ActionEvent arg0) {
       OAuthPortListener portListener = new OAuthPortListener();
       portListener.start();
-      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&response_type=token&scope=user:read%20public:upload%20public:write";
+      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id="+MapillaryPlugin.CLIENT_ID+"&response_type=token&scope=user:read%20public:upload%20public:write";
       try {
         MapillaryUtils.browse(new URL(url));
-      } catch (MalformedURLException e) {
+      } catch (IOException e) {
         Main.error(e);
       }
     }

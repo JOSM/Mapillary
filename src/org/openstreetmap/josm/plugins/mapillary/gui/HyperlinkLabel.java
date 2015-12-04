@@ -11,6 +11,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -160,9 +161,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
       @Override
       public void actionPerformed(ActionEvent arg0) {
         try {
-          MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/"
-              + HyperlinkLabel.this.key));
-        } catch (MalformedURLException e) {
+          MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/" + HyperlinkLabel.this.key));
+        } catch (IOException e) {
           Main.error(e);
         }
       }
@@ -210,6 +210,10 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (this.url == null)
       return;
-    MapillaryUtils.browse(this.url);
+    try {
+      MapillaryUtils.browse(this.url);
+    } catch (IOException e1) {
+      Main.error(e1);
+    }
   }
 }

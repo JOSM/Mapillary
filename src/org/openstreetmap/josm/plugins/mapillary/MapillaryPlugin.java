@@ -40,6 +40,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  */
 public class MapillaryPlugin extends Plugin {
+  public static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
 
   /** OS route separator */
   public static final String SEPARATOR = System.getProperty("file.separator");
@@ -62,35 +63,35 @@ public class MapillaryPlugin extends Plugin {
   private final MapillaryDownloadAction downloadAction;
   private final MapillaryExportAction exportAction;
   /** Import action */
-  public static MapillaryImportAction importAction;
+  private final MapillaryImportAction importAction;
   /** Zoom action */
-  public static MapillaryZoomAction zoomAction;
+  private static MapillaryZoomAction zoomAction;
   private final MapillaryDownloadViewAction downloadViewAction;
   private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
   private final MapillaryJoinAction joinAction;
   /** Walk action */
-  public static MapillaryWalkAction walkAction;
+  private static MapillaryWalkAction walkAction;
   /** Upload action */
-  public static MapillaryUploadAction uploadAction;
+  private static MapillaryUploadAction uploadAction;
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
-  public static JMenuItem DOWNLOAD_MENU;
+  private JMenuItem downloadMenu;
   /** Menu button for the {@link MapillaryExportAction} action. */
-  public static JMenuItem EXPORT_MENU;
+  private static JMenuItem exportMenu;
   /** Menu button for the {@link MapillaryImportAction} action. */
-  public static JMenuItem IMPORT_MENU;
+  private JMenuItem importMenu;
   /** Menu button for the {@link MapillaryZoomAction} action. */
-  public static JMenuItem ZOOM_MENU;
+  private static JMenuItem zoomMenu;
   /** Menu button for the {@link MapillaryDownloadViewAction} action. */
-  public static JMenuItem DOWNLOAD_VIEW_MENU;
+  private static JMenuItem downloadViewMenu;
   /** Menu button for the {@link MapillaryImportIntoSequenceAction} action. */
-  public static JMenuItem IMPORT_INTO_SEQUENCE_MENU;
+  private JMenuItem importIntoSequenceMenu;
   /** Menu button for the {@link MapillaryJoinAction} action. */
-  public static JMenuItem JOIN_MENU;
+  private static JMenuItem joinMenu;
   /** Menu button for the {@link MapillaryWalkAction} action. */
-  public static JMenuItem WALK_MENU;
+  private static JMenuItem walkMenu;
   /** Menu button for the {@link MapillaryUploadAction} action. */
-  public static JMenuItem UPLOAD_MENU;
+  private static JMenuItem uploadMenu;
 
   /**
    * Main constructor.
@@ -101,52 +102,108 @@ public class MapillaryPlugin extends Plugin {
   public MapillaryPlugin(PluginInformation info) {
     super(info);
 
-    this.downloadAction = new MapillaryDownloadAction();
+    downloadAction = new MapillaryDownloadAction();
     walkAction = new MapillaryWalkAction();
-    this.exportAction = new MapillaryExportAction();
+    exportAction = new MapillaryExportAction();
     importAction = new MapillaryImportAction();
     zoomAction = new MapillaryZoomAction();
-    this.downloadViewAction = new MapillaryDownloadViewAction();
-    this.importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
-    this.joinAction = new MapillaryJoinAction();
+    downloadViewAction = new MapillaryDownloadViewAction();
+    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
+    joinAction = new MapillaryJoinAction();
     uploadAction = new MapillaryUploadAction();
 
     if (Main.main != null) { // important for headless mode
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu,
-          this.downloadAction, false);
-      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, this.exportAction,
-          false, 14);
-      IMPORT_INTO_SEQUENCE_MENU = MainMenu.add(Main.main.menu.fileMenu,
-          this.importIntoSequenceAction, false, 14);
-      IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, importAction, false,
-          14);
-      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false,
-          14);
-      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu,
-          this.downloadViewAction, false, 14);
-      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);
-      WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
+      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, this.downloadAction, false);
+      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
+      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
+      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
+      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
+      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
+      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, this.downloadViewAction, false, 14);
+      joinMenu = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);
+      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
 
-      EXPORT_MENU.setEnabled(false);
-      DOWNLOAD_MENU.setEnabled(false);
-      IMPORT_MENU.setEnabled(false);
-      IMPORT_INTO_SEQUENCE_MENU.setEnabled(false);
-      ZOOM_MENU.setEnabled(false);
-      DOWNLOAD_VIEW_MENU.setEnabled(false);
-      JOIN_MENU.setEnabled(false);
-      WALK_MENU.setEnabled(false);
+      exportMenu.setEnabled(false);
+      downloadMenu.setEnabled(false);
+      importMenu.setEnabled(false);
+      importIntoSequenceMenu.setEnabled(false);
+      zoomMenu.setEnabled(false);
+      downloadViewMenu.setEnabled(false);
+      joinMenu.setEnabled(false);
+      walkMenu.setEnabled(false);
     }
 
     try {
-      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000,
-          this.getPluginDir() + "/cache/");
+      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
     } catch (IOException e) {
       Main.error(e);
     }
 
     if (Main.pref.get("mapillary.access-token") == null)
       MapillaryUser.isTokenValid = false;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryDownloadViewAction}
+   */
+  public static JMenuItem getDownloadViewMenu() {
+    return downloadViewMenu;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryExportAction}
+   */
+  public static JMenuItem getExportMenu() {
+    return exportMenu;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryJoinAction}
+   */
+  public static JMenuItem getJoinMenu() {
+    return joinMenu;
+  }
+
+  /**
+   * @return the {@link MapillaryUploadAction} for the plugin
+   */
+  public static MapillaryDataListener getUploadAction() {
+    return uploadAction;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryUploadAction}
+   */
+  public static JMenuItem getUploadMenu() {
+    return uploadMenu;
+  }
+
+  /**
+   * @return the {@link MapillaryWalkAction} for the plugin
+   */
+  public static MapillaryWalkAction getWalkAction() {
+    return walkAction;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryWalkAction}
+   */
+  public static JMenuItem getWalkMenu() {
+    return walkMenu;
+  }
+
+  /**
+   * @return the {@link MapillaryZoomAction} for the plugin
+   */
+  public static MapillaryDataListener getZoomAction() {
+    return zoomAction;
+  }
+
+  /**
+   * @return the menu-item associated with the {@link MapillaryZoomAction}
+   */
+  public static JMenuItem getZoomMenu() {
+    return zoomMenu;
   }
 
   /**
@@ -158,20 +215,20 @@ public class MapillaryPlugin extends Plugin {
       Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-      setMenuEnabled(DOWNLOAD_MENU, true);
+      setMenuEnabled(downloadMenu, true);
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)
-        setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
-      setMenuEnabled(IMPORT_MENU, true);
-      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, true);
+        setMenuEnabled(downloadViewMenu, true);
+      setMenuEnabled(importMenu, true);
+      setMenuEnabled(importIntoSequenceMenu, true);
     }
     if (oldFrame != null && newFrame == null) { // map frame destroyed
       MapillaryMainDialog.destroyInstance();
       MapillaryHistoryDialog.destroyInstance();
       MapillaryFilterDialog.destroyInstance();
-      setMenuEnabled(DOWNLOAD_MENU, false);
-      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
-      setMenuEnabled(IMPORT_MENU, false);
-      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);
+      setMenuEnabled(downloadMenu, false);
+      setMenuEnabled(downloadViewMenu, false);
+      setMenuEnabled(importMenu, false);
+      setMenuEnabled(importIntoSequenceMenu, false);
     }
   }
 

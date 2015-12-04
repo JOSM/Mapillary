@@ -41,9 +41,9 @@ public class MapillaryData {
     this.selectedImage = null;
 
     // Adds the basic set of listeners.
-    addListener(MapillaryPlugin.walkAction);
-    addListener(MapillaryPlugin.zoomAction);
-    addListener(MapillaryPlugin.uploadAction);
+    addListener(MapillaryPlugin.getWalkAction());
+    addListener(MapillaryPlugin.getZoomAction());
+    addListener(MapillaryPlugin.getUploadAction());
     if (Main.main != null)
       addListener(MapillaryMainDialog.getInstance());
   }

@@ -4,8 +4,10 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -16,8 +18,8 @@ import org.openstreetmap.josm.Main;
 public class MapillaryUser {
 
   private static String username;
-  private static String images_policy;
-  private static String images_hash;
+  private static String imagesPolicy;
+  private static String imagesHash;
   /** If the stored token is valid or not. */
   public static boolean isTokenValid = true;
 
@@ -34,7 +36,7 @@ public class MapillaryUser {
         username = OAuthUtils
             .getWithHeader(
                 new URL(
-                    "https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
+                    "https://a.mapillary.com/v2/me?client_id="+MapillaryPlugin.CLIENT_ID))
             .getString("username");
       } catch (IOException e) {
         Main.info("Invalid Mapillary token, reseting field");
@@ -47,29 +49,29 @@ public class MapillaryUser {
    * @return A HashMap object containing the images_policy and images_hash
    *         strings.
    */
-  public static HashMap<String, String> getSecrets() {
+  public static Map<String, String> getSecrets() {
     if (!isTokenValid)
       return null;
-    HashMap<String, String> hash = new HashMap<>();
+    Map<String, String> hash = new HashMap<>();
     try {
-      if (images_hash == null)
-        images_hash = OAuthUtils
+      if (imagesHash == null)
+        imagesHash = OAuthUtils
             .getWithHeader(
                 new URL(
-                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
+                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id="+MapillaryPlugin.CLIENT_ID))
             .getString("images_hash");
-      hash.put("images_hash", images_hash);
-      if (images_policy == null)
-        images_policy = OAuthUtils
+      hash.put("images_hash", imagesHash);
+      if (imagesPolicy == null)
+        imagesPolicy = OAuthUtils
             .getWithHeader(
                 new URL(
-                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
+                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id="+MapillaryPlugin.CLIENT_ID))
             .getString("images_policy");
     } catch (IOException e) {
       Main.info("Invalid Mapillary token, reseting field");
       reset();
     }
-    hash.put("images_policy", images_policy);
+    hash.put("images_policy", imagesPolicy);
     return hash;
   }
 
@@ -78,8 +80,8 @@ public class MapillaryUser {
    */
   public static void reset() {
     username = null;
-    images_policy = null;
-    images_hash = null;
+    imagesPolicy = null;
+    imagesHash = null;
     isTokenValid = false;
     Main.pref.put("mapillary.access-token", null);
   }

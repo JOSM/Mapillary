@@ -4,13 +4,15 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
+import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -48,8 +50,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
    *          The query data.
    *
    */
-  public MapillarySquareDownloadManagerThread(
-      ConcurrentHashMap<String, Double> queryStringParts) {
+  public MapillarySquareDownloadManagerThread(ConcurrentMap<String, Double> queryStringParts) {
     this.imageQueryString = buildQueryString(queryStringParts);
     this.sequenceQueryString = buildQueryString(queryStringParts);
     this.signQueryString = buildQueryString(queryStringParts);
@@ -59,16 +60,15 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   }
 
   // TODO: Maybe move into a separate utility class?
-  private static String buildQueryString(ConcurrentHashMap<String, Double> hash) {
-    StringBuilder ret = new StringBuilder("?client_id="
-        + MapillaryDownloader.CLIENT_ID);
-    for (String key : hash.keySet())
-      if (key != null)
+  private static String buildQueryString(ConcurrentMap<String, Double> hash) {
+    StringBuilder ret = new StringBuilder().append("?client_id=").append(MapillaryPlugin.CLIENT_ID);
+    for (Entry<String, Double> entry : hash.entrySet())
+      if (entry.getKey() != null)
         try {
-          ret.append("&" + URLEncoder.encode(key, "UTF-8")).append(
-              "="
-                  + URLEncoder.encode(
-                      String.format(Locale.UK, "%f", hash.get(key)), "UTF-8"));
+          ret.append('&')
+            .append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+            .append('=')
+            .append(URLEncoder.encode(String.format(Locale.UK, "%f", entry.getValue()), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
           // This should not happen, as the encoding is hard-coded
         }
@@ -105,8 +105,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!this.downloadExecutor.isShutdown()) {
       this.downloadExecutor.execute(new MapillarySequenceDownloadThread(
-          this.downloadExecutor, this.sequenceQueryString + "&page=" + page
-              + "&limit=10"));
+          this.downloadExecutor, this.sequenceQueryString + "&page=" + page + "&limit=10"));
       while (this.downloadExecutor.getQueue().remainingCapacity() == 0)
         Thread.sleep(500);
       page++;

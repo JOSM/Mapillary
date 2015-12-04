@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JLabel;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -21,25 +23,35 @@ import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSignElement;
+import org.openstreetmap.josm.tools.I18n;
 
 public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
+  private static final String TRAFFICO_PATH = "data/fonts/traffico/traffico.ttf";
   private static MapillaryTrafficSignLayer instance;
+  private final Font traffico;
+
+  private MapillaryTrafficSignLayer() throws IOException {
+    super("Mapillary traffic signs");
+    try {
+      traffico = Font.createFont(Font.TRUETYPE_FONT, new File("data/fonts/traffico/traffico.ttf")).deriveFont(50.0f);
+    } catch (FontFormatException e) {
+      throw new IOException(I18n.tr("Traffic sign font at ''{0}'' has wrong format.", TRAFFICO_PATH), e);
+    } catch (IOException e) {
+      throw new IOException(I18n.tr("Could not read font-file from ''{{0}}''.", TRAFFICO_PATH), e);
+    }
+  }
 
   /**
    * Returns and when needed instantiates the Mapillary traffic sign layer.
    *
    * @return the only instance of the traffic sign layer
+   * @throws IOException if some error occured while reading the icon-font traffico or
+   *         if the traffico font has the wrong format
    */
-  public static MapillaryTrafficSignLayer getInstance() {
-    return instance == null ? (instance = new MapillaryTrafficSignLayer())
-        : instance;
-  }
-
-  /**
-   * @param name
-   */
-  private MapillaryTrafficSignLayer() {
-    super("Mapillary traffic signs");
+  public static MapillaryTrafficSignLayer getInstance() throws IOException {
+    if (instance == null)
+      instance = new MapillaryTrafficSignLayer();
+    return instance;
   }
 
   /*
@@ -60,16 +72,8 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-        RenderingHints.VALUE_ANTIALIAS_ON);
-    try {
-      g.setFont(Font.createFont(Font.TRUETYPE_FONT,
-          new File("data/fonts/traffico/traffico.ttf")).deriveFont(50.0f));
-    } catch (FontFormatException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.setFont(traffico);
 
     Point[] points = new Point[3];
     points[0] = mv.getPoint(new LatLon(49.01058, 8.40743));
@@ -90,15 +94,12 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
 
     // Start iterating the images
     g.setColor(Color.MAGENTA);
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance()
-        .getData().getImages()) {
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
       if (img instanceof MapillaryImage) {
-        g.fillOval(mv.getPoint(img.getLatLon()).x - 3,
-            mv.getPoint(img.getLatLon()).y - 3, 6, 6);
+        g.fillOval(mv.getPoint(img.getLatLon()).x - 3, mv.getPoint(img.getLatLon()).y - 3, 6, 6);
         if (((MapillaryImage) img).getSigns().size() >= 1) {
           Point imgLoc = mv.getPoint(img.getLatLon());
-          for (TrafficoSignElement e : TrafficoSign.getSign("de",
-              ((MapillaryImage) img).getSigns().get(0))) {
+          for (TrafficoSignElement e : TrafficoSign.getSign("de", ((MapillaryImage) img).getSigns().get(0))) {
             g.setColor(e.getColor());
             g.drawString("" + e.getGlyph(), imgLoc.x, imgLoc.y);
           }
@@ -136,8 +137,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public void mergeFrom(Layer from) {
-    // Does nothing as this layer is not mergeable (see method
-    // isMergable(Layer))
+    // Does nothing as this layer is not mergeable (see method isMergable(Layer))
   }
 
   /*
@@ -162,7 +162,6 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
     // TODO Auto-generated method stub
-
   }
 
   /*
@@ -171,9 +170,8 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    * @see org.openstreetmap.josm.gui.layer.Layer#getInfoComponent()
    */
   @Override
-  public Object getInfoComponent() {
-    // TODO Auto-generated method stub
-    return null;
+  public Component getInfoComponent() {
+    return new JLabel("Mapillary traffic sign layer");
   }
 
   /*
@@ -183,8 +181,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public Action[] getMenuEntries() {
-    // TODO Auto-generated method stub
-    return null;
+    return new Action[]{};
   }
 
 }

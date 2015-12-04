@@ -94,9 +94,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public boolean equals(Object object) {
-    if (object instanceof MapillaryImportedImage)
-      return this.file.equals(((MapillaryImportedImage) object).file);
+  public boolean equals(Object other) {
+    if (other != null && other.getClass() == this.getClass())
+      return this.file.equals(((MapillaryImportedImage) other).file);
     return false;
   }
 

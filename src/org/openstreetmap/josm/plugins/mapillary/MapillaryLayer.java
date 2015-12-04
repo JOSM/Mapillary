@@ -17,8 +17,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractAction;
@@ -77,7 +75,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       "mapillary.sequence-max-jump-distance", 100);
 
   /** If the download is in semiautomatic during this object lifetime. */
-  public boolean TEMP_SEMIAUTOMATIC = false;
+  public boolean tempSemiautomatic;
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
@@ -91,10 +89,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /** Mode of the layer. */
   public AbstractMode mode;
 
-  private int highlightPointRadius = Main.pref.getInteger(
-      "mappaint.highlight.radius", 7);
-  private int highlightStep = Main.pref
-      .getInteger("mappaint.highlight.step", 4);
+  private final int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
+  private final int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
 
   private volatile TexturePaint hatched;
 
@@ -122,8 +118,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         this.mode.zoomChanged();
     }
     // Does not execute when in headless mode
-    if (MapillaryPlugin.EXPORT_MENU != null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, true);
+    if (MapillaryPlugin.getExportMenu() != null) {
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), true);
       if (!MapillaryMainDialog.getInstance().isShowing())
         MapillaryMainDialog.getInstance().getButton().doClick();
     }
@@ -219,8 +215,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
     MapillaryMainDialog.getInstance().updateImage();
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.EXPORT_MENU, false);
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
     MapView.removeEditLayerChangeListener(this);
@@ -463,11 +459,13 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getClosestImagesFromDifferentSequences() {
     if (!(this.data.getSelectedImage() instanceof MapillaryImage))
-      return new MapillaryImage[2];
+      return new MapillaryImage[]{null, null};
     MapillaryImage selected = (MapillaryImage) this.data.getSelectedImage();
     MapillaryImage[] ret = new MapillaryImage[2];
-    double[] distances = { SEQUENCE_MAX_JUMP_DISTANCE,
-        SEQUENCE_MAX_JUMP_DISTANCE };
+    double[] distances = {
+        SEQUENCE_MAX_JUMP_DISTANCE,
+        SEQUENCE_MAX_JUMP_DISTANCE
+    };
     LatLon selectedCoords = this.data.getSelectedImage().getLatLon();
     for (MapillaryAbstractImage imagePrev : this.data.getImages()) {
       if (!(imagePrev instanceof MapillaryImage))
@@ -500,19 +498,19 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Object getInfoComponent() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(tr("Mapillary layer"));
-    sb.append("\n");
-    sb.append(tr("Total images:"));
-    sb.append(" ");
-    sb.append(this.data.size());
-    sb.append("\n");
-    return sb.toString();
+    return new StringBuilder(35)
+      .append(tr("Mapillary layer"))
+      .append('\n')
+      .append(tr("Total images:"))
+      .append(' ')
+      .append(this.data.size())
+      .append('\n')
+      .toString();
   }
 
   @Override
   public String getToolTipText() {
-    return this.data.size() + " " + tr("images");
+    return this.data.size() + (' ' + tr("images"));
   }
 
   @Override
@@ -567,9 +565,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   public void activeLayerChange(Layer oldLayer, Layer newLayer) {
     if (newLayer == this) {
       MapillaryUtils.updateHelpText();
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, true);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), true);
     } else
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.JOIN_MENU, false);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), false);
   }
 
   @Override
@@ -588,7 +586,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @author nokutu
    *
    */
-  private class DelayedDownload extends Thread {
+  private static class DelayedDownload extends Thread {
 
     @Override
     public void run() {

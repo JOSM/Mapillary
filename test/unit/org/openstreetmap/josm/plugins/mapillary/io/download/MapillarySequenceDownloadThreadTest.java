@@ -14,6 +14,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySequenceDownloadThread;
 
@@ -46,7 +47,7 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
             Locale.UK,
             "?max_lat=%.8f&max_lon=%.8f&min_lat=%.8f&min_lon=%.8f&limit=10&client_id=%s",
             maxLatLon.lat(), maxLatLon.lon(), minLatLon.lat(), minLatLon.lon(),
-            MapillaryDownloader.CLIENT_ID);
+            MapillaryPlugin.CLIENT_ID);
     MapillaryLayer.getInstance().getData().bounds.add(new Bounds(minLatLon,
         maxLatLon));
 

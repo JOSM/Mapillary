@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -16,6 +17,10 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public abstract class MapillaryAbstractImage {
+  /**
+   * If two values for field ca differ by less than EPSILON both values are considered equal.
+   */
+  private static final float EPSILON = 1e-5f;
 
   /** The time the image was captured, in Epoch format. */
   protected long capturedAt;
@@ -86,7 +91,7 @@ public abstract class MapillaryAbstractImage {
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-    StringBuilder format = new StringBuilder("");
+    StringBuilder format = new StringBuilder(26);
     if (Main.pref.getBoolean("iso.dates"))
       format.append("yyyy-MM-dd");
     else
@@ -107,11 +112,12 @@ public abstract class MapillaryAbstractImage {
    *          Format of the date. See {@link SimpleDateFormat}.
    * @return A String containing the date the picture was taken using the given
    *         format.
+   * @throws NullPointerException if parameter format is <code>null</code>
    */
   public String getDate(String format) {
     Date date = new Date(getCapturedAt());
 
-    SimpleDateFormat formatter = new SimpleDateFormat(format);
+    SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
     formatter.setTimeZone(Calendar.getInstance().getTimeZone());
     return formatter.format(date);
   }
@@ -164,7 +170,7 @@ public abstract class MapillaryAbstractImage {
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-    return (this.getLatLon() != this.latLon || this.getCa() != this.ca);
+    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) < EPSILON;
   }
 
   /**
@@ -196,7 +202,7 @@ public abstract class MapillaryAbstractImage {
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-    synchronized (this.getClass()) {
+    synchronized (MapillaryAbstractImage.class) {
       if (this.getSequence() == null)
         return null;
       return this.getSequence().next(this);
@@ -210,7 +216,7 @@ public abstract class MapillaryAbstractImage {
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-    synchronized (this.getClass()) {
+    synchronized (MapillaryAbstractImage.class) {
       if (this.getSequence() == null)
         return null;
       return this.getSequence().previous(this);

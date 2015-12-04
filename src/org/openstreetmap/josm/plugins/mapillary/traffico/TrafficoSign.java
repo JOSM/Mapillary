@@ -14,11 +14,11 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 public final class TrafficoSign {
+  private static Map<String, Map<String, TrafficoSignElement[]>> signs = new HashMap<>();
+
   private TrafficoSign() {
     // private constructor to avoid instantiation
   }
-
-  private static Map<String, Map<String, TrafficoSignElement[]>> signs = new HashMap<>();
 
   public static TrafficoSignElement[] getSign(String country, String signName) {
     if (signs.get(country) == null) {

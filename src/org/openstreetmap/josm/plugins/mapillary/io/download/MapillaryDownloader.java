@@ -39,8 +39,6 @@ public class MapillaryDownloader {
 
   /** Base URL of the Mapillary API. */
   public static final String BASE_URL = "https://a.mapillary.com/v2/";
-  /** Client ID for the app */
-  public static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
       100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));;
@@ -178,10 +176,10 @@ public class MapillaryDownloader {
    */
   public static MapillaryDownloader.MODES getMode() {
     if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
-        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
+        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))
       return MODES.Automatic;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
-        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
+        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic))
       return MODES.Semiautomatic;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
       return MODES.Manual;
@@ -200,8 +198,8 @@ public class MapillaryDownloader {
         }
       });
     } else {
-      MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC = true;
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);
+      MapillaryLayer.getInstance().tempSemiautomatic = true;
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
       JOptionPane
           .showMessageDialog(
               Main.parent,
