@@ -59,6 +59,13 @@ sourceSets {
   }
 }
 
+eclipse {
+  project {
+    name = 'JOSM-Mapillary'
+    natures 'org.sonarlint.eclipse.core.sonarlintNature'
+  }
+}
+
 build.dependsOn jacocoTestReport
 build.dependsOn projectReport
 
