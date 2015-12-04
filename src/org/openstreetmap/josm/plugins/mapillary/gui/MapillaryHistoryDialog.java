@@ -53,7 +53,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private static final long serialVersionUID = -3019715241209349372L;
 
-  private static MapillaryHistoryDialog INSTANCE;
+  private static MapillaryHistoryDialog instance;
 
   private transient UndoRedoSelectionListener undoSelectionListener;
   private transient UndoRedoSelectionListener redoSelectionListener;
@@ -132,9 +132,9 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    * @return The unique instance of the class.
    */
   public static MapillaryHistoryDialog getInstance() {
-    if (INSTANCE == null)
-      INSTANCE = new MapillaryHistoryDialog();
-    return INSTANCE;
+    if (instance == null)
+      instance = new MapillaryHistoryDialog();
+    return instance;
   }
 
   private void buildTree() {
@@ -148,9 +148,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     else
       this.undoButton.setEnabled(false);
     ArrayList<MapillaryCommand> redoCommands = new ArrayList<>();
-    if (commands.size() > 0 && position + 1 < commands.size())
-      redoCommands = new ArrayList<>(commands.subList(position + 1,
-          commands.size()));
+    if (!commands.isEmpty() && position + 1 < commands.size())
+      redoCommands = new ArrayList<>(commands.subList(position + 1, commands.size()));
     else
       this.redoButton.setEnabled(false);
 
@@ -160,23 +159,20 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     this.map.clear();
     for (MapillaryCommand command : undoCommands) {
       if (command != null) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(
-            command.toString());
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
         this.map.put(node, command);
         undoRoot.add(node);
       }
     }
     for (MapillaryCommand command : redoCommands) {
       if (command != null) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(
-            command.toString());
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
         this.map.put(node, command);
         redoRoot.add(node);
       }
     }
 
-    this.separator.setVisible(!undoCommands.isEmpty()
-        || !redoCommands.isEmpty());
+    this.separator.setVisible(!undoCommands.isEmpty() || !redoCommands.isEmpty());
     this.spacer.setVisible(undoCommands.isEmpty() && !redoCommands.isEmpty());
 
     this.undoTreeModel.setRoot(undoRoot);
@@ -245,7 +241,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    * Destroys the unique instance of the class.
    */
   public static void destroyInstance() {
-    MapillaryHistoryDialog.INSTANCE = null;
+    MapillaryHistoryDialog.instance = null;
   }
 
   private class MouseEventHandler implements MouseListener {

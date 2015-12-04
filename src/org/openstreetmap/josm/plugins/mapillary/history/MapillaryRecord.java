@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
@@ -15,7 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryExecut
  */
 public class MapillaryRecord {
   /** The unique instance of the class. */
-  private static MapillaryRecord INSTANCE;
+  private static MapillaryRecord instance;
 
   private ArrayList<MapillaryRecordListener> listeners;
 
@@ -39,9 +40,9 @@ public class MapillaryRecord {
    * @return The unique instance of the class.
    */
   public static synchronized MapillaryRecord getInstance() {
-    if (MapillaryRecord.INSTANCE == null)
-      MapillaryRecord.INSTANCE = new MapillaryRecord();
-    return MapillaryRecord.INSTANCE;
+    if (MapillaryRecord.instance == null)
+      MapillaryRecord.instance = new MapillaryRecord();
+    return MapillaryRecord.instance;
   }
 
   /**

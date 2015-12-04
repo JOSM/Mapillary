@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  */
 public class CacheUtils {
 
-  private static IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
+  private static IgnoreDownload ignoreDownload = new IgnoreDownload();
 
   /** Picture quality */
   public enum PICTURE {
@@ -53,18 +53,16 @@ public class CacheUtils {
   public static void downloadPicture(MapillaryImage img, PICTURE pic) {
     switch (pic) {
       case BOTH:
-        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL)
-            .get() == null)
-          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
-        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE)
-            .get() == null)
-          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
+        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)
+          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, ignoreDownload);
+        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).get() == null)
+          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, ignoreDownload);
         break;
       case THUMBNAIL:
-        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
+        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, ignoreDownload);
         break;
       case FULL_IMAGE:
-        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
+        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, ignoreDownload);
         break;
     }
   }
@@ -92,8 +90,8 @@ public class CacheUtils {
   private static class IgnoreDownload implements ICachedLoaderListener {
 
     @Override
-    public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1,
-        LoadResult arg2) {
+    public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1, LoadResult arg2) {
+      // Ignore download
     }
   }
 }

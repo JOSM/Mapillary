@@ -428,7 +428,7 @@ public class MapillaryImageDisplay extends JComponent {
         + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
   }
 
-  private final static Point getCenterImgCoord(Rectangle visibleRect) {
+  private static final Point getCenterImgCoord(Rectangle visibleRect) {
     return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y
         + visibleRect.height / 2);
   }
@@ -499,7 +499,7 @@ public class MapillaryImageDisplay extends JComponent {
     repaint();
   }
 
-  private final static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
+  private static final void checkVisibleRectPos(Image image, Rectangle visibleRect) {
     if (visibleRect.x < 0) {
       visibleRect.x = 0;
     }

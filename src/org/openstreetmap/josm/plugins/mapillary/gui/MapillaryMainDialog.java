@@ -53,23 +53,23 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private static final long serialVersionUID = 6856496736429480600L;
 
-  private final static String BASE_TITLE = marktr("Mapillary picture");
+  private static final String BASE_TITLE = marktr("Mapillary picture");
 
-  private static MapillaryMainDialog INSTANCE;
+  private static MapillaryMainDialog instance;
 
   private volatile MapillaryAbstractImage image;
 
   private final SideButton nextButton = new SideButton(new nextPictureAction());
   private final SideButton previousButton = new SideButton(
-      new previousPictureAction());
+      new PreviousPictureAction());
   /** Button used to jump to the image following the red line */
-  public final SideButton redButton = new SideButton(new redAction());
+  public final SideButton redButton = new SideButton(new RedAction());
   /** Button used to jump to the image following the blue line */
-  public final SideButton blueButton = new SideButton(new blueAction());
+  public final SideButton blueButton = new SideButton(new BlueAction());
 
-  private final SideButton playButton = new SideButton(new playAction());
-  private final SideButton pauseButton = new SideButton(new pauseAction());
-  private final SideButton stopButton = new SideButton(new stopAction());
+  private final SideButton playButton = new SideButton(new PlayAction());
+  private final SideButton pauseButton = new SideButton(new PauseAction());
+  private final SideButton stopButton = new SideButton(new StopAction());
 
   /**
    * Buttons mode.
@@ -77,7 +77,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  public static enum MODE {
+  public enum MODE {
     /** Standard mode to view pictures. */
     NORMAL,
     /** Mode when in walk. */
@@ -122,13 +122,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
     this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("PAGE_UP"), "previous");
     this.previousButton.getActionMap().put("previous",
-        new previousPictureAction());
+        new PreviousPictureAction());
     this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
-    this.blueButton.getActionMap().put("blue", new blueAction());
+    this.blueButton.getActionMap().put("blue", new BlueAction());
     this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
-    this.redButton.getActionMap().put("red", new redAction());
+    this.redButton.getActionMap().put("red", new RedAction());
   }
 
   /**
@@ -137,9 +137,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @return The unique instance of the class.
    */
   public static MapillaryMainDialog getInstance() {
-    if (INSTANCE == null)
-      INSTANCE = new MapillaryMainDialog();
-    return INSTANCE;
+    if (instance == null)
+      instance = new MapillaryMainDialog();
+    return instance;
   }
 
   /**
@@ -150,18 +150,17 @@ public class MapillaryMainDialog extends ToggleDialog implements
    */
   public void setMode(MODE mode) {
     switch (mode) {
-      case NORMAL:
-        createLayout(
-            this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { this.blueButton,
-                this.previousButton, this.nextButton, this.redButton }),
-            Main.pref.getBoolean("mapillary.reverse-buttons"));
-        break;
       case WALK:
         createLayout(
             this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { this.playButton, this.pauseButton,
-                this.stopButton }),
+            Arrays.asList(new SideButton[] { playButton, pauseButton, stopButton }),
+            Main.pref.getBoolean("mapillary.reverse-buttons"));
+        break;
+      case NORMAL:
+      default:
+        createLayout(
+            this.mapillaryImageDisplay,
+            Arrays.asList(new SideButton[] { blueButton, previousButton, nextButton, redButton }),
             Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
     }
@@ -175,7 +174,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Destroys the unique instance of the class.
    */
   public static void destroyInstance() {
-    INSTANCE = null;
+    instance = null;
   }
 
   /**
@@ -203,7 +202,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
       });
     } else {
-      if (MapillaryLayer.INSTANCE == null) {
+      if (!MapillaryLayer.hasInstance()) {
         return;
       }
       if (this.image == null) {
@@ -308,23 +307,21 @@ public class MapillaryMainDialog extends ToggleDialog implements
           updateTitle();
         }
       });
-    } else {
-      if (this.image != null) {
-        if (this.image instanceof MapillaryImage) {
-          MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-          String title = tr(BASE_TITLE);
-          if (mapillaryImage.getUser() != null)
-            title += " -- " + mapillaryImage.getUser();
-          if (mapillaryImage.getCapturedAt() != 0)
-            title += " -- " + mapillaryImage.getDate();
-          setTitle(title);
-        } else if (this.image instanceof MapillaryImportedImage) {
-          MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
-          String title = tr(BASE_TITLE);
-          title += " -- " + mapillaryImportedImage.getFile().getName();
-          title += " -- " + mapillaryImportedImage.getDate();
-          setTitle(title);
-        }
+    } else if (this.image != null) {
+      if (this.image instanceof MapillaryImage) {
+        MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+        String title = tr(BASE_TITLE);
+        if (mapillaryImage.getUser() != null)
+          title += " -- " + mapillaryImage.getUser();
+        if (mapillaryImage.getCapturedAt() != 0)
+          title += " -- " + mapillaryImage.getDate();
+        setTitle(title);
+      } else if (this.image instanceof MapillaryImportedImage) {
+        MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
+        String title = tr(BASE_TITLE);
+        title += " -- " + mapillaryImportedImage.getFile().getName();
+        title += " -- " + mapillaryImportedImage.getDate();
+        setTitle(title);
       }
     }
   }
@@ -365,11 +362,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  private class previousPictureAction extends AbstractAction {
+  private class PreviousPictureAction extends AbstractAction {
 
     private static final long serialVersionUID = -6420511632957956012L;
 
-    public previousPictureAction() {
+    public PreviousPictureAction() {
       putValue(NAME, tr("Previous picture"));
       putValue(SHORT_DESCRIPTION,
           tr("Shows the previous picture in the sequence"));
@@ -387,11 +384,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  private class redAction extends AbstractAction {
+  private class RedAction extends AbstractAction {
 
     private static final long serialVersionUID = -6480229431481386376L;
 
-    public redAction() {
+    public RedAction() {
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
           tr("Jumps to the picture at the other side of the red line"));
@@ -401,7 +398,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-            .setSelectedImage(MapillaryLayer.RED, true);
+            .setSelectedImage(MapillaryLayer.getInstance().getRed(), true);
       }
     }
   }
@@ -412,11 +409,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  private class blueAction extends AbstractAction {
+  private class BlueAction extends AbstractAction {
 
     private static final long serialVersionUID = 6250690644594703314L;
 
-    public blueAction() {
+    public BlueAction() {
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,
           tr("Jumps to the picture at the other side of the blue line"));
@@ -426,18 +423,18 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-            .setSelectedImage(MapillaryLayer.BLUE, true);
+            .setSelectedImage(MapillaryLayer.getInstance().getBlue(), true);
       }
     }
   }
 
-  private class stopAction extends AbstractAction implements WalkListener {
+  private class StopAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -6561451575815789198L;
 
     private WalkThread thread;
 
-    public stopAction() {
+    public StopAction() {
       putValue(NAME, tr("Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryStop.png"));
@@ -456,12 +453,12 @@ public class MapillaryMainDialog extends ToggleDialog implements
     }
   }
 
-  private class playAction extends AbstractAction implements WalkListener {
+  private class PlayAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -17943404752082788L;
     private WalkThread thread;
 
-    public playAction() {
+    public PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPlay.png"));
@@ -481,13 +478,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
     }
   }
 
-  private class pauseAction extends AbstractAction implements WalkListener {
+  private class PauseAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = 4400240686337741192L;
 
     private WalkThread thread;
 
-    public pauseAction() {
+    public PauseAction() {
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
       putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPause.png"));

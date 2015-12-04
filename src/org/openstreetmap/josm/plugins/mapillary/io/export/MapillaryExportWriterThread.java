@@ -72,9 +72,8 @@ public class MapillaryExportWriterThread extends Thread {
   @Override
   public void run() {
     this.monitor.setCustomText("Downloaded 0/" + this.amount);
-    // File tempFile = null;
     BufferedImage img;
-    MapillaryAbstractImage mimg = null;
+    MapillaryAbstractImage mimg;
     String finalPath = "";
     for (int i = 0; i < this.amount; i++) {
       try {
@@ -90,7 +89,6 @@ public class MapillaryExportWriterThread extends Thread {
         else if (mimg instanceof MapillaryImportedImage)
           finalPath = this.path + "/"
               + ((MapillaryImportedImage) mimg).getFile().getName();
-        ;
 
         // Transforms the image into a byte array.
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -99,8 +97,8 @@ public class MapillaryExportWriterThread extends Thread {
 
         // Write EXIF tags
         TiffOutputSet outputSet = null;
-        TiffOutputDirectory exifDirectory = null;
-        TiffOutputDirectory gpsDirectory = null;
+        TiffOutputDirectory exifDirectory;
+        TiffOutputDirectory gpsDirectory;
         // If the image is imported, loads the rest of the EXIF data.
         if (mimg instanceof MapillaryImportedImage) {
           final ImageMetadata metadata = Imaging
@@ -134,12 +132,9 @@ public class MapillaryExportWriterThread extends Thread {
         else if (mimg instanceof MapillaryImage)
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImage) mimg).getDate("yyyy/MM/dd hh/mm/ss"));
-        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon()
-            .lat());
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(
-            finalPath + ".jpg"));
-        new ExifRewriter()
-            .updateExifMetadataLossless(imageBytes, os, outputSet);
+        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon().lat());
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"));
+        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
 
         os.close();
       } catch (InterruptedException e) {
@@ -154,8 +149,7 @@ public class MapillaryExportWriterThread extends Thread {
       }
 
       // Increases the progress bar.
-      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX
-          / this.amount);
+      this.monitor.worked(PleaseWaitProgressMonitor.PROGRESS_BAR_MAX / this.amount);
       this.monitor.setCustomText("Downloaded " + (i + 1) + "/" + this.amount);
     }
   }

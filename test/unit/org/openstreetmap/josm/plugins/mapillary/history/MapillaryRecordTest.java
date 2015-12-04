@@ -1,6 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary.history;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -265,12 +267,10 @@ public class MapillaryRecordTest extends AbstractTest {
                 this.img3 }));
 
     this.record.addCommand(cmd1);
-    assertEquals(false, MapillaryLayer.getInstance().getData().getImages()
-        .contains(this.img1));
+    assertFalse(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));
     assertEquals(null, this.img2.previous());
     this.record.undo();
-    assertEquals(true, MapillaryLayer.getInstance().getData().getImages()
-        .contains(this.img1));
+    assertTrue(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));
     this.record.redo();
     this.record.addCommand(cmd2);
     assertEquals(0, MapillaryLayer.getInstance().getData().size());

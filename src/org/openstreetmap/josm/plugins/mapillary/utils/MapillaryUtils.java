@@ -189,7 +189,7 @@ public class MapillaryUtils {
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void join(
+  public static synchronized void join(
       MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;
@@ -432,7 +432,7 @@ public class MapillaryUtils {
    * @param mapillaryAbstractImage
    * @param mapillaryAbstractImage2
    */
-  public synchronized static void unjoin(
+  public static synchronized void unjoin(
       MapillaryAbstractImage mapillaryAbstractImage,
       MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;

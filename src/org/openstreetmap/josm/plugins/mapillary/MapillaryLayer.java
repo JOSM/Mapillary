@@ -73,18 +73,18 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-  public final static int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
+  public static final int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
       "mapillary.sequence-max-jump-distance", 100);
 
   /** If the download is in semiautomatic during this object lifetime. */
   public boolean TEMP_SEMIAUTOMATIC = false;
 
   /** Unique instance of the class. */
-  public static MapillaryLayer INSTANCE;
+  private static MapillaryLayer instance;
   /** The image pointed by the blue line. */
-  public static MapillaryImage BLUE;
+  private MapillaryImage blue;
   /** The image pointed by the red line. */
-  public static MapillaryImage RED;
+  private MapillaryImage red;
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
@@ -109,8 +109,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    if (INSTANCE == null)
-      INSTANCE = this;
     if (Main.main != null && Main.map.mapView != null) {
       setMode(new SelectMode());
       Main.map.mapView.addLayer(this);
@@ -165,14 +163,28 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
+   * Clears the unique instance of this class.
+   */
+  public static void clearInstance() {
+    instance = null;
+  }
+
+  /**
    * Returns the unique instance of this class.
    *
    * @return The unique instance of this class.
    */
-  public synchronized static MapillaryLayer getInstance() {
-    if (INSTANCE == null)
-      return new MapillaryLayer();
-    return MapillaryLayer.INSTANCE;
+  public static synchronized MapillaryLayer getInstance() {
+    if (instance == null)
+      instance = new MapillaryLayer();
+    return instance;
+  }
+
+  /**
+   * @return if the unique instance of this layer is currently instantiated
+   */
+  public static boolean hasInstance() {
+    return instance != null;
   }
 
   /**
@@ -183,6 +195,20 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public MapillaryData getData() {
     return this.data;
+  }
+
+  /**
+   * @return The image that is linked to the current image with a blue line
+   */
+  public MapillaryImage getBlue() {
+    return blue;
+  }
+
+  /**
+   * @return The image that is linked to the current image with a blue line
+   */
+  public MapillaryImage getRed() {
+    return red;
   }
 
   @Override
@@ -202,13 +228,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
     clearInstance();
     super.destroy();
-  }
-
-  /**
-   * Clears the unique instance of this class.
-   */
-  public static void clearInstance() {
-    INSTANCE = null;
   }
 
   @Override
@@ -283,8 +302,8 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
     // Draw colored lines
-    MapillaryLayer.BLUE = null;
-    MapillaryLayer.RED = null;
+    blue = null;
+    red = null;
     MapillaryMainDialog.getInstance().blueButton.setEnabled(false);
     MapillaryMainDialog.getInstance().redButton.setEnabled(false);
 
@@ -293,14 +312,14 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
       Point selected = mv.getPoint(this.data.getSelectedImage().getLatLon());
       if (closestImages[0] != null) {
-        MapillaryLayer.BLUE = closestImages[0];
+        blue = closestImages[0];
         g.setColor(Color.BLUE);
         g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
             mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);
         MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
       }
       if (closestImages[1] != null) {
-        MapillaryLayer.RED = closestImages[1];
+        red = closestImages[1];
         g.setColor(Color.RED);
         g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
             mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);
@@ -391,8 +410,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @param p
    *          The P¡{@link Point} when the image lies.
    */
-  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon,
-      Point p) {
+  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
     Image imagetemp = icon.getImage();
     BufferedImage bi = (BufferedImage) imagetemp;
     int width = icon.getIconWidth();
@@ -400,15 +418,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     // Rotate the image
     double rotationRequired = Math.toRadians(image.getCa());
-    double locationX = width / 2;
-    double locationY = height / 2;
-    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired,
-        locationX, locationY);
-    AffineTransformOp op = new AffineTransformOp(tx,
-        AffineTransformOp.TYPE_BILINEAR);
+    double locationX = width / 2d;
+    double locationY = height / 2d;
+    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2),
-        Main.map.mapView);
+    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2), Main.map.mapView);
     if (this.data.getHighlightedImage() == image) {
       drawPointHighlight(g, p, 16);
     }
@@ -432,11 +447,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Action[] getMenuEntries() {
-    List<Action> actions = new ArrayList<>();
-    actions.add(LayerListDialog.getInstance().createShowHideLayerAction());
-    actions.add(LayerListDialog.getInstance().createDeleteLayerAction());
-    actions.add(new LayerListPopup.InfoAction(this));
-    return actions.toArray(new Action[actions.size()]);
+    return new Action[]{
+      LayerListDialog.getInstance().createShowHideLayerAction(),
+      LayerListDialog.getInstance().createDeleteLayerAction(),
+      new LayerListPopup.InfoAction(this)
+    };
   }
 
   /**
@@ -559,10 +574,12 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void layerAdded(Layer newLayer) {
+    // Do nothing, we're only interested in layer change, not addition
   }
 
   @Override
   public void layerRemoved(Layer oldLayer) {
+    // Do nothing, we're only interested in layer change, not removal
   }
 
   /**
@@ -596,7 +613,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (INSTANCE != null)
+      if (instance != null)
         MapillaryRecord.getInstance().addCommand(
             new CommandDelete(getData().getMultiSelectedImages()));
     }

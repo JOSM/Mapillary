@@ -16,18 +16,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
  * @author nokutu
  *
  */
-public class MapillaryCache extends
-    JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
+public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
 
-  private volatile URL url;
-  private volatile String key;
+  private final URL url;
+  private final String key;
 
   /**
    * Types of images.
    *
    * @author nokutu
    */
-  public static enum Type {
+  public enum Type {
     /** Full quality image */
     FULL_IMAGE,
     /** Low quality image */
@@ -45,23 +44,28 @@ public class MapillaryCache extends
    */
   public MapillaryCache(String key, Type type) {
     super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap<String, String>());
-    this.key = key;
-    try {
-      switch (type) {
-        case FULL_IMAGE:
-          this.url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-              + "/thumb-2048.jpg");
-          this.key += ".FULL_IMAGE";
-          break;
-        case THUMBNAIL:
-          this.url = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key
-              + "/thumb-320.jpg");
-          this.key += ".THUMBNAIL";
-          break;
+    String k = null;
+    URL u = null;
+    if (key != null && type != null) {
+      try {
+        switch (type) {
+          case FULL_IMAGE:
+            k = key + ".FULL_IMAGE";
+            u = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key + "/thumb-2048.jpg");
+            break;
+          case THUMBNAIL:
+          default:
+            k = key + ".THUMBNAIL";
+            u = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key + "/thumb-320.jpg");
+            break;
+        }
+      } catch (MalformedURLException e) {
+        // TODO: Throw exception, so that a MapillaryCache with malformed URL can't be instantiated.
+        Main.error(e);
       }
-    } catch (MalformedURLException e) {
-      Main.error(e);
     }
+    this.key = k;
+    this.url = u;
   }
 
   @Override

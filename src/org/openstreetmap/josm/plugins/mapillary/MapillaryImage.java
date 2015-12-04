@@ -109,7 +109,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   @Override
   public String toString() {
     return "Image[key=" + this.key + ";lat=" + this.latLon.lat() + ";lon="
-        + this.latLon.lon() + ";ca=" + this.ca + "]";
+        + this.latLon.lon() + ";ca=" + this.ca + ']';
   }
 
   @Override

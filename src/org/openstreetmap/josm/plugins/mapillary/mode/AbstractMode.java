@@ -26,7 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 public abstract class AbstractMode extends MouseAdapter implements
     ZoomChangeListener {
 
-  private final static int DOWNLOAD_COOLDOWN = 2000;
+  private static final int DOWNLOAD_COOLDOWN = 2000;
 
   protected MapillaryData data = MapillaryLayer.getInstance().getData();
   private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();

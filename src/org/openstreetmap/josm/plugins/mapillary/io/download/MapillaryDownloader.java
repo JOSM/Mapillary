@@ -38,9 +38,9 @@ public class MapillaryDownloader {
       "mapillary.max-download-area", 0.015);
 
   /** Base URL of the Mapillary API. */
-  public final static String BASE_URL = "https://a.mapillary.com/v2/";
+  public static final String BASE_URL = "https://a.mapillary.com/v2/";
   /** Client ID for the app */
-  public final static String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
+  public static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
       100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));;
@@ -178,14 +178,14 @@ public class MapillaryDownloader {
    */
   public static MapillaryDownloader.MODES getMode() {
     if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
-        && (MapillaryLayer.INSTANCE == null || !MapillaryLayer.INSTANCE.TEMP_SEMIAUTOMATIC))
+        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
       return MODES.Automatic;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
-        || (MapillaryLayer.INSTANCE != null && MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
+        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().TEMP_SEMIAUTOMATIC))
       return MODES.Semiautomatic;
     else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
       return MODES.Manual;
-    else if (Main.pref.get("mapillary.download-mode").equals(""))
+    else if ("".equals(Main.pref.get("mapillary.download-mode")))
       return MODES.Automatic;
     else
       throw new IllegalStateException();

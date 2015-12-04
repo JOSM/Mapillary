@@ -46,7 +46,7 @@ public class MapillaryFilterChooseSigns extends JPanel {
   /** Forbidden turn signs */
   public final JCheckBox noTurn = new JCheckBox();
 
-  private static MapillaryFilterChooseSigns INSTANCE;
+  private static MapillaryFilterChooseSigns instance;
 
   private MapillaryFilterChooseSigns() {
     this.maxSpeed.setSelected(true);
@@ -171,8 +171,8 @@ public class MapillaryFilterChooseSigns extends JPanel {
    * @return THe unique instance of the class.
    */
   public static MapillaryFilterChooseSigns getInstance() {
-    if (INSTANCE == null)
-      INSTANCE = new MapillaryFilterChooseSigns();
-    return INSTANCE;
+    if (instance == null)
+      instance = new MapillaryFilterChooseSigns();
+    return instance;
   }
 }

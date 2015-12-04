@@ -46,7 +46,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
   private static MapillaryFilterDialog INSTANCE;
 
-  private final static String[] TIME_LIST = { tr("All"), tr("Years"),
+  private static final String[] TIME_LIST = { tr("All"), tr("Years"),
       tr("Months"), tr("Days") };
 
   private final JPanel panel;

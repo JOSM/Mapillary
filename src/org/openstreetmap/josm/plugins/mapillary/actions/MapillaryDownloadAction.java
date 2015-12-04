@@ -36,13 +36,10 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryLayer.INSTANCE == null) {
-      MapillaryLayer.getInstance();
-    } else {
-      if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
-        Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
-      else
-        Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
-    }
+    MapillaryLayer.getInstance();
+    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
+      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
+    else
+      Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
   }
 }

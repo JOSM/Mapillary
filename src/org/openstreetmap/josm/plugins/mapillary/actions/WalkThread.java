@@ -123,11 +123,6 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   }
 
   @Override
-  public synchronized void interrupt() {
-    super.interrupt();
-  }
-
-  @Override
   public void imagesAdded() {
     // Nothing
   }
