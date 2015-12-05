@@ -50,9 +50,9 @@ public class MapillaryZoomAction extends JosmAction implements
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
 <span class="nc bnc" id="L52" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="nc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, true);</span>
+<span class="nc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
 <span class="nc bnc" id="L54" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="nc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.ZOOM_MENU, false);</span>
+<span class="nc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
 <span class="nc" id="L56">  }</span>
 
   @Override

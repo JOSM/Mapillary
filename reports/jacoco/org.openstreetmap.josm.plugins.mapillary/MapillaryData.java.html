@@ -41,9 +41,9 @@ public class MapillaryData {
 <span class="fc" id="L41">    this.selectedImage = null;</span>
 
     // Adds the basic set of listeners.
-<span class="fc" id="L44">    addListener(MapillaryPlugin.walkAction);</span>
-<span class="fc" id="L45">    addListener(MapillaryPlugin.zoomAction);</span>
-<span class="fc" id="L46">    addListener(MapillaryPlugin.uploadAction);</span>
+<span class="fc" id="L44">    addListener(MapillaryPlugin.getWalkAction());</span>
+<span class="fc" id="L45">    addListener(MapillaryPlugin.getZoomAction());</span>
+<span class="fc" id="L46">    addListener(MapillaryPlugin.getUploadAction());</span>
 <span class="pc bpc" id="L47" title="1 of 2 branches missed.">    if (Main.main != null)</span>
 <span class="nc" id="L48">      addListener(MapillaryMainDialog.getInstance());</span>
 <span class="fc" id="L49">  }</span>

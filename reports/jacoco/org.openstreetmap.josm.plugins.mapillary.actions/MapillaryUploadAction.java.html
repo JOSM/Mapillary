@@ -70,9 +70,9 @@ public class MapillaryUploadAction extends JosmAction implements
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
 <span class="nc bnc" id="L72" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="nc" id="L73">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, true);</span>
+<span class="nc" id="L73">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), true);</span>
 <span class="nc bnc" id="L74" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="nc" id="L75">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.UPLOAD_MENU, false);</span>
+<span class="nc" id="L75">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), false);</span>
 <span class="nc" id="L76">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

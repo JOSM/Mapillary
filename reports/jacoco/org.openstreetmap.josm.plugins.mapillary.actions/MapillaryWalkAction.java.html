@@ -100,9 +100,9 @@ public class MapillaryWalkAction extends JosmAction implements
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
 <span class="nc bnc" id="L102" title="All 2 branches missed.">    if (newImage != null)</span>
-<span class="nc" id="L103">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, true);</span>
+<span class="nc" id="L103">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), true);</span>
     else
-<span class="nc" id="L105">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.WALK_MENU, false);</span>
+<span class="nc" id="L105">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), false);</span>
 <span class="nc" id="L106">  }</span>
 
 }

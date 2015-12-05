@@ -4,8 +4,10 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -13,13 +15,13 @@ import org.openstreetmap.josm.Main;
  * @author nokutu
  *
  */
-<span class="nc" id="L16">public class MapillaryUser {</span>
+<span class="nc" id="L18">public class MapillaryUser {</span>
 
   private static String username;
-  private static String images_policy;
-  private static String images_hash;
+  private static String imagesPolicy;
+  private static String imagesHash;
   /** If the stored token is valid or not. */
-<span class="fc" id="L22">  public static boolean isTokenValid = true;</span>
+<span class="fc" id="L24">  public static boolean isTokenValid = true;</span>
 
   /**
    * Returns the username of the logged user.
@@ -27,61 +29,61 @@ import org.openstreetmap.josm.Main;
    * @return The username of the logged in user.
    */
   public static String getUsername() {
-<span class="nc bnc" id="L30" title="All 2 branches missed.">    if (!isTokenValid)</span>
-<span class="nc" id="L31">      return null;</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">    if (username == null)</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">    if (!isTokenValid)</span>
+<span class="nc" id="L33">      return null;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (username == null)</span>
       try {
-<span class="nc" id="L34">        username = OAuthUtils</span>
-<span class="nc" id="L35">            .getWithHeader(</span>
+<span class="nc" id="L36">        username = OAuthUtils</span>
+<span class="nc" id="L37">            .getWithHeader(</span>
                 new URL(
-                    &quot;https://a.mapillary.com/v2/me?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
-<span class="nc" id="L38">            .getString(&quot;username&quot;);</span>
-<span class="nc" id="L39">      } catch (IOException e) {</span>
-<span class="nc" id="L40">        Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
-<span class="nc" id="L41">        reset();</span>
-<span class="nc" id="L42">      }</span>
-<span class="nc" id="L43">    return username;</span>
+                    &quot;https://a.mapillary.com/v2/me?client_id=&quot;+MapillaryPlugin.CLIENT_ID))
+<span class="nc" id="L40">            .getString(&quot;username&quot;);</span>
+<span class="nc" id="L41">      } catch (IOException e) {</span>
+<span class="nc" id="L42">        Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
+<span class="nc" id="L43">        reset();</span>
+<span class="nc" id="L44">      }</span>
+<span class="nc" id="L45">    return username;</span>
   }
 
   /**
    * @return A HashMap object containing the images_policy and images_hash
    *         strings.
    */
-  public static HashMap&lt;String, String&gt; getSecrets() {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (!isTokenValid)</span>
-<span class="nc" id="L52">      return null;</span>
-<span class="nc" id="L53">    HashMap&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
+  public static Map&lt;String, String&gt; getSecrets() {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    if (!isTokenValid)</span>
+<span class="nc" id="L54">      return null;</span>
+<span class="nc" id="L55">    Map&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
     try {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">      if (images_hash == null)</span>
-<span class="nc" id="L56">        images_hash = OAuthUtils</span>
-<span class="nc" id="L57">            .getWithHeader(</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">      if (imagesHash == null)</span>
+<span class="nc" id="L58">        imagesHash = OAuthUtils</span>
+<span class="nc" id="L59">            .getWithHeader(</span>
                 new URL(
-                    &quot;https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
-<span class="nc" id="L60">            .getString(&quot;images_hash&quot;);</span>
-<span class="nc" id="L61">      hash.put(&quot;images_hash&quot;, images_hash);</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">      if (images_policy == null)</span>
-<span class="nc" id="L63">        images_policy = OAuthUtils</span>
-<span class="nc" id="L64">            .getWithHeader(</span>
+                    &quot;https://a.mapillary.com/v2/me/uploads/secrets?client_id=&quot;+MapillaryPlugin.CLIENT_ID))
+<span class="nc" id="L62">            .getString(&quot;images_hash&quot;);</span>
+<span class="nc" id="L63">      hash.put(&quot;images_hash&quot;, imagesHash);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      if (imagesPolicy == null)</span>
+<span class="nc" id="L65">        imagesPolicy = OAuthUtils</span>
+<span class="nc" id="L66">            .getWithHeader(</span>
                 new URL(
-                    &quot;https://a.mapillary.com/v2/me/uploads/secrets?client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;))
-<span class="nc" id="L67">            .getString(&quot;images_policy&quot;);</span>
-<span class="nc" id="L68">    } catch (IOException e) {</span>
-<span class="nc" id="L69">      Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
-<span class="nc" id="L70">      reset();</span>
-<span class="nc" id="L71">    }</span>
-<span class="nc" id="L72">    hash.put(&quot;images_policy&quot;, images_policy);</span>
-<span class="nc" id="L73">    return hash;</span>
+                    &quot;https://a.mapillary.com/v2/me/uploads/secrets?client_id=&quot;+MapillaryPlugin.CLIENT_ID))
+<span class="nc" id="L69">            .getString(&quot;images_policy&quot;);</span>
+<span class="nc" id="L70">    } catch (IOException e) {</span>
+<span class="nc" id="L71">      Main.info(&quot;Invalid Mapillary token, reseting field&quot;);</span>
+<span class="nc" id="L72">      reset();</span>
+<span class="nc" id="L73">    }</span>
+<span class="nc" id="L74">    hash.put(&quot;images_policy&quot;, imagesPolicy);</span>
+<span class="nc" id="L75">    return hash;</span>
   }
 
   /**
    * Resets the MapillaryUser to null values.
    */
   public static void reset() {
-<span class="fc" id="L80">    username = null;</span>
-<span class="fc" id="L81">    images_policy = null;</span>
-<span class="fc" id="L82">    images_hash = null;</span>
-<span class="fc" id="L83">    isTokenValid = false;</span>
-<span class="fc" id="L84">    Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
-<span class="fc" id="L85">  }</span>
+<span class="fc" id="L82">    username = null;</span>
+<span class="fc" id="L83">    imagesPolicy = null;</span>
+<span class="fc" id="L84">    imagesHash = null;</span>
+<span class="fc" id="L85">    isTokenValid = false;</span>
+<span class="fc" id="L86">    Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
+<span class="fc" id="L87">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

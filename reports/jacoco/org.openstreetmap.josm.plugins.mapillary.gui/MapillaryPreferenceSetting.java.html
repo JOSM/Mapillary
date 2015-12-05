@@ -5,7 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -98,14 +98,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 <span class="nc" id="L98">    Main.pref</span>
 <span class="nc" id="L99">        .put(&quot;mapillary.reverse-buttons&quot;, this.reverseButtons.isSelected());</span>
 
-<span class="nc" id="L101">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, false);</span>
+<span class="nc" id="L101">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);</span>
 <span class="nc bnc" id="L102" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))</span>
 <span class="nc" id="L103">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Automatic.toString());</span>
 <span class="nc bnc" id="L104" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))</span>
 <span class="nc" id="L105">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Semiautomatic.toString());</span>
 <span class="nc bnc" id="L106" title="All 2 branches missed.">    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {</span>
 <span class="nc" id="L107">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Manual.toString());</span>
-<span class="nc" id="L108">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.DOWNLOAD_VIEW_MENU, true);</span>
+<span class="nc" id="L108">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
     }
 <span class="nc" id="L110">    Main.pref.put(&quot;mapillary.display-hour&quot;, this.displayHour.isSelected());</span>
 <span class="nc" id="L111">    Main.pref.put(&quot;mapillary.format-24&quot;, this.format24.isSelected());</span>
@@ -132,10 +132,10 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
     public void actionPerformed(ActionEvent arg0) {
 <span class="nc" id="L133">      OAuthPortListener portListener = new OAuthPortListener();</span>
 <span class="nc" id="L134">      portListener.start();</span>
-<span class="nc" id="L135">      String url = &quot;http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&amp;response_type=token&amp;scope=user:read%20public:upload%20public:write&quot;;</span>
+<span class="nc" id="L135">      String url = &quot;http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&amp;client_id=&quot;+MapillaryPlugin.CLIENT_ID+&quot;&amp;response_type=token&amp;scope=user:read%20public:upload%20public:write&quot;;</span>
       try {
 <span class="nc" id="L137">        MapillaryUtils.browse(new URL(url));</span>
-<span class="nc" id="L138">      } catch (MalformedURLException e) {</span>
+<span class="nc" id="L138">      } catch (IOException e) {</span>
 <span class="nc" id="L139">        Main.error(e);</span>
 <span class="nc" id="L140">      }</span>
 <span class="nc" id="L141">    }</span>

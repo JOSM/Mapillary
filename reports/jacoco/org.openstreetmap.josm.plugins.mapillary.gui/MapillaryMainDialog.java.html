@@ -438,7 +438,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L438">      putValue(NAME, tr(&quot;Stop&quot;));</span>
 <span class="nc" id="L439">      putValue(SHORT_DESCRIPTION, tr(&quot;Stops the walk.&quot;));</span>
 <span class="nc" id="L440">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryStop.png&quot;));</span>
-<span class="nc" id="L441">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L441">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L442">    }</span>
 
     @Override
@@ -456,13 +456,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   private class PlayAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -17943404752082788L;
-    private WalkThread thread;
+    private transient WalkThread thread;
 
 <span class="nc" id="L461">    public PlayAction() {</span>
 <span class="nc" id="L462">      putValue(NAME, tr(&quot;Play&quot;));</span>
 <span class="nc" id="L463">      putValue(SHORT_DESCRIPTION, tr(&quot;Continues with the paused walk.&quot;));</span>
 <span class="nc" id="L464">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPlay.png&quot;));</span>
-<span class="nc" id="L465">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L465">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L466">    }</span>
 
     @Override
@@ -488,7 +488,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L488">      putValue(NAME, tr(&quot;Pause&quot;));</span>
 <span class="nc" id="L489">      putValue(SHORT_DESCRIPTION, tr(&quot;Pauses the walk.&quot;));</span>
 <span class="nc" id="L490">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPause.png&quot;));</span>
-<span class="nc" id="L491">      MapillaryPlugin.walkAction.addListener(this);</span>
+<span class="nc" id="L491">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L492">    }</span>
 
     @Override
