@@ -104,7 +104,7 @@ test {
 jar {
   manifest {
     attributes("Plugin-Mainversion": project.property('plugin.main.version'),
-               "Plugin-Version": "31799",
+               "Plugin-Version": "31802",
                "Plugin-Class": project.property('plugin.class'),
                "Plugin-Description": project.property('plugin.description'),
                "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
