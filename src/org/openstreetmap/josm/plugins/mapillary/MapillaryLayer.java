@@ -98,7 +98,6 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
     super(tr("Mapillary Images"));
     this.data = new MapillaryData();
     this.data.bounds = new CopyOnWriteArrayList<>();
-    init();
   }
 
   /**
@@ -171,8 +170,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The unique instance of this class.
    */
   public static synchronized MapillaryLayer getInstance() {
-    if (instance == null)
+    if (instance == null) {
       instance = new MapillaryLayer();
+      instance.init();
+    }
     return instance;
   }
 
