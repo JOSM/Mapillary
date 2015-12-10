@@ -2,13 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.json.Json;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -41,20 +39,20 @@ import org.openstreetmap.josm.tools.I18n;
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
 
-  private JCheckBox reverseButtons = new JCheckBox(I18n.tr("Reverse buttons position when displaying images."));
-  private JComboBox<String> downloadMode = new JComboBox<>(new String[]{
+  private final JCheckBox reverseButtons = new JCheckBox(I18n.tr("Reverse buttons position when displaying images."));
+  private final JComboBox<String> downloadMode = new JComboBox<>(new String[]{
       MapillaryDownloader.MODES.Automatic.toString(),
       MapillaryDownloader.MODES.Semiautomatic.toString(),
       MapillaryDownloader.MODES.Manual.toString()
   });
-  private JCheckBox displayHour = new JCheckBox(I18n.tr("Display hour when the picture was taken"));
-  private JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
-  private JCheckBox moveTo = new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"));
+  private final JCheckBox displayHour = new JCheckBox(I18n.tr("Display hour when the picture was taken"));
+  private final JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
+  private final JCheckBox moveTo = new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"));
 
-  private JButton loginButton = new JButton(new LoginAction(this));
-  private JButton logoutButton = new JButton(new LogoutAction());
-  private JLabel loginLabel = new JLabel();
-  private JPanel loginPanel = new JPanel();
+  private final JButton loginButton = new JButton(new LoginAction(this));
+  private final JButton logoutButton = new JButton(new LogoutAction());
+  private final JLabel loginLabel = new JLabel();
+  private final JPanel loginPanel = new JPanel();
 
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -112,11 +110,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     }).start();
   }
 
-  /**
-   * Should be called whenever the user logs into a mapillary account.
-   * This updates the GUI to reflect the login status.
-   * @param username the username that the user is now logged in with
-   */
+  @Override
   public void onLogin(final String username) {
     loginPanel.add(logoutButton, 1);
     loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
@@ -124,10 +118,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     logoutButton.setText(I18n.tr("Logout"));
   }
 
-  /**
-   * Should be called whenever the user logs out of a mapillary account.
-   * This updates the GUI to reflect the login status.
-   */
+  @Override
   public void onLogout() {
     loginPanel.remove(logoutButton);
     loginLabel.setText(I18n.tr("You are currently not logged in."));
@@ -167,7 +158,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    */
   public class LoginAction extends AbstractAction {
     private static final long serialVersionUID = -3908477563072057344L;
-    final transient MapillaryLoginListener callback;
+    private final transient MapillaryLoginListener callback;
 
     public LoginAction(MapillaryLoginListener loginCallback) {
       this.callback = loginCallback;

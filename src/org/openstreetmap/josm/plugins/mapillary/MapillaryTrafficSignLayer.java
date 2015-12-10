@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSignElement;
 import org.openstreetmap.josm.tools.I18n;
 
-public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
+public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
   private static final String TRAFFICO_PATH = "data/fonts/traffico/traffico.ttf";
   private static MapillaryTrafficSignLayer instance;
   private final Font traffico;
@@ -48,7 +48,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    * @throws IOException if some error occured while reading the icon-font traffico or
    *         if the traffico font has the wrong format
    */
-  public static MapillaryTrafficSignLayer getInstance() throws IOException {
+  public static synchronized MapillaryTrafficSignLayer getInstance() throws IOException {
     if (instance == null)
       instance = new MapillaryTrafficSignLayer();
     return instance;
@@ -88,7 +88,7 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     for (int i = 0; i < signs.length && i < points.length; i++) {
       for (TrafficoSignElement layer : signs[i]) { // TODO: NPE
         g.setColor(layer.getColor());
-        g.drawString("" + layer.getGlyph(), points[i].x - 25, points[i].y + 25);
+        g.drawString(Character.toString(layer.getGlyph()), points[i].x - 25, points[i].y + 25);
       }
     }
 
@@ -97,11 +97,11 @@ public class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
       if (img instanceof MapillaryImage) {
         g.fillOval(mv.getPoint(img.getLatLon()).x - 3, mv.getPoint(img.getLatLon()).y - 3, 6, 6);
-        if (((MapillaryImage) img).getSigns().size() >= 1) {
+        if (!((MapillaryImage) img).getSigns().isEmpty()) {
           Point imgLoc = mv.getPoint(img.getLatLon());
           for (TrafficoSignElement e : TrafficoSign.getSign("de", ((MapillaryImage) img).getSigns().get(0))) {
             g.setColor(e.getColor());
-            g.drawString("" + e.getGlyph(), imgLoc.x, imgLoc.y);
+            g.drawString(Character.toString(e.getGlyph()), imgLoc.x, imgLoc.y);
           }
         }
       }

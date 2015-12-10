@@ -16,7 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
  * @author nokutu
  *
  */
-public class MapillaryUser {
+public final class MapillaryUser {
 
   private static String username;
   private static String imagesPolicy;
