@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,19 +41,15 @@ import org.openstreetmap.josm.tools.I18n;
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
 
-  private JCheckBox reverseButtons = new JCheckBox(
-      tr("Reverse buttons position when displaying images."));
+  private JCheckBox reverseButtons = new JCheckBox(I18n.tr("Reverse buttons position when displaying images."));
   private JComboBox<String> downloadMode = new JComboBox<>(new String[]{
       MapillaryDownloader.MODES.Automatic.toString(),
       MapillaryDownloader.MODES.Semiautomatic.toString(),
       MapillaryDownloader.MODES.Manual.toString()
   });
-  private JCheckBox displayHour = new JCheckBox(
-      tr("Display hour when the picture was taken"));
-  private JCheckBox format24 = new JCheckBox(tr("Use 24 hour format"));
-  private JCheckBox moveTo = new JCheckBox(
-      tr("Move to picture''s location with next/previous buttons"));
-  private JButton login;
+  private JCheckBox displayHour = new JCheckBox(I18n.tr("Display hour when the picture was taken"));
+  private JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
+  private JCheckBox moveTo = new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"));
 
   private JButton loginButton = new JButton(new LoginAction(this));
   private JButton logoutButton = new JButton(new LogoutAction());
@@ -70,15 +64,15 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @Override
   public void addGui(PreferenceTabbedPane gui) {
     JPanel panel = new JPanel();
-    this.reverseButtons.setSelected(Main.pref
-        .getBoolean("mapillary.reverse-buttons"));
-    this.displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour",
-        true));
+    this.reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
+    this.displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
     this.format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
-    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture",
-        true));
-    panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    panel.add(this.reverseButtons);
+    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+
+    panel.setLayout(new GridBagLayout());
+    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+    panel.add(this.reverseButtons, GBC.eol());
     // Sets the value of the ComboBox.
     if (Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Automatic.toString())
         || Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Semiautomatic.toString())
@@ -86,12 +80,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       this.downloadMode.setSelectedItem(Main.pref.get("mapillary.download-mode"));
     }
     JPanel downloadModePanel = new JPanel();
-    downloadModePanel.add(new JLabel(tr("Download mode: ")));
+    downloadModePanel.add(new JLabel(I18n.tr("Download mode")));
     downloadModePanel.add(this.downloadMode);
-    panel.add(downloadModePanel);
-    panel.add(this.displayHour);
-    panel.add(this.format24);
-    panel.add(this.moveTo);
+    panel.add(downloadModePanel, GBC.eol());
+    panel.add(displayHour, GBC.eol());
+    panel.add(format24, GBC.eol());
+    panel.add(moveTo, GBC.eol());
 
     loginPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
     loginPanel.add(loginButton, 0);
@@ -100,7 +94,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     panel.add(loginPanel, GBC.eol());
     panel.add(Box.createVerticalGlue(), GBC.eol().fill(GBC.BOTH));
 
-    gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
+    gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(panel));
 
     new Thread(new Runnable() {
       @Override
@@ -143,8 +137,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @Override
   public boolean ok() {
     boolean mod = false;
-    Main.pref
-        .put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
+    Main.pref.put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
     if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
