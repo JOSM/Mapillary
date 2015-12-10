@@ -24,7 +24,7 @@ public class OAuthPortListenerTest {
    */
   @Test
   public void responseTest() {
-    OAuthPortListener t = new OAuthPortListener();
+    OAuthPortListener t = new OAuthPortListener(null);
     t.start();
     try {
       synchronized (this) {

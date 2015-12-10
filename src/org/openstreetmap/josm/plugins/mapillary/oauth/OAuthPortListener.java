@@ -28,7 +28,11 @@ public class OAuthPortListener extends Thread {
       I18n.tr("Mapillary login"),
       I18n.tr("Login successful, return to JOSM.")
   );
+  private MapillaryLoginListener callback;
 
+  public OAuthPortListener(MapillaryLoginListener loginCallback) {
+    this.callback = loginCallback;
+  }
 
   @Override
   public void run() {
@@ -69,7 +73,11 @@ public class OAuthPortListener extends Thread {
       MapillaryUser.isTokenValid = true;
       if (Main.main != null) {
         Main.pref.put("mapillary.access-token", accessToken);
-        Main.info("The username is: " + MapillaryUser.getUsername());
+        String username = MapillaryUser.getUsername();
+        Main.info("The username is: " + username);
+        if (callback != null) {
+          callback.onLogin(username);
+        }
       }
     } catch (BindException e) {
       Main.warn(e);

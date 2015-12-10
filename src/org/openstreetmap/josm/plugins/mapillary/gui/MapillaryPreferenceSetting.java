@@ -4,16 +4,23 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.json.Json;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
@@ -21,9 +28,12 @@ import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.I18n;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -31,7 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @author nokutu
  *
  */
-public class MapillaryPreferenceSetting implements SubPreferenceSetting {
+public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
 
   private JCheckBox reverseButtons = new JCheckBox(
       tr("Reverse buttons position when displaying images."));
@@ -46,6 +56,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
   private JCheckBox moveTo = new JCheckBox(
       tr("Move to picture''s location with next/previous buttons"));
   private JButton login;
+
+  private JButton loginButton = new JButton(new LoginAction(this));
+  private JButton logoutButton = new JButton(new LogoutAction());
+  private JLabel loginLabel = new JLabel();
+  private JPanel loginPanel = new JPanel();
 
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
@@ -77,19 +92,52 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     panel.add(this.displayHour);
     panel.add(this.format24);
     panel.add(this.moveTo);
-    this.login = new JButton(new LoginAction());
-    if (MapillaryUser.getUsername() == null)
-      this.login.setText("Login");
-    else
-      this.login.setText("Logged as: " + MapillaryUser.getUsername()
-          + ". Click to relogin.");
-    panel.add(this.login);
-    if (MapillaryUser.getUsername() != null) {
-      JButton logout = new JButton(new LogoutAction());
-      logout.setText("Logout");
-      panel.add(logout);
-    }
+
+    loginPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+    loginPanel.add(loginButton, 0);
+    loginPanel.add(loginLabel, 1);
+    onLogout();
+    panel.add(loginPanel, GBC.eol());
+    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GBC.BOTH));
+
     gui.getDisplayPreference().addSubTab(this, "Mapillary", panel);
+
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        String username = MapillaryUser.getUsername();
+        if (username != null) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+              onLogin(MapillaryUser.getUsername());
+            }
+          });
+        }
+      }
+    }).start();
+  }
+
+  /**
+   * Should be called whenever the user logs into a mapillary account.
+   * This updates the GUI to reflect the login status.
+   * @param username the username that the user is now logged in with
+   */
+  public void onLogin(final String username) {
+    loginPanel.add(logoutButton, 1);
+    loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
+    loginButton.setText(I18n.tr("Re-Login"));
+    logoutButton.setText(I18n.tr("Logout"));
+  }
+
+  /**
+   * Should be called whenever the user logs out of a mapillary account.
+   * This updates the GUI to reflect the login status.
+   */
+  public void onLogout() {
+    loginPanel.remove(logoutButton);
+    loginLabel.setText(I18n.tr("You are currently not logged in."));
+    loginButton.setText(I18n.tr("Login"));
   }
 
   @Override
@@ -125,14 +173,18 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
    *
    */
   public class LoginAction extends AbstractAction {
-
     private static final long serialVersionUID = -3908477563072057344L;
+    final transient MapillaryLoginListener callback;
+
+    public LoginAction(MapillaryLoginListener loginCallback) {
+      this.callback = loginCallback;
+    }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      OAuthPortListener portListener = new OAuthPortListener();
+      OAuthPortListener portListener = new OAuthPortListener(callback);
       portListener.start();
-      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:8763%2F&client_id="+MapillaryPlugin.CLIENT_ID+"&response_type=token&scope=user:read%20public:upload%20public:write";
+      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:"+OAuthPortListener.PORT+"%2F&client_id="+MapillaryPlugin.CLIENT_ID+"&response_type=token&scope=user:read%20public:upload%20public:write";
       try {
         MapillaryUtils.browse(new URL(url));
       } catch (IOException e) {
@@ -155,7 +207,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting {
     public void actionPerformed(ActionEvent arg0) {
       MapillaryUser.reset();
       Main.pref.put("mapillary.access-token", null);
-      MapillaryPreferenceSetting.this.login.setText("Login");
+      onLogout();
     }
   }
 }
