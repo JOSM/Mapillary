@@ -28,10 +28,11 @@ repositories {
 }
 dependencies {
   // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
-  compile ':josm:latest'
+  // When using a numeric version number you can leave out {changing=true}.
+  compile(':josm:latest'){changing=true}
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
-  compile ':apache-commons:latest'
-  compile ':apache-http:latest'
+  compile (':apache-commons:latest'){changing=true}
+  compile (':apache-http:latest'){changing=true}
 
   testCompile 'junit:junit:4.12'
 }
