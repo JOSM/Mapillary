@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -23,25 +24,27 @@ public class MapillaryUser {
   /** If the stored token is valid or not. */
   public static boolean isTokenValid = true;
 
+  private MapillaryUser() {
+    // Private constructor to avoid instantiation
+  }
+
   /**
-   * Returns the username of the logged user.
-   *
    * @return The username of the logged in user.
    */
   public static String getUsername() {
-    if (!isTokenValid)
+    if (!isTokenValid) {
       return null;
-    if (username == null)
+    }
+    if (username == null) {
       try {
         username = OAuthUtils
-            .getWithHeader(
-                new URL(
-                    "https://a.mapillary.com/v2/me?client_id="+MapillaryPlugin.CLIENT_ID))
+            .getWithHeader(new URL(MapillaryDownloader.BASE_URL+"me?client_id="+MapillaryPlugin.CLIENT_ID))
             .getString("username");
       } catch (IOException e) {
-        Main.info("Invalid Mapillary token, reseting field");
+        Main.info("Invalid Mapillary token, resetting field");
         reset();
       }
+    }
     return username;
   }
 

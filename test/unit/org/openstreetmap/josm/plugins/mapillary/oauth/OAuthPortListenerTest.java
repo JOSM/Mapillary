@@ -33,7 +33,7 @@ public class OAuthPortListenerTest {
     } catch (InterruptedException e1) {
     }
     try {
-      URL url = new URL("http://localhost:8763?access_token=access_token");
+      URL url = new URL("http://localhost:"+OAuthPortListener.PORT+"?access_token=access_token");
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
       BufferedReader in = new BufferedReader(new InputStreamReader(
           con.getInputStream()));

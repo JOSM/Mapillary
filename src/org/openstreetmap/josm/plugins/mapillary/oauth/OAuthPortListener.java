@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -13,6 +11,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.tools.I18n;
 
 /**
  * Listens to the OAuth port (8763) in order to get the access token and sends
@@ -22,13 +21,19 @@ import org.openstreetmap.josm.Main;
  *
  */
 public class OAuthPortListener extends Thread {
+  public static final int PORT = 8763;
 
-  protected static final String RESPONSE = tr("<html><head><title>Mapillary login</title></head><body>Login successful, return to JOSM.</body></html>");
+  protected static final String RESPONSE = String.format(
+      "<!DOCTYPE html><html><head><meta charset=\"utf8\"><title>%s</title></head><body>%s</body></html>",
+      I18n.tr("Mapillary login"),
+      I18n.tr("Login successful, return to JOSM.")
+  );
+
 
   @Override
   public void run() {
     try {
-      ServerSocket serverSocket = new ServerSocket(8763);
+      ServerSocket serverSocket = new ServerSocket(PORT);
       Socket clientSocket = serverSocket.accept();
       PrintWriter out = new PrintWriter(new OutputStreamWriter(
           clientSocket.getOutputStream(), "UTF-8"), true);
@@ -36,20 +41,19 @@ public class OAuthPortListener extends Thread {
           clientSocket.getInputStream(), "UTF-8"));
       String s;
       String accessToken = null;
-      while (in.hasNextLine()) {
+      while (in.hasNextLine() && accessToken == null) {
         s = in.nextLine();
         if (s.contains("access_token=")) {
           String[] ss = s.split("&");
-          for (int i = 0; i < ss.length; i++) {
-            if (ss[i].contains("access_token=")) {
-              accessToken = ss[i].substring(
-                  ss[i].indexOf("access_token=") + 13, ss[i].length());
-              break;
+          for (int i = 0; i < ss.length && accessToken == null; i++) {
+            if (ss[i].startsWith("access_token=")) {
+              accessToken = ss[i].substring(ss[i].indexOf("access_token=") + 13, ss[i].length());
             }
           }
           break;
-        } else if (s.contains("keep-alive"))
+        } else if (s.contains("keep-alive")) {
           break;
+        }
       }
 
       writeContent(out);
@@ -60,8 +64,7 @@ public class OAuthPortListener extends Thread {
 
       MapillaryUser.reset();
 
-      Main.info("Successful login with Mapillary, the access token is: "
-          + accessToken);
+      Main.info("Successful login with Mapillary, the access token is: " + accessToken);
       // Saves the access token in preferences.
       MapillaryUser.isTokenValid = true;
       if (Main.main != null) {
@@ -69,6 +72,7 @@ public class OAuthPortListener extends Thread {
         Main.info("The username is: " + MapillaryUser.getUsername());
       }
     } catch (BindException e) {
+      Main.warn(e);
       return;
     } catch (IOException e) {
       Main.error(e);

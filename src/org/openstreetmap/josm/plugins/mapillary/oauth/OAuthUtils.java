@@ -33,8 +33,7 @@ public class OAuthUtils {
   public static JsonObject getWithHeader(URL url) throws IOException {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization",
-        "Bearer " + Main.pref.get("mapillary.access-token"));
+    con.setRequestProperty("Authorization", "Bearer " + Main.pref.get("mapillary.access-token"));
 
     try (
       BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))
