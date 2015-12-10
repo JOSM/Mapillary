@@ -17,7 +17,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  *
  */
-public class MapillaryFilterChooseSigns extends JPanel {
+public final class MapillaryFilterChooseSigns extends JPanel {
 
   private static final long serialVersionUID = -3513805549022406720L;
 
@@ -49,128 +49,41 @@ public class MapillaryFilterChooseSigns extends JPanel {
   private static MapillaryFilterChooseSigns instance;
 
   private MapillaryFilterChooseSigns() {
-    this.maxSpeed.setSelected(true);
-    this.stop.setSelected(true);
-    this.giveWay.setSelected(true);
-    this.roundabout.setSelected(true);
-    this.access.setSelected(true);
-    this.intersection.setSelected(true);
-    this.direction.setSelected(true);
-    this.uneven.setSelected(true);
-    this.noParking.setSelected(true);
-    this.noOvertaking.setSelected(true);
-    this.crossing.setSelected(true);
-    this.noTurn.setSelected(true);
+    addCheckBoxWithLabel(this, maxSpeed, true, "signs/speed.png", tr("Speed limit"));
+    addCheckBoxWithLabel(this, stop, true, "signs/stop.png", tr("Stop"));
+    addCheckBoxWithLabel(this, giveWay, true, "signs/right_of_way.png", tr("Give way"));
+    addCheckBoxWithLabel(this, roundabout, true, "signs/roundabout_right.png", tr("Roundabout"));
+    addCheckBoxWithLabel(this, access, true, "signs/no_entry.png", tr("No entry"));
+    addCheckBoxWithLabel(this, intersection, true, "signs/intersection_danger.png", tr("Intersection danger"));
+    addCheckBoxWithLabel(this, direction, true, "signs/only_straight_on.png", tr("Mandatory direction (any)"));
+    addCheckBoxWithLabel(this, uneven, true, "signs/uneven.png", tr("Uneven road"));
+    addCheckBoxWithLabel(this, noParking, true, "signs/no_parking.png", tr("No parking"));
+    addCheckBoxWithLabel(this, noOvertaking, true, "signs/no_overtaking.png", tr("No overtaking"));
+    addCheckBoxWithLabel(this, crossing, true, "signs/crossing.png", tr("Pedestrian crossing"));
+    addCheckBoxWithLabel(this, noTurn, true, "signs/no_turn.png", tr("No turn"));
 
-    // Max speed sign
-    JPanel maxspeedPanel = new JPanel();
-    JLabel maxspeedLabel = new JLabel(tr("Speed limit"));
-    maxspeedLabel.setIcon(new ImageProvider("signs/speed.png").get());
-    maxspeedPanel.add(maxspeedLabel);
-    maxspeedPanel.add(this.maxSpeed);
-    this.add(maxspeedPanel);
+    setPreferredSize(new Dimension(600, 150));
+  }
 
-    // Stop sign
-    JPanel stopPanel = new JPanel();
-    JLabel stopLabel = new JLabel(tr("Stop"));
-    stopLabel.setIcon(new ImageProvider("signs/stop.png").get());
-    stopPanel.add(stopLabel);
-    stopPanel.add(this.stop);
-    this.add(stopPanel);
+  private void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,
+      final boolean isSelected, final String iconPath,  final String labelText) {
+    final JPanel checkBoxPanel = new JPanel();
+    final JLabel checkBoxLabel = new JLabel(labelText);
 
-    // Give way sign
-    JPanel giveWayPanel = new JPanel();
-    JLabel giveWayLabel = new JLabel(tr("Give way"));
-    giveWayLabel.setIcon(new ImageProvider("signs/right_of_way.png").get());
-    giveWayPanel.add(giveWayLabel);
-    giveWayPanel.add(this.giveWay);
-    this.add(giveWayPanel);
-
-    // Roundabout sign
-    JPanel roundaboutPanel = new JPanel();
-    JLabel roundaboutLabel = new JLabel(tr("Give way"));
-    roundaboutLabel.setIcon(new ImageProvider("signs/roundabout_right.png")
-        .get());
-    roundaboutPanel.add(roundaboutLabel);
-    roundaboutPanel.add(this.roundabout);
-    this.add(roundaboutPanel);
-
-    // No entry sign
-    JPanel noEntryPanel = new JPanel();
-    JLabel noEntryLabel = new JLabel(tr("No entry"));
-    noEntryLabel.setIcon(new ImageProvider("signs/no_entry.png").get());
-    noEntryPanel.add(noEntryLabel);
-    noEntryPanel.add(this.access);
-    this.add(noEntryPanel);
-
-    // Danger intersection
-    JPanel intersectionPanel = new JPanel();
-    JLabel intersectionLabel = new JLabel(tr("Intersection danger"));
-    intersectionLabel
-        .setIcon(new ImageProvider("signs/intersection_danger.png").get());
-    intersectionPanel.add(intersectionLabel);
-    intersectionPanel.add(this.intersection);
-    this.add(intersectionPanel);
-
-    // Mandatory direction
-    JPanel directionPanel = new JPanel();
-    JLabel directionLabel = new JLabel(tr("Mandatory direction (any)"));
-    directionLabel.setIcon(new ImageProvider("signs/only_straight_on.png")
-        .get());
-    directionPanel.add(directionLabel);
-    directionPanel.add(this.direction);
-    this.add(directionPanel);
-
-    // No turn
-    JPanel noTurnPanel = new JPanel();
-    JLabel noTurnLabel = new JLabel(tr("No turn"));
-    noTurnLabel.setIcon(new ImageProvider("signs/no_turn.png").get());
-    noTurnPanel.add(noTurnLabel);
-    noTurnPanel.add(this.noTurn);
-    this.add(noTurnPanel);
-
-    // Uneven road
-    JPanel unevenPanel = new JPanel();
-    JLabel unevenLabel = new JLabel(tr("Uneven road"));
-    unevenLabel.setIcon(new ImageProvider("signs/uneaven.png").get());
-    unevenPanel.add(unevenLabel);
-    unevenPanel.add(this.uneven);
-    this.add(unevenPanel);
-
-    // No parking
-    JPanel noParkingPanel = new JPanel();
-    JLabel noParkingLabel = new JLabel(tr("No parking"));
-    noParkingLabel.setIcon(new ImageProvider("signs/no_parking.png").get());
-    noParkingPanel.add(noParkingLabel);
-    noParkingPanel.add(this.noParking);
-    this.add(noParkingPanel);
-
-    // No overtaking
-    JPanel noOvertakingPanel = new JPanel();
-    JLabel noOvertakingLabel = new JLabel(tr("No overtaking"));
-    noOvertakingLabel.setIcon(new ImageProvider("signs/no_overtaking.png")
-        .get());
-    noOvertakingPanel.add(noOvertakingLabel);
-    noOvertakingPanel.add(this.noOvertaking);
-    this.add(noOvertakingPanel);
-
-    // Pedestrian crossing
-    JPanel crossingPanel = new JPanel();
-    JLabel crossingLabel = new JLabel(tr("Pedestrian crossing"));
-    crossingLabel.setIcon(new ImageProvider("signs/crossing.png").get());
-    crossingPanel.add(crossingLabel);
-    crossingPanel.add(this.crossing);
-    this.add(crossingPanel);
-
-    this.setPreferredSize(new Dimension(600, 150));
+    checkBoxLabel.setIcon(new ImageProvider(iconPath).get());
+    checkBoxLabel.setLabelFor(checkBox);
+    checkBoxPanel.add(checkBoxLabel);
+    checkBox.setSelected(isSelected);
+    checkBoxPanel.add(checkBox);
+    parentPanel.add(checkBoxPanel);
   }
 
   /**
    * Return the unique instance of the class.
    *
-   * @return THe unique instance of the class.
+   * @return the unique instance of the class.
    */
-  public static MapillaryFilterChooseSigns getInstance() {
+  public static synchronized MapillaryFilterChooseSigns getInstance() {
     if (instance == null)
       instance = new MapillaryFilterChooseSigns();
     return instance;
