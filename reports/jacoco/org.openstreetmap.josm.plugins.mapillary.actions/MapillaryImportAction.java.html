@@ -40,13 +40,13 @@ public class MapillaryImportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportAction() {
-<span class="nc" id="L43">    super(tr(&quot;Import pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L44">        tr(&quot;Import local pictures&quot;), Shortcut.registerShortcut(</span>
-<span class="nc" id="L45">            &quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+<span class="fc" id="L43">    super(tr(&quot;Import pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="fc" id="L44">        tr(&quot;Import local pictures&quot;), Shortcut.registerShortcut(</span>
+<span class="fc" id="L45">            &quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryImport&quot;,
         false);
-<span class="nc" id="L48">    this.setEnabled(false);</span>
-<span class="nc" id="L49">  }</span>
+<span class="fc" id="L48">    this.setEnabled(false);</span>
+<span class="fc" id="L49">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {

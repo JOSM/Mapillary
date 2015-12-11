@@ -17,7 +17,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /** The user that made the image. */
   private String user;
   /** Set of traffic signs in the image. */
-  private List&lt;String&gt; signs;
+<span class="fc" id="L20">  private final List&lt;String&gt; signs = new ArrayList&lt;&gt;();</span>
   /** Where the picture was taken. */
   private String location;
 
@@ -36,8 +36,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public MapillaryImage(String key, double lat, double lon, double ca) {
 <span class="fc" id="L37">    super(lat, lon, ca);</span>
 <span class="fc" id="L38">    this.key = key;</span>
-<span class="fc" id="L39">    this.signs = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L39">  }</span>
 
   /**
    * Returns the location where the image was taken.
@@ -45,7 +44,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A {@code String} containing the location where the picture was taken.
    */
   public String getLocation() {
-<span class="nc" id="L48">    return this.location;</span>
+<span class="nc" id="L47">    return this.location;</span>
   }
 
   /**
@@ -55,8 +54,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *          A {@code String} object containing the place where the image was taken.
    */
   public void setLocation(String location) {
-<span class="nc" id="L58">    this.location = location;</span>
-<span class="nc" id="L59">  }</span>
+<span class="nc" id="L57">    this.location = location;</span>
+<span class="nc" id="L58">  }</span>
 
   /**
    * Returns the unique identifier of the object.
@@ -64,7 +63,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A {@code String} containing the unique identifier of the object.
    */
   public String getKey() {
-<span class="fc" id="L67">    return this.key;</span>
+<span class="fc" id="L66">    return this.key;</span>
   }
 
   /**
@@ -74,8 +73,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *          A {@code String} that identifies the type of sign.
    */
   public void addSign(String sign) {
-<span class="nc" id="L77">    this.signs.add(sign);</span>
-<span class="nc" id="L78">  }</span>
+<span class="nc" id="L76">    this.signs.add(sign);</span>
+<span class="nc" id="L77">  }</span>
 
   /**
    * Returns a {@link List} containing the signs assigned to this image.
@@ -83,7 +82,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A {@link List} object containing the signs assigned to this image.
    */
   public List&lt;String&gt; getSigns() {
-<span class="nc" id="L86">    return this.signs;</span>
+<span class="nc" id="L85">    return this.signs;</span>
   }
 
   /**
@@ -93,8 +92,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *          A {@code String} containing the username of the person who took the image.
    */
   public void setUser(String user) {
-<span class="nc" id="L96">    this.user = user;</span>
-<span class="nc" id="L97">  }</span>
+<span class="nc" id="L95">    this.user = user;</span>
+<span class="nc" id="L96">  }</span>
 
   /**
    * Returns the username of the person who took the picture.
@@ -103,25 +102,25 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *         picture.
    */
   public String getUser() {
-<span class="nc" id="L106">    return this.user;</span>
+<span class="nc" id="L105">    return this.user;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L111">    return &quot;Image[key=&quot; + this.key + &quot;;lat=&quot; + this.latLon.lat() + &quot;;lon=&quot;</span>
-<span class="nc" id="L112">        + this.latLon.lon() + &quot;;ca=&quot; + this.ca + ']';</span>
+<span class="nc" id="L110">    return &quot;Image[key=&quot; + this.key + &quot;;lat=&quot; + this.latLon.lat() + &quot;;lon=&quot;</span>
+<span class="nc" id="L111">        + this.latLon.lon() + &quot;;ca=&quot; + this.ca + ']';</span>
   }
 
   @Override
   public boolean equals(Object object) {
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    if (object instanceof MapillaryImage)</span>
-<span class="fc" id="L118">      return this.key.equals(((MapillaryImage) object).getKey());</span>
-<span class="nc" id="L119">    return false;</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    if (object instanceof MapillaryImage)</span>
+<span class="fc" id="L117">      return this.key.equals(((MapillaryImage) object).getKey());</span>
+<span class="nc" id="L118">    return false;</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L124">    return this.key.hashCode();</span>
+<span class="fc" id="L123">    return this.key.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

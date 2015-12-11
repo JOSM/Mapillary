@@ -60,19 +60,19 @@ public class MapillaryPlugin extends Plugin {
   /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess&lt;String, BufferedImageCacheEntry&gt; CACHE;
 
-  private final MapillaryDownloadAction downloadAction;
-  private final MapillaryExportAction exportAction;
+<span class="fc" id="L63">  private static final MapillaryDownloadAction downloadAction = new MapillaryDownloadAction();</span>
+<span class="fc" id="L64">  private static final MapillaryExportAction exportAction = new MapillaryExportAction();</span>
   /** Import action */
-  private final MapillaryImportAction importAction;
+<span class="fc" id="L66">  private static final MapillaryImportAction importAction = new MapillaryImportAction();</span>
   /** Zoom action */
-  private static MapillaryZoomAction zoomAction;
-  private final MapillaryDownloadViewAction downloadViewAction;
-  private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
-  private final MapillaryJoinAction joinAction;
+<span class="fc" id="L68">  private static final MapillaryZoomAction zoomAction = new MapillaryZoomAction();</span>
+<span class="fc" id="L69">  private static final MapillaryDownloadViewAction downloadViewAction = new MapillaryDownloadViewAction();</span>
+<span class="fc" id="L70">  private static final MapillaryImportIntoSequenceAction importIntoSequenceAction = new MapillaryImportIntoSequenceAction();</span>
+<span class="fc" id="L71">  private static final MapillaryJoinAction joinAction = new MapillaryJoinAction();</span>
   /** Walk action */
-  private static MapillaryWalkAction walkAction;
+<span class="fc" id="L73">  private static final MapillaryWalkAction walkAction = new MapillaryWalkAction();</span>
   /** Upload action */
-  private static MapillaryUploadAction uploadAction;
+<span class="fc" id="L75">  private static final MapillaryUploadAction uploadAction = new MapillaryUploadAction();</span>
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   private JMenuItem downloadMenu;
@@ -102,108 +102,98 @@ public class MapillaryPlugin extends Plugin {
   public MapillaryPlugin(PluginInformation info) {
 <span class="nc" id="L103">    super(info);</span>
 
-<span class="nc" id="L105">    downloadAction = new MapillaryDownloadAction();</span>
-<span class="nc" id="L106">    walkAction = new MapillaryWalkAction();</span>
-<span class="nc" id="L107">    exportAction = new MapillaryExportAction();</span>
-<span class="nc" id="L108">    importAction = new MapillaryImportAction();</span>
-<span class="nc" id="L109">    zoomAction = new MapillaryZoomAction();</span>
-<span class="nc" id="L110">    downloadViewAction = new MapillaryDownloadViewAction();</span>
-<span class="nc" id="L111">    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();</span>
-<span class="nc" id="L112">    joinAction = new MapillaryJoinAction();</span>
-<span class="nc" id="L113">    uploadAction = new MapillaryUploadAction();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    if (Main.main != null) { // important for headless mode</span>
+<span class="nc" id="L106">      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);</span>
+<span class="nc" id="L107">      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);</span>
+<span class="nc" id="L108">      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);</span>
+<span class="nc" id="L109">      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);</span>
+<span class="nc" id="L110">      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);</span>
+<span class="nc" id="L111">      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);</span>
+<span class="nc" id="L112">      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);</span>
+<span class="nc" id="L113">      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);</span>
+<span class="nc" id="L114">      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);</span>
 
-<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (Main.main != null) { // important for headless mode</span>
-<span class="nc" id="L116">      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, this.downloadAction, false);</span>
-<span class="nc" id="L117">      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);</span>
-<span class="nc" id="L118">      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);</span>
-<span class="nc" id="L119">      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);</span>
-<span class="nc" id="L120">      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);</span>
-<span class="nc" id="L121">      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);</span>
-<span class="nc" id="L122">      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, this.downloadViewAction, false, 14);</span>
-<span class="nc" id="L123">      joinMenu = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);</span>
-<span class="nc" id="L124">      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);</span>
-
-<span class="nc" id="L126">      exportMenu.setEnabled(false);</span>
-<span class="nc" id="L127">      downloadMenu.setEnabled(false);</span>
-<span class="nc" id="L128">      importMenu.setEnabled(false);</span>
-<span class="nc" id="L129">      importIntoSequenceMenu.setEnabled(false);</span>
-<span class="nc" id="L130">      zoomMenu.setEnabled(false);</span>
-<span class="nc" id="L131">      downloadViewMenu.setEnabled(false);</span>
-<span class="nc" id="L132">      joinMenu.setEnabled(false);</span>
-<span class="nc" id="L133">      walkMenu.setEnabled(false);</span>
+<span class="nc" id="L116">      exportMenu.setEnabled(false);</span>
+<span class="nc" id="L117">      downloadMenu.setEnabled(false);</span>
+<span class="nc" id="L118">      importMenu.setEnabled(false);</span>
+<span class="nc" id="L119">      importIntoSequenceMenu.setEnabled(false);</span>
+<span class="nc" id="L120">      zoomMenu.setEnabled(false);</span>
+<span class="nc" id="L121">      downloadViewMenu.setEnabled(false);</span>
+<span class="nc" id="L122">      joinMenu.setEnabled(false);</span>
+<span class="nc" id="L123">      walkMenu.setEnabled(false);</span>
     }
 
     try {
-<span class="nc" id="L137">      CACHE = JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000, this.getPluginDir() + &quot;/cache/&quot;);</span>
-<span class="nc" id="L138">    } catch (IOException e) {</span>
-<span class="nc" id="L139">      Main.error(e);</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L127">      CACHE = JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000, this.getPluginDir() + &quot;/cache/&quot;);</span>
+<span class="nc" id="L128">    } catch (IOException e) {</span>
+<span class="nc" id="L129">      Main.error(e);</span>
+<span class="nc" id="L130">    }</span>
 
-<span class="nc bnc" id="L142" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.access-token&quot;) == null)</span>
-<span class="nc" id="L143">      MapillaryUser.isTokenValid = false;</span>
-<span class="nc" id="L144">  }</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.access-token&quot;) == null)</span>
+<span class="nc" id="L133">      MapillaryUser.isTokenValid = false;</span>
+<span class="nc" id="L134">  }</span>
 
   /**
    * @return the menu-item associated with the {@link MapillaryDownloadViewAction}
    */
   public static JMenuItem getDownloadViewMenu() {
-<span class="nc" id="L150">    return downloadViewMenu;</span>
+<span class="nc" id="L140">    return downloadViewMenu;</span>
   }
 
   /**
    * @return the menu-item associated with the {@link MapillaryExportAction}
    */
   public static JMenuItem getExportMenu() {
-<span class="fc" id="L157">    return exportMenu;</span>
+<span class="fc" id="L147">    return exportMenu;</span>
   }
 
   /**
    * @return the menu-item associated with the {@link MapillaryJoinAction}
    */
   public static JMenuItem getJoinMenu() {
-<span class="nc" id="L164">    return joinMenu;</span>
+<span class="nc" id="L154">    return joinMenu;</span>
   }
 
   /**
    * @return the {@link MapillaryUploadAction} for the plugin
    */
   public static MapillaryDataListener getUploadAction() {
-<span class="fc" id="L171">    return uploadAction;</span>
+<span class="fc" id="L161">    return uploadAction;</span>
   }
 
   /**
    * @return the menu-item associated with the {@link MapillaryUploadAction}
    */
   public static JMenuItem getUploadMenu() {
-<span class="nc" id="L178">    return uploadMenu;</span>
+<span class="fc" id="L168">    return uploadMenu;</span>
   }
 
   /**
    * @return the {@link MapillaryWalkAction} for the plugin
    */
   public static MapillaryWalkAction getWalkAction() {
-<span class="fc" id="L185">    return walkAction;</span>
+<span class="fc" id="L175">    return walkAction;</span>
   }
 
   /**
    * @return the menu-item associated with the {@link MapillaryWalkAction}
    */
   public static JMenuItem getWalkMenu() {
-<span class="nc" id="L192">    return walkMenu;</span>
+<span class="fc" id="L182">    return walkMenu;</span>
   }
 
   /**
    * @return the {@link MapillaryZoomAction} for the plugin
    */
   public static MapillaryDataListener getZoomAction() {
-<span class="fc" id="L199">    return zoomAction;</span>
+<span class="fc" id="L189">    return zoomAction;</span>
   }
 
   /**
    * @return the menu-item associated with the {@link MapillaryZoomAction}
    */
   public static JMenuItem getZoomMenu() {
-<span class="nc" id="L206">    return zoomMenu;</span>
+<span class="fc" id="L196">    return zoomMenu;</span>
   }
 
   /**
@@ -211,26 +201,26 @@ public class MapillaryPlugin extends Plugin {
    */
   @Override
   public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
-<span class="nc bnc" id="L214" title="All 4 branches missed.">    if (oldFrame == null &amp;&amp; newFrame != null) { // map frame added</span>
-<span class="nc" id="L215">      Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);</span>
-<span class="nc" id="L216">      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);</span>
-<span class="nc" id="L217">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
-<span class="nc" id="L218">      setMenuEnabled(downloadMenu, true);</span>
-<span class="nc bnc" id="L219" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)</span>
-<span class="nc" id="L220">        setMenuEnabled(downloadViewMenu, true);</span>
-<span class="nc" id="L221">      setMenuEnabled(importMenu, true);</span>
-<span class="nc" id="L222">      setMenuEnabled(importIntoSequenceMenu, true);</span>
+<span class="nc bnc" id="L204" title="All 4 branches missed.">    if (oldFrame == null &amp;&amp; newFrame != null) { // map frame added</span>
+<span class="nc" id="L205">      Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);</span>
+<span class="nc" id="L206">      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);</span>
+<span class="nc" id="L207">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
+<span class="nc" id="L208">      setMenuEnabled(downloadMenu, true);</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)</span>
+<span class="nc" id="L210">        setMenuEnabled(downloadViewMenu, true);</span>
+<span class="nc" id="L211">      setMenuEnabled(importMenu, true);</span>
+<span class="nc" id="L212">      setMenuEnabled(importIntoSequenceMenu, true);</span>
     }
-<span class="nc bnc" id="L224" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
-<span class="nc" id="L225">      MapillaryMainDialog.destroyInstance();</span>
-<span class="nc" id="L226">      MapillaryHistoryDialog.destroyInstance();</span>
-<span class="nc" id="L227">      MapillaryFilterDialog.destroyInstance();</span>
-<span class="nc" id="L228">      setMenuEnabled(downloadMenu, false);</span>
-<span class="nc" id="L229">      setMenuEnabled(downloadViewMenu, false);</span>
-<span class="nc" id="L230">      setMenuEnabled(importMenu, false);</span>
-<span class="nc" id="L231">      setMenuEnabled(importIntoSequenceMenu, false);</span>
+<span class="nc bnc" id="L214" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
+<span class="nc" id="L215">      MapillaryMainDialog.destroyInstance();</span>
+<span class="nc" id="L216">      MapillaryHistoryDialog.destroyInstance();</span>
+<span class="nc" id="L217">      MapillaryFilterDialog.destroyInstance();</span>
+<span class="nc" id="L218">      setMenuEnabled(downloadMenu, false);</span>
+<span class="nc" id="L219">      setMenuEnabled(downloadViewMenu, false);</span>
+<span class="nc" id="L220">      setMenuEnabled(importMenu, false);</span>
+<span class="nc" id="L221">      setMenuEnabled(importIntoSequenceMenu, false);</span>
     }
-<span class="nc" id="L233">  }</span>
+<span class="nc" id="L223">  }</span>
 
   /**
    * Enables/disables a {@link JMenuItem}.
@@ -241,22 +231,22 @@ public class MapillaryPlugin extends Plugin {
    *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
-<span class="nc bnc" id="L244" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L245">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="fc" id="L235">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L248">          setMenuEnabled(menu, value);</span>
-<span class="nc" id="L249">        }</span>
+<span class="nc" id="L238">          setMenuEnabled(menu, value);</span>
+<span class="nc" id="L239">        }</span>
       });
     } else {
-<span class="nc" id="L252">      menu.setEnabled(value);</span>
-<span class="nc" id="L253">      menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L242">      menu.setEnabled(value);</span>
+<span class="nc" id="L243">      menu.getAction().setEnabled(value);</span>
     }
-<span class="nc" id="L255">  }</span>
+<span class="fc" id="L245">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L259">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L249">    return new MapillaryPreferenceSetting();</span>
   }
 
   /**
@@ -268,10 +258,10 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (Main.main == null)</span>
-<span class="nc" id="L272">      return null;</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">    if (Main.main == null)</span>
+<span class="fc" id="L262">      return null;</span>
     else
-<span class="nc" id="L274">      return new ImageProvider(s);</span>
+<span class="nc" id="L264">      return new ImageProvider(s);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

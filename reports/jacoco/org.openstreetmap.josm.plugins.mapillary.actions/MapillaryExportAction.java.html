@@ -42,12 +42,12 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-<span class="nc" id="L45">    super(tr(&quot;Export pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="nc" id="L46">        tr(&quot;Export pictures&quot;), Shortcut.registerShortcut(&quot;Export Mapillary&quot;,</span>
-<span class="nc" id="L47">            tr(&quot;Export Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
+<span class="fc" id="L45">    super(tr(&quot;Export pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="fc" id="L46">        tr(&quot;Export pictures&quot;), Shortcut.registerShortcut(&quot;Export Mapillary&quot;,</span>
+<span class="fc" id="L47">            tr(&quot;Export Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
             Shortcut.NONE), false, &quot;mapillaryExport&quot;, false);
-<span class="nc" id="L49">    this.setEnabled(false);</span>
-<span class="nc" id="L50">  }</span>
+<span class="fc" id="L49">    this.setEnabled(false);</span>
+<span class="fc" id="L50">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -114,7 +114,7 @@ public class MapillaryExportAction extends JosmAction {
 <span class="nc" id="L114">  }</span>
 
   private class OKAction implements ActionListener {
-    private JOptionPane pane;
+    private final JOptionPane pane;
 
 <span class="nc" id="L119">    public OKAction(JOptionPane pane) {</span>
 <span class="nc" id="L120">      this.pane = pane;</span>
@@ -127,7 +127,7 @@ public class MapillaryExportAction extends JosmAction {
   }
 
   private class CancelAction implements ActionListener {
-    private JOptionPane pane;
+    private final JOptionPane pane;
 
 <span class="nc" id="L132">    public CancelAction(JOptionPane pane) {</span>
 <span class="nc" id="L133">      this.pane = pane;</span>

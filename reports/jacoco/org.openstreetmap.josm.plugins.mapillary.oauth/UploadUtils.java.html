@@ -56,9 +56,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 <span class="nc" id="L56">public class UploadUtils {</span>
 
   private static class SequenceUploadThread extends Thread {
-    private List&lt;MapillaryAbstractImage&gt; images;
-    private UUID uuid;
-    private boolean delete;
+    private final List&lt;MapillaryAbstractImage&gt; images;
+    private final UUID uuid;
+    private final boolean delete;
     ThreadPoolExecutor ex;
 
     private SequenceUploadThread(List&lt;MapillaryAbstractImage&gt; images,
@@ -100,8 +100,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
   }
 <span class="nc" id="L101">  private static class SingleUploadThread extends Thread {</span>
 
-    private MapillaryImportedImage image;
-    private UUID uuid;
+    private final MapillaryImportedImage image;
+    private final UUID uuid;
 
 <span class="nc" id="L106">    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {</span>
 <span class="nc" id="L107">      this.image = image;</span>

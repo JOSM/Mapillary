@@ -55,8 +55,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private static MapillaryHistoryDialog instance;
 
-  private transient UndoRedoSelectionListener undoSelectionListener;
-  private transient UndoRedoSelectionListener redoSelectionListener;
+  private final transient UndoRedoSelectionListener undoSelectionListener;
+  private final transient UndoRedoSelectionListener redoSelectionListener;
 
 <span class="nc" id="L61">  private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(</span>
       new DefaultMutableTreeNode());
@@ -65,13 +65,13 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 <span class="nc" id="L65">  private final JTree undoTree = new JTree(this.undoTreeModel);</span>
 <span class="nc" id="L66">  private final JTree redoTree = new JTree(this.redoTreeModel);</span>
 
-<span class="nc" id="L68">  private JSeparator separator = new JSeparator();</span>
-<span class="nc" id="L69">  private Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
+<span class="nc" id="L68">  private final JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L69">  private final Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
 
-  private SideButton undoButton;
-  private SideButton redoButton;
+  private final SideButton undoButton;
+  private final SideButton redoButton;
 
-  private ConcurrentHashMap&lt;Object, MapillaryCommand&gt; map;
+  private final ConcurrentHashMap&lt;Object, MapillaryCommand&gt; map;
 
   private MapillaryHistoryDialog() {
 <span class="nc" id="L77">    super(tr(&quot;Mapillary history&quot;), &quot;mapillaryhistory.png&quot;,</span>

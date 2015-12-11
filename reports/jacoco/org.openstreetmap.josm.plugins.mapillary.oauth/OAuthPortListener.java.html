@@ -28,7 +28,7 @@ public class OAuthPortListener extends Thread {
 <span class="fc" id="L28">      I18n.tr(&quot;Mapillary login&quot;),</span>
 <span class="fc" id="L29">      I18n.tr(&quot;Login successful, return to JOSM.&quot;)</span>
   );
-  private MapillaryLoginListener callback;
+  private final MapillaryLoginListener callback;
 
 <span class="fc" id="L33">  public OAuthPortListener(MapillaryLoginListener loginCallback) {</span>
 <span class="fc" id="L34">    this.callback = loginCallback;</span>

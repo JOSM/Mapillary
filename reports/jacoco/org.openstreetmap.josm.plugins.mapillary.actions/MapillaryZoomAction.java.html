@@ -29,14 +29,14 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-<span class="nc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin</span>
-<span class="nc" id="L33">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Zoom to selected image&quot;), Shortcut</span>
-<span class="nc" id="L34">        .registerShortcut(&quot;Zoom Mapillary&quot;,</span>
-<span class="nc" id="L35">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
+<span class="fc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin</span>
+<span class="fc" id="L33">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Zoom to selected image&quot;), Shortcut</span>
+<span class="fc" id="L34">        .registerShortcut(&quot;Zoom Mapillary&quot;,</span>
+<span class="fc" id="L35">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryZoom&quot;,
         false);
-<span class="nc" id="L38">    this.setEnabled(false);</span>
-<span class="nc" id="L39">  }</span>
+<span class="fc" id="L38">    this.setEnabled(false);</span>
+<span class="fc" id="L39">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
@@ -49,15 +49,15 @@ public class MapillaryZoomAction extends JosmAction implements
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage,
       MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L52" title="All 4 branches missed.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="nc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
-<span class="nc bnc" id="L54" title="All 4 branches missed.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="nc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
-<span class="nc" id="L56">  }</span>
+<span class="fc bfc" id="L52" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null)</span>
+<span class="fc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
+<span class="fc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
+<span class="fc" id="L56">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="nc" id="L61">  }</span>
+<span class="fc" id="L61">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  */
 public class CommandDelete extends MapillaryExecutableCommand {
 
-  private HashMap&lt;MapillaryAbstractImage, Integer&gt; changesHash;
+<span class="fc" id="L20">  private final HashMap&lt;MapillaryAbstractImage, Integer&gt; changesHash = new HashMap&lt;&gt;();</span>
 
   /**
    * Main constructor.
@@ -27,39 +27,38 @@ public class CommandDelete extends MapillaryExecutableCommand {
    */
   public CommandDelete(List&lt;MapillaryAbstractImage&gt; images) {
 <span class="fc" id="L29">    super(images);</span>
-<span class="fc" id="L30">    this.changesHash = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L31">  }</span>
+<span class="fc" id="L30">  }</span>
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="nc" id="L35">  }</span>
+<span class="nc" id="L34">  }</span>
 
   @Override
   public void execute() {
-<span class="fc bfc" id="L39" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images) {</span>
-<span class="fc" id="L40">      this.changesHash.put(img, img.getSequence().getImages().indexOf(img));</span>
-<span class="fc" id="L41">      MapillaryLayer.getInstance().getData().remove(img);</span>
-<span class="fc" id="L42">    }</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images) {</span>
+<span class="fc" id="L39">      this.changesHash.put(img, img.getSequence().getImages().indexOf(img));</span>
+<span class="fc" id="L40">      MapillaryLayer.getInstance().getData().remove(img);</span>
+<span class="fc" id="L41">    }</span>
+<span class="fc" id="L42">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L47">    return trn(&quot;Deleted {0} image&quot;, &quot;Deleted {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L48">        this.images.size());</span>
+<span class="nc" id="L46">    return trn(&quot;Deleted {0} image&quot;, &quot;Deleted {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L47">        this.images.size());</span>
   }
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (int i = this.images.size() - 1; i &gt;= 0; i--) {</span>
-<span class="fc" id="L54">      MapillaryAbstractImage img = this.images.get(i);</span>
-<span class="fc" id="L55">      MapillaryLayer.getInstance().getData().add(img);</span>
-<span class="fc" id="L56">      img.getSequence().getImages().add(this.changesHash.get(img), img);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    for (int i = this.images.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L53">      MapillaryAbstractImage img = this.images.get(i);</span>
+<span class="fc" id="L54">      MapillaryLayer.getInstance().getData().add(img);</span>
+<span class="fc" id="L55">      img.getSequence().getImages().add(this.changesHash.get(img), img);</span>
     }
-<span class="fc" id="L58">  }</span>
+<span class="fc" id="L57">  }</span>
 
   @Override
   public void redo() {
-<span class="fc" id="L62">    MapillaryLayer.getInstance().getData().remove(this.images);</span>
-<span class="fc" id="L63">  }</span>
+<span class="fc" id="L61">    MapillaryLayer.getInstance().getData().remove(this.images);</span>
+<span class="fc" id="L62">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
