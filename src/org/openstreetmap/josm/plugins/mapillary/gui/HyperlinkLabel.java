@@ -113,9 +113,9 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
     private static final long serialVersionUID = 1384054752970921552L;
 
-    private JMenuItem copy;
-    private JMenuItem copyTag;
-    private JMenuItem edit;
+    private final JMenuItem copy;
+    private final JMenuItem copyTag;
+    private final JMenuItem edit;
 
     public LinkPopUp() {
       this.copy = new JMenuItem(tr("Copy key"));

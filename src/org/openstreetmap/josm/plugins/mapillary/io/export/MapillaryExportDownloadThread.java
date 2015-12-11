@@ -28,10 +28,10 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 public class MapillaryExportDownloadThread extends Thread implements
     ICachedLoaderListener {
 
-  private ArrayBlockingQueue<BufferedImage> queue;
-  private ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<BufferedImage> queue;
+  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
-  private MapillaryImage image;
+  private final MapillaryImage image;
 
   /**
    * Main constructor.

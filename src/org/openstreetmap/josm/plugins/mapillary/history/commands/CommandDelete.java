@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  */
 public class CommandDelete extends MapillaryExecutableCommand {
 
-  private HashMap<MapillaryAbstractImage, Integer> changesHash;
+  private final HashMap<MapillaryAbstractImage, Integer> changesHash = new HashMap<>();
 
   /**
    * Main constructor.
@@ -27,7 +27,6 @@ public class CommandDelete extends MapillaryExecutableCommand {
    */
   public CommandDelete(List<MapillaryAbstractImage> images) {
     super(images);
-    this.changesHash = new HashMap<>();
   }
 
   @Override

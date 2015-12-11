@@ -5,8 +5,8 @@ import java.awt.Color;
 
 public class TrafficoSignElement {
 
-  private Color color;
-  private char glyph;
+  private final Color color;
+  private final char glyph;
 
   public TrafficoSignElement(char glyph, Color c) {
     if (c == null) {

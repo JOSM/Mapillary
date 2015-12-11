@@ -26,13 +26,12 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @author nokutu
  *
  */
-public class MapillaryWalkAction extends JosmAction implements
-    MapillaryDataListener {
+public class MapillaryWalkAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = 3454223919402245818L;
 
   private WalkThread thread = null;
-  private ArrayList<WalkListener> listeners = new ArrayList<>();
+  private final ArrayList<WalkListener> listeners = new ArrayList<>();
 
   /**
    *

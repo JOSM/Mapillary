@@ -36,11 +36,11 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   private final String sequenceQueryString;
   private final String signQueryString;
 
-  private ThreadPoolExecutor downloadExecutor = new ThreadPoolExecutor(3, 5,
+  private final ThreadPoolExecutor downloadExecutor = new ThreadPoolExecutor(3, 5,
       25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
-  private ThreadPoolExecutor completeExecutor = new ThreadPoolExecutor(3, 5,
+  private final ThreadPoolExecutor completeExecutor = new ThreadPoolExecutor(3, 5,
       25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
-  private ThreadPoolExecutor signsExecutor = new ThreadPoolExecutor(3, 5, 25,
+  private final ThreadPoolExecutor signsExecutor = new ThreadPoolExecutor(3, 5, 25,
       TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
 
   /**

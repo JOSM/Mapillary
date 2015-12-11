@@ -146,7 +146,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = -9103251296651015563L;
     private String lastPath;
-    private MapillaryExportDialog dlg;
+    private final MapillaryExportDialog dlg;
 
     /**
      * Main constructor.

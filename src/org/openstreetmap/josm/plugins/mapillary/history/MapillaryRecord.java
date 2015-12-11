@@ -18,7 +18,7 @@ public class MapillaryRecord {
   /** The unique instance of the class. */
   private static MapillaryRecord instance;
 
-  private ArrayList<MapillaryRecordListener> listeners;
+  private final ArrayList<MapillaryRecordListener> listeners = new ArrayList<>();
 
   /** The set of commands that have taken place or that have been undone. */
   public ArrayList<MapillaryCommand> commandList;
@@ -31,7 +31,6 @@ public class MapillaryRecord {
   public MapillaryRecord() {
     this.commandList = new ArrayList<>();
     this.position = -1;
-    this.listeners = new ArrayList<>();
   }
 
   /**

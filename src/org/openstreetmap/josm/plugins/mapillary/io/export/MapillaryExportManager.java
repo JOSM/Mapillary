@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
  */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
-  private ArrayBlockingQueue<BufferedImage> queue;
-  private ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<BufferedImage> queue;
+  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
   private final int amount;
   private List<MapillaryAbstractImage> images;

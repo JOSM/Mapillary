@@ -17,7 +17,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /** The user that made the image. */
   private String user;
   /** Set of traffic signs in the image. */
-  private List<String> signs;
+  private final List<String> signs = new ArrayList<>();
   /** Where the picture was taken. */
   private String location;
 
@@ -36,7 +36,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public MapillaryImage(String key, double lat, double lon, double ca) {
     super(lat, lon, ca);
     this.key = key;
-    this.signs = new ArrayList<>();
   }
 
   /**

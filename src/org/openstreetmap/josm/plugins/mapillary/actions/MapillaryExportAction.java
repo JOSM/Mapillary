@@ -114,7 +114,7 @@ public class MapillaryExportAction extends JosmAction {
   }
 
   private class OKAction implements ActionListener {
-    private JOptionPane pane;
+    private final JOptionPane pane;
 
     public OKAction(JOptionPane pane) {
       this.pane = pane;
@@ -127,7 +127,7 @@ public class MapillaryExportAction extends JosmAction {
   }
 
   private class CancelAction implements ActionListener {
-    private JOptionPane pane;
+    private final JOptionPane pane;
 
     public CancelAction(JOptionPane pane) {
       this.pane = pane;
