@@ -39,24 +39,21 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @see MapillaryFilterChooseSigns
  *
  */
-public class MapillaryFilterDialog extends ToggleDialog implements
-    MapillaryDataListener {
+public class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
-  private static MapillaryFilterDialog INSTANCE;
+  private static MapillaryFilterDialog instance;
 
-  private static final String[] TIME_LIST = { tr("All"), tr("Years"),
-      tr("Months"), tr("Days") };
+  private static final String[] TIME_LIST = { tr("All"), tr("Years"), tr("Months"), tr("Days") };
 
   private final JPanel panel;
 
   /** Spinner to choose the range of dates. */
-  public SpinnerNumberModel spinner;
+  private final SpinnerNumberModel spinner;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
-  private final JCheckBox downloaded = new JCheckBox(
-      new downloadCheckBoxAction());
+  private final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
   private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
   private final JComboBox<String> time;
   private final JTextField user;
@@ -65,11 +62,10 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   private final SideButton resetButton = new SideButton(new ResetAction());
   private final JButton signChooser = new JButton(new SignChooserAction());
 
-  private final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns
-      .getInstance();
+  private final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns.getInstance();
 
   /** The list of sign names */
-  private final String[] SIGN_TAGS = { "prohibitory_speed_limit",
+  private static final String[] SIGN_TAGS = { "prohibitory_speed_limit",
       "priority_stop", "other_give_way", "mandatory_roundabout",
       "other_no_entry", "prohibitory_no_traffic_both_ways",
       "danger_intersection", "mandatory_go", "mandatory_keep",
@@ -77,7 +73,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       "prohibitory_no_parking", "prohibitory_on_overtaking",
       "danger_pedestrian_crossing", "prohibitory_no_u_turn",
       "prohibitory_noturn" };
-  /** The the {@link JCheckBox} where the respective tag should be searched */
+  /** The {@link JCheckBox} where the respective tag should be searched */
   private final JCheckBox[] SIGN_CHECKBOXES = { this.signFilter.maxSpeed,
       this.signFilter.stop, this.signFilter.giveWay,
       this.signFilter.roundabout, this.signFilter.access,
@@ -136,14 +132,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   }
 
   /**
-   * Returns the unique instance of the class.
-   *
-   * @return THe unique instance of the class.
+   * @return the unique instance of the class.
    */
-  public static MapillaryFilterDialog getInstance() {
-    if (INSTANCE == null)
-      INSTANCE = new MapillaryFilterDialog();
-    return INSTANCE;
+  public static synchronized MapillaryFilterDialog getInstance() {
+    if (instance == null)
+      instance = new MapillaryFilterDialog();
+    return instance;
   }
 
   @Override
@@ -152,8 +146,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+    // Do nothing when image selection changed
   }
 
   /**
@@ -178,8 +172,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     boolean downloaded = this.downloaded.isSelected();
     boolean onlySigns = this.onlySigns.isSelected();
 
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData()
-        .getImages()) {
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
       img.setVisible(true);
       if (img instanceof MapillaryImportedImage) {
         if (!imported)
@@ -200,7 +193,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
             continue;
           }
         }
-        if (!this.user.getText().equals("")
+        if (!"".equals(user.getText())
             && !this.user.getText().equals(((MapillaryImage) img).getUser())) {
           img.setVisible(false);
           continue;
@@ -208,27 +201,16 @@ public class MapillaryFilterDialog extends ToggleDialog implements
       }
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
-      if (this.time.getSelectedItem().equals(TIME_LIST[1])) {
-        if (img.getCapturedAt() < currentTime
-            - ((Integer) this.spinner.getValue()).longValue() * 365 * 24 * 60
-            * 60 * 1000) {
+      long[] timeFactor = new long[]{
+          31536000000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
+          2592000000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
+          86400000 // = 24 * 60 * 60 * 1000 = number of ms in a day
+      };
+      for (int i = 1; i <= 3; i++) {
+        if (TIME_LIST[i].equals(time.getSelectedItem())
+            && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
+        ) {
           img.setVisible(false);
-          continue;
-        }
-      }
-      if (this.time.getSelectedItem().equals(TIME_LIST[2])) {
-        if (img.getCapturedAt() < currentTime
-            - ((Integer) this.spinner.getValue()).longValue() * 30 * 24 * 60
-            * 60 * 1000) {
-          img.setVisible(false);
-          continue;
-        }
-      }
-      if (this.time.getSelectedItem().equals(TIME_LIST[3])) {
-        if (img.getCapturedAt() < currentTime
-            - ((Integer) this.spinner.getValue()).longValue() * 60 * 60 * 1000) {
-          img.setVisible(false);
-          continue;
         }
       }
     }
@@ -245,8 +227,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements
    *         otherwise.
    */
   private boolean checkSigns(MapillaryImage img) {
-    for (int i = 0; i < this.SIGN_TAGS.length; i++) {
-      if (checkSign(img, this.SIGN_CHECKBOXES[i], this.SIGN_TAGS[i]))
+    for (int i = 0; i < SIGN_TAGS.length; i++) {
+      if (checkSign(img, this.SIGN_CHECKBOXES[i], SIGN_TAGS[i]))
         return true;
     }
     return false;
@@ -269,18 +251,17 @@ public class MapillaryFilterDialog extends ToggleDialog implements
     return cal.getTimeInMillis();
   }
 
-  private class downloadCheckBoxAction extends AbstractAction {
+  private class DownloadCheckBoxAction extends AbstractAction {
 
     private static final long serialVersionUID = 4672634002899519496L;
 
-    public downloadCheckBoxAction() {
+    public DownloadCheckBoxAction() {
       putValue(NAME, tr("Downloaded images"));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryFilterDialog.this.onlySigns
-          .setEnabled(MapillaryFilterDialog.this.downloaded.isSelected());
+      onlySigns.setEnabled(downloaded.isSelected());
     }
   }
 
@@ -324,8 +305,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryFilterDialog.this.signChooser
-          .setEnabled(MapillaryFilterDialog.this.onlySigns.isSelected());
+      signChooser.setEnabled(onlySigns.isSelected());
     }
   }
 
@@ -359,7 +339,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements
   /**
    * Destroys the unique instance of the class.
    */
-  public static void destroyInstance() {
-    MapillaryFilterDialog.INSTANCE = null;
+  public static synchronized void destroyInstance() {
+    instance = null;
   }
 }

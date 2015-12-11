@@ -16,7 +16,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author nokutu
  *
  */
-public abstract class MapillaryAbstractImage {
+public class MapillaryAbstractImage {
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */
@@ -57,7 +57,7 @@ public abstract class MapillaryAbstractImage {
    * @param ca
    *          The direction of the picture (0 means north).
    */
-  public MapillaryAbstractImage(double lat, double lon, double ca) {
+  protected MapillaryAbstractImage(final double lat, final double lon, final double ca) {
     this.latLon = new LatLon(lat, lon);
     this.tempLatLon = this.latLon;
     this.movingLatLon = this.latLon;
@@ -91,16 +91,18 @@ public abstract class MapillaryAbstractImage {
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-    StringBuilder format = new StringBuilder(26);
-    if (Main.pref.getBoolean("iso.dates"))
+    final StringBuilder format = new StringBuilder(26);
+    if (Main.pref.getBoolean("iso.dates")) {
       format.append("yyyy-MM-dd");
-    else
+    } else {
       format.append("dd/MM/yyyy");
+    }
     if (Main.pref.getBoolean("mapillary.display-hour", true)) {
-      if (Main.pref.getBoolean("mapillary.format-24"))
+      if (Main.pref.getBoolean("mapillary.format-24")) {
         format.append(" - HH:mm:ss (z)");
-      else
+      } else {
         format.append(" - h:mm:ss a (z)");
+      }
     }
     return getDate(format.toString());
   }
@@ -115,9 +117,9 @@ public abstract class MapillaryAbstractImage {
    * @throws NullPointerException if parameter format is <code>null</code>
    */
   public String getDate(String format) {
-    Date date = new Date(getCapturedAt());
+    final Date date = new Date(getCapturedAt());
 
-    SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
+    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
     formatter.setTimeZone(Calendar.getInstance().getTimeZone());
     return formatter.format(date);
   }
@@ -185,14 +187,11 @@ public abstract class MapillaryAbstractImage {
   /**
    * Moves the image temporally to another position
    *
-   * @param x
-   *          The movement of the image in longitude units.
-   * @param y
-   *          The movement of the image in latitude units.
+   * @param x The movement of the image in longitude units.
+   * @param y The movement of the image in latitude units.
    */
-  public void move(double x, double y) {
-    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y,
-        this.tempLatLon.getX() + x);
+  public void move(final double x, final double y) {
+    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);
   }
 
   /**
@@ -226,30 +225,27 @@ public abstract class MapillaryAbstractImage {
   /**
    * Sets the Epoch time when the picture was captured.
    *
-   * @param capturedAt
-   *          Epoch time when the image was captured.
+   * @param capturedAt Epoch time when the image was captured.
    */
-  public void setCapturedAt(long capturedAt) {
+  public void setCapturedAt(final long capturedAt) {
     this.capturedAt = capturedAt;
   }
 
   /**
    * Sets the MapillarySequence object which contains the MapillaryImage.
    *
-   * @param sequence
-   *          The MapillarySequence that contains the MapillaryImage.
+   * @param sequence The MapillarySequence that contains the MapillaryImage.
    */
-  public void setSequence(MapillarySequence sequence) {
+  public void setSequence(final MapillarySequence sequence) {
     this.sequence = sequence;
   }
 
   /**
    * Set's whether the image should be visible on the map or not.
    *
-   * @param visible
-   *          true if the image is set to be visible; false otherwise.
+   * @param visible true if the image is set to be visible; false otherwise.
    */
-  public void setVisible(boolean visible) {
+  public void setVisible(final boolean visible) {
     this.visible = visible;
   }
 
@@ -265,10 +261,9 @@ public abstract class MapillaryAbstractImage {
   /**
    * Turns the image direction.
    *
-   * @param ca
-   *          The angle the image is moving.
+   * @param ca The angle the image is moving.
    */
-  public void turn(double ca) {
+  public void turn(final double ca) {
     this.movingCa = this.tempCa + ca;
   }
 }

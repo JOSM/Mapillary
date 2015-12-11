@@ -60,19 +60,19 @@ public class MapillaryPlugin extends Plugin {
   /** Cache that stores the pictures the downloaded pictures. */
   public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
 
-  private final MapillaryDownloadAction downloadAction;
-  private final MapillaryExportAction exportAction;
+  private static final MapillaryDownloadAction downloadAction = new MapillaryDownloadAction();
+  private static final MapillaryExportAction exportAction = new MapillaryExportAction();
   /** Import action */
-  private final MapillaryImportAction importAction;
+  private static final MapillaryImportAction importAction = new MapillaryImportAction();
   /** Zoom action */
-  private static MapillaryZoomAction zoomAction;
-  private final MapillaryDownloadViewAction downloadViewAction;
-  private final MapillaryImportIntoSequenceAction importIntoSequenceAction;
-  private final MapillaryJoinAction joinAction;
+  private static final MapillaryZoomAction zoomAction = new MapillaryZoomAction();
+  private static final MapillaryDownloadViewAction downloadViewAction = new MapillaryDownloadViewAction();
+  private static final MapillaryImportIntoSequenceAction importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
+  private static final MapillaryJoinAction joinAction = new MapillaryJoinAction();
   /** Walk action */
-  private static MapillaryWalkAction walkAction;
+  private static final MapillaryWalkAction walkAction = new MapillaryWalkAction();
   /** Upload action */
-  private static MapillaryUploadAction uploadAction;
+  private static final MapillaryUploadAction uploadAction = new MapillaryUploadAction();
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   private JMenuItem downloadMenu;
@@ -102,25 +102,15 @@ public class MapillaryPlugin extends Plugin {
   public MapillaryPlugin(PluginInformation info) {
     super(info);
 
-    downloadAction = new MapillaryDownloadAction();
-    walkAction = new MapillaryWalkAction();
-    exportAction = new MapillaryExportAction();
-    importAction = new MapillaryImportAction();
-    zoomAction = new MapillaryZoomAction();
-    downloadViewAction = new MapillaryDownloadViewAction();
-    importIntoSequenceAction = new MapillaryImportIntoSequenceAction();
-    joinAction = new MapillaryJoinAction();
-    uploadAction = new MapillaryUploadAction();
-
     if (Main.main != null) { // important for headless mode
-      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, this.downloadAction, false);
+      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
       exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
       importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
       importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
       uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
       zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, this.downloadViewAction, false, 14);
-      joinMenu = MainMenu.add(Main.main.menu.dataMenu, this.joinAction, false);
+      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
+      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
       walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
 
       exportMenu.setEnabled(false);
