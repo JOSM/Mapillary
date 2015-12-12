@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.GraphicsEnvironment;
 import java.lang.reflect.Field;
 
 import javax.swing.JButton;
@@ -19,6 +20,9 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
 
   @Test
   public void testAddGui() {
+    if (GraphicsEnvironment.isHeadless()) {
+      return;
+    }
     PreferenceTabbedPane tabs = new PreferenceTabbedPane();
     tabs.buildGui();
     int displayTabs = tabs.getDisplayPreference().getTabPane().getTabCount();
@@ -30,6 +34,9 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
 
   @Test
   public void testLoginLogout() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    if (GraphicsEnvironment.isHeadless()) {
+      return;
+    }
     PreferenceTabbedPane tabs = new PreferenceTabbedPane();
     tabs.buildGui();
     MapillaryPreferenceSetting setting = new MapillaryPreferenceSetting();
