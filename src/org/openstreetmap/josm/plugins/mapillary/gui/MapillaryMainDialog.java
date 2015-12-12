@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,8 +106,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     createLayout(
         this.mapillaryImageDisplay,
-        Arrays.asList(new SideButton[] { this.blueButton, this.previousButton,
-            this.nextButton, this.redButton }),
+        Arrays.asList(new SideButton[] {this.blueButton, this.previousButton, this.nextButton, this.redButton}),
         Main.pref.getBoolean("mapillary.reverse-buttons"));
     disableAllButtons();
 
@@ -136,7 +136,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    * @return The unique instance of the class.
    */
-  public static MapillaryMainDialog getInstance() {
+  public static synchronized MapillaryMainDialog getInstance() {
     if (instance == null)
       instance = new MapillaryMainDialog();
     return instance;
@@ -153,14 +153,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
       case WALK:
         createLayout(
             this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { playButton, pauseButton, stopButton }),
+            Arrays.asList(new SideButton[] {playButton, pauseButton, stopButton}),
             Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
       case NORMAL:
       default:
         createLayout(
             this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] { blueButton, previousButton, nextButton, redButton }),
+            Arrays.asList(new SideButton[] {blueButton, previousButton, nextButton, redButton}),
             Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
     }
@@ -237,7 +237,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
       if (this.image instanceof MapillaryImage) {
         this.mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+        try {
+          this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
+        } catch (MalformedURLException e1) {
+          Main.error(e1);
+        }
         // Downloads the thumbnail.
         this.mapillaryImageDisplay.setImage(null);
         if (this.thumbnailCache != null)
@@ -264,7 +268,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
       } else if (this.image instanceof MapillaryImportedImage) {
         this.mapillaryImageDisplay.hyperlink.setVisible(false);
-        this.mapillaryImageDisplay.hyperlink.setURL(null);
+        try {
+          this.mapillaryImageDisplay.hyperlink.setURL(null);
+        } catch (MalformedURLException e1) {
+          Main.error(e1);
+        }
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           this.mapillaryImageDisplay.setImage(mapillaryImage.getImage());

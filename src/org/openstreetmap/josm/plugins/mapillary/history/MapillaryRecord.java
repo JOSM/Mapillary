@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;

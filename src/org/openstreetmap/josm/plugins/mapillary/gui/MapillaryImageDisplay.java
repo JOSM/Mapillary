@@ -43,28 +43,28 @@ public class MapillaryImageDisplay extends JComponent {
       "mapillary.picture-zoom-button", 1);
 
   /** The image currently displayed */
-  private transient BufferedImage image = null;
+  private transient BufferedImage image;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
    * rectangle is calculated each time the zoom is modified
    */
-  private Rectangle visibleRect = null;
+  private Rectangle visibleRect;
 
   /**
    * When a selection is done, the rectangle of the selection (in image
    * coordinates)
    */
-  private Rectangle selectedRect = null;
+  private Rectangle selectedRect;
 
   /** HyperlinkLabel shown in the bottom right corner. */
   protected HyperlinkLabel hyperlink;
 
   private class ImgDisplayMouseListener implements MouseListener,
       MouseWheelListener, MouseMotionListener {
-    private boolean mouseIsDragging = false;
-    private long lastTimeForMousePoint = 0L;
-    private Point mousePointInImg = null;
+    private boolean mouseIsDragging;
+    private long lastTimeForMousePoint;
+    private Point mousePointInImg;
 
     /**
      * Zoom in and out, trying to preserve the point of the image that was under
@@ -301,14 +301,17 @@ public class MapillaryImageDisplay extends JComponent {
 
     @Override
     public void mouseEntered(MouseEvent e) {
+      // Do nothing, method is enforced by MouseListener
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+      // Do nothing, method is enforced by MouseListener
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+      // Do nothing, method is enforced by MouseListener
     }
 
     private void checkPointInVisibleRect(Point p, Rectangle visibleRect) {
@@ -448,13 +451,11 @@ public class MapillaryImageDisplay extends JComponent {
    *          component coordinates)
    * @return the part of compRect with the same width/height ratio as the image
    */
-  static Rectangle calculateDrawImageRectangle(Rectangle imgRect,
-      Rectangle compRect) {
-    int x, y, w, h;
-    x = 0;
-    y = 0;
-    w = compRect.width;
-    h = compRect.height;
+  static Rectangle calculateDrawImageRectangle(Rectangle imgRect, Rectangle compRect) {
+    int x = 0;
+    int y = 0;
+    int w = compRect.width;
+    int h = compRect.height;
     int wFact = w * imgRect.height;
     int hFact = h * imgRect.width;
     if (wFact != hFact) {

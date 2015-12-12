@@ -6,7 +6,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.AWTEvent;
 import java.awt.Cursor;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -53,8 +51,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    */
   @Override
   public void setText(String text) {
-    super
-        .setText("<html><font color=\"#0000CF\" size=\"2\">" + text + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+    super.setText("<html><a style=\"color:#0000CF;font-size:8px\">" + text + "</a></html>"); //$NON-NLS-1$ //$NON-NLS-2$
     this.text = text;
   }
 
@@ -63,18 +60,15 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    *
    * @param key
    *          The key of the image that the hyperlink will point to.
+   * @throws MalformedURLException
    */
-  public void setURL(String key) {
+  public void setURL(String key) throws MalformedURLException {
     this.key = key;
     if (key == null) {
       this.url = null;
       return;
     }
-    try {
-      this.url = new URL("http://www.mapillary.com/map/im/" + key);
-    } catch (MalformedURLException e) {
-      Main.error(e);
-    }
+    this.url = new URL("http://www.mapillary.com/map/im/" + key);
   }
 
   /**
@@ -97,7 +91,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
         fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
             getNormalText()));
       if (e.getButton() == MouseEvent.BUTTON3) {
-        LinkPopUp menu = new LinkPopUp();
+        LinkPopUp menu = new LinkPopUp(key);
         menu.show(e.getComponent(), e.getX(), e.getY());
       }
     }
@@ -117,55 +111,37 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     private final JMenuItem copyTag;
     private final JMenuItem edit;
 
-    public LinkPopUp() {
+    public LinkPopUp(final String key) {
       this.copy = new JMenuItem(tr("Copy key"));
-      this.copy.addActionListener(new copyAction());
+      this.copy.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(key), null);
+        }
+      });
       add(this.copy);
 
       this.copyTag = new JMenuItem(tr("Copy key tag"));
-      this.copyTag.addActionListener(new copyTagAction());
+      this.copyTag.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection("mapillary=" + key), null);
+        }
+      });
       add(this.copyTag);
 
       this.edit = new JMenuItem(tr("Edit on website"));
-      this.edit.addActionListener(new editAction());
-      add(this.edit);
-    }
-
-    private class copyAction implements ActionListener {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        StringSelection stringSelection = new StringSelection(
-            ((MapillaryImage) MapillaryMainDialog.getInstance().getImage())
-                .getKey());
-        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clpbrd.setContents(stringSelection, null);
-      }
-    }
-
-    private class copyTagAction implements ActionListener {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        StringSelection stringSelection = new StringSelection(
-            "mapillary="
-                + ((MapillaryImage) MapillaryMainDialog.getInstance()
-                    .getImage()).getKey());
-        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clpbrd.setContents(stringSelection, null);
-      }
-    }
-
-    private class editAction implements ActionListener {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        try {
-          MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/" + HyperlinkLabel.this.key));
-        } catch (IOException e) {
-          Main.error(e);
+      this.edit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+          try {
+            MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/" + key));
+          } catch (IOException e) {
+            Main.error(e);
+          }
         }
-      }
+      });
+      add(this.edit);
     }
   }
 
@@ -200,8 +176,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     Object[] listeners = this.listenerList.getListenerList();
     for (int i = 0; i < listeners.length; i += 2) {
       if (listeners[i] == ActionListener.class) {
-        ActionListener listener = (ActionListener) listeners[i + 1];
-        listener.actionPerformed(evt);
+        ((ActionListener) listeners[i + 1]).actionPerformed(evt);
       }
     }
   }

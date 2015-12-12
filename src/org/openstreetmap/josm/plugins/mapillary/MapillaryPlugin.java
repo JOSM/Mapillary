@@ -58,7 +58,7 @@ public class MapillaryPlugin extends Plugin {
   public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
 
   /** Cache that stores the pictures the downloaded pictures. */
-  public static CacheAccess<String, BufferedImageCacheEntry> CACHE;
+  public static CacheAccess<String, BufferedImageCacheEntry> cache;
 
   private static final MapillaryDownloadAction downloadAction = new MapillaryDownloadAction();
   private static final MapillaryExportAction exportAction = new MapillaryExportAction();
@@ -124,7 +124,7 @@ public class MapillaryPlugin extends Plugin {
     }
 
     try {
-      CACHE = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
+      cache = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
     } catch (IOException e) {
       Main.error(e);
     }
