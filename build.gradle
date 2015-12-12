@@ -104,16 +104,20 @@ test {
 
 jar {
   manifest {
-    attributes("Plugin-Mainversion": project.property('plugin.main.version'),
-               "Plugin-Version": "31802",
-               "Plugin-Class": project.property('plugin.class'),
-               "Plugin-Description": project.property('plugin.description'),
-               "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
-               "Author": project.property('plugin.author'),
-               "Plugin-Link": project.property('plugin.link'),
-               "Plugin-Icon": project.property("plugin.icon"),
-               "Plugin-Requires": project.property("plugin.requires"),
-               "Plugin-Canloadatruntime": project.property('plugin.canloadatruntime'))
+    attributes(
+      "Gradle-Version": project.getGradle().getGradleVersion(),
+      "Created-By": System.getProperty("java.version")+" ("+System.getProperty("java.vendor")+")",
+      "Plugin-Mainversion": project.property('plugin.main.version'),
+      "Plugin-Version": "31817",
+      "Plugin-Class": project.property('plugin.class'),
+      "Plugin-Description": project.property('plugin.description'),
+      "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
+      "Author": project.property('plugin.author'),
+      "Plugin-Link": project.property('plugin.link'),
+      "Plugin-Icon": project.property("plugin.icon"),
+      "Plugin-Requires": project.property("plugin.requires"),
+      "Plugin-Canloadatruntime": project.property('plugin.canloadatruntime')
+    )
   }
 }
 
