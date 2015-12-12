@@ -39,21 +39,21 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Creates a new HyperlinlLabel.
    */
   public HyperlinkLabel() {
-<span class="nc" id="L42">    super(tr(&quot;View in website&quot;), SwingConstants.RIGHT);</span>
-<span class="nc" id="L43">    this.addActionListener(this);</span>
-<span class="nc" id="L44">    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="fc" id="L42">    super(tr(&quot;View in website&quot;), SwingConstants.RIGHT);</span>
+<span class="fc" id="L43">    this.addActionListener(this);</span>
+<span class="fc" id="L44">    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
 
-<span class="nc" id="L46">    enableEvents(AWTEvent.MOUSE_EVENT_MASK);</span>
-<span class="nc" id="L47">  }</span>
+<span class="fc" id="L46">    enableEvents(AWTEvent.MOUSE_EVENT_MASK);</span>
+<span class="fc" id="L47">  }</span>
 
   /**
    * Sets the text of the label.
    */
   @Override
   public void setText(String text) {
-<span class="nc" id="L54">    super.setText(&quot;&lt;html&gt;&lt;a style=\&quot;color:#0000CF;font-size:8px\&quot;&gt;&quot; + text + &quot;&lt;/a&gt;&lt;/html&gt;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="nc" id="L55">    this.text = text;</span>
-<span class="nc" id="L56">  }</span>
+<span class="fc" id="L54">    super.setText(&quot;&lt;html&gt;&lt;a style=\&quot;color:#0000CF;font-size:8px\&quot;&gt;&quot; + text + &quot;&lt;/a&gt;&lt;/html&gt;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L55">    this.text = text;</span>
+<span class="fc" id="L56">  }</span>
 
   /**
    * Sets a new URL, just pass the key of the image or null if there is none.
@@ -76,7 +76,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @return The plain-text written in the label.
    */
   public String getNormalText() {
-<span class="nc" id="L79">    return this.text;</span>
+<span class="fc" id="L79">    return this.text;</span>
   }
 
   /**
@@ -152,8 +152,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    *          The listener to be added.
    */
   public void addActionListener(ActionListener listener) {
-<span class="nc" id="L155">    this.listenerList.add(ActionListener.class, listener);</span>
-<span class="nc" id="L156">  }</span>
+<span class="fc" id="L155">    this.listenerList.add(ActionListener.class, listener);</span>
+<span class="fc" id="L156">  }</span>
 
   /**
    * Removes the given ActionListener from the list of listeners receiving
