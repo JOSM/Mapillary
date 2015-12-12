@@ -60,7 +60,7 @@ public class MapillaryExportAction extends JosmAction {
 
     this.dialog = new MapillaryExportDialog(ok);
     pane.setMessage(this.dialog);
-    pane.setOptions(new JButton[] { ok, cancel });
+    pane.setOptions(new JButton[] {ok, cancel});
 
     JDialog dlg = pane.createDialog(Main.parent, tr("Export images"));
     dlg.setMinimumSize(new Dimension(400, 150));
@@ -91,7 +91,7 @@ public class MapillaryExportAction extends JosmAction {
       for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
           .getData().getImages())
         if (image instanceof MapillaryImportedImage) {
-          images.add(((MapillaryImportedImage) image));
+          images.add((MapillaryImportedImage) image);
         }
       try {
         Main.worker.submit(new Thread(new MapillaryExportManager(images)));
@@ -113,7 +113,7 @@ public class MapillaryExportAction extends JosmAction {
         this.dialog.chooser.getSelectedFile().toString())));
   }
 
-  private class OKAction implements ActionListener {
+  private static class OKAction implements ActionListener {
     private final JOptionPane pane;
 
     public OKAction(JOptionPane pane) {
@@ -126,7 +126,7 @@ public class MapillaryExportAction extends JosmAction {
     }
   }
 
-  private class CancelAction implements ActionListener {
+  private static class CancelAction implements ActionListener {
     private final JOptionPane pane;
 
     public CancelAction(JOptionPane pane) {

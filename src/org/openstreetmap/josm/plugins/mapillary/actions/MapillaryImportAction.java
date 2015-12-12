@@ -57,8 +57,7 @@ public class MapillaryImportAction extends JosmAction {
     this.chooser.setDialogTitle(tr("Select pictures"));
     this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     this.chooser.setAcceptAllFileFilterUsed(false);
-    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter("images",
-        "jpg", "jpeg", "png"));
+    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg", "png"));
     this.chooser.setMultiSelectionEnabled(true);
     if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       List<MapillaryAbstractImage> images = new ArrayList<>();
@@ -72,9 +71,9 @@ public class MapillaryImportAction extends JosmAction {
           for (int j = 0; j < file.listFiles().length; j++) {
             String extension = MapillaryUtils.getExtension(file.listFiles()[j]);
             try {
-              if (extension.equals("jpg") || extension.equals("jpeg"))
+              if ("jpg".equals(extension) || "jpeg".equals(extension))
                 images.add(MapillaryUtils.readJPG(file.listFiles()[j]));
-              else if (extension.equals("png"))
+              else if ("png".equals(extension))
                 images.add(MapillaryUtils.readPNG(file.listFiles()[j]));
             } catch (ImageReadException | IOException | NullPointerException e1) {
               Main.error(e1);
@@ -82,7 +81,7 @@ public class MapillaryImportAction extends JosmAction {
           }
         } else {
           String extension = MapillaryUtils.getExtension(file);
-          if (extension.equals("jpg") || extension.equals("jpeg")) {
+          if ("jpg".equals(extension) || "jpeg".equals(extension)) {
             try {
               images.add(MapillaryUtils.readJPG(file));
             } catch (ImageReadException ex) {
@@ -90,8 +89,7 @@ public class MapillaryImportAction extends JosmAction {
             } catch (IOException ex) {
               Main.error(ex);
             }
-          } else if (file.getPath().substring(file.getPath().length() - 4)
-              .equals(".png")) {
+          } else if (".png".equals(file.getPath().substring(file.getPath().length() - 4))) {
             images.add(MapillaryUtils.readPNG(file));
           }
         }

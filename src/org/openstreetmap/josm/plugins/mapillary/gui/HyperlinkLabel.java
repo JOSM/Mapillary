@@ -58,9 +58,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
   /**
    * Sets a new URL, just pass the key of the image or null if there is none.
    *
-   * @param key
-   *          The key of the image that the hyperlink will point to.
-   * @throws MalformedURLException
+   * @param key The key of the image that the hyperlink will point to.
+   * @throws MalformedURLException when the key appended to the base URL forms a malformed URL
    */
   public void setURL(String key) throws MalformedURLException {
     this.key = key;
@@ -103,7 +102,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @author nokutu
    *
    */
-  private class LinkPopUp extends JPopupMenu {
+  private static class LinkPopUp extends JPopupMenu {
 
     private static final long serialVersionUID = 1384054752970921552L;
 

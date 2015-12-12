@@ -80,7 +80,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           for (int j = 0; j < file.listFiles().length; j++) {
             String extension = MapillaryUtils.getExtension(file.listFiles()[j]);
             try {
-              if (extension.equals("jpg") || extension.equals("jpeg"))
+              if ("jpg".equals(extension) || "jpeg".equals(extension))
                 MapillaryUtils.readJPG(file.listFiles()[j], true);
             } catch (ImageReadException | NullPointerException | IOException e) {
               Main.error(e);
@@ -88,7 +88,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           }
         } else {
           String extension = MapillaryUtils.getExtension(file);
-          if (extension.equals("jpg") || extension.equals("jpeg")) {
+          if ("jpg".equals(extension) || "jpeg".equals(extension)) {
             try {
               this.images.add(MapillaryUtils.readJPG(file, true));
             } catch (ImageReadException ex) {
