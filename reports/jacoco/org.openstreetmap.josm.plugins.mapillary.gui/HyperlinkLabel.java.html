@@ -6,7 +6,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.AWTEvent;
 import java.awt.Cursor;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -41,41 +39,36 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Creates a new HyperlinlLabel.
    */
   public HyperlinkLabel() {
-<span class="nc" id="L44">    super(tr(&quot;View in website&quot;), SwingConstants.RIGHT);</span>
-<span class="nc" id="L45">    this.addActionListener(this);</span>
-<span class="nc" id="L46">    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
+<span class="nc" id="L42">    super(tr(&quot;View in website&quot;), SwingConstants.RIGHT);</span>
+<span class="nc" id="L43">    this.addActionListener(this);</span>
+<span class="nc" id="L44">    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</span>
 
-<span class="nc" id="L48">    enableEvents(AWTEvent.MOUSE_EVENT_MASK);</span>
-<span class="nc" id="L49">  }</span>
+<span class="nc" id="L46">    enableEvents(AWTEvent.MOUSE_EVENT_MASK);</span>
+<span class="nc" id="L47">  }</span>
 
   /**
    * Sets the text of the label.
    */
   @Override
   public void setText(String text) {
-<span class="nc" id="L56">    super</span>
-<span class="nc" id="L57">        .setText(&quot;&lt;html&gt;&lt;font color=\&quot;#0000CF\&quot; size=\&quot;2\&quot;&gt;&quot; + text + &quot;&lt;/font&gt;&lt;/html&gt;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="nc" id="L58">    this.text = text;</span>
-<span class="nc" id="L59">  }</span>
+<span class="nc" id="L54">    super.setText(&quot;&lt;html&gt;&lt;a style=\&quot;color:#0000CF;font-size:8px\&quot;&gt;&quot; + text + &quot;&lt;/a&gt;&lt;/html&gt;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="nc" id="L55">    this.text = text;</span>
+<span class="nc" id="L56">  }</span>
 
   /**
    * Sets a new URL, just pass the key of the image or null if there is none.
    *
-   * @param key
-   *          The key of the image that the hyperlink will point to.
+   * @param key The key of the image that the hyperlink will point to.
+   * @throws MalformedURLException when the key appended to the base URL forms a malformed URL
    */
-  public void setURL(String key) {
-<span class="nc" id="L68">    this.key = key;</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (key == null) {</span>
-<span class="nc" id="L70">      this.url = null;</span>
-<span class="nc" id="L71">      return;</span>
+  public void setURL(String key) throws MalformedURLException {
+<span class="nc" id="L65">    this.key = key;</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (key == null) {</span>
+<span class="nc" id="L67">      this.url = null;</span>
+<span class="nc" id="L68">      return;</span>
     }
-    try {
-<span class="nc" id="L74">      this.url = new URL(&quot;http://www.mapillary.com/map/im/&quot; + key);</span>
-<span class="nc" id="L75">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L76">      Main.error(e);</span>
-<span class="nc" id="L77">    }</span>
-<span class="nc" id="L78">  }</span>
+<span class="nc" id="L70">    this.url = new URL(&quot;http://www.mapillary.com/map/im/&quot; + key);</span>
+<span class="nc" id="L71">  }</span>
 
   /**
    * Returns the text set by the user.
@@ -83,7 +76,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @return The plain-text written in the label.
    */
   public String getNormalText() {
-<span class="nc" id="L86">    return this.text;</span>
+<span class="nc" id="L79">    return this.text;</span>
   }
 
   /**
@@ -91,17 +84,17 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    */
   @Override
   protected void processMouseEvent(MouseEvent e) {
-<span class="nc" id="L94">    super.processMouseEvent(e);</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">    if (e.getID() == MouseEvent.MOUSE_CLICKED) {</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">      if (e.getButton() == MouseEvent.BUTTON1)</span>
-<span class="nc" id="L97">        fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,</span>
-<span class="nc" id="L98">            getNormalText()));</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      if (e.getButton() == MouseEvent.BUTTON3) {</span>
-<span class="nc" id="L100">        LinkPopUp menu = new LinkPopUp();</span>
-<span class="nc" id="L101">        menu.show(e.getComponent(), e.getX(), e.getY());</span>
+<span class="nc" id="L87">    super.processMouseEvent(e);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (e.getID() == MouseEvent.MOUSE_CLICKED) {</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">      if (e.getButton() == MouseEvent.BUTTON1)</span>
+<span class="nc" id="L90">        fireActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,</span>
+<span class="nc" id="L91">            getNormalText()));</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">      if (e.getButton() == MouseEvent.BUTTON3) {</span>
+<span class="nc" id="L93">        LinkPopUp menu = new LinkPopUp(key);</span>
+<span class="nc" id="L94">        menu.show(e.getComponent(), e.getX(), e.getY());</span>
       }
     }
-<span class="nc" id="L104">  }</span>
+<span class="nc" id="L97">  }</span>
 
   /**
    * PopUp shown when right click on the label.
@@ -109,7 +102,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @author nokutu
    *
    */
-  private class LinkPopUp extends JPopupMenu {
+  private static class LinkPopUp extends JPopupMenu {
 
     private static final long serialVersionUID = 1384054752970921552L;
 
@@ -117,56 +110,38 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     private final JMenuItem copyTag;
     private final JMenuItem edit;
 
-<span class="nc" id="L120">    public LinkPopUp() {</span>
-<span class="nc" id="L121">      this.copy = new JMenuItem(tr(&quot;Copy key&quot;));</span>
-<span class="nc" id="L122">      this.copy.addActionListener(new copyAction());</span>
-<span class="nc" id="L123">      add(this.copy);</span>
+<span class="nc" id="L113">    public LinkPopUp(final String key) {</span>
+<span class="nc" id="L114">      this.copy = new JMenuItem(tr(&quot;Copy key&quot;));</span>
+<span class="nc" id="L115">      this.copy.addActionListener(new ActionListener() {</span>
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+<span class="nc" id="L118">          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(key), null);</span>
+<span class="nc" id="L119">        }</span>
+      });
+<span class="nc" id="L121">      add(this.copy);</span>
 
-<span class="nc" id="L125">      this.copyTag = new JMenuItem(tr(&quot;Copy key tag&quot;));</span>
-<span class="nc" id="L126">      this.copyTag.addActionListener(new copyTagAction());</span>
-<span class="nc" id="L127">      add(this.copyTag);</span>
+<span class="nc" id="L123">      this.copyTag = new JMenuItem(tr(&quot;Copy key tag&quot;));</span>
+<span class="nc" id="L124">      this.copyTag.addActionListener(new ActionListener() {</span>
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+<span class="nc" id="L127">          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(&quot;mapillary=&quot; + key), null);</span>
+<span class="nc" id="L128">        }</span>
+      });
+<span class="nc" id="L130">      add(this.copyTag);</span>
 
-<span class="nc" id="L129">      this.edit = new JMenuItem(tr(&quot;Edit on website&quot;));</span>
-<span class="nc" id="L130">      this.edit.addActionListener(new editAction());</span>
-<span class="nc" id="L131">      add(this.edit);</span>
-<span class="nc" id="L132">    }</span>
-
-<span class="nc" id="L134">    private class copyAction implements ActionListener {</span>
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L138">        StringSelection stringSelection = new StringSelection(</span>
-<span class="nc" id="L139">            ((MapillaryImage) MapillaryMainDialog.getInstance().getImage())</span>
-<span class="nc" id="L140">                .getKey());</span>
-<span class="nc" id="L141">        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();</span>
-<span class="nc" id="L142">        clpbrd.setContents(stringSelection, null);</span>
-<span class="nc" id="L143">      }</span>
-    }
-
-<span class="nc" id="L146">    private class copyTagAction implements ActionListener {</span>
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L150">        StringSelection stringSelection = new StringSelection(</span>
-            &quot;mapillary=&quot;
-<span class="nc" id="L152">                + ((MapillaryImage) MapillaryMainDialog.getInstance()</span>
-<span class="nc" id="L153">                    .getImage()).getKey());</span>
-<span class="nc" id="L154">        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();</span>
-<span class="nc" id="L155">        clpbrd.setContents(stringSelection, null);</span>
-<span class="nc" id="L156">      }</span>
-    }
-
-<span class="nc" id="L159">    private class editAction implements ActionListener {</span>
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        try {
-<span class="nc" id="L164">          MapillaryUtils.browse(new URL(&quot;http://www.mapillary.com/map/e/&quot; + HyperlinkLabel.this.key));</span>
-<span class="nc" id="L165">        } catch (IOException e) {</span>
-<span class="nc" id="L166">          Main.error(e);</span>
-<span class="nc" id="L167">        }</span>
-<span class="nc" id="L168">      }</span>
-    }
+<span class="nc" id="L132">      this.edit = new JMenuItem(tr(&quot;Edit on website&quot;));</span>
+<span class="nc" id="L133">      this.edit.addActionListener(new ActionListener() {</span>
+        @Override
+        public void actionPerformed(ActionEvent paramActionEvent) {
+          try {
+<span class="nc" id="L137">            MapillaryUtils.browse(new URL(&quot;http://www.mapillary.com/map/e/&quot; + key));</span>
+<span class="nc" id="L138">          } catch (IOException e) {</span>
+<span class="nc" id="L139">            Main.error(e);</span>
+<span class="nc" id="L140">          }</span>
+<span class="nc" id="L141">        }</span>
+      });
+<span class="nc" id="L143">      add(this.edit);</span>
+<span class="nc" id="L144">    }</span>
   }
 
   /**
@@ -177,8 +152,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    *          The listener to be added.
    */
   public void addActionListener(ActionListener listener) {
-<span class="nc" id="L180">    this.listenerList.add(ActionListener.class, listener);</span>
-<span class="nc" id="L181">  }</span>
+<span class="nc" id="L155">    this.listenerList.add(ActionListener.class, listener);</span>
+<span class="nc" id="L156">  }</span>
 
   /**
    * Removes the given ActionListener from the list of listeners receiving
@@ -188,8 +163,8 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    *          The listener to be added.
    */
   public void removeActionListener(ActionListener listener) {
-<span class="nc" id="L191">    this.listenerList.remove(ActionListener.class, listener);</span>
-<span class="nc" id="L192">  }</span>
+<span class="nc" id="L166">    this.listenerList.remove(ActionListener.class, listener);</span>
+<span class="nc" id="L167">  }</span>
 
   /**
    * Fires an ActionEvent to all interested listeners.
@@ -197,24 +172,23 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * @param evt
    */
   protected void fireActionPerformed(ActionEvent evt) {
-<span class="nc" id="L200">    Object[] listeners = this.listenerList.getListenerList();</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">    for (int i = 0; i &lt; listeners.length; i += 2) {</span>
-<span class="nc bnc" id="L202" title="All 2 branches missed.">      if (listeners[i] == ActionListener.class) {</span>
-<span class="nc" id="L203">        ActionListener listener = (ActionListener) listeners[i + 1];</span>
-<span class="nc" id="L204">        listener.actionPerformed(evt);</span>
+<span class="nc" id="L175">    Object[] listeners = this.listenerList.getListenerList();</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    for (int i = 0; i &lt; listeners.length; i += 2) {</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">      if (listeners[i] == ActionListener.class) {</span>
+<span class="nc" id="L178">        ((ActionListener) listeners[i + 1]).actionPerformed(evt);</span>
       }
     }
-<span class="nc" id="L207">  }</span>
+<span class="nc" id="L181">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {
-<span class="nc bnc" id="L211" title="All 2 branches missed.">    if (this.url == null)</span>
-<span class="nc" id="L212">      return;</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (this.url == null)</span>
+<span class="nc" id="L186">      return;</span>
     try {
-<span class="nc" id="L214">      MapillaryUtils.browse(this.url);</span>
-<span class="nc" id="L215">    } catch (IOException e1) {</span>
-<span class="nc" id="L216">      Main.error(e1);</span>
-<span class="nc" id="L217">    }</span>
-<span class="nc" id="L218">  }</span>
+<span class="nc" id="L188">      MapillaryUtils.browse(this.url);</span>
+<span class="nc" id="L189">    } catch (IOException e1) {</span>
+<span class="nc" id="L190">      Main.error(e1);</span>
+<span class="nc" id="L191">    }</span>
+<span class="nc" id="L192">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

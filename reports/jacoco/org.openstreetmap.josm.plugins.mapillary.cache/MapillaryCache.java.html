@@ -43,7 +43,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob&lt;String, BufferedIm
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-<span class="fc" id="L46">    super(MapillaryPlugin.CACHE, 50000, 50000, new HashMap&lt;String, String&gt;());</span>
+<span class="fc" id="L46">    super(MapillaryPlugin.cache, 50000, 50000, new HashMap&lt;String, String&gt;());</span>
 <span class="fc" id="L47">    String k = null;</span>
 <span class="fc" id="L48">    URL u = null;</span>
 <span class="pc bpc" id="L49" title="1 of 4 branches missed.">    if (key != null &amp;&amp; type != null) {</span>

@@ -17,7 +17,7 @@ public class MapillarySequence {
   /** Unique identifier. Used only for {@link MapillaryImage} sequences. */
   private String key;
   /** Epoch time when the sequence was created */
-  private long created_at;
+  private long createdAt;
 
   /**
    * Creates a sequence without key or timestamp. Used for
@@ -32,13 +32,13 @@ public class MapillarySequence {
    *
    * @param key
    *          The unique identifier of the sequence.
-   * @param created_at
+   * @param createdAt
    *          The date the sequence was created.
    */
-<span class="nc" id="L38">  public MapillarySequence(String key, long created_at) {</span>
+<span class="nc" id="L38">  public MapillarySequence(String key, long createdAt) {</span>
 <span class="nc" id="L39">    this.images = new ArrayList&lt;&gt;();</span>
 <span class="nc" id="L40">    this.key = key;</span>
-<span class="nc" id="L41">    this.created_at = created_at;</span>
+<span class="nc" id="L41">    this.createdAt = createdAt;</span>
 <span class="nc" id="L42">  }</span>
 
   /**
@@ -60,7 +60,7 @@ public class MapillarySequence {
    *
    */
   public long getCreatedAt() {
-<span class="nc" id="L63">    return this.created_at;</span>
+<span class="nc" id="L63">    return this.createdAt;</span>
   }
 
   /**

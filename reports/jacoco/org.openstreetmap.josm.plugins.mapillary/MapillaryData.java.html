@@ -186,7 +186,7 @@ public class MapillaryData {
    *
    * @return A List object containing all images.
    */
-  public List&lt;MapillaryAbstractImage&gt; getImages() {
+  public synchronized List&lt;MapillaryAbstractImage&gt; getImages() {
 <span class="fc" id="L190">    return this.images;</span>
   }
 

@@ -80,7 +80,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 <span class="nc bnc" id="L80" title="All 2 branches missed.">          for (int j = 0; j &lt; file.listFiles().length; j++) {</span>
 <span class="nc" id="L81">            String extension = MapillaryUtils.getExtension(file.listFiles()[j]);</span>
             try {
-<span class="nc bnc" id="L83" title="All 4 branches missed.">              if (extension.equals(&quot;jpg&quot;) || extension.equals(&quot;jpeg&quot;))</span>
+<span class="nc bnc" id="L83" title="All 4 branches missed.">              if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension))</span>
 <span class="nc" id="L84">                MapillaryUtils.readJPG(file.listFiles()[j], true);</span>
 <span class="nc" id="L85">            } catch (ImageReadException | NullPointerException | IOException e) {</span>
 <span class="nc" id="L86">              Main.error(e);</span>
@@ -88,7 +88,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
           }
         } else {
 <span class="nc" id="L90">          String extension = MapillaryUtils.getExtension(file);</span>
-<span class="nc bnc" id="L91" title="All 4 branches missed.">          if (extension.equals(&quot;jpg&quot;) || extension.equals(&quot;jpeg&quot;)) {</span>
+<span class="nc bnc" id="L91" title="All 4 branches missed.">          if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension)) {</span>
             try {
 <span class="nc" id="L93">              this.images.add(MapillaryUtils.readJPG(file, true));</span>
 <span class="nc" id="L94">            } catch (ImageReadException ex) {</span>
