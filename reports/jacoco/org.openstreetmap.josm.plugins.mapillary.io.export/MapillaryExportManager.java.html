@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryExportManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.io.export</a> &gt; <span class="el_source">MapillaryExportManager.java</span></div><h1>MapillaryExportManager.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.io.export;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.PleaseWaitRunnable;
+import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.io.OsmTransferException;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.xml.sax.SAXException;
+
+/**
+ * Export main thread. Exportation works by creating a
+ * {@link MapillaryExportWriterThread} and several
+ * {@link MapillaryExportDownloadThread}. The second ones download every single
+ * image that is going to be exported and stores them in an
+ * {@link ArrayBlockingQueue}. Then it is picked by the first one and written on
+ * the selected folder. Each image will be named by its key.
+ *
+ * @author nokutu
+ * @see MapillaryExportWriterThread
+ * @see MapillaryExportDownloadThread
+ */
+public class MapillaryExportManager extends PleaseWaitRunnable {
+
+  private final ArrayBlockingQueue&lt;BufferedImage&gt; queue;
+  private final ArrayBlockingQueue&lt;MapillaryAbstractImage&gt; queueImages;
+
+  private final int amount;
+  private List&lt;MapillaryAbstractImage&gt; images;
+  private String path;
+
+  private Thread writer;
+  private ThreadPoolExecutor ex;
+
+  /**
+   * Main constructor.
+   *
+   * @param images
+   *          Set of {@link MapillaryAbstractImage} objects to be exported.
+   * @param path
+   *          Export path.
+   */
+  public MapillaryExportManager(List&lt;MapillaryAbstractImage&gt; images, String path) {
+<span class="nc" id="L55">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
+        &quot;Exporting Mapillary Images&quot;), true);
+<span class="nc" id="L57">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc" id="L58">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
+
+<span class="nc" id="L60">    this.images = images;</span>
+<span class="nc" id="L61">    this.amount = images.size();</span>
+<span class="nc" id="L62">    this.path = path;</span>
+<span class="nc" id="L63">  }</span>
+
+  /**
+   * Constructor used to rewrite imported images.
+   *
+   * @param images
+   *          The set of {@link MapillaryImportedImage} object that is going to
+   *          be rewritten.
+   * @throws IOException
+   *           If the file of one of the {@link MapillaryImportedImage} objects
+   *           doesn't contain a picture.
+   */
+  public MapillaryExportManager(List&lt;MapillaryImportedImage&gt; images)
+      throws IOException {
+<span class="nc" id="L77">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
+        &quot;Exporting Mapillary Images&quot;), true);
+<span class="nc" id="L79">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc" id="L80">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    for (MapillaryImportedImage image : images) {</span>
+<span class="nc" id="L82">      this.queue.add(image.getImage());</span>
+<span class="nc" id="L83">      this.queueImages.add(image);</span>
+<span class="nc" id="L84">    }</span>
+<span class="nc" id="L85">    this.amount = images.size();</span>
+<span class="nc" id="L86">  }</span>
+
+  @Override
+  protected void cancel() {
+<span class="nc" id="L90">    this.writer.interrupt();</span>
+<span class="nc" id="L91">    this.ex.shutdown();</span>
+<span class="nc" id="L92">  }</span>
+
+  @Override
+  protected void realRun() throws SAXException, IOException,
+      OsmTransferException {
+    // Starts a writer thread in order to write the pictures on the disk.
+<span class="nc" id="L98">    this.writer = new MapillaryExportWriterThread(this.path, this.queue,</span>
+<span class="nc" id="L99">        this.queueImages, this.amount, this.getProgressMonitor());</span>
+<span class="nc" id="L100">    this.writer.start();</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">    if (this.path == null) {</span>
+      try {
+<span class="nc" id="L103">        this.writer.join();</span>
+<span class="nc" id="L104">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L105">        Main.error(e);</span>
+<span class="nc" id="L106">      }</span>
+<span class="nc" id="L107">      return;</span>
+    }
+<span class="nc" id="L109">    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,</span>
+        new ArrayBlockingQueue&lt;Runnable&gt;(10));
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
+        try {
+<span class="nc" id="L114">          this.ex.execute(new MapillaryExportDownloadThread(</span>
+              (MapillaryImage) image, this.queue, this.queueImages));
+<span class="nc" id="L116">        } catch (Exception e) {</span>
+<span class="nc" id="L117">          Main.error(e);</span>
+<span class="nc" id="L118">        }</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">      } else if (image instanceof MapillaryImportedImage) {</span>
+        try {
+<span class="nc" id="L121">          this.queue.put(((MapillaryImportedImage) image).getImage());</span>
+<span class="nc" id="L122">          this.queueImages.put(image);</span>
+<span class="nc" id="L123">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L124">          Main.error(e);</span>
+<span class="nc" id="L125">        }</span>
+      }
+      try {
+        // If the queue is full, waits for it to have more space
+        // available before executing anything else.
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L131">          Thread.sleep(100);</span>
+<span class="nc" id="L132">      } catch (Exception e) {</span>
+<span class="nc" id="L133">        Main.error(e);</span>
+<span class="nc" id="L134">      }</span>
+<span class="nc" id="L135">    }</span>
+    try {
+<span class="nc" id="L137">      this.writer.join();</span>
+<span class="nc" id="L138">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L139">      Main.error(e);</span>
+<span class="nc" id="L140">    }</span>
+<span class="nc" id="L141">  }</span>
+
+  @Override
+  protected void finish() {
+<span class="nc" id="L145">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

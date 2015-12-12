@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryZoomAction.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.actions</a> &gt; <span class="el_source">MapillaryZoomAction.java</span></div><h1>MapillaryZoomAction.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.actions;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.tools.Shortcut;
+
+/**
+ * Zooms to the currently selected image.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryZoomAction extends JosmAction implements
+    MapillaryDataListener {
+
+  private static final long serialVersionUID = -6050566219765623059L;
+
+  /**
+   * Main constructor.
+   */
+  public MapillaryZoomAction() {
+<span class="fc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin</span>
+<span class="fc" id="L33">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Zoom to selected image&quot;), Shortcut</span>
+<span class="fc" id="L34">        .registerShortcut(&quot;Zoom Mapillary&quot;,</span>
+<span class="fc" id="L35">            tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryZoom&quot;,
+        false);
+<span class="fc" id="L38">    this.setEnabled(false);</span>
+<span class="fc" id="L39">  }</span>
+
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
+<span class="nc" id="L44">      throw new IllegalStateException();</span>
+<span class="nc" id="L45">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L46">        .getSelectedImage().getLatLon());</span>
+<span class="nc" id="L47">  }</span>
+
+  @Override
+  public void selectedImageChanged(MapillaryAbstractImage oldImage,
+      MapillaryAbstractImage newImage) {
+<span class="fc bfc" id="L52" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null)</span>
+<span class="fc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
+<span class="fc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public void imagesAdded() {
+    // Nothing
+<span class="fc" id="L61">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
