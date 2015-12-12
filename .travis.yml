@@ -8,16 +8,17 @@ jdk:
 script: ./gradlew build javadoc
 
 # Release the plugin via GitHub releases when pushing a tag
+before_deploy: 'cp -T build/libs/josm-mapillary-plugin.jar build/libs/Mapillary.jar'
 deploy:
   provider: releases
   api_key: "${GH_TOKEN}"
-  file: "build/libs/josm-mapillary-plugin.jar"
+  file: "build/libs/Mapillary.jar"
   skip_cleanup: true
   on:
     tags: true
 
 #Deploy to GitHub pages
-after_success: |
+after_script: |
   if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then
     git config --global user.email "deploy@travis"
     git config --global user.name "Travis CI"

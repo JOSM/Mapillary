@@ -70,6 +70,10 @@ eclipse {
 build.dependsOn jacocoTestReport
 build.dependsOn projectReport
 
+tasks.withType(Javadoc) {
+  failOnError false
+}
+
 /** FindBugs configuration */
 findbugs {
   toolVersion = "3.0.1"
