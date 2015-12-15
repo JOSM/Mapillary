@@ -30,7 +30,7 @@ public class MapillaryData {
   /** Listeners of the class. */
   private final CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
   /** The bounds of the areas for which the pictures have been downloaded. */
-  public CopyOnWriteArrayList<Bounds> bounds;
+  public List<Bounds> bounds;
 
   /**
    * Creates a new object and adds the initial set of listeners.

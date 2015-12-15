@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -38,8 +37,7 @@ public class MapillaryDownloader {
       "mapillary.max-download-area", 0.015);
 
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
-      100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));;
+  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
 
   /**
    * Gets all the images in a square. It downloads all the images of all the
@@ -51,7 +49,7 @@ public class MapillaryDownloader {
    *          The maximum latitude and longitude of the rectangle
    */
   public static void getImages(LatLon minLatLon, LatLon maxLatLon) {
-    if (maxLatLon == null || maxLatLon == null) {
+    if (minLatLon == null || maxLatLon == null) {
       throw new IllegalArgumentException();
     }
     getImages(new Bounds(minLatLon, maxLatLon));
@@ -89,7 +87,7 @@ public class MapillaryDownloader {
 
   private static void run(Thread t) {
     threads.add(t);
-    EXECUTOR.execute(t);
+    executor.execute(t);
   }
 
   /**
@@ -213,13 +211,13 @@ public class MapillaryDownloader {
       t.interrupt();
     }
     threads.clear();
-    EXECUTOR.shutdownNow();
+    executor.shutdownNow();
     try {
-      EXECUTOR.awaitTermination(30, TimeUnit.SECONDS);
+      executor.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Main.error(e);
     }
-    EXECUTOR = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
+    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
         new ArrayBlockingQueue<Runnable>(100));
   }
 }

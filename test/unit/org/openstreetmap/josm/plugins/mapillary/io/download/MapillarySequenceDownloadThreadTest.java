@@ -5,7 +5,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,9 +13,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySequenceDownloadThread;
 
 /**
  *

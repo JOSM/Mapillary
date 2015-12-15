@@ -36,13 +36,12 @@ public class OAuthPortListener extends Thread {
 
   @Override
   public void run() {
-    try {
-      ServerSocket serverSocket = new ServerSocket(PORT);
-      Socket clientSocket = serverSocket.accept();
-      PrintWriter out = new PrintWriter(new OutputStreamWriter(
-          clientSocket.getOutputStream(), "UTF-8"), true);
-      Scanner in = new Scanner(new InputStreamReader(
-          clientSocket.getInputStream(), "UTF-8"));
+    try (
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        Socket clientSocket = serverSocket.accept();
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
+        Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+    ) {
       String s;
       String accessToken = null;
       while (in.hasNextLine() && accessToken == null) {

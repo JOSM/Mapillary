@@ -2,10 +2,10 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -91,7 +91,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     loginPanel.add(loginLabel, 1);
     onLogout();
     panel.add(loginPanel, GBC.eol());
-    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GBC.BOTH));
+    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(panel));
 
