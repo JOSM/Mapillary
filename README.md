@@ -1,7 +1,7 @@
 # Mapillary-plugin for [JOSM](https://josm.openstreetmap.de)
 
 [![build status](https://travis-ci.org/floscher/josm-mapillary-plugin.svg?branch=master)](https://travis-ci.org/floscher/josm-mapillary-plugin)
-[![code coverage](https://img.shields.io/sonar/https/josm.openstreetmap.de/sonar/josm-plugins:mapillary/coverage.svg)](https://josm.openstreetmap.de/sonar/drilldown/measures/3325?metric=coverage)
+[![code coverage](https://img.shields.io/codecov/c/github/floscher/josm-mapillary-plugin/master.svg)](https://codecov.io/github/floscher/josm-mapillary-plugin?branch=master)
 [![technical debt](https://img.shields.io/sonar/https/josm.openstreetmap.de/sonar/josm-plugins:mapillary/sqale_debt_ratio.svg)](https://josm.openstreetmap.de/sonar/drilldown/measures/3325?metric=sqale_index)
 [![latest release](https://img.shields.io/github/release/floscher/josm-mapillary-plugin.svg)](https://github.com/floscher/josm-mapillary-plugin/releases/latest)
 
