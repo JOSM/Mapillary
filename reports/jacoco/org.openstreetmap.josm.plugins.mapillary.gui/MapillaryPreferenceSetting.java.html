@@ -2,10 +2,10 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -91,15 +91,15 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="fc" id="L91">    loginPanel.add(loginLabel, 1);</span>
 <span class="fc" id="L92">    onLogout();</span>
 <span class="fc" id="L93">    panel.add(loginPanel, GBC.eol());</span>
-<span class="fc" id="L94">    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GBC.BOTH));</span>
+<span class="fc" id="L94">    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));</span>
 
 <span class="fc" id="L96">    gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, new JScrollPane(panel));</span>
 
 <span class="fc" id="L98">    new Thread(new Runnable() {</span>
       @Override
       public void run() {
-<span class="nc" id="L101">        String username = MapillaryUser.getUsername();</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (username != null) {</span>
+<span class="fc" id="L101">        String username = MapillaryUser.getUsername();</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if (username != null) {</span>
 <span class="nc" id="L103">          SwingUtilities.invokeLater(new Runnable() {</span>
             @Override
             public void run() {
@@ -107,7 +107,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="nc" id="L107">            }</span>
           });
         }
-<span class="nc" id="L110">      }</span>
+<span class="fc" id="L110">      }</span>
 <span class="fc" id="L111">    }).start();</span>
 <span class="fc" id="L112">  }</span>
 

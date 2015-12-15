@@ -36,62 +36,61 @@ public class OAuthPortListener extends Thread {
 
   @Override
   public void run() {
-    try {
-<span class="fc" id="L40">      ServerSocket serverSocket = new ServerSocket(PORT);</span>
-<span class="fc" id="L41">      Socket clientSocket = serverSocket.accept();</span>
-<span class="fc" id="L42">      PrintWriter out = new PrintWriter(new OutputStreamWriter(</span>
-<span class="fc" id="L43">          clientSocket.getOutputStream(), &quot;UTF-8&quot;), true);</span>
-<span class="fc" id="L44">      Scanner in = new Scanner(new InputStreamReader(</span>
-<span class="fc" id="L45">          clientSocket.getInputStream(), &quot;UTF-8&quot;));</span>
+<span class="pc" id="L39">    try (</span>
+<span class="fc" id="L40">        ServerSocket serverSocket = new ServerSocket(PORT);</span>
+<span class="fc" id="L41">        Socket clientSocket = serverSocket.accept();</span>
+<span class="fc" id="L42">        PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), &quot;UTF-8&quot;), true);</span>
+<span class="fc" id="L43">        Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), &quot;UTF-8&quot;));</span>
+    ) {
       String s;
-<span class="fc" id="L47">      String accessToken = null;</span>
-<span class="pc bpc" id="L48" title="2 of 4 branches missed.">      while (in.hasNextLine() &amp;&amp; accessToken == null) {</span>
-<span class="fc" id="L49">        s = in.nextLine();</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (s.contains(&quot;access_token=&quot;)) {</span>
-<span class="fc" id="L51">          String[] ss = s.split(&quot;&amp;&quot;);</span>
-<span class="pc bpc" id="L52" title="1 of 4 branches missed.">          for (int i = 0; i &lt; ss.length &amp;&amp; accessToken == null; i++) {</span>
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">            if (ss[i].startsWith(&quot;access_token=&quot;)) {</span>
-<span class="nc" id="L54">              accessToken = ss[i].substring(ss[i].indexOf(&quot;access_token=&quot;) + 13, ss[i].length());</span>
+<span class="fc" id="L46">      String accessToken = null;</span>
+<span class="pc bpc" id="L47" title="2 of 4 branches missed.">      while (in.hasNextLine() &amp;&amp; accessToken == null) {</span>
+<span class="fc" id="L48">        s = in.nextLine();</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (s.contains(&quot;access_token=&quot;)) {</span>
+<span class="fc" id="L50">          String[] ss = s.split(&quot;&amp;&quot;);</span>
+<span class="pc bpc" id="L51" title="1 of 4 branches missed.">          for (int i = 0; i &lt; ss.length &amp;&amp; accessToken == null; i++) {</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">            if (ss[i].startsWith(&quot;access_token=&quot;)) {</span>
+<span class="nc" id="L53">              accessToken = ss[i].substring(ss[i].indexOf(&quot;access_token=&quot;) + 13, ss[i].length());</span>
             }
           }
-<span class="fc" id="L57">          break;</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        } else if (s.contains(&quot;keep-alive&quot;)) {</span>
-<span class="nc" id="L59">          break;</span>
+<span class="fc" id="L56">          break;</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        } else if (s.contains(&quot;keep-alive&quot;)) {</span>
+<span class="nc" id="L58">          break;</span>
         }
       }
 
-<span class="fc" id="L63">      writeContent(out);</span>
+<span class="fc" id="L62">      writeContent(out);</span>
 
-<span class="fc" id="L65">      out.close();</span>
-<span class="fc" id="L66">      in.close();</span>
-<span class="fc" id="L67">      serverSocket.close();</span>
+<span class="fc" id="L64">      out.close();</span>
+<span class="fc" id="L65">      in.close();</span>
+<span class="fc" id="L66">      serverSocket.close();</span>
 
-<span class="fc" id="L69">      MapillaryUser.reset();</span>
+<span class="fc" id="L68">      MapillaryUser.reset();</span>
 
-<span class="fc" id="L71">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot; + accessToken);</span>
+<span class="fc" id="L70">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot; + accessToken);</span>
       // Saves the access token in preferences.
-<span class="fc" id="L73">      MapillaryUser.setTokenValid(true);</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
-<span class="nc" id="L75">        Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
-<span class="nc" id="L76">        String username = MapillaryUser.getUsername();</span>
-<span class="nc" id="L77">        Main.info(&quot;The username is: &quot; + username);</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (callback != null) {</span>
-<span class="nc" id="L79">          callback.onLogin(username);</span>
+<span class="fc" id="L72">      MapillaryUser.setTokenValid(true);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
+<span class="nc" id="L74">        Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
+<span class="nc" id="L75">        String username = MapillaryUser.getUsername();</span>
+<span class="nc" id="L76">        Main.info(&quot;The username is: &quot; + username);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (callback != null) {</span>
+<span class="nc" id="L78">          callback.onLogin(username);</span>
         }
       }
-<span class="nc" id="L82">    } catch (BindException e) {</span>
-<span class="nc" id="L83">      Main.warn(e);</span>
-<span class="nc" id="L84">      return;</span>
-<span class="nc" id="L85">    } catch (IOException e) {</span>
-<span class="nc" id="L86">      Main.error(e);</span>
-<span class="fc" id="L87">    }</span>
-<span class="fc" id="L88">  }</span>
+<span class="pc bpc" id="L81" title="24 of 32 branches missed.">    } catch (BindException e) {</span>
+<span class="nc" id="L82">      Main.warn(e);</span>
+<span class="nc" id="L83">      return;</span>
+<span class="nc" id="L84">    } catch (IOException e) {</span>
+<span class="nc" id="L85">      Main.error(e);</span>
+<span class="fc" id="L86">    }</span>
+<span class="fc" id="L87">  }</span>
 
   private static void writeContent(PrintWriter out) {
-<span class="fc" id="L91">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>
-<span class="fc" id="L92">    out.println(&quot;Content-Length: &quot; + RESPONSE.length());</span>
-<span class="fc" id="L93">    out.println(&quot;Content-Type: text/html&quot; + &quot;\r\n\r\n&quot;);</span>
-<span class="fc" id="L94">    out.println(RESPONSE);</span>
-<span class="fc" id="L95">  }</span>
+<span class="fc" id="L90">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>
+<span class="fc" id="L91">    out.println(&quot;Content-Length: &quot; + RESPONSE.length());</span>
+<span class="fc" id="L92">    out.println(&quot;Content-Type: text/html&quot; + &quot;\r\n\r\n&quot;);</span>
+<span class="fc" id="L93">    out.println(RESPONSE);</span>
+<span class="fc" id="L94">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
