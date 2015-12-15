@@ -74,23 +74,56 @@ public class MapillaryPlugin extends Plugin {
   private static final MapillaryUploadAction uploadAction = new MapillaryUploadAction();
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
-  private JMenuItem downloadMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
+  private static final JMenuItem downloadMenu;
   /** Menu button for the {@link MapillaryExportAction} action. */
-  private static JMenuItem exportMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
+  private static final  JMenuItem exportMenu;
   /** Menu button for the {@link MapillaryImportAction} action. */
-  private JMenuItem importMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
+  private static final JMenuItem importMenu;
   /** Menu button for the {@link MapillaryZoomAction} action. */
-  private static JMenuItem zoomMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
+  private static final JMenuItem zoomMenu;
   /** Menu button for the {@link MapillaryDownloadViewAction} action. */
-  private static JMenuItem downloadViewMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
+  private static final JMenuItem downloadViewMenu;
   /** Menu button for the {@link MapillaryImportIntoSequenceAction} action. */
-  private JMenuItem importIntoSequenceMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
+  private static final JMenuItem importIntoSequenceMenu;
   /** Menu button for the {@link MapillaryJoinAction} action. */
-  private static JMenuItem joinMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
+  private static final JMenuItem joinMenu;
   /** Menu button for the {@link MapillaryWalkAction} action. */
-  private static JMenuItem walkMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
+  private static final JMenuItem walkMenu;
   /** Menu button for the {@link MapillaryUploadAction} action. */
-  private static JMenuItem uploadMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
+  private static final JMenuItem uploadMenu;
+
+  static {
+    if (Main.main != null) {
+      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
+      exportMenu.setEnabled(false);
+      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
+      downloadMenu.setEnabled(false);
+      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
+      importMenu.setEnabled(false);
+      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
+      zoomMenu.setEnabled(false);
+      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
+      downloadViewMenu.setEnabled(false);
+      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
+      importIntoSequenceMenu.setEnabled(false);
+      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
+      joinMenu.setEnabled(false);
+      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
+      walkMenu.setEnabled(false);
+      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
+      uploadMenu.setEnabled(false);
+    } else {
+      exportMenu = null;
+      downloadMenu = null;
+      importMenu = null;
+      zoomMenu = null;
+      downloadViewMenu = null;
+      importIntoSequenceMenu = null;
+      joinMenu = null;
+      walkMenu = null;
+      uploadMenu = null;
+    }
+  }
 
   /**
    * Main constructor.
@@ -100,17 +133,6 @@ public class MapillaryPlugin extends Plugin {
    */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
-
-    if (Main.main != null) { // important for headless mode
-      exportMenu.setEnabled(false);
-      downloadMenu.setEnabled(false);
-      importMenu.setEnabled(false);
-      importIntoSequenceMenu.setEnabled(false);
-      zoomMenu.setEnabled(false);
-      downloadViewMenu.setEnabled(false);
-      joinMenu.setEnabled(false);
-      walkMenu.setEnabled(false);
-    }
 
     try {
       cache = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
