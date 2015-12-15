@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryURL.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryURL.java</span></div><h1>MapillaryURL.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.utils;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryURL.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryURL.java</span></div><h1>MapillaryURL.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -18,98 +19,164 @@ public final class MapillaryURL {
   private static final String BASE_API_URL = &quot;https://a.mapillary.com/v2/&quot;;
   private static final String BASE_WEBSITE_URL = &quot;https://www.mapillary.com/&quot;;
 
-<span class="nc" id="L21">  private MapillaryURL() {</span>
+<span class="fc" id="L22">  private MapillaryURL() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L23">  }</span>
+<span class="fc" id="L24">  }</span>
 
+  /**
+   * Gives you the URL for the online editor of a specific mapillary image.
+   * @param key the key of the image to which you want to link
+   * @return the URL of the online editor for the image with the given image key
+   */
   public static URL browseEditURL(String key) {
-<span class="nc bnc" id="L26" title="All 4 branches missed.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
-<span class="nc" id="L27">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
+<span class="fc bfc" id="L32" title="All 4 branches covered.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
+<span class="fc" id="L33">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
     }
-<span class="nc" id="L29">    return string2URL(BASE_WEBSITE_URL + &quot;map/e/&quot; + key);</span>
+<span class="fc" id="L35">    return string2URL(BASE_WEBSITE_URL + &quot;map/e/&quot; + key);</span>
   }
 
+  /**
+   * Gives you the URL for the online viewer of a specific mapillary image.
+   * @param key the key of the image to which you want to link
+   * @return the URL of the online viewer for the image with the given image key
+   */
   public static URL browseImageURL(String key) {
-<span class="nc bnc" id="L33" title="All 4 branches missed.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
-<span class="nc" id="L34">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
+<span class="fc" id="L45">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
     }
-<span class="nc" id="L36">    return string2URL(BASE_WEBSITE_URL + &quot;map/im/&quot; + key);</span>
+<span class="fc" id="L47">    return string2URL(BASE_WEBSITE_URL + &quot;map/im/&quot; + key);</span>
   }
 
+  /**
+   * @return the URL where the user can view all uploaded images that are not yet published
+   */
   public static URL browseUploadImageURL() {
-<span class="nc" id="L40">    return string2URL(BASE_WEBSITE_URL + &quot;map/upload/im&quot;);</span>
+<span class="fc" id="L54">    return string2URL(BASE_WEBSITE_URL + &quot;map/upload/im/&quot;);</span>
   }
 
+  /**
+   * Gives you the URL which the user should visit to initiate the OAuth authentication process
+   * @param redirectURI the URI to which the user will be redirected when the authentication is finished
+   * @return the URL that the user should visit to start the OAuth authentication
+   */
   public static URL connectURL(String redirectURI) {
-<span class="nc" id="L44">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L45">    parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
-<span class="nc" id="L46">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
-<span class="nc" id="L47">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="nc" id="L48">    return string2URL(BASE_WEBSITE_URL + &quot;connect/&quot;+queryString(parts));</span>
-  }
-
-  public static URL searchImageURL(Bounds bounds, int page) {
-<span class="nc" id="L52">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L53">    putBoundsInQueryStringParts(parts, bounds);</span>
-<span class="nc" id="L54">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
-<span class="nc" id="L55">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
-<span class="nc" id="L56">    return string2URL(BASE_API_URL + &quot;search/im/&quot; + queryString(parts));</span>
-  }
-
-  public static URL searchSequenceURL(Bounds bounds, int page) {
-<span class="nc" id="L60">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L61">    putBoundsInQueryStringParts(parts, bounds);</span>
-<span class="nc" id="L62">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
-<span class="nc" id="L63">    parts.put(&quot;limit&quot;, &quot;10&quot;);</span>
-<span class="nc" id="L64">    return string2URL(BASE_API_URL + &quot;search/s/&quot; + queryString(parts));</span>
-  }
-
-  public static URL searchTrafficSignURL(Bounds bounds, int page) {
-<span class="nc" id="L68">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L69">    putBoundsInQueryStringParts(parts, bounds);</span>
-<span class="nc" id="L70">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
-<span class="nc" id="L71">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
-<span class="nc" id="L72">    return string2URL(BASE_API_URL + &quot;search/im/or/&quot; + queryString(parts));</span>
-  }
-
-  public static URL uploadSecretsURL() {
-<span class="nc" id="L76">    return string2URL(BASE_API_URL + &quot;me/uploads/secrets/&quot; + queryString(null));</span>
-  }
-
-  public static URL userURL() {
-<span class="fc" id="L80">    return string2URL(BASE_API_URL + &quot;me/&quot; + queryString(null));</span>
-  }
-
-  private static void putBoundsInQueryStringParts(Map&lt;String, String&gt; parts, Bounds bounds) {
-<span class="nc" id="L84">    parts.put(&quot;min_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lat()));</span>
-<span class="nc" id="L85">    parts.put(&quot;max_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lat()));</span>
-<span class="nc" id="L86">    parts.put(&quot;min_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lon()));</span>
-<span class="nc" id="L87">    parts.put(&quot;max_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lon()));</span>
-<span class="nc" id="L88">  }</span>
-
-  private static String queryString(Map&lt;String, String&gt; parts) {
-<span class="fc" id="L91">    StringBuilder ret = new StringBuilder().append(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">    if (parts != null) {</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
-        try {
-<span class="nc" id="L95">          ret.append('&amp;')</span>
-<span class="nc" id="L96">            .append(URLEncoder.encode(entry.getKey(), &quot;UTF-8&quot;))</span>
-<span class="nc" id="L97">            .append('=')</span>
-<span class="nc" id="L98">            .append(URLEncoder.encode(entry.getValue(), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L99">        } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L100">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
-<span class="nc" id="L101">        }</span>
-<span class="nc" id="L102">      }</span>
+<span class="fc" id="L63">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">    if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L65">      parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
     }
-<span class="fc" id="L104">    return ret.toString();</span>
+<span class="fc" id="L67">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L68">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L69">    return string2URL(BASE_WEBSITE_URL + &quot;connect/&quot;+queryString(parts));</span>
   }
 
+  /**
+   * Gives you the API-URL where you get 20 images within the given bounds.
+   * For more than 20 images you have to use different URLs with different page numbers.
+   * @param bounds the bounds in which you want to search for images
+   * @param page number of the page to retrieve from the API
+   * @return the API-URL which gives you the images in the given bounds as JSON
+   */
+  public static URL searchImageURL(Bounds bounds, int page) {
+<span class="fc" id="L80">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L81">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L82">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L83">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
+<span class="fc" id="L84">    return string2URL(BASE_API_URL + &quot;search/im/&quot; + queryString(parts));</span>
+  }
+
+  /**
+   * Gives you the API-URL where you get 10 sequences within the given bounds.
+   * For more than 10 sequences you have to use different URLs with different page numbers.
+   * @param bounds the bounds in which you want to search for sequences
+   * @param page number of the page to retrieve from the API
+   * @return the API-URL which gives you the sequences in the given bounds as JSON
+   */
+  public static URL searchSequenceURL(Bounds bounds, int page) {
+<span class="fc" id="L95">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L96">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L97">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L98">    parts.put(&quot;limit&quot;, &quot;10&quot;);</span>
+<span class="fc" id="L99">    return string2URL(BASE_API_URL + &quot;search/s/&quot; + queryString(parts));</span>
+  }
+
+  /**
+   * Gives you the API-URL where you get the traffic signs for 20 images within the given bounds.
+   * For the signs from more than 20 images you have to use different URLs with different page numbers.
+   * @param bounds the bounds in which you want to search for traffic signs
+   * @param page number of the page to retrieve from the API
+   * @return the API-URL which gives you the traffic signs in the given bounds as JSON
+   */
+  public static URL searchTrafficSignURL(Bounds bounds, int page) {
+<span class="fc" id="L110">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L111">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L112">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L113">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
+<span class="fc" id="L114">    return string2URL(BASE_API_URL + &quot;search/im/or/&quot; + queryString(parts));</span>
+  }
+
+  /**
+   * @return the URL where you'll find the upload secrets as JSON
+   */
+  public static URL uploadSecretsURL() {
+<span class="fc" id="L121">    return string2URL(BASE_API_URL + &quot;me/uploads/secrets/&quot; + queryString(null));</span>
+  }
+
+  /**
+   * @return the URL where you'll find information about the user account as JSON
+   */
+  public static URL userURL() {
+<span class="fc" id="L128">    return string2URL(BASE_API_URL + &quot;me/&quot; + queryString(null));</span>
+  }
+
+  /**
+   * Adds the given {@link Bounds} to a {@link Map} that contains the parts of a query string.
+   * @param parts the parts of a query string
+   * @param bounds the bounds that will be added to the query string
+   */
+  private static void putBoundsInQueryStringParts(Map&lt;String, String&gt; parts, Bounds bounds) {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if (bounds != null) {</span>
+<span class="fc" id="L138">      parts.put(&quot;min_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lat()));</span>
+<span class="fc" id="L139">      parts.put(&quot;max_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lat()));</span>
+<span class="fc" id="L140">      parts.put(&quot;min_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lon()));</span>
+<span class="fc" id="L141">      parts.put(&quot;max_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lon()));</span>
+    }
+<span class="fc" id="L143">  }</span>
+
+  /**
+   * Builds a query string from it's parts that are supplied as a {@link Map}
+   * @param parts the parts of the query string
+   * @return the constructed query string (including a leading ?)
+   */
+  private static String queryString(Map&lt;String, String&gt; parts) {
+<span class="fc" id="L151">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (parts != null) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
+        try {
+<span class="fc" id="L155">          ret.append('&amp;')</span>
+<span class="fc" id="L156">            .append(URLEncoder.encode(entry.getKey(), &quot;UTF-8&quot;))</span>
+<span class="fc" id="L157">            .append('=')</span>
+<span class="fc" id="L158">            .append(URLEncoder.encode(entry.getValue(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L159">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L160">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
+<span class="fc" id="L161">        }</span>
+<span class="fc" id="L162">      }</span>
+    }
+<span class="fc" id="L164">    return ret.toString();</span>
+  }
+
+  /**
+   * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
+   * Instead such an exception will lead to an {@link Main#error(Throwable)}.
+   * So you should be very confident that your URL is well-formed when calling this method.
+   * @param string the String describing the URL
+   * @return the URL that is constructed from the given string
+   */
   private static URL string2URL(String string) {
     try {
-<span class="fc" id="L109">      return new URL(string);</span>
-<span class="nc" id="L110">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L111">      Main.error(&quot;The MapillaryAPI class produces malformed URLs!&quot;, e);</span>
-<span class="nc" id="L112">      return null;</span>
+<span class="fc" id="L176">      return new URL(string);</span>
+<span class="fc" id="L177">    } catch (MalformedURLException e) {</span>
+<span class="fc" id="L178">      Main.error(new Exception(&quot;The &quot;+MapillaryURL.class.getSimpleName()+&quot; class produces malformed URLs!&quot;, e));</span>
+<span class="fc" id="L179">      return null;</span>
     }
   }
 }
