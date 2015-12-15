@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
@@ -13,9 +12,11 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
  * This thread downloads one of the images in a given area.
@@ -24,8 +25,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  * @see MapillarySquareDownloadManagerThread
  */
 public class MapillaryImageInfoDownloadThread extends Thread {
-  private static final String URL = MapillaryDownloader.BASE_URL + "search/im/";
-  private final String queryString;
+  private final Bounds bounds;
+  private final int page;
   private final ExecutorService ex;
 
   /**
@@ -36,18 +37,16 @@ public class MapillaryImageInfoDownloadThread extends Thread {
    * @param queryString
    *          A String containing the parameters for the download.
    */
-  public MapillaryImageInfoDownloadThread(ExecutorService ex,
-      String queryString) {
+  public MapillaryImageInfoDownloadThread(ExecutorService ex, Bounds bounds, int page) {
+    this.bounds = bounds;
+    this.page = page;
     this.ex = ex;
-    this.queryString = queryString;
   }
 
   @Override
   public void run() {
     try (
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-        new URL(URL + this.queryString).openStream(), "UTF-8")
-      );
+      BufferedReader br = new BufferedReader(new InputStreamReader(MapillaryURL.searchImageURL(bounds, page).openStream(), "UTF-8"));
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))

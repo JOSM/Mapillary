@@ -42,12 +42,7 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
     LatLon maxLatLon = new LatLon(59.3212546, 18.0616686);
 
     ExecutorService ex = Executors.newSingleThreadExecutor();
-    String queryString = String
-        .format(
-            Locale.UK,
-            "?max_lat=%.8f&max_lon=%.8f&min_lat=%.8f&min_lon=%.8f&limit=10&client_id=%s",
-            maxLatLon.lat(), maxLatLon.lon(), minLatLon.lat(), minLatLon.lon(),
-            MapillaryPlugin.CLIENT_ID);
+    Bounds bounds = new Bounds(minLatLon, maxLatLon);
     MapillaryLayer.getInstance().getData().bounds.add(new Bounds(minLatLon,
         maxLatLon));
 
@@ -57,16 +52,14 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
         && page < 50) {
       System.out.println("Sending sequence-request " + page
           + " to Mapillary-servers…");
-      Thread downloadThread = new MapillarySequenceDownloadThread(ex,
-          queryString + "&page=" + page);
+      Thread downloadThread = new MapillarySequenceDownloadThread(ex, bounds, page);
       downloadThread.start();
       downloadThread.join();
       page++;
       Thread.sleep(500);
     }
     assertTrue(MapillaryLayer.getInstance().getData().getImages().size() >= 1);
-    System.out
-        .println("One or more images were added to the MapillaryLayer within the given bounds.");
+    System.out.println("One or more images were added to the MapillaryLayer within the given bounds.");
   }
 
 }

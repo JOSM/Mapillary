@@ -37,8 +37,6 @@ public class MapillaryDownloader {
   public static final double MAX_AREA = Main.pref.getDouble(
       "mapillary.max-download-area", 0.015);
 
-  /** Base URL of the Mapillary API. */
-  public static final String BASE_URL = "https://a.mapillary.com/v2/";
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(3, 5,
       100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));;
@@ -53,12 +51,10 @@ public class MapillaryDownloader {
    *          The maximum latitude and longitude of the rectangle
    */
   public static void getImages(LatLon minLatLon, LatLon maxLatLon) {
-    ConcurrentHashMap<String, Double> queryStringParts = new ConcurrentHashMap<>();
-    queryStringParts.put("min_lat", minLatLon.lat());
-    queryStringParts.put("min_lon", minLatLon.lon());
-    queryStringParts.put("max_lat", maxLatLon.lat());
-    queryStringParts.put("max_lon", maxLatLon.lon());
-    run(new MapillarySquareDownloadManagerThread(queryStringParts));
+    if (maxLatLon == null || maxLatLon == null) {
+      throw new IllegalArgumentException();
+    }
+    getImages(new Bounds(minLatLon, maxLatLon));
   }
 
   /**
@@ -68,7 +64,7 @@ public class MapillaryDownloader {
    *          A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
-    getImages(bounds.getMin(), bounds.getMax());
+    run(new MapillarySquareDownloadManagerThread(bounds));
   }
 
   /**

@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
@@ -43,11 +44,10 @@ public class FinishedUploadDialog extends JPanel {
   }
 
   private class WebAction implements ActionListener {
-
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
-        MapillaryUtils.browse(new URL("http://www.mapillary.com/map/upload/im"));
+        MapillaryUtils.browse(MapillaryURL.browseUploadImageURL());
       } catch (IOException e1) {
         Main.error(e1);
       }

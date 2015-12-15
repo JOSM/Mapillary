@@ -40,7 +40,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  */
 public class MapillaryPlugin extends Plugin {
-  public static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
 
   /** OS route separator */
   public static final String SEPARATOR = System.getProperty("file.separator");

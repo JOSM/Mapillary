@@ -27,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
@@ -168,9 +169,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     public void actionPerformed(ActionEvent arg0) {
       OAuthPortListener portListener = new OAuthPortListener(callback);
       portListener.start();
-      String url = "http://www.mapillary.com/connect?redirect_uri=http:%2F%2Flocalhost:"+OAuthPortListener.PORT+"%2F&client_id="+MapillaryPlugin.CLIENT_ID+"&response_type=token&scope=user:read%20public:upload%20public:write";
       try {
-        MapillaryUtils.browse(new URL(url));
+        MapillaryUtils.browse(MapillaryURL.connectURL("http://localhost:"+OAuthPortListener.PORT));
       } catch (IOException e) {
         Main.error(e);
       }

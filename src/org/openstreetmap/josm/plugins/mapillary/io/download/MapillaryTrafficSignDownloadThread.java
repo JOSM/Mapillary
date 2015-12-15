@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
@@ -13,9 +12,11 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
  * Downloads the signs information in a given area.
@@ -24,23 +25,21 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  *
  */
 public class MapillaryTrafficSignDownloadThread extends Thread {
-  private static final String URL = MapillaryDownloader.BASE_URL
-      + "search/im/or/";
-  private final String queryString;
+  private final Bounds bounds;
+  private final int page;
   private final ExecutorService ex;
 
   /**
    * Main constructor.
    *
-   * @param ex
-   *          {@link ExecutorService} object that is executing this thread.
-   * @param queryString
-   *          A String containing the parameter for the download.
+   * @param ex {@link ExecutorService} object that is executing this thread.
+   * @param bounds the bounds in which the traffic signs should be downloaded
+   * @page page the pagenumber of the results page that should be retrieved
    */
-  public MapillaryTrafficSignDownloadThread(ExecutorService ex,
-      String queryString) {
+  public MapillaryTrafficSignDownloadThread(ExecutorService ex, Bounds bounds, int page) {
+    this.bounds = bounds;
+    this.page = page;
     this.ex = ex;
-    this.queryString = queryString;
   }
 
   @Override
@@ -48,7 +47,7 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
 
     try (
       BufferedReader br = new BufferedReader(new InputStreamReader(
-        new URL(URL + this.queryString).openStream(), "UTF-8"
+        MapillaryURL.searchTrafficSignURL(bounds, page).openStream(), "UTF-8"
       ));
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
@@ -66,15 +65,9 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
             rects = rectversions.getJsonObject(j).getJsonArray("rects");
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
-                  .getData().getImages())
-                if (image instanceof MapillaryImage
-                    && ((MapillaryImage) image).getKey().equals(key))
-                  try {
-                    ((MapillaryImage) image).addSign(data.getString("type"));
-                  } catch (Exception e) {
-                    Main.error("Error when downloading sign.");
-                  }
+              for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages())
+                if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key))
+                  ((MapillaryImage) image).addSign(data.getString("type"));
             }
           }
         }
@@ -83,10 +76,8 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
         else if (rects != null) {
           for (int j = 0; j < rects.size(); j++) {
             JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
-                .getData().getImages())
-              if (image instanceof MapillaryImage
-                  && ((MapillaryImage) image).getKey().equals(key))
+            for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages())
+              if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key))
                 ((MapillaryImage) image).addSign(data.getString("type"));
           }
         }

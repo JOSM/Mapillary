@@ -237,11 +237,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
       if (this.image instanceof MapillaryImage) {
         this.mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        try {
-          this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
-        } catch (MalformedURLException e1) {
-          Main.error(e1);
-        }
+        this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
         // Downloads the thumbnail.
         this.mapillaryImageDisplay.setImage(null);
         if (this.thumbnailCache != null)
@@ -268,11 +264,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
       } else if (this.image instanceof MapillaryImportedImage) {
         this.mapillaryImageDisplay.hyperlink.setVisible(false);
-        try {
-          this.mapillaryImageDisplay.hyperlink.setURL(null);
-        } catch (MalformedURLException e1) {
-          Main.error(e1);
-        }
+        this.mapillaryImageDisplay.hyperlink.setURL(null);
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           this.mapillaryImageDisplay.setImage(mapillaryImage.getImage());

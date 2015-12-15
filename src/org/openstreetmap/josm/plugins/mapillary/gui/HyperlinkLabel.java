@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JLabel;
@@ -20,6 +19,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -59,15 +59,14 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
    * Sets a new URL, just pass the key of the image or null if there is none.
    *
    * @param key The key of the image that the hyperlink will point to.
-   * @throws MalformedURLException when the key appended to the base URL forms a malformed URL
    */
-  public void setURL(String key) throws MalformedURLException {
+  public void setURL(String key) {
     this.key = key;
     if (key == null) {
       this.url = null;
-      return;
+    } else {
+      this.url = MapillaryURL.browseImageURL(key);
     }
-    this.url = new URL("http://www.mapillary.com/map/im/" + key);
   }
 
   /**
@@ -134,7 +133,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent paramActionEvent) {
           try {
-            MapillaryUtils.browse(new URL("http://www.mapillary.com/map/e/" + key));
+            MapillaryUtils.browse(MapillaryURL.browseEditURL(key));
           } catch (IOException e) {
             Main.error(e);
           }

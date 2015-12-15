@@ -2,13 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -38,7 +36,7 @@ public final class MapillaryUser {
     if (username == null) {
       try {
         username = OAuthUtils
-            .getWithHeader(new URL(MapillaryDownloader.BASE_URL+"me?client_id="+MapillaryPlugin.CLIENT_ID))
+            .getWithHeader(MapillaryURL.userURL())
             .getString("username");
       } catch (IOException e) {
         Main.info("Invalid Mapillary token, resetting field");
@@ -59,19 +57,15 @@ public final class MapillaryUser {
     try {
       if (imagesHash == null)
         imagesHash = OAuthUtils
-            .getWithHeader(
-                new URL(
-                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id="+MapillaryPlugin.CLIENT_ID))
+            .getWithHeader(MapillaryURL.uploadSecretsURL())
             .getString("images_hash");
       hash.put("images_hash", imagesHash);
       if (imagesPolicy == null)
         imagesPolicy = OAuthUtils
-            .getWithHeader(
-                new URL(
-                    "https://a.mapillary.com/v2/me/uploads/secrets?client_id="+MapillaryPlugin.CLIENT_ID))
+            .getWithHeader(MapillaryURL.uploadSecretsURL())
             .getString("images_policy");
     } catch (IOException e) {
-      Main.info("Invalid Mapillary token, reseting field");
+      Main.info("Invalid Mapillary token, resetting field");
       reset();
     }
     hash.put("images_policy", imagesPolicy);
