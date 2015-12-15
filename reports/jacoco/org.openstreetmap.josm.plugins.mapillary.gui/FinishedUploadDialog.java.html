@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
@@ -31,23 +32,22 @@ public class FinishedUploadDialog extends JPanel {
   /**
    * Main constructor.
    */
-<span class="nc" id="L34">  public FinishedUploadDialog() {</span>
-<span class="nc" id="L35">    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));</span>
-<span class="nc" id="L36">    JLabel text = new JLabel(tr(&quot;Uploaded {0} images&quot;, PluginState.imagesUploaded));</span>
-<span class="nc" id="L37">    text.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L38">    this.add(text);</span>
-<span class="nc" id="L39">    JButton web = new JButton(tr(&quot;Approve upload on the website&quot;));</span>
-<span class="nc" id="L40">    web.addActionListener(new WebAction());</span>
-<span class="nc" id="L41">    web.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L42">    this.add(web, Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L43">  }</span>
+<span class="nc" id="L35">  public FinishedUploadDialog() {</span>
+<span class="nc" id="L36">    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));</span>
+<span class="nc" id="L37">    JLabel text = new JLabel(tr(&quot;Uploaded {0} images&quot;, PluginState.imagesUploaded));</span>
+<span class="nc" id="L38">    text.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L39">    this.add(text);</span>
+<span class="nc" id="L40">    JButton web = new JButton(tr(&quot;Approve upload on the website&quot;));</span>
+<span class="nc" id="L41">    web.addActionListener(new WebAction());</span>
+<span class="nc" id="L42">    web.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L43">    this.add(web, Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L44">  }</span>
 
-<span class="nc" id="L45">  private class WebAction implements ActionListener {</span>
-
+<span class="nc" id="L46">  private class WebAction implements ActionListener {</span>
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
-<span class="nc" id="L50">        MapillaryUtils.browse(new URL(&quot;http://www.mapillary.com/map/upload/im&quot;));</span>
+<span class="nc" id="L50">        MapillaryUtils.browse(MapillaryURL.browseUploadImageURL());</span>
 <span class="nc" id="L51">      } catch (IOException e1) {</span>
 <span class="nc" id="L52">        Main.error(e1);</span>
 <span class="nc" id="L53">      }</span>

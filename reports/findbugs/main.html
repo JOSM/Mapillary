@@ -190,6 +190,7 @@
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoGlyph.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSign.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSignElement.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils$1.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.class</li>
 <li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/PluginState$1.class</li>
@@ -200,8 +201,8 @@
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>4558 lines of code analyzed,
-	in 123 classes, 
+<p>4590 lines of code analyzed,
+	in 124 classes, 
 	in 12 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
 <tr class="tableheader">
@@ -211,8 +212,8 @@
 </tr>
 <tr class="tablerow0">
 <td>High Priority Warnings</td>
-<td align="right"/>
-<td align="right">0.00</td>
+<td align="right">1</td>
+<td align="right">0.22</td>
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
@@ -224,10 +225,10 @@
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>0</b>
+<b>1</b>
 </td>
 <td align="right">
-<b>0.00</b>
+<b>0.22</b>
 </td>
 </tr>
 </table>
@@ -241,6 +242,9 @@
 <h2>Contents</h2>
 <ul>
 <li>
+<a href="#Warnings_CORRECTNESS">Correctness Warnings</a>
+</li>
+<li>
 <a href="#Details">Details</a>
 </li>
 </ul>
@@ -252,17 +256,55 @@
 </tr>
 <tr class="tablerow0">
 <td>
+<a href="#Warnings_CORRECTNESS">Correctness Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow1">
+<td>
 <b>Total</b>
 </td>
 <td align="right">
-<b>0</b>
+<b>1</b>
 </td>
 </tr>
 </table>
 <h1>Warnings</h1>
 <p>Click on a warning row to see full context information.</p>
+<h2>
+<a name="Warnings_CORRECTNESS">Correctness Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N65956');">
+<td>
+<span class="priority-1">RpC</span>
+</td>
+<td>Repeated conditional test in org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.getImages(LatLon, LatLon)</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65956" style="display: none;">
+<a href="#RpC_REPEATED_CONDITIONAL_TEST">Bug type RpC_REPEATED_CONDITIONAL_TEST (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader<br/>In method org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.getImages(LatLon, LatLon)<br/>At MapillaryDownloader.java:[line 54]<br/>At MapillaryDownloader.java:[line 54]</p>
+</td>
+</tr>
+</table>
 <h1>
 <a name="Details">Details</a>
 </h1>
-</body>
+<h2>
+<a name="RpC_REPEATED_CONDITIONAL_TEST">RpC_REPEATED_CONDITIONAL_TEST: Repeated conditional tests</a>
+</h2>
+
+<p>The code contains a conditional test is performed twice, one right after the other
+(e.g., <code>x == 0 || x == 0</code>). Perhaps the second occurrence is intended to be something else
+(e.g., <code>x == 0 || y == 0</code>).
+</p>
+
+    </body>
 </html>
