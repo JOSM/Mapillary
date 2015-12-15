@@ -74,23 +74,23 @@ public class MapillaryPlugin extends Plugin {
   private static final MapillaryUploadAction uploadAction = new MapillaryUploadAction();
 
   /** Menu button for the {@link MapillaryDownloadAction} action. */
-  private JMenuItem downloadMenu;
+  private JMenuItem downloadMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
   /** Menu button for the {@link MapillaryExportAction} action. */
-  private static JMenuItem exportMenu;
+  private static JMenuItem exportMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
   /** Menu button for the {@link MapillaryImportAction} action. */
-  private JMenuItem importMenu;
+  private JMenuItem importMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
   /** Menu button for the {@link MapillaryZoomAction} action. */
-  private static JMenuItem zoomMenu;
+  private static JMenuItem zoomMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
   /** Menu button for the {@link MapillaryDownloadViewAction} action. */
-  private static JMenuItem downloadViewMenu;
+  private static JMenuItem downloadViewMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
   /** Menu button for the {@link MapillaryImportIntoSequenceAction} action. */
-  private JMenuItem importIntoSequenceMenu;
+  private JMenuItem importIntoSequenceMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
   /** Menu button for the {@link MapillaryJoinAction} action. */
-  private static JMenuItem joinMenu;
+  private static JMenuItem joinMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
   /** Menu button for the {@link MapillaryWalkAction} action. */
-  private static JMenuItem walkMenu;
+  private static JMenuItem walkMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
   /** Menu button for the {@link MapillaryUploadAction} action. */
-  private static JMenuItem uploadMenu;
+  private static JMenuItem uploadMenu = Main.main == null ? null : MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
 
   /**
    * Main constructor.
@@ -102,16 +102,6 @@ public class MapillaryPlugin extends Plugin {
     super(info);
 
     if (Main.main != null) { // important for headless mode
-      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
-      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
-      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);
-      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);
-      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
-      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);
-      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);
-      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);
-      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);
-
       exportMenu.setEnabled(false);
       downloadMenu.setEnabled(false);
       importMenu.setEnabled(false);
@@ -230,6 +220,9 @@ public class MapillaryPlugin extends Plugin {
    *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
+    if (menu == null) { // In headless mode the menu items are initialized to null
+      return;
+    }
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
