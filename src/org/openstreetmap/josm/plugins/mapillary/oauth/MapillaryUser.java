@@ -22,7 +22,7 @@ public final class MapillaryUser {
   private static String imagesPolicy;
   private static String imagesHash;
   /** If the stored token is valid or not. */
-  public static boolean isTokenValid = true;
+  private static boolean isTokenValid = true;
 
   private MapillaryUser() {
     // Private constructor to avoid instantiation
@@ -81,11 +81,15 @@ public final class MapillaryUser {
   /**
    * Resets the MapillaryUser to null values.
    */
-  public static void reset() {
+  public static synchronized void reset() {
     username = null;
     imagesPolicy = null;
     imagesHash = null;
     isTokenValid = false;
     Main.pref.put("mapillary.access-token", null);
+  }
+
+  public static synchronized void setTokenValid(boolean value) {
+    isTokenValid = value;
   }
 }

@@ -130,7 +130,7 @@ public class MapillaryPlugin extends Plugin {
     }
 
     if (Main.pref.get("mapillary.access-token") == null)
-      MapillaryUser.isTokenValid = false;
+      MapillaryUser.setTokenValid(false);
   }
 
   /**

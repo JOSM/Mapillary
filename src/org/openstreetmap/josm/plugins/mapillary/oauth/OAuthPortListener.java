@@ -70,7 +70,7 @@ public class OAuthPortListener extends Thread {
 
       Main.info("Successful login with Mapillary, the access token is: " + accessToken);
       // Saves the access token in preferences.
-      MapillaryUser.isTokenValid = true;
+      MapillaryUser.setTokenValid(true);
       if (Main.main != null) {
         Main.pref.put("mapillary.access-token", accessToken);
         String username = MapillaryUser.getUsername();
