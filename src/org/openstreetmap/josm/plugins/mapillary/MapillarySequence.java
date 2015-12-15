@@ -42,28 +42,6 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns all {@link MapillaryAbstractImage} objects contained by this
-   * object.
-   *
-   * @return A {@link List} object containing all the
-   *         {@link MapillaryAbstractImage} objects that are part of the
-   *         sequence.
-   */
-  public List<MapillaryAbstractImage> getImages() {
-    return this.images;
-  }
-
-  /**
-   * Returns the Epoch time when the sequence was captured.
-   *
-   * @return A long containing the Epoch time when the sequence was captured.
-   *
-   */
-  public long getCreatedAt() {
-    return this.createdAt;
-  }
-
-  /**
    * Adds a new {@link MapillaryAbstractImage} object to the database.
    *
    * @param image
@@ -71,17 +49,6 @@ public class MapillarySequence {
    */
   public synchronized void add(MapillaryAbstractImage image) {
     this.images.add(image);
-  }
-
-  /**
-   * Returns the unique identifier of the sequence.
-   *
-   * @return A {@code String} containing the unique identifier of the sequence.
-   *         null means that the sequence has been created locally for imported
-   *         images.
-   */
-  public String getKey() {
-    return this.key;
   }
 
   /**
@@ -96,13 +63,36 @@ public class MapillarySequence {
   }
 
   /**
-   * Removes a {@link MapillaryAbstractImage} object from the database.
+   * Returns the Epoch time when the sequence was captured.
    *
-   * @param image
-   *          The {@link MapillaryAbstractImage} object to be removed.
+   * @return A long containing the Epoch time when the sequence was captured.
+   *
    */
-  public void remove(MapillaryAbstractImage image) {
-    this.images.remove(image);
+  public long getCreatedAt() {
+    return this.createdAt;
+  }
+
+  /**
+   * Returns all {@link MapillaryAbstractImage} objects contained by this
+   * object.
+   *
+   * @return A {@link List} object containing all the
+   *         {@link MapillaryAbstractImage} objects that are part of the
+   *         sequence.
+   */
+  public List<MapillaryAbstractImage> getImages() {
+    return this.images;
+  }
+
+  /**
+   * Returns the unique identifier of the sequence.
+   *
+   * @return A {@code String} containing the unique identifier of the sequence.
+   *         null means that the sequence has been created locally for imported
+   *         images.
+   */
+  public String getKey() {
+    return this.key;
   }
 
   /**
@@ -145,5 +135,15 @@ public class MapillarySequence {
     if (i == 0)
       return null;
     return this.images.get(i - 1);
+  }
+
+  /**
+   * Removes a {@link MapillaryAbstractImage} object from the database.
+   *
+   * @param image
+   *          The {@link MapillaryAbstractImage} object to be removed.
+   */
+  public void remove(MapillaryAbstractImage image) {
+    this.images.remove(image);
   }
 }

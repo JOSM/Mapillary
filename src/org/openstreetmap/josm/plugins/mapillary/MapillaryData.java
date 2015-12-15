@@ -49,6 +49,34 @@ public class MapillaryData {
   }
 
   /**
+   * Adds an MapillaryImage to the object, and then repaints mapView.
+   *
+   * @param image
+   *          The image to be added.
+   */
+  public synchronized void add(MapillaryAbstractImage image) {
+    add(image, true);
+  }
+
+  /**
+   * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
+   * needed for concurrency.
+   *
+   * @param image
+   *          The image to be added.
+   * @param update
+   *          Whether the map must be updated or not.
+   */
+  public synchronized void add(MapillaryAbstractImage image, boolean update) {
+    if (!this.images.contains(image)) {
+      this.images.add(image);
+    }
+    if (update)
+      dataUpdated();
+    fireImagesAdded();
+  }
+
+  /**
    * Adds a set of MapillaryImages to the object, and then repaints mapView.
    *
    * @param images
@@ -59,13 +87,63 @@ public class MapillaryData {
   }
 
   /**
-   * Adds an MapillaryImage to the object, and then repaints mapView.
+   * Adds a set of {link MapillaryAbstractImage} objects to this object.
+   *
+   * @param images
+   *          The set of images to be added.
+   * @param update
+   *          Whether the map must be updated or not.
+   */
+  public synchronized void add(List<MapillaryAbstractImage> images, boolean update) {
+    for (MapillaryAbstractImage image : images) {
+      add(image, update);
+    }
+  }
+
+  /**
+   * Adds a new listener.
+   *
+   * @param lis
+   *          Listener to be added.
+   */
+  public void addListener(MapillaryDataListener lis) {
+    this.listeners.add(lis);
+  }
+
+  /**
+   * Adds a {@link MapillaryImage} object to the list of selected images, (when
+   * ctrl + click)
    *
    * @param image
-   *          The image to be added.
+   *          The {@link MapillaryImage} object to be added.
    */
-  public synchronized void add(MapillaryAbstractImage image) {
-    add(image, true);
+  public void addMultiSelectedImage(MapillaryAbstractImage image) {
+    if (!this.multiSelectedImages.contains(image)) {
+      if (this.getSelectedImage() != null)
+        this.multiSelectedImages.add(image);
+      else
+        this.setSelectedImage(image);
+    }
+    if (Main.main != null)
+      Main.map.mapView.repaint();
+  }
+
+  /**
+   * Adds a set of {@code MapillaryAbstractImage} objects to the list of
+   * selected images.
+   *
+   * @param images
+   *          A List object containing the set of images to be added.
+   */
+  public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
+    for (MapillaryAbstractImage image : images)
+      if (!this.multiSelectedImages.contains(image)) {
+        if (this.getSelectedImage() != null)
+          this.multiSelectedImages.add(image);
+        else
+          this.setSelectedImage(image);
+      }
+    Main.map.mapView.repaint();
   }
 
   /**
@@ -102,16 +180,6 @@ public class MapillaryData {
   }
 
   /**
-   * Adds a new listener.
-   *
-   * @param lis
-   *          Listener to be added.
-   */
-  public void addListener(MapillaryDataListener lis) {
-    this.listeners.add(lis);
-  }
-
-  /**
    * Removes a listener.
    *
    * @param lis
@@ -119,21 +187,6 @@ public class MapillaryData {
    */
   public void removeListener(MapillaryDataListener lis) {
     this.listeners.remove(lis);
-  }
-
-  /**
-   * Adds a set of {link MapillaryAbstractImage} objects to this object.
-   *
-   * @param images
-   *          The set of images to be added.
-   * @param update
-   *          Whether the map must be updated or not.
-   */
-  public synchronized void add(List<MapillaryAbstractImage> images,
-      boolean update) {
-    for (MapillaryAbstractImage image : images) {
-      add(image, update);
-    }
   }
 
   /**
@@ -153,24 +206,6 @@ public class MapillaryData {
    */
   public MapillaryAbstractImage getHighlightedImage() {
     return this.highlightedImage;
-  }
-
-  /**
-   * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
-   * needed for concurrency.
-   *
-   * @param image
-   *          The image to be added.
-   * @param update
-   *          Whether the map must be updated or not.
-   */
-  public synchronized void add(MapillaryAbstractImage image, boolean update) {
-    if (!this.images.contains(image)) {
-      this.images.add(image);
-    }
-    if (update)
-      dataUpdated();
-    fireImagesAdded();
   }
 
   /**
@@ -339,42 +374,6 @@ public class MapillaryData {
     for (MapillaryDataListener lis : this.listeners)
       if (lis != null)
         lis.selectedImageChanged(oldImage, newImage);
-  }
-
-  /**
-   * Adds a {@link MapillaryImage} object to the list of selected images, (when
-   * ctrl + click)
-   *
-   * @param image
-   *          The {@link MapillaryImage} object to be added.
-   */
-  public void addMultiSelectedImage(MapillaryAbstractImage image) {
-    if (!this.multiSelectedImages.contains(image)) {
-      if (this.getSelectedImage() != null)
-        this.multiSelectedImages.add(image);
-      else
-        this.setSelectedImage(image);
-    }
-    if (Main.main != null)
-      Main.map.mapView.repaint();
-  }
-
-  /**
-   * Adds a set of {@code MapillaryAbstractImage} objects to the list of
-   * selected images.
-   *
-   * @param images
-   *          A List object containing the set of images to be added.
-   */
-  public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images)
-      if (!this.multiSelectedImages.contains(image)) {
-        if (this.getSelectedImage() != null)
-          this.multiSelectedImages.add(image);
-        else
-          this.setSelectedImage(image);
-      }
-    Main.map.mapView.repaint();
   }
 
   /**

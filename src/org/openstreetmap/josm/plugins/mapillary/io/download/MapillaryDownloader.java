@@ -61,6 +61,36 @@ public class MapillaryDownloader {
     run(new MapillarySquareDownloadManagerThread(queryStringParts));
   }
 
+  /**
+   * Gets the images within the given bounds.
+   *
+   * @param bounds
+   *          A {@link Bounds} object containing the area to be downloaded.
+   */
+  public static void getImages(Bounds bounds) {
+    getImages(bounds.getMin(), bounds.getMax());
+  }
+
+  /**
+   * Returns the current download mode.
+   *
+   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
+   */
+  public static MapillaryDownloader.MODES getMode() {
+    if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
+        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))
+      return MODES.Automatic;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
+        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic))
+      return MODES.Semiautomatic;
+    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
+      return MODES.Manual;
+    else if ("".equals(Main.pref.get("mapillary.download-mode")))
+      return MODES.Automatic;
+    else
+      throw new IllegalStateException();
+  }
+
   private static void run(Thread t) {
     threads.add(t);
     EXECUTOR.execute(t);
@@ -120,16 +150,6 @@ public class MapillaryDownloader {
   }
 
   /**
-   * Gets the images within the given bounds.
-   *
-   * @param bounds
-   *          A {@link Bounds} object containing the area to be downloaded.
-   */
-  public static void getImages(Bounds bounds) {
-    getImages(bounds.getMin(), bounds.getMax());
-  }
-
-  /**
    * Downloads all images of the area covered by the OSM data. This is only just
    * for automatic download.
    */
@@ -169,27 +189,7 @@ public class MapillaryDownloader {
     return false;
   }
 
-  /**
-   * Returns the current download mode.
-   *
-   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
-   */
-  public static MapillaryDownloader.MODES getMode() {
-    if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
-        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))
-      return MODES.Automatic;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
-        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic))
-      return MODES.Semiautomatic;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
-      return MODES.Manual;
-    else if ("".equals(Main.pref.get("mapillary.download-mode")))
-      return MODES.Automatic;
-    else
-      throw new IllegalStateException();
-  }
-
-  private static void tooBigErrorDialog() {
+  protected static void tooBigErrorDialog() {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
