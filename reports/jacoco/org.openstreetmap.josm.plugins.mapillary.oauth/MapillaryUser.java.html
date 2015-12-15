@@ -40,7 +40,7 @@ public final class MapillaryUser {
 <span class="fc" id="L40">        username = OAuthUtils</span>
 <span class="nc" id="L41">            .getWithHeader(new URL(MapillaryDownloader.BASE_URL+&quot;me?client_id=&quot;+MapillaryPlugin.CLIENT_ID))</span>
 <span class="nc" id="L42">            .getString(&quot;username&quot;);</span>
-<span class="fc" id="L43">      } catch (IOException e) {</span>
+<span class="nc" id="L43">      } catch (IOException e) {</span>
 <span class="nc" id="L44">        Main.info(&quot;Invalid Mapillary token, resetting field&quot;);</span>
 <span class="nc" id="L45">        reset();</span>
 <span class="nc" id="L46">      }</span>

@@ -61,46 +61,76 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 <span class="nc" id="L61">    run(new MapillarySquareDownloadManagerThread(queryStringParts));</span>
 <span class="nc" id="L62">  }</span>
 
+  /**
+   * Gets the images within the given bounds.
+   *
+   * @param bounds
+   *          A {@link Bounds} object containing the area to be downloaded.
+   */
+  public static void getImages(Bounds bounds) {
+<span class="nc" id="L71">    getImages(bounds.getMin(), bounds.getMax());</span>
+<span class="nc" id="L72">  }</span>
+
+  /**
+   * Returns the current download mode.
+   *
+   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
+   */
+  public static MapillaryDownloader.MODES getMode() {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Automatic.toString())</span>
+<span class="nc bnc" id="L81" title="All 4 branches missed.">        &amp;&amp; (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))</span>
+<span class="nc" id="L82">      return MODES.Automatic;</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Semiautomatic.toString())</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">        || (MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic))</span>
+<span class="nc" id="L85">      return MODES.Semiautomatic;</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Manual.toString()))</span>
+<span class="nc" id="L87">      return MODES.Manual;</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    else if (&quot;&quot;.equals(Main.pref.get(&quot;mapillary.download-mode&quot;)))</span>
+<span class="nc" id="L89">      return MODES.Automatic;</span>
+    else
+<span class="nc" id="L91">      throw new IllegalStateException();</span>
+  }
+
   private static void run(Thread t) {
-<span class="nc" id="L65">    threads.add(t);</span>
-<span class="nc" id="L66">    EXECUTOR.execute(t);</span>
-<span class="nc" id="L67">  }</span>
+<span class="nc" id="L95">    threads.add(t);</span>
+<span class="nc" id="L96">    EXECUTOR.execute(t);</span>
+<span class="nc" id="L97">  }</span>
 
   /**
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void completeView() {
-<span class="nc bnc" id="L73" title="All 4 branches missed.">    if (getMode() != MODES.Semiautomatic &amp;&amp; getMode() != MODES.Manual)</span>
-<span class="nc" id="L74">      throw new IllegalStateException(&quot;Must be in semiautomatic or manual mode&quot;);</span>
-<span class="nc" id="L75">    Bounds view = Main.map.mapView.getRealBounds();</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (view.getArea() &gt; MAX_AREA)</span>
-<span class="nc" id="L77">      return;</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">    if (isViewDownloaded(view))</span>
-<span class="nc" id="L79">      return;</span>
-<span class="nc" id="L80">    MapillaryLayer.getInstance().getData().bounds.add(view);</span>
-<span class="nc" id="L81">    getImages(view);</span>
-<span class="nc" id="L82">  }</span>
+<span class="nc bnc" id="L103" title="All 4 branches missed.">    if (getMode() != MODES.Semiautomatic &amp;&amp; getMode() != MODES.Manual)</span>
+<span class="nc" id="L104">      throw new IllegalStateException(&quot;Must be in semiautomatic or manual mode&quot;);</span>
+<span class="nc" id="L105">    Bounds view = Main.map.mapView.getRealBounds();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (view.getArea() &gt; MAX_AREA)</span>
+<span class="nc" id="L107">      return;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (isViewDownloaded(view))</span>
+<span class="nc" id="L109">      return;</span>
+<span class="nc" id="L110">    MapillaryLayer.getInstance().getData().bounds.add(view);</span>
+<span class="nc" id="L111">    getImages(view);</span>
+<span class="nc" id="L112">  }</span>
 
   private static boolean isViewDownloaded(Bounds view) {
-<span class="nc" id="L85">    int n = 15;</span>
-<span class="nc" id="L86">    boolean[][] inside = new boolean[n][n];</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (isInBounds(new LatLon(view.getMinLat()</span>
-<span class="nc" id="L90">            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),</span>
-<span class="nc" id="L91">            view.getMinLon() + (view.getMaxLon() - view.getMinLon())</span>
+<span class="nc" id="L115">    int n = 15;</span>
+<span class="nc" id="L116">    boolean[][] inside = new boolean[n][n];</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (isInBounds(new LatLon(view.getMinLat()</span>
+<span class="nc" id="L120">            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),</span>
+<span class="nc" id="L121">            view.getMinLon() + (view.getMaxLon() - view.getMinLon())</span>
                 * ((double) j / n)))) {
-<span class="nc" id="L93">          inside[i][j] = true;</span>
+<span class="nc" id="L123">          inside[i][j] = true;</span>
         }
       }
     }
-<span class="nc bnc" id="L97" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (!inside[i][j])</span>
-<span class="nc" id="L100">          return false;</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (!inside[i][j])</span>
+<span class="nc" id="L130">          return false;</span>
       }
     }
-<span class="nc" id="L103">    return true;</span>
+<span class="nc" id="L133">    return true;</span>
   }
 
   /**
@@ -112,45 +142,35 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
    * @return true if it lies inside the bounds; false otherwise;
    */
   private static boolean isInBounds(LatLon latlon) {
-<span class="nc bnc" id="L115" title="All 2 branches missed.">    for (Bounds bounds : MapillaryLayer.getInstance().getData().bounds) {</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (bounds.contains(latlon))</span>
-<span class="nc" id="L117">        return true;</span>
-<span class="nc" id="L118">    }</span>
-<span class="nc" id="L119">    return false;</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">    for (Bounds bounds : MapillaryLayer.getInstance().getData().bounds) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">      if (bounds.contains(latlon))</span>
+<span class="nc" id="L147">        return true;</span>
+<span class="nc" id="L148">    }</span>
+<span class="nc" id="L149">    return false;</span>
   }
-
-  /**
-   * Gets the images within the given bounds.
-   *
-   * @param bounds
-   *          A {@link Bounds} object containing the area to be downloaded.
-   */
-  public static void getImages(Bounds bounds) {
-<span class="nc" id="L129">    getImages(bounds.getMin(), bounds.getMax());</span>
-<span class="nc" id="L130">  }</span>
 
   /**
    * Downloads all images of the area covered by the OSM data. This is only just
    * for automatic download.
    */
   public static void automaticDownload() {
-<span class="nc" id="L137">    MapillaryLayer layer = MapillaryLayer.getInstance();</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() == null)</span>
-<span class="nc" id="L139">      return;</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (isAreaTooBig()) {</span>
-<span class="nc" id="L141">      tooBigErrorDialog();</span>
-<span class="nc" id="L142">      return;</span>
+<span class="nc" id="L157">    MapillaryLayer layer = MapillaryLayer.getInstance();</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() == null)</span>
+<span class="nc" id="L159">      return;</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">    if (isAreaTooBig()) {</span>
+<span class="nc" id="L161">      tooBigErrorDialog();</span>
+<span class="nc" id="L162">      return;</span>
     }
-<span class="nc bnc" id="L144" title="All 2 branches missed.">    if (getMode() != MODES.Automatic)</span>
-<span class="nc" id="L145">      throw new IllegalStateException(&quot;Must be in automatic mode.&quot;);</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
-<span class="nc" id="L147">        .getDataSourceBounds()) {</span>
-<span class="nc bnc" id="L148" title="All 2 branches missed.">      if (!layer.getData().bounds.contains(bounds)) {</span>
-<span class="nc" id="L149">        layer.getData().bounds.add(bounds);</span>
-<span class="nc" id="L150">        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (getMode() != MODES.Automatic)</span>
+<span class="nc" id="L165">      throw new IllegalStateException(&quot;Must be in automatic mode.&quot;);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
+<span class="nc" id="L167">        .getDataSourceBounds()) {</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">      if (!layer.getData().bounds.contains(bounds)) {</span>
+<span class="nc" id="L169">        layer.getData().bounds.add(bounds);</span>
+<span class="nc" id="L170">        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());</span>
       }
-<span class="nc" id="L152">    }</span>
-<span class="nc" id="L153">  }</span>
+<span class="nc" id="L172">    }</span>
+<span class="nc" id="L173">  }</span>
 
   /**
    * Checks if the area of the OSM data is too big. This means that probably
@@ -159,37 +179,17 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
    * and you will have to download areas manually.
    */
   private static boolean isAreaTooBig() {
-<span class="nc" id="L162">    double area = 0;</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
-<span class="nc" id="L164">        .getDataSourceBounds()) {</span>
-<span class="nc" id="L165">      area += bounds.getArea();</span>
-<span class="nc" id="L166">    }</span>
-<span class="nc bnc" id="L167" title="All 2 branches missed.">    if (area &gt; MAX_AREA)</span>
-<span class="nc" id="L168">      return true;</span>
-<span class="nc" id="L169">    return false;</span>
+<span class="nc" id="L182">    double area = 0;</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
+<span class="nc" id="L184">        .getDataSourceBounds()) {</span>
+<span class="nc" id="L185">      area += bounds.getArea();</span>
+<span class="nc" id="L186">    }</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">    if (area &gt; MAX_AREA)</span>
+<span class="nc" id="L188">      return true;</span>
+<span class="nc" id="L189">    return false;</span>
   }
 
-  /**
-   * Returns the current download mode.
-   *
-   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
-   */
-  public static MapillaryDownloader.MODES getMode() {
-<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Automatic.toString())</span>
-<span class="nc bnc" id="L179" title="All 4 branches missed.">        &amp;&amp; (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))</span>
-<span class="nc" id="L180">      return MODES.Automatic;</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Semiautomatic.toString())</span>
-<span class="nc bnc" id="L182" title="All 4 branches missed.">        || (MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic))</span>
-<span class="nc" id="L183">      return MODES.Semiautomatic;</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">    else if (Main.pref.get(&quot;mapillary.download-mode&quot;).equals(MODES.Manual.toString()))</span>
-<span class="nc" id="L185">      return MODES.Manual;</span>
-<span class="nc bnc" id="L186" title="All 2 branches missed.">    else if (&quot;&quot;.equals(Main.pref.get(&quot;mapillary.download-mode&quot;)))</span>
-<span class="nc" id="L187">      return MODES.Automatic;</span>
-    else
-<span class="nc" id="L189">      throw new IllegalStateException();</span>
-  }
-
-  private static void tooBigErrorDialog() {
+  protected static void tooBigErrorDialog() {
 <span class="nc bnc" id="L193" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
 <span class="nc" id="L194">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
