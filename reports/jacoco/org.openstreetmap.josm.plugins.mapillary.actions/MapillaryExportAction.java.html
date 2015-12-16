@@ -79,28 +79,29 @@ public class MapillaryExportAction extends JosmAction {
 <span class="nc bnc" id="L79" title="All 2 branches missed.">          if (image instanceof MapillaryImage) {</span>
 <span class="nc bnc" id="L80" title="All 2 branches missed.">            if (!images.contains(image))</span>
 <span class="nc" id="L81">              images.addAll(((MapillaryImage) image).getSequence().getImages());</span>
-          } else
+          } else {
 <span class="nc" id="L83">            images.add(image);</span>
-<span class="nc" id="L84">        export(images);</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">      } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {</span>
-<span class="nc" id="L86">        export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());</span>
+          }
+<span class="nc" id="L85">        export(images);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">      } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {</span>
+<span class="nc" id="L87">        export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());</span>
       }
       // This option ignores the selected directory.
-<span class="nc bnc" id="L89" title="All 2 branches missed.">    } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {</span>
-<span class="nc" id="L90">      ArrayList&lt;MapillaryImportedImage&gt; images = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L91" title="All 2 branches missed.">      for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
-<span class="nc" id="L92">          .getData().getImages())</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (image instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L94">          images.add((MapillaryImportedImage) image);</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">    } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {</span>
+<span class="nc" id="L91">      ArrayList&lt;MapillaryImportedImage&gt; images = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">      for (MapillaryAbstractImage image : MapillaryLayer.getInstance()</span>
+<span class="nc" id="L93">          .getData().getImages())</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (image instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L95">          images.add((MapillaryImportedImage) image);</span>
         }
       try {
-<span class="nc" id="L97">        Main.worker.submit(new Thread(new MapillaryExportManager(images)));</span>
-<span class="nc" id="L98">      } catch (IOException e1) {</span>
-<span class="nc" id="L99">        Main.error(e1);</span>
-<span class="nc" id="L100">      }</span>
+<span class="nc" id="L98">        Main.worker.submit(new Thread(new MapillaryExportManager(images)));</span>
+<span class="nc" id="L99">      } catch (IOException e1) {</span>
+<span class="nc" id="L100">        Main.error(e1);</span>
+<span class="nc" id="L101">      }</span>
     }
-<span class="nc" id="L102">    dlg.dispose();</span>
-<span class="nc" id="L103">  }</span>
+<span class="nc" id="L103">    dlg.dispose();</span>
+<span class="nc" id="L104">  }</span>
 
   /**
    * Exports the given images from the database.
@@ -109,34 +110,34 @@ public class MapillaryExportAction extends JosmAction {
    *          The set of images to be exported.
    */
   public void export(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc" id="L112">    Main.worker.submit(new Thread(new MapillaryExportManager(images,</span>
-<span class="nc" id="L113">        this.dialog.chooser.getSelectedFile().toString())));</span>
-<span class="nc" id="L114">  }</span>
+<span class="nc" id="L113">    Main.worker.submit(new Thread(new MapillaryExportManager(images,</span>
+<span class="nc" id="L114">        this.dialog.chooser.getSelectedFile().toString())));</span>
+<span class="nc" id="L115">  }</span>
 
   private static class OKAction implements ActionListener {
     private final JOptionPane pane;
 
-<span class="nc" id="L119">    public OKAction(JOptionPane pane) {</span>
-<span class="nc" id="L120">      this.pane = pane;</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L120">    public OKAction(JOptionPane pane) {</span>
+<span class="nc" id="L121">      this.pane = pane;</span>
+<span class="nc" id="L122">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L125">      this.pane.setValue(JOptionPane.OK_OPTION);</span>
-<span class="nc" id="L126">    }</span>
+<span class="nc" id="L126">      this.pane.setValue(JOptionPane.OK_OPTION);</span>
+<span class="nc" id="L127">    }</span>
   }
 
   private static class CancelAction implements ActionListener {
     private final JOptionPane pane;
 
-<span class="nc" id="L132">    public CancelAction(JOptionPane pane) {</span>
-<span class="nc" id="L133">      this.pane = pane;</span>
-<span class="nc" id="L134">    }</span>
+<span class="nc" id="L133">    public CancelAction(JOptionPane pane) {</span>
+<span class="nc" id="L134">      this.pane = pane;</span>
+<span class="nc" id="L135">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L138">      this.pane.setValue(JOptionPane.CANCEL_OPTION);</span>
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L139">      this.pane.setValue(JOptionPane.CANCEL_OPTION);</span>
+<span class="nc" id="L140">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

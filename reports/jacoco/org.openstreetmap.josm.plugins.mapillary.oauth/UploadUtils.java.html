@@ -59,7 +59,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
     private final List&lt;MapillaryAbstractImage&gt; images;
     private final UUID uuid;
     private final boolean delete;
-    ThreadPoolExecutor ex;
+    private ThreadPoolExecutor ex;
 
     private SequenceUploadThread(List&lt;MapillaryAbstractImage&gt; images,
 <span class="nc" id="L65">        boolean delete) {</span>

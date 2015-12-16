@@ -131,7 +131,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    *
    * @return The unique instance of the class.
    */
-  public static MapillaryHistoryDialog getInstance() {
+  public static synchronized MapillaryHistoryDialog getInstance() {
 <span class="nc bnc" id="L135" title="All 2 branches missed.">    if (instance == null)</span>
 <span class="nc" id="L136">      instance = new MapillaryHistoryDialog();</span>
 <span class="nc" id="L137">    return instance;</span>
@@ -228,10 +228,10 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     private static final long serialVersionUID = -3129520241562296901L;
 
     @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-        boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-<span class="nc" id="L233">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,</span>
-          hasFocus);
+    public Component getTreeCellRendererComponent(
+        JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
+    ) {
+<span class="nc" id="L234">      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);</span>
 <span class="nc" id="L235">      setIcon(ImageProvider.get(&quot;data/node.png&quot;));</span>
 <span class="nc" id="L236">      return this;</span>
     }
@@ -248,66 +248,60 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     @Override
     public void mouseClicked(MouseEvent e) {
-<span class="nc" id="L251">    }</span>
+      // Method is enforced by MouseListener, but (currently) not needed
+<span class="nc" id="L252">    }</span>
 
     @Override
     public void mouseEntered(MouseEvent e) {
-<span class="nc" id="L255">    }</span>
+      // Method is enforced by MouseListener, but (currently) not needed
+<span class="nc" id="L257">    }</span>
 
     @Override
     public void mouseExited(MouseEvent e) {
-<span class="nc" id="L259">    }</span>
+      // Method is enforced by MouseListener, but (currently) not needed
+<span class="nc" id="L262">    }</span>
 
     @Override
     public void mousePressed(MouseEvent e) {
-<span class="nc bnc" id="L263" title="All 2 branches missed.">      if (e.getClickCount() == 2) {</span>
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {</span>
-<span class="nc" id="L265">          MapillaryCommand cmd = MapillaryHistoryDialog.this.map</span>
-<span class="nc" id="L266">              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()</span>
-<span class="nc" id="L267">                  .getLastPathComponent());</span>
-<span class="nc bnc" id="L268" title="All 2 branches missed.">          if (!(cmd instanceof CommandDelete))</span>
-<span class="nc" id="L269">            MapillaryUtils.showPictures(cmd.images, true);</span>
-<span class="nc" id="L270">        } else</span>
-<span class="nc" id="L271">          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map</span>
-<span class="nc" id="L272">              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()</span>
-<span class="nc" id="L273">                  .getLastPathComponent()).images, true);</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">      if (e.getClickCount() == 2) {</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (undoTree.getSelectionPath() == null) {</span>
+<span class="nc" id="L268">          MapillaryUtils.showPictures(map.get(redoTree.getSelectionPath().getLastPathComponent()).images, true);</span>
+        } else {
+<span class="nc" id="L270">          MapillaryCommand cmd = map.get(undoTree.getSelectionPath().getLastPathComponent());</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">          if (!(cmd instanceof CommandDelete)) {</span>
+<span class="nc" id="L272">            MapillaryUtils.showPictures(cmd.images, true);</span>
+          }
+        }
       }
-<span class="nc" id="L275">    }</span>
+<span class="nc" id="L276">    }</span>
 
     @Override
     public void mouseReleased(MouseEvent e) {
-<span class="nc" id="L279">    }</span>
+      // Method is enforced by MouseListener, but (currently) not needed
+<span class="nc" id="L281">    }</span>
   }
 
   private class UndoRedoSelectionListener implements TreeSelectionListener {
 
     private JTree source;
 
-<span class="nc" id="L286">    private UndoRedoSelectionListener(JTree source) {</span>
-<span class="nc" id="L287">      this.source = source;</span>
-<span class="nc" id="L288">    }</span>
+<span class="nc" id="L288">    protected UndoRedoSelectionListener(JTree source) {</span>
+<span class="nc" id="L289">      this.source = source;</span>
+<span class="nc" id="L290">    }</span>
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-<span class="nc bnc" id="L292" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.undoTree) {</span>
-<span class="nc" id="L293">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
-<span class="nc" id="L294">            .removeTreeSelectionListener(</span>
-<span class="nc" id="L295">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
-<span class="nc" id="L296">        MapillaryHistoryDialog.this.redoTree.clearSelection();</span>
-<span class="nc" id="L297">        MapillaryHistoryDialog.this.redoTree.getSelectionModel()</span>
-<span class="nc" id="L298">            .addTreeSelectionListener(</span>
-<span class="nc" id="L299">                MapillaryHistoryDialog.this.redoSelectionListener);</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">      if (this.source == undoTree) {</span>
+<span class="nc" id="L295">        redoTree.getSelectionModel().removeTreeSelectionListener(redoSelectionListener);</span>
+<span class="nc" id="L296">        redoTree.clearSelection();</span>
+<span class="nc" id="L297">        redoTree.getSelectionModel().addTreeSelectionListener(redoSelectionListener);</span>
       }
-<span class="nc bnc" id="L301" title="All 2 branches missed.">      if (this.source == MapillaryHistoryDialog.this.redoTree) {</span>
-<span class="nc" id="L302">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
-<span class="nc" id="L303">            .removeTreeSelectionListener(</span>
-<span class="nc" id="L304">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
-<span class="nc" id="L305">        MapillaryHistoryDialog.this.undoTree.clearSelection();</span>
-<span class="nc" id="L306">        MapillaryHistoryDialog.this.undoTree.getSelectionModel()</span>
-<span class="nc" id="L307">            .addTreeSelectionListener(</span>
-<span class="nc" id="L308">                MapillaryHistoryDialog.this.undoSelectionListener);</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">      if (this.source == redoTree) {</span>
+<span class="nc" id="L300">        undoTree.getSelectionModel().removeTreeSelectionListener(undoSelectionListener);</span>
+<span class="nc" id="L301">        undoTree.clearSelection();</span>
+<span class="nc" id="L302">        undoTree.getSelectionModel().addTreeSelectionListener(undoSelectionListener);</span>
       }
-<span class="nc" id="L310">    }</span>
+<span class="nc" id="L304">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

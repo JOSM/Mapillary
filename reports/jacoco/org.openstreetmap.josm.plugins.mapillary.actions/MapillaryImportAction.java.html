@@ -38,62 +38,70 @@ public class MapillaryImportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportAction() {
-<span class="fc" id="L41">    super(tr(&quot;Import pictures&quot;), MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="fc" id="L42">        tr(&quot;Import local pictures&quot;), Shortcut.registerShortcut(</span>
-<span class="fc" id="L43">            &quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryImport&quot;,
+<span class="fc" id="L41">    super(</span>
+<span class="fc" id="L42">        tr(&quot;Import pictures&quot;),</span>
+<span class="fc" id="L43">        MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="fc" id="L44">        tr(&quot;Import local pictures&quot;),</span>
+<span class="fc" id="L45">        Shortcut.registerShortcut(</span>
+            &quot;Import Mapillary&quot;,
+<span class="fc" id="L47">            tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+            KeyEvent.CHAR_UNDEFINED,
+            Shortcut.NONE
+        ),
+        false,
+        &quot;mapillaryImport&quot;,
         false);
-<span class="fc" id="L46">    this.setEnabled(false);</span>
-<span class="fc" id="L47">  }</span>
+<span class="fc" id="L54">    this.setEnabled(false);</span>
+<span class="fc" id="L55">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L51">    JFileChooser chooser = new JFileChooser();</span>
-<span class="nc" id="L52">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
-<span class="nc" id="L53">        System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L54">    chooser.setCurrentDirectory(startDirectory);</span>
-<span class="nc" id="L55">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
-<span class="nc" id="L56">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
-<span class="nc" id="L57">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L58">    chooser.addChoosableFileFilter(new FileNameExtensionFilter(&quot;images&quot;, &quot;jpg&quot;, &quot;jpeg&quot;, &quot;png&quot;));</span>
-<span class="nc" id="L59">    chooser.setMultiSelectionEnabled(true);</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc" id="L61">      List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
-<span class="nc" id="L63">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
-<span class="nc" id="L64">        MapillaryLayer.getInstance();</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (file.isDirectory()) {</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">          if (file.listFiles() == null)</span>
-<span class="nc" id="L67">            continue;</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">          for (File innerFile : file.listFiles()) {</span>
-<span class="nc" id="L69">            String extension = MapillaryUtils.getExtension(innerFile);</span>
+<span class="nc" id="L59">    JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L60">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
+<span class="nc" id="L61">        System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L62">    chooser.setCurrentDirectory(startDirectory);</span>
+<span class="nc" id="L63">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L64">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L65">    chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L66">    chooser.addChoosableFileFilter(new FileNameExtensionFilter(&quot;images&quot;, &quot;jpg&quot;, &quot;jpeg&quot;, &quot;png&quot;));</span>
+<span class="nc" id="L67">    chooser.setMultiSelectionEnabled(true);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc" id="L69">      List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
+<span class="nc" id="L71">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
+<span class="nc" id="L72">        MapillaryLayer.getInstance();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (file.isDirectory()) {</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">          if (file.listFiles() == null)</span>
+<span class="nc" id="L75">            continue;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">          for (File innerFile : file.listFiles()) {</span>
+<span class="nc" id="L77">            String extension = MapillaryUtils.getExtension(innerFile);</span>
             try {
-<span class="nc bnc" id="L71" title="All 4 branches missed.">              if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension))</span>
-<span class="nc" id="L72">                images.add(MapillaryUtils.readJPG(innerFile));</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">              else if (&quot;png&quot;.equals(extension))</span>
-<span class="nc" id="L74">                images.add(MapillaryUtils.readPNG(innerFile));</span>
-<span class="nc" id="L75">            } catch (ImageReadException | IOException | NullPointerException e1) {</span>
-<span class="nc" id="L76">              Main.error(e1);</span>
-<span class="nc" id="L77">            }</span>
+<span class="nc bnc" id="L79" title="All 4 branches missed.">              if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension))</span>
+<span class="nc" id="L80">                images.add(MapillaryUtils.readJPG(innerFile));</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">              else if (&quot;png&quot;.equals(extension))</span>
+<span class="nc" id="L82">                images.add(MapillaryUtils.readPNG(innerFile));</span>
+<span class="nc" id="L83">            } catch (ImageReadException | IOException | NullPointerException e1) {</span>
+<span class="nc" id="L84">              Main.error(e1);</span>
+<span class="nc" id="L85">            }</span>
           }
         } else {
-<span class="nc" id="L80">          String extension = MapillaryUtils.getExtension(file);</span>
-<span class="nc bnc" id="L81" title="All 4 branches missed.">          if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension)) {</span>
+<span class="nc" id="L88">          String extension = MapillaryUtils.getExtension(file);</span>
+<span class="nc bnc" id="L89" title="All 4 branches missed.">          if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension)) {</span>
             try {
-<span class="nc" id="L83">              images.add(MapillaryUtils.readJPG(file));</span>
-<span class="nc" id="L84">            } catch (ImageReadException ex) {</span>
-<span class="nc" id="L85">              Main.error(ex);</span>
-<span class="nc" id="L86">            } catch (IOException ex) {</span>
-<span class="nc" id="L87">              Main.error(ex);</span>
-<span class="nc" id="L88">            }</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">          } else if (&quot;.png&quot;.equals(file.getPath().substring(file.getPath().length() - 4))) {</span>
-<span class="nc" id="L90">            images.add(MapillaryUtils.readPNG(file));</span>
+<span class="nc" id="L91">              images.add(MapillaryUtils.readJPG(file));</span>
+<span class="nc" id="L92">            } catch (ImageReadException ex) {</span>
+<span class="nc" id="L93">              Main.error(ex);</span>
+<span class="nc" id="L94">            } catch (IOException ex) {</span>
+<span class="nc" id="L95">              Main.error(ex);</span>
+<span class="nc" id="L96">            }</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">          } else if (&quot;.png&quot;.equals(file.getPath().substring(file.getPath().length() - 4))) {</span>
+<span class="nc" id="L98">            images.add(MapillaryUtils.readPNG(file));</span>
           }
         }
       }
-<span class="nc" id="L94">      MapillaryRecord.getInstance().addCommand(new CommandImport(images));</span>
-<span class="nc" id="L95">      MapillaryUtils.showAllPictures();</span>
+<span class="nc" id="L102">      MapillaryRecord.getInstance().addCommand(new CommandImport(images));</span>
+<span class="nc" id="L103">      MapillaryUtils.showAllPictures();</span>
     }
-<span class="nc" id="L97">  }</span>
+<span class="nc" id="L105">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

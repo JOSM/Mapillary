@@ -84,11 +84,11 @@ public class MapillaryExportWriterThread extends Thread {
 <span class="nc bnc" id="L84" title="All 4 branches missed.">        if (this.path == null &amp;&amp; mimg instanceof MapillaryImportedImage) {</span>
 <span class="nc" id="L85">          String path = ((MapillaryImportedImage) mimg).getFile().getPath();</span>
 <span class="nc" id="L86">          finalPath = path.substring(0, path.lastIndexOf('.'));</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImage)</span>
-<span class="nc" id="L88">          finalPath = this.path + &quot;/&quot; + ((MapillaryImage) mimg).getKey();</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L90">          finalPath = this.path + &quot;/&quot;</span>
-<span class="nc" id="L91">              + ((MapillaryImportedImage) mimg).getFile().getName();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImage) {</span>
+<span class="nc" id="L88">          finalPath = this.path + '/' + ((MapillaryImage) mimg).getKey();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        } else if (mimg instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L90">          finalPath = this.path + '/' + ((MapillaryImportedImage) mimg).getFile().getName();</span>
+        }
 
         // Transforms the image into a byte array.
 <span class="nc" id="L94">        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>

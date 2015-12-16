@@ -476,110 +476,112 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L476">      MapillaryImage image = (MapillaryImage) imagePrev;</span>
 <span class="nc bnc" id="L477" title="All 2 branches missed.">      if (image.getLatLon().greatCircleDistance(selectedCoords) &lt; SEQUENCE_MAX_JUMP_DISTANCE</span>
 <span class="nc bnc" id="L478" title="All 2 branches missed.">          &amp;&amp; selected.getSequence() != image.getSequence()) {</span>
-<span class="nc bnc" id="L479" title="All 4 branches missed.">        if ((ret[0] == null &amp;&amp; ret[1] == null)</span>
-<span class="nc bnc" id="L480" title="All 4 branches missed.">            || (image.getLatLon().greatCircleDistance(selectedCoords) &lt; distances[0] &amp;&amp; (ret[1] == null || image</span>
-<span class="nc bnc" id="L481" title="All 2 branches missed.">                .getSequence() != ret[1].getSequence()))) {</span>
-<span class="nc" id="L482">          ret[0] = image;</span>
-<span class="nc" id="L483">          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
-<span class="nc bnc" id="L484" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(</span>
+<span class="nc bnc" id="L479" title="All 4 branches missed.">        if (</span>
+            ret[0] == null &amp;&amp; ret[1] == null
+<span class="nc bnc" id="L481" title="All 4 branches missed.">            || image.getLatLon().greatCircleDistance(selectedCoords) &lt; distances[0]</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">            &amp;&amp; (ret[1] == null || image.getSequence() != ret[1].getSequence())</span>
+        ) {
+<span class="nc" id="L484">          ret[0] = image;</span>
+<span class="nc" id="L485">          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc bnc" id="L486" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(</span>
             selectedCoords) &lt; distances[1])
-<span class="nc bnc" id="L486" title="All 2 branches missed.">            &amp;&amp; image.getSequence() != ret[0].getSequence()) {</span>
-<span class="nc" id="L487">          ret[1] = image;</span>
-<span class="nc" id="L488">          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">            &amp;&amp; image.getSequence() != ret[0].getSequence()) {</span>
+<span class="nc" id="L489">          ret[1] = image;</span>
+<span class="nc" id="L490">          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
         }
       }
-<span class="nc" id="L491">    }</span>
+<span class="nc" id="L493">    }</span>
     // Predownloads the thumbnails
-<span class="nc bnc" id="L493" title="All 2 branches missed.">    if (ret[0] != null)</span>
-<span class="nc" id="L494">      CacheUtils.downloadPicture(ret[0]);</span>
-<span class="nc bnc" id="L495" title="All 2 branches missed.">    if (ret[1] != null)</span>
-<span class="nc" id="L496">      CacheUtils.downloadPicture(ret[1]);</span>
-<span class="nc" id="L497">    return ret;</span>
+<span class="nc bnc" id="L495" title="All 2 branches missed.">    if (ret[0] != null)</span>
+<span class="nc" id="L496">      CacheUtils.downloadPicture(ret[0]);</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">    if (ret[1] != null)</span>
+<span class="nc" id="L498">      CacheUtils.downloadPicture(ret[1]);</span>
+<span class="nc" id="L499">    return ret;</span>
   }
 
   @Override
   public Object getInfoComponent() {
-<span class="nc" id="L502">    return new StringBuilder(35)</span>
-<span class="nc" id="L503">      .append(tr(&quot;Mapillary layer&quot;))</span>
-<span class="nc" id="L504">      .append('\n')</span>
-<span class="nc" id="L505">      .append(tr(&quot;Total images:&quot;))</span>
-<span class="nc" id="L506">      .append(' ')</span>
-<span class="nc" id="L507">      .append(this.data.size())</span>
-<span class="nc" id="L508">      .append('\n')</span>
-<span class="nc" id="L509">      .toString();</span>
+<span class="nc" id="L504">    return new StringBuilder(35)</span>
+<span class="nc" id="L505">      .append(tr(&quot;Mapillary layer&quot;))</span>
+<span class="nc" id="L506">      .append('\n')</span>
+<span class="nc" id="L507">      .append(tr(&quot;Total images:&quot;))</span>
+<span class="nc" id="L508">      .append(' ')</span>
+<span class="nc" id="L509">      .append(this.data.size())</span>
+<span class="nc" id="L510">      .append('\n')</span>
+<span class="nc" id="L511">      .toString();</span>
   }
 
   @Override
   public String getToolTipText() {
-<span class="nc" id="L514">    return this.data.size() + (' ' + tr(&quot;images&quot;));</span>
+<span class="nc" id="L516">    return this.data.size() + (' ' + tr(&quot;images&quot;));</span>
   }
 
   @Override
   public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-<span class="nc bnc" id="L519" title="All 4 branches missed.">    if (oldLayer == null &amp;&amp; newLayer != null) {</span>
-<span class="nc" id="L520">      newLayer.data.addDataSetListener(this);</span>
-<span class="nc bnc" id="L521" title="All 4 branches missed.">    } else if (oldLayer != null &amp;&amp; newLayer == null) {</span>
-<span class="nc" id="L522">      oldLayer.data.removeDataSetListener(this);</span>
+<span class="nc bnc" id="L521" title="All 4 branches missed.">    if (oldLayer == null &amp;&amp; newLayer != null) {</span>
+<span class="nc" id="L522">      newLayer.data.addDataSetListener(this);</span>
+<span class="nc bnc" id="L523" title="All 4 branches missed.">    } else if (oldLayer != null &amp;&amp; newLayer == null) {</span>
+<span class="nc" id="L524">      oldLayer.data.removeDataSetListener(this);</span>
     }
-<span class="nc" id="L524">  }</span>
+<span class="nc" id="L526">  }</span>
 
   @Override
   public void dataChanged(DataChangedEvent event) {
     // When more data is downloaded, a delayed update is thrown, in order to
     // wait for the data bounds to be set.
-<span class="nc" id="L530">    Main.worker.submit(new DelayedDownload());</span>
-<span class="nc" id="L531">  }</span>
+<span class="nc" id="L532">    Main.worker.submit(new DelayedDownload());</span>
+<span class="nc" id="L533">  }</span>
 
   @Override
   public void primitivesAdded(PrimitivesAddedEvent event) {
-<span class="nc" id="L535">  }</span>
+<span class="nc" id="L537">  }</span>
 
   @Override
   public void primitivesRemoved(PrimitivesRemovedEvent event) {
-<span class="nc" id="L539">  }</span>
+<span class="nc" id="L541">  }</span>
 
   @Override
   public void tagsChanged(TagsChangedEvent event) {
-<span class="nc" id="L543">  }</span>
+<span class="nc" id="L545">  }</span>
 
   @Override
   public void nodeMoved(NodeMovedEvent event) {
-<span class="nc" id="L547">  }</span>
+<span class="nc" id="L549">  }</span>
 
   @Override
   public void wayNodesChanged(WayNodesChangedEvent event) {
-<span class="nc" id="L551">  }</span>
+<span class="nc" id="L553">  }</span>
 
   @Override
   public void relationMembersChanged(RelationMembersChangedEvent event) {
-<span class="nc" id="L555">  }</span>
+<span class="nc" id="L557">  }</span>
 
   @Override
   public void otherDatasetChange(AbstractDatasetChangedEvent event) {
-<span class="nc" id="L559">  }</span>
+<span class="nc" id="L561">  }</span>
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
-<span class="nc" id="L563">  }</span>
+<span class="nc" id="L565">  }</span>
 
   @Override
   public void activeLayerChange(Layer oldLayer, Layer newLayer) {
-<span class="nc bnc" id="L567" title="All 2 branches missed.">    if (newLayer == this) {</span>
-<span class="nc" id="L568">      MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L569">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), true);</span>
+<span class="nc bnc" id="L569" title="All 2 branches missed.">    if (newLayer == this) {</span>
+<span class="nc" id="L570">      MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L571">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), true);</span>
     } else
-<span class="nc" id="L571">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), false);</span>
-<span class="nc" id="L572">  }</span>
+<span class="nc" id="L573">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), false);</span>
+<span class="nc" id="L574">  }</span>
 
   @Override
   public void layerAdded(Layer newLayer) {
     // Do nothing, we're only interested in layer change, not addition
-<span class="nc" id="L577">  }</span>
+<span class="nc" id="L579">  }</span>
 
   @Override
   public void layerRemoved(Layer oldLayer) {
     // Do nothing, we're only interested in layer change, not removal
-<span class="nc" id="L582">  }</span>
+<span class="nc" id="L584">  }</span>
 
   /**
    * Threads that runs a delayed Mapillary download.
@@ -587,17 +589,17 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @author nokutu
    *
    */
-<span class="nc" id="L590">  private static class DelayedDownload extends Thread {</span>
+<span class="nc" id="L592">  private static class DelayedDownload extends Thread {</span>
 
     @Override
     public void run() {
       try {
-<span class="nc" id="L595">        sleep(1500);</span>
-<span class="nc" id="L596">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L597">        Main.error(e);</span>
-<span class="nc" id="L598">      }</span>
-<span class="nc" id="L599">      MapillaryDownloader.automaticDownload();</span>
-<span class="nc" id="L600">    }</span>
+<span class="nc" id="L597">        sleep(1500);</span>
+<span class="nc" id="L598">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L599">        Main.error(e);</span>
+<span class="nc" id="L600">      }</span>
+<span class="nc" id="L601">      MapillaryDownloader.automaticDownload();</span>
+<span class="nc" id="L602">    }</span>
   }
 
   /**
@@ -606,16 +608,16 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * @author nokutu
    *
    */
-<span class="nc" id="L609">  private class DeleteImageAction extends AbstractAction {</span>
+<span class="nc" id="L611">  private class DeleteImageAction extends AbstractAction {</span>
 
     private static final long serialVersionUID = -982809854631863962L;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<span class="nc bnc" id="L615" title="All 2 branches missed.">      if (instance != null)</span>
-<span class="nc" id="L616">        MapillaryRecord.getInstance().addCommand(</span>
-<span class="nc" id="L617">            new CommandDelete(getData().getMultiSelectedImages()));</span>
-<span class="nc" id="L618">    }</span>
+<span class="nc bnc" id="L617" title="All 2 branches missed.">      if (instance != null)</span>
+<span class="nc" id="L618">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L619">            new CommandDelete(getData().getMultiSelectedImages()));</span>
+<span class="nc" id="L620">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
