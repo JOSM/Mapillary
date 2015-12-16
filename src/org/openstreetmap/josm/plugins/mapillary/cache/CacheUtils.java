@@ -62,6 +62,7 @@ public class CacheUtils {
         submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, ignoreDownload);
         break;
       case FULL_IMAGE:
+      default:
         submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, ignoreDownload);
         break;
     }

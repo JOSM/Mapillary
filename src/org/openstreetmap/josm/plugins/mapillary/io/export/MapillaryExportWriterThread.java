@@ -84,11 +84,11 @@ public class MapillaryExportWriterThread extends Thread {
         if (this.path == null && mimg instanceof MapillaryImportedImage) {
           String path = ((MapillaryImportedImage) mimg).getFile().getPath();
           finalPath = path.substring(0, path.lastIndexOf('.'));
-        } else if (mimg instanceof MapillaryImage)
-          finalPath = this.path + "/" + ((MapillaryImage) mimg).getKey();
-        else if (mimg instanceof MapillaryImportedImage)
-          finalPath = this.path + "/"
-              + ((MapillaryImportedImage) mimg).getFile().getName();
+        } else if (mimg instanceof MapillaryImage) {
+          finalPath = this.path + '/' + ((MapillaryImage) mimg).getKey();
+        } else if (mimg instanceof MapillaryImportedImage) {
+          finalPath = this.path + '/' + ((MapillaryImportedImage) mimg).getFile().getName();
+        }
 
         // Transforms the image into a byte array.
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

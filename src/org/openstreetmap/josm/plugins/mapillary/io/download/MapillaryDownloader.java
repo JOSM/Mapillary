@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,11 +31,10 @@ public class MapillaryDownloader {
   public enum MODES {Automatic, Semiautomatic, Manual};
 
   /** All the Threads that have been run. Used to interrupt them properly. */
-  private static ArrayList<Thread> threads = new ArrayList<>();
+  private static List<Thread> threads = new ArrayList<>();
 
   /** Max area to be downloaded */
-  public static final double MAX_AREA = Main.pref.getDouble(
-      "mapillary.max-download-area", 0.015);
+  public static final double MAX_AREA = Main.pref.getDouble("mapillary.max-download-area", 0.015);
 
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
@@ -174,13 +174,10 @@ public class MapillaryDownloader {
    */
   private static boolean isAreaTooBig() {
     double area = 0;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
-        .getDataSourceBounds()) {
+    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
       area += bounds.getArea();
     }
-    if (area > MAX_AREA)
-      return true;
-    return false;
+    return area > MAX_AREA;
   }
 
   protected static void tooBigErrorDialog() {

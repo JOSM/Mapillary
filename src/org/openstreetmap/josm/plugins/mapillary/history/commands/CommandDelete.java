@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -17,7 +18,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  */
 public class CommandDelete extends MapillaryExecutableCommand {
 
-  private final HashMap<MapillaryAbstractImage, Integer> changesHash = new HashMap<>();
+  private final Map<MapillaryAbstractImage, Integer> changesHash = new HashMap<>();
 
   /**
    * Main constructor.
@@ -31,6 +32,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void sum(MapillaryCommand command) {
+    // TODO: Implement
   }
 
   @Override
