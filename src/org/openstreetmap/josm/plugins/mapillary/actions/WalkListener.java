@@ -15,5 +15,5 @@ public interface WalkListener {
    *
    * @param thread The thread executing the walk.
    */
-  public void walkStarted(WalkThread thread);
+  void walkStarted(WalkThread thread);
 }
