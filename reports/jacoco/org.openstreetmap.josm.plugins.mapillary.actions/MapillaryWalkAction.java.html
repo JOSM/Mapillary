@@ -96,13 +96,9 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
 <span class="nc" id="L96">  }</span>
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (newImage != null)</span>
-<span class="fc" id="L102">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), true);</span>
-    else
-<span class="fc" id="L104">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), false);</span>
-<span class="fc" id="L105">  }</span>
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+<span class="fc bfc" id="L100" title="All 2 branches covered.">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), newImage != null);</span>
+<span class="fc" id="L101">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
