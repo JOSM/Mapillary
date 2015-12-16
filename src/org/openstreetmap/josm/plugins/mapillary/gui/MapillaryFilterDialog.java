@@ -47,8 +47,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static final String[] TIME_LIST = { tr("All"), tr("Years"), tr("Months"), tr("Days") };
 
-  private final JPanel panel;
-
   /** Spinner to choose the range of dates. */
   private final SpinnerNumberModel spinner;
 
@@ -89,8 +87,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
             tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
             KeyEvent.VK_M, Shortcut.NONE), 200);
 
-    this.panel = new JPanel();
-
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
     signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -114,21 +110,21 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
 
+    JPanel panel = new JPanel();
     JPanel col1 = new JPanel(new GridLayout(2, 1));
     col1.add(this.downloaded);
     col1.add(fromPanel);
-    this.panel.add(col1);
+    panel.add(col1);
     JPanel col2 = new JPanel(new GridLayout(2, 1));
     col2.add(this.imported);
     col2.add(userSearchPanel);
-    this.panel.add(col2);
+    panel.add(col2);
     JPanel col3 = new JPanel(new GridLayout(2, 1));
     col3.add(this.onlySigns);
     col3.add(signChooserPanel);
-    this.panel.add(col3);
+    panel.add(col3);
 
-    createLayout(this.panel, true,
-        Arrays.asList(new SideButton[] { this.updateButton, this.resetButton }));
+    createLayout(panel, true, Arrays.asList(new SideButton[] { updateButton, resetButton }));
   }
 
   /**
@@ -202,9 +198,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
       long[] timeFactor = new long[]{
-          31536000000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
-          2592000000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
-          86400000 // = 24 * 60 * 60 * 1000 = number of ms in a day
+          31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
+          2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
+          86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
       };
       for (int i = 1; i <= 3; i++) {
         if (TIME_LIST[i].equals(time.getSelectedItem())
@@ -234,16 +230,13 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     return false;
   }
 
-  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox,
-      String singString) {
+  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String singString) {
     boolean contains = false;
     for (String sign : img.getSigns()) {
       if (sign.contains(singString))
         contains = true;
     }
-    if (contains == signCheckBox.isSelected() && contains)
-      return true;
-    return false;
+    return contains == signCheckBox.isSelected() && contains;
   }
 
   private static long currentTime() {

@@ -37,8 +37,6 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   private static final long serialVersionUID = -9190217809965894878L;
 
-  private JFileChooser chooser;
-
   private List<MapillaryAbstractImage> images;
 
   /**
@@ -58,30 +56,28 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
   public void actionPerformed(ActionEvent arg0) {
     this.images = new LinkedList<>();
 
-    this.chooser = new JFileChooser();
+    JFileChooser chooser = new JFileChooser();
     File startDirectory = new File(Main.pref.get("mapillary.start-directory",
         System.getProperty("user.home")));
-    this.chooser.setCurrentDirectory(startDirectory);
-    this.chooser.setDialogTitle(tr("Select pictures"));
-    this.chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-    this.chooser.setAcceptAllFileFilterUsed(false);
-    this.chooser.addChoosableFileFilter(new FileNameExtensionFilter("images",
-        "jpg", "jpeg"));
-    this.chooser.setMultiSelectionEnabled(true);
+    chooser.setCurrentDirectory(startDirectory);
+    chooser.setDialogTitle(tr("Select pictures"));
+    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    chooser.setAcceptAllFileFilterUsed(false);
+    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg"));
+    chooser.setMultiSelectionEnabled(true);
 
-    if (this.chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
-      for (int i = 0; i < this.chooser.getSelectedFiles().length; i++) {
-        File file = this.chooser.getSelectedFiles()[i];
+    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
+      for (File file : chooser.getSelectedFiles()) {
         if (file == null)
           break;
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();
         if (file.isDirectory()) {
-          for (int j = 0; j < file.listFiles().length; j++) {
-            String extension = MapillaryUtils.getExtension(file.listFiles()[j]);
+          for (File file2 : file.listFiles()) {
+            String extension = MapillaryUtils.getExtension(file2);
             try {
               if ("jpg".equals(extension) || "jpeg".equals(extension))
-                MapillaryUtils.readJPG(file.listFiles()[j], true);
+                MapillaryUtils.readJPG(file2, true);
             } catch (ImageReadException | NullPointerException | IOException e) {
               Main.error(e);
             }
