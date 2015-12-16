@@ -55,18 +55,27 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  */
 public class UploadUtils {
 
+  /** Required keys for POST */
+  private static final String[] keys = { "key", "AWSAccessKeyId", "acl",
+      "policy", "signature", "Content-Type" };
+
+  /** Mapillary upload URL */
+  private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
+
+  /** Count to name temporal files. */
+  private static int c;
+
   private static class SequenceUploadThread extends Thread {
     private final List<MapillaryAbstractImage> images;
     private final UUID uuid;
     private final boolean delete;
-    private ThreadPoolExecutor ex;
+    private final ThreadPoolExecutor ex;
 
     private SequenceUploadThread(List<MapillaryAbstractImage> images,
         boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<Runnable>(15));
+      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(15));
       this.delete = delete;
     }
 
@@ -76,16 +85,15 @@ public class UploadUtils {
       MapillaryUtils.updateHelpText();
       for (MapillaryAbstractImage img : this.images) {
         if (!(img instanceof MapillaryImportedImage))
-          throw new IllegalArgumentException(
-              "The sequence contains downloaded images.");
-        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img,
-            this.uuid));
-        while (this.ex.getQueue().remainingCapacity() == 0)
+          throw new IllegalArgumentException("The sequence contains downloaded images.");
+        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img, this.uuid));
+        while (this.ex.getQueue().remainingCapacity() == 0) {
           try {
             Thread.sleep(100);
           } catch (InterruptedException e) {
             Main.error(e);
           }
+        }
       }
       this.ex.shutdown();
       try {
@@ -113,15 +121,6 @@ public class UploadUtils {
       upload(this.image, this.uuid);
     }
   }
-  /** Required keys for POST */
-  private static final String[] keys = { "key", "AWSAccessKeyId", "acl",
-      "policy", "signature", "Content-Type" };
-
-  /** Mapillary upload URL */
-  private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
-
-  /** Count to name temporal files. */
-  private static int c = 0;
 
   /**
    * Returns a file containing the picture and an updated version of the EXIF
