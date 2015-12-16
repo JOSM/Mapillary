@@ -22,12 +22,12 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 public class WalkThread extends Thread implements MapillaryDataListener {
   private final int interval;
   private final MapillaryData data;
-  private boolean end = false;
+  private boolean end;
   private final boolean waitForFullQuality;
   private final boolean followSelected;
   private final boolean goForward;
   private BufferedImage lastImage;
-  private volatile boolean paused = false;
+  private volatile boolean paused;
 
   /**
    * Main constructor.
@@ -60,63 +60,59 @@ public class WalkThread extends Thread implements MapillaryDataListener {
         if (image instanceof MapillaryImage) {
           // Predownload next 10 thumbnails.
           for (int i = 0; i < 10; i++) {
-            if (image.next() == null)
+            if (image.next() == null) {
               break;
+            }
             image = image.next();
-            CacheUtils.downloadPicture((MapillaryImage) image,
-                CacheUtils.PICTURE.THUMBNAIL);
+            CacheUtils.downloadPicture((MapillaryImage) image, CacheUtils.PICTURE.THUMBNAIL);
           }
           if (this.waitForFullQuality)
             // Start downloading 3 next full images.
             for (int i = 0; i < 3; i++) {
-              if (image.next() == null)
+              if (image.next() == null) {
                 break;
+              }
               image = image.next();
-              CacheUtils.downloadPicture((MapillaryImage) image,
-                  CacheUtils.PICTURE.FULL_IMAGE);
+              CacheUtils.downloadPicture((MapillaryImage) image, CacheUtils.PICTURE.FULL_IMAGE);
             }
         }
         try {
           synchronized (this) {
             // Waits for full quality picture.
+            final BufferedImage displayImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
             if (this.waitForFullQuality && image instanceof MapillaryImage) {
-              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                  .getImage() == this.lastImage
-                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                      .getImage() == null
-                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                      .getImage().getWidth() < 2048)
+              while ( displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
                 wait(100);
+              }
             }
             // Waits for thumbnail.
             else {
-              while (MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                  .getImage() == this.lastImage
-                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                      .getImage() == null
-                  || MapillaryMainDialog.getInstance().mapillaryImageDisplay
-                      .getImage().getWidth() < 320)
+              while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 320) {
                 wait(100);
+              }
             }
-            while (this.paused)
+            while (this.paused) {
               wait(100);
+            }
             wait(this.interval);
-            while (this.paused)
+            while (this.paused) {
               wait(100);
+            }
           }
-          this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay
-              .getImage();
+          this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
           synchronized (this) {
-            if (this.goForward)
+            if (this.goForward) {
               this.data.selectNext(this.followSelected);
-            else
+            } else {
               this.data.selectPrevious(this.followSelected);
+            }
           }
         } catch (InterruptedException e) {
           return;
         }
       }
     } catch (NullPointerException e) {
+      // TODO: Avoid NPEs instead of waiting until they are thrown and then catching them
       return;
     }
     end();
@@ -128,8 +124,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (newImage != oldImage.next()) {
       end();
       interrupt();
@@ -154,16 +149,16 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * Stops the execution.
    */
   public void stopWalk() {
-    if (!SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      end();
+      this.interrupt();
+    } else {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
           stopWalk();
         }
       });
-    } else {
-      end();
-      this.interrupt();
     }
   }
 
@@ -171,18 +166,17 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * Called when the walk stops by itself of forcefully.
    */
   public void end() {
-    if (!SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      this.end = true;
+      this.data.removeListener(this);
+      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
+    } else {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
           end();
         }
       });
-    } else {
-      this.end = true;
-      this.data.removeListener(this);
-      MapillaryMainDialog.getInstance()
-          .setMode(MapillaryMainDialog.MODE.NORMAL);
     }
   }
 }

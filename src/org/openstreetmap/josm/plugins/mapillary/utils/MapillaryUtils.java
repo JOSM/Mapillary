@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.SwingUtilities;
 
@@ -162,9 +163,8 @@ public final class MapillaryUtils {
    * @return The date in Epoch format.
    * @throws ParseException
    */
-  public static long getEpoch(String date, String format)
-      throws ParseException {
-    SimpleDateFormat formatter = new SimpleDateFormat(format);
+  public static long getEpoch(String date, String format) throws ParseException {
+    SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
     Date dateTime = formatter.parse(date);
     return dateTime.getTime();
   }
@@ -459,20 +459,22 @@ public final class MapillaryUtils {
    * Updates the help text at the bottom of the window.
    */
   public static void updateHelpText() {
-    String ret = "";
-    if (PluginState.isDownloading())
-      ret += tr("Downloading Mapillary images");
-    else if (MapillaryLayer.getInstance().getData().size() > 0)
-      ret += tr("Total Mapillary images: {0}",
-          MapillaryLayer.getInstance().getData().size());
-    else
-      ret += tr("No images found");
-    if (MapillaryLayer.getInstance().mode != null)
-      ret += " -- " + tr(MapillaryLayer.getInstance().mode.toString());
-    if (PluginState.isUploading())
-      ret += " -- " + PluginState.getUploadString();
+    StringBuilder ret = new StringBuilder();
+    if (PluginState.isDownloading()) {
+      ret .append(tr("Downloading Mapillary images"));
+    } else if (MapillaryLayer.getInstance().getData().size() > 0) {
+      ret.append(tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getData().size()));
+    } else {
+      ret.append(tr("No images found"));
+    }
+    if (MapillaryLayer.getInstance().mode != null) {
+      ret.append(" — ").append(tr(MapillaryLayer.getInstance().mode.toString()));
+    }
+    if (PluginState.isUploading()) {
+      ret.append(" — ").append(PluginState.getUploadString());
+    }
     synchronized (MapillaryUtils.class) {
-      Main.map.statusLine.setHelpText(ret);
+      Main.map.statusLine.setHelpText(ret.toString());
     }
   }
 }

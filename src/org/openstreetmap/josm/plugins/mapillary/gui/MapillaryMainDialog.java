@@ -307,20 +307,19 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
       });
     } else if (this.image != null) {
+      StringBuilder title = new StringBuilder(tr(BASE_TITLE));
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        String title = tr(BASE_TITLE);
         if (mapillaryImage.getUser() != null)
-          title += " -- " + mapillaryImage.getUser();
+          title.append(" — ").append(mapillaryImage.getUser());
         if (mapillaryImage.getCapturedAt() != 0)
-          title += " -- " + mapillaryImage.getDate();
-        setTitle(title);
+          title.append(" — ").append(mapillaryImage.getDate());
+        setTitle(title.toString());
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
-        String title = tr(BASE_TITLE);
-        title += " -- " + mapillaryImportedImage.getFile().getName();
-        title += " -- " + mapillaryImportedImage.getDate();
-        setTitle(title);
+        title.append(" — ").append(mapillaryImportedImage.getFile().getName());
+        title.append(" — ").append(mapillaryImportedImage.getDate());
+        setTitle(title.toString());
       }
     }
   }
@@ -517,14 +516,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
       });
     } else if (data != null && result == LoadResult.SUCCESS) {
       try {
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data
-            .getContent()));
-        if (img == null)
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data.getContent()));
+        if (img == null) {
           return;
-        if (this.mapillaryImageDisplay.getImage() == null)
+        }
+        if (this.mapillaryImageDisplay.getImage() == null) {
           this.mapillaryImageDisplay.setImage(img);
-        else if (img.getHeight() > this.mapillaryImageDisplay.getImage()
-            .getHeight()) {
+        } else if (img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()) {
           this.mapillaryImageDisplay.setImage(img);
         }
       } catch (IOException e) {
@@ -562,8 +560,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
       }
       panel.add(this.buttonsPanel, BorderLayout.NORTH);
       createLayout(panel, true, null);
-    } else
+    } else {
       createLayout(panel, true, buttons);
+    }
     this.add(this.titleBar, BorderLayout.NORTH);
   }
 

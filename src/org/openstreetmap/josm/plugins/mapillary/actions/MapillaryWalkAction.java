@@ -96,12 +96,8 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
-    if (newImage != null)
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), true);
-    else
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), false);
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), newImage != null);
   }
 
 }

@@ -16,11 +16,15 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
  */
 public class PluginState {
 
-  private static int runningDownloads = 0;
+  private static int runningDownloads;
   /** Images that have to be uploaded. */
-  protected static int imagesToUpload = 0;
+  protected static int imagesToUpload;
   /** Images that have been uploaded. */
-  public static int imagesUploaded = 0;
+  public static int imagesUploaded;
+
+  private PluginState() {
+    // Empty constructor to avoid instantiation
+  }
 
   /**
    * Called when a download is started.
@@ -76,25 +80,24 @@ public class PluginState {
    */
   public static void imageUploaded() {
     imagesUploaded++;
-    if (imagesToUpload == imagesUploaded) {
-      if (Main.main != null)
+    if (imagesToUpload == imagesUploaded && Main.main != null) {
         finishedUploadDialog();
     }
   }
 
   private static void finishedUploadDialog() {
     if (!SwingUtilities.isEventDispatchThread()) {
+      JOptionPane pane = new JOptionPane();
+      pane.setMessage(new FinishedUploadDialog());
+      JDialog dlg = pane.createDialog(Main.parent, tr("Finished upload"));
+      dlg.setVisible(true);
+    } else {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
           finishedUploadDialog();
         }
       });
-    } else {
-      JOptionPane pane = new JOptionPane();
-      pane.setMessage(new FinishedUploadDialog());
-      JDialog dlg = pane.createDialog(Main.parent, tr("Finished upload"));
-      dlg.setVisible(true);
     }
   }
 
@@ -104,7 +107,6 @@ public class PluginState {
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-    return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload
-        + ")");
+    return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload + ")");
   }
 }
