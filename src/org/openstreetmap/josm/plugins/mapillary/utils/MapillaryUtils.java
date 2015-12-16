@@ -383,8 +383,7 @@ public final class MapillaryUtils {
    * @param select
    *          Whether the added images must be selected or not.
    */
-  public static void showPictures(final List<MapillaryAbstractImage> images,
-      final boolean select) {
+  public static void showPictures(final List<MapillaryAbstractImage> images, final boolean select) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
@@ -393,31 +392,18 @@ public final class MapillaryUtils {
         }
       });
     } else {
-      double minLat = 90;
-      double minLon = 180;
-      double maxLat = -90;
-      double maxLon = -180;
-      for (MapillaryAbstractImage img : images) {
-        if (img.getLatLon().lat() < minLat)
-          minLat = img.getLatLon().lat();
-        if (img.getLatLon().lon() < minLon)
-          minLon = img.getLatLon().lon();
-        if (img.getLatLon().lat() > maxLat)
-          maxLat = img.getLatLon().lat();
-        if (img.getLatLon().lon() > maxLon)
-          maxLon = img.getLatLon().lon();
+      Bounds zoomBounds;
+      if (images.isEmpty()) {
+        zoomBounds = new Bounds(new LatLon(0, 0));
+      } else {
+        zoomBounds = new Bounds(images.get(0).getLatLon());
+        for (MapillaryAbstractImage img : images) {
+          zoomBounds.extend(img.getLatLon());
+        }
       }
-      Bounds zoomBounds = new Bounds(new LatLon(minLat, minLon),
-          new LatLon(maxLat, maxLon));
       // The zoom rectangle must have a minimum size.
-      double latExtent = zoomBounds.getMaxLat()
-          - zoomBounds.getMinLat() >= MIN_ZOOM_SQUARE_SIDE
-              ? zoomBounds.getMaxLat() - zoomBounds.getMinLat()
-              : MIN_ZOOM_SQUARE_SIDE;
-      double lonExtent = zoomBounds.getMaxLon()
-          - zoomBounds.getMinLon() >= MIN_ZOOM_SQUARE_SIDE
-              ? zoomBounds.getMaxLon() - zoomBounds.getMinLon()
-              : MIN_ZOOM_SQUARE_SIDE;
+      double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);
+      double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);
       zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
 
       Main.map.mapView.zoomTo(zoomBounds);
