@@ -27,19 +27,25 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-    super(tr("Mapillary"), MapillaryPlugin.getProvider("icon24.png"),
-        tr("Create Mapillary layer"), Shortcut.registerShortcut("Mapillary",
-            tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
-        false, "mapillaryDownload", false);
+    super(
+        tr("Mapillary"),
+        MapillaryPlugin.getProvider("icon24.png"),
+        tr("Create Mapillary layer"),
+        Shortcut.registerShortcut("Mapillary", tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
+        false,
+        "mapillaryDownload",
+        false
+    );
     this.setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
     MapillaryLayer.getInstance();
-    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
-      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
-    else
+    if (Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()) {
       Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
+    } else {
+      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
+    }
   }
 }

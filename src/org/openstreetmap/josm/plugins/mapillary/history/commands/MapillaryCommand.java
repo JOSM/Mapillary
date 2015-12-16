@@ -23,7 +23,7 @@ public abstract class MapillaryCommand {
    *          The images that are affected by the command.
    */
   public MapillaryCommand(List<MapillaryAbstractImage> images) {
-    this.images = new ArrayList<MapillaryAbstractImage>(images);
+    this.images = new ArrayList<>(images);
   }
 
   /**

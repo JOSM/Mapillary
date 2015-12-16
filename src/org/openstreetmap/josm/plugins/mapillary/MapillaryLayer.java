@@ -476,9 +476,11 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       MapillaryImage image = (MapillaryImage) imagePrev;
       if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
           && selected.getSequence() != image.getSequence()) {
-        if ((ret[0] == null && ret[1] == null)
-            || (image.getLatLon().greatCircleDistance(selectedCoords) < distances[0] && (ret[1] == null || image
-                .getSequence() != ret[1].getSequence()))) {
+        if (
+            ret[0] == null && ret[1] == null
+            || image.getLatLon().greatCircleDistance(selectedCoords) < distances[0]
+            && (ret[1] == null || image.getSequence() != ret[1].getSequence())
+        ) {
           ret[0] = image;
           distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);
         } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(

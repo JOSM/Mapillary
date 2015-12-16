@@ -59,7 +59,7 @@ public class UploadUtils {
     private final List<MapillaryAbstractImage> images;
     private final UUID uuid;
     private final boolean delete;
-    ThreadPoolExecutor ex;
+    private ThreadPoolExecutor ex;
 
     private SequenceUploadThread(List<MapillaryAbstractImage> images,
         boolean delete) {

@@ -79,8 +79,9 @@ public class MapillaryExportAction extends JosmAction {
           if (image instanceof MapillaryImage) {
             if (!images.contains(image))
               images.addAll(((MapillaryImage) image).getSequence().getImages());
-          } else
+          } else {
             images.add(image);
+          }
         export(images);
       } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
         export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());

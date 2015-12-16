@@ -131,7 +131,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
    *
    * @return The unique instance of the class.
    */
-  public static MapillaryHistoryDialog getInstance() {
+  public static synchronized MapillaryHistoryDialog getInstance() {
     if (instance == null)
       instance = new MapillaryHistoryDialog();
     return instance;
@@ -228,10 +228,10 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     private static final long serialVersionUID = -3129520241562296901L;
 
     @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-        boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
-          hasFocus);
+    public Component getTreeCellRendererComponent(
+        JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
+    ) {
+      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       setIcon(ImageProvider.get("data/node.png"));
       return this;
     }
@@ -248,34 +248,36 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     @Override
     public void mouseClicked(MouseEvent e) {
+      // Method is enforced by MouseListener, but (currently) not needed
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
+      // Method is enforced by MouseListener, but (currently) not needed
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+      // Method is enforced by MouseListener, but (currently) not needed
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
       if (e.getClickCount() == 2) {
-        if (MapillaryHistoryDialog.this.undoTree.getSelectionPath() != null) {
-          MapillaryCommand cmd = MapillaryHistoryDialog.this.map
-              .get(MapillaryHistoryDialog.this.undoTree.getSelectionPath()
-                  .getLastPathComponent());
-          if (!(cmd instanceof CommandDelete))
+        if (undoTree.getSelectionPath() == null) {
+          MapillaryUtils.showPictures(map.get(redoTree.getSelectionPath().getLastPathComponent()).images, true);
+        } else {
+          MapillaryCommand cmd = map.get(undoTree.getSelectionPath().getLastPathComponent());
+          if (!(cmd instanceof CommandDelete)) {
             MapillaryUtils.showPictures(cmd.images, true);
-        } else
-          MapillaryUtils.showPictures(MapillaryHistoryDialog.this.map
-              .get(MapillaryHistoryDialog.this.redoTree.getSelectionPath()
-                  .getLastPathComponent()).images, true);
+          }
+        }
       }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+      // Method is enforced by MouseListener, but (currently) not needed
     }
   }
 
@@ -283,29 +285,21 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     private JTree source;
 
-    private UndoRedoSelectionListener(JTree source) {
+    protected UndoRedoSelectionListener(JTree source) {
       this.source = source;
     }
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-      if (this.source == MapillaryHistoryDialog.this.undoTree) {
-        MapillaryHistoryDialog.this.redoTree.getSelectionModel()
-            .removeTreeSelectionListener(
-                MapillaryHistoryDialog.this.redoSelectionListener);
-        MapillaryHistoryDialog.this.redoTree.clearSelection();
-        MapillaryHistoryDialog.this.redoTree.getSelectionModel()
-            .addTreeSelectionListener(
-                MapillaryHistoryDialog.this.redoSelectionListener);
+      if (this.source == undoTree) {
+        redoTree.getSelectionModel().removeTreeSelectionListener(redoSelectionListener);
+        redoTree.clearSelection();
+        redoTree.getSelectionModel().addTreeSelectionListener(redoSelectionListener);
       }
-      if (this.source == MapillaryHistoryDialog.this.redoTree) {
-        MapillaryHistoryDialog.this.undoTree.getSelectionModel()
-            .removeTreeSelectionListener(
-                MapillaryHistoryDialog.this.undoSelectionListener);
-        MapillaryHistoryDialog.this.undoTree.clearSelection();
-        MapillaryHistoryDialog.this.undoTree.getSelectionModel()
-            .addTreeSelectionListener(
-                MapillaryHistoryDialog.this.undoSelectionListener);
+      if (this.source == redoTree) {
+        undoTree.getSelectionModel().removeTreeSelectionListener(undoSelectionListener);
+        undoTree.clearSelection();
+        undoTree.getSelectionModel().addTreeSelectionListener(undoSelectionListener);
       }
     }
   }

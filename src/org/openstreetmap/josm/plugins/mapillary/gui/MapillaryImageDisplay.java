@@ -451,7 +451,7 @@ public class MapillaryImageDisplay extends JComponent {
    *          component coordinates)
    * @return the part of compRect with the same width/height ratio as the image
    */
-  static Rectangle calculateDrawImageRectangle(Rectangle imgRect, Rectangle compRect) {
+  private static Rectangle calculateDrawImageRectangle(Rectangle imgRect, Rectangle compRect) {
     int x = 0;
     int y = 0;
     int w = compRect.width;
