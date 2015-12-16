@@ -14,7 +14,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
  * @author nokutu
  *
  */
-public class PluginState {
+public final class PluginState {
 
   private static int runningDownloads;
   /** Images that have to be uploaded. */
