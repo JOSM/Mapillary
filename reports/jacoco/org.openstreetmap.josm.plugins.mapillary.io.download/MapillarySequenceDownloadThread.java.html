@@ -121,10 +121,12 @@ public class MapillarySequenceDownloadThread extends Thread {
 <span class="nc" id="L121">  }</span>
 
   private boolean isInside(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L124" title="All 2 branches missed.">    for (int i = 0; i &lt; MapillaryLayer.getInstance().getData().bounds.size(); i++)</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">      if (MapillaryLayer.getInstance().getData().bounds.get(i).contains(image.getLatLon()))</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    for (Bounds b : MapillaryLayer.getInstance().getData().bounds) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">      if (b.contains(image.getLatLon())) {</span>
 <span class="nc" id="L126">        return true;</span>
-<span class="nc" id="L127">    return false;</span>
+      }
+<span class="nc" id="L128">    }</span>
+<span class="nc" id="L129">    return false;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
