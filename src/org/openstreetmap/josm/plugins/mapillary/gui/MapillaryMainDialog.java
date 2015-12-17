@@ -59,7 +59,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private volatile MapillaryAbstractImage image;
 
-  private final SideButton nextButton = new SideButton(new nextPictureAction());
+  private final SideButton nextButton = new SideButton(new NextPictureAction());
   private final SideButton previousButton = new SideButton(
       new PreviousPictureAction());
   /** Button used to jump to the image following the red line */
@@ -117,7 +117,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
   private void addShortcuts() {
     this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
-    this.nextButton.getActionMap().put("next", new nextPictureAction());
+    this.nextButton.getActionMap().put("next", new NextPictureAction());
     this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
         KeyStroke.getKeyStroke("PAGE_UP"), "previous");
     this.previousButton.getActionMap().put("previous",
@@ -172,7 +172,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Destroys the unique instance of the class.
    */
-  public static void destroyInstance() {
+  public static synchronized void destroyInstance() {
     instance = null;
   }
 
@@ -339,11 +339,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * @author nokutu
    *
    */
-  private class nextPictureAction extends AbstractAction {
+  private static class NextPictureAction extends AbstractAction {
 
     private static final long serialVersionUID = 3023827221453154340L;
 
-    public nextPictureAction() {
+    /**
+     * Constructs a normal NextPictureAction
+     */
+    public NextPictureAction() {
       putValue(NAME, tr("Next picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
     }
@@ -364,6 +367,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     private static final long serialVersionUID = -6420511632957956012L;
 
+    /**
+     * Constructs a normal PreviousPictureAction
+     */
     public PreviousPictureAction() {
       putValue(NAME, tr("Previous picture"));
       putValue(SHORT_DESCRIPTION,
@@ -386,6 +392,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     private static final long serialVersionUID = -6480229431481386376L;
 
+    /**
+     * Constructs a normal RedAction
+     */
     public RedAction() {
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
@@ -411,6 +420,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     private static final long serialVersionUID = 6250690644594703314L;
 
+    /**
+     * Constructs a normal BlueAction
+     */
     public BlueAction() {
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,
@@ -432,6 +444,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     private WalkThread thread;
 
+    /**
+     * Constructs a normal StopAction
+     */
     public StopAction() {
       putValue(NAME, tr("Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
@@ -456,6 +471,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
     private static final long serialVersionUID = -17943404752082788L;
     private transient WalkThread thread;
 
+    /**
+     * Constructs a normal PlayAction
+     */
     public PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
@@ -482,6 +500,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
     private WalkThread thread;
 
+    /**
+     * Constructs a normal PauseAction
+     */
     public PauseAction() {
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
@@ -520,9 +541,10 @@ public class MapillaryMainDialog extends ToggleDialog implements
         if (img == null) {
           return;
         }
-        if (this.mapillaryImageDisplay.getImage() == null) {
-          this.mapillaryImageDisplay.setImage(img);
-        } else if (img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()) {
+        if (
+            this.mapillaryImageDisplay.getImage() == null
+            || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
+        ) {
           this.mapillaryImageDisplay.setImage(img);
         }
       } catch (IOException e) {
@@ -567,13 +589,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     setImage(newImage);
     updateImage();
   }
 
   @Override
   public void imagesAdded() {
+    // This method is enforced by MapillaryDataListener, but only selectedImageChanged() is needed
   }
 }

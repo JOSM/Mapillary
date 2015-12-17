@@ -37,10 +37,9 @@ public class MapillarySequenceDownloadThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param ex
-   *          {@link ExecutorService} executing this thread.
-   * @param queryString
-   *          String containing the parameters for the download.
+   * @param ex {@link ExecutorService} executing this thread.
+   * @param bounds The bounds inside which the sequences should be downloaded
+   * @param page the pagenumber of the results that should be retrieved
    */
   public MapillarySequenceDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;

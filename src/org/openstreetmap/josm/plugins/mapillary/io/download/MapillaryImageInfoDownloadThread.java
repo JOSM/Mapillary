@@ -32,10 +32,9 @@ public class MapillaryImageInfoDownloadThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param ex
-   *          {@link ExecutorService} object that is executing this thread.
-   * @param queryString
-   *          A String containing the parameters for the download.
+   * @param ex {@link ExecutorService} object that is executing this thread.
+   * @param bounds the bounds inside which the image info should be downloaded
+   * @param page the pagenumber of the results that should be retrieved
    */
   public MapillaryImageInfoDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;

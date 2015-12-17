@@ -35,7 +35,9 @@ public class MapillaryUploadDialog extends JPanel {
    */
   public MapillaryUploadDialog() {
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-    if (MapillaryUser.getUsername() != null) {
+    if (MapillaryUser.getUsername() == null) {
+      this.add(new JLabel(tr("Go to setting and log in to Mapillary before uploading.")));
+    } else {
       ButtonGroup group = new ButtonGroup();
       this.sequence = new JRadioButton(tr("Upload selected sequence"));
       if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {
@@ -47,8 +49,6 @@ public class MapillaryUploadDialog extends JPanel {
       this.delete = new JCheckBox(tr("Delete after upload"));
       this.delete.setSelected(Main.pref.getBoolean("mapillary.delete-after-upload", true));
       add(this.delete);
-    } else {
-      this.add(new JLabel(tr("Go to setting and log in to Mapillary before uploading.")));
     }
   }
 

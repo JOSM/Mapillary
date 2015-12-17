@@ -55,7 +55,7 @@ public class MapillaryImportAction extends JosmAction {
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent event) {
     JFileChooser chooser = new JFileChooser();
     File startDirectory = new File(Main.pref.get("mapillary.start-directory",
         System.getProperty("user.home")));

@@ -29,7 +29,7 @@ public final class MapillaryUser {
   /**
    * @return The username of the logged in user.
    */
-  public static String getUsername() {
+  public static synchronized String getUsername() {
     if (!isTokenValid) {
       return null;
     }
@@ -50,7 +50,7 @@ public final class MapillaryUser {
    * @return A HashMap object containing the images_policy and images_hash
    *         strings.
    */
-  public static Map<String, String> getSecrets() {
+  public static synchronized Map<String, String> getSecrets() {
     if (!isTokenValid)
       return null;
     Map<String, String> hash = new HashMap<>();

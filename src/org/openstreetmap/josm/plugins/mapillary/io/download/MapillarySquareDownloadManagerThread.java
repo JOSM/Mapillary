@@ -39,8 +39,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param queryStringParts
-   *          The query data.
+   * @param bounds the bounds of the area that should be downloaded
    *
    */
   public MapillarySquareDownloadManagerThread(Bounds bounds) {
@@ -70,8 +69,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
   /**
    * Downloads the sequence positions, directions and keys.
    *
-   * @throws InterruptedException
-   *           if the thread is interrupted while running this method.
+   * @throws InterruptedException if the thread is interrupted while running this method.
    */
   private void downloadSequences() throws InterruptedException {
     int page = 0;

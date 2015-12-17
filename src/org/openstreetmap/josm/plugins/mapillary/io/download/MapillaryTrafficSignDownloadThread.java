@@ -34,7 +34,7 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
    *
    * @param ex {@link ExecutorService} object that is executing this thread.
    * @param bounds the bounds in which the traffic signs should be downloaded
-   * @page page the pagenumber of the results page that should be retrieved
+   * @param page the pagenumber of the results page that should be retrieved
    */
   public MapillaryTrafficSignDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;
