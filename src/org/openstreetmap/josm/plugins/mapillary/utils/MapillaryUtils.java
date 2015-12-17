@@ -73,24 +73,36 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Returns the current date.
+   * Returns the current date formatted as EXIF timestamp.
+   * As timezone the default timezone of the JVM is used ({@link java.util.TimeZone#getDefault()}).
    *
    * @return A {@code String} object containing the current date.
    */
   public static String currentDate() {
-    Calendar cal = Calendar.getInstance();
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
-    return formatter.format(cal.getTime());
+    return new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.UK).format(Calendar.getInstance().getTime());
   }
 
   /**
-   * Returns current time in Epoch format
+   * Returns current time in Epoch format (milliseconds since 1970-01-01T00:00:00+0000)
    *
    * @return The current date in Epoch format.
    */
   public static long currentTime() {
-    Calendar cal = Calendar.getInstance();
-    return cal.getTimeInMillis();
+    return Calendar.getInstance().getTimeInMillis();
+  }
+
+  /**
+   * Parses a string with a given format and returns the Epoch time.
+   * If no timezone information is given, the default timezone of the JVM is used
+   * ({@link java.util.TimeZone#getDefault()}).
+   *
+   * @param date The string containing the date.
+   * @param format The format of the date.
+   * @return The date in Epoch format.
+   * @throws ParseException
+   */
+  public static long getEpoch(String date, String format) throws ParseException {
+    return new SimpleDateFormat(format, Locale.UK).parse(date).getTime();
   }
 
   /**
@@ -148,25 +160,8 @@ public final class MapillaryUtils {
       result *= -1;
     }
 
-    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360))
-        - 180;
+    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;
     return result;
-  }
-
-  /**
-   * Parses a string with a given format and returns the Epoch time.
-   *
-   * @param date
-   *          The string containing the date.
-   * @param format
-   *          The format of the date.
-   * @return The date in Epoch format.
-   * @throws ParseException
-   */
-  public static long getEpoch(String date, String format) throws ParseException {
-    SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
-    Date dateTime = formatter.parse(date);
-    return dateTime.getTime();
   }
 
   /**
