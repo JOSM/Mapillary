@@ -35,20 +35,20 @@ public class MapillaryUploadDialog extends JPanel {
    */
 <span class="nc" id="L36">  public MapillaryUploadDialog() {</span>
 <span class="nc" id="L37">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryUser.getUsername() != null) {</span>
-<span class="nc" id="L39">      ButtonGroup group = new ButtonGroup();</span>
-<span class="nc" id="L40">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
-<span class="nc" id="L42">        this.sequence.setEnabled(false);</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
+<span class="nc" id="L39">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
+    } else {
+<span class="nc" id="L41">      ButtonGroup group = new ButtonGroup();</span>
+<span class="nc" id="L42">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L44">        this.sequence.setEnabled(false);</span>
       }
-<span class="nc" id="L44">      group.add(this.sequence);</span>
-<span class="nc" id="L45">      add(this.sequence);</span>
-<span class="nc" id="L46">      group.setSelected(this.sequence.getModel(), true);</span>
-<span class="nc" id="L47">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
-<span class="nc" id="L48">      this.delete.setSelected(Main.pref.getBoolean(&quot;mapillary.delete-after-upload&quot;, true));</span>
-<span class="nc" id="L49">      add(this.delete);</span>
-<span class="nc" id="L50">    } else {</span>
-<span class="nc" id="L51">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
+<span class="nc" id="L46">      group.add(this.sequence);</span>
+<span class="nc" id="L47">      add(this.sequence);</span>
+<span class="nc" id="L48">      group.setSelected(this.sequence.getModel(), true);</span>
+<span class="nc" id="L49">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
+<span class="nc" id="L50">      this.delete.setSelected(Main.pref.getBoolean(&quot;mapillary.delete-after-upload&quot;, true));</span>
+<span class="nc" id="L51">      add(this.delete);</span>
     }
 <span class="nc" id="L53">  }</span>
 

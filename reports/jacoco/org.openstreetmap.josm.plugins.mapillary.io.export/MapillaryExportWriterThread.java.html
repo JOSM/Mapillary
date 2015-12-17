@@ -128,10 +128,10 @@ public class MapillaryExportWriterThread extends Thread {
 <span class="nc" id="L128">        exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
 <span class="nc bnc" id="L129" title="All 2 branches missed.">        if (mimg instanceof MapillaryImportedImage)</span>
 <span class="nc" id="L130">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="nc" id="L131">              ((MapillaryImportedImage) mimg).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
+<span class="nc" id="L131">              ((MapillaryImportedImage) mimg).getDate(&quot;yyyy/MM/dd HH:mm:ss&quot;));</span>
 <span class="nc bnc" id="L132" title="All 2 branches missed.">        else if (mimg instanceof MapillaryImage)</span>
 <span class="nc" id="L133">          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="nc" id="L134">              ((MapillaryImage) mimg).getDate(&quot;yyyy/MM/dd hh/mm/ss&quot;));</span>
+<span class="nc" id="L134">              ((MapillaryImage) mimg).getDate(&quot;yyyy/MM/dd HH/mm/ss&quot;));</span>
 <span class="nc" id="L135">        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon().lat());</span>
 <span class="nc" id="L136">        OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + &quot;.jpg&quot;));</span>
 <span class="nc" id="L137">        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>

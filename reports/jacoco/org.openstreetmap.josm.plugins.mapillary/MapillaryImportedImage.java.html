@@ -58,17 +58,15 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 <span class="fc" id="L58">    super(lat, lon, ca);</span>
 <span class="fc" id="L59">    this.file = file;</span>
     try {
-<span class="fc" id="L61">      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,</span>
-          &quot;yyyy:MM:dd hh:mm:ss&quot;);
-<span class="nc" id="L63">    } catch (ParseException e) {</span>
+<span class="fc" id="L61">      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, &quot;yyyy:MM:dd HH:mm:ss&quot;);</span>
+<span class="nc" id="L62">    } catch (ParseException e) {</span>
       try {
-<span class="nc" id="L65">        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal,</span>
-            &quot;yyyy/MM/dd hh:mm:ss&quot;);
-<span class="nc" id="L67">      } catch (ParseException e1) {</span>
-<span class="nc" id="L68">        this.capturedAt = MapillaryUtils.currentTime();</span>
-<span class="nc" id="L69">      }</span>
-<span class="fc" id="L70">    }</span>
-<span class="fc" id="L71">  }</span>
+<span class="nc" id="L64">        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, &quot;yyyy/MM/dd HH:mm:ss&quot;);</span>
+<span class="nc" id="L65">      } catch (ParseException e1) {</span>
+<span class="nc" id="L66">        this.capturedAt = MapillaryUtils.currentTime();</span>
+<span class="nc" id="L67">      }</span>
+<span class="fc" id="L68">    }</span>
+<span class="fc" id="L69">  }</span>
 
   /**
    * Returns the pictures of the file.
@@ -79,9 +77,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *           If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
-<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (this.file != null)</span>
-<span class="fc" id="L83">      return ImageIO.read(this.file);</span>
-<span class="fc" id="L84">    return null;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    if (this.file != null)</span>
+<span class="fc" id="L81">      return ImageIO.read(this.file);</span>
+<span class="fc" id="L82">    return null;</span>
   }
 
   /**
@@ -90,19 +88,19 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @return The {@link File} object where the picture is located.
    */
   public File getFile() {
-<span class="fc" id="L93">    return this.file;</span>
+<span class="fc" id="L91">    return this.file;</span>
   }
 
   @Override
   public boolean equals(Object other) {
-<span class="nc bnc" id="L98" title="All 4 branches missed.">    if (other != null &amp;&amp; other.getClass() == this.getClass())</span>
-<span class="nc" id="L99">      return this.file.equals(((MapillaryImportedImage) other).file);</span>
-<span class="nc" id="L100">    return false;</span>
+<span class="nc bnc" id="L96" title="All 4 branches missed.">    if (other != null &amp;&amp; other.getClass() == this.getClass())</span>
+<span class="nc" id="L97">      return this.file.equals(((MapillaryImportedImage) other).file);</span>
+<span class="nc" id="L98">    return false;</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L105">    return this.file.hashCode();</span>
+<span class="nc" id="L103">    return this.file.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

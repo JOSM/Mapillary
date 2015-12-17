@@ -174,7 +174,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
 <span class="fc" id="L175">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
 <span class="fc" id="L176">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="fc" id="L177">        ((MapillaryImportedImage) image).getDate(&quot;yyyy/MM/dd hh:mm:ss&quot;));</span>
+<span class="fc" id="L177">        ((MapillaryImportedImage) image).getDate(&quot;yyyy/MM/dd HH:mm:ss&quot;));</span>
 
     // Removes the ImageDescription tag, that causes problems in the upload.
 <span class="fc" id="L180">    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);</span>

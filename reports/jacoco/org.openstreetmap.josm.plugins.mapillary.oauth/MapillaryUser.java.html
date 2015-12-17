@@ -29,7 +29,7 @@ public final class MapillaryUser {
   /**
    * @return The username of the logged in user.
    */
-  public static String getUsername() {
+  public static synchronized String getUsername() {
 <span class="pc bpc" id="L33" title="1 of 2 branches missed.">    if (!isTokenValid) {</span>
 <span class="nc" id="L34">      return null;</span>
     }
@@ -39,18 +39,18 @@ public final class MapillaryUser {
 <span class="nc" id="L39">            .getWithHeader(MapillaryURL.userURL())</span>
 <span class="nc" id="L40">            .getString(&quot;username&quot;);</span>
 <span class="fc" id="L41">      } catch (IOException e) {</span>
-<span class="nc" id="L42">        Main.info(&quot;Invalid Mapillary token, resetting field&quot;);</span>
-<span class="nc" id="L43">        reset();</span>
+<span class="fc" id="L42">        Main.info(&quot;Invalid Mapillary token, resetting field&quot;);</span>
+<span class="fc" id="L43">        reset();</span>
 <span class="nc" id="L44">      }</span>
     }
-<span class="nc" id="L46">    return username;</span>
+<span class="fc" id="L46">    return username;</span>
   }
 
   /**
    * @return A HashMap object containing the images_policy and images_hash
    *         strings.
    */
-  public static Map&lt;String, String&gt; getSecrets() {
+  public static synchronized Map&lt;String, String&gt; getSecrets() {
 <span class="nc bnc" id="L54" title="All 2 branches missed.">    if (!isTokenValid)</span>
 <span class="nc" id="L55">      return null;</span>
 <span class="nc" id="L56">    Map&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
