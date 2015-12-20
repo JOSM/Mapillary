@@ -1,0 +1,4 @@
+add Exif.GPSInfo.GPSLatitude 55/1 36/1 19/1
+add Exif.GPSInfo.GPSLatitudeRef N
+add Exif.GPSInfo.GPSLongitude 13/1 0/1 1/2
+add Exif.GPSInfo.GPSLongitudeRef E

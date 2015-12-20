@@ -1,0 +1,1 @@
+add Exif.GPSInfo.GPSImgDirection 4273/100
