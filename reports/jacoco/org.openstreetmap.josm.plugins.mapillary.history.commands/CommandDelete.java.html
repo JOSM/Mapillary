@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -18,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
  */
 public class CommandDelete extends MapillaryExecutableCommand {
 
-<span class="fc" id="L21">  private final Map&lt;MapillaryAbstractImage, Integer&gt; changesHash = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L22">  private final Map&lt;MapillaryAbstractImage, Integer&gt; changesHash = new HashMap&lt;&gt;();</span>
 
   /**
    * Main constructor.
@@ -26,36 +27,35 @@ public class CommandDelete extends MapillaryExecutableCommand {
    * @param images
    *          The set of images that are going to be deleted.
    */
-  public CommandDelete(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc" id="L30">    super(images);</span>
-<span class="fc" id="L31">  }</span>
+  public CommandDelete(Set&lt;MapillaryAbstractImage&gt; images) {
+<span class="fc" id="L31">    super(images);</span>
+<span class="fc" id="L32">  }</span>
 
   @Override
   public void sum(MapillaryCommand command) {
     // TODO: Implement
-<span class="nc" id="L36">  }</span>
+<span class="nc" id="L37">  }</span>
 
   @Override
   public void execute() {
-<span class="fc bfc" id="L40" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images) {</span>
-<span class="fc" id="L41">      this.changesHash.put(img, img.getSequence().getImages().indexOf(img));</span>
-<span class="fc" id="L42">      MapillaryLayer.getInstance().getData().remove(img);</span>
-<span class="fc" id="L43">    }</span>
-<span class="fc" id="L44">  }</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images) {</span>
+<span class="fc" id="L42">      this.changesHash.put(img, img.getSequence().getImages().indexOf(img));</span>
+<span class="fc" id="L43">      MapillaryLayer.getInstance().getData().remove(img);</span>
+<span class="fc" id="L44">    }</span>
+<span class="fc" id="L45">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L48">    return trn(&quot;Deleted {0} image&quot;, &quot;Deleted {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L49">        this.images.size());</span>
+<span class="nc" id="L49">    return trn(&quot;Deleted {0} image&quot;, &quot;Deleted {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L50">        this.images.size());</span>
   }
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L54" title="All 2 branches covered.">    for (int i = this.images.size() - 1; i &gt;= 0; i--) {</span>
-<span class="fc" id="L55">      MapillaryAbstractImage img = this.images.get(i);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    for (MapillaryAbstractImage img : images) {</span>
 <span class="fc" id="L56">      MapillaryLayer.getInstance().getData().add(img);</span>
 <span class="fc" id="L57">      img.getSequence().getImages().add(this.changesHash.get(img), img);</span>
-    }
+<span class="fc" id="L58">    }</span>
 <span class="fc" id="L59">  }</span>
 
   @Override

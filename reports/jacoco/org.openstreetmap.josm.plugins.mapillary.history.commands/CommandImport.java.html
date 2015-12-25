@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -25,36 +26,36 @@ public class CommandImport extends MapillaryExecutableCommand {
    *          The set of images that are going to be added. Might be in the same
    *          sequence or not.
    */
-  public CommandImport(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc" id="L29">    super(images);</span>
-<span class="fc" id="L30">  }</span>
+  public CommandImport(Set&lt;MapillaryAbstractImage&gt; images) {
+<span class="fc" id="L30">    super(images);</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
   public void execute() {
-<span class="fc" id="L34">    MapillaryLayer.getInstance().getData().add(this.images);</span>
-<span class="fc" id="L35">  }</span>
+<span class="fc" id="L35">    MapillaryLayer.getInstance().getData().add(this.images);</span>
+<span class="fc" id="L36">  }</span>
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L39" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images)</span>
-<span class="fc" id="L40">      MapillaryLayer.getInstance().getData().getImages().remove(img);</span>
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L42">      MapillaryData.dataUpdated();</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images)</span>
+<span class="fc" id="L41">      MapillaryLayer.getInstance().getData().getImages().remove(img);</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L43">      MapillaryData.dataUpdated();</span>
+<span class="fc" id="L44">  }</span>
 
   @Override
   public void redo() {
-<span class="fc" id="L47">    this.execute();</span>
-<span class="fc" id="L48">  }</span>
+<span class="fc" id="L48">    this.execute();</span>
+<span class="fc" id="L49">  }</span>
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="nc" id="L52">  }</span>
+<span class="nc" id="L53">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L56">    return trn(&quot;Imported {0} image&quot;, &quot;Imported {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L57">        this.images.size());</span>
+<span class="nc" id="L57">    return trn(&quot;Imported {0} image&quot;, &quot;Imported {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L58">        this.images.size());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
