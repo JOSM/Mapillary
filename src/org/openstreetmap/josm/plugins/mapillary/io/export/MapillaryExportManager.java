@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +38,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
   private final int amount;
-  private List<MapillaryAbstractImage> images;
+  private Set<MapillaryAbstractImage> images;
   private String path;
 
   private Thread writer;
@@ -51,7 +52,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    * @param path
    *          Export path.
    */
-  public MapillaryExportManager(List<MapillaryAbstractImage> images, String path) {
+  public MapillaryExportManager(Set<MapillaryAbstractImage> images, String path) {
     super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
         "Exporting Mapillary Images"), true);
     this.queue = new ArrayBlockingQueue<>(10);

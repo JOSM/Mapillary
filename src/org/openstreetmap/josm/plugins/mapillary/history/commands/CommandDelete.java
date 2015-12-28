@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -26,7 +27,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
    * @param images
    *          The set of images that are going to be deleted.
    */
-  public CommandDelete(List<MapillaryAbstractImage> images) {
+  public CommandDelete(Set<MapillaryAbstractImage> images) {
     super(images);
   }
 
@@ -51,8 +52,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-    for (int i = this.images.size() - 1; i >= 0; i--) {
-      MapillaryAbstractImage img = this.images.get(i);
+    for (MapillaryAbstractImage img : images) {
       MapillaryLayer.getInstance().getData().add(img);
       img.getSequence().getImages().add(this.changesHash.get(img), img);
     }

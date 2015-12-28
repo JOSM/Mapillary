@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -16,6 +17,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  */
 public class CommandJoin extends MapillaryExecutableCommand {
 
+  private MapillaryAbstractImage a;
+  private MapillaryAbstractImage b;
+
   /**
    * Main constructor.
    *
@@ -26,7 +30,9 @@ public class CommandJoin extends MapillaryExecutableCommand {
    *           if the List size is different from 2.
    */
   public CommandJoin(List<MapillaryAbstractImage> images) {
-    super(images);
+    super(new ConcurrentSkipListSet(images));
+    a = images.get(0);
+    b = images.get(1);
     if (images.size() != 2)
       throw new IllegalArgumentException();
   }
@@ -38,12 +44,12 @@ public class CommandJoin extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-    MapillaryUtils.unjoin(this.images.get(0), this.images.get(1));
+    MapillaryUtils.unjoin(a, b);
   }
 
   @Override
   public void redo() {
-    MapillaryUtils.join(this.images.get(0), this.images.get(1));
+    MapillaryUtils.join(a, b);
   }
 
   @Override

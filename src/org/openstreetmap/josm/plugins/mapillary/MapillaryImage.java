@@ -119,6 +119,13 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   @Override
+  public int compareTo(MapillaryAbstractImage image) {
+    if (image instanceof MapillaryImage)
+      return this.key.compareTo(((MapillaryImage) image).getKey());
+    return super.compareTo(image);
+  }
+
+  @Override
   public int hashCode() {
     return this.key.hashCode();
   }

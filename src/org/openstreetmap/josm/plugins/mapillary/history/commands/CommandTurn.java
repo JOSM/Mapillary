@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -25,7 +26,7 @@ public class CommandTurn extends MapillaryCommand {
    * @param ca
    *          How much the images turn.
    */
-  public CommandTurn(List<MapillaryAbstractImage> images, double ca) {
+  public CommandTurn(Set<MapillaryAbstractImage> images, double ca) {
     super(images);
     this.ca = ca;
   }

@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -73,7 +75,7 @@ public class MapillaryExportAction extends JosmAction {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
         export(MapillaryLayer.getInstance().getData().getImages());
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
-        ArrayList<MapillaryAbstractImage> images = new ArrayList<>();
+        Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
         for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
             .getData().getMultiSelectedImages())
           if (image instanceof MapillaryImage) {
@@ -109,7 +111,7 @@ public class MapillaryExportAction extends JosmAction {
    * @param images
    *          The set of images to be exported.
    */
-  public void export(List<MapillaryAbstractImage> images) {
+  public void export(Set<MapillaryAbstractImage> images) {
     Main.worker.submit(new Thread(new MapillaryExportManager(images,
         this.dialog.chooser.getSelectedFile().toString())));
   }

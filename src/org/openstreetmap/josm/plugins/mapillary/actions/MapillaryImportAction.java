@@ -5,10 +5,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.beancontext.BeanContextChildComponentProxy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -66,7 +69,7 @@ public class MapillaryImportAction extends JosmAction {
     chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg", "png"));
     chooser.setMultiSelectionEnabled(true);
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
-      List<MapillaryAbstractImage> images = new ArrayList<>();
+      Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
       for (File file : chooser.getSelectedFiles()) {
         Main.pref.put("mapillary.start-directory", file.getParent());
         MapillaryLayer.getInstance();

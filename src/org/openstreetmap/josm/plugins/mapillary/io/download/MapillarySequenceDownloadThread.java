@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
@@ -37,9 +38,9 @@ public class MapillarySequenceDownloadThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param ex {@link ExecutorService} executing this thread.
+   * @param ex     {@link ExecutorService} executing this thread.
    * @param bounds The bounds inside which the sequences should be downloaded
-   * @param page the pagenumber of the results that should be retrieved
+   * @param page   the pagenumber of the results that should be retrieved
    */
   public MapillarySequenceDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;
@@ -50,10 +51,10 @@ public class MapillarySequenceDownloadThread extends Thread {
   @Override
   public void run() {
     try (
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-          MapillaryURL.searchSequenceURL(bounds, page).openStream(),
-          "UTF-8"
-      ));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    MapillaryURL.searchSequenceURL(bounds, page).openStream(),
+                    "UTF-8"
+            ));
     ) {
       JsonObject jsonall = Json.createReader(br).readObject();
 
@@ -70,9 +71,9 @@ public class MapillarySequenceDownloadThread extends Thread {
         for (int j = 0; j < cas.size(); j++) {
           try {
             images.add(new MapillaryImage(keys.getString(j), coords
-                .getJsonArray(j).getJsonNumber(1).doubleValue(), coords
-                .getJsonArray(j).getJsonNumber(0).doubleValue(), cas
-                .getJsonNumber(j).doubleValue()));
+                    .getJsonArray(j).getJsonNumber(1).doubleValue(), coords
+                    .getJsonArray(j).getJsonNumber(0).doubleValue(), cas
+                    .getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
             Main.warn("Mapillary bug at " + MapillaryURL.searchSequenceURL(bounds, page));
             isSequenceWrong = true;
@@ -81,7 +82,7 @@ public class MapillarySequenceDownloadThread extends Thread {
         if (isSequenceWrong)
           break;
         MapillarySequence sequence = new MapillarySequence(
-            jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
+                jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
                 .longValue());
         List<MapillaryImage> finalImages = new ArrayList<>(images);
         // Here it gets only those images which are in the downloaded
@@ -96,12 +97,13 @@ public class MapillarySequenceDownloadThread extends Thread {
               if (MapillaryLayer.getInstance().getData().getImages().contains(img)) {
                 // The image in finalImages is substituted by the one in the
                 // database, as they represent the same picture.
-                img = (MapillaryImage) MapillaryLayer.getInstance().getData().getImages()
-                    .get(MapillaryLayer.getInstance().getData().getImages().indexOf(img));
+                for (MapillaryAbstractImage source : MapillaryLayer.getInstance().getData().getImages()) {
+                  if (source.equals(img)) {
+                    img = (MapillaryImage) source;
+                  }
+                }
                 sequence.add(img);
-                ((MapillaryImage) MapillaryLayer.getInstance().getData().getImages()
-                    .get(MapillaryLayer.getInstance().getData().getImages().indexOf(img)))
-                    .setSequence(sequence);
+                img.setSequence(sequence);
                 finalImages.set(finalImages.indexOf(img), img);
               } else {
                 img.setSequence(sequence);
@@ -111,7 +113,7 @@ public class MapillarySequenceDownloadThread extends Thread {
           }
         }
 
-        MapillaryLayer.getInstance().getData().add(new ArrayList<MapillaryAbstractImage>(finalImages), false);
+        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet(finalImages), false);
       }
     } catch (IOException e) {
       Main.error("Error reading the url " + MapillaryURL.searchSequenceURL(bounds, page) + " might be a Mapillary problem.", e);

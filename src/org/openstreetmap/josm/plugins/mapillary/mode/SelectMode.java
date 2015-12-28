@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -28,7 +29,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
  * Handles the input event related with the layer. Mainly clicks.
  *
  * @author nokutu
- *
  */
 public class SelectMode extends AbstractMode {
   private Point start;
@@ -53,16 +53,16 @@ public class SelectMode extends AbstractMode {
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
     if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer)
-        && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
+            && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       this.data.setSelectedImage(closest);
       return;
     } else if (Main.map.mapView.getActiveLayer() != MapillaryLayer
-        .getInstance())
+            .getInstance())
       return;
     // Double click
     if (e.getClickCount() == 2 && this.data.getSelectedImage() != null
-        && closest != null) {
+            && closest != null) {
       for (MapillaryAbstractImage img : closest.getSequence().getImages()) {
         this.data.addMultiSelectedImage(img);
       }
@@ -70,26 +70,26 @@ public class SelectMode extends AbstractMode {
     this.start = e.getPoint();
     this.lastClicked = this.closest;
     this.closest = closest;
-    if (this.data.getMultiSelectedImages().contains(closest))
+    if (closest != null && this.data.getMultiSelectedImages().contains(closest))
       return;
     // ctrl+click
     if (e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.CTRL_MASK)
-        && closest != null)
+            && closest != null)
       this.data.addMultiSelectedImage(closest);
-    // shift + click
+      // shift + click
     else if (e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)
-        && this.lastClicked instanceof MapillaryImage) {
+            && this.lastClicked instanceof MapillaryImage) {
       if (this.closest != null && this.lastClicked != null
-          && this.closest.getSequence() == (this.lastClicked).getSequence()) {
+              && this.closest.getSequence() == (this.lastClicked).getSequence()) {
         int i = this.closest.getSequence().getImages().indexOf(this.closest);
         int j = this.lastClicked.getSequence().getImages()
-            .indexOf(this.lastClicked);
+                .indexOf(this.lastClicked);
         if (i < j)
-          this.data.addMultiSelectedImage(new ArrayList<>(this.closest.getSequence()
-              .getImages().subList(i, j + 1)));
+          this.data.addMultiSelectedImage(new ConcurrentSkipListSet(this.closest.getSequence()
+                  .getImages().subList(i, j + 1)));
         else
-          this.data.addMultiSelectedImage(new ArrayList<>(this.closest.getSequence()
-              .getImages().subList(j, i + 1)));
+          this.data.addMultiSelectedImage(new ConcurrentSkipListSet(this.closest.getSequence()
+                  .getImages().subList(j, i + 1)));
       }
       // click
     } else
@@ -98,8 +98,9 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance())
+    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance()) {
       return;
+    }
 
     if (!Main.pref.getBoolean("mapillary.developer"))
       for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
@@ -117,11 +118,11 @@ public class SelectMode extends AbstractMode {
         Main.map.repaint();
       } else if (this.lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
         this.closest.turn(Math.toDegrees(Math.atan2((e.getX() - this.start.x),
-            -(e.getY() - this.start.y)))
-            - this.closest.getTempCa());
+                -(e.getY() - this.start.y)))
+                - this.closest.getTempCa());
         for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
           img.turn(Math.toDegrees(Math.atan2((e.getX() - this.start.x),
-              -(e.getY() - this.start.y))) - this.closest.getTempCa());
+                  -(e.getY() - this.start.y))) - this.closest.getTempCa());
         }
         Main.map.repaint();
       }
@@ -136,13 +137,13 @@ public class SelectMode extends AbstractMode {
       double from = this.data.getSelectedImage().getTempCa();
       double to = this.data.getSelectedImage().getCa();
       this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to
-          - from));
+              - from));
     } else if (this.data.getSelectedImage().getTempLatLon() != this.data
-        .getSelectedImage().getLatLon()) {
+            .getSelectedImage().getLatLon()) {
       LatLon from = this.data.getSelectedImage().getTempLatLon();
       LatLon to = this.data.getSelectedImage().getLatLon();
       this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to
-          .getX() - from.getX(), to.getY() - from.getY()));
+              .getX() - from.getX(), to.getY() - from.getY()));
     }
     for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
       if (img != null)
@@ -155,28 +156,30 @@ public class SelectMode extends AbstractMode {
    */
   @Override
   public void mouseMoved(MouseEvent e) {
-    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
     if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
-        && Main.map.mapMode != Main.map.mapModeSelect)
+            && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
+    }
+    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
+
     if (closestTemp != null
-        && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
-        && !this.imageHighlighted) {
+            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+            && !this.imageHighlighted) {
       Main.map.mapMode.putValue("active", Boolean.FALSE);
       this.imageHighlighted = true;
 
     } else if (closestTemp == null
-        && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
-        && this.imageHighlighted && this.nothingHighlighted) {
+            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+            && this.imageHighlighted && this.nothingHighlighted) {
       this.nothingHighlighted = false;
       Main.map.mapMode.putValue("active", Boolean.TRUE);
 
     } else if (this.imageHighlighted && !this.nothingHighlighted
-        && Main.map.mapView.getEditLayer().data != null
-        && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {
+            && Main.map.mapView.getEditLayer().data != null
+            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {
 
       for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data
-          .allPrimitives()) {
+              .allPrimitives()) {
         primivitive.setHighlighted(false);
       }
       this.imageHighlighted = false;

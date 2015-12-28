@@ -7,10 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -54,7 +52,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    this.images = new LinkedList<>();
+    this.images = new ArrayList<>();
 
     JFileChooser chooser = new JFileChooser();
     File startDirectory = new File(Main.pref.get("mapillary.start-directory",
@@ -98,7 +96,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         }
       }
       joinImages();
-      MapillaryRecord.getInstance().addCommand(new CommandImport(this.images));
+      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet(images)));
     }
     MapillaryUtils.showAllPictures();
   }

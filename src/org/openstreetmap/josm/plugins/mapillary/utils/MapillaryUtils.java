@@ -10,11 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.SwingUtilities;
 
@@ -39,7 +35,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * Set of utilities.
  *
  * @author nokutu
- *
  */
 public final class MapillaryUtils {
 
@@ -96,7 +91,7 @@ public final class MapillaryUtils {
    * If no timezone information is given, the default timezone of the JVM is used
    * ({@link java.util.TimeZone#getDefault()}).
    *
-   * @param date The string containing the date.
+   * @param date   The string containing the date.
    * @param format The format of the date.
    * @return The date in Epoch format.
    * @throws ParseException
@@ -109,31 +104,28 @@ public final class MapillaryUtils {
    * Calculates the decimal degree-value from a degree value given in
    * degrees-minutes-seconds-format
    *
-   * @param degMinSec
-   *          an array of length 3, the values in there are (in this order)
-   *          degrees, minutes and seconds
-   * @param ref
-   *          the latitude or longitude reference determining if the given value
-   *          is:
-   *          <ul>
-   *          <li>north (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
-   *          south (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
-   *          the equator</li>
-   *          <li>east (
-   *          {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
-   *          west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
-   *          ) of the equator</li>
-   *          </ul>
+   * @param degMinSec an array of length 3, the values in there are (in this order)
+   *                  degrees, minutes and seconds
+   * @param ref       the latitude or longitude reference determining if the given value
+   *                  is:
+   *                  <ul>
+   *                  <li>north (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
+   *                  south (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
+   *                  the equator</li>
+   *                  <li>east (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
+   *                  west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
+   *                  ) of the equator</li>
+   *                  </ul>
    * @return the decimal degree-value for the given input, negative when west of
-   *         0-meridian or south of equator, positive otherwise
-   * @throws IllegalArgumentException
-   *           if {@code degMinSec} doesn't have length 3 or if {@code ref} is
-   *           not one of the values mentioned above
+   * 0-meridian or south of equator, positive otherwise
+   * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is
+   *                                  not one of the values mentioned above
    */
   public static double degMinSecToDouble(RationalNumber[] degMinSec,
-      String ref) {
+                                         String ref) {
     if (degMinSec == null || degMinSec.length != 3) {
       throw new IllegalArgumentException("Array's length must be 3.");
     }
@@ -156,7 +148,7 @@ public final class MapillaryUtils {
     result += degMinSec[2].doubleValue() / 3600; // seconds
 
     if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)
-        || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
+            || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {
       result *= -1;
     }
 
@@ -167,8 +159,7 @@ public final class MapillaryUtils {
   /**
    * Returns the extension of a {@link File} object.
    *
-   * @param file
-   *          The {@link File} object whose extension is going to be returned.
+   * @param file The {@link File} object whose extension is going to be returned.
    * @return A {@code String} object containing the extension in lowercase.
    */
   public static String getExtension(File file) {
@@ -188,8 +179,8 @@ public final class MapillaryUtils {
    * @param mapillaryAbstractImage2
    */
   public static synchronized void join(
-      MapillaryAbstractImage mapillaryAbstractImage,
-      MapillaryAbstractImage mapillaryAbstractImage2) {
+          MapillaryAbstractImage mapillaryAbstractImage,
+          MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;
     MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
 
@@ -220,16 +211,13 @@ public final class MapillaryUtils {
    * Reads a JPG pictures that contains the needed GPS information (position and
    * direction) and creates a new icon in that position.
    *
-   * @param file
-   *          The file where the picture is located.
+   * @param file The file where the picture is located.
    * @return The imported image.
-   * @throws ImageReadException
-   *           If the file isn't an image.
-   * @throws IOException
-   *           If the file doesn't have the valid metadata.
+   * @throws ImageReadException If the file isn't an image.
+   * @throws IOException        If the file doesn't have the valid metadata.
    */
   public static MapillaryImportedImage readJPG(File file)
-      throws IOException, ImageReadException {
+          throws IOException, ImageReadException {
     return readJPG(file, false);
   }
 
@@ -237,44 +225,39 @@ public final class MapillaryUtils {
    * Reads a JPG pictures that contains the needed GPS information (position and
    * direction) and creates a new icon in that position.
    *
-   * @param file
-   *          The {@link File} where the picture is located.
-   * @param exceptionNoTags
-   *          {@code true} if an exception must be thrown if the image doesn't
-   *          have all the needed EXIF tags; {@code false} returns an image in
-   *          the center of the screen.
+   * @param file            The {@link File} where the picture is located.
+   * @param exceptionNoTags {@code true} if an exception must be thrown if the image doesn't
+   *                        have all the needed EXIF tags; {@code false} returns an image in
+   *                        the center of the screen.
    * @return The imported image, whose data has been extracted from the
-   *         picture's metadata.
-   * @throws ImageReadException
-   *           If the {@link File} isn't an image.
-   * @throws IOException
-   *           If the {@link File} doesn't have the valid metadata.
-   * @throws IllegalArgumentException
-   *           if exceptionNoTags is set to {@code true} and the image doesn't
-   *           have the needed EXIF tags.
+   * picture's metadata.
+   * @throws ImageReadException       If the {@link File} isn't an image.
+   * @throws IOException              If the {@link File} doesn't have the valid metadata.
+   * @throws IllegalArgumentException if exceptionNoTags is set to {@code true} and the image doesn't
+   *                                  have the needed EXIF tags.
    */
   public static MapillaryImportedImage readJPG(File file,
-      boolean exceptionNoTags) throws IOException, ImageReadException {
+                                               boolean exceptionNoTags) throws IOException, ImageReadException {
     final ImageMetadata metadata = Imaging.getMetadata(file);
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
       final TiffField lat_ref = jpegMetadata.findEXIFValueWithExactMatch(
-          GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
+              GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF);
       final TiffField lat = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
+              .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE);
       final TiffField lon_ref = jpegMetadata.findEXIFValueWithExactMatch(
-          GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
+              GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF);
       final TiffField lon = jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
+              .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
       final TiffField ca = jpegMetadata.findEXIFValueWithExactMatch(
-          GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+              GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
       final TiffField datetimeOriginal = jpegMetadata
-          .findEXIFValueWithExactMatch(
-              ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+              .findEXIFValueWithExactMatch(
+                      ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
         if (exceptionNoTags)
           throw new IllegalArgumentException(
-              "The image doesn't have the needed EXIF tags.");
+                  "The image doesn't have the needed EXIF tags.");
         else
           return readNoTags(file);
       }
@@ -283,15 +266,15 @@ public final class MapillaryUtils {
       double caValue = 0;
       if (lat.getValue() instanceof RationalNumber[])
         latValue = MapillaryUtils.degMinSecToDouble(
-            (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
+                (RationalNumber[]) lat.getValue(), lat_ref.getValue().toString());
       if (lon.getValue() instanceof RationalNumber[])
         lonValue = MapillaryUtils.degMinSecToDouble(
-            (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
+                (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null)
         return new MapillaryImportedImage(latValue, lonValue, caValue, file,
-            datetimeOriginal.getStringValue());
+                datetimeOriginal.getStringValue());
       else
         return new MapillaryImportedImage(latValue, lonValue, caValue, file);
     }
@@ -302,24 +285,21 @@ public final class MapillaryUtils {
    * Reads a image file that doesn't contain the needed GPS information. And
    * creates a new icon in the middle of the map.
    *
-   * @param file
-   *          The file where the image is located.
+   * @param file The file where the image is located.
    * @return The imported image.
    */
   public static MapillaryImportedImage readNoTags(File file) {
     return readNoTags(file, Main.map.mapView.getProjection()
-        .eastNorth2latlon(Main.map.mapView.getCenter()));
+            .eastNorth2latlon(Main.map.mapView.getCenter()));
   }
 
   /**
    * Reads a image file that doesn't contain the needed GPS information. And
    * creates a new icon in the middle of the map.
    *
-   * @param file
-   *          The file where the image is located.
-   * @param pos
-   *          A {@link LatLon} object indicating the position in the map where
-   *          the image must be set.
+   * @param file The file where the image is located.
+   * @param pos  A {@link LatLon} object indicating the position in the map where
+   *             the image must be set.
    * @return The imported image.
    */
   public static MapillaryImportedImage readNoTags(File file, LatLon pos) {
@@ -334,15 +314,15 @@ public final class MapillaryUtils {
     if (metadata instanceof JpegImageMetadata) {
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
       final TiffField datetimeOriginal = jpegMetadata
-          .findEXIFValueWithExactMatch(
-              ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+              .findEXIFValueWithExactMatch(
+                      ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (datetimeOriginal == null)
         return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-            file);
+                file);
       else {
         try {
           return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-              file, datetimeOriginal.getStringValue());
+                  file, datetimeOriginal.getStringValue());
         } catch (ImageReadException e) {
           Main.error(e);
         }
@@ -354,8 +334,7 @@ public final class MapillaryUtils {
   /**
    * Reads an image in PNG format.
    *
-   * @param file
-   *          The file where the image is located.
+   * @param file The file where the image is located.
    * @return The imported image.
    */
   public static MapillaryImportedImage readPNG(File file) {
@@ -373,12 +352,10 @@ public final class MapillaryUtils {
   /**
    * Zooms to fit all the given {@link MapillaryAbstractImage} objects.
    *
-   * @param images
-   *          The images your are zooming to.
-   * @param select
-   *          Whether the added images must be selected or not.
+   * @param images The images your are zooming to.
+   * @param select Whether the added images must be selected or not.
    */
-  public static void showPictures(final List<MapillaryAbstractImage> images, final boolean select) {
+  public static void showPictures(final Set<MapillaryAbstractImage> images, final boolean select) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
@@ -387,15 +364,18 @@ public final class MapillaryUtils {
         }
       });
     } else {
-      Bounds zoomBounds;
+      Bounds zoomBounds = null;
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
-        zoomBounds = new Bounds(images.get(0).getLatLon());
         for (MapillaryAbstractImage img : images) {
-          zoomBounds.extend(img.getLatLon());
+          if (zoomBounds == null) {
+            zoomBounds = new Bounds(img.getLatLon());
+          } else
+            zoomBounds.extend(img.getLatLon());
         }
       }
+
       // The zoom rectangle must have a minimum size.
       double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);
       double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);
@@ -408,6 +388,7 @@ public final class MapillaryUtils {
       if (Main.main != null)
         MapillaryData.dataUpdated();
     }
+
   }
 
   /**
@@ -417,8 +398,8 @@ public final class MapillaryUtils {
    * @param mapillaryAbstractImage2
    */
   public static synchronized void unjoin(
-      MapillaryAbstractImage mapillaryAbstractImage,
-      MapillaryAbstractImage mapillaryAbstractImage2) {
+          MapillaryAbstractImage mapillaryAbstractImage,
+          MapillaryAbstractImage mapillaryAbstractImage2) {
     MapillaryAbstractImage firstImage = mapillaryAbstractImage;
     MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
 
@@ -428,12 +409,12 @@ public final class MapillaryUtils {
     }
 
     ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(
-        firstImage.getSequence().getImages().subList(0,
-            firstImage.getSequence().getImages().indexOf(secondImage)));
+            firstImage.getSequence().getImages().subList(0,
+                    firstImage.getSequence().getImages().indexOf(secondImage)));
     ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(
-        firstImage.getSequence().getImages().subList(
-            firstImage.getSequence().getImages().indexOf(secondImage),
-            firstImage.getSequence().getImages().size()));
+            firstImage.getSequence().getImages().subList(
+                    firstImage.getSequence().getImages().indexOf(secondImage),
+                    firstImage.getSequence().getImages().size()));
 
     MapillarySequence seq1 = new MapillarySequence();
     MapillarySequence seq2 = new MapillarySequence();
@@ -456,7 +437,7 @@ public final class MapillaryUtils {
   public static void updateHelpText() {
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
-      ret .append(tr("Downloading Mapillary images"));
+      ret.append(tr("Downloading Mapillary images"));
     } else if (MapillaryLayer.getInstance().getData().size() > 0) {
       ret.append(tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getData().size()));
     } else {

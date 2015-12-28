@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
@@ -19,7 +20,7 @@ public abstract class MapillaryExecutableCommand extends MapillaryCommand {
    * @param images
    *          The set of images affected by the command.
    */
-  public MapillaryExecutableCommand(List<MapillaryAbstractImage> images) {
+  public MapillaryExecutableCommand(Set<MapillaryAbstractImage> images) {
     super(images);
   }
 

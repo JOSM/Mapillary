@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -51,28 +53,33 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  * Upload utilities.
  *
  * @author nokutu
- *
  */
 public class UploadUtils {
 
-  /** Required keys for POST */
-  private static final String[] keys = { "key", "AWSAccessKeyId", "acl",
-      "policy", "signature", "Content-Type" };
+  /**
+   * Required keys for POST
+   */
+  private static final String[] keys = {"key", "AWSAccessKeyId", "acl",
+          "policy", "signature", "Content-Type"};
 
-  /** Mapillary upload URL */
+  /**
+   * Mapillary upload URL
+   */
   private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
 
-  /** Count to name temporal files. */
+  /**
+   * Count to name temporal files.
+   */
   private static int c;
 
   private static class SequenceUploadThread extends Thread {
-    private final List<MapillaryAbstractImage> images;
+    private final Set<MapillaryAbstractImage> images;
     private final UUID uuid;
     private final boolean delete;
     private final ThreadPoolExecutor ex;
 
-    private SequenceUploadThread(List<MapillaryAbstractImage> images,
-        boolean delete) {
+    private SequenceUploadThread(Set<MapillaryAbstractImage> images,
+                                 boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
       this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(15));
@@ -103,9 +110,10 @@ public class UploadUtils {
       }
       if (this.delete)
         MapillaryRecord.getInstance()
-            .addCommand(new CommandDelete(this.images));
+                .addCommand(new CommandDelete(images));
     }
   }
+
   private static class SingleUploadThread extends Thread {
 
     private final MapillaryImportedImage image;
@@ -128,17 +136,14 @@ public class UploadUtils {
    *
    * @param image
    * @return A File object containing the picture and an updated version of the
-   *         EXIF tags.
-   * @throws ImageReadException
-   *           if there are errors reading the image from the file.
-   * @throws IOException
-   *           if there are errors getting the metadata from the file or writing
-   *           the output.
-   * @throws ImageWriteException
-   *           if there are errors writing the image in the file.
+   * EXIF tags.
+   * @throws ImageReadException  if there are errors reading the image from the file.
+   * @throws IOException         if there are errors getting the metadata from the file or writing
+   *                             the output.
+   * @throws ImageWriteException if there are errors writing the image in the file.
    */
   public static File updateFile(MapillaryImportedImage image)
-      throws ImageReadException, IOException, ImageWriteException {
+          throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory = null;
     TiffOutputDirectory gpsDirectory = null;
@@ -166,15 +171,15 @@ public class UploadUtils {
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
     gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
-        GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+            GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
     gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-        RationalNumber.valueOf(image.getCa()));
+            RationalNumber.valueOf(image.getCa()));
 
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
     exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-        ((MapillaryImportedImage) image).getDate("yyyy/MM/dd HH:mm:ss"));
+            ((MapillaryImportedImage) image).getDate("yyyy/MM/dd HH:mm:ss"));
 
     // Removes the ImageDescription tag, that causes problems in the upload.
     rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
@@ -196,7 +201,6 @@ public class UploadUtils {
    * Uploads the given MapillaryImportedImage object.
    *
    * @param image
-   *
    */
   public static void upload(MapillaryImportedImage image) {
     upload(image, UUID.randomUUID());
@@ -204,13 +208,12 @@ public class UploadUtils {
 
   /**
    * @param image
-   * @param uuid
-   *          The UUID used to create the sequence.
+   * @param uuid  The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
     String key = MapillaryUser.getUsername() + "/" + uuid.toString() + "/"
-        + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
-        + image.getCa() + "_" + image.getCapturedAt() + ".jpg";
+            + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
+            + image.getCa() + "_" + image.getCapturedAt() + ".jpg";
 
     String policy = null;
     String signature = null;
@@ -235,11 +238,10 @@ public class UploadUtils {
    * @param file
    * @param hash
    * @throws IOException
-   * @throws IllegalArgumentException
-   *           if the hash doesn't contain all the needed keys.
+   * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    */
   public static void uploadFile(File file, HashMap<String, String> hash)
-      throws IOException {
+          throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();
     HttpClient httpClient = builder.build();
     HttpPost httpPost = new HttpPost(UPLOAD_URL);
@@ -249,7 +251,7 @@ public class UploadUtils {
       if (hash.get(key) == null)
         throw new IllegalArgumentException();
       entityBuilder.addPart(key, new StringBody(hash.get(key),
-          ContentType.TEXT_PLAIN));
+              ContentType.TEXT_PLAIN));
     }
     entityBuilder.addPart("file", new FileBody(file));
     HttpEntity entity = entityBuilder.build();
@@ -267,13 +269,11 @@ public class UploadUtils {
   /**
    * Uploads the given {@link MapillarySequence}.
    *
-   * @param sequence
-   *          The sequence to upload. It must contain only
-   *          {@link MapillaryImportedImage} objects.
-   * @param delete
-   *          Whether the images must be deleted after upload or not.
+   * @param sequence The sequence to upload. It must contain only
+   *                 {@link MapillaryImportedImage} objects.
+   * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    Main.worker.submit(new SequenceUploadThread(sequence.getImages(), delete));
+    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet(sequence.getImages()), delete));
   }
 }

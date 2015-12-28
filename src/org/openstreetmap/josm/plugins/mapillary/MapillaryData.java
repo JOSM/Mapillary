@@ -1,8 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.openstreetmap.josm.Main;
@@ -16,28 +17,37 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  * @author nokutu
  * @see MapillaryAbstractImage
  * @see MapillarySequence
- *
  */
 public class MapillaryData {
 
-  private List<MapillaryAbstractImage> images;
-  /** The image currently selected, this is the one being shown. */
+  private Set<MapillaryAbstractImage> images;
+  /**
+   * The image currently selected, this is the one being shown.
+   */
   private MapillaryAbstractImage selectedImage;
-  /** The image under the cursor. */
+  /**
+   * The image under the cursor.
+   */
   private MapillaryAbstractImage highlightedImage;
-  /** All the images selected, can be more than one. */
-  private final List<MapillaryAbstractImage> multiSelectedImages;
-  /** Listeners of the class. */
+  /**
+   * All the images selected, can be more than one.
+   */
+  private final Set<MapillaryAbstractImage> multiSelectedImages;
+  /**
+   * Listeners of the class.
+   */
   private final CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
-  /** The bounds of the areas for which the pictures have been downloaded. */
+  /**
+   * The bounds of the areas for which the pictures have been downloaded.
+   */
   public List<Bounds> bounds;
 
   /**
    * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
-    this.images = new CopyOnWriteArrayList<>();
-    this.multiSelectedImages = new ArrayList<>();
+    this.images = new ConcurrentSkipListSet<>();
+    this.multiSelectedImages = new ConcurrentSkipListSet<>();
     this.selectedImage = null;
 
     // Adds the basic set of listeners.
@@ -51,8 +61,7 @@ public class MapillaryData {
   /**
    * Adds an MapillaryImage to the object, and then repaints mapView.
    *
-   * @param image
-   *          The image to be added.
+   * @param image The image to be added.
    */
   public synchronized void add(MapillaryAbstractImage image) {
     add(image, true);
@@ -62,10 +71,8 @@ public class MapillaryData {
    * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
    * needed for concurrency.
    *
-   * @param image
-   *          The image to be added.
-   * @param update
-   *          Whether the map must be updated or not.
+   * @param image  The image to be added.
+   * @param update Whether the map must be updated or not.
    */
   public synchronized void add(MapillaryAbstractImage image, boolean update) {
     if (!this.images.contains(image)) {
@@ -79,22 +86,19 @@ public class MapillaryData {
   /**
    * Adds a set of MapillaryImages to the object, and then repaints mapView.
    *
-   * @param images
-   *          The set of images to be added.
+   * @param images The set of images to be added.
    */
-  public synchronized void add(List<MapillaryAbstractImage> images) {
+  public synchronized void add(Set<MapillaryAbstractImage> images) {
     add(images, true);
   }
 
   /**
    * Adds a set of {link MapillaryAbstractImage} objects to this object.
    *
-   * @param images
-   *          The set of images to be added.
-   * @param update
-   *          Whether the map must be updated or not.
+   * @param images The set of images to be added.
+   * @param update Whether the map must be updated or not.
    */
-  public synchronized void add(List<MapillaryAbstractImage> images, boolean update) {
+  public synchronized void add(Set<MapillaryAbstractImage> images, boolean update) {
     for (MapillaryAbstractImage image : images) {
       add(image, update);
     }
@@ -103,8 +107,7 @@ public class MapillaryData {
   /**
    * Adds a new listener.
    *
-   * @param lis
-   *          Listener to be added.
+   * @param lis Listener to be added.
    */
   public void addListener(MapillaryDataListener lis) {
     this.listeners.add(lis);
@@ -114,8 +117,7 @@ public class MapillaryData {
    * Adds a {@link MapillaryImage} object to the list of selected images, (when
    * ctrl + click)
    *
-   * @param image
-   *          The {@link MapillaryImage} object to be added.
+   * @param image The {@link MapillaryImage} object to be added.
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
@@ -132,10 +134,9 @@ public class MapillaryData {
    * Adds a set of {@code MapillaryAbstractImage} objects to the list of
    * selected images.
    *
-   * @param images
-   *          A List object containing the set of images to be added.
+   * @param images A List object containing the set of images to be added.
    */
-  public void addMultiSelectedImage(List<MapillaryAbstractImage> images) {
+  public void addMultiSelectedImage(Set<MapillaryAbstractImage> images) {
     for (MapillaryAbstractImage image : images)
       if (!this.multiSelectedImages.contains(image)) {
         if (this.getSelectedImage() != null)
@@ -150,12 +151,11 @@ public class MapillaryData {
    * Removes an image from the database. From the {@link List} in this object
    * and from its {@link MapillarySequence}.
    *
-   * @param image
-   *          The {@link MapillaryAbstractImage} that is going to be deleted.
+   * @param image The {@link MapillaryAbstractImage} that is going to be deleted.
    */
   public synchronized void remove(MapillaryAbstractImage image) {
     if (Main.main != null
-        && MapillaryMainDialog.getInstance().getImage() != null) {
+            && MapillaryMainDialog.getInstance().getImage() != null) {
       MapillaryMainDialog.getInstance().setImage(null);
       MapillaryMainDialog.getInstance().updateImage();
     }
@@ -170,20 +170,19 @@ public class MapillaryData {
   /**
    * Removes a set of images from the database.
    *
-   * @param images
-   *          A {@link List} of {@link MapillaryAbstractImage} objects that are
-   *          going to be removed.
+   * @param images A {@link List} of {@link MapillaryAbstractImage} objects that are
+   *               going to be removed.
    */
-  public synchronized void remove(List<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage img : images)
+  public synchronized void remove(Set<MapillaryAbstractImage> images) {
+    for (MapillaryAbstractImage img : images) {
       remove(img);
+    }
   }
 
   /**
    * Removes a listener.
    *
-   * @param lis
-   *          Listener to be removed.
+   * @param lis Listener to be removed.
    */
   public void removeListener(MapillaryDataListener lis) {
     this.listeners.remove(lis);
@@ -192,8 +191,7 @@ public class MapillaryData {
   /**
    * Highlights the image under the cursor.
    *
-   * @param image
-   *          The image under the cursor.
+   * @param image The image under the cursor.
    */
   public void setHighlightedImage(MapillaryAbstractImage image) {
     this.highlightedImage = image;
@@ -221,7 +219,7 @@ public class MapillaryData {
    *
    * @return A List object containing all images.
    */
-  public synchronized List<MapillaryAbstractImage> getImages() {
+  public synchronized Set<MapillaryAbstractImage> getImages() {
     return this.images;
   }
 
@@ -247,9 +245,8 @@ public class MapillaryData {
    * following visible MapillaryImage is selected. In case there is none, does
    * nothing.
    *
-   * @throws IllegalStateException
-   *           if the selected image is null or the selected image doesn't
-   *           belong to a sequence.
+   * @throws IllegalStateException if the selected image is null or the selected image doesn't
+   *                               belong to a sequence.
    */
   public void selectNext() {
     selectNext(Main.pref.getBoolean("mapillary.move-to-picture", true));
@@ -260,11 +257,9 @@ public class MapillaryData {
    * following visible MapillaryImage is selected. In case there is none, does
    * nothing.
    *
-   * @param moveToPicture
-   *          True if the view must me moved to the next picture.
-   * @throws IllegalStateException
-   *           if the selected image is null or the selected image doesn't
-   *           belong to a sequence.
+   * @param moveToPicture True if the view must me moved to the next picture.
+   * @throws IllegalStateException if the selected image is null or the selected image doesn't
+   *                               belong to a sequence.
    */
   public void selectNext(boolean moveToPicture) {
     if (getSelectedImage() == null)
@@ -286,9 +281,8 @@ public class MapillaryData {
    * previous visible MapillaryImage is selected. In case there is none, does
    * nothing.
    *
-   * @throws IllegalStateException
-   *           if the selected image is null or the selected image doesn't
-   *           belong to a sequence.
+   * @throws IllegalStateException if the selected image is null or the selected image doesn't
+   *                               belong to a sequence.
    */
   public void selectPrevious() {
     selectPrevious(Main.pref.getBoolean("mapillary.move-to-picture", true));
@@ -300,11 +294,9 @@ public class MapillaryData {
    * nothing. * @throws IllegalStateException if the selected image is null or
    * the selected image doesn't belong to a sequence.
    *
-   * @param moveToPicture
-   *          True if the view must me moved to the previous picture.
-   * @throws IllegalStateException
-   *           if the selected image is null or the selected image doesn't
-   *           belong to a sequence.
+   * @param moveToPicture True if the view must me moved to the previous picture.
+   * @throws IllegalStateException if the selected image is null or the selected image doesn't
+   *                               belong to a sequence.
    */
   public void selectPrevious(boolean moveToPicture) {
     if (getSelectedImage() == null)
@@ -324,9 +316,7 @@ public class MapillaryData {
   /**
    * Selects a new image.If the user does ctrl + click, this isn't triggered.
    *
-   * @param image
-   *          The MapillaryImage which is going to be selected
-   *
+   * @param image The MapillaryImage which is going to be selected
    */
   public void setSelectedImage(MapillaryAbstractImage image) {
     setSelectedImage(image, false);
@@ -336,16 +326,16 @@ public class MapillaryData {
    * Selects a new image.If the user does ctrl+click, this isn't triggered. You
    * can choose whether to center the view on the new image or not.
    *
-   * @param image
-   *          The {@link MapillaryImage} which is going to be selected.
-   * @param zoom
-   *          True if the view must be centered on the image; false otherwise.
+   * @param image The {@link MapillaryImage} which is going to be selected.
+   * @param zoom  True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = this.selectedImage;
     this.selectedImage = image;
     this.multiSelectedImages.clear();
-    this.multiSelectedImages.add(image);
+    if (image != null) {
+      this.multiSelectedImages.add(image);
+    }
     if (image != null && Main.main != null && image instanceof MapillaryImage) {
       MapillaryImage mapillaryImage = (MapillaryImage) image;
       // Downloading thumbnails of surrounding pictures.
@@ -368,7 +358,7 @@ public class MapillaryData {
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
+                                        MapillaryAbstractImage newImage) {
     if (this.listeners.isEmpty())
       return;
     for (MapillaryDataListener lis : this.listeners)
@@ -382,7 +372,7 @@ public class MapillaryData {
    *
    * @return A List object containing all the images selected.
    */
-  public List<MapillaryAbstractImage> getMultiSelectedImages() {
+  public Set<MapillaryAbstractImage> getMultiSelectedImages() {
     return this.multiSelectedImages;
   }
 
@@ -391,8 +381,8 @@ public class MapillaryData {
    *
    * @param images the new image list (previously set images are completely replaced)
    */
-  public synchronized void setImages(List<MapillaryAbstractImage> images) {
-    this.images = new ArrayList<>(images);
+  public synchronized void setImages(Set<MapillaryAbstractImage> images) {
+    this.images = new ConcurrentSkipListSet<>(images);
   }
 
   /**

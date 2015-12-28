@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -25,7 +26,7 @@ public class CommandImport extends MapillaryExecutableCommand {
    *          The set of images that are going to be added. Might be in the same
    *          sequence or not.
    */
-  public CommandImport(List<MapillaryAbstractImage> images) {
+  public CommandImport(Set<MapillaryAbstractImage> images) {
     super(images);
   }
 

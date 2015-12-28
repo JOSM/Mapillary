@@ -38,6 +38,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -46,10 +47,9 @@ import org.openstreetmap.josm.tools.Shortcut;
  * Toggle dialog that shows an image and some buttons.
  *
  * @author nokutu
- *
  */
 public class MapillaryMainDialog extends ToggleDialog implements
-    ICachedLoaderListener, MapillaryDataListener {
+        ICachedLoaderListener, MapillaryDataListener {
 
   private static final long serialVersionUID = 6856496736429480600L;
 
@@ -61,10 +61,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private final SideButton nextButton = new SideButton(new NextPictureAction());
   private final SideButton previousButton = new SideButton(
-      new PreviousPictureAction());
-  /** Button used to jump to the image following the red line */
+          new PreviousPictureAction());
+  /**
+   * Button used to jump to the image following the red line
+   */
   public final SideButton redButton = new SideButton(new RedAction());
-  /** Button used to jump to the image following the blue line */
+  /**
+   * Button used to jump to the image following the blue line
+   */
   public final SideButton blueButton = new SideButton(new BlueAction());
 
   private final SideButton playButton = new SideButton(new PlayAction());
@@ -75,18 +79,23 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Buttons mode.
    *
    * @author nokutu
-   *
    */
   public enum MODE {
-    /** Standard mode to view pictures. */
+    /**
+     * Standard mode to view pictures.
+     */
     NORMAL,
-    /** Mode when in walk. */
+    /**
+     * Mode when in walk.
+     */
     WALK;
   }
 
   private JPanel buttonsPanel;
 
-  /** Object containing the shown image and that handles zoom and drag */
+  /**
+   * Object containing the shown image and that handles zoom and drag
+   */
   public MapillaryImageDisplay mapillaryImageDisplay;
 
   private MapillaryCache imageCache;
@@ -94,9 +103,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   private MapillaryMainDialog() {
     super(tr(BASE_TITLE), "mapillary.png", tr("Open Mapillary window"),
-        Shortcut.registerShortcut(tr("Mapillary dialog"),
-            tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
-        200, false, MapillaryPreferenceSetting.class);
+            Shortcut.registerShortcut(tr("Mapillary dialog"),
+                    tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
+            200, false, MapillaryPreferenceSetting.class);
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
@@ -104,9 +113,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
     this.redButton.setForeground(Color.RED);
 
     createLayout(
-        this.mapillaryImageDisplay,
-        Arrays.asList(new SideButton[] {this.blueButton, this.previousButton, this.nextButton, this.redButton}),
-        Main.pref.getBoolean("mapillary.reverse-buttons"));
+            this.mapillaryImageDisplay,
+            Arrays.asList(new SideButton[]{this.blueButton, this.previousButton, this.nextButton, this.redButton}),
+            Main.pref.getBoolean("mapillary.reverse-buttons"));
     disableAllButtons();
 
   }
@@ -116,17 +125,17 @@ public class MapillaryMainDialog extends ToggleDialog implements
    */
   private void addShortcuts() {
     this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
+            KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
     this.nextButton.getActionMap().put("next", new NextPictureAction());
     this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke("PAGE_UP"), "previous");
+            KeyStroke.getKeyStroke("PAGE_UP"), "previous");
     this.previousButton.getActionMap().put("previous",
-        new PreviousPictureAction());
+            new PreviousPictureAction());
     this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
+            KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
     this.blueButton.getActionMap().put("blue", new BlueAction());
     this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-        KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
+            KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
     this.redButton.getActionMap().put("red", new RedAction());
   }
 
@@ -144,23 +153,22 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Sets a new mode for the dialog.
    *
-   * @param mode
-   *          The mode to be set.
+   * @param mode The mode to be set.
    */
   public void setMode(MODE mode) {
     switch (mode) {
       case WALK:
         createLayout(
-            this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] {playButton, pauseButton, stopButton}),
-            Main.pref.getBoolean("mapillary.reverse-buttons"));
+                this.mapillaryImageDisplay,
+                Arrays.asList(new SideButton[]{playButton, pauseButton, stopButton}),
+                Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
       case NORMAL:
       default:
         createLayout(
-            this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[] {blueButton, previousButton, nextButton, redButton}),
-            Main.pref.getBoolean("mapillary.reverse-buttons"));
+                this.mapillaryImageDisplay,
+                Arrays.asList(new SideButton[]{blueButton, previousButton, nextButton, redButton}),
+                Main.pref.getBoolean("mapillary.reverse-buttons"));
         break;
     }
     disableAllButtons();
@@ -188,9 +196,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Downloads the picture of the selected MapillaryImage and sets in the
    * MapillaryImageDisplay object.
    *
-   * @param fullQuality
-   *          If the full quality picture must be downloaded or just the
-   *          thumbnail.
+   * @param fullQuality If the full quality picture must be downloaded or just the
+   *                    thumbnail.
    */
   public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -242,7 +249,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
-            MapillaryCache.Type.THUMBNAIL);
+                MapillaryCache.Type.THUMBNAIL);
         try {
           this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
@@ -250,11 +257,12 @@ public class MapillaryMainDialog extends ToggleDialog implements
         }
 
         // Downloads the full resolution image.
-        if (fullQuality) {
+        if (fullQuality || new MapillaryCache(mapillaryImage.getKey(),
+                MapillaryCache.Type.FULL_IMAGE).get() != null) {
           if (this.imageCache != null)
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(),
-              MapillaryCache.Type.FULL_IMAGE);
+                  MapillaryCache.Type.FULL_IMAGE);
           try {
             this.imageCache.submit(this, false);
           } catch (IOException e) {
@@ -276,7 +284,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
 
   }
 
-  /** Disables all the buttons in the dialog */
+  /**
+   * Disables all the buttons in the dialog
+   */
   private void disableAllButtons() {
     this.nextButton.setEnabled(false);
     this.previousButton.setEnabled(false);
@@ -288,8 +298,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Sets a new MapillaryImage to be shown.
    *
-   * @param image
-   *          The image to be shown.
+   * @param image The image to be shown.
    */
   public synchronized void setImage(MapillaryAbstractImage image) {
     this.image = image;
@@ -337,7 +346,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Action class form the next image button.
    *
    * @author nokutu
-   *
    */
   private static class NextPictureAction extends AbstractAction {
 
@@ -361,7 +369,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Action class for the previous image button.
    *
    * @author nokutu
-   *
    */
   private class PreviousPictureAction extends AbstractAction {
 
@@ -373,7 +380,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public PreviousPictureAction() {
       putValue(NAME, tr("Previous picture"));
       putValue(SHORT_DESCRIPTION,
-          tr("Shows the previous picture in the sequence"));
+              tr("Shows the previous picture in the sequence"));
     }
 
     @Override
@@ -386,7 +393,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Action class to jump to the image following the red line.
    *
    * @author nokutu
-   *
    */
   private class RedAction extends AbstractAction {
 
@@ -398,14 +404,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public RedAction() {
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
-          tr("Jumps to the picture at the other side of the red line"));
+              tr("Jumps to the picture at the other side of the red line"));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-            .setSelectedImage(MapillaryLayer.getInstance().getRed(), true);
+                .setSelectedImage(MapillaryLayer.getInstance().getRed(), true);
       }
     }
   }
@@ -414,7 +420,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
    * Action class to jump to the image following the blue line.
    *
    * @author nokutu
-   *
    */
   private class BlueAction extends AbstractAction {
 
@@ -426,14 +431,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public BlueAction() {
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,
-          tr("Jumps to the picture at the other side of the blue line"));
+              tr("Jumps to the picture at the other side of the blue line"));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-            .setSelectedImage(MapillaryLayer.getInstance().getBlue(), true);
+                .setSelectedImage(MapillaryLayer.getInstance().getBlue(), true);
       }
     }
   }
@@ -527,7 +532,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
    */
   @Override
   public void loadingFinished(final CacheEntry data,
-      final CacheEntryAttributes attributes, final LoadResult result) {
+                              final CacheEntryAttributes attributes, final LoadResult result) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(new Runnable() {
         @Override
@@ -542,9 +547,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
           return;
         }
         if (
-            this.mapillaryImageDisplay.getImage() == null
-            || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
-        ) {
+                this.mapillaryImageDisplay.getImage() == null
+                        || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
+                ) {
           this.mapillaryImageDisplay.setImage(img);
         }
       } catch (IOException e) {
@@ -556,16 +561,13 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Creates the layout of the dialog.
    *
-   * @param data
-   *          The content of the dialog
-   * @param buttons
-   *          The buttons where you can click
-   * @param reverse
-   *          {@code true} if the buttons should go at the top; {@code false}
-   *          otherwise.
+   * @param data    The content of the dialog
+   * @param buttons The buttons where you can click
+   * @param reverse {@code true} if the buttons should go at the top; {@code false}
+   *                otherwise.
    */
   public void createLayout(Component data, List<SideButton> buttons,
-      boolean reverse) {
+                           boolean reverse) {
     this.removeAll();
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
@@ -574,8 +576,8 @@ public class MapillaryMainDialog extends ToggleDialog implements
       this.buttonsPanel = new JPanel(new GridLayout(1, 1));
       if (!buttons.isEmpty() && buttons.get(0) != null) {
         final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
-            "dialog.align.left", false) ? new FlowLayout(FlowLayout.LEFT)
-            : new GridLayout(1, buttons.size()));
+                "dialog.align.left", false) ? new FlowLayout(FlowLayout.LEFT)
+                : new GridLayout(1, buttons.size()));
         this.buttonsPanel.add(buttonRowPanel);
         for (SideButton button : buttons)
           buttonRowPanel.add(button);

@@ -5,3 +5,5 @@
 /.gradle/
 /.settings
 /test/data/preferences/
+*.iml
+.idea/
