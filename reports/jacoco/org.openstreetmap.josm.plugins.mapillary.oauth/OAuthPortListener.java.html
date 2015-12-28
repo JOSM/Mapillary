@@ -65,12 +65,12 @@ public class OAuthPortListener extends Thread {
 <span class="fc" id="L65">      in.close();</span>
 <span class="fc" id="L66">      serverSocket.close();</span>
 
-<span class="fc" id="L68">      MapillaryUser.reset();</span>
+<span class="nc" id="L68">      MapillaryUser.reset();</span>
 
-<span class="fc" id="L70">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot; + accessToken);</span>
+<span class="nc" id="L70">      Main.info(&quot;Successful login with Mapillary, the access token is: &quot; + accessToken);</span>
       // Saves the access token in preferences.
-<span class="fc" id="L72">      MapillaryUser.setTokenValid(true);</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
+<span class="nc" id="L72">      MapillaryUser.setTokenValid(true);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">      if (Main.main != null) {</span>
 <span class="nc" id="L74">        Main.pref.put(&quot;mapillary.access-token&quot;, accessToken);</span>
 <span class="nc" id="L75">        String username = MapillaryUser.getUsername();</span>
 <span class="nc" id="L76">        Main.info(&quot;The username is: &quot; + username);</span>
@@ -78,13 +78,13 @@ public class OAuthPortListener extends Thread {
 <span class="nc" id="L78">          callback.onLogin(username);</span>
         }
       }
-<span class="pc bpc" id="L81" title="24 of 32 branches missed.">    } catch (BindException e) {</span>
+<span class="nc bnc" id="L81" title="All 32 branches missed.">    } catch (BindException e) {</span>
 <span class="nc" id="L82">      Main.warn(e);</span>
 <span class="nc" id="L83">      return;</span>
 <span class="nc" id="L84">    } catch (IOException e) {</span>
 <span class="nc" id="L85">      Main.error(e);</span>
-<span class="fc" id="L86">    }</span>
-<span class="fc" id="L87">  }</span>
+<span class="nc" id="L86">    }</span>
+<span class="nc" id="L87">  }</span>
 
   private static void writeContent(PrintWriter out) {
 <span class="fc" id="L90">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>

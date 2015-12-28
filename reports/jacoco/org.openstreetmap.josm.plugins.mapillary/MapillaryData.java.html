@@ -46,8 +46,8 @@ public class MapillaryData {
    * Creates a new object and adds the initial set of listeners.
    */
 <span class="fc" id="L48">  protected MapillaryData() {</span>
-<span class="fc" id="L49">    this.images = new ConcurrentSkipListSet&lt;&gt;();</span>
-<span class="fc" id="L50">    this.multiSelectedImages = new ConcurrentSkipListSet&lt;&gt;();</span>
+<span class="fc" id="L49">    this.images = Collections.newSetFromMap(new ConcurrentHashMap&lt;MapillaryAbstractImage, Boolean&gt;());</span>
+<span class="fc" id="L50">    this.multiSelectedImages = Collections.newSetFromMap(new ConcurrentHashMap&lt;MapillaryAbstractImage, Boolean&gt;());</span>
 <span class="fc" id="L51">    this.selectedImage = null;</span>
 
     // Adds the basic set of listeners.
@@ -382,8 +382,9 @@ public class MapillaryData {
    * @param images the new image list (previously set images are completely replaced)
    */
   public synchronized void setImages(Set&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc" id="L385">    this.images = new ConcurrentSkipListSet&lt;&gt;(images);</span>
-<span class="nc" id="L386">  }</span>
+<span class="nc" id="L385">    this.images.clear();</span>
+<span class="nc" id="L386">    this.images.addAll(images);</span>
+<span class="nc" id="L387">  }</span>
 
   /**
    * Returns the amount of images contained by this object.
@@ -391,7 +392,7 @@ public class MapillaryData {
    * @return The amount of images in stored.
    */
   public int size() {
-<span class="fc" id="L394">    return this.images.size();</span>
+<span class="fc" id="L395">    return this.images.size();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
