@@ -46,8 +46,8 @@ public class MapillaryData {
    * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
-    this.images = new ConcurrentSkipListSet<>();
-    this.multiSelectedImages = new ConcurrentSkipListSet<>();
+    this.images = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
+    this.multiSelectedImages = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
     this.selectedImage = null;
 
     // Adds the basic set of listeners.
@@ -382,7 +382,8 @@ public class MapillaryData {
    * @param images the new image list (previously set images are completely replaced)
    */
   public synchronized void setImages(Set<MapillaryAbstractImage> images) {
-    this.images = new ConcurrentSkipListSet<>(images);
+    this.images.clear();
+    this.images.addAll(images);
   }
 
   /**
