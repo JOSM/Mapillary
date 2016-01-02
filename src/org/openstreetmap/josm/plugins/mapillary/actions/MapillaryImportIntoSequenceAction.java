@@ -45,9 +45,8 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    */
   public MapillaryImportIntoSequenceAction() {
     super(tr("Import pictures into sequence"), MapillaryPlugin
-        .getProvider("icon24.png"), tr("Import local pictures"), Shortcut
-        .registerShortcut("Import Mapillary Sequence",
-            tr("Import pictures into Mapillary layer in a sequence"),
+        .getProvider("icon24.png"), tr("Import local pictures"),
+        Shortcut.registerShortcut("Import Mapillary Sequence", tr("Import pictures into Mapillary layer in a sequence"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
         "mapillaryImportSequence", false);
     this.setEnabled(false);

@@ -42,12 +42,8 @@ public class MapillaryImportAction extends JosmAction {
         tr("Import pictures"),
         MapillaryPlugin.getProvider("icon24.png"),
         tr("Import local pictures"),
-        Shortcut.registerShortcut(
-            "Import Mapillary",
-            tr("Import pictures into Mapillary layer"),
-            KeyEvent.CHAR_UNDEFINED,
-            Shortcut.NONE
-        ),
+        Shortcut.registerShortcut("Import Mapillary", tr("Import pictures into Mapillary layer"),
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
         false,
         "mapillaryImport",
         false);

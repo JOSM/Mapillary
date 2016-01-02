@@ -30,9 +30,8 @@ public class MapillaryZoomAction extends JosmAction implements
    */
   public MapillaryZoomAction() {
     super(tr("Zoom to selected image"), MapillaryPlugin
-        .getProvider("icon24.png"), tr("Zoom to selected image"), Shortcut
-        .registerShortcut("Zoom Mapillary",
-            tr("Zoom to the currently selected Mapillary image"),
+        .getProvider("icon24.png"), tr("Zoom to selected image"),
+        Shortcut.registerShortcut("Zoom Mapillary", tr("Zoom to the currently selected Mapillary image"),
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, "mapillaryZoom",
         false);
     this.setEnabled(false);
