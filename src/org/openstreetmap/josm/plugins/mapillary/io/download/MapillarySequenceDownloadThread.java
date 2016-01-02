@@ -113,7 +113,7 @@ public class MapillarySequenceDownloadThread extends Thread {
           }
         }
 
-        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet(finalImages), false);
+        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<MapillaryAbstractImage>(finalImages), false);
       }
     } catch (IOException e) {
       Main.error("Error reading the url " + MapillaryURL.searchSequenceURL(bounds, page) + " might be a Mapillary problem.", e);
@@ -121,7 +121,7 @@ public class MapillarySequenceDownloadThread extends Thread {
     MapillaryData.dataUpdated();
   }
 
-  private boolean isInside(MapillaryAbstractImage image) {
+  private static boolean isInside(MapillaryAbstractImage image) {
     for (Bounds b : MapillaryLayer.getInstance().getData().bounds) {
       if (b.contains(image.getLatLon())) {
         return true;

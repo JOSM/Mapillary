@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -179,7 +178,7 @@ public class UploadUtils {
 
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
     exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-            ((MapillaryImportedImage) image).getDate("yyyy/MM/dd HH:mm:ss"));
+            image.getDate("yyyy/MM/dd HH:mm:ss"));
 
     // Removes the ImageDescription tag, that causes problems in the upload.
     rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
@@ -274,6 +273,6 @@ public class UploadUtils {
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet(sequence.getImages()), delete));
+    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
   }
 }

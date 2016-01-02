@@ -55,7 +55,7 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
   }
 
-  private Object getPrivateField(MapillaryPreferenceSetting object, String name) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+  private static Object getPrivateField(MapillaryPreferenceSetting object, String name) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
     Field field = object.getClass().getDeclaredField(name);
     field.setAccessible(true);
     return field.get(object);

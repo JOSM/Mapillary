@@ -28,7 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 public class MapillaryDownloader {
 
   /** Possible download modes. */
-  public enum MODES {Automatic, Semiautomatic, Manual};
+  public enum MODES {Automatic, Semiautomatic, Manual}
 
   /** All the Threads that have been run. Used to interrupt them properly. */
   private static List<Thread> threads = new ArrayList<>();

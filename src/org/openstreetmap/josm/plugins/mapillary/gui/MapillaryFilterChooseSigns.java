@@ -65,7 +65,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     setPreferredSize(new Dimension(600, 150));
   }
 
-  private void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,
+  private static void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,
       final boolean isSelected, final String iconPath,  final String labelText) {
     final JPanel checkBoxPanel = new JPanel();
     final JLabel checkBoxLabel = new JLabel(labelText);

@@ -30,7 +30,7 @@ public class CommandJoin extends MapillaryExecutableCommand {
    *           if the List size is different from 2.
    */
   public CommandJoin(List<MapillaryAbstractImage> images) {
-    super(new ConcurrentSkipListSet(images));
+    super(new ConcurrentSkipListSet<>(images));
     a = images.get(0);
     b = images.get(1);
     if (images.size() != 2)

@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.traffico;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.awt.Color;
 
@@ -20,7 +21,7 @@ public class TrafficoSignElementTest {
 
   @Test(expected=IllegalArgumentException.class)
   public void testNullColor() {
-    new TrafficoSignElement('\ufeed', null);
+    assertNotNull(new TrafficoSignElement('\ufeed', null));
   }
 
 }

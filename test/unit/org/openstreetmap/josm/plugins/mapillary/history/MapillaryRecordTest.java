@@ -15,7 +15,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandJoin;
@@ -55,18 +54,18 @@ public class MapillaryRecordTest extends AbstractTest {
   @Test
   public void commandTest() {
     MapillaryCommand cmd12 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
             0.1, 0.1);
     MapillaryCommand cmd23 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})),
             0.1, 0.1);
     MapillaryCommand cmd13 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img3})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img3})),
             0.1, 0.1);
     MapillaryCommand cmd1 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1})), 0.1, 0.1);
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1})), 0.1, 0.1);
     MapillaryCommand cmd31 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img3, this.img1})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img3, this.img1})),
             0.2, 0.2);
     this.record.addCommand(cmd12);
     this.record.addCommand(cmd23);
@@ -111,10 +110,10 @@ public class MapillaryRecordTest extends AbstractTest {
   @Test
   public void commandMoveTest() {
     CommandMove cmd1 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
             0.1, 0.1);
     CommandMove cmd2 = new CommandMove(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
             0.1, 0.1);
 
     this.record.addCommand(cmd1);
@@ -145,10 +144,10 @@ public class MapillaryRecordTest extends AbstractTest {
   @Test
   public void commandTurnTest() {
     CommandTurn cmd1 = new CommandTurn(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
             0.2);
     CommandTurn cmd2 = new CommandTurn(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2})),
             0.1);
 
     this.record.addCommand(cmd1);
@@ -252,9 +251,9 @@ public class MapillaryRecordTest extends AbstractTest {
             Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3}));
 
     CommandDelete cmd1 = new CommandDelete(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1})));
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1})));
     CommandDelete cmd2 = new CommandDelete(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})));
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})));
 
     this.record.addCommand(join1);
     this.record.addCommand(join2);
@@ -263,7 +262,7 @@ public class MapillaryRecordTest extends AbstractTest {
             .getInstance()
             .getData()
             .add(
-                    new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2,
+                    new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2,
                             this.img3})));
 
     this.record.addCommand(cmd1);
@@ -285,9 +284,9 @@ public class MapillaryRecordTest extends AbstractTest {
     data.remove(data.getImages());
 
     CommandImport cmd1 = new CommandImport(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img1})));
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img1})));
     CommandImport cmd2 = new CommandImport(
-            new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})));
+            new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})));
 
     this.record.addCommand(cmd1);
     assertEquals(1, data.size());

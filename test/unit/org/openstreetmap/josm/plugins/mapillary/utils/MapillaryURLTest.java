@@ -182,7 +182,7 @@ public class MapillaryURLTest {
     TestUtil.testUtilityClass(MapillaryURL.class);
   }
 
-  private void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
+  private static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
     assertEquals(expectedBaseUrl, actualUrl.toString().substring(0, actualUrl.toString().indexOf('?')));
     String[] actualParams = actualUrl.getQuery().split("&");
     assertEquals(expectedParams.length, actualParams.length);

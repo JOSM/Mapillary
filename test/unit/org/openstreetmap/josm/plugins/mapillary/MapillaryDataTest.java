@@ -44,7 +44,7 @@ public class MapillaryDataTest extends AbstractTest {
     this.img4.setSequence(this.seq);
 
     this.data = new MapillaryData();
-    this.data.add(new ConcurrentSkipListSet(this.seq.getImages()));
+    this.data.add(new ConcurrentSkipListSet<>(this.seq.getImages()));
   }
 
   /**
@@ -59,10 +59,10 @@ public class MapillaryDataTest extends AbstractTest {
     assertEquals(1, this.data.getImages().size());
     this.data.add(this.img1);
     assertEquals(1, this.data.getImages().size());
-    this.data.add(new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[] { this.img2,
+    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] { this.img2,
         this.img3 })));
     assertEquals(3, this.data.getImages().size());
-    this.data.add(new ConcurrentSkipListSet(Arrays.asList(new MapillaryAbstractImage[] { this.img3,
+    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] { this.img3,
         this.img4 })));
     assertEquals(4, this.data.getImages().size());
   }

@@ -7,7 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
@@ -96,7 +99,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         }
       }
       joinImages();
-      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet(images)));
+      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet<>(images)));
     }
     MapillaryUtils.showAllPictures();
   }

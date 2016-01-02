@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -31,7 +30,7 @@ public class CommandUnjoin extends MapillaryExecutableCommand {
    *           if the List size is different from 2.
    */
   public CommandUnjoin(List<MapillaryAbstractImage> images) {
-    super(new ConcurrentSkipListSet(images));
+    super(new ConcurrentSkipListSet<>(images));
     a = images.get(0);
     b = images.get(1);
     if (images.size() != 2)

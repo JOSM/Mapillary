@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.Main;
@@ -85,10 +84,10 @@ public class SelectMode extends AbstractMode {
         int j = this.lastClicked.getSequence().getImages()
                 .indexOf(this.lastClicked);
         if (i < j)
-          this.data.addMultiSelectedImage(new ConcurrentSkipListSet(this.closest.getSequence()
+          this.data.addMultiSelectedImage(new ConcurrentSkipListSet<>(this.closest.getSequence()
                   .getImages().subList(i, j + 1)));
         else
-          this.data.addMultiSelectedImage(new ConcurrentSkipListSet(this.closest.getSequence()
+          this.data.addMultiSelectedImage(new ConcurrentSkipListSet<>(this.closest.getSequence()
                   .getImages().subList(j, i + 1)));
       }
       // click
