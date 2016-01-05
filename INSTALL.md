@@ -1,17 +1,12 @@
+If you don't want to tinker with the code, just [install JOSM](https://josm.openstreetmap.de/) and open the Settings dialog in JOSM, choose the Plugin tab, check "Mapillary" and you are ready to go.
+
+But if you want to explore the sourcecode and maybe even improve it, first of all a :thumbsup: for you, and here are the instructions on getting the source code and building it on your machine:
+
 ## Setting up your local git-repo
 
 ```shell
-git clone https://github.com/floscher/josm-mapillary-plugin
+git clone git@github.com:floscher/josm-mapillary-plugin.git
 cd josm-mapillary-plugin
-git svn init --prefix=svn/ http://svn.openstreetmap.org/applications/editors/josm/plugins/mapillary #You have to use http://, _not_ https://
-git config --local svn.authorsfile authors.txt
-git svn fetch #this might take a while
-```
-
-## Fetching from the SVN-repo into your local git-repo
-
-```shell
-git svn fetch
 ```
 
 ## Building the plugin with Gradle
@@ -32,8 +27,8 @@ If you also want to run the unit tests, create a FindBugs report and a code cove
 ```
 (look for the results in the directory `build/reports`)
 
-And finally if you have JOSM installed on your machine, you can execute the following to build the plugin from source,
-installs it for you in JOSM and then even starts JOSM with the plugin loaded:
+And finally, you can execute the following to build the plugin from source, and run the latest JOSM with the Mapillary plugin already loaded.
+This works regardless if you have JOSM installed, or which version of it. Any already present JOSM-installation stays untouched by the following command.
 ```shell
 ./gradlew runJosm
 ```
@@ -43,7 +38,32 @@ For info about other available tasks you can run
 ./gradlew tasks
 ```
 
-## Making changes to the repo and committing them back to SVN
+---
+
+If you don't have push-access to the SVN-server, you should now be ready to go.
+
+The following paragraphs only deal with transferring commits grom the GitHub-repository to the SVN-server and the other way around.
+
+---
+
+## Connecting the git-repo to the SVN-server (optional)
+
+This step is normally only relevant, if you either have push-access to the SVN-server and want to push your commits from the git-repo to the SVN-repo. Otherwise just skip it.
+
+First, you need to have [`git-svn`](https://git-scm.com/docs/git-svn) installed. E.g. on Ubuntu, just run `sudo apt install git-svn`. On Windows you probably already installed it together with `git`.
+
+Then run the following commands:
+```shell
+git svn init --prefix=svn/ http://svn.openstreetmap.org/applications/editors/josm/plugins/mapillary #You have to use http://, _not_ https://
+git config --local svn.authorsfile authors.txt
+mkdir .git/refs/remotes/svn
+git rev-parse master > .git/refs/remotes/svn/git-svn # creates a file containing the SHA1 of master-branch
+git svn fetch
+git reset --hard svn/git-svn
+```
+
+## Making changes to the repo and committing back to SVN (if you have git-svn set up as described above)
+
 The following steps are for those with commit-privileges for the SVN repository containing the plugins for JOSM.
 All others can simply file pull requests against the master-branch on github.
 
@@ -110,14 +130,3 @@ git svn dcommit --interactive --username=‹your_svn_username›
 ```
 This command will ask for your password and shows you the commit message of every git-commit before it
 applies it to the SVN-repo.
-
----
-
-__Pro-tip:__
-
-If you want to use a different text-editor than git currently uses, execute the following command:
-`git config --global core.editor ‹insert_your_favourite_text_editor›` and git will in the future always fire the new
-editor up instead.
-
-The same applies for the merge-tool: After executing `git config --global merge.tool ‹insert_your_favourite_merge_tool›`
-you can omit the --tool option when executing `git mergetool` in the future.
