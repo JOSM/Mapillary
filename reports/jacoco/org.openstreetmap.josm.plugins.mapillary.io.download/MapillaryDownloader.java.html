@@ -181,20 +181,20 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
   }
 
   protected static void tooBigErrorDialog() {
-<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L185">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L185">      MapillaryLayer.getInstance().tempSemiautomatic = true;</span>
+<span class="nc" id="L186">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
+<span class="nc" id="L187">      JOptionPane</span>
+<span class="nc" id="L188">          .showMessageDialog(</span>
+              Main.parent,
+<span class="nc" id="L190">              tr(&quot;The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted.&quot;));</span>
+    } else {
+<span class="nc" id="L192">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L188">          tooBigErrorDialog();</span>
-<span class="nc" id="L189">        }</span>
+<span class="nc" id="L195">          tooBigErrorDialog();</span>
+<span class="nc" id="L196">        }</span>
       });
-    } else {
-<span class="nc" id="L192">      MapillaryLayer.getInstance().tempSemiautomatic = true;</span>
-<span class="nc" id="L193">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
-<span class="nc" id="L194">      JOptionPane</span>
-<span class="nc" id="L195">          .showMessageDialog(</span>
-              Main.parent,
-<span class="nc" id="L197">              tr(&quot;The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted.&quot;));</span>
     }
 <span class="nc" id="L199">  }</span>
 

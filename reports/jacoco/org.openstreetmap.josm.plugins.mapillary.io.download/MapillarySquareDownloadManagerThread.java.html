@@ -75,13 +75,14 @@ public class MapillarySquareDownloadManagerThread extends Thread {
 <span class="nc" id="L75">    int page = 0;</span>
 <span class="nc bnc" id="L76" title="All 2 branches missed.">    while (!this.downloadExecutor.isShutdown()) {</span>
 <span class="nc" id="L77">      this.downloadExecutor.execute(new MapillarySequenceDownloadThread(this.downloadExecutor, bounds, page));</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">      while (this.downloadExecutor.getQueue().remainingCapacity() == 0)</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">      while (this.downloadExecutor.getQueue().remainingCapacity() == 0) {</span>
 <span class="nc" id="L79">        Thread.sleep(500);</span>
-<span class="nc" id="L80">      page++;</span>
+      }
+<span class="nc" id="L81">      page++;</span>
     }
-<span class="nc" id="L82">    this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L83">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L84">  }</span>
+<span class="nc" id="L83">    this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L84">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L85">  }</span>
 
   /**
    * Downloads the image's author's username and the image's location.
@@ -90,15 +91,15 @@ public class MapillarySquareDownloadManagerThread extends Thread {
    *           if the thread is interrupted while running this method.
    */
   private void completeImages() throws InterruptedException {
-<span class="nc" id="L93">    int page = 0;</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">    while (!this.completeExecutor.isShutdown()) {</span>
-<span class="nc" id="L95">      this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(completeExecutor, bounds, page));</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">      while (this.completeExecutor.getQueue().remainingCapacity() == 0)</span>
-<span class="nc" id="L97">        Thread.sleep(100);</span>
-<span class="nc" id="L98">      page++;</span>
+<span class="nc" id="L94">    int page = 0;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">    while (!this.completeExecutor.isShutdown()) {</span>
+<span class="nc" id="L96">      this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(completeExecutor, bounds, page));</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">      while (this.completeExecutor.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L98">        Thread.sleep(100);</span>
+<span class="nc" id="L99">      page++;</span>
     }
-<span class="nc" id="L100">    this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L101">  }</span>
+<span class="nc" id="L101">    this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L102">  }</span>
 
   /**
    * Downloads the traffic signs in the images.
@@ -107,29 +108,29 @@ public class MapillarySquareDownloadManagerThread extends Thread {
    *           if the thread is interrupted while running this method.
    */
   private void downloadSigns() throws InterruptedException {
-<span class="nc" id="L110">    int page = 0;</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    while (!this.signsExecutor.isShutdown()) {</span>
-<span class="nc" id="L112">      this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(this.signsExecutor, bounds, page));</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">      while (this.signsExecutor.getQueue().remainingCapacity() == 0)</span>
-<span class="nc" id="L114">        Thread.sleep(100);</span>
-<span class="nc" id="L115">      page++;</span>
+<span class="nc" id="L111">    int page = 0;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    while (!this.signsExecutor.isShutdown()) {</span>
+<span class="nc" id="L113">      this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(this.signsExecutor, bounds, page));</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      while (this.signsExecutor.getQueue().remainingCapacity() == 0)</span>
+<span class="nc" id="L115">        Thread.sleep(100);</span>
+<span class="nc" id="L116">      page++;</span>
     }
-<span class="nc" id="L117">    this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L118">  }</span>
+<span class="nc" id="L118">    this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L119">  }</span>
 
   @Override
   public void interrupt() {
-<span class="nc" id="L122">    super.interrupt();</span>
-<span class="nc" id="L123">    this.downloadExecutor.shutdownNow();</span>
-<span class="nc" id="L124">    this.completeExecutor.shutdownNow();</span>
-<span class="nc" id="L125">    this.signsExecutor.shutdownNow();</span>
+<span class="nc" id="L123">    super.interrupt();</span>
+<span class="nc" id="L124">    this.downloadExecutor.shutdownNow();</span>
+<span class="nc" id="L125">    this.completeExecutor.shutdownNow();</span>
+<span class="nc" id="L126">    this.signsExecutor.shutdownNow();</span>
     try {
-<span class="nc" id="L127">      this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L128">      this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L129">      this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L130">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L131">      Main.error(e);</span>
-<span class="nc" id="L132">    }</span>
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L128">      this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L129">      this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L130">      this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L131">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L132">      Main.error(e);</span>
+<span class="nc" id="L133">    }</span>
+<span class="nc" id="L134">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
