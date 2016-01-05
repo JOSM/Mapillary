@@ -238,8 +238,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
-    for (MapillaryAbstractImage img : this.data.getImages())
+    for (MapillaryAbstractImage img : this.data.getImages()) {
       img.setVisible(visible);
+    }
     MapillaryFilterDialog.getInstance().refresh();
   }
 
@@ -346,10 +347,7 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
       if (imageAbs instanceof MapillaryImage) {
         MapillaryImage image = (MapillaryImage) imageAbs;
         ImageIcon icon;
-        if (!this.data.getMultiSelectedImages().contains(image))
-          icon = MapillaryPlugin.MAP_ICON;
-        else
-          icon = MapillaryPlugin.MAP_ICON_SELECTED;
+        icon = this.data.getMultiSelectedImages().contains(image) ? MapillaryPlugin.MAP_ICON_SELECTED : MapillaryPlugin.MAP_ICON;
         draw(g, image, icon, p);
         if (!image.getSigns().isEmpty()) {
           g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),

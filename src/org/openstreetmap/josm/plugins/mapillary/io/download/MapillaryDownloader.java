@@ -181,20 +181,20 @@ public class MapillaryDownloader {
   }
 
   protected static void tooBigErrorDialog() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          tooBigErrorDialog();
-        }
-      });
-    } else {
+    if (SwingUtilities.isEventDispatchThread()) {
       MapillaryLayer.getInstance().tempSemiautomatic = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
       JOptionPane
           .showMessageDialog(
               Main.parent,
               tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
+    } else {
+      SwingUtilities.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+          tooBigErrorDialog();
+        }
+      });
     }
   }
 

@@ -65,9 +65,10 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
             rects = rectversions.getJsonObject(j).getJsonArray("rects");
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages())
+              for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
                 if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key))
                   ((MapillaryImage) image).addSign(data.getString("type"));
+              }
             }
           }
         }

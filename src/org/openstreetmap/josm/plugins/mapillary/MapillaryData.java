@@ -138,13 +138,15 @@ public class MapillaryData {
    * @param images A List object containing the set of images to be added.
    */
   public void addMultiSelectedImage(Set<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images)
+    for (MapillaryAbstractImage image : images) {
       if (!this.multiSelectedImages.contains(image)) {
-        if (this.getSelectedImage() != null)
-          this.multiSelectedImages.add(image);
-        else
+        if (this.getSelectedImage() == null) {
           this.setSelectedImage(image);
+        } else {
+          this.multiSelectedImages.add(image);
+        }
       }
+    }
     Main.map.mapView.repaint();
   }
 
@@ -236,9 +238,10 @@ public class MapillaryData {
   private void fireImagesAdded() {
     if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : this.listeners)
+    for (MapillaryDataListener lis : this.listeners) {
       if (lis != null)
         lis.imagesAdded();
+    }
   }
 
   /**

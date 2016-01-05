@@ -75,8 +75,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!this.downloadExecutor.isShutdown()) {
       this.downloadExecutor.execute(new MapillarySequenceDownloadThread(this.downloadExecutor, bounds, page));
-      while (this.downloadExecutor.getQueue().remainingCapacity() == 0)
+      while (this.downloadExecutor.getQueue().remainingCapacity() == 0) {
         Thread.sleep(500);
+      }
       page++;
     }
     this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);
