@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.trn;
 
-import java.util.List;
+import java.util.Set;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -28,8 +28,8 @@ public class CommandMove extends MapillaryCommand {
    * @param y
    *          How much the y coordinate increases.
    */
-  public CommandMove(List&lt;MapillaryAbstractImage&gt; images, double x,
-      double y) {
+  public CommandMove(Set&lt;MapillaryAbstractImage&gt; images, double x,
+                     double y) {
 <span class="fc" id="L33">    super(images);</span>
 <span class="fc" id="L34">    this.x = x;</span>
 <span class="fc" id="L35">    this.y = y;</span>

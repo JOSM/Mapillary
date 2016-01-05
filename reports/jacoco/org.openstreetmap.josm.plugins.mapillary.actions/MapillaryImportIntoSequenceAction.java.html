@@ -7,10 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -43,10 +44,9 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportIntoSequenceAction() {
-<span class="fc" id="L46">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin</span>
-<span class="fc" id="L47">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Import local pictures&quot;), Shortcut</span>
-<span class="fc" id="L48">        .registerShortcut(&quot;Import Mapillary Sequence&quot;,</span>
-<span class="fc" id="L49">            tr(&quot;Import pictures into Mapillary layer in a sequence&quot;),</span>
+<span class="fc" id="L47">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin</span>
+<span class="fc" id="L48">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Import local pictures&quot;),</span>
+<span class="fc" id="L49">        Shortcut.registerShortcut(&quot;Import Mapillary Sequence&quot;, tr(&quot;Import pictures into Mapillary layer in a sequence&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
         &quot;mapillaryImportSequence&quot;, false);
 <span class="fc" id="L52">    this.setEnabled(false);</span>
@@ -54,7 +54,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L57">    this.images = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L57">    this.images = new ArrayList&lt;&gt;();</span>
 
 <span class="nc" id="L59">    JFileChooser chooser = new JFileChooser();</span>
 <span class="nc" id="L60">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
@@ -98,7 +98,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
         }
       }
 <span class="nc" id="L100">      joinImages();</span>
-<span class="nc" id="L101">      MapillaryRecord.getInstance().addCommand(new CommandImport(this.images));</span>
+<span class="nc" id="L101">      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(images)));</span>
     }
 <span class="nc" id="L103">    MapillaryUtils.showAllPictures();</span>
 <span class="nc" id="L104">  }</span>

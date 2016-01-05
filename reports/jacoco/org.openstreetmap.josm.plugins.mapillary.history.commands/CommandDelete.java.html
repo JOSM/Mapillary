@@ -4,8 +4,8 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -26,7 +26,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
    * @param images
    *          The set of images that are going to be deleted.
    */
-  public CommandDelete(List&lt;MapillaryAbstractImage&gt; images) {
+  public CommandDelete(Set&lt;MapillaryAbstractImage&gt; images) {
 <span class="fc" id="L30">    super(images);</span>
 <span class="fc" id="L31">  }</span>
 
@@ -51,16 +51,15 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L54" title="All 2 branches covered.">    for (int i = this.images.size() - 1; i &gt;= 0; i--) {</span>
-<span class="fc" id="L55">      MapillaryAbstractImage img = this.images.get(i);</span>
-<span class="fc" id="L56">      MapillaryLayer.getInstance().getData().add(img);</span>
-<span class="fc" id="L57">      img.getSequence().getImages().add(this.changesHash.get(img), img);</span>
-    }
-<span class="fc" id="L59">  }</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">    for (MapillaryAbstractImage img : images) {</span>
+<span class="fc" id="L55">      MapillaryLayer.getInstance().getData().add(img);</span>
+<span class="fc" id="L56">      img.getSequence().getImages().add(this.changesHash.get(img), img);</span>
+<span class="fc" id="L57">    }</span>
+<span class="fc" id="L58">  }</span>
 
   @Override
   public void redo() {
-<span class="fc" id="L63">    MapillaryLayer.getInstance().getData().remove(this.images);</span>
-<span class="fc" id="L64">  }</span>
+<span class="fc" id="L62">    MapillaryLayer.getInstance().getData().remove(this.images);</span>
+<span class="fc" id="L63">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
