@@ -99,15 +99,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public int compareTo(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L103" title="All 2 branches missed.">    if (image instanceof MapillaryImage)</span>
-<span class="nc" id="L104">      return this.file.compareTo(((MapillaryImportedImage) image).getFile());</span>
-<span class="nc" id="L105">    return super.compareTo(image);</span>
-  }
-
-  @Override
   public int hashCode() {
-<span class="nc" id="L110">    return this.file.hashCode();</span>
+<span class="nc" id="L103">    return this.file.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

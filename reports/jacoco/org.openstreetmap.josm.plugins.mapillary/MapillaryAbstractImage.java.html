@@ -16,7 +16,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author nokutu
  *
  */
-public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractImage&gt;{
+public class MapillaryAbstractImage {
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */
@@ -119,7 +119,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
   public String getDate(String format) {
 <span class="fc" id="L120">    final Date date = new Date(getCapturedAt());</span>
 
-<span class="fc" id="L122">    final SimpleDateFormat formatter = new SimpleDateFormat(format);</span>
+<span class="fc" id="L122">    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);</span>
 <span class="fc" id="L123">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
 <span class="fc" id="L124">    return formatter.format(date);</span>
   }
@@ -266,10 +266,5 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
   public void turn(final double ca) {
 <span class="fc" id="L267">    this.movingCa = this.tempCa + ca;</span>
 <span class="fc" id="L268">  }</span>
-
-  @Override
-  public int compareTo(MapillaryAbstractImage mapillaryAbstractImage) {
-<span class="nc" id="L272">    return hashCode() - mapillaryAbstractImage.hashCode();</span>
-  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

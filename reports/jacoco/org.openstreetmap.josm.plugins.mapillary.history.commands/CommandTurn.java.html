@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.List;
-import java.util.Set;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -26,42 +25,42 @@ public class CommandTurn extends MapillaryCommand {
    * @param ca
    *          How much the images turn.
    */
-  public CommandTurn(Set&lt;MapillaryAbstractImage&gt; images, double ca) {
-<span class="fc" id="L30">    super(images);</span>
-<span class="fc" id="L31">    this.ca = ca;</span>
-<span class="fc" id="L32">  }</span>
+  public CommandTurn(List&lt;MapillaryAbstractImage&gt; images, double ca) {
+<span class="fc" id="L29">    super(images);</span>
+<span class="fc" id="L30">    this.ca = ca;</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
   public void undo() {
-<span class="fc bfc" id="L36" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="fc" id="L37">      image.turn(-this.ca);</span>
-<span class="fc" id="L38">      image.stopMoving();</span>
-<span class="fc" id="L39">    }</span>
-<span class="pc bpc" id="L40" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L41">      Main.map.repaint();</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="fc" id="L36">      image.turn(-this.ca);</span>
+<span class="fc" id="L37">      image.stopMoving();</span>
+<span class="fc" id="L38">    }</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L40">      Main.map.repaint();</span>
+<span class="fc" id="L41">  }</span>
 
   @Override
   public void redo() {
-<span class="fc bfc" id="L46" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="fc" id="L47">      image.turn(this.ca);</span>
-<span class="fc" id="L48">      image.stopMoving();</span>
-<span class="fc" id="L49">    }</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L51">      Main.map.repaint();</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="fc" id="L46">      image.turn(this.ca);</span>
+<span class="fc" id="L47">      image.stopMoving();</span>
+<span class="fc" id="L48">    }</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">    if (Main.main != null)</span>
+<span class="nc" id="L50">      Main.map.repaint();</span>
+<span class="fc" id="L51">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L56">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
-<span class="nc" id="L57">        this.images.size());</span>
+<span class="nc" id="L55">    return trn(&quot;Turned {0} image&quot;, &quot;Turned {0} images&quot;, this.images.size(),</span>
+<span class="nc" id="L56">        this.images.size());</span>
   }
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (command instanceof CommandTurn) {</span>
-<span class="fc" id="L63">      this.ca += ((CommandTurn) command).ca;</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    if (command instanceof CommandTurn) {</span>
+<span class="fc" id="L62">      this.ca += ((CommandTurn) command).ca;</span>
     }
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L64">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
