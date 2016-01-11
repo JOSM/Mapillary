@@ -87,7 +87,7 @@ public class UploadUtils {
 
     @Override
     public void run() {
-      PluginState.imagesToUpload(this.images.size());
+      PluginState.addImagesToUpload(this.images.size());
       MapillaryUtils.updateHelpText();
       for (MapillaryAbstractImage img : this.images) {
         if (!(img instanceof MapillaryImportedImage))
@@ -193,6 +193,7 @@ public class UploadUtils {
     ImageIO.write(image.getImage(), "jpg", outputStream);
     byte[] imageBytes = outputStream.toByteArray();
     new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+    os.close();
     return tempFile;
   }
 

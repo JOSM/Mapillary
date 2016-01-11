@@ -36,7 +36,7 @@ public class SelectMode extends AbstractMode {
   private MapillaryAbstractImage lastClicked;
   private final MapillaryRecord record;
   private boolean nothingHighlighted;
-  private boolean imageHighlighted = false;
+  private boolean imageHighlighted;
 
   /**
    * Main constructor.

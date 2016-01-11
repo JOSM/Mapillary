@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -117,8 +118,7 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
    */
   public String getDate(String format) {
     final Date date = new Date(getCapturedAt());
-
-    final SimpleDateFormat formatter = new SimpleDateFormat(format);
+    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
     formatter.setTimeZone(Calendar.getInstance().getTimeZone());
     return formatter.format(date);
   }

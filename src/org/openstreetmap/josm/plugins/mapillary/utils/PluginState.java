@@ -18,9 +18,9 @@ public final class PluginState {
 
   private static int runningDownloads;
   /** Images that have to be uploaded. */
-  protected static int imagesToUpload;
+  private static int imagesToUpload;
   /** Images that have been uploaded. */
-  public static int imagesUploaded;
+  private static int imagesUploaded;
 
   private PluginState() {
     // Empty constructor to avoid instantiation
@@ -67,12 +67,20 @@ public final class PluginState {
    * @param amount
    *          The amount of images that are going to be uploaded.
    */
-  public static void imagesToUpload(int amount) {
+  public static void addImagesToUpload(int amount) {
     if (imagesToUpload <= imagesUploaded) {
       imagesToUpload = 0;
       imagesUploaded = 0;
     }
     imagesToUpload += amount;
+  }
+
+  public static int getImagesToUpload() {
+    return imagesToUpload;
+  }
+
+  public static int getImagesUploaded() {
+    return imagesUploaded;
   }
 
   /**

@@ -272,9 +272,9 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-    if (Main.main == null)
+    if (Main.main == null) {
       return null;
-    else
-      return new ImageProvider(s);
+    }
+    return new ImageProvider(s);
   }
 }

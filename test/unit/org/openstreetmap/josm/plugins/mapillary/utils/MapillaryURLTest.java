@@ -60,7 +60,7 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testConnectURL() throws MalformedURLException {
+  public void testConnectURL() {
     assertUrlEquals(
         MapillaryURL.connectURL("http://redirect-host/ä"),
         "https://www.mapillary.com/connect",
@@ -88,7 +88,7 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testSearchImageURL() throws MalformedURLException {
+  public void testSearchImageURL() {
     assertUrlEquals(
         MapillaryURL.searchImageURL(new Bounds(1.1, 2.22, 3.333, 4.4444), 42),
         "https://a.mapillary.com/v2/search/im/",
@@ -110,7 +110,7 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testSearchSequenceURL() throws MalformedURLException {
+  public void testSearchSequenceURL() {
     assertUrlEquals(
         MapillaryURL.searchSequenceURL(new Bounds(-55.55555, -66.666666, 77.7777777, 88.88888888, false), 42),
         "https://a.mapillary.com/v2/search/s/",
@@ -132,7 +132,7 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testSearchTrafficSignURL() throws MalformedURLException {
+  public void testSearchTrafficSignURL() {
     assertUrlEquals(
         MapillaryURL.searchTrafficSignURL(new Bounds(1.1, 2.22, 3.333, 4.4444), -42),
         "https://a.mapillary.com/v2/search/im/or/",

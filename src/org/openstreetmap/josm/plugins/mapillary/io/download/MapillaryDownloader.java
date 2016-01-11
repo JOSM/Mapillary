@@ -204,7 +204,7 @@ public class MapillaryDownloader {
   public static void stopAll() {
     for (Thread t : threads) {
       if (t.isAlive())
-        System.out.println(t);
+        Main.info(t+" is still alive!");
       t.interrupt();
     }
     threads.clear();

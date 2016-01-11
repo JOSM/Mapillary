@@ -33,7 +33,7 @@ public class FinishedUploadDialog extends JPanel {
    */
   public FinishedUploadDialog() {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JLabel text = new JLabel(tr("Uploaded {0} images", PluginState.imagesUploaded));
+    JLabel text = new JLabel(tr("Uploaded {0} images", PluginState.getImagesUploaded()));
     text.setAlignmentX(Component.CENTER_ALIGNMENT);
     this.add(text);
     JButton web = new JButton(tr("Approve upload on the website"));

@@ -578,8 +578,9 @@ public class MapillaryMainDialog extends ToggleDialog implements
                 "dialog.align.left", false) ? new FlowLayout(FlowLayout.LEFT)
                 : new GridLayout(1, buttons.size()));
         this.buttonsPanel.add(buttonRowPanel);
-        for (SideButton button : buttons)
+        for (SideButton button : buttons) {
           buttonRowPanel.add(button);
+        }
       }
       panel.add(this.buttonsPanel, BorderLayout.NORTH);
       createLayout(panel, true, null);

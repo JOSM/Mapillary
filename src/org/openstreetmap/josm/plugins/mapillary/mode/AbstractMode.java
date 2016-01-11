@@ -85,7 +85,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     /** If in semiautomatic mode, the last Epoch time when there was a download */
     private long lastDownload;
 
-    private boolean moved = false;
+    private boolean moved;
 
     @Override
     public void run() {

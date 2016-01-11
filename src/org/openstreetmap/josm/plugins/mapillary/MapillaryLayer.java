@@ -356,11 +356,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
         }
       } else if (imageAbs instanceof MapillaryImportedImage) {
         MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
-        ImageIcon icon;
-        if (!this.data.getMultiSelectedImages().contains(image))
-          icon = MapillaryPlugin.MAP_ICON_IMPORTED;
-        else
-          icon = MapillaryPlugin.MAP_ICON_SELECTED;
+        ImageIcon icon = this.data.getMultiSelectedImages().contains(image)
+            ? MapillaryPlugin.MAP_ICON_SELECTED
+            : MapillaryPlugin.MAP_ICON_IMPORTED;
         draw(g, image, icon, p);
       }
     }

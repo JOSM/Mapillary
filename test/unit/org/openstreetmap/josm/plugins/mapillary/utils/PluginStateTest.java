@@ -34,16 +34,16 @@ public class PluginStateTest {
   @Test
   public void uploadTest() {
     assertEquals(false, PluginState.isUploading());
-    PluginState.imagesToUpload(2);
-    assertEquals(2, PluginState.imagesToUpload);
-    assertEquals(0, PluginState.imagesUploaded);
+    PluginState.addImagesToUpload(2);
+    assertEquals(2, PluginState.getImagesToUpload());
+    assertEquals(0, PluginState.getImagesUploaded());
     assertEquals(true, PluginState.isUploading());
     PluginState.imageUploaded();
-    assertEquals(1, PluginState.imagesUploaded);
+    assertEquals(1, PluginState.getImagesUploaded());
     assertEquals(true, PluginState.isUploading());
     PluginState.imageUploaded();
     assertEquals(false, PluginState.isUploading());
-    assertEquals(2, PluginState.imagesToUpload);
-    assertEquals(2, PluginState.imagesUploaded);
+    assertEquals(2, PluginState.getImagesToUpload());
+    assertEquals(2, PluginState.getImagesUploaded());
   }
 }

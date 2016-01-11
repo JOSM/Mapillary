@@ -124,8 +124,7 @@ public final class MapillaryUtils {
    * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is
    *                                  not one of the values mentioned above
    */
-  public static double degMinSecToDouble(RationalNumber[] degMinSec,
-                                         String ref) {
+  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
     if (degMinSec == null || degMinSec.length != 3) {
       throw new IllegalArgumentException("Array's length must be 3.");
     }
@@ -255,11 +254,10 @@ public final class MapillaryUtils {
               .findEXIFValueWithExactMatch(
                       ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (lat_ref == null || lat == null || lon == null || lon_ref == null) {
-        if (exceptionNoTags)
-          throw new IllegalArgumentException(
-                  "The image doesn't have the needed EXIF tags.");
-        else
-          return readNoTags(file);
+        if (exceptionNoTags) {
+          throw new IllegalArgumentException("The image doesn't have the needed EXIF tags.");
+        }
+        return readNoTags(file);
       }
       double latValue = 0;
       double lonValue = 0;
@@ -272,11 +270,10 @@ public final class MapillaryUtils {
                 (RationalNumber[]) lon.getValue(), lon_ref.getValue().toString());
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
-      if (datetimeOriginal != null)
-        return new MapillaryImportedImage(latValue, lonValue, caValue, file,
-                datetimeOriginal.getStringValue());
-      else
-        return new MapillaryImportedImage(latValue, lonValue, caValue, file);
+      if (datetimeOriginal != null) {
+        return new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue());
+      }
+      return new MapillaryImportedImage(latValue, lonValue, caValue, file);
     }
     throw new IllegalStateException("Invalid format.");
   }
@@ -316,16 +313,13 @@ public final class MapillaryUtils {
       final TiffField datetimeOriginal = jpegMetadata
               .findEXIFValueWithExactMatch(
                       ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-      if (datetimeOriginal == null)
-        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-                file);
-      else {
-        try {
-          return new MapillaryImportedImage(pos.lat(), pos.lon(), 0,
-                  file, datetimeOriginal.getStringValue());
-        } catch (ImageReadException e) {
-          Main.error(e);
-        }
+      if (datetimeOriginal == null) {
+        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file);
+      }
+      try {
+        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file, datetimeOriginal.getStringValue());
+      } catch (ImageReadException e) {
+        Main.error(e);
       }
     }
     return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file);

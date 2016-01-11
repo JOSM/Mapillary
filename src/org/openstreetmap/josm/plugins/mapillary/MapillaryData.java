@@ -21,7 +21,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  */
 public class MapillaryData {
 
-  private Set<MapillaryAbstractImage> images;
+  private final Set<MapillaryAbstractImage> images;
   /**
    * The image currently selected, this is the one being shown.
    */
@@ -122,10 +122,10 @@ public class MapillaryData {
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
-      if (this.getSelectedImage() != null)
-        this.multiSelectedImages.add(image);
-      else
+      if (this.getSelectedImage() == null)
         this.setSelectedImage(image);
+      else
+        this.multiSelectedImages.add(image);
     }
     if (Main.main != null)
       Main.map.mapView.repaint();

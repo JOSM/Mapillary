@@ -10,10 +10,11 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 public final class TrafficoGlyph {
+  private static Map<String, Character> glyphs;
+
   private TrafficoGlyph() {
     // private constructor to avoid instantiation
   }
-  private static Map<String, Character> glyphs;
 
   private static Map<String, Character> readGlyphsFromResources() {
     JsonReader reader = Json.createReader(TrafficoSignElement.class
@@ -24,10 +25,11 @@ public final class TrafficoGlyph {
     for (String name : glyphNames) {
       glyphs.put(name, glyphObject.getString(name).charAt(0));
     }
+    reader.close();
     return glyphs;
   }
 
-  public static Character getGlyph(String key) {
+  public static synchronized Character getGlyph(String key) {
     if (glyphs == null) {
       glyphs = readGlyphsFromResources();
     }

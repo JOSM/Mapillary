@@ -283,7 +283,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
   private class UndoRedoSelectionListener implements TreeSelectionListener {
 
-    private JTree source;
+    private final JTree source;
 
     protected UndoRedoSelectionListener(JTree source) {
       this.source = source;

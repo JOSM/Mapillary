@@ -17,8 +17,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  */
 public class CommandUnjoin extends MapillaryExecutableCommand {
 
-  private MapillaryAbstractImage a;
-  private MapillaryAbstractImage b;
+  private final MapillaryAbstractImage a;
+  private final MapillaryAbstractImage b;
 
   /**
    * Main constructor.
