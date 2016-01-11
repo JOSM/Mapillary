@@ -38,12 +38,12 @@ public final class MapillaryUser {
         username = OAuthUtils
 <span class="nc" id="L39">            .getWithHeader(MapillaryURL.userURL())</span>
 <span class="nc" id="L40">            .getString(&quot;username&quot;);</span>
-<span class="nc" id="L41">      } catch (IOException e) {</span>
-<span class="nc" id="L42">        Main.info(&quot;Invalid Mapillary token, resetting field&quot;);</span>
-<span class="nc" id="L43">        reset();</span>
+<span class="fc" id="L41">      } catch (IOException e) {</span>
+<span class="fc" id="L42">        Main.info(&quot;Invalid Mapillary token, resetting field&quot;);</span>
+<span class="fc" id="L43">        reset();</span>
 <span class="nc" id="L44">      }</span>
     }
-<span class="nc" id="L46">    return username;</span>
+<span class="fc" id="L46">    return username;</span>
   }
 
   /**
@@ -76,15 +76,15 @@ public final class MapillaryUser {
    * Resets the MapillaryUser to null values.
    */
   public static synchronized void reset() {
-<span class="nc" id="L79">    username = null;</span>
-<span class="nc" id="L80">    imagesPolicy = null;</span>
-<span class="nc" id="L81">    imagesHash = null;</span>
-<span class="nc" id="L82">    isTokenValid = false;</span>
-<span class="nc" id="L83">    Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
-<span class="nc" id="L84">  }</span>
+<span class="fc" id="L79">    username = null;</span>
+<span class="fc" id="L80">    imagesPolicy = null;</span>
+<span class="fc" id="L81">    imagesHash = null;</span>
+<span class="fc" id="L82">    isTokenValid = false;</span>
+<span class="fc" id="L83">    Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
+<span class="fc" id="L84">  }</span>
 
   public static synchronized void setTokenValid(boolean value) {
-<span class="nc" id="L87">    isTokenValid = value;</span>
-<span class="nc" id="L88">  }</span>
+<span class="fc" id="L87">    isTokenValid = value;</span>
+<span class="fc" id="L88">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
