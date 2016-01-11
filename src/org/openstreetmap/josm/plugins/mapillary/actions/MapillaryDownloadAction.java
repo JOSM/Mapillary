@@ -41,11 +41,16 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    MapillaryLayer.getInstance();
-    if (Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()) {
-      Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());
-    } else {
-      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());
+    if (!MapillaryLayer.hasInstance()) {
+      // A new mapillary layer is created, so the active layer is not changed
+      MapillaryLayer.getInstance();
+      return;
     }
+    // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
+    Main.map.mapView.setActiveLayer(
+        Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()
+          ? Main.map.mapView.getEditLayer()
+          : MapillaryLayer.getInstance()
+    );
   }
 }
