@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
@@ -17,10 +18,10 @@ public class MapillaryRecord {
   /** The unique instance of the class. */
   private static MapillaryRecord instance;
 
-  private final ArrayList<MapillaryRecordListener> listeners = new ArrayList<>();
+  private final List<MapillaryRecordListener> listeners = new ArrayList<>();
 
   /** The set of commands that have taken place or that have been undone. */
-  public ArrayList<MapillaryCommand> commandList;
+  public List<MapillaryCommand> commandList;
   /** Last written command. */
   public int position;
 

@@ -110,7 +110,7 @@ public class MapillaryData {
    *
    * @param lis Listener to be added.
    */
-  public void addListener(MapillaryDataListener lis) {
+  public final void addListener(MapillaryDataListener lis) {
     this.listeners.add(lis);
   }
 

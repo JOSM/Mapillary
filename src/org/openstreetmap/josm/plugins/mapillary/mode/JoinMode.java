@@ -43,29 +43,28 @@ public class JoinMode extends AbstractMode {
   public void mousePressed(MouseEvent e) {
     if (this.data.getHighlightedImage() == null)
       return;
-    if (this.lastClick == null
-        && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
+    if (this.lastClick == null && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
       this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();
     } else if (this.lastClick != null
         && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
-      if (((this.data.getHighlightedImage().previous() == null && this.lastClick
-          .next() == null) || (this.data.getHighlightedImage().next() == null && this.lastClick
-          .previous() == null))
-          && (this.data.getHighlightedImage().getSequence() != this.lastClick
-              .getSequence() || this.lastClick.getSequence() == null)) {
+      if (
+        (this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null
+          || this.data.getHighlightedImage().next() == null && this.lastClick.previous() == null)
+        && (this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence() || this.lastClick.getSequence() == null)
+      ) {
 
         MapillaryRecord.getInstance().addCommand(
             new CommandJoin(Arrays.asList(new MapillaryAbstractImage[] {
                 this.lastClick, this.data.getHighlightedImage() })));
       } else if (this.lastClick.next() == this.data.getHighlightedImage()
-          || this.lastClick.previous() == this.data.getHighlightedImage())
+          || this.lastClick.previous() == this.data.getHighlightedImage()) {
         MapillaryRecord.getInstance().addCommand(
             new CommandUnjoin(Arrays.asList(new MapillaryAbstractImage[] {
                 this.lastClick, this.data.getHighlightedImage() })));
+      }
       this.lastClick = null;
     }
-    if (Main.main != null)
-      MapillaryData.dataUpdated();
+    MapillaryData.dataUpdated();
   }
 
   @Override

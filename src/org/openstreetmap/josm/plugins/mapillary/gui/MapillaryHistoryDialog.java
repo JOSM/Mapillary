@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.AbstractAction;
@@ -140,7 +141,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   private void buildTree() {
     this.redoButton.setEnabled(true);
     this.undoButton.setEnabled(true);
-    ArrayList<MapillaryCommand> commands = MapillaryRecord.getInstance().commandList;
+    List<MapillaryCommand> commands = MapillaryRecord.getInstance().commandList;
     int position = MapillaryRecord.getInstance().position;
     ArrayList<MapillaryCommand> undoCommands = new ArrayList<>();
     if (position >= 0)

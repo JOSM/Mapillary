@@ -362,11 +362,9 @@ public final class MapillaryUtils {
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
+        zoomBounds = new Bounds(images.iterator().next().getLatLon());
         for (MapillaryAbstractImage img : images) {
-          if (zoomBounds == null) {
-            zoomBounds = new Bounds(img.getLatLon());
-          } else
-            zoomBounds.extend(img.getLatLon());
+          zoomBounds.extend(img.getLatLon());
         }
       }
 

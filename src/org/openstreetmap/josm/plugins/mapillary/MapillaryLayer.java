@@ -67,7 +67,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @author nokutu
  *
  */
-public class MapillaryLayer extends AbstractModifiableLayer implements
+public final class MapillaryLayer extends AbstractModifiableLayer implements
     DataSetListener, EditLayerChangeListener, LayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
@@ -370,11 +370,9 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Draws the highlight of the icon.
    *
-   * @param g
-   * @param p
-   *          The {@link Point} where the image must be set.
-   * @param size
-   *          The width in pixels of the highlight.
+   * @param g  the graphics context
+   * @param p  the {@link Point} where the image must be set.
+   * @param size  the width in pixels of the highlight.
    */
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
     Color oldColor = g.getColor();
@@ -395,13 +393,10 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
    * Draws the given icon of an image. Also checks if the mouse is over the
    * image.
    *
-   * @param g
-   * @param image
-   *          The {@link MapillaryAbstractImage} which is being drown.
-   * @param icon
-   *          The {@link ImageIcon} that represents the image.
-   * @param p
-   *          The P¡{@link Point} when the image lies.
+   * @param g  the graphics context
+   * @param image  The {@link MapillaryAbstractImage} which is being drown.
+   * @param icon  The {@link ImageIcon} that represents the image.
+   * @param p  The P¡{@link Point} when the image lies.
    */
   private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
     Image imagetemp = icon.getImage();
@@ -530,30 +525,37 @@ public class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void primitivesAdded(PrimitivesAddedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void primitivesRemoved(PrimitivesRemovedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void tagsChanged(TagsChangedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void nodeMoved(NodeMovedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void wayNodesChanged(WayNodesChangedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void relationMembersChanged(RelationMembersChangedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
   public void otherDatasetChange(AbstractDatasetChangedEvent event) {
+    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override

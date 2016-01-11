@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -54,6 +55,10 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  * @author nokutu
  */
 public class UploadUtils {
+
+  private UploadUtils() {
+    // Private constructor to avoid instantiation.
+  }
 
   /**
    * Required keys for POST
@@ -144,9 +149,9 @@ public class UploadUtils {
   public static File updateFile(MapillaryImportedImage image)
           throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
-    TiffOutputDirectory exifDirectory = null;
-    TiffOutputDirectory gpsDirectory = null;
-    TiffOutputDirectory rootDirectory = null;
+    TiffOutputDirectory exifDirectory;
+    TiffOutputDirectory gpsDirectory;
+    TiffOutputDirectory rootDirectory;
 
     // If the image is imported, loads the rest of the EXIF data.
     JpegImageMetadata jpegMetadata = null;
@@ -215,12 +220,12 @@ public class UploadUtils {
             + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
             + image.getCa() + "_" + image.getCapturedAt() + ".jpg";
 
-    String policy = null;
-    String signature = null;
+    String policy;
+    String signature;
     policy = MapillaryUser.getSecrets().get("images_policy");
     signature = MapillaryUser.getSecrets().get("images_hash");
 
-    HashMap<String, String> hash = new HashMap<>();
+    Map<String, String> hash = new HashMap<>();
     hash.put("key", key);
     hash.put("AWSAccessKeyId", "AKIAI2X3BJAT2W75HILA");
     hash.put("acl", "private");
@@ -240,8 +245,7 @@ public class UploadUtils {
    * @throws IOException
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    */
-  public static void uploadFile(File file, HashMap<String, String> hash)
-          throws IOException {
+  public static void uploadFile(File file, Map<String, String> hash) throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();
     HttpClient httpClient = builder.build();
     HttpPost httpPost = new HttpPost(UPLOAD_URL);

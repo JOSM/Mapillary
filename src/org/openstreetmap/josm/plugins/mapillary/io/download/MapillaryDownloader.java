@@ -68,18 +68,16 @@ public class MapillaryDownloader {
   /**
    * Returns the current download mode.
    *
-   * @return 0 - automatic; 1 - semiautomatic; 2 - manual.
+   * @return the currently enabled of the available {@link MODES}
    */
   public static MapillaryDownloader.MODES getMode() {
-    if (Main.pref.get("mapillary.download-mode").equals(MODES.Automatic.toString())
-        && (!MapillaryLayer.hasInstance() || !MapillaryLayer.getInstance().tempSemiautomatic))
-      return MODES.Automatic;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Semiautomatic.toString())
-        || (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic))
+    String downloadMode = Main.pref.get("mapillary.download-mode", MODES.Automatic.toString());
+    boolean isTempSemiautomatic = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic;
+    if (MODES.Semiautomatic.toString().equals(downloadMode) || isTempSemiautomatic)
       return MODES.Semiautomatic;
-    else if (Main.pref.get("mapillary.download-mode").equals(MODES.Manual.toString()))
+    else if (MODES.Manual.toString().equals(downloadMode))
       return MODES.Manual;
-    else if ("".equals(Main.pref.get("mapillary.download-mode")))
+    else if (MODES.Automatic.toString().equals(downloadMode))
       return MODES.Automatic;
     else
       throw new IllegalStateException();

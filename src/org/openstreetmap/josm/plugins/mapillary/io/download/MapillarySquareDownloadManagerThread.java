@@ -94,8 +94,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!this.completeExecutor.isShutdown()) {
       this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(completeExecutor, bounds, page));
-      while (this.completeExecutor.getQueue().remainingCapacity() == 0)
+      while (this.completeExecutor.getQueue().remainingCapacity() == 0) {
         Thread.sleep(100);
+      }
       page++;
     }
     this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
@@ -111,8 +112,9 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     int page = 0;
     while (!this.signsExecutor.isShutdown()) {
       this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(this.signsExecutor, bounds, page));
-      while (this.signsExecutor.getQueue().remainingCapacity() == 0)
+      while (this.signsExecutor.getQueue().remainingCapacity() == 0) {
         Thread.sleep(100);
+      }
       page++;
     }
     this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);

@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -31,7 +32,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   private static final long serialVersionUID = 3454223919402245818L;
 
   private WalkThread thread = null;
-  private final ArrayList<WalkListener> listeners = new ArrayList<>();
+  private final List<WalkListener> listeners = new ArrayList<>();
 
   /**
    *
