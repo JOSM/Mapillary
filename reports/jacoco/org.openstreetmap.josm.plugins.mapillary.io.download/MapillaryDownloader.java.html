@@ -204,7 +204,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
   public static void stopAll() {
 <span class="nc bnc" id="L205" title="All 2 branches missed.">    for (Thread t : threads) {</span>
 <span class="nc bnc" id="L206" title="All 2 branches missed.">      if (t.isAlive())</span>
-<span class="nc" id="L207">        System.out.println(t);</span>
+<span class="nc" id="L207">        Main.info(t+&quot; is still alive!&quot;);</span>
 <span class="nc" id="L208">      t.interrupt();</span>
 <span class="nc" id="L209">    }</span>
 <span class="nc" id="L210">    threads.clear();</span>
