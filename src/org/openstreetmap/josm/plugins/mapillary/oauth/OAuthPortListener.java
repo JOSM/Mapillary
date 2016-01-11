@@ -9,6 +9,8 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.tools.I18n;
@@ -46,13 +48,9 @@ public class OAuthPortListener extends Thread {
       String accessToken = null;
       while (in.hasNextLine() && accessToken == null) {
         s = in.nextLine();
-        if (s.contains("access_token=")) {
-          String[] ss = s.split("&");
-          for (int i = 0; i < ss.length && accessToken == null; i++) {
-            if (ss[i].startsWith("access_token=")) {
-              accessToken = ss[i].substring(ss[i].indexOf("access_token=") + 13, ss[i].length());
-            }
-          }
+        Matcher tokenMatcher = Pattern.compile("^.*&access_token=([^&]+)&.*$").matcher('&'+s+'&');
+        if (tokenMatcher.matches()) {
+          accessToken = tokenMatcher.group(1);
           break;
         } else if (s.contains("keep-alive")) {
           break;
@@ -60,10 +58,7 @@ public class OAuthPortListener extends Thread {
       }
 
       writeContent(out);
-
-      out.close();
-      in.close();
-      serverSocket.close();
+      out.flush();
 
       MapillaryUser.reset();
 

@@ -73,9 +73,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
     panel.add(this.reverseButtons, GBC.eol());
     // Sets the value of the ComboBox.
-    if (Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Automatic.toString())
-        || Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Semiautomatic.toString())
-        || Main.pref.get("mapillary.download-mode").equals(MapillaryDownloader.MODES.Manual.toString())) {
+    String downloadMode = Main.pref.get("mapillary.download-mode");
+    if (MapillaryDownloader.MODES.Automatic.toString().equals(downloadMode)
+        || MapillaryDownloader.MODES.Semiautomatic.toString().equals(downloadMode)
+        || MapillaryDownloader.MODES.Manual.toString().equals(downloadMode)) {
       this.downloadMode.setSelectedItem(Main.pref.get("mapillary.download-mode"));
     }
     JPanel downloadModePanel = new JPanel();
@@ -93,7 +94,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     panel.add(loginPanel, GBC.eol());
     panel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
-    gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(panel));
+    synchronized (gui.getDisplayPreference().getTabPane()) {
+      gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(panel));
+      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.ICON12);
+    }
 
     new Thread(new Runnable() {
       @Override
