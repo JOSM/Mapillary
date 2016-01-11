@@ -81,9 +81,9 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 <span class="nc" id="L81">    this.group.add(this.selected);</span>
 <span class="nc" id="L82">    this.group.add(this.rewrite);</span>
     // Some options are disabled depending on the circumstances
-<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        || !(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage &amp;&amp; ((MapillaryImage) MapillaryLayer</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">            .getInstance().getData().getSelectedImage()).getSequence() != null)) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage)</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        || ((MapillaryImage) MapillaryLayer.getInstance().getData().getSelectedImage()).getSequence() == null</span>
+    ) {
 <span class="nc" id="L87">      this.sequence.setEnabled(false);</span>
     }
 <span class="nc" id="L89">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages()</span>

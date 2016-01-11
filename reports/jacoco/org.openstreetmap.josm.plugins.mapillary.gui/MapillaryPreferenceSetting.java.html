@@ -170,7 +170,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="nc" id="L170">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
 <span class="nc" id="L171">      portListener.start();</span>
       try {
-<span class="nc" id="L173">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT));</span>
+<span class="nc" id="L173">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
 <span class="nc" id="L174">      } catch (IOException e) {</span>
 <span class="nc" id="L175">        Main.error(e);</span>
 <span class="nc" id="L176">      }</span>

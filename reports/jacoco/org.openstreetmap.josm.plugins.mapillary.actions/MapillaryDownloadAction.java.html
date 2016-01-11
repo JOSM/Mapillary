@@ -41,12 +41,17 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L44">    MapillaryLayer.getInstance();</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()) {</span>
-<span class="nc" id="L46">      Main.map.mapView.setActiveLayer(Main.map.mapView.getEditLayer());</span>
-    } else {
-<span class="nc" id="L48">      Main.map.mapView.setActiveLayer(MapillaryLayer.getInstance());</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (!MapillaryLayer.hasInstance()) {</span>
+      // A new mapillary layer is created, so the active layer is not changed
+<span class="nc" id="L46">      MapillaryLayer.getInstance();</span>
+<span class="nc" id="L47">      return;</span>
     }
-<span class="nc" id="L50">  }</span>
+    // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
+<span class="nc" id="L50">    Main.map.mapView.setActiveLayer(</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()</span>
+<span class="nc" id="L52">          ? Main.map.mapView.getEditLayer()</span>
+<span class="nc" id="L53">          : MapillaryLayer.getInstance()</span>
+    );
+<span class="nc" id="L55">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
