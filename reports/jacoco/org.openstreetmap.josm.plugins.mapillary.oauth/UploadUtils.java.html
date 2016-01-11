@@ -87,7 +87,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
     @Override
     public void run() {
-<span class="nc" id="L90">      PluginState.addImagesToUpload(this.images.size());</span>
+<span class="nc" id="L90">      PluginState.imagesToUpload(this.images.size());</span>
 <span class="nc" id="L91">      MapillaryUtils.updateHelpText();</span>
 <span class="nc bnc" id="L92" title="All 2 branches missed.">      for (MapillaryAbstractImage img : this.images) {</span>
 <span class="nc bnc" id="L93" title="All 2 branches missed.">        if (!(img instanceof MapillaryImportedImage))</span>
@@ -193,8 +193,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 <span class="fc" id="L193">    ImageIO.write(image.getImage(), &quot;jpg&quot;, outputStream);</span>
 <span class="fc" id="L194">    byte[] imageBytes = outputStream.toByteArray();</span>
 <span class="fc" id="L195">    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
-<span class="fc" id="L196">    os.close();</span>
-<span class="fc" id="L197">    return tempFile;</span>
+<span class="fc" id="L196">    return tempFile;</span>
   }
 
   /**
@@ -203,36 +202,36 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
    * @param image
    */
   public static void upload(MapillaryImportedImage image) {
-<span class="nc" id="L206">    upload(image, UUID.randomUUID());</span>
-<span class="nc" id="L207">  }</span>
+<span class="nc" id="L205">    upload(image, UUID.randomUUID());</span>
+<span class="nc" id="L206">  }</span>
 
   /**
    * @param image
    * @param uuid  The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
-<span class="nc" id="L214">    String key = MapillaryUser.getUsername() + &quot;/&quot; + uuid.toString() + &quot;/&quot;</span>
-<span class="nc" id="L215">            + image.getLatLon().lat() + &quot;_&quot; + image.getLatLon().lon() + &quot;_&quot;</span>
-<span class="nc" id="L216">            + image.getCa() + &quot;_&quot; + image.getCapturedAt() + &quot;.jpg&quot;;</span>
+<span class="nc" id="L213">    String key = MapillaryUser.getUsername() + &quot;/&quot; + uuid.toString() + &quot;/&quot;</span>
+<span class="nc" id="L214">            + image.getLatLon().lat() + &quot;_&quot; + image.getLatLon().lon() + &quot;_&quot;</span>
+<span class="nc" id="L215">            + image.getCa() + &quot;_&quot; + image.getCapturedAt() + &quot;.jpg&quot;;</span>
 
-<span class="nc" id="L218">    String policy = null;</span>
-<span class="nc" id="L219">    String signature = null;</span>
-<span class="nc" id="L220">    policy = MapillaryUser.getSecrets().get(&quot;images_policy&quot;);</span>
-<span class="nc" id="L221">    signature = MapillaryUser.getSecrets().get(&quot;images_hash&quot;);</span>
+<span class="nc" id="L217">    String policy = null;</span>
+<span class="nc" id="L218">    String signature = null;</span>
+<span class="nc" id="L219">    policy = MapillaryUser.getSecrets().get(&quot;images_policy&quot;);</span>
+<span class="nc" id="L220">    signature = MapillaryUser.getSecrets().get(&quot;images_hash&quot;);</span>
 
-<span class="nc" id="L223">    HashMap&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L224">    hash.put(&quot;key&quot;, key);</span>
-<span class="nc" id="L225">    hash.put(&quot;AWSAccessKeyId&quot;, &quot;AKIAI2X3BJAT2W75HILA&quot;);</span>
-<span class="nc" id="L226">    hash.put(&quot;acl&quot;, &quot;private&quot;);</span>
-<span class="nc" id="L227">    hash.put(&quot;policy&quot;, policy);</span>
-<span class="nc" id="L228">    hash.put(&quot;signature&quot;, signature);</span>
-<span class="nc" id="L229">    hash.put(&quot;Content-Type&quot;, &quot;image/jpeg&quot;);</span>
+<span class="nc" id="L222">    HashMap&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L223">    hash.put(&quot;key&quot;, key);</span>
+<span class="nc" id="L224">    hash.put(&quot;AWSAccessKeyId&quot;, &quot;AKIAI2X3BJAT2W75HILA&quot;);</span>
+<span class="nc" id="L225">    hash.put(&quot;acl&quot;, &quot;private&quot;);</span>
+<span class="nc" id="L226">    hash.put(&quot;policy&quot;, policy);</span>
+<span class="nc" id="L227">    hash.put(&quot;signature&quot;, signature);</span>
+<span class="nc" id="L228">    hash.put(&quot;Content-Type&quot;, &quot;image/jpeg&quot;);</span>
     try {
-<span class="nc" id="L231">      uploadFile(updateFile(image), hash);</span>
-<span class="nc" id="L232">    } catch (ImageReadException | ImageWriteException | IOException e) {</span>
-<span class="nc" id="L233">      Main.error(e);</span>
-<span class="nc" id="L234">    }</span>
-<span class="nc" id="L235">  }</span>
+<span class="nc" id="L230">      uploadFile(updateFile(image), hash);</span>
+<span class="nc" id="L231">    } catch (ImageReadException | ImageWriteException | IOException e) {</span>
+<span class="nc" id="L232">      Main.error(e);</span>
+<span class="nc" id="L233">    }</span>
+<span class="nc" id="L234">  }</span>
 
   /**
    * @param file
@@ -242,29 +241,29 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
    */
   public static void uploadFile(File file, HashMap&lt;String, String&gt; hash)
           throws IOException {
-<span class="nc" id="L245">    HttpClientBuilder builder = HttpClientBuilder.create();</span>
-<span class="nc" id="L246">    HttpClient httpClient = builder.build();</span>
-<span class="nc" id="L247">    HttpPost httpPost = new HttpPost(UPLOAD_URL);</span>
+<span class="nc" id="L244">    HttpClientBuilder builder = HttpClientBuilder.create();</span>
+<span class="nc" id="L245">    HttpClient httpClient = builder.build();</span>
+<span class="nc" id="L246">    HttpPost httpPost = new HttpPost(UPLOAD_URL);</span>
 
-<span class="nc" id="L249">    MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();</span>
-<span class="nc bnc" id="L250" title="All 2 branches missed.">    for (String key : keys) {</span>
-<span class="nc bnc" id="L251" title="All 2 branches missed.">      if (hash.get(key) == null)</span>
-<span class="nc" id="L252">        throw new IllegalArgumentException();</span>
-<span class="nc" id="L253">      entityBuilder.addPart(key, new StringBody(hash.get(key),</span>
+<span class="nc" id="L248">    MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">    for (String key : keys) {</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">      if (hash.get(key) == null)</span>
+<span class="nc" id="L251">        throw new IllegalArgumentException();</span>
+<span class="nc" id="L252">      entityBuilder.addPart(key, new StringBody(hash.get(key),</span>
               ContentType.TEXT_PLAIN));
     }
-<span class="nc" id="L256">    entityBuilder.addPart(&quot;file&quot;, new FileBody(file));</span>
-<span class="nc" id="L257">    HttpEntity entity = entityBuilder.build();</span>
-<span class="nc" id="L258">    httpPost.setEntity(entity);</span>
-<span class="nc" id="L259">    HttpResponse response = httpClient.execute(httpPost);</span>
-<span class="nc bnc" id="L260" title="All 2 branches missed.">    if (response.getStatusLine().toString().contains(&quot;204&quot;)) {</span>
-<span class="nc" id="L261">      PluginState.imageUploaded();</span>
-<span class="nc" id="L262">      Main.info(PluginState.getUploadString() + &quot; (Mapillary)&quot;);</span>
+<span class="nc" id="L255">    entityBuilder.addPart(&quot;file&quot;, new FileBody(file));</span>
+<span class="nc" id="L256">    HttpEntity entity = entityBuilder.build();</span>
+<span class="nc" id="L257">    httpPost.setEntity(entity);</span>
+<span class="nc" id="L258">    HttpResponse response = httpClient.execute(httpPost);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    if (response.getStatusLine().toString().contains(&quot;204&quot;)) {</span>
+<span class="nc" id="L260">      PluginState.imageUploaded();</span>
+<span class="nc" id="L261">      Main.info(PluginState.getUploadString() + &quot; (Mapillary)&quot;);</span>
     } else
-<span class="nc" id="L264">      Main.info(&quot;Upload error&quot;);</span>
-<span class="nc" id="L265">    file.delete();</span>
-<span class="nc" id="L266">    MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L267">  }</span>
+<span class="nc" id="L263">      Main.info(&quot;Upload error&quot;);</span>
+<span class="nc" id="L264">    file.delete();</span>
+<span class="nc" id="L265">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L266">  }</span>
 
   /**
    * Uploads the given {@link MapillarySequence}.
@@ -274,7 +273,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-<span class="nc" id="L277">    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet&lt;&gt;(sequence.getImages()), delete));</span>
-<span class="nc" id="L278">  }</span>
+<span class="nc" id="L276">    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet&lt;&gt;(sequence.getImages()), delete));</span>
+<span class="nc" id="L277">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

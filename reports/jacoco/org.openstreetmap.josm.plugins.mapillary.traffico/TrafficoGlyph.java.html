@@ -10,30 +10,28 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 public final class TrafficoGlyph {
+<span class="fc" id="L13">  private TrafficoGlyph() {</span>
+    // private constructor to avoid instantiation
+<span class="fc" id="L15">  }</span>
   private static Map&lt;String, Character&gt; glyphs;
 
-<span class="fc" id="L15">  private TrafficoGlyph() {</span>
-    // private constructor to avoid instantiation
-<span class="fc" id="L17">  }</span>
-
   private static Map&lt;String, Character&gt; readGlyphsFromResources() {
-<span class="fc" id="L20">    JsonReader reader = Json.createReader(TrafficoSignElement.class</span>
-<span class="fc" id="L21">        .getResourceAsStream(&quot;/data/fonts/traffico/glyphs.json&quot;));</span>
-<span class="fc" id="L22">    JsonObject glyphObject = reader.readObject().getJsonObject(&quot;glyphs&quot;);</span>
-<span class="fc" id="L23">    Set&lt;String&gt; glyphNames = glyphObject.keySet();</span>
-<span class="fc" id="L24">    glyphs = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L25" title="All 2 branches covered.">    for (String name : glyphNames) {</span>
-<span class="fc" id="L26">      glyphs.put(name, glyphObject.getString(name).charAt(0));</span>
-<span class="fc" id="L27">    }</span>
-<span class="fc" id="L28">    reader.close();</span>
-<span class="fc" id="L29">    return glyphs;</span>
+<span class="fc" id="L19">    JsonReader reader = Json.createReader(TrafficoSignElement.class</span>
+<span class="fc" id="L20">        .getResourceAsStream(&quot;/data/fonts/traffico/glyphs.json&quot;));</span>
+<span class="fc" id="L21">    JsonObject glyphObject = reader.readObject().getJsonObject(&quot;glyphs&quot;);</span>
+<span class="fc" id="L22">    Set&lt;String&gt; glyphNames = glyphObject.keySet();</span>
+<span class="fc" id="L23">    glyphs = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    for (String name : glyphNames) {</span>
+<span class="fc" id="L25">      glyphs.put(name, glyphObject.getString(name).charAt(0));</span>
+<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">    return glyphs;</span>
   }
 
-  public static synchronized Character getGlyph(String key) {
-<span class="fc bfc" id="L33" title="All 2 branches covered.">    if (glyphs == null) {</span>
-<span class="fc" id="L34">      glyphs = readGlyphsFromResources();</span>
+  public static Character getGlyph(String key) {
+<span class="fc bfc" id="L31" title="All 2 branches covered.">    if (glyphs == null) {</span>
+<span class="fc" id="L32">      glyphs = readGlyphsFromResources();</span>
     }
-<span class="fc" id="L36">    return glyphs.get(key);</span>
+<span class="fc" id="L34">    return glyphs.get(key);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

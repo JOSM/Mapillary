@@ -18,9 +18,9 @@ public final class PluginState {
 
   private static int runningDownloads;
   /** Images that have to be uploaded. */
-  private static int imagesToUpload;
+  protected static int imagesToUpload;
   /** Images that have been uploaded. */
-  private static int imagesUploaded;
+  public static int imagesUploaded;
 
 <span class="nc" id="L25">  private PluginState() {</span>
     // Empty constructor to avoid instantiation
@@ -67,7 +67,7 @@ public final class PluginState {
    * @param amount
    *          The amount of images that are going to be uploaded.
    */
-  public static void addImagesToUpload(int amount) {
+  public static void imagesToUpload(int amount) {
 <span class="pc bpc" id="L71" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
 <span class="fc" id="L72">      imagesToUpload = 0;</span>
 <span class="fc" id="L73">      imagesUploaded = 0;</span>
@@ -75,39 +75,31 @@ public final class PluginState {
 <span class="fc" id="L75">    imagesToUpload += amount;</span>
 <span class="fc" id="L76">  }</span>
 
-  public static int getImagesToUpload() {
-<span class="fc" id="L79">    return imagesToUpload;</span>
-  }
-
-  public static int getImagesUploaded() {
-<span class="fc" id="L83">    return imagesUploaded;</span>
-  }
-
   /**
    * Called when an image is uploaded.
    */
   public static void imageUploaded() {
-<span class="fc" id="L90">    imagesUploaded++;</span>
-<span class="pc bpc" id="L91" title="1 of 4 branches missed.">    if (imagesToUpload == imagesUploaded &amp;&amp; Main.main != null) {</span>
-<span class="nc" id="L92">        finishedUploadDialog();</span>
+<span class="fc" id="L82">    imagesUploaded++;</span>
+<span class="pc bpc" id="L83" title="1 of 4 branches missed.">    if (imagesToUpload == imagesUploaded &amp;&amp; Main.main != null) {</span>
+<span class="nc" id="L84">        finishedUploadDialog();</span>
     }
-<span class="fc" id="L94">  }</span>
+<span class="fc" id="L86">  }</span>
 
   private static void finishedUploadDialog() {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L98">      JOptionPane pane = new JOptionPane();</span>
-<span class="nc" id="L99">      pane.setMessage(new FinishedUploadDialog());</span>
-<span class="nc" id="L100">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
-<span class="nc" id="L101">      dlg.setVisible(true);</span>
-<span class="nc" id="L102">    } else {</span>
-<span class="nc" id="L103">      SwingUtilities.invokeLater(new Runnable() {</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L90">      JOptionPane pane = new JOptionPane();</span>
+<span class="nc" id="L91">      pane.setMessage(new FinishedUploadDialog());</span>
+<span class="nc" id="L92">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
+<span class="nc" id="L93">      dlg.setVisible(true);</span>
+<span class="nc" id="L94">    } else {</span>
+<span class="nc" id="L95">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
-<span class="nc" id="L106">          finishedUploadDialog();</span>
-<span class="nc" id="L107">        }</span>
+<span class="nc" id="L98">          finishedUploadDialog();</span>
+<span class="nc" id="L99">        }</span>
       });
     }
-<span class="nc" id="L110">  }</span>
+<span class="nc" id="L102">  }</span>
 
   /**
    * Returns the text to be written in the status bar.
@@ -115,7 +107,7 @@ public final class PluginState {
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L118">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
+<span class="nc" id="L110">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

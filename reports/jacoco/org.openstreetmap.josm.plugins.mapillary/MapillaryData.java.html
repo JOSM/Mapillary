@@ -21,7 +21,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  */
 public class MapillaryData {
 
-  private final Set&lt;MapillaryAbstractImage&gt; images;
+  private Set&lt;MapillaryAbstractImage&gt; images;
   /**
    * The image currently selected, this is the one being shown.
    */
@@ -122,10 +122,10 @@ public class MapillaryData {
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
 <span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (!this.multiSelectedImages.contains(image)) {</span>
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">      if (this.getSelectedImage() == null)</span>
-<span class="nc" id="L126">        this.setSelectedImage(image);</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">      if (this.getSelectedImage() != null)</span>
+<span class="fc" id="L126">        this.multiSelectedImages.add(image);</span>
       else
-<span class="fc" id="L128">        this.multiSelectedImages.add(image);</span>
+<span class="nc" id="L128">        this.setSelectedImage(image);</span>
     }
 <span class="pc bpc" id="L130" title="1 of 2 branches missed.">    if (Main.main != null)</span>
 <span class="nc" id="L131">      Main.map.mapView.repaint();</span>

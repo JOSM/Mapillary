@@ -272,10 +272,10 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="pc bpc" id="L275" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">    if (Main.main == null)</span>
 <span class="fc" id="L276">      return null;</span>
-    }
-<span class="nc" id="L278">    return new ImageProvider(s);</span>
+    else
+<span class="nc" id="L278">      return new ImageProvider(s);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
