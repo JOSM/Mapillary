@@ -578,26 +578,27 @@ public class MapillaryMainDialog extends ToggleDialog implements
                 &quot;dialog.align.left&quot;, false) ? new FlowLayout(FlowLayout.LEFT)
 <span class="nc" id="L579">                : new GridLayout(1, buttons.size()));</span>
 <span class="nc" id="L580">        this.buttonsPanel.add(buttonRowPanel);</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">        for (SideButton button : buttons)</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">        for (SideButton button : buttons) {</span>
 <span class="nc" id="L582">          buttonRowPanel.add(button);</span>
+<span class="nc" id="L583">        }</span>
       }
-<span class="nc" id="L584">      panel.add(this.buttonsPanel, BorderLayout.NORTH);</span>
-<span class="nc" id="L585">      createLayout(panel, true, null);</span>
+<span class="nc" id="L585">      panel.add(this.buttonsPanel, BorderLayout.NORTH);</span>
+<span class="nc" id="L586">      createLayout(panel, true, null);</span>
     } else {
-<span class="nc" id="L587">      createLayout(panel, true, buttons);</span>
+<span class="nc" id="L588">      createLayout(panel, true, buttons);</span>
     }
-<span class="nc" id="L589">    this.add(this.titleBar, BorderLayout.NORTH);</span>
-<span class="nc" id="L590">  }</span>
+<span class="nc" id="L590">    this.add(this.titleBar, BorderLayout.NORTH);</span>
+<span class="nc" id="L591">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="nc" id="L594">    setImage(newImage);</span>
-<span class="nc" id="L595">    updateImage();</span>
-<span class="nc" id="L596">  }</span>
+<span class="nc" id="L595">    setImage(newImage);</span>
+<span class="nc" id="L596">    updateImage();</span>
+<span class="nc" id="L597">  }</span>
 
   @Override
   public void imagesAdded() {
     // This method is enforced by MapillaryDataListener, but only selectedImageChanged() is needed
-<span class="nc" id="L601">  }</span>
+<span class="nc" id="L602">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
