@@ -66,7 +66,7 @@ public final class MapillaryURL {
     }
 <span class="fc" id="L67">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
 <span class="fc" id="L68">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="fc" id="L69">    return string2URL(BASE_WEBSITE_URL + &quot;connect/&quot;+queryString(parts));</span>
+<span class="fc" id="L69">    return string2URL(BASE_WEBSITE_URL + &quot;connect&quot;+queryString(parts));</span>
   }
 
   /**
