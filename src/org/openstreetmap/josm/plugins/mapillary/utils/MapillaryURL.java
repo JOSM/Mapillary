@@ -66,7 +66,7 @@ public final class MapillaryURL {
     }
     parts.put("response_type", "token");
     parts.put("scope", "user:read public:upload public:write");
-    return string2URL(BASE_WEBSITE_URL + "connect/"+queryString(parts));
+    return string2URL(BASE_WEBSITE_URL + "connect"+queryString(parts));
   }
 
   /**
