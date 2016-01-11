@@ -63,7 +63,7 @@ public class MapillaryURLTest {
   public void testConnectURL() throws MalformedURLException {
     assertUrlEquals(
         MapillaryURL.connectURL("http://redirect-host/ä"),
-        "https://www.mapillary.com/connect/",
+        "https://www.mapillary.com/connect",
         "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz",
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token",
@@ -72,7 +72,7 @@ public class MapillaryURLTest {
 
     assertUrlEquals(
         MapillaryURL.connectURL(null),
-        "https://www.mapillary.com/connect/",
+        "https://www.mapillary.com/connect",
         "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz",
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token"
@@ -80,7 +80,7 @@ public class MapillaryURLTest {
 
     assertUrlEquals(
         MapillaryURL.connectURL(""),
-        "https://www.mapillary.com/connect/",
+        "https://www.mapillary.com/connect",
         "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz",
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token"
