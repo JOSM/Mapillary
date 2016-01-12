@@ -14,9 +14,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -24,10 +22,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
-
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * Imports a set of images and puts them in a single {@link MapillarySequence}.
@@ -64,38 +61,19 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(new FileNameExtensionFilter("images", "jpg", "jpeg"));
+    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);
     chooser.setMultiSelectionEnabled(true);
 
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (File file : chooser.getSelectedFiles()) {
-        if (file == null)
-          break;
         Main.pref.put("mapillary.start-directory", file.getParent());
-        MapillaryLayer.getInstance();
-        if (file.isDirectory()) {
-          for (File file2 : file.listFiles()) {
-            String extension = MapillaryUtils.getExtension(file2);
-            try {
-              if ("jpg".equals(extension) || "jpeg".equals(extension))
-                MapillaryUtils.readJPG(file2, true);
-            } catch (ImageReadException | NullPointerException | IOException e) {
-              Main.error(e);
-            }
-          }
-        } else {
-          String extension = MapillaryUtils.getExtension(file);
-          if ("jpg".equals(extension) || "jpeg".equals(extension)) {
-            try {
-              this.images.add(MapillaryUtils.readJPG(file, true));
-            } catch (ImageReadException ex) {
-              Main.error(ex);
-            } catch (IOException ex) {
-              Main.error(ex);
-            } catch (IllegalArgumentException ex) {
-              // Ignored image.
-            }
-          }
+        try {
+          images.addAll(ImageUtil.readImagesFrom(
+              file,
+              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())
+          ));
+        } catch (IOException e) {
+          Main.error("Could not read image(s) from "+file.getAbsolutePath());
         }
       }
       joinImages();

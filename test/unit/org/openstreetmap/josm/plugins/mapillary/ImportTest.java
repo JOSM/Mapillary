@@ -1,16 +1,16 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.IIOException;
 
+import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 
 /**
  * Test the importation of images.
@@ -24,10 +24,9 @@ public class ImportTest extends AbstractTest {
    * Test the importation of images in PNG format.
    */
   @Test
-  public void importNoTagsTest() {
+  public void importNoTagsTest() throws IOException {
     File image = new File("images/icon16.png");
-    MapillaryImportedImage img = MapillaryUtils.readNoTags(image,
-        new LatLon(0, 0));
+    MapillaryImportedImage img = ImageUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
     assertEquals(0, img.getCa(), 0.01);
     assertTrue(new LatLon(0, 0).equalsEpsilon(img.getLatLon()));
   }
