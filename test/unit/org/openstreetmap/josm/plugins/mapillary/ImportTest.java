@@ -39,11 +39,11 @@ public class ImportTest extends AbstractTest {
    */
   @Test(expected = IIOException.class)
   public void testInvalidFiles() throws IOException {
-    MapillaryImportedImage img = new MapillaryImportedImage(0, 0, 0, null);
+    MapillaryImportedImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
     assertEquals(null, img.getImage());
     assertEquals(null, img.getFile());
 
-    img = new MapillaryImportedImage(0, 0, 0, new File(""));
+    img = new MapillaryImportedImage(new LatLon(0, 0), 0, new File(""));
     assertEquals(new File(""), img.getFile());
     img.getImage();
   }

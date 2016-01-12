@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.coor.LatLon;
 
 /**
  *
@@ -22,7 +23,7 @@ public class MapillaryAbstractImageTest extends AbstractTest{
   public void testGetDate() {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0745"));
 
-    MapillaryAbstractImage mai = new MapillaryImportedImage(0, 0, 0, null);
+    MapillaryAbstractImage mai = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
     mai.setCapturedAt(1044087606000l); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
 
 

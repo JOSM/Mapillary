@@ -279,9 +279,9 @@ public final class MapillaryUtils {
       if (ca != null && ca.getValue() instanceof RationalNumber)
         caValue = ((RationalNumber) ca.getValue()).doubleValue();
       if (datetimeOriginal != null) {
-        return new MapillaryImportedImage(latValue, lonValue, caValue, file, datetimeOriginal.getStringValue());
+        return new MapillaryImportedImage(new LatLon(latValue, lonValue), caValue, file, datetimeOriginal.getStringValue());
       }
-      return new MapillaryImportedImage(latValue, lonValue, caValue, file);
+      return new MapillaryImportedImage(new LatLon(latValue, lonValue), caValue, file);
     }
     throw new IllegalStateException("Invalid format.");
   }
@@ -322,15 +322,15 @@ public final class MapillaryUtils {
               .findEXIFValueWithExactMatch(
                       ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
       if (datetimeOriginal == null) {
-        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file);
+        return new MapillaryImportedImage(pos, 0, file);
       }
       try {
-        return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file, datetimeOriginal.getStringValue());
+        return new MapillaryImportedImage(pos, 0, file, datetimeOriginal.getStringValue());
       } catch (ImageReadException e) {
         Main.error(e);
       }
     }
-    return new MapillaryImportedImage(pos.lat(), pos.lon(), 0, file);
+    return new MapillaryImportedImage(pos, 0, file);
   }
 
   /**
