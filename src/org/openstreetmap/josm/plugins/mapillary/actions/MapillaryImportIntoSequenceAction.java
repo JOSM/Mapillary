@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.imaging.ImageReadException;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -24,6 +26,8 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
+
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * Imports a set of images and puts them in a single {@link MapillarySequence}.
