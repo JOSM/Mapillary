@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapViewGeometryUtil.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapViewGeometryUtil.java</span></div><h1>MapViewGeometryUtil.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.utils;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapViewGeometryUtil.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapViewGeometryUtil.java</span></div><h1>MapViewGeometryUtil.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -17,9 +18,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * can then easily be drawn on a {@link MapView}s {@link Graphics2D}-context.
  */
 public final  class MapViewGeometryUtil {
-<span class="nc" id="L20">  private MapViewGeometryUtil() {</span>
+<span class="nc" id="L21">  private MapViewGeometryUtil() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L22">  }</span>
+<span class="nc" id="L23">  }</span>
 
   /**
    * Subtracts the download bounds from the rectangular bounds of the map view.
@@ -29,20 +30,19 @@ public final  class MapViewGeometryUtil {
    * @return the difference between the {@link MapView}s bounds and the downloaded area
    */
   public static Area getNonDownloadedArea(MapView mv, Iterable&lt;Bounds&gt; downloadBounds) {
-<span class="nc" id="L32">    Rectangle b = mv.getBounds();</span>
+<span class="nc" id="L33">    Rectangle b = mv.getBounds();</span>
     // on some platforms viewport bounds seem to be offset from the left,
     // over-grow it just to be sure
-<span class="nc" id="L35">    b.grow(100, 100);</span>
-<span class="nc" id="L36">    Area a = new Area(b);</span>
+<span class="nc" id="L36">    b.grow(100, 100);</span>
+<span class="nc" id="L37">    Area a = new Area(b);</span>
     // now successively subtract downloaded areas
-<span class="nc bnc" id="L38" title="All 2 branches missed.">    for (Bounds bounds : downloadBounds) {</span>
-<span class="nc" id="L39">      Point p1 = mv.getPoint(bounds.getMin());</span>
-<span class="nc" id="L40">      Point p2 = mv.getPoint(bounds.getMax());</span>
-<span class="nc" id="L41">      Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
-<span class="nc" id="L42">          Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
-<span class="nc" id="L43">      a.subtract(new Area(r));</span>
-<span class="nc" id="L44">    }</span>
-<span class="nc" id="L45">    Shape s = null;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    for (Bounds bounds : downloadBounds) {</span>
+<span class="nc" id="L40">      Point p1 = mv.getPoint(bounds.getMin());</span>
+<span class="nc" id="L41">      Point p2 = mv.getPoint(bounds.getMax());</span>
+<span class="nc" id="L42">      Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
+<span class="nc" id="L43">          Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
+<span class="nc" id="L44">      a.subtract(new Area(r));</span>
+<span class="nc" id="L45">    }</span>
 <span class="nc" id="L46">    return a;</span>
   }
 
