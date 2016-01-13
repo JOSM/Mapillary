@@ -96,35 +96,35 @@ public class MapillaryPlugin extends Plugin {
   private static final JMenuItem uploadMenu;
 
   static {
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">    if (Main.main != null) {</span>
-<span class="nc" id="L100">      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);</span>
-<span class="nc" id="L101">      exportMenu.setEnabled(false);</span>
-<span class="nc" id="L102">      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);</span>
-<span class="nc" id="L103">      downloadMenu.setEnabled(false);</span>
-<span class="nc" id="L104">      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);</span>
-<span class="nc" id="L105">      importMenu.setEnabled(false);</span>
-<span class="nc" id="L106">      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);</span>
-<span class="nc" id="L107">      zoomMenu.setEnabled(false);</span>
-<span class="nc" id="L108">      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);</span>
-<span class="nc" id="L109">      downloadViewMenu.setEnabled(false);</span>
-<span class="nc" id="L110">      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);</span>
-<span class="nc" id="L111">      importIntoSequenceMenu.setEnabled(false);</span>
-<span class="nc" id="L112">      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);</span>
-<span class="nc" id="L113">      joinMenu.setEnabled(false);</span>
-<span class="nc" id="L114">      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);</span>
-<span class="nc" id="L115">      walkMenu.setEnabled(false);</span>
-<span class="nc" id="L116">      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);</span>
-<span class="nc" id="L117">      uploadMenu.setEnabled(false);</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="fc" id="L100">      exportMenu = null;</span>
+<span class="fc" id="L101">      downloadMenu = null;</span>
+<span class="fc" id="L102">      importMenu = null;</span>
+<span class="fc" id="L103">      zoomMenu = null;</span>
+<span class="fc" id="L104">      downloadViewMenu = null;</span>
+<span class="fc" id="L105">      importIntoSequenceMenu = null;</span>
+<span class="fc" id="L106">      joinMenu = null;</span>
+<span class="fc" id="L107">      walkMenu = null;</span>
+<span class="fc" id="L108">      uploadMenu = null;</span>
     } else {
-<span class="fc" id="L119">      exportMenu = null;</span>
-<span class="fc" id="L120">      downloadMenu = null;</span>
-<span class="fc" id="L121">      importMenu = null;</span>
-<span class="fc" id="L122">      zoomMenu = null;</span>
-<span class="fc" id="L123">      downloadViewMenu = null;</span>
-<span class="fc" id="L124">      importIntoSequenceMenu = null;</span>
-<span class="fc" id="L125">      joinMenu = null;</span>
-<span class="fc" id="L126">      walkMenu = null;</span>
-<span class="fc" id="L127">      uploadMenu = null;</span>
+<span class="nc" id="L110">      exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);</span>
+<span class="nc" id="L111">      exportMenu.setEnabled(false);</span>
+<span class="nc" id="L112">      downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);</span>
+<span class="nc" id="L113">      downloadMenu.setEnabled(false);</span>
+<span class="nc" id="L114">      importMenu = MainMenu.add(Main.main.menu.fileMenu, importAction, false, 14);</span>
+<span class="nc" id="L115">      importMenu.setEnabled(false);</span>
+<span class="nc" id="L116">      zoomMenu = MainMenu.add(Main.main.menu.viewMenu, zoomAction, false, 15);</span>
+<span class="nc" id="L117">      zoomMenu.setEnabled(false);</span>
+<span class="nc" id="L118">      downloadViewMenu = MainMenu.add(Main.main.menu.fileMenu, downloadViewAction, false, 14);</span>
+<span class="nc" id="L119">      downloadViewMenu.setEnabled(false);</span>
+<span class="nc" id="L120">      importIntoSequenceMenu = MainMenu.add(Main.main.menu.fileMenu, importIntoSequenceAction, false, 14);</span>
+<span class="nc" id="L121">      importIntoSequenceMenu.setEnabled(false);</span>
+<span class="nc" id="L122">      joinMenu = MainMenu.add(Main.main.menu.dataMenu, joinAction, false);</span>
+<span class="nc" id="L123">      joinMenu.setEnabled(false);</span>
+<span class="nc" id="L124">      walkMenu = MainMenu.add(Main.main.menu.moreToolsMenu, walkAction, false);</span>
+<span class="nc" id="L125">      walkMenu.setEnabled(false);</span>
+<span class="nc" id="L126">      uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);</span>
+<span class="nc" id="L127">      uploadMenu.setEnabled(false);</span>
     }
 <span class="fc" id="L129">  }</span>
 
