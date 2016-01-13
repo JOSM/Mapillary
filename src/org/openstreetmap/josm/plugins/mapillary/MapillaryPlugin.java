@@ -96,7 +96,17 @@ public class MapillaryPlugin extends Plugin {
   private static final JMenuItem uploadMenu;
 
   static {
-    if (Main.main != null) {
+    if (Main.main == null) {
+      exportMenu = null;
+      downloadMenu = null;
+      importMenu = null;
+      zoomMenu = null;
+      downloadViewMenu = null;
+      importIntoSequenceMenu = null;
+      joinMenu = null;
+      walkMenu = null;
+      uploadMenu = null;
+    } else {
       exportMenu = MainMenu.add(Main.main.menu.fileMenu, exportAction, false, 14);
       exportMenu.setEnabled(false);
       downloadMenu = MainMenu.add(Main.main.menu.imageryMenu, downloadAction, false);
@@ -115,16 +125,6 @@ public class MapillaryPlugin extends Plugin {
       walkMenu.setEnabled(false);
       uploadMenu = MainMenu.add(Main.main.menu.fileMenu, uploadAction, false, 14);
       uploadMenu.setEnabled(false);
-    } else {
-      exportMenu = null;
-      downloadMenu = null;
-      importMenu = null;
-      zoomMenu = null;
-      downloadViewMenu = null;
-      importIntoSequenceMenu = null;
-      joinMenu = null;
-      walkMenu = null;
-      uploadMenu = null;
     }
   }
 

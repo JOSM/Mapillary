@@ -195,7 +195,7 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
 
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the next
-   * MapillarySequence in it.
+   * image in the sequence.
    *
    * @return The following MapillaryImage, or null if there is none.
    */
@@ -209,7 +209,7 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
 
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the previous
-   * MapillarySequence in it.
+   * image in the sequence.
    *
    * @return The previous MapillaryImage, or null if there is none.
    */

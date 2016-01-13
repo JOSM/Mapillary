@@ -55,16 +55,10 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  * @author nokutu
  */
 public class UploadUtils {
-
-  private UploadUtils() {
-    // Private constructor to avoid instantiation.
-  }
-
   /**
    * Required keys for POST
    */
-  private static final String[] keys = {"key", "AWSAccessKeyId", "acl",
-          "policy", "signature", "Content-Type"};
+  private static final String[] keys = {"key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type"};
 
   /**
    * Mapillary upload URL
@@ -75,6 +69,10 @@ public class UploadUtils {
    * Count to name temporal files.
    */
   private static int c;
+
+  private UploadUtils() {
+    // Private constructor to avoid instantiation.
+  }
 
   private static class SequenceUploadThread extends Thread {
     private final Set<MapillaryAbstractImage> images;

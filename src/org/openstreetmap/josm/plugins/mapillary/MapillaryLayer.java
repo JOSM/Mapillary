@@ -5,16 +5,19 @@ import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
+import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -58,6 +61,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -229,9 +233,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public boolean isModified() {
-    for (MapillaryAbstractImage image : this.data.getImages())
+    for (MapillaryAbstractImage image : this.data.getImages()) {
       if (image.isModified())
         return true;
+    }
     return false;
   }
 
@@ -279,87 +284,61 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   @Override
-  public synchronized void paint(Graphics2D g, MapView mv, Bounds box) {
+  public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     if (Main.map.mapView.getActiveLayer() == this) {
-      Rectangle b = mv.getBounds();
-      // on some platforms viewport bounds seem to be offset from the left,
-      // over-grow it just to be sure
-      b.grow(100, 100);
-      Area a = new Area(b);
-      // now successively subtract downloaded areas
-      for (Bounds bounds : this.data.bounds) {
-        Point p1 = mv.getPoint(bounds.getMin());
-        Point p2 = mv.getPoint(bounds.getMax());
-        Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),
-            Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));
-        a.subtract(new Area(r));
-      }
       // paint remainder
       g.setPaint(this.hatched);
-      g.fill(a);
+      g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.bounds));
     }
 
     // Draw colored lines
-    blue = null;
-    red = null;
     MapillaryMainDialog.getInstance().blueButton.setEnabled(false);
     MapillaryMainDialog.getInstance().redButton.setEnabled(false);
+    blue = null;
+    red = null;
 
-    // Sets blue and red lines and enables/disables the buttons
+    // Draw the blue and red line and enable/disable the buttons
     if (this.data.getSelectedImage() != null) {
       MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
       Point selected = mv.getPoint(this.data.getSelectedImage().getLatLon());
       if (closestImages[0] != null) {
         blue = closestImages[0];
         g.setColor(Color.BLUE);
-        g.drawLine(mv.getPoint(closestImages[0].getLatLon()).x,
-            mv.getPoint(closestImages[0].getLatLon()).y, selected.x, selected.y);
+        final Point p = mv.getPoint(closestImages[0].getLatLon());
+        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
         MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
       }
       if (closestImages[1] != null) {
         red = closestImages[1];
         g.setColor(Color.RED);
-        g.drawLine(mv.getPoint(closestImages[1].getLatLon()).x,
-            mv.getPoint(closestImages[1].getLatLon()).y, selected.x, selected.y);
+        final Point p = mv.getPoint(closestImages[1].getLatLon());
+        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
         MapillaryMainDialog.getInstance().redButton.setEnabled(true);
       }
     }
+    // Draw sequence line
     g.setColor(Color.WHITE);
+    g.setStroke(new BasicStroke(this == Main.map.mapView.getActiveLayer() ? 3 : 1));
+    for (MapillarySequence seq : getData().getSequences()) {
+      g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
+    }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
-      if (!imageAbs.isVisible())
-        continue;
-      Point p = mv.getPoint(imageAbs.getLatLon());
-      Point nextp = null;
-      // Draw sequence line
-      if (imageAbs.getSequence() != null) {
-        MapillaryAbstractImage tempImage = imageAbs.next();
-        while (tempImage != null) {
-          if (tempImage.isVisible()) {
-            nextp = mv.getPoint(tempImage.getLatLon());
-            break;
-          }
-          tempImage = tempImage.next();
+      if (imageAbs.isVisible()) {
+        final Point p = mv.getPoint(imageAbs.getLatLon());
+        if (getData().getMultiSelectedImages().contains(imageAbs)) {
+          draw(g, imageAbs, MapillaryPlugin.MAP_ICON_SELECTED, p);
+        } else {
+          draw(g, imageAbs, imageAbs instanceof MapillaryImage ? MapillaryPlugin.MAP_ICON : MapillaryPlugin.MAP_ICON_IMPORTED, p);
         }
-        if (nextp != null)
-          g.drawLine(p.x, p.y, nextp.x, nextp.y);
-      }
-      // Draws icons
-      if (imageAbs instanceof MapillaryImage) {
-        MapillaryImage image = (MapillaryImage) imageAbs;
-        ImageIcon icon;
-        icon = this.data.getMultiSelectedImages().contains(image) ? MapillaryPlugin.MAP_ICON_SELECTED : MapillaryPlugin.MAP_ICON;
-        draw(g, image, icon, p);
-        if (!image.getSigns().isEmpty()) {
-          g.drawImage(MapillaryPlugin.MAP_SIGN.getImage(),
-              p.x + icon.getIconWidth() / 2, p.y - icon.getIconHeight() / 2,
-              Main.map.mapView);
+        if (imageAbs instanceof MapillaryImage && !((MapillaryImage) imageAbs).getSigns().isEmpty()) {
+          g.drawImage(
+              MapillaryPlugin.MAP_SIGN.getImage(),
+              p.x - MapillaryPlugin.MAP_SIGN.getIconWidth() / 2,
+              p.y - MapillaryPlugin.MAP_SIGN.getIconHeight() / 2,
+              Main.map.mapView
+          );
         }
-      } else if (imageAbs instanceof MapillaryImportedImage) {
-        MapillaryImportedImage image = (MapillaryImportedImage) imageAbs;
-        ImageIcon icon = this.data.getMultiSelectedImages().contains(image)
-            ? MapillaryPlugin.MAP_ICON_SELECTED
-            : MapillaryPlugin.MAP_ICON_IMPORTED;
-        draw(g, image, icon, p);
       }
     }
     if (this.mode instanceof JoinMode) {

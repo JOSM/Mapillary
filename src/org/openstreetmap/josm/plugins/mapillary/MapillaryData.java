@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -218,12 +219,24 @@ public class MapillaryData {
   }
 
   /**
-   * Returns a List containing all images.
+   * Returns a Set containing all images.
    *
-   * @return A List object containing all images.
+   * @return A Set object containing all images.
    */
   public synchronized Set<MapillaryAbstractImage> getImages() {
     return this.images;
+  }
+
+  /**
+   * Returns a Set of all sequences, that the images are part of.
+   * @return
+   */
+  public synchronized Set<MapillarySequence> getSequences() {
+    Set<MapillarySequence> result = new HashSet<>();
+    for (MapillaryAbstractImage img : getImages()) {
+      result.add(img.getSequence());
+    }
+    return result;
   }
 
   /**

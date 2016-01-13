@@ -4,13 +4,19 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Desktop;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Area;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
@@ -25,6 +31,7 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -128,9 +135,10 @@ public final class MapillaryUtils {
     if (degMinSec == null || degMinSec.length != 3) {
       throw new IllegalArgumentException("Array's length must be 3.");
     }
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++) {
       if (degMinSec[i] == null)
         throw new IllegalArgumentException("Null value in array.");
+    }
 
     switch (ref) {
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
