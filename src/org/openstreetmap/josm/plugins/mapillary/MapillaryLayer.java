@@ -13,7 +13,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
@@ -326,11 +325,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
       if (imageAbs.isVisible()) {
         final Point p = mv.getPoint(imageAbs.getLatLon());
+        ImageIcon icon = MapillaryPlugin.MAP_ICON;
         if (getData().getMultiSelectedImages().contains(imageAbs)) {
-          draw(g, imageAbs, MapillaryPlugin.MAP_ICON_SELECTED, p);
-        } else {
-          draw(g, imageAbs, imageAbs instanceof MapillaryImage ? MapillaryPlugin.MAP_ICON : MapillaryPlugin.MAP_ICON_IMPORTED, p);
+          icon = MapillaryPlugin.MAP_ICON_SELECTED;
+        } else if (imageAbs instanceof MapillaryImportedImage) {
+          icon = MapillaryPlugin.MAP_ICON_IMPORTED;
         }
+        draw(g, imageAbs, icon, p);
         if (imageAbs instanceof MapillaryImage && !((MapillaryImage) imageAbs).getSigns().isEmpty()) {
           g.drawImage(
               MapillaryPlugin.MAP_SIGN.getImage(),

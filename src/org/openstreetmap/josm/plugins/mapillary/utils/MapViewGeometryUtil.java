@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Graphics2D;
@@ -42,7 +43,6 @@ public final  class MapViewGeometryUtil {
           Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));
       a.subtract(new Area(r));
     }
-    Shape s = null;
     return a;
   }
 

@@ -39,6 +39,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -245,25 +246,28 @@ public class UploadUtils {
    */
   public static void uploadFile(File file, Map<String, String> hash) throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();
-    HttpClient httpClient = builder.build();
     HttpPost httpPost = new HttpPost(UPLOAD_URL);
 
-    MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-    for (String key : keys) {
-      if (hash.get(key) == null)
-        throw new IllegalArgumentException();
-      entityBuilder.addPart(key, new StringBody(hash.get(key),
-              ContentType.TEXT_PLAIN));
+    try (CloseableHttpClient httpClient = builder.build()) {
+      MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+      for (String key : keys) {
+        if (hash.get(key) == null)
+          throw new IllegalArgumentException();
+        entityBuilder.addPart(key, new StringBody(hash.get(key),
+                ContentType.TEXT_PLAIN));
+      }
+      entityBuilder.addPart("file", new FileBody(file));
+      HttpEntity entity = entityBuilder.build();
+      httpPost.setEntity(entity);
+      HttpResponse response = httpClient.execute(httpPost);
+
+      if (response.getStatusLine().toString().contains("204")) {
+        PluginState.imageUploaded();
+        Main.info(PluginState.getUploadString() + " (Mapillary)");
+      } else {
+        Main.info("Upload error");
+      }
     }
-    entityBuilder.addPart("file", new FileBody(file));
-    HttpEntity entity = entityBuilder.build();
-    httpPost.setEntity(entity);
-    HttpResponse response = httpClient.execute(httpPost);
-    if (response.getStatusLine().toString().contains("204")) {
-      PluginState.imageUploaded();
-      Main.info(PluginState.getUploadString() + " (Mapillary)");
-    } else
-      Main.info("Upload error");
     file.delete();
     MapillaryUtils.updateHelpText();
   }
