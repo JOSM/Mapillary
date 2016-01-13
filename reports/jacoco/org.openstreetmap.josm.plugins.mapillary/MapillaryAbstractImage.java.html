@@ -50,22 +50,18 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
   /**
    * Creates a new object in the given position and with the given direction.
    *
-   * @param lat
-   *          The latitude where the picture was taken.
-   * @param lon
-   *          The longitude where the picture was taken.
-   * @param ca
-   *          The direction of the picture (0 means north).
+   * @param latLon  The latitude and longitude where the picture was taken.
+   * @param ca  The direction of the picture (0 means north).
    */
-<span class="fc" id="L60">  protected MapillaryAbstractImage(final double lat, final double lon, final double ca) {</span>
-<span class="fc" id="L61">    this.latLon = new LatLon(lat, lon);</span>
-<span class="fc" id="L62">    this.tempLatLon = this.latLon;</span>
-<span class="fc" id="L63">    this.movingLatLon = this.latLon;</span>
-<span class="fc" id="L64">    this.ca = ca;</span>
-<span class="fc" id="L65">    this.tempCa = ca;</span>
-<span class="fc" id="L66">    this.movingCa = ca;</span>
-<span class="fc" id="L67">    this.visible = true;</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L56">  protected MapillaryAbstractImage(final LatLon latLon, final double ca) {</span>
+<span class="fc" id="L57">    this.latLon = latLon;</span>
+<span class="fc" id="L58">    this.tempLatLon = this.latLon;</span>
+<span class="fc" id="L59">    this.movingLatLon = this.latLon;</span>
+<span class="fc" id="L60">    this.ca = ca;</span>
+<span class="fc" id="L61">    this.tempCa = ca;</span>
+<span class="fc" id="L62">    this.movingCa = ca;</span>
+<span class="fc" id="L63">    this.visible = true;</span>
+<span class="fc" id="L64">  }</span>
 
   /**
    * Returns the direction towards the image has been taken.
@@ -73,7 +69,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The direction of the image (0 means north and goes clockwise).
    */
   public double getCa() {
-<span class="fc" id="L76">    return this.movingCa;</span>
+<span class="fc" id="L72">    return this.movingCa;</span>
   }
 
   /**
@@ -82,7 +78,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The long containing the Epoch time when the image was captured.
    */
   public long getCapturedAt() {
-<span class="fc" id="L85">    return this.capturedAt;</span>
+<span class="fc" id="L81">    return this.capturedAt;</span>
   }
 
   /**
@@ -91,20 +87,20 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
-<span class="fc" id="L94">    final StringBuilder format = new StringBuilder(26);</span>
-<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;)) {</span>
-<span class="fc" id="L96">      format.append(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L90">    final StringBuilder format = new StringBuilder(26);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;iso.dates&quot;)) {</span>
+<span class="fc" id="L92">      format.append(&quot;yyyy-MM-dd&quot;);</span>
     } else {
-<span class="fc" id="L98">      format.append(&quot;dd/MM/yyyy&quot;);</span>
+<span class="fc" id="L94">      format.append(&quot;dd/MM/yyyy&quot;);</span>
     }
-<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;)) {</span>
-<span class="fc" id="L102">        format.append(&quot; - HH:mm:ss (z)&quot;);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (Main.pref.getBoolean(&quot;mapillary.display-hour&quot;, true)) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (Main.pref.getBoolean(&quot;mapillary.format-24&quot;)) {</span>
+<span class="fc" id="L98">        format.append(&quot; - HH:mm:ss (z)&quot;);</span>
       } else {
-<span class="fc" id="L104">        format.append(&quot; - h:mm:ss a (z)&quot;);</span>
+<span class="fc" id="L100">        format.append(&quot; - h:mm:ss a (z)&quot;);</span>
       }
     }
-<span class="fc" id="L107">    return getDate(format.toString());</span>
+<span class="fc" id="L103">    return getDate(format.toString());</span>
   }
 
   /**
@@ -117,10 +113,10 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @throws NullPointerException if parameter format is &lt;code&gt;null&lt;/code&gt;
    */
   public String getDate(String format) {
-<span class="fc" id="L120">    final Date date = new Date(getCapturedAt());</span>
-<span class="fc" id="L121">    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);</span>
-<span class="fc" id="L122">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
-<span class="fc" id="L123">    return formatter.format(date);</span>
+<span class="fc" id="L116">    final Date date = new Date(getCapturedAt());</span>
+<span class="fc" id="L117">    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);</span>
+<span class="fc" id="L118">    formatter.setTimeZone(Calendar.getInstance().getTimeZone());</span>
+<span class="fc" id="L119">    return formatter.format(date);</span>
   }
 
   /**
@@ -130,7 +126,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The LatLon object with the position of the object.
    */
   public LatLon getLatLon() {
-<span class="fc" id="L133">    return this.movingLatLon;</span>
+<span class="fc" id="L129">    return this.movingLatLon;</span>
   }
 
   /**
@@ -139,12 +135,12 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (this.sequence == null) {</span>
-<span class="fc" id="L143">      this.sequence = new MapillarySequence();</span>
-<span class="fc" id="L144">      this.sequence.add(this);</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">    if (this.sequence == null) {</span>
+<span class="fc" id="L139">      this.sequence = new MapillarySequence();</span>
+<span class="fc" id="L140">      this.sequence.add(this);</span>
     }
 
-<span class="fc" id="L147">    return this.sequence;</span>
+<span class="fc" id="L143">    return this.sequence;</span>
   }
 
   /**
@@ -153,7 +149,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The last fixed direction of the object. 0 means north.
    */
   public double getTempCa() {
-<span class="nc" id="L156">    return this.tempCa;</span>
+<span class="nc" id="L152">    return this.tempCa;</span>
   }
 
   /**
@@ -162,7 +158,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return A LatLon object containing.
    */
   public LatLon getTempLatLon() {
-<span class="nc" id="L165">    return this.tempLatLon;</span>
+<span class="nc" id="L161">    return this.tempLatLon;</span>
   }
 
   /**
@@ -171,7 +167,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-<span class="nc bnc" id="L174" title="All 4 branches missed.">    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) &lt; EPSILON;</span>
+<span class="nc bnc" id="L170" title="All 4 branches missed.">    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) &lt; EPSILON;</span>
   }
 
   /**
@@ -180,7 +176,7 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return True if the image is visible; false otherwise.
    */
   public boolean isVisible() {
-<span class="fc" id="L183">    return this.visible;</span>
+<span class="fc" id="L179">    return this.visible;</span>
   }
 
   /**
@@ -190,8 +186,8 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param y The movement of the image in latitude units.
    */
   public void move(final double x, final double y) {
-<span class="fc" id="L193">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);</span>
-<span class="fc" id="L194">  }</span>
+<span class="fc" id="L189">    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);</span>
+<span class="fc" id="L190">  }</span>
 
   /**
    * If the MapillaryImage belongs to a MapillarySequence, returns the next
@@ -200,11 +196,11 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-<span class="fc" id="L203">    synchronized (MapillaryAbstractImage.class) {</span>
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">      if (this.getSequence() == null)</span>
-<span class="nc" id="L205">        return null;</span>
-<span class="fc" id="L206">      return this.getSequence().next(this);</span>
-<span class="nc" id="L207">    }</span>
+<span class="fc" id="L199">    synchronized (MapillaryAbstractImage.class) {</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">      if (this.getSequence() == null)</span>
+<span class="nc" id="L201">        return null;</span>
+<span class="fc" id="L202">      return this.getSequence().next(this);</span>
+<span class="nc" id="L203">    }</span>
   }
 
   /**
@@ -214,11 +210,11 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-<span class="fc" id="L217">    synchronized (MapillaryAbstractImage.class) {</span>
-<span class="pc bpc" id="L218" title="1 of 2 branches missed.">      if (this.getSequence() == null)</span>
-<span class="nc" id="L219">        return null;</span>
-<span class="fc" id="L220">      return this.getSequence().previous(this);</span>
-<span class="nc" id="L221">    }</span>
+<span class="fc" id="L213">    synchronized (MapillaryAbstractImage.class) {</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">      if (this.getSequence() == null)</span>
+<span class="nc" id="L215">        return null;</span>
+<span class="fc" id="L216">      return this.getSequence().previous(this);</span>
+<span class="nc" id="L217">    }</span>
   }
 
   /**
@@ -227,8 +223,8 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param capturedAt Epoch time when the image was captured.
    */
   public void setCapturedAt(final long capturedAt) {
-<span class="fc" id="L230">    this.capturedAt = capturedAt;</span>
-<span class="fc" id="L231">  }</span>
+<span class="fc" id="L226">    this.capturedAt = capturedAt;</span>
+<span class="fc" id="L227">  }</span>
 
   /**
    * Sets the MapillarySequence object which contains the MapillaryImage.
@@ -236,8 +232,8 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param sequence The MapillarySequence that contains the MapillaryImage.
    */
   public void setSequence(final MapillarySequence sequence) {
-<span class="fc" id="L239">    this.sequence = sequence;</span>
-<span class="fc" id="L240">  }</span>
+<span class="fc" id="L235">    this.sequence = sequence;</span>
+<span class="fc" id="L236">  }</span>
 
   /**
    * Set's whether the image should be visible on the map or not.
@@ -245,17 +241,17 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param visible true if the image is set to be visible; false otherwise.
    */
   public void setVisible(final boolean visible) {
-<span class="nc" id="L248">    this.visible = visible;</span>
-<span class="nc" id="L249">  }</span>
+<span class="nc" id="L244">    this.visible = visible;</span>
+<span class="nc" id="L245">  }</span>
 
   /**
    * Called when the mouse button is released, meaning that the picture has
    * stopped being dragged, so the temporal values are saved.
    */
   public void stopMoving() {
-<span class="fc" id="L256">    this.tempLatLon = this.movingLatLon;</span>
-<span class="fc" id="L257">    this.tempCa = this.movingCa;</span>
-<span class="fc" id="L258">  }</span>
+<span class="fc" id="L252">    this.tempLatLon = this.movingLatLon;</span>
+<span class="fc" id="L253">    this.tempCa = this.movingCa;</span>
+<span class="fc" id="L254">  }</span>
 
   /**
    * Turns the image direction.
@@ -263,12 +259,12 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param ca The angle the image is moving.
    */
   public void turn(final double ca) {
-<span class="fc" id="L266">    this.movingCa = this.tempCa + ca;</span>
-<span class="fc" id="L267">  }</span>
+<span class="fc" id="L262">    this.movingCa = this.tempCa + ca;</span>
+<span class="fc" id="L263">  }</span>
 
   @Override
   public int compareTo(MapillaryAbstractImage mapillaryAbstractImage) {
-<span class="nc" id="L271">    return hashCode() - mapillaryAbstractImage.hashCode();</span>
+<span class="nc" id="L267">    return hashCode() - mapillaryAbstractImage.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

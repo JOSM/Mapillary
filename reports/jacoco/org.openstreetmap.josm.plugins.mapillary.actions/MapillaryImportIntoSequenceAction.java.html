@@ -25,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -44,76 +45,57 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryImportIntoSequenceAction() {
-<span class="fc" id="L47">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin</span>
-<span class="fc" id="L48">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Import local pictures&quot;),</span>
-<span class="fc" id="L49">        Shortcut.registerShortcut(&quot;Import Mapillary Sequence&quot;, tr(&quot;Import pictures into Mapillary layer in a sequence&quot;),</span>
+<span class="fc" id="L48">    super(tr(&quot;Import pictures into sequence&quot;), MapillaryPlugin</span>
+<span class="fc" id="L49">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Import local pictures&quot;),</span>
+<span class="fc" id="L50">        Shortcut.registerShortcut(&quot;Import Mapillary Sequence&quot;, tr(&quot;Import pictures into Mapillary layer in a sequence&quot;),</span>
             KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false,
         &quot;mapillaryImportSequence&quot;, false);
-<span class="fc" id="L52">    this.setEnabled(false);</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L53">    this.setEnabled(false);</span>
+<span class="fc" id="L54">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L57">    this.images = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L58">    this.images = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L59">    JFileChooser chooser = new JFileChooser();</span>
-<span class="nc" id="L60">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
-<span class="nc" id="L61">        System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L62">    chooser.setCurrentDirectory(startDirectory);</span>
-<span class="nc" id="L63">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
-<span class="nc" id="L64">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
-<span class="nc" id="L65">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L66">    chooser.addChoosableFileFilter(new FileNameExtensionFilter(&quot;images&quot;, &quot;jpg&quot;, &quot;jpeg&quot;));</span>
-<span class="nc" id="L67">    chooser.setMultiSelectionEnabled(true);</span>
+<span class="nc" id="L60">    JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L61">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
+<span class="nc" id="L62">        System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L63">    chooser.setCurrentDirectory(startDirectory);</span>
+<span class="nc" id="L64">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L65">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L66">    chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L67">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L68">    chooser.setMultiSelectionEnabled(true);</span>
 
-<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (file == null)</span>
-<span class="nc" id="L72">          break;</span>
-<span class="nc" id="L73">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
-<span class="nc" id="L74">        MapillaryLayer.getInstance();</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (file.isDirectory()) {</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">          for (File file2 : file.listFiles()) {</span>
-<span class="nc" id="L77">            String extension = MapillaryUtils.getExtension(file2);</span>
-            try {
-<span class="nc bnc" id="L79" title="All 4 branches missed.">              if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension))</span>
-<span class="nc" id="L80">                MapillaryUtils.readJPG(file2, true);</span>
-<span class="nc" id="L81">            } catch (ImageReadException | NullPointerException | IOException e) {</span>
-<span class="nc" id="L82">              Main.error(e);</span>
-<span class="nc" id="L83">            }</span>
-          }
-        } else {
-<span class="nc" id="L86">          String extension = MapillaryUtils.getExtension(file);</span>
-<span class="nc bnc" id="L87" title="All 4 branches missed.">          if (&quot;jpg&quot;.equals(extension) || &quot;jpeg&quot;.equals(extension)) {</span>
-            try {
-<span class="nc" id="L89">              this.images.add(MapillaryUtils.readJPG(file, true));</span>
-<span class="nc" id="L90">            } catch (ImageReadException ex) {</span>
-<span class="nc" id="L91">              Main.error(ex);</span>
-<span class="nc" id="L92">            } catch (IOException ex) {</span>
-<span class="nc" id="L93">              Main.error(ex);</span>
-<span class="nc" id="L94">            } catch (IllegalArgumentException ex) {</span>
-              // Ignored image.
-<span class="nc" id="L96">            }</span>
-          }
-        }
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
+<span class="nc" id="L72">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
+        try {
+<span class="nc" id="L74">          images.addAll(ImageUtil.readImagesFrom(</span>
+              file,
+<span class="nc" id="L76">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
+          ));
+<span class="nc" id="L78">        } catch (IOException e) {</span>
+<span class="nc" id="L79">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
+<span class="nc" id="L80">        }</span>
       }
-<span class="nc" id="L100">      joinImages();</span>
-<span class="nc" id="L101">      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(images)));</span>
+<span class="nc" id="L82">      joinImages();</span>
+<span class="nc" id="L83">      MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(images)));</span>
     }
-<span class="nc" id="L103">    MapillaryUtils.showAllPictures();</span>
-<span class="nc" id="L104">  }</span>
+<span class="nc" id="L85">    MapillaryUtils.showAllPictures();</span>
+<span class="nc" id="L86">  }</span>
 
   /**
    * Joins all the images in a unique {@link MapillarySequence}.
    */
   public void joinImages() {
-<span class="nc" id="L110">    Collections.sort(this.images, new MapillaryEpochComparator());</span>
-<span class="nc" id="L111">    MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">    for (MapillaryAbstractImage img : this.images) {</span>
-<span class="nc" id="L113">      seq.add(img);</span>
-<span class="nc" id="L114">      img.setSequence(seq);</span>
-<span class="nc" id="L115">    }</span>
-<span class="nc" id="L116">  }</span>
+<span class="nc" id="L92">    Collections.sort(this.images, new MapillaryEpochComparator());</span>
+<span class="nc" id="L93">    MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    for (MapillaryAbstractImage img : this.images) {</span>
+<span class="nc" id="L95">      seq.add(img);</span>
+<span class="nc" id="L96">      img.setSequence(seq);</span>
+<span class="nc" id="L97">    }</span>
+<span class="nc" id="L98">  }</span>
 
   /**
    * Comparator that compares two {@link MapillaryAbstractImage} objects
@@ -122,16 +104,16 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * @author nokutu
    *
    */
-<span class="nc" id="L125">  public class MapillaryEpochComparator implements</span>
+<span class="nc" id="L107">  public class MapillaryEpochComparator implements</span>
       Comparator&lt;MapillaryAbstractImage&gt; {
 
     @Override
     public int compare(MapillaryAbstractImage arg0, MapillaryAbstractImage arg1) {
-<span class="nc bnc" id="L130" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
-<span class="nc" id="L131">        return -1;</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
-<span class="nc" id="L133">        return 1;</span>
-<span class="nc" id="L134">      return 0;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      if (arg0.getCapturedAt() &lt; arg1.getCapturedAt())</span>
+<span class="nc" id="L113">        return -1;</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (arg0.getCapturedAt() &gt; arg1.getCapturedAt())</span>
+<span class="nc" id="L115">        return 1;</span>
+<span class="nc" id="L116">      return 0;</span>
     }
   }
 }
