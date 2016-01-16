@@ -32,8 +32,7 @@ import org.apache.commons.imaging.formats.tiff.constants.TiffTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -259,13 +258,13 @@ public class UploadUtils {
       entityBuilder.addPart("file", new FileBody(file));
       HttpEntity entity = entityBuilder.build();
       httpPost.setEntity(entity);
-      HttpResponse response = httpClient.execute(httpPost);
-
-      if (response.getStatusLine().toString().contains("204")) {
-        PluginState.imageUploaded();
-        Main.info(PluginState.getUploadString() + " (Mapillary)");
-      } else {
-        Main.info("Upload error");
+      try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+        if (response.getStatusLine().toString().contains("204")) {
+          PluginState.imageUploaded();
+          Main.info(PluginState.getUploadString() + " (Mapillary)");
+        } else {
+          Main.info("Upload error");
+        }
       }
     }
     file.delete();

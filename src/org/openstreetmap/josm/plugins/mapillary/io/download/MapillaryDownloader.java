@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
  * @author nokutu
  *
  */
-public class MapillaryDownloader {
+public final class MapillaryDownloader {
 
   /** Possible download modes. */
   public enum MODES {Automatic, Semiautomatic, Manual}
@@ -38,6 +38,10 @@ public class MapillaryDownloader {
 
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
+
+  private MapillaryDownloader() {
+    // Private constructor to avoid instantiation
+  }
 
   /**
    * Gets all the images in a square. It downloads all the images of all the

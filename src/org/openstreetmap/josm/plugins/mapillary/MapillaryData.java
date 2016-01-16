@@ -374,13 +374,13 @@ public class MapillaryData {
     fireSelectedImageChanged(oldImage, this.selectedImage);
   }
 
-  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
-                                        MapillaryAbstractImage newImage) {
+  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : this.listeners)
+    for (MapillaryDataListener lis : this.listeners) {
       if (lis != null)
         lis.selectedImageChanged(oldImage, newImage);
+    }
   }
 
   /**

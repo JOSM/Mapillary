@@ -57,24 +57,13 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     try {
       while (!this.end && this.data.getSelectedImage().next() != null) {
         MapillaryAbstractImage image = this.data.getSelectedImage();
-        if (image instanceof MapillaryImage) {
+        if (image != null && image.next() instanceof MapillaryImage) {
           // Predownload next 10 thumbnails.
-          for (int i = 0; i < 10; i++) {
-            if (image.next() == null) {
-              break;
-            }
-            image = image.next();
-            CacheUtils.downloadPicture((MapillaryImage) image, CacheUtils.PICTURE.THUMBNAIL);
-          }
-          if (this.waitForFullQuality)
+          preDownloadImages((MapillaryImage) image.next(), 10, CacheUtils.PICTURE.THUMBNAIL);
+          if (this.waitForFullQuality) {
             // Start downloading 3 next full images.
-            for (int i = 0; i < 3; i++) {
-              if (image.next() == null) {
-                break;
-              }
-              image = image.next();
-              CacheUtils.downloadPicture((MapillaryImage) image, CacheUtils.PICTURE.FULL_IMAGE);
-            }
+            preDownloadImages((MapillaryImage) image.next(), 3, CacheUtils.PICTURE.FULL_IMAGE);
+          }
         }
         try {
           synchronized (this) {
@@ -116,6 +105,21 @@ public class WalkThread extends Thread implements MapillaryDataListener {
       return;
     }
     end();
+  }
+
+  /**
+   * Downloads n images into the cache beginning from the supplied start-image (including the start-image itself).
+   * @param startImage the image to start with (this and the next n-1 images in the same sequence are downloaded)
+   * @param n the number of images to download
+   * @param type the quality of the image (full or thumbnail)
+   */
+  private void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type) {
+    if (n >= 1 && startImage != null) {
+      CacheUtils.downloadPicture(startImage, type);
+      if (startImage.next() instanceof MapillaryImage && n >= 2) {
+        preDownloadImages((MapillaryImage) startImage.next(), n - 1, type);
+      }
+    }
   }
 
   @Override

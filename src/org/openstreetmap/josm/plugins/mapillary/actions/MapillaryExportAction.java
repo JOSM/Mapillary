@@ -90,11 +90,11 @@ public class MapillaryExportAction extends JosmAction {
       // This option ignores the selected directory.
     } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
-      for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
-          .getData().getImages())
+      for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
         if (image instanceof MapillaryImportedImage) {
           images.add((MapillaryImportedImage) image);
         }
+      }
       try {
         Main.worker.submit(new Thread(new MapillaryExportManager(images)));
       } catch (IOException e1) {

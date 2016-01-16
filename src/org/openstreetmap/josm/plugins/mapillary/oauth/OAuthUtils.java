@@ -18,7 +18,11 @@ import org.openstreetmap.josm.Main;
  * @author nokutu
  *
  */
-public class OAuthUtils {
+public final class OAuthUtils {
+
+  private OAuthUtils() {
+    // Private constructor to avoid instantiation
+  }
 
   /**
    * Returns a JsonObject containing the result of making a GET request with the
