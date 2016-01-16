@@ -121,17 +121,18 @@ public class MapillaryRecord {
 <span class="fc" id="L121">  }</span>
 
   private void fireRecordChanged() {
-<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    for (MapillaryRecordListener lis : this.listeners)</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    for (MapillaryRecordListener lis : this.listeners) {</span>
 <span class="nc bnc" id="L125" title="All 2 branches missed.">      if (lis != null)</span>
 <span class="nc" id="L126">        lis.recordChanged();</span>
-<span class="fc" id="L127">  }</span>
+<span class="nc" id="L127">    }</span>
+<span class="fc" id="L128">  }</span>
 
   /**
    * Resets the object to its start state.
    */
   public void reset() {
-<span class="nc" id="L133">    this.commandList.clear();</span>
-<span class="nc" id="L134">    this.position = -1;</span>
-<span class="nc" id="L135">  }</span>
+<span class="nc" id="L134">    this.commandList.clear();</span>
+<span class="nc" id="L135">    this.position = -1;</span>
+<span class="nc" id="L136">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

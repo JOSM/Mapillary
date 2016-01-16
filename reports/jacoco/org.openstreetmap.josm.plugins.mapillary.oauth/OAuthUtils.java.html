@@ -18,7 +18,11 @@ import org.openstreetmap.josm.Main;
  * @author nokutu
  *
  */
-<span class="nc" id="L21">public class OAuthUtils {</span>
+public final class OAuthUtils {
+
+<span class="nc" id="L23">  private OAuthUtils() {</span>
+    // Private constructor to avoid instantiation
+<span class="nc" id="L25">  }</span>
 
   /**
    * Returns a JsonObject containing the result of making a GET request with the
@@ -31,15 +35,15 @@ import org.openstreetmap.josm.Main;
    *           Errors relating to the connection.
    */
   public static JsonObject getWithHeader(URL url) throws IOException {
-<span class="fc" id="L34">    HttpURLConnection con = (HttpURLConnection) url.openConnection();</span>
-<span class="fc" id="L35">    con.setRequestMethod(&quot;GET&quot;);</span>
-<span class="fc" id="L36">    con.setRequestProperty(&quot;Authorization&quot;, &quot;Bearer &quot; + Main.pref.get(&quot;mapillary.access-token&quot;));</span>
+<span class="fc" id="L38">    HttpURLConnection con = (HttpURLConnection) url.openConnection();</span>
+<span class="fc" id="L39">    con.setRequestMethod(&quot;GET&quot;);</span>
+<span class="fc" id="L40">    con.setRequestProperty(&quot;Authorization&quot;, &quot;Bearer &quot; + Main.pref.get(&quot;mapillary.access-token&quot;));</span>
 
-<span class="nc" id="L38">    try (</span>
-<span class="nc" id="L39">      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;))</span>
+<span class="nc" id="L42">    try (</span>
+<span class="nc" id="L43">      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;))</span>
     ) {
-<span class="nc" id="L41">      return Json.createReader(in).readObject();</span>
-<span class="nc bnc" id="L42" title="All 8 branches missed.">    }</span>
+<span class="nc" id="L45">      return Json.createReader(in).readObject();</span>
+<span class="nc bnc" id="L46" title="All 8 branches missed.">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

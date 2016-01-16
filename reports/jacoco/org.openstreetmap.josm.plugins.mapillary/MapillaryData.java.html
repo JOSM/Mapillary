@@ -374,13 +374,13 @@ public class MapillaryData {
 <span class="fc" id="L374">    fireSelectedImageChanged(oldImage, this.selectedImage);</span>
 <span class="fc" id="L375">  }</span>
 
-  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage,
-                                        MapillaryAbstractImage newImage) {
-<span class="pc bpc" id="L379" title="1 of 2 branches missed.">    if (this.listeners.isEmpty())</span>
-<span class="nc" id="L380">      return;</span>
-<span class="fc bfc" id="L381" title="All 2 branches covered.">    for (MapillaryDataListener lis : this.listeners)</span>
-<span class="pc bpc" id="L382" title="1 of 2 branches missed.">      if (lis != null)</span>
-<span class="fc" id="L383">        lis.selectedImageChanged(oldImage, newImage);</span>
+  private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+<span class="pc bpc" id="L378" title="1 of 2 branches missed.">    if (this.listeners.isEmpty())</span>
+<span class="nc" id="L379">      return;</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">    for (MapillaryDataListener lis : this.listeners) {</span>
+<span class="pc bpc" id="L381" title="1 of 2 branches missed.">      if (lis != null)</span>
+<span class="fc" id="L382">        lis.selectedImageChanged(oldImage, newImage);</span>
+<span class="fc" id="L383">    }</span>
 <span class="fc" id="L384">  }</span>
 
   /**
