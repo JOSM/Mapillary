@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.traffico;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,75 +14,79 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-public final class TrafficoSign {
-<span class="fc" id="L17">  private static Map&lt;String, Map&lt;String, TrafficoSignElement[]&gt;&gt; signs = new HashMap&lt;&gt;();</span>
+import org.openstreetmap.josm.Main;
 
-<span class="fc" id="L19">  private TrafficoSign() {</span>
+public final class TrafficoSign {
+<span class="fc" id="L20">  private static Map&lt;String, Map&lt;String, TrafficoSignElement[]&gt;&gt; signs = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L22">  private TrafficoSign() {</span>
     // private constructor to avoid instantiation
-<span class="fc" id="L21">  }</span>
+<span class="fc" id="L24">  }</span>
 
   public static TrafficoSignElement[] getSign(String country, String signName) {
-<span class="fc bfc" id="L24" title="All 2 branches covered.">    if (signs.get(country) == null) {</span>
-<span class="fc" id="L25">      System.out.println(&quot;Read signs for &quot; + country);</span>
-<span class="fc" id="L26">      InputStream countryStream = TrafficoSign.class</span>
-<span class="fc" id="L27">          .getResourceAsStream(&quot;/data/fonts/traffico/signs/&quot; + country + &quot;.json&quot;);</span>
-<span class="fc bfc" id="L28" title="All 2 branches covered.">      if (countryStream == null) {</span>
-<span class="fc" id="L29">        return null;</span>
-      }
-<span class="fc" id="L31">      JsonObject countrySigns = Json.createReader(countryStream).readObject();</span>
-<span class="fc" id="L32">      Set&lt;String&gt; countrySignNames = countrySigns.keySet();</span>
-<span class="fc" id="L33">      System.out.println(countrySignNames.size() + &quot; signs found&quot;);</span>
-<span class="fc" id="L34">      Map&lt;String, TrafficoSignElement[]&gt; countryMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L35" title="All 2 branches covered.">      for (String name : countrySignNames) {</span>
-<span class="fc" id="L36">        System.out.println(&quot; * sign &quot; + name);</span>
-<span class="fc" id="L37">        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(</span>
-            &quot;elements&quot;);
-
-        // TODO: Replace by an array when all types of sign elements (text!) are
-        // supported
-<span class="fc" id="L42">        List&lt;TrafficoSignElement&gt; layers = new ArrayList&lt;&gt;();</span>
-
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
-<span class="fc" id="L45">          System.out.println(&quot;   - &quot;</span>
-<span class="fc" id="L46">              + elements.getJsonObject(i).getString(&quot;color&quot;) + &quot; layer &quot;</span>
-<span class="fc" id="L47">              + elements.getJsonObject(i).getString(&quot;type&quot;));</span>
-<span class="fc" id="L48">          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i)</span>
-<span class="fc" id="L49">              .getString(&quot;type&quot;));</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">          if (glyph != null) {</span>
-            Color c;
-<span class="pc bpc" id="L52" title="6 of 26 branches missed.">            switch (elements.getJsonObject(i).getString(&quot;color&quot;).toLowerCase()) {</span>
-              case &quot;black&quot;:
-<span class="fc" id="L54">                c = Color.BLACK;</span>
-<span class="fc" id="L55">                break;</span>
-              case &quot;red&quot;:
-<span class="fc" id="L57">                c = Color.RED;</span>
-<span class="fc" id="L58">                break;</span>
-              case &quot;blue&quot;:
-<span class="fc" id="L60">                c = Color.BLUE;</span>
-<span class="fc" id="L61">                break;</span>
-              case &quot;white&quot;:
-<span class="fc" id="L63">                c = Color.WHITE;</span>
-<span class="fc" id="L64">                break;</span>
-              case &quot;green&quot;:
-<span class="fc" id="L66">                c = Color.GREEN;</span>
-<span class="fc" id="L67">                break;</span>
-              case &quot;yellow&quot;:
-<span class="fc" id="L69">                c = Color.YELLOW;</span>
-<span class="fc" id="L70">                break;</span>
-              default:
-<span class="fc" id="L72">                c = Color.MAGENTA;</span>
-            }
-<span class="fc" id="L74">            layers.add(new TrafficoSignElement(glyph, c));</span>
-          }
+<span class="fc bfc" id="L27" title="All 2 branches covered.">    if (signs.get(country) == null) {</span>
+<span class="fc" id="L28">      Main.info(&quot;Reading signs for country ''{0}''.&quot;, country);</span>
+<span class="pc" id="L29">      try (</span>
+<span class="fc" id="L30">        InputStream countryStream = TrafficoSign.class</span>
+<span class="fc" id="L31">            .getResourceAsStream(&quot;/data/fonts/traffico/signs/&quot; + country + &quot;.json&quot;)) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (countryStream == null) {</span>
+<span class="fc" id="L33">          return null;</span>
         }
-<span class="fc" id="L77">        countryMap.put(name, layers.toArray(new TrafficoSignElement[0]));</span>
-<span class="fc" id="L78">      }</span>
-<span class="fc" id="L79">      signs.put(country, countryMap);</span>
+<span class="fc" id="L35">        JsonObject countrySigns = Json.createReader(countryStream).readObject();</span>
+<span class="fc" id="L36">        Set&lt;String&gt; countrySignNames = countrySigns.keySet();</span>
+<span class="fc" id="L37">        Main.info(</span>
+<span class="fc" id="L38">            countrySignNames.size() + &quot; different signs are supported for ''{0}'' by the Mapillary-plugin .&quot;,</span>
+            country
+        );
+<span class="fc" id="L41">        Map&lt;String, TrafficoSignElement[]&gt; countryMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (String name : countrySignNames) {</span>
+<span class="fc" id="L43">          JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(&quot;elements&quot;);</span>
+
+          // TODO: Replace by an array when all types of sign elements (text!) are
+          // supported
+<span class="fc" id="L47">          List&lt;TrafficoSignElement&gt; layers = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">          for (int i = 0; i &lt; elements.size(); i++) {</span>
+<span class="fc" id="L50">            Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i)</span>
+<span class="fc" id="L51">                .getString(&quot;type&quot;));</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (glyph != null) {</span>
+              Color c;
+<span class="pc bpc" id="L54" title="6 of 26 branches missed.">              switch (elements.getJsonObject(i).getString(&quot;color&quot;).toLowerCase()) {</span>
+                case &quot;black&quot;:
+<span class="fc" id="L56">                  c = Color.BLACK;</span>
+<span class="fc" id="L57">                  break;</span>
+                case &quot;red&quot;:
+<span class="fc" id="L59">                  c = Color.RED;</span>
+<span class="fc" id="L60">                  break;</span>
+                case &quot;blue&quot;:
+<span class="fc" id="L62">                  c = Color.BLUE;</span>
+<span class="fc" id="L63">                  break;</span>
+                case &quot;white&quot;:
+<span class="fc" id="L65">                  c = Color.WHITE;</span>
+<span class="fc" id="L66">                  break;</span>
+                case &quot;green&quot;:
+<span class="fc" id="L68">                  c = Color.GREEN;</span>
+<span class="fc" id="L69">                  break;</span>
+                case &quot;yellow&quot;:
+<span class="fc" id="L71">                  c = Color.YELLOW;</span>
+<span class="fc" id="L72">                  break;</span>
+                default:
+<span class="fc" id="L74">                  c = Color.MAGENTA;</span>
+              }
+<span class="fc" id="L76">              layers.add(new TrafficoSignElement(glyph, c));</span>
+            }
+          }
+<span class="fc" id="L79">          countryMap.put(name, layers.toArray(new TrafficoSignElement[layers.size()]));</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc" id="L81">        signs.put(country, countryMap);</span>
+<span class="pc bpc" id="L82" title="9 of 12 branches missed.">      } catch (IOException e) {</span>
+<span class="nc" id="L83">        Main.error(e);</span>
+<span class="fc" id="L84">      }</span>
     }
-<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (signs.get(country).get(signName) != null) {</span>
-<span class="fc" id="L82">      return signs.get(country).get(signName);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (signs.get(country).get(signName) != null) {</span>
+<span class="fc" id="L87">      return signs.get(country).get(signName);</span>
     }
-<span class="fc" id="L84">    return null;</span>
+<span class="fc" id="L89">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
