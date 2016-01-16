@@ -93,8 +93,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   @Override
   public boolean equals(Object other) {
-<span class="nc bnc" id="L96" title="All 4 branches missed.">    if (other != null &amp;&amp; other.getClass() == this.getClass())</span>
-<span class="nc" id="L97">      return this.file.equals(((MapillaryImportedImage) other).file);</span>
+<span class="pc bpc" id="L96" title="2 of 4 branches missed.">    if (other != null &amp;&amp; other.getClass() == this.getClass())</span>
+<span class="fc" id="L97">      return this.file.equals(((MapillaryImportedImage) other).file);</span>
 <span class="nc" id="L98">    return false;</span>
   }
 
@@ -107,7 +107,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   @Override
   public int hashCode() {
-<span class="nc" id="L110">    return this.file.hashCode();</span>
+<span class="fc" id="L110">    return this.file.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
