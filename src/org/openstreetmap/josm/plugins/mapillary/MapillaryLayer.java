@@ -245,7 +245,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     for (MapillaryAbstractImage img : this.data.getImages()) {
       img.setVisible(visible);
     }
-    MapillaryFilterDialog.getInstance().refresh();
+    if (Main.map != null) {
+      MapillaryFilterDialog.getInstance().refresh();
+    }
   }
 
   /**

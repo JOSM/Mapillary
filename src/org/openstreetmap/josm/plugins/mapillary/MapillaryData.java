@@ -75,6 +75,7 @@ public class MapillaryData {
    *
    * @param image  The image to be added.
    * @param update Whether the map must be updated or not.
+   * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
   public synchronized void add(MapillaryAbstractImage image, boolean update) {
     if (!this.images.contains(image)) {
