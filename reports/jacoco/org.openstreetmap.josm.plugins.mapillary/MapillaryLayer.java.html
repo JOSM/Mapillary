@@ -325,7 +325,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L325">      g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));</span>
 <span class="nc" id="L326">    }</span>
 <span class="nc bnc" id="L327" title="All 2 branches missed.">    for (MapillaryAbstractImage imageAbs : this.data.getImages()) {</span>
-<span class="nc bnc" id="L328" title="All 2 branches missed.">      if (imageAbs.isVisible()) {</span>
+<span class="nc bnc" id="L328" title="All 4 branches missed.">      if (imageAbs.isVisible() &amp;&amp; Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getLatLon()))) {</span>
 <span class="nc" id="L329">        final Point p = mv.getPoint(imageAbs.getLatLon());</span>
 <span class="nc" id="L330">        ImageIcon icon = MapillaryPlugin.MAP_ICON;</span>
 <span class="nc bnc" id="L331" title="All 2 branches missed.">        if (getData().getMultiSelectedImages().contains(imageAbs)) {</span>
