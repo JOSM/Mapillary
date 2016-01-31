@@ -325,7 +325,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
-      if (imageAbs.isVisible()) {
+      if (imageAbs.isVisible() && Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getLatLon()))) {
         final Point p = mv.getPoint(imageAbs.getLatLon());
         ImageIcon icon = MapillaryPlugin.MAP_ICON;
         if (getData().getMultiSelectedImages().contains(imageAbs)) {

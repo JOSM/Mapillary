@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -29,7 +30,7 @@ public class MapillarySequence {
    * {@link MapillaryImportedImage} sequences.
    */
   public MapillarySequence() {
-    this.images = new ArrayList<>();
+    this.images = new CopyOnWriteArrayList<>();
   }
 
   /**
@@ -39,7 +40,7 @@ public class MapillarySequence {
    * @param createdAt The date the sequence was created.
    */
   public MapillarySequence(String key, long createdAt) {
-    this.images = new ArrayList<>();
+    this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.createdAt = createdAt;
   }
