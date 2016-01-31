@@ -4,6 +4,8 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openstreetmap.josm.data.coor.LatLon;
+
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
  *
@@ -24,17 +26,12 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class MapillaryImage
    *
-   * @param key
-   *          The unique identifier of the image.
-   * @param lat
-   *          The latitude where it is positioned.
-   * @param lon
-   *          The longitude where it is positioned.
-   * @param ca
-   *          The direction of the images in degrees, meaning 0 north.
+   * @param key  The unique identifier of the image.
+   * @param latLon  The latitude and longitude where it is positioned.
+   * @param ca  The direction of the images in degrees, meaning 0 north.
    */
-  public MapillaryImage(String key, double lat, double lon, double ca) {
-    super(lat, lon, ca);
+  public MapillaryImage(final String key, final LatLon latLon, final double ca) {
+    super(latLon, ca);
     this.key = key;
   }
 

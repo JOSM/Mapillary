@@ -15,6 +15,7 @@ import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -70,10 +71,13 @@ public class MapillarySequenceDownloadThread extends Thread {
         ArrayList<MapillaryImage> images = new ArrayList<>();
         for (int j = 0; j < cas.size(); j++) {
           try {
-            images.add(new MapillaryImage(keys.getString(j), coords
-                    .getJsonArray(j).getJsonNumber(1).doubleValue(), coords
-                    .getJsonArray(j).getJsonNumber(0).doubleValue(), cas
-                    .getJsonNumber(j).doubleValue()));
+            images.add(new MapillaryImage(
+                keys.getString(j),
+                new LatLon(
+                    coords.getJsonArray(j).getJsonNumber(1).doubleValue(),
+                    coords.getJsonArray(j).getJsonNumber(0).doubleValue()
+                ),
+                cas.getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
             Main.warn("Mapillary bug at " + MapillaryURL.searchSequenceURL(bounds, page));
             isSequenceWrong = true;

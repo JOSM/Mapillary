@@ -50,15 +50,11 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   /**
    * Creates a new object in the given position and with the given direction.
    *
-   * @param lat
-   *          The latitude where the picture was taken.
-   * @param lon
-   *          The longitude where the picture was taken.
-   * @param ca
-   *          The direction of the picture (0 means north).
+   * @param latLon  The latitude and longitude where the picture was taken.
+   * @param ca  The direction of the picture (0 means north).
    */
-  protected MapillaryAbstractImage(final double lat, final double lon, final double ca) {
-    this.latLon = new LatLon(lat, lon);
+  protected MapillaryAbstractImage(final LatLon latLon, final double ca) {
+    this.latLon = latLon;
     this.tempLatLon = this.latLon;
     this.movingLatLon = this.latLon;
     this.ca = ca;

@@ -8,6 +8,7 @@ import java.text.ParseException;
 
 import javax.imageio.ImageIO;
 
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -26,36 +27,24 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * Creates a new MapillaryImportedImage object using as date the current date.
    * Using when the EXIF tags doesn't contain that info.
    *
-   * @param lat
-   *          Latitude where the picture was taken.
-   * @param lon
-   *          Longitude where the picture was taken.
-   * @param ca
-   *          Direction of the picture (0 means north).
-   * @param file
-   *          The file containing the picture.
+   * @param latLon  The latitude and longitude where the picture was taken.
+   * @param ca  Direction of the picture (0 means north).
+   * @param file  The file containing the picture.
    */
-  public MapillaryImportedImage(double lat, double lon, double ca, File file) {
-    this(lat, lon, ca, file, MapillaryUtils.currentDate());
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file) {
+    this(latLon, ca, file, MapillaryUtils.currentDate());
   }
 
   /**
    * Main constructor of the class.
    *
-   * @param lat
-   *          Latitude where the picture was taken.
-   * @param lon
-   *          Longitude where the picture was taken.
-   * @param ca
-   *          Direction of the picture (0 means north),
-   * @param file
-   *          The file containing the picture.
-   * @param datetimeOriginal
-   *          The date the picture was taken.
+   * @param latLon  Latitude and Longitude where the picture was taken.
+   * @param ca  Direction of the picture (0 means north),
+   * @param file  The file containing the picture.
+   * @param datetimeOriginal  The date the picture was taken.
    */
-  public MapillaryImportedImage(double lat, double lon, double ca, File file,
-      String datetimeOriginal) {
-    super(lat, lon, ca);
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final String datetimeOriginal) {
+    super(latLon, ca);
     this.file = file;
     try {
       this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy:MM:dd HH:mm:ss");
