@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -34,10 +34,9 @@ public class UploadTest extends AbstractTest {
    * Tests the {@link UploadUtils#updateFile(MapillaryImportedImage)} method.
    */
   @Test
-  public void updateFileTest() {
+  public void updateFileTest() throws IOException {
     File image = new File("images/icon16.png");
-    MapillaryImportedImage img = MapillaryUtils.readNoTags(image,
-        new LatLon(0, 0));
+    MapillaryImportedImage img = ImageUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
     File updatedFile = null;
     try {
       updatedFile = UploadUtils.updateFile(img);
