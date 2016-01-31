@@ -3,8 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  * @author nokutu
  * @see MapillaryFilterChooseSigns
- *
  */
 public class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
 
@@ -45,9 +43,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static MapillaryFilterDialog instance;
 
-  private static final String[] TIME_LIST = { tr("All"), tr("Years"), tr("Months"), tr("Days") };
+  private static final String[] TIME_LIST = {tr("All"), tr("Years"), tr("Months"), tr("Days")};
 
-  /** Spinner to choose the range of dates. */
+  /**
+   * Spinner to choose the range of dates.
+   */
   private final SpinnerNumberModel spinner;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
@@ -62,30 +62,34 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns.getInstance();
 
-  /** The list of sign names */
-  private static final String[] SIGN_TAGS = { "prohibitory_speed_limit",
-      "priority_stop", "other_give_way", "mandatory_roundabout",
-      "other_no_entry", "prohibitory_no_traffic_both_ways",
-      "danger_intersection", "mandatory_go", "mandatory_keep",
-      "danger_priority_next_intersection", "danger_uneven_road",
-      "prohibitory_no_parking", "prohibitory_on_overtaking",
-      "danger_pedestrian_crossing", "prohibitory_no_u_turn",
-      "prohibitory_noturn" };
-  /** The {@link JCheckBox} where the respective tag should be searched */
-  private final JCheckBox[] SIGN_CHECKBOXES = { this.signFilter.maxSpeed,
-      this.signFilter.stop, this.signFilter.giveWay,
-      this.signFilter.roundabout, this.signFilter.access,
-      this.signFilter.access, this.signFilter.intersection,
-      this.signFilter.direction, this.signFilter.direction,
-      this.signFilter.intersection, this.signFilter.uneven,
-      this.signFilter.noParking, this.signFilter.noOvertaking,
-      this.signFilter.crossing, this.signFilter.noTurn, this.signFilter.noTurn };
+  /**
+   * The list of sign names
+   */
+  private static final String[] SIGN_TAGS = {"prohibitory_speed_limit",
+          "priority_stop", "other_give_way", "mandatory_roundabout",
+          "other_no_entry", "prohibitory_no_traffic_both_ways",
+          "danger_intersection", "mandatory_go", "mandatory_keep",
+          "danger_priority_next_intersection", "danger_uneven_road",
+          "prohibitory_no_parking", "prohibitory_on_overtaking",
+          "danger_pedestrian_crossing", "prohibitory_no_u_turn",
+          "prohibitory_noturn"};
+  /**
+   * The {@link JCheckBox} where the respective tag should be searched
+   */
+  private final JCheckBox[] SIGN_CHECKBOXES = {this.signFilter.maxSpeed,
+          this.signFilter.stop, this.signFilter.giveWay,
+          this.signFilter.roundabout, this.signFilter.access,
+          this.signFilter.access, this.signFilter.intersection,
+          this.signFilter.direction, this.signFilter.direction,
+          this.signFilter.intersection, this.signFilter.uneven,
+          this.signFilter.noParking, this.signFilter.noOvertaking,
+          this.signFilter.crossing, this.signFilter.noTurn, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillaryfilter.png",
-        tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
-            tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
-            KeyEvent.VK_M, Shortcut.NONE), 200);
+            tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
+                    tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
+                    KeyEvent.VK_M, Shortcut.NONE), 200);
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
@@ -111,20 +115,25 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     this.downloaded.setSelected(true);
 
     JPanel panel = new JPanel();
-    JPanel col1 = new JPanel(new GridLayout(2, 1));
-    col1.add(this.downloaded);
-    col1.add(fromPanel);
-    panel.add(col1);
-    JPanel col2 = new JPanel(new GridLayout(2, 1));
-    col2.add(this.imported);
-    col2.add(userSearchPanel);
-    panel.add(col2);
-    JPanel col3 = new JPanel(new GridLayout(2, 1));
-    col3.add(this.onlySigns);
-    col3.add(signChooserPanel);
-    panel.add(col3);
+    panel.setLayout(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    c.anchor = GridBagConstraints.LINE_START;
+    panel.add(this.downloaded, c);
+    c.gridx = 1;
+    panel.add(this.imported, c);
+    c.gridx = 0;
+    c.gridy = 1;
+    c.gridwidth = 2;
+    panel.add(fromPanel, c);
+    c.gridy = 2;
+    panel.add(userSearchPanel, c);
+    c.gridwidth = 1;
+    c.gridy = 3;
+    panel.add(this.onlySigns, c);
+    c.gridx = 1;
+    panel.add(signChooserPanel, c);
 
-    createLayout(panel, true, Arrays.asList(new SideButton[] { updateButton, resetButton }));
+    createLayout(panel, true, Arrays.asList(new SideButton[]{updateButton, resetButton}));
   }
 
   /**
@@ -190,7 +199,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
           }
         }
         if (!"".equals(user.getText())
-            && !this.user.getText().equals(((MapillaryImage) img).getUser())) {
+                && !this.user.getText().equals(((MapillaryImage) img).getUser())) {
           img.setVisible(false);
           continue;
         }
@@ -198,14 +207,14 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
       // Calculates the amount of days since the image was taken
       Long currentTime = currentTime();
       long[] timeFactor = new long[]{
-          31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
-          2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
-          86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
+              31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
+              2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
+              86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
       };
       for (int i = 1; i <= 3; i++) {
         if (TIME_LIST[i].equals(time.getSelectedItem())
-            && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
-        ) {
+                && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
+                ) {
           img.setVisible(false);
         }
       }
@@ -216,11 +225,10 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   /**
    * Checks if the image fulfills the sign conditions.
    *
-   * @param img
-   *          The {@link MapillaryAbstractImage} object that is going to be
-   *          checked.
+   * @param img The {@link MapillaryAbstractImage} object that is going to be
+   *            checked.
    * @return {@code true} if it fulfills the conditions; {@code false}
-   *         otherwise.
+   * otherwise.
    */
   private boolean checkSigns(MapillaryImage img) {
     for (int i = 0; i < SIGN_TAGS.length; i++) {
@@ -306,7 +314,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * Opens a new window where you can specifically filter signs.
    *
    * @author nokutu
-   *
    */
   private class SignChooserAction extends AbstractAction {
 
@@ -320,7 +327,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     public void actionPerformed(ActionEvent arg0) {
       JPanel dialog = MapillaryFilterChooseSigns.getInstance();
       JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-          JOptionPane.OK_CANCEL_OPTION);
+              JOptionPane.OK_CANCEL_OPTION);
       JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
       dlg.setVisible(true);
       if ((int) pane.getValue() == JOptionPane.OK_OPTION)
