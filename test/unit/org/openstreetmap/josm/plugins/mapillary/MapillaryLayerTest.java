@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.junit.Test;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -24,16 +25,16 @@ public class MapillaryLayerTest extends AbstractTest {
     assertFalse(MapillaryLayer.getInstance().isMergable(dummyLayer));
   }
 
-  @Test(expected=UnsupportedOperationException.class)
+  @Test(expected = UnsupportedOperationException.class)
   public void testMergeFrom() {
     MapillaryLayer.getInstance().mergeFrom(dummyLayer);
   }
 
   @Test
   public void testSetVisible() {
-    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(0.0, 0.0, 0.0, new File("")));
-    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(0.0, 0.0, 0.0, new File("")));
-    MapillaryImportedImage invisibleImage = new MapillaryImportedImage(0.0, 0.0, 0.0, new File(""));
+    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File("")));
+    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File("")));
+    MapillaryImportedImage invisibleImage = new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""));
     invisibleImage.setVisible(false);
     MapillaryLayer.getInstance().getData().add(invisibleImage);
 
@@ -53,7 +54,7 @@ public class MapillaryLayerTest extends AbstractTest {
   public void testGetInfoComponent() {
     Object comp = MapillaryLayer.getInstance().getInfoComponent();
     assertTrue(comp instanceof String);
-    assertTrue(((String)comp).length() >= 9);
+    assertTrue(((String) comp).length() >= 9);
   }
 
   @Test
