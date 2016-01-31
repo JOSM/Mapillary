@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>FindBugs Report</title>
+<style type="text/css">
+		.tablerow0 {
+			background: #EEEEEE;
+		}
+
+		.tablerow1 {
+			background: white;
+		}
+
+		.detailrow0 {
+			background: #EEEEEE;
+		}
+
+		.detailrow1 {
+			background: white;
+		}
+
+		.tableheader {
+			background: #b9b9fe;
+			font-size: larger;
+		}
+
+		.tablerow0:hover, .tablerow1:hover {
+			background: #aaffaa;
+		}
+
+		.priority-1 {
+		    color: red;
+		    font-weight: bold;
+		}
+		.priority-2 {
+		    color: orange;
+		    font-weight: bold;
+		}
+		.priority-3 {
+		    color: green;
+		    font-weight: bold;
+		}
+		.priority-4 {
+		    color: blue;
+		    font-weight: bold;
+		}
+		</style>
+<script type="text/javascript">
+			function toggleRow(elid) {
+				if (document.getElementById) {
+					element = document.getElementById(elid);
+					if (element) {
+						if (element.style.display == 'none') {
+							element.style.display = 'block';
+							//window.status = 'Toggle on!';
+						} else {
+							element.style.display = 'none';
+							//window.status = 'Toggle off!';
+						}
+					}
+				}
+			}
+		</script>
+</head>
+<body>
+<h1>
+<a href="http://findbugs.sourceforge.net">FindBugs</a> Report</h1>
+<h2>Project Information</h2>
+<p>Project: 
+		</p>
+<p>FindBugs version: 3.0.1</p>
+<p>Code analyzed:</p>
+<ul>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryAbstractImage.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillarySequence.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryData.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryDataListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryImage.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryImportedImage.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer$DelayedDownload.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer$DeleteImageAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/mode/AbstractMode$SemiautomaticThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/mode/AbstractMode$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/mode/AbstractMode.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryPlugin$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryPlugin.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction$OKAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction$CancelAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadViewAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportIntoSequenceAction$MapillaryEpochComparator.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportIntoSequenceAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryUploadAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread$2.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/actions/WalkListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog$RewriteButtonAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/FinishedUploadDialog$WebAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/FinishedUploadDialog$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/FinishedUploadDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp$2.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp$3.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel$LinkPopUp.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabel.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$DownloadCheckBoxAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$UpdateAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$ResetAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$OnlySignsAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog$SignChooserAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$UndoAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$RedoAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$MapillaryCellRenderer.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$MouseEventHandler.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog$UndoRedoSelectionListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryHistoryDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay$ImgDisplayMouseListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$MODE.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$2.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$NextPictureAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$PreviousPictureAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$RedAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$BlueAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$StopAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$PlayAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$PauseAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$3.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog$4.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting$1$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting$LoginAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting$LogoutAction.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryUploadDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryWalkDialog.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils$PICTURE.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils$IgnoreDownload.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache$Type.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/MapillaryTrafficSignLayer.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/MapillaryCommand.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandDelete.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/MapillaryExecutableCommand.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandImport.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandJoin.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandMove.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandTurn.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandUnjoin.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecord.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/MapillaryLoginListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/MapillaryUser.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthUtils.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils$SequenceUploadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils$SingleUploadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader$MODES.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryImageInfoDownloadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillarySequenceDownloadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillarySquareDownloadManagerThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryTrafficSignDownloadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportDownloadThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportWriterThread.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoGlyph.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSign.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSignElement.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/ImageUtil$ImageFileFilter.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/ImageUtil.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapViewGeometryUtil.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/PluginState$1.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.class</li>
+</ul>
+<p>
+<br/>
+<br/>
+</p>
+<h2>Metrics</h2>
+<p>4573 lines of code analyzed,
+	in 127 classes, 
+	in 12 packages.</p>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Metric</th>
+<th align="right">Total</th>
+<th align="right">Density*</th>
+</tr>
+<tr class="tablerow0">
+<td>High Priority Warnings</td>
+<td align="right"/>
+<td align="right">0.00</td>
+</tr>
+<tr class="tablerow1">
+<td>Medium Priority Warnings</td>
+<td align="right"/>
+<td align="right">0.00</td>
+</tr>
+<tr class="$totalClass">
+<td>
+<b>Total Warnings</b>
+</td>
+<td align="right">
+<b>0</b>
+</td>
+<td align="right">
+<b>0.00</b>
+</td>
+</tr>
+</table>
+<p>
+<i>(* Defects per Thousand lines of non-commenting source statements)</i>
+</p>
+<p>
+<br/>
+<br/>
+</p>
+<h2>Contents</h2>
+<ul>
+<li>
+<a href="#Details">Details</a>
+</li>
+</ul>
+<h1>Summary</h1>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Warning Type</th>
+<th align="right">Number</th>
+</tr>
+<tr class="tablerow0">
+<td>
+<b>Total</b>
+</td>
+<td align="right">
+<b>0</b>
+</td>
+</tr>
+</table>
+<h1>Warnings</h1>
+<p>Click on a warning row to see full context information.</p>
+<h1>
+<a name="Details">Details</a>
+</h1>
+</body>
+</html>
