@@ -5,20 +5,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
-import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 
 public class ImageUtilsTest {
 
   @Test
-  public void testUntaggedImage() throws IOException {
+  public void testUntaggedImage() throws URISyntaxException, IOException {
     long startTime = System.currentTimeMillis() / 1000 * 1000; // Rounding to last full second
-    final File untaggedFile = new File(TestUtils.getTestDataRoot() + "exifTestImages/untagged.jpg");
+    final File untaggedFile = new File(ImageUtil.class.getResource("/exifTestImages/untagged.jpg").toURI());
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
@@ -30,9 +30,9 @@ public class ImageUtilsTest {
   }
 
   @Test
-  public void testLatLonOnlyImage() throws IOException {
+  public void testLatLonOnlyImage() throws URISyntaxException, IOException {
     long startTime = System.currentTimeMillis() / 1000 * 1000; // Rounding to last full second
-    final File untaggedFile = new File(TestUtils.getTestDataRoot() + "exifTestImages/latLonOnly.jpg");
+    final File untaggedFile = new File(ImageUtil.class.getResource("/exifTestImages/latLonOnly.jpg").toURI());
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
@@ -45,9 +45,9 @@ public class ImageUtilsTest {
   }
 
   @Test
-  public void testGpsDirectionOnlyImage() throws IOException {
+  public void testGpsDirectionOnlyImage() throws URISyntaxException, IOException {
     long startTime = System.currentTimeMillis() / 1000 * 1000; // Rounding to last full second
-    final File untaggedFile = new File(TestUtils.getTestDataRoot() + "exifTestImages/gpsDirectionOnly.jpg");
+    final File untaggedFile = new File(ImageUtil.class.getResource("/exifTestImages/gpsDirectionOnly.jpg").toURI());
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
@@ -59,9 +59,9 @@ public class ImageUtilsTest {
   }
 
   @Test
-  public void testDateTimeOnlyImage() throws IOException {
+  public void testDateTimeOnlyImage() throws URISyntaxException, IOException {
     TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    final File untaggedFile = new File(TestUtils.getTestDataRoot() + "exifTestImages/dateTimeOnly.jpg");
+    final File untaggedFile = new File(ImageUtil.class.getResource("/exifTestImages/dateTimeOnly.jpg").toURI());
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
@@ -78,8 +78,8 @@ public class ImageUtilsTest {
   }
 
   @Test
-  public void testImageDirectory() throws IOException {
-    final File imageDirectory = new File(TestUtils.getTestDataRoot() + "exifTestImages");
+  public void testImageDirectory() throws URISyntaxException, IOException {
+    final File imageDirectory = new File(ImageUtil.class.getResource("/exifTestImages/").toURI());
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(imageDirectory, new LatLon(42,-73));
     assertEquals(5, images.size());
   }
@@ -88,4 +88,5 @@ public class ImageUtilsTest {
   public void testUtilityClass() {
     TestUtil.testUtilityClass(ImageUtil.class);
   }
+
 }
