@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryWalkDialog.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui</a> &gt; <span class="el_source">MapillaryWalkDialog.java</span></div><h1>MapillaryWalkDialog.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
+/**
+ * Dialog to set the walk mode options.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryWalkDialog extends JPanel {
+
+  private static final long serialVersionUID = -6258767312211941358L;
+
+  /** Spin containing the interval value. */
+  public SpinnerModel spin;
+  /** Whether it must wait for the picture to be downloaded */
+  public JCheckBox waitForPicture;
+  /** Whether the view must follow the selected image. */
+  public JCheckBox followSelection;
+  /** Go forward or backwards */
+  public JCheckBox goForward;
+
+  /**
+   * Main constructor
+   */
+<span class="nc" id="L35">  public MapillaryWalkDialog() {</span>
+<span class="nc" id="L36">    JPanel interval = new JPanel();</span>
+<span class="nc" id="L37">    this.spin = new SpinnerNumberModel(2000, 500, 10000, 500);</span>
+<span class="nc" id="L38">    interval.add(new JLabel(&quot;Interval (miliseconds): &quot;));</span>
+<span class="nc" id="L39">    interval.add(new JSpinner(this.spin));</span>
+<span class="nc" id="L40">    add(interval);</span>
+
+<span class="nc" id="L42">    this.waitForPicture = new JCheckBox(tr(&quot;Wait for full quality pictures&quot;));</span>
+<span class="nc" id="L43">    this.waitForPicture.setSelected(true);</span>
+<span class="nc" id="L44">    add(this.waitForPicture);</span>
+
+<span class="nc" id="L46">    this.followSelection = new JCheckBox(tr(&quot;Follow selected image&quot;));</span>
+<span class="nc" id="L47">    this.followSelection.setSelected(true);</span>
+<span class="nc" id="L48">    add(this.followSelection);</span>
+
+<span class="nc" id="L50">    this.goForward = new JCheckBox(tr(&quot;Go forward&quot;));</span>
+<span class="nc" id="L51">    this.goForward.setSelected(true);</span>
+<span class="nc" id="L52">    add(this.goForward);</span>
+<span class="nc" id="L53">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
