@@ -17,11 +17,11 @@ import org.openstreetmap.josm.data.coor.LatLon;
  */
 public class MapillarySequenceTest {
 
-  MapillaryImage img1;
-  MapillaryImage img2;
-  MapillaryImage img3;
-  MapillaryImage img4;
-  MapillarySequence seq;
+  private MapillaryImage img1;
+  private MapillaryImage img2;
+  private MapillaryImage img3;
+  private MapillaryImage img4;
+  private MapillarySequence seq;
 
   /**
    * Creates 4 {@link MapillaryImage} objects and puts them in a
@@ -29,18 +29,17 @@ public class MapillarySequenceTest {
    */
   @Before
   public void setUp() {
-    this.img1 = new MapillaryImage("key1", new LatLon(0.1, 0.1), 90);
-    this.img2 = new MapillaryImage("key2", new LatLon(0.2, 0.2), 90);
-    this.img3 = new MapillaryImage("key3", new LatLon(0.3, 0.3), 90);
-    this.img4 = new MapillaryImage("key4", new LatLon(0.4, 0.4), 90);
-    this.seq = new MapillarySequence();
+    img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90);
+    img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90);
+    img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90);
+    img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90);
+    seq = new MapillarySequence();
 
-    this.seq.add(Arrays.asList(new MapillaryAbstractImage[] { this.img1,
-        this.img2, this.img3, this.img4 }));
-    this.img1.setSequence(this.seq);
-    this.img2.setSequence(this.seq);
-    this.img3.setSequence(this.seq);
-    this.img4.setSequence(this.seq);
+    seq.add(Arrays.asList(new MapillaryAbstractImage[] { img1, img2, img3, img4 }));
+    img1.setSequence(seq);
+    img2.setSequence(seq);
+    img3.setSequence(seq);
+    img4.setSequence(seq);
   }
 
   /**
@@ -63,11 +62,9 @@ public class MapillarySequenceTest {
     // Test IllegalArgumentException when asking for the next image of an image
     // that is not in the sequence.
     try {
-      this.seq.next(new MapillaryImage("key5", new LatLon(0.5, 0.5), 90));
+      this.seq.next(new MapillaryImage("key5__________________", new LatLon(0.5, 0.5), 90));
       fail();
     } catch (IllegalArgumentException e) {
-    } catch (Exception e) {
-      fail();
     }
     // Test IllegalArgumentException when asking for the previous image of an
     // image that is not in the sequence.
@@ -75,8 +72,6 @@ public class MapillarySequenceTest {
       this.seq.previous(new MapillaryImage("key5", new LatLon(0.5, 0.5), 90));
       fail();
     } catch (IllegalArgumentException e) {
-    } catch (Exception e) {
-      fail();
     }
   }
 }

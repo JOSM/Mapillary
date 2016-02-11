@@ -42,7 +42,7 @@ public final class ValidationUtil {
    */
   public static void throwExceptionForInvalidImgKey(String imgKey, boolean nullAllowed) {
     if (!validateSequenceKey(imgKey)) {
-      throw new IllegalArgumentException(I18n.tr("The image key ''{{0}}'' is invalid!", imgKey));
+      throw new IllegalArgumentException(I18n.tr("The image key ''{0}'' is invalid!", imgKey));
     }
     if (!nullAllowed && imgKey == null) {
       throw new IllegalArgumentException(I18n.tr("The image key must not be null here!"));
@@ -58,7 +58,7 @@ public final class ValidationUtil {
    */
   public static void throwExceptionForInvalidSeqKey(String seqKey, boolean nullAllowed) {
     if (!validateSequenceKey(seqKey)) {
-      throw new IllegalArgumentException(I18n.tr("The sequence key ''{{0}}'' is invalid!", seqKey));
+      throw new IllegalArgumentException(I18n.tr("The sequence key ''{0}'' is invalid!", seqKey));
     }
     if (!nullAllowed && seqKey == null) {
       throw new IllegalArgumentException(I18n.tr("The sequence key must not be null here!"));
