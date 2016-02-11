@@ -39,7 +39,7 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
 
     ExecutorService ex = Executors.newSingleThreadExecutor();
     Bounds bounds = new Bounds(minLatLon, maxLatLon);
-    MapillaryLayer.getInstance().getData().bounds.add(new Bounds(minLatLon,
+    MapillaryLayer.getInstance().getData().getBounds().add(new Bounds(minLatLon,
         maxLatLon));
 
     int page = 1;

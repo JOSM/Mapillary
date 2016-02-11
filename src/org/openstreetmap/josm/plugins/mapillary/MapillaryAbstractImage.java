@@ -27,9 +27,9 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   /** Sequence of pictures containing this object. */
   private MapillarySequence sequence;
   /** Position of the picture. */
-  public final LatLon latLon;
+  protected LatLon latLon;
   /** Direction of the picture. */
-  public final double ca;
+  protected double ca;
   /** Temporal position of the picture until it is uploaded. */
   public LatLon tempLatLon;
   /**
@@ -217,6 +217,10 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
     }
   }
 
+  public void setCa(final double ca) {
+    this.ca = ca;
+  }
+
   /**
    * Sets the Epoch time when the picture was captured.
    *
@@ -224,6 +228,12 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
    */
   public void setCapturedAt(final long capturedAt) {
     this.capturedAt = capturedAt;
+  }
+
+  public void setLatLon(final LatLon latLon) {
+    if (latLon != null) {
+      this.latLon = latLon;
+    }
   }
 
   /**

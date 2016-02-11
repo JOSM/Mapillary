@@ -19,7 +19,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -100,7 +99,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
     this.data = new MapillaryData();
-    this.data.bounds = new CopyOnWriteArrayList<>();
   }
 
   /**
@@ -290,7 +288,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (Main.map.mapView.getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
-      g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.bounds));
+      g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
     }
 
     // Draw colored lines

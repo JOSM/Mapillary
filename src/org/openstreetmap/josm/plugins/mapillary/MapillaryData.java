@@ -10,8 +10,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -21,7 +23,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  * @see MapillarySequence
  */
 public class MapillaryData {
-
   private final Set<MapillaryAbstractImage> images;
   /**
    * The image currently selected, this is the one being shown.
@@ -38,11 +39,11 @@ public class MapillaryData {
   /**
    * Listeners of the class.
    */
-  private final CopyOnWriteArrayList<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<MapillaryDataListener> listeners = new CopyOnWriteArrayList<>();
   /**
    * The bounds of the areas for which the pictures have been downloaded.
    */
-  public List<Bounds> bounds;
+  private final List<Bounds> bounds;
 
   /**
    * Creates a new object and adds the initial set of listeners.
@@ -51,6 +52,7 @@ public class MapillaryData {
     this.images = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
     this.multiSelectedImages = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
     this.selectedImage = null;
+    this.bounds = new CopyOnWriteArrayList<>();
 
     // Adds the basic set of listeners.
     addListener(MapillaryPlugin.getWalkAction());
@@ -81,8 +83,9 @@ public class MapillaryData {
     if (!this.images.contains(image)) {
       this.images.add(image);
     }
-    if (update)
+    if (update) {
       dataUpdated();
+    }
     fireImagesAdded();
   }
 
@@ -150,6 +153,10 @@ public class MapillaryData {
       }
     }
     Main.map.mapView.repaint();
+  }
+
+  public List<Bounds> getBounds() {
+    return bounds;
   }
 
   /**

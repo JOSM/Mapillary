@@ -1,9 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.ValidationUtil;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -38,8 +39,12 @@ public class MapillarySequence {
    *
    * @param key       The unique identifier of the sequence.
    * @param createdAt The date the sequence was created.
+   * @throws IllegalArgumentException if the key is invalid
+   *           according to {@link ValidationUtil#validateSequenceKey(String)}
    */
   public MapillarySequence(String key, long createdAt) {
+    ValidationUtil.throwExceptionForInvalidSeqKey(key, true);
+
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.createdAt = createdAt;
