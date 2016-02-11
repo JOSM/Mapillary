@@ -2,6 +2,7 @@ apply plugin: 'eclipse'
 apply plugin: 'findbugs'
 apply plugin: 'jacoco'
 apply plugin: 'java'
+apply plugin: 'pmd'
 apply plugin: 'project-report'
 
 sourceCompatibility = '1.7'
@@ -63,8 +64,20 @@ sourceSets {
 eclipse {
   project {
     name = 'JOSM-Mapillary'
-    natures 'org.sonarlint.eclipse.core.sonarlintNature'
+    comment = property('plugin.description')
+    natures 'org.sonarlint.eclipse.core.sonarlintNature', 'ch.acanda.eclipse.pmd.builder.PMDNature'
+    buildCommand 'ch.acanda.eclipse.pmd.builder.PMDBuilder'
   }
+}
+eclipseClasspath.dependsOn cleanEclipseClasspath
+eclipseProject.dependsOn cleanEclipseProject
+tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
+
+pmd {
+  toolVersion '5.4.1'
+  ignoreFailures true
+  targetJdk sourceCompatibility
+  ruleSetFiles = files('.settings/pmd-ruleset.xml')
 }
 
 build.dependsOn jacocoTestReport
@@ -78,8 +91,8 @@ tasks.withType(Javadoc) {
 findbugs {
   toolVersion = "3.0.1"
   ignoreFailures = true
-  effort = "min"
-  reportLevel = "high"
+  effort = "max"
+  reportLevel = "low"
 }
 tasks.withType(FindBugs) {
   reports {
