@@ -27,9 +27,9 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
   /** Sequence of pictures containing this object. */
   private MapillarySequence sequence;
   /** Position of the picture. */
-  public final LatLon latLon;
+  protected LatLon latLon;
   /** Direction of the picture. */
-  public final double ca;
+  protected double ca;
   /** Temporal position of the picture until it is uploaded. */
   public LatLon tempLatLon;
   /**
@@ -217,14 +217,24 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
 <span class="nc" id="L217">    }</span>
   }
 
+  public void setCa(final double ca) {
+<span class="nc" id="L221">    this.ca = ca;</span>
+<span class="nc" id="L222">  }</span>
+
   /**
    * Sets the Epoch time when the picture was captured.
    *
    * @param capturedAt Epoch time when the image was captured.
    */
   public void setCapturedAt(final long capturedAt) {
-<span class="fc" id="L226">    this.capturedAt = capturedAt;</span>
-<span class="fc" id="L227">  }</span>
+<span class="fc" id="L230">    this.capturedAt = capturedAt;</span>
+<span class="fc" id="L231">  }</span>
+
+  public void setLatLon(final LatLon latLon) {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">    if (latLon != null) {</span>
+<span class="nc" id="L235">      this.latLon = latLon;</span>
+    }
+<span class="nc" id="L237">  }</span>
 
   /**
    * Sets the MapillarySequence object which contains the MapillaryImage.
@@ -232,8 +242,8 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param sequence The MapillarySequence that contains the MapillaryImage.
    */
   public void setSequence(final MapillarySequence sequence) {
-<span class="fc" id="L235">    this.sequence = sequence;</span>
-<span class="fc" id="L236">  }</span>
+<span class="fc" id="L245">    this.sequence = sequence;</span>
+<span class="fc" id="L246">  }</span>
 
   /**
    * Set's whether the image should be visible on the map or not.
@@ -241,17 +251,17 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param visible true if the image is set to be visible; false otherwise.
    */
   public void setVisible(final boolean visible) {
-<span class="fc" id="L244">    this.visible = visible;</span>
-<span class="fc" id="L245">  }</span>
+<span class="fc" id="L254">    this.visible = visible;</span>
+<span class="fc" id="L255">  }</span>
 
   /**
    * Called when the mouse button is released, meaning that the picture has
    * stopped being dragged, so the temporal values are saved.
    */
   public void stopMoving() {
-<span class="fc" id="L252">    this.tempLatLon = this.movingLatLon;</span>
-<span class="fc" id="L253">    this.tempCa = this.movingCa;</span>
-<span class="fc" id="L254">  }</span>
+<span class="fc" id="L262">    this.tempLatLon = this.movingLatLon;</span>
+<span class="fc" id="L263">    this.tempCa = this.movingCa;</span>
+<span class="fc" id="L264">  }</span>
 
   /**
    * Turns the image direction.
@@ -259,12 +269,12 @@ public class MapillaryAbstractImage implements Comparable&lt;MapillaryAbstractIm
    * @param ca The angle the image is moving.
    */
   public void turn(final double ca) {
-<span class="fc" id="L262">    this.movingCa = this.tempCa + ca;</span>
-<span class="fc" id="L263">  }</span>
+<span class="fc" id="L272">    this.movingCa = this.tempCa + ca;</span>
+<span class="fc" id="L273">  }</span>
 
   @Override
   public int compareTo(MapillaryAbstractImage mapillaryAbstractImage) {
-<span class="nc" id="L267">    return hashCode() - mapillaryAbstractImage.hashCode();</span>
+<span class="nc" id="L277">    return hashCode() - mapillaryAbstractImage.hashCode();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

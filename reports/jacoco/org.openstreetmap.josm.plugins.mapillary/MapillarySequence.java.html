@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillarySequence.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillarySequence.java</span></div><h1>MapillarySequence.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.ValidationUtil;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -29,21 +30,25 @@ public class MapillarySequence {
    * Creates a sequence without key or timestamp. Used for
    * {@link MapillaryImportedImage} sequences.
    */
-<span class="fc" id="L32">  public MapillarySequence() {</span>
-<span class="fc" id="L33">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
-<span class="fc" id="L34">  }</span>
+<span class="fc" id="L33">  public MapillarySequence() {</span>
+<span class="fc" id="L34">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">  }</span>
 
   /**
    * Creates a sequence object with the given parameters.
    *
    * @param key       The unique identifier of the sequence.
    * @param createdAt The date the sequence was created.
+   * @throws IllegalArgumentException if the key is invalid
+   *           according to {@link ValidationUtil#validateSequenceKey(String)}
    */
-<span class="nc" id="L42">  public MapillarySequence(String key, long createdAt) {</span>
-<span class="nc" id="L43">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
-<span class="nc" id="L44">    this.key = key;</span>
-<span class="nc" id="L45">    this.createdAt = createdAt;</span>
-<span class="nc" id="L46">  }</span>
+<span class="nc" id="L45">  public MapillarySequence(String key, long createdAt) {</span>
+<span class="nc" id="L46">    ValidationUtil.throwExceptionForInvalidSeqKey(key, true);</span>
+
+<span class="nc" id="L48">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="nc" id="L49">    this.key = key;</span>
+<span class="nc" id="L50">    this.createdAt = createdAt;</span>
+<span class="nc" id="L51">  }</span>
 
   /**
    * Adds a new {@link MapillaryAbstractImage} object to the database.
@@ -51,8 +56,8 @@ public class MapillarySequence {
    * @param image The {@link MapillaryAbstractImage} object to be added
    */
   public synchronized void add(MapillaryAbstractImage image) {
-<span class="fc" id="L54">    this.images.add(image);</span>
-<span class="fc" id="L55">  }</span>
+<span class="fc" id="L59">    this.images.add(image);</span>
+<span class="fc" id="L60">  }</span>
 
   /**
    * Adds a set of {@link MapillaryAbstractImage} objects to the database.
@@ -60,9 +65,9 @@ public class MapillarySequence {
    * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc bfc" id="L63" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
-<span class="fc" id="L64">      add(image);</span>
-<span class="fc" id="L65">  }</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
+<span class="fc" id="L69">      add(image);</span>
+<span class="fc" id="L70">  }</span>
 
   /**
    * Returns the Epoch time when the sequence was captured.
@@ -70,7 +75,7 @@ public class MapillarySequence {
    * @return A long containing the Epoch time when the sequence was captured.
    */
   public long getCreatedAt() {
-<span class="nc" id="L73">    return this.createdAt;</span>
+<span class="nc" id="L78">    return this.createdAt;</span>
   }
 
   /**
@@ -82,7 +87,7 @@ public class MapillarySequence {
    * sequence.
    */
   public List&lt;MapillaryAbstractImage&gt; getImages() {
-<span class="fc" id="L85">    return this.images;</span>
+<span class="fc" id="L90">    return this.images;</span>
   }
 
   /**
@@ -93,7 +98,7 @@ public class MapillarySequence {
    * images.
    */
   public String getKey() {
-<span class="nc" id="L96">    return this.key;</span>
+<span class="nc" id="L101">    return this.key;</span>
   }
 
   /**
@@ -107,14 +112,14 @@ public class MapillarySequence {
    *                                  the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-<span class="fc" id="L110">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (i == -1) {</span>
-<span class="fc" id="L112">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L115">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (i == -1) {</span>
+<span class="fc" id="L117">      throw new IllegalArgumentException();</span>
     }
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (i == this.images.size() - 1) {</span>
-<span class="fc" id="L115">      return null;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (i == this.images.size() - 1) {</span>
+<span class="fc" id="L120">      return null;</span>
     }
-<span class="fc" id="L117">    return this.images.get(i + 1);</span>
+<span class="fc" id="L122">    return this.images.get(i + 1);</span>
   }
 
   /**
@@ -128,14 +133,14 @@ public class MapillarySequence {
    *                                  the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-<span class="fc" id="L131">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">    if (i == -1) {</span>
-<span class="fc" id="L133">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L136">    int i = this.images.indexOf(image);</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">    if (i == -1) {</span>
+<span class="nc" id="L138">      throw new IllegalArgumentException();</span>
     }
-<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (i == 0) {</span>
-<span class="fc" id="L136">      return null;</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (i == 0) {</span>
+<span class="fc" id="L141">      return null;</span>
     }
-<span class="fc" id="L138">    return this.images.get(i - 1);</span>
+<span class="fc" id="L143">    return this.images.get(i - 1);</span>
   }
 
   /**
@@ -144,7 +149,7 @@ public class MapillarySequence {
    * @param image The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
-<span class="fc" id="L147">    this.images.remove(image);</span>
-<span class="fc" id="L148">  }</span>
+<span class="fc" id="L152">    this.images.remove(image);</span>
+<span class="fc" id="L153">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

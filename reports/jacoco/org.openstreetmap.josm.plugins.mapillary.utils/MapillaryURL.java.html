@@ -25,25 +25,25 @@ public final class MapillaryURL {
 
   /**
    * Gives you the URL for the online editor of a specific mapillary image.
-   * @param key the key of the image to which you want to link
+   * @param imgKey the key of the image to which you want to link
    * @return the URL of the online editor for the image with the given image key
+   * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt; or invalid according
+   *           to {@link ValidationUtil#validateImageKey(String)}
    */
-  public static URL browseEditURL(String key) {
-<span class="fc bfc" id="L32" title="All 4 branches covered.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
-<span class="fc" id="L33">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
-    }
-<span class="fc" id="L35">    return string2URL(BASE_WEBSITE_URL + &quot;map/e/&quot; + key);</span>
+  public static URL browseEditURL(String imgKey) {
+<span class="fc" id="L34">    ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);</span>
+<span class="fc" id="L35">    return string2URL(BASE_WEBSITE_URL + &quot;map/e/&quot; + imgKey);</span>
   }
 
   /**
    * Gives you the URL for the online viewer of a specific mapillary image.
    * @param key the key of the image to which you want to link
    * @return the URL of the online viewer for the image with the given image key
+   * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt; or invalid according
+   *           to {@link ValidationUtil#validateImageKey(String)}
    */
   public static URL browseImageURL(String key) {
-<span class="fc bfc" id="L44" title="All 4 branches covered.">    if (key == null || !key.matches(&quot;[a-zA-Z0-9\\-_]{22}&quot;)) {</span>
-<span class="fc" id="L45">      throw new IllegalArgumentException(&quot;Invalid image key&quot;);</span>
-    }
+<span class="fc" id="L46">    ValidationUtil.throwExceptionForInvalidImgKey(key, false);</span>
 <span class="fc" id="L47">    return string2URL(BASE_WEBSITE_URL + &quot;map/im/&quot; + key);</span>
   }
 

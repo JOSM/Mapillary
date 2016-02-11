@@ -103,7 +103,7 @@ public final class MapillaryDownloader {
 <span class="nc" id="L103">      return;</span>
 <span class="nc bnc" id="L104" title="All 2 branches missed.">    if (isViewDownloaded(view))</span>
 <span class="nc" id="L105">      return;</span>
-<span class="nc" id="L106">    MapillaryLayer.getInstance().getData().bounds.add(view);</span>
+<span class="nc" id="L106">    MapillaryLayer.getInstance().getData().getBounds().add(view);</span>
 <span class="nc" id="L107">    getImages(view);</span>
 <span class="nc" id="L108">  }</span>
 
@@ -138,7 +138,7 @@ public final class MapillaryDownloader {
    * @return true if it lies inside the bounds; false otherwise;
    */
   private static boolean isInBounds(LatLon latlon) {
-<span class="nc bnc" id="L141" title="All 2 branches missed.">    for (Bounds bounds : MapillaryLayer.getInstance().getData().bounds) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">    for (Bounds bounds : MapillaryLayer.getInstance().getData().getBounds()) {</span>
 <span class="nc bnc" id="L142" title="All 2 branches missed.">      if (bounds.contains(latlon))</span>
 <span class="nc" id="L143">        return true;</span>
 <span class="nc" id="L144">    }</span>
@@ -161,8 +161,8 @@ public final class MapillaryDownloader {
 <span class="nc" id="L161">      throw new IllegalStateException(&quot;Must be in automatic mode.&quot;);</span>
 <span class="nc bnc" id="L162" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
 <span class="nc" id="L163">        .getDataSourceBounds()) {</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">      if (!layer.getData().bounds.contains(bounds)) {</span>
-<span class="nc" id="L165">        layer.getData().bounds.add(bounds);</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">      if (!layer.getData().getBounds().contains(bounds)) {</span>
+<span class="nc" id="L165">        layer.getData().getBounds().add(bounds);</span>
 <span class="nc" id="L166">        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());</span>
       }
 <span class="nc" id="L168">    }</span>
