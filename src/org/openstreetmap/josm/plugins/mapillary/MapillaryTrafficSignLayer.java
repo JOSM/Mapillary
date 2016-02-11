@@ -22,7 +22,6 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
-import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSignElement;
 import org.openstreetmap.josm.tools.I18n;
 
 public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
@@ -37,7 +36,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     } catch (FontFormatException e) {
       throw new IOException(I18n.tr("Traffic sign font at ''{0}'' has wrong format.", TRAFFICO_PATH), e);
     } catch (IOException e) {
-      throw new IOException(I18n.tr("Could not read font-file from ''{{0}}''.", TRAFFICO_PATH), e);
+      throw new IOException(I18n.tr("Could not read font-file from ''{0}''.", TRAFFICO_PATH), e);
     }
   }
 
@@ -80,15 +79,15 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     points[1] = mv.getPoint(new LatLon(49.01116, 8.40679));
     points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));
 
-    TrafficoSignElement[][] signs = {
+    TrafficoSign[] signs = {
         TrafficoSign.getSign("europe", "mandatory_cycle_track"),
         TrafficoSign.getSign("de", "information_bus_stop"),
         TrafficoSign.getSign("europe", "information_pedestrian_crossing") };
 
     for (int i = 0; i < signs.length && i < points.length; i++) {
-      for (TrafficoSignElement layer : signs[i]) { // TODO: NPE
-        g.setColor(layer.getColor());
-        g.drawString(Character.toString(layer.getGlyph()), points[i].x - 25, points[i].y + 25);
+      for (int j = 0; signs[i] != null && j < signs[i].getNumElements(); j++) {
+        g.setColor(signs[i].getElement(j).getColor());
+        g.drawString(Character.toString(signs[i].getElement(j).getGlyph()), points[i].x - 25, points[i].y + 25);
       }
     }
 
@@ -99,10 +98,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
         g.fillOval(mv.getPoint(img.getLatLon()).x - 3, mv.getPoint(img.getLatLon()).y - 3, 6, 6);
         if (!((MapillaryImage) img).getSigns().isEmpty()) {
           Point imgLoc = mv.getPoint(img.getLatLon());
-          for (TrafficoSignElement e : TrafficoSign.getSign("de", ((MapillaryImage) img).getSigns().get(0))) {
-            g.setColor(e.getColor());
-            g.drawString(Character.toString(e.getGlyph()), imgLoc.x, imgLoc.y);
-          }
+          // TODO: Paint a sign from the image
         }
       }
     }
