@@ -2,8 +2,10 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -19,7 +21,7 @@ import org.openstreetmap.josm.tools.I18n;
  *
  * @author floscher
  */
-public class TestUtil {
+public final class TestUtil {
   private static boolean isInitialized;
 
   private TestUtil() {
@@ -32,7 +34,7 @@ public class TestUtil {
    *
    * That is needed e.g. to use {@link MapillaryLayer#getInstance()}
    */
-  public static final void initPlugin() {
+  public static final synchronized void initPlugin() {
     if (!isInitialized) {
       System.setProperty("josm.home", "test/data/preferences");
       Main.initApplicationPreferences();
@@ -72,8 +74,8 @@ public class TestUtil {
         // Check if all methods are static
         assertTrue(m.getDeclaringClass() != c || Modifier.isStatic(m.getModifiers()));
       }
-    } catch (Exception e) {
-      assertTrue(e.getMessage(), false);
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      fail(e.getLocalizedMessage());
     }
   }
 }

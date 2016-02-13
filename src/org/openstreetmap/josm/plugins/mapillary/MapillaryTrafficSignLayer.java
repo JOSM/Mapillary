@@ -8,7 +8,6 @@ import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.Action;
@@ -25,18 +24,21 @@ import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 import org.openstreetmap.josm.tools.I18n;
 
 public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
-  private static final String TRAFFICO_PATH = "data/fonts/traffico/traffico.ttf";
+  private static final String TRAFFICO_PATH = "/data/fonts/traffico/traffico.ttf";
   private static MapillaryTrafficSignLayer instance;
   private final Font traffico;
 
   private MapillaryTrafficSignLayer() throws IOException {
     super("Mapillary traffic signs");
     try {
-      traffico = Font.createFont(Font.TRUETYPE_FONT, new File("data/fonts/traffico/traffico.ttf")).deriveFont(50.0f);
+      traffico = Font.createFont(
+          Font.TRUETYPE_FONT,
+          MapillaryTrafficSignLayer.class.getResourceAsStream(TRAFFICO_PATH)
+      ).deriveFont(50.0f);
     } catch (FontFormatException e) {
-      throw new IOException(I18n.tr("Traffic sign font at ''{0}'' has wrong format.", TRAFFICO_PATH), e);
+      throw new IOException(I18n.tr("Traffic sign font at ''{0}'' has wrong format", TRAFFICO_PATH), e);
     } catch (IOException e) {
-      throw new IOException(I18n.tr("Could not read font-file from ''{0}''.", TRAFFICO_PATH), e);
+      throw new IOException(I18n.tr("Could not read font-file from ''{0}''", TRAFFICO_PATH), e);
     }
   }
 
@@ -48,8 +50,9 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    *         if the traffico font has the wrong format
    */
   public static synchronized MapillaryTrafficSignLayer getInstance() throws IOException {
-    if (instance == null)
+    if (instance == null) {
       instance = new MapillaryTrafficSignLayer();
+    }
     return instance;
   }
 
@@ -80,9 +83,9 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
     points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));
 
     TrafficoSign[] signs = {
-        TrafficoSign.getSign("europe", "mandatory_cycle_track"),
-        TrafficoSign.getSign("de", "information_bus_stop"),
-        TrafficoSign.getSign("europe", "information_pedestrian_crossing") };
+        TrafficoSign.getSign("de", "bicycles-only"),
+        TrafficoSign.getSign("de", "bus-stop"),
+        TrafficoSign.getSign("de", "pedestrian-crossing") };
 
     for (int i = 0; i < signs.length && i < points.length; i++) {
       for (int j = 0; signs[i] != null && j < signs[i].getNumElements(); j++) {

@@ -10,10 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
