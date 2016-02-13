@@ -8,7 +8,6 @@ import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.Action;
@@ -25,20 +24,23 @@ import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 import org.openstreetmap.josm.tools.I18n;
 
 public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
-  private static final String TRAFFICO_PATH = &quot;data/fonts/traffico/traffico.ttf&quot;;
+  private static final String TRAFFICO_PATH = &quot;/data/fonts/traffico/traffico.ttf&quot;;
   private static MapillaryTrafficSignLayer instance;
   private final Font traffico;
 
   private MapillaryTrafficSignLayer() throws IOException {
-<span class="fc" id="L33">    super(&quot;Mapillary traffic signs&quot;);</span>
+<span class="fc" id="L32">    super(&quot;Mapillary traffic signs&quot;);</span>
     try {
-<span class="fc" id="L35">      traffico = Font.createFont(Font.TRUETYPE_FONT, new File(&quot;data/fonts/traffico/traffico.ttf&quot;)).deriveFont(50.0f);</span>
-<span class="nc" id="L36">    } catch (FontFormatException e) {</span>
-<span class="nc" id="L37">      throw new IOException(I18n.tr(&quot;Traffic sign font at ''{0}'' has wrong format.&quot;, TRAFFICO_PATH), e);</span>
-<span class="nc" id="L38">    } catch (IOException e) {</span>
-<span class="nc" id="L39">      throw new IOException(I18n.tr(&quot;Could not read font-file from ''{0}''.&quot;, TRAFFICO_PATH), e);</span>
-<span class="fc" id="L40">    }</span>
-<span class="fc" id="L41">  }</span>
+<span class="fc" id="L34">      traffico = Font.createFont(</span>
+          Font.TRUETYPE_FONT,
+<span class="fc" id="L36">          MapillaryTrafficSignLayer.class.getResourceAsStream(TRAFFICO_PATH)</span>
+<span class="fc" id="L37">      ).deriveFont(50.0f);</span>
+<span class="nc" id="L38">    } catch (FontFormatException e) {</span>
+<span class="nc" id="L39">      throw new IOException(I18n.tr(&quot;Traffic sign font at ''{0}'' has wrong format&quot;, TRAFFICO_PATH), e);</span>
+<span class="nc" id="L40">    } catch (IOException e) {</span>
+<span class="nc" id="L41">      throw new IOException(I18n.tr(&quot;Could not read font-file from ''{0}''&quot;, TRAFFICO_PATH), e);</span>
+<span class="fc" id="L42">    }</span>
+<span class="fc" id="L43">  }</span>
 
   /**
    * Returns and when needed instantiates the Mapillary traffic sign layer.
@@ -48,9 +50,10 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    *         if the traffico font has the wrong format
    */
   public static synchronized MapillaryTrafficSignLayer getInstance() throws IOException {
-<span class="fc bfc" id="L51" title="All 2 branches covered.">    if (instance == null)</span>
-<span class="fc" id="L52">      instance = new MapillaryTrafficSignLayer();</span>
-<span class="fc" id="L53">    return instance;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (instance == null) {</span>
+<span class="fc" id="L54">      instance = new MapillaryTrafficSignLayer();</span>
+    }
+<span class="fc" id="L56">    return instance;</span>
   }
 
   /*
@@ -60,7 +63,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public boolean isModified() {
-<span class="fc" id="L63">    return false;</span>
+<span class="fc" id="L66">    return false;</span>
   }
 
   /*
@@ -71,38 +74,38 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-<span class="nc" id="L74">    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
-<span class="nc" id="L75">    g.setFont(traffico);</span>
+<span class="nc" id="L77">    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
+<span class="nc" id="L78">    g.setFont(traffico);</span>
 
-<span class="nc" id="L77">    Point[] points = new Point[3];</span>
-<span class="nc" id="L78">    points[0] = mv.getPoint(new LatLon(49.01058, 8.40743));</span>
-<span class="nc" id="L79">    points[1] = mv.getPoint(new LatLon(49.01116, 8.40679));</span>
-<span class="nc" id="L80">    points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));</span>
+<span class="nc" id="L80">    Point[] points = new Point[3];</span>
+<span class="nc" id="L81">    points[0] = mv.getPoint(new LatLon(49.01058, 8.40743));</span>
+<span class="nc" id="L82">    points[1] = mv.getPoint(new LatLon(49.01116, 8.40679));</span>
+<span class="nc" id="L83">    points[2] = mv.getPoint(new LatLon(49.01038, 8.40636));</span>
 
-<span class="nc" id="L82">    TrafficoSign[] signs = {</span>
-<span class="nc" id="L83">        TrafficoSign.getSign(&quot;europe&quot;, &quot;mandatory_cycle_track&quot;),</span>
-<span class="nc" id="L84">        TrafficoSign.getSign(&quot;de&quot;, &quot;information_bus_stop&quot;),</span>
-<span class="nc" id="L85">        TrafficoSign.getSign(&quot;europe&quot;, &quot;information_pedestrian_crossing&quot;) };</span>
+<span class="nc" id="L85">    TrafficoSign[] signs = {</span>
+<span class="nc" id="L86">        TrafficoSign.getSign(&quot;de&quot;, &quot;bicycles-only&quot;),</span>
+<span class="nc" id="L87">        TrafficoSign.getSign(&quot;de&quot;, &quot;bus-stop&quot;),</span>
+<span class="nc" id="L88">        TrafficoSign.getSign(&quot;de&quot;, &quot;pedestrian-crossing&quot;) };</span>
 
-<span class="nc bnc" id="L87" title="All 4 branches missed.">    for (int i = 0; i &lt; signs.length &amp;&amp; i &lt; points.length; i++) {</span>
-<span class="nc bnc" id="L88" title="All 4 branches missed.">      for (int j = 0; signs[i] != null &amp;&amp; j &lt; signs[i].getNumElements(); j++) {</span>
-<span class="nc" id="L89">        g.setColor(signs[i].getElement(j).getColor());</span>
-<span class="nc" id="L90">        g.drawString(Character.toString(signs[i].getElement(j).getGlyph()), points[i].x - 25, points[i].y + 25);</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">    for (int i = 0; i &lt; signs.length &amp;&amp; i &lt; points.length; i++) {</span>
+<span class="nc bnc" id="L91" title="All 4 branches missed.">      for (int j = 0; signs[i] != null &amp;&amp; j &lt; signs[i].getNumElements(); j++) {</span>
+<span class="nc" id="L92">        g.setColor(signs[i].getElement(j).getColor());</span>
+<span class="nc" id="L93">        g.drawString(Character.toString(signs[i].getElement(j).getGlyph()), points[i].x - 25, points[i].y + 25);</span>
       }
     }
 
     // Start iterating the images
-<span class="nc" id="L95">    g.setColor(Color.MAGENTA);</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">      if (img instanceof MapillaryImage) {</span>
-<span class="nc" id="L98">        g.fillOval(mv.getPoint(img.getLatLon()).x - 3, mv.getPoint(img.getLatLon()).y - 3, 6, 6);</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (!((MapillaryImage) img).getSigns().isEmpty()) {</span>
-<span class="nc" id="L100">          Point imgLoc = mv.getPoint(img.getLatLon());</span>
+<span class="nc" id="L98">    g.setColor(Color.MAGENTA);</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">      if (img instanceof MapillaryImage) {</span>
+<span class="nc" id="L101">        g.fillOval(mv.getPoint(img.getLatLon()).x - 3, mv.getPoint(img.getLatLon()).y - 3, 6, 6);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (!((MapillaryImage) img).getSigns().isEmpty()) {</span>
+<span class="nc" id="L103">          Point imgLoc = mv.getPoint(img.getLatLon());</span>
           // TODO: Paint a sign from the image
         }
       }
-<span class="nc" id="L104">    }</span>
-<span class="nc" id="L105">  }</span>
+<span class="nc" id="L107">    }</span>
+<span class="nc" id="L108">  }</span>
 
   /*
    * (non-Javadoc)
@@ -111,7 +114,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public Icon getIcon() {
-<span class="fc" id="L114">    return MapillaryPlugin.ICON16;</span>
+<span class="fc" id="L117">    return MapillaryPlugin.ICON16;</span>
   }
 
   /*
@@ -121,7 +124,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public String getToolTipText() {
-<span class="fc" id="L124">    return null;</span>
+<span class="fc" id="L127">    return null;</span>
   }
 
   /*
@@ -134,7 +137,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
   @Override
   public void mergeFrom(Layer from) {
     // Does nothing as this layer is not mergeable (see method isMergable(Layer))
-<span class="nc" id="L137">  }</span>
+<span class="nc" id="L140">  }</span>
 
   /*
    * (non-Javadoc)
@@ -145,7 +148,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public boolean isMergable(Layer other) {
-<span class="fc" id="L148">    return false;</span>
+<span class="fc" id="L151">    return false;</span>
   }
 
   /*
@@ -158,7 +161,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
     // TODO Auto-generated method stub
-<span class="nc" id="L161">  }</span>
+<span class="nc" id="L164">  }</span>
 
   /*
    * (non-Javadoc)
@@ -167,7 +170,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public Component getInfoComponent() {
-<span class="fc" id="L170">    return new JLabel(&quot;Mapillary traffic sign layer&quot;);</span>
+<span class="fc" id="L173">    return new JLabel(&quot;Mapillary traffic sign layer&quot;);</span>
   }
 
   /*
@@ -177,7 +180,7 @@ public final class MapillaryTrafficSignLayer extends AbstractModifiableLayer {
    */
   @Override
   public Action[] getMenuEntries() {
-<span class="nc" id="L180">    return new Action[]{};</span>
+<span class="nc" id="L183">    return new Action[]{};</span>
   }
 
 }
