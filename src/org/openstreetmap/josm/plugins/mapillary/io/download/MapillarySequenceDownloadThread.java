@@ -52,10 +52,9 @@ public class MapillarySequenceDownloadThread extends Thread {
   @Override
   public void run() {
     try (
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    MapillaryURL.searchSequenceURL(bounds, page).openStream(),
-                    "UTF-8"
-            ));
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+            MapillaryURL.searchSequenceURL(bounds, page).openStream(), "UTF-8"
+        ));
     ) {
       JsonObject jsonall = Json.createReader(br).readObject();
 
@@ -120,7 +119,10 @@ public class MapillarySequenceDownloadThread extends Thread {
         MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<MapillaryAbstractImage>(finalImages), false);
       }
     } catch (IOException e) {
-      Main.error("Error reading the url " + MapillaryURL.searchSequenceURL(bounds, page) + " might be a Mapillary problem.", e);
+      Main.error(String.format(
+          "Error reading the url %s, this might be a Mapillary problem.",
+          MapillaryURL.searchSequenceURL(bounds, page)
+      ), e);
     }
     MapillaryData.dataUpdated();
   }

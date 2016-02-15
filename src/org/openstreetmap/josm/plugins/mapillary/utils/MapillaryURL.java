@@ -19,6 +19,10 @@ public final class MapillaryURL {
   private static final String BASE_API_URL = "https://a.mapillary.com/v2/";
   private static final String BASE_WEBSITE_URL = "https://www.mapillary.com/";
 
+  public enum IMAGE_SELECTOR {
+    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected
+  }
+
   private MapillaryURL() {
     // Private constructor to avoid instantiation
   }
@@ -32,7 +36,7 @@ public final class MapillaryURL {
    */
   public static URL browseEditURL(String imgKey) {
     ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);
-    return string2URL(BASE_WEBSITE_URL + "map/e/" + imgKey);
+    return string2URL(BASE_WEBSITE_URL, "map/e/", imgKey);
   }
 
   /**
@@ -44,14 +48,14 @@ public final class MapillaryURL {
    */
   public static URL browseImageURL(String key) {
     ValidationUtil.throwExceptionForInvalidImgKey(key, false);
-    return string2URL(BASE_WEBSITE_URL + "map/im/" + key);
+    return string2URL(BASE_WEBSITE_URL, "map/im/", key);
   }
 
   /**
    * @return the URL where the user can view all uploaded images that are not yet published
    */
   public static URL browseUploadImageURL() {
-    return string2URL(BASE_WEBSITE_URL + "map/upload/im/");
+    return string2URL(BASE_WEBSITE_URL, "map/upload/im");
   }
 
   /**
@@ -66,7 +70,7 @@ public final class MapillaryURL {
     }
     parts.put("response_type", "token");
     parts.put("scope", "user:read public:upload public:write");
-    return string2URL(BASE_WEBSITE_URL + "connect"+queryString(parts));
+    return string2URL(BASE_WEBSITE_URL, "connect", queryString(parts));
   }
 
   /**
@@ -74,14 +78,32 @@ public final class MapillaryURL {
    * For more than 20 images you have to use different URLs with different page numbers.
    * @param bounds the bounds in which you want to search for images
    * @param page number of the page to retrieve from the API
+   * @param selector
    * @return the API-URL which gives you the images in the given bounds as JSON
    */
-  public static URL searchImageURL(Bounds bounds, int page) {
+  public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
+    String selectorString = "";
+    if (selector != null) {
+      switch (selector) {
+      case BLURRED_ONLY:
+        selectorString = "/b";
+        break;
+      case COMMENTED_ONLY:
+        selectorString = "/cm";
+        break;
+      case OBJ_REC_ONLY:
+        selectorString = "/or";
+        break;
+      default:
+        selectorString = "";
+        break;
+      }
+    }
     HashMap<String, String> parts = new HashMap<>();
     putBoundsInQueryStringParts(parts, bounds);
     parts.put("page", Integer.toString(page));
     parts.put("limit", "20");
-    return string2URL(BASE_API_URL + "search/im/" + queryString(parts));
+    return string2URL(BASE_API_URL, "search/im", selectorString, queryString(parts));
   }
 
   /**
@@ -96,36 +118,21 @@ public final class MapillaryURL {
     putBoundsInQueryStringParts(parts, bounds);
     parts.put("page", Integer.toString(page));
     parts.put("limit", "10");
-    return string2URL(BASE_API_URL + "search/s/" + queryString(parts));
-  }
-
-  /**
-   * Gives you the API-URL where you get the traffic signs for 20 images within the given bounds.
-   * For the signs from more than 20 images you have to use different URLs with different page numbers.
-   * @param bounds the bounds in which you want to search for traffic signs
-   * @param page number of the page to retrieve from the API
-   * @return the API-URL which gives you the traffic signs in the given bounds as JSON
-   */
-  public static URL searchTrafficSignURL(Bounds bounds, int page) {
-    HashMap<String, String> parts = new HashMap<>();
-    putBoundsInQueryStringParts(parts, bounds);
-    parts.put("page", Integer.toString(page));
-    parts.put("limit", "20");
-    return string2URL(BASE_API_URL + "search/im/or/" + queryString(parts));
+    return string2URL(BASE_API_URL, "search/s", queryString(parts));
   }
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-    return string2URL(BASE_API_URL + "me/uploads/secrets/" + queryString(null));
+    return string2URL(BASE_API_URL, "me/uploads/secrets", queryString(null));
   }
 
   /**
    * @return the URL where you'll find information about the user account as JSON
    */
   public static URL userURL() {
-    return string2URL(BASE_API_URL + "me/" + queryString(null));
+    return string2URL(BASE_API_URL, "me", queryString(null));
   }
 
   /**
@@ -171,11 +178,19 @@ public final class MapillaryURL {
    * @param string the String describing the URL
    * @return the URL that is constructed from the given string
    */
-  private static URL string2URL(String string) {
+  private static URL string2URL(String... strings) {
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; strings != null && i < strings.length; i++) {
+      builder.append(strings[i]);
+    }
     try {
-      return new URL(string);
+      return new URL(builder.toString());
     } catch (MalformedURLException e) {
-      Main.error(new Exception("The "+MapillaryURL.class.getSimpleName()+" class produces malformed URLs!", e));
+      Main.error(new Exception(String.format(
+          "The class '%s' produces malformed URLs like '%s'!",
+          MapillaryURL.class.getName(),
+          builder
+      ), e));
       return null;
     }
   }

@@ -17,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.IMAGE_SELECTOR;
 
 /**
  * Downloads the signs information in a given area.
@@ -47,7 +48,7 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
 
     try (
       BufferedReader br = new BufferedReader(new InputStreamReader(
-        MapillaryURL.searchTrafficSignURL(bounds, page).openStream(), "UTF-8"
+        MapillaryURL.searchImageInfoURL(bounds, page, IMAGE_SELECTOR.OBJ_REC_ONLY).openStream(), "UTF-8"
       ));
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
@@ -77,9 +78,11 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
         else if (rects != null) {
           for (int j = 0; j < rects.size(); j++) {
             JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages())
-              if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key))
+            for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
+              if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key)) {
                 ((MapillaryImage) image).addSign(data.getString("type"));
+              }
+            }
           }
         }
       }

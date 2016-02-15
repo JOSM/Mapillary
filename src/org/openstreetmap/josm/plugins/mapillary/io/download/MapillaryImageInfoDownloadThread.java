@@ -45,7 +45,9 @@ public class MapillaryImageInfoDownloadThread extends Thread {
   @Override
   public void run() {
     try (
-      BufferedReader br = new BufferedReader(new InputStreamReader(MapillaryURL.searchImageURL(bounds, page).openStream(), "UTF-8"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+          MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
+      ));
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more"))
