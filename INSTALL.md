@@ -16,6 +16,12 @@ to build the project. The wrapper consists of the two scripts `gradlew` (for UNI
 and `gradlew.bat` (for systems running Windows). The following examples shows the commands for Linux/Mac users,
 Windows users can simply replace `./gradlew` with `./gradlew.bat`.
 
+If you develop using the Eclipse IDE, run the following command before opening the project in Eclipse. This will download the dependencies and tells Eclipse about where these dependencies are located on your machine:
+```shell
+./gradlew eclipse
+```
+As Eclipse plugins we recommend [eclipse-pmd](http://marketplace.eclipse.org/content/eclipse-pmd) and [Anyedit tools](http://marketplace.eclipse.org/content/anyedit-tools).
+
 For just building the jar-file for the plugin, run
 ```shell
 ./gradlew jar
@@ -25,7 +31,7 @@ If you also want to run the unit tests, create a FindBugs report and a code cove
 ```shell
 ./gradlew build
 ```
-(look for the results in the directory `build/reports`)
+(look for the reports in the directory `build/reports` and for the packaged `Mapillary.jar` in the directory `build/libs`)
 
 And finally, you can execute the following to build the plugin from source, and run the latest JOSM with the Mapillary plugin already loaded.
 This works regardless if you have JOSM installed, or which version of it. Any already present JOSM-installation stays untouched by the following command.
@@ -42,7 +48,7 @@ For info about other available tasks you can run
 
 If you don't have push-access to the SVN-server, you should now be ready to go.
 
-The following paragraphs only deal with transferring commits grom the GitHub-repository to the SVN-server and the other way around.
+The following paragraphs only deal with transferring commits from the git-repository to the SVN-server and the other way around.
 
 ---
 
@@ -83,7 +89,7 @@ git commit
 
 ---
 
-If you want to commit all of the commits that you made on the _‹foo›_-branch back to SVN, then you can skip this step.
+If you want to push (or in SVN-terms _commit_) all of the commits that you made on the _‹foo›_-branch back to SVN, then you can skip this step.
 
 Otherwise execute the following line to preserve the other commits:
 ```shell
