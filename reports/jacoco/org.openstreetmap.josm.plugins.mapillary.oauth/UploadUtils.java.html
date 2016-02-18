@@ -154,10 +154,10 @@ public class UploadUtils {
     // If the image is imported, loads the rest of the EXIF data.
 <span class="fc" id="L155">    JpegImageMetadata jpegMetadata = null;</span>
     try {
-<span class="fc" id="L157">      ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
-<span class="fc" id="L158">      jpegMetadata = (JpegImageMetadata) metadata;</span>
-<span class="nc" id="L159">    } catch (Exception e) {</span>
-<span class="fc" id="L160">    }</span>
+<span class="nc" id="L157">      ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
+<span class="nc" id="L158">      jpegMetadata = (JpegImageMetadata) metadata;</span>
+<span class="fc" id="L159">    } catch (Exception e) {</span>
+<span class="nc" id="L160">    }</span>
 <span class="pc bpc" id="L161" title="1 of 2 branches missed.">    if (null != jpegMetadata) {</span>
 <span class="nc" id="L162">      final TiffImageMetadata exif = jpegMetadata.getExif();</span>
 <span class="nc bnc" id="L163" title="All 2 branches missed.">      if (null != exif) {</span>
