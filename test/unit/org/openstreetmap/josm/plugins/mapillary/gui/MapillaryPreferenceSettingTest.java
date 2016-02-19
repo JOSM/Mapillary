@@ -46,13 +46,15 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     assertEquals(I18n.tr("Login"), ((JButton) getPrivateField(setting, "loginButton")).getText());
     assertEquals(I18n.tr("You are currently not logged in."), ((JLabel) getPrivateField(setting, "loginLabel")).getText());
     assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
+    assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
 
     String username = "TheMapillaryUsername";
     setting.onLogin(username);
 
-    assertEquals(I18n.tr("Re-Login"), ((JButton) getPrivateField(setting, "loginButton")).getText());
+    assertEquals(I18n.tr("Login"), ((JButton) getPrivateField(setting, "loginButton")).getText());
     assertEquals(I18n.tr("You are logged in as ''{0}''.", username), ((JLabel) getPrivateField(setting, "loginLabel")).getText());
     assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
+    assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
   }
 
   private static Object getPrivateField(MapillaryPreferenceSetting object, String name) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {

@@ -16,7 +16,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author nokutu
  *
  */
-public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage>{
+public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage> {
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */

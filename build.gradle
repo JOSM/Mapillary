@@ -140,9 +140,11 @@ jar {
 }
 
 task activatePlugin(type: Copy) {
-  from "gradle/josm-preferences.xml"
-  into "$buildDir/.josm"
-  rename 'josm-preferences.xml', 'preferences.xml'
+  if (!new File("$buildDir/.josm/preferences.xml").exists()) {
+    from "gradle/josm-preferences.xml"
+    into "$buildDir/.josm"
+    rename 'josm-preferences.xml', 'preferences.xml'
+  }
 }
 
 task installPlugin(type: Copy) {

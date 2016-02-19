@@ -317,9 +317,18 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Draw sequence line
-    g.setColor(Color.WHITE);
-    g.setStroke(new BasicStroke(this == Main.map.mapView.getActiveLayer() ? 3 : 1));
+    final MapillaryAbstractImage selectedImage = MapillaryLayer.getInstance().getData().getSelectedImage();
+    String selectedImageKey = null; // Intentionally not null to avoid null-check before .equals()
+    if (selectedImage != null && selectedImage.getSequence() != null) {
+      selectedImageKey = selectedImage.getSequence().getKey();
+    }
+    g.setStroke(new BasicStroke(this == Main.map.mapView.getActiveLayer() ? 3 : 2));
     for (MapillarySequence seq : getData().getSequences()) {
+      if (selectedImageKey != null && selectedImageKey.equals(seq.getKey())) {
+        g.setColor(Color.MAGENTA.brighter());
+      } else {
+        g.setColor(Color.WHITE);
+      }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
