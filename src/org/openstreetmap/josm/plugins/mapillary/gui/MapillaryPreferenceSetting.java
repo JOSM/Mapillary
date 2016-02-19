@@ -1,15 +1,20 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,6 +32,8 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
@@ -41,7 +48,7 @@ import org.openstreetmap.josm.tools.I18n;
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
 
   private final JCheckBox reverseButtons = new JCheckBox(I18n.tr("Reverse buttons position when displaying images."));
-  private final JComboBox<String> downloadMode = new JComboBox<>(new String[]{
+  private final JComboBox<String> downloadModeComboBox = new JComboBox<>(new String[]{
       MapillaryDownloader.MODES.Automatic.toString(),
       MapillaryDownloader.MODES.Semiautomatic.toString(),
       MapillaryDownloader.MODES.Manual.toString()
@@ -50,8 +57,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
   private final JCheckBox moveTo = new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"));
 
-  private final JButton loginButton = new JButton(new LoginAction(this));
-  private final JButton logoutButton = new JButton(new LogoutAction());
+  private final JButton loginButton = new MapillaryButton(I18n.tr("Login"), new LoginAction(this));
+  private final JButton logoutButton = new MapillaryButton(I18n.tr("Logout"), new LogoutAction());
   private final JLabel loginLabel = new JLabel();
   private final JPanel loginPanel = new JPanel();
 
@@ -62,40 +69,64 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void addGui(PreferenceTabbedPane gui) {
-    JPanel panel = new JPanel();
-    this.reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
-    this.displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
-    this.format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
-    this.moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+    JPanel container = new JPanel(new BorderLayout());
 
-    panel.setLayout(new GridBagLayout());
-    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.LINE_AXIS));
+    loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);
+    JLabel brandImage = new JLabel();
+    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream("/images/mapillary-logo-white.png")) {
+      if (is != null) {
+        brandImage.setIcon(new ImageIcon(ImageIO.read(is)));
+      } else {
+        Main.warn("Could not load Mapillary brand image!");
+      }
+    } catch (IOException e) {
+      Main.warn("While reading Mapillary brand image, an IO-exception occured!");
+    }
+    loginPanel.add(brandImage, 0);
+    loginPanel.add(Box.createHorizontalGlue(), 1);
+    loginLabel.setForeground(Color.WHITE);
+    loginLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+    loginPanel.add(loginLabel, 2);
+    loginPanel.add(loginButton, 3);
+    onLogout();
+    container.add(loginPanel, BorderLayout.NORTH);
 
-    panel.add(this.reverseButtons, GBC.eol());
+    JPanel mainPanel = new JPanel();
+    reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
+    displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
+    format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
+    moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+
+    mainPanel.setLayout(new GridBagLayout());
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
     // Sets the value of the ComboBox.
     String downloadMode = Main.pref.get("mapillary.download-mode");
     if (MapillaryDownloader.MODES.Automatic.toString().equals(downloadMode)
         || MapillaryDownloader.MODES.Semiautomatic.toString().equals(downloadMode)
         || MapillaryDownloader.MODES.Manual.toString().equals(downloadMode)) {
-      this.downloadMode.setSelectedItem(Main.pref.get("mapillary.download-mode"));
+      downloadModeComboBox.setSelectedItem(Main.pref.get("mapillary.download-mode"));
     }
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(I18n.tr("Download mode")));
-    downloadModePanel.add(this.downloadMode);
-    panel.add(downloadModePanel, GBC.eol());
-    panel.add(displayHour, GBC.eol());
-    panel.add(format24, GBC.eol());
-    panel.add(moveTo, GBC.eol());
+    downloadModePanel.add(downloadModeComboBox);
+    mainPanel.add(downloadModePanel, GBC.eol());
 
-    loginPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-    loginPanel.add(loginButton, 0);
-    loginPanel.add(loginLabel, 1);
-    onLogout();
-    panel.add(loginPanel, GBC.eol());
-    panel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
+    mainPanel.add(reverseButtons, GBC.eol());
+    mainPanel.add(displayHour, GBC.eol());
+    mainPanel.add(format24, GBC.eol());
+    mainPanel.add(moveTo, GBC.eol());
+    MapillaryColorScheme.styleAsDefaultPanel(
+      mainPanel, downloadModePanel, reverseButtons, displayHour, format24, moveTo
+    );
+    mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
+
+    container.add(mainPanel, BorderLayout.CENTER);
 
     synchronized (gui.getDisplayPreference().getTabPane()) {
-      gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(panel));
+      gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(container));
       gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.ICON12);
     }
 
@@ -117,17 +148,20 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void onLogin(final String username) {
-    loginPanel.add(logoutButton, 1);
+    loginPanel.remove(loginButton);
+    loginPanel.add(logoutButton, 3);
     loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
-    loginButton.setText(I18n.tr("Re-Login"));
-    logoutButton.setText(I18n.tr("Logout"));
+    loginPanel.revalidate();
+    loginPanel.repaint();
   }
 
   @Override
   public void onLogout() {
     loginPanel.remove(logoutButton);
+    loginPanel.add(loginButton, 3);
     loginLabel.setText(I18n.tr("You are currently not logged in."));
-    loginButton.setText(I18n.tr("Login"));
+    loginPanel.revalidate();
+    loginPanel.repaint();
   }
 
   @Override
@@ -136,11 +170,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     Main.pref.put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
+    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Automatic.toString());
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))
+    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Semiautomatic.toString());
-    if (this.downloadMode.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
+    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Manual.toString());
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
     }
