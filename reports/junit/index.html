@@ -26,7 +26,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">0</div>
+<div class="counter">1</div>
 <p>failures</p>
 </div>
 </td>
@@ -38,7 +38,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">5.081s</div>
+<div class="counter">4.653s</div>
 <p>duration</p>
 </div>
 </td>
@@ -47,8 +47,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
+<div class="infoBox failures" id="successRate">
+<div class="percent">98%</div>
 <p>successful</p>
 </div>
 </td>
@@ -58,13 +58,25 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Packages</a>
+<a href="#tab0">Failed tests</a>
 </li>
 <li>
-<a href="#tab1">Classes</a>
+<a href="#tab1">Packages</a>
+</li>
+<li>
+<a href="#tab2">Classes</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<ul class="linkList">
+<li>
+<a href="classes/org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSettingTest.html">MapillaryPreferenceSettingTest</a>.
+<a href="classes/org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSettingTest.html#testLoginLogout">testLoginLogout</a>
+</li>
+</ul>
+</div>
+<div id="tab1" class="tab">
 <h2>Packages</h2>
 <table>
 <thead>
@@ -85,7 +97,7 @@
 <td>17</td>
 <td>0</td>
 <td>0</td>
-<td>1.886s</td>
+<td>1.888s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -95,18 +107,18 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.010s</td>
+<td>0.015s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="failures">
 <a href="packages/org.openstreetmap.josm.plugins.mapillary.gui.html">org.openstreetmap.josm.plugins.mapillary.gui</a>
 </td>
 <td>3</td>
+<td>1</td>
 <td>0</td>
-<td>0</td>
-<td>2.117s</td>
-<td class="success">100%</td>
+<td>1.720s</td>
+<td class="failures">66%</td>
 </tr>
 <tr>
 <td class="success">
@@ -115,7 +127,7 @@
 <td>7</td>
 <td>0</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0.013s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -125,7 +137,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -135,7 +147,7 @@
 <td>2</td>
 <td>0</td>
 <td>0</td>
-<td>0.855s</td>
+<td>0.788s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -145,7 +157,7 @@
 <td>5</td>
 <td>0</td>
 <td>0</td>
-<td>0.080s</td>
+<td>0.103s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -155,13 +167,13 @@
 <td>29</td>
 <td>0</td>
 <td>0</td>
-<td>0.127s</td>
+<td>0.122s</td>
 <td class="success">100%</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Classes</h2>
 <table>
 <thead>
@@ -181,7 +193,7 @@
 <td>2</td>
 <td>0</td>
 <td>0</td>
-<td>0.571s</td>
+<td>0.427s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -190,7 +202,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.156s</td>
+<td>0.146s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -199,7 +211,7 @@
 <td>6</td>
 <td>0</td>
 <td>0</td>
-<td>1.043s</td>
+<td>1.255s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -208,7 +220,7 @@
 <td>6</td>
 <td>0</td>
 <td>0</td>
-<td>0.023s</td>
+<td>0.011s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -217,7 +229,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.014s</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -226,7 +238,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.079s</td>
+<td>0.048s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -235,7 +247,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.010s</td>
+<td>0.015s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -244,17 +256,17 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.117s</td>
+<td>0.144s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="failures"/>
 <a href="classes/org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSettingTest.html">org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSettingTest</a>
 <td>2</td>
+<td>1</td>
 <td>0</td>
-<td>0</td>
-<td>2.000s</td>
-<td class="success">100%</td>
+<td>1.576s</td>
+<td class="failures">50%</td>
 </tr>
 <tr>
 <td class="success"/>
@@ -262,7 +274,7 @@
 <td>7</td>
 <td>0</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0.013s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -271,7 +283,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -280,7 +292,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.545s</td>
+<td>0.627s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -289,7 +301,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.310s</td>
+<td>0.161s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -298,7 +310,7 @@
 <td>2</td>
 <td>0</td>
 <td>0</td>
-<td>0.032s</td>
+<td>0.053s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -307,7 +319,7 @@
 <td>2</td>
 <td>0</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -316,7 +328,7 @@
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.047s</td>
+<td>0.050s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -325,7 +337,7 @@
 <td>6</td>
 <td>0</td>
 <td>0</td>
-<td>0.024s</td>
+<td>0.017s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -334,7 +346,7 @@
 <td>19</td>
 <td>0</td>
 <td>0</td>
-<td>0.098s</td>
+<td>0.102s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -343,7 +355,7 @@
 <td>2</td>
 <td>0</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -366,7 +378,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.11</a> at Feb 18, 2016 11:00:47 PM</p>
+<a href="http://www.gradle.org">Gradle 2.11</a> at Feb 19, 2016 4:59:32 PM</p>
 </div>
 </div>
 </body>
