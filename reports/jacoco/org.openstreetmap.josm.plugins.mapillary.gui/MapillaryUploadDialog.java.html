@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MapillaryUploadDialog.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui</a> &gt; <span class="el_source">MapillaryUploadDialog.java</span></div><h1>MapillaryUploadDialog.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+
+/**
+ * JPanel used when uploading pictures.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryUploadDialog extends JPanel {
+
+  private static final long serialVersionUID = 2517368588113991767L;
+
+  /** Upload the whole sequence. */
+  private JRadioButton sequence;
+  /** Whether the images must be deleted after upload or not */
+  private JCheckBox delete;
+
+  /**
+   * Creates the JPanel and adds the needed elements.
+   */
+<span class="nc" id="L36">  public MapillaryUploadDialog() {</span>
+<span class="nc" id="L37">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
+<span class="nc" id="L39">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
+    } else {
+<span class="nc" id="L41">      ButtonGroup group = new ButtonGroup();</span>
+<span class="nc" id="L42">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L44">        this.sequence.setEnabled(false);</span>
+      }
+<span class="nc" id="L46">      group.add(this.sequence);</span>
+<span class="nc" id="L47">      add(this.sequence);</span>
+<span class="nc" id="L48">      group.setSelected(this.sequence.getModel(), true);</span>
+<span class="nc" id="L49">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
+<span class="nc" id="L50">      this.delete.setSelected(Main.pref.getBoolean(&quot;mapillary.delete-after-upload&quot;, true));</span>
+<span class="nc" id="L51">      add(this.delete);</span>
+    }
+<span class="nc" id="L53">  }</span>
+
+  /**
+   * @return the delete checkbox of the dialog
+   */
+  public JCheckBox getDelete() {
+<span class="nc" id="L59">    return delete;</span>
+  }
+
+  /**
+   * @return the sequence radio button of the dialog
+   */
+  public JRadioButton getSequence() {
+<span class="nc" id="L66">    return sequence;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

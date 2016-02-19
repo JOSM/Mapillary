@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TrafficoSign.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.traffico</a> &gt; <span class="el_source">TrafficoSign.java</span></div><h1>TrafficoSign.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.traffico;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
+import org.openstreetmap.josm.Main;
+
+/**
+ * &lt;p&gt;
+ * Representation of a traffico sign, which consists of a country code, a unique name and the individual
+ * layers of the sign.
+ * &lt;/p&gt;&lt;p&gt;
+ * You can obtain a {@link TrafficoSign} via {@link #getSign(String, String)}. The first call to that method reads
+ * all sign definition for the queried country from disk and holds them in memory for future access.
+ * &lt;/p&gt;&lt;p&gt;
+ * You can rely on the fact, that two instances of {@link TrafficoSign} with same {@link #getName()} and same
+ * {@link #getCountry()} that were obtained via {@link #getSign(String, String)} will return &lt;code&gt;true&lt;/code&gt; when
+ * compared with &lt;code&gt;==&lt;/code&gt;
+ * &lt;/p&gt;
+ */
+public final class TrafficoSign {
+  private static final String SIGN_DEFINITION_PATH = &quot;/data/fonts/traffico/signs/%s.json&quot;;
+  /**
+   * The signs that are already created from the JSON source file
+   */
+<span class="fc" id="L37">  private static final Map&lt;String, Map&lt;String, TrafficoSign&gt;&gt; signs = new TreeMap&lt;&gt;();</span>
+
+  private final String country;
+  private final String name;
+  private final TrafficoSignElement[] elements;
+
+<span class="fc" id="L43">  private TrafficoSign(TrafficoSignElement[] elements, String country, String name) {</span>
+<span class="fc" id="L44">    this.country = country;</span>
+<span class="fc" id="L45">    this.name = name;</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    if (elements == null) {</span>
+<span class="nc" id="L47">      this.elements = new TrafficoSignElement[0];</span>
+    } else {
+<span class="fc" id="L49">      this.elements = elements.clone();</span>
+    }
+<span class="fc" id="L51">  }</span>
+
+  /**
+   * @return the country of this sign
+   */
+  public String getCountry() {
+<span class="fc" id="L57">    return country;</span>
+  }
+
+  /**
+   * @return the name of the sign
+   */
+  public String getName() {
+<span class="fc" id="L64">    return name;</span>
+  }
+
+  /**
+   * @return the number of sign elements (=layers) of which this sign consists
+   */
+  public int getNumElements() {
+<span class="fc" id="L71">    return elements.length;</span>
+  }
+
+  /**
+   *
+   * @param index the index which is assigned to the sign element in question
+   * @return the sign element (=layer) with the given index
+   * @throws ArrayIndexOutOfBoundsException if index &gt;= {@link #getNumElements()} or index &lt; 0
+   */
+  public TrafficoSignElement getElement(int index) {
+<span class="nc" id="L81">    return elements[index];</span>
+  }
+
+  /**
+   * &lt;p&gt;
+   * Returns the sign associated with the given country and name or &lt;code&gt;null&lt;/code&gt; if no such sign is available.
+   * &lt;/p&gt;&lt;p&gt;
+   * If you obtain two instances of {@link TrafficoSign} with this method that have the same country and name, you can
+   * safely assume that a comparison of both objects with &lt;code&gt;==&lt;/code&gt; will result in &lt;code&gt;true&lt;/code&gt;.
+   * &lt;/p&gt;
+   * @param country the country to which the sign belongs
+   * @param signName the name of the sign (unique in a country)
+   * @return the requested sign or &lt;code&gt;null&lt;/code&gt; if this sign is unavailable
+   */
+  public static TrafficoSign getSign(String country, String signName) {
+<span class="fc" id="L96">    synchronized (signs) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (!signs.containsKey(country)) {</span>
+<span class="fc" id="L98">        buildSignsFromJsonDefinition(country);</span>
+      }
+<span class="fc bfc" id="L100" title="All 4 branches covered.">      if (signs.containsKey(country) &amp;&amp; signs.get(country).containsKey(signName)) {</span>
+<span class="fc" id="L101">        return signs.get(country).get(signName);</span>
+      }
+<span class="fc" id="L103">      return null;</span>
+<span class="nc" id="L104">    }</span>
+  }
+
+  private static void addSign(TrafficoSign sign) {
+<span class="fc" id="L108">    synchronized (signs) {</span>
+      // Create Map for country if not already exists
+<span class="fc bfc" id="L110" title="All 2 branches covered.">      if (!signs.containsKey(sign.getCountry())) {</span>
+<span class="fc" id="L111">        signs.put(sign.getCountry(), new TreeMap&lt;String, TrafficoSign&gt;());</span>
+      }
+      // Don't overwrite existing sign with same country-name-combination
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">      if (signs.get(sign.getCountry()).containsKey(sign.getName())) {</span>
+<span class="nc" id="L115">        Main.warn(</span>
+            &quot;The sign {0}--{1} was found multiple times in the traffico sign-definitions.&quot;,
+<span class="nc" id="L117">            sign.getName(), sign.getCountry()</span>
+        );
+      } else {
+<span class="fc" id="L120">        signs.get(sign.getCountry()).put(sign.getName(), sign);</span>
+      }
+<span class="pc" id="L122">    }</span>
+<span class="fc" id="L123">  }</span>
+
+  private static void buildSignsFromJsonDefinition(String country) {
+<span class="fc" id="L126">    Main.info(&quot;Reading signs for country ''{0}''.&quot;, country);</span>
+<span class="pc" id="L127">    try (</span>
+<span class="fc" id="L128">      InputStream countryStream = TrafficoSign.class.getResourceAsStream(String.format(SIGN_DEFINITION_PATH, country))</span>
+    ) {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">      if (countryStream == null) {</span>
+<span class="fc" id="L131">        return;</span>
+      }
+<span class="fc" id="L133">      JsonObject countrySigns = Json.createReader(countryStream).readObject();</span>
+<span class="fc" id="L134">      Set&lt;String&gt; countrySignNames = countrySigns.keySet();</span>
+<span class="fc" id="L135">      Main.info(</span>
+<span class="fc" id="L136">          countrySignNames.size() + &quot; different signs are supported for ''{0}'' by the Mapillary-plugin .&quot;,</span>
+          country
+      );
+
+      // TODO: Replace by an array when all types of sign elements (text!) are supported
+<span class="fc" id="L141">      List&lt;TrafficoSignElement&gt; signLayers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">      for (String name : countrySignNames) {</span>
+<span class="fc" id="L143">        signLayers.clear();</span>
+<span class="fc" id="L144">        JsonArray elements = countrySigns.getJsonObject(name).getJsonArray(&quot;elements&quot;);</span>
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
+<span class="fc" id="L147">          Character glyph = TrafficoGlyph.getGlyph(elements.getJsonObject(i).getString(&quot;type&quot;));</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">          if (glyph != null) {</span>
+            Color c;
+<span class="pc bpc" id="L150" title="6 of 26 branches missed.">            switch (elements.getJsonObject(i).getString(&quot;color&quot;).toLowerCase()) {</span>
+              case &quot;black&quot;:
+<span class="fc" id="L152">                c = Color.BLACK;</span>
+<span class="fc" id="L153">                break;</span>
+              case &quot;red&quot;:
+<span class="fc" id="L155">                c = new Color(0xc1121c);</span>
+<span class="fc" id="L156">                break;</span>
+              case &quot;blue&quot;:
+<span class="fc" id="L158">                c = new Color(0x154889);</span>
+<span class="fc" id="L159">                break;</span>
+              case &quot;white&quot;:
+<span class="fc" id="L161">                c = Color.WHITE;</span>
+<span class="fc" id="L162">                break;</span>
+              case &quot;green&quot;:
+<span class="fc" id="L164">                c = new Color(0x008754);</span>
+<span class="fc" id="L165">                break;</span>
+              case &quot;yellow&quot;:
+<span class="fc" id="L167">                c = new Color(0xfecf33);</span>
+<span class="fc" id="L168">                break;</span>
+              default:
+<span class="fc" id="L170">                c = Color.MAGENTA;</span>
+                break;
+            }
+<span class="fc" id="L173">            signLayers.add(new TrafficoSignElement(glyph, c));</span>
+          }
+        }
+<span class="fc" id="L176">        addSign(new TrafficoSign(signLayers.toArray(new TrafficoSignElement[signLayers.size()]), country, name));</span>
+<span class="fc" id="L177">      }</span>
+<span class="pc bpc" id="L178" title="9 of 12 branches missed.">    } catch (IOException e) {</span>
+<span class="nc" id="L179">      Main.error(e);</span>
+<span class="fc" id="L180">    }</span>
+<span class="fc" id="L181">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
