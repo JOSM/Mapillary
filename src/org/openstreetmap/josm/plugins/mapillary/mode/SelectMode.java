@@ -159,6 +159,10 @@ public class SelectMode extends AbstractMode {
             && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
+    if (!Main.pref.getBoolean("mapillary.hover-enabled", true)) {
+      return;
+    }
+
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
 
     if (closestTemp != null

@@ -56,6 +56,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox displayHour = new JCheckBox(I18n.tr("Display hour when the picture was taken"));
   private final JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
   private final JCheckBox moveTo = new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"));
+  private final JCheckBox hoverEnabled = new JCheckBox(I18n.tr("Preview images when hovering its icon"));
 
   private final JButton loginButton = new MapillaryButton(I18n.tr("Login"), new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(I18n.tr("Logout"), new LogoutAction());
@@ -98,6 +99,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
     format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
     moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
+        this.hoverEnabled.setSelected(Main.pref.getBoolean("mapillary.hover-enabled", true));
 
     mainPanel.setLayout(new GridBagLayout());
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -118,6 +120,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(displayHour, GBC.eol());
     mainPanel.add(format24, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
+    mainPanel.add(hoverEnabled, GBC.eol());
     MapillaryColorScheme.styleAsDefaultPanel(
       mainPanel, downloadModePanel, reverseButtons, displayHour, format24, moveTo
     );
@@ -181,6 +184,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
     Main.pref.put("mapillary.format-24", this.format24.isSelected());
     Main.pref.put("mapillary.move-to-picture", this.moveTo.isSelected());
+    Main.pref.put("mapillary.hover-enabled", this.hoverEnabled.isSelected());
     return mod;
   }
 
