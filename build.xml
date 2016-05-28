@@ -3,6 +3,8 @@
 
   <!-- edit the properties of this plugin in the file `gradle.properties` -->
   <property file="${basedir}/gradle.properties"/>
+  <!-- had to add the description here instead of grade.properties in order to have in translated -->
+  <property name="plugin.description" value="Allows the user to work with pictures hosted at mapillary.com"/>
 
   <property name="josm" location="../../core/dist/josm-custom.jar"/>
   <property name="plugin.dist.dir" value="../../dist"/>
