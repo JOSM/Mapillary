@@ -34,15 +34,15 @@ public class MapillarySequenceDownloadThreadTest extends AbstractTest {
   public void testRun() throws InterruptedException {
     System.out.println("[JUnit] MapillarySequenceDownloadThreadTest.testRun()");
     // Area around image UjEbeXZYIoyAKOsE-remlg (59.32125452° N 18.06166856° E)
-    LatLon minLatLon = new LatLon(59.3212545, 18.0616685);
-    LatLon maxLatLon = new LatLon(59.3212546, 18.0616686);
+    LatLon minLatLon = new LatLon(59.32125, 18.06166);
+    LatLon maxLatLon = new LatLon(59.32126, 18.06167);
 
     ExecutorService ex = Executors.newSingleThreadExecutor();
     Bounds bounds = new Bounds(minLatLon, maxLatLon);
     MapillaryLayer.getInstance().getData().getBounds().add(new Bounds(minLatLon,
         maxLatLon));
 
-    int page = 1;
+    int page = 0;
     while (!ex.isShutdown()
         && MapillaryLayer.getInstance().getData().getImages().size() <= 0
         && page < 50) {
