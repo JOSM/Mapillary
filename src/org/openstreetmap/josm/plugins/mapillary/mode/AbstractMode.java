@@ -41,7 +41,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
     for (MapillaryAbstractImage image : this.data.getImages()) {
-      Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());
+      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
       if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance

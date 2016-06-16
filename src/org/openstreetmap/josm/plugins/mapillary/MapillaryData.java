@@ -47,7 +47,7 @@ public class MapillaryData {
      * The bounds of the areas for which the pictures have been downloaded.
      */
     private final List<Bounds> bounds;
-    private HashSet<MapillaryAbstractImage> changeset;
+    private HashSet<MapillaryImage> changeset;
 
     /**
      * Creates a new object and adds the initial set of listeners.
@@ -391,7 +391,7 @@ public class MapillaryData {
             }
         }
         if (zoom && Main.main != null)
-            Main.map.mapView.zoomTo(getSelectedImage().getLatLon());
+            Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());
         if (Main.main != null)
             Main.map.mapView.repaint();
         fireSelectedImageChanged(oldImage, this.selectedImage);
@@ -436,8 +436,8 @@ public class MapillaryData {
     }
 
     public void addImageToChangeset(MapillaryAbstractImage image) {
-        if(image.isModified()) {
-            changeset.add(image);
+        if(image.isModified() && image instanceof MapillaryImage) {
+            changeset.add((MapillaryImage) image);
         } else {
             changeset.remove(image);
         }
@@ -445,7 +445,7 @@ public class MapillaryData {
 
     }
 
-    public HashSet<MapillaryAbstractImage> getChangeset() {
+    public HashSet<MapillaryImage> getChangeset() {
         return changeset;
     }
 
@@ -456,5 +456,10 @@ public class MapillaryData {
             if (lis != null)
                 lis.changesetChanged(image);
         }
+    }
+
+    public void cleanChangeset() {
+        this.changeset.clear();
+        fireChangesetChanged(null);
     }
 }

@@ -213,9 +213,9 @@ public final class MapillaryUtils {
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
-        zoomBounds = new Bounds(images.iterator().next().getLatLon());
+        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());
         for (MapillaryAbstractImage img : images) {
-          zoomBounds.extend(img.getLatLon());
+          zoomBounds.extend(img.getMovingLatLon());
         }
       }
 
@@ -283,6 +283,8 @@ public final class MapillaryUtils {
       ret.append(tr("Downloading Mapillary images"));
     } else if (MapillaryLayer.getInstance().getData().size() > 0) {
       ret.append(tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getData().size()));
+    } else if (PluginState.isSubmittingChangeset()) {
+        ret.append(tr("Submitting Mapillary Changeset"));
     } else {
       ret.append(tr("No images found"));
     }

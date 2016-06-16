@@ -57,7 +57,7 @@ public final  class MapViewGeometryUtil {
     Path2D.Double path = new Path2D.Double();
     for (MapillaryAbstractImage img : seq.getImages()) {
       if (img.isVisible()) {
-        Point p = mv.getPoint(img.getLatLon());
+        Point p = mv.getPoint(img.getMovingLatLon());
         if (path.getCurrentPoint() == null) {
           path.moveTo(p.getX(), p.getY());
         } else {

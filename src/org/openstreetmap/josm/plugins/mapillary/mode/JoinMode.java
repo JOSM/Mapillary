@@ -81,7 +81,7 @@ public class JoinMode extends AbstractMode {
   public void paint(Graphics2D g, MapView mv, Bounds box) {
     if (this.lastClick != null) {
       g.setColor(Color.WHITE);
-      Point p0 = mv.getPoint(this.lastClick.getLatLon());
+      Point p0 = mv.getPoint(this.lastClick.getMovingLatLon());
       Point p1 = this.lastPos.getPoint();
       g.drawLine(p0.x, p0.y, p1.x, p1.y);
     }

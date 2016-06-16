@@ -4,7 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitCurrentChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
@@ -45,8 +47,6 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
     private static MapillaryChangesetDialog instance;
 
-    private final transient UndoRedoSelectionListener undoSelectionListener;
-
     private final DefaultTreeModel changesetTreeModel = new DefaultTreeModel(
             new DefaultMutableTreeNode());
     private final JTree changesetTree = new JTree(this.changesetTreeModel);
@@ -54,7 +54,6 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
     private final JSeparator separator = new JSeparator();
     private final Component spacer = Box.createRigidArea(new Dimension(0, 3));
 
-    private final SideButton resetButton;
     private final SideButton submitButton;
 
     private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
@@ -75,9 +74,6 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         this.changesetTree.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
         this.changesetTree.addMouseListener(new MouseEventHandler());
-        this.undoSelectionListener = new UndoRedoSelectionListener(this.changesetTree);
-        this.changesetTree.getSelectionModel().addTreeSelectionListener(
-                this.undoSelectionListener);
 
         JPanel treesPanel = new JPanel(new GridBagLayout());
         treesPanel.add(this.spacer, GBC.eol());
@@ -90,11 +86,11 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),
                 GBC.std().weight(0, 1));
 
-        this.resetButton = new SideButton(new ResetAction());
         this.submitButton = new SideButton(new SubmitAction());
 
         createLayout(treesPanel, true,
-                Arrays.asList(new SideButton[]{this.resetButton, this.submitButton}));
+                Arrays.asList(new SideButton[]{this.submitButton}));
+        buildTree();
     }
 
     /**
@@ -110,8 +106,7 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
     private void buildTree() {
         this.submitButton.setEnabled(true);
-        this.resetButton.setEnabled(true);
-        HashSet<MapillaryAbstractImage> changeset = MapillaryLayer.getInstance().getData().getChangeset();
+        HashSet<MapillaryImage> changeset = MapillaryLayer.getInstance().getData().getChangeset();
         if (!changeset.isEmpty())
             this.submitButton.setEnabled(true);
         else
@@ -120,7 +115,7 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
         this.map.clear();
-        for (MapillaryAbstractImage command : changeset) {
+        for (MapillaryImage command : changeset) {
             if (command != null) {
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
                 this.map.put(node, command);
@@ -152,22 +147,6 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         buildTree();
     }
 
-    private class ResetAction extends AbstractAction {
-
-        private static final long serialVersionUID = -6435832206342007269L;
-
-        public ResetAction() {
-            putValue(NAME, tr("Reset"));
-            putValue(SMALL_ICON, ImageProvider.get("undo"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent arg0) {
-            ;
-        }
-    }
-
-
     private class SubmitAction extends AbstractAction {
 
         private static final long serialVersionUID = -2761935780353053512L;
@@ -179,7 +158,8 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            System.out.println(String.format("submitting %s", MapillaryLayer.getInstance().getData().getChangeset()));
+            MapillarySubmitCurrentChangesetAction submitCurrentChangesetAction = new MapillarySubmitCurrentChangesetAction();
+            submitCurrentChangesetAction.actionPerformed(null);
         }
     }
 
@@ -239,21 +219,5 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         }
     }
 
-    private class UndoRedoSelectionListener implements TreeSelectionListener {
 
-        private final JTree source;
-
-        protected UndoRedoSelectionListener(JTree source) {
-            this.source = source;
-        }
-
-        @Override
-        public void valueChanged(TreeSelectionEvent e) {
-            if (this.source == changesetTree) {
-                changesetTree.getSelectionModel().removeTreeSelectionListener(undoSelectionListener);
-                changesetTree.clearSelection();
-                changesetTree.getSelectionModel().addTreeSelectionListener(undoSelectionListener);
-            }
-        }
-    }
 }
