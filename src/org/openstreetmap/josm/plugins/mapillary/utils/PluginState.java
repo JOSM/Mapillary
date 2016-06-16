@@ -9,12 +9,15 @@ import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.NotLoggedInDialog;
 
 /**
  * @author nokutu
  *
  */
 public final class PluginState {
+
+  private static boolean isSubmittingChangeset;
 
   private static int runningDownloads;
   /** Images that have to be uploaded. */
@@ -53,6 +56,14 @@ public final class PluginState {
   }
 
   /**
+   * Checks if there is a changeset being submitted.
+   *
+   * @return true if the plugin is submitting a changeset false otherwise.
+   */
+  public static boolean isSubmittingChangeset() {
+    return isSubmittingChangeset;
+  }
+   /**
    * Checks if there is any running upload.
    *
    * @return true if the plugin is uploading; false otherwise.
@@ -108,6 +119,17 @@ public final class PluginState {
       } );
     }
   }
+  public static void notLoggedInToMapillaryDialog() {
+    if( Main.main == null) {
+        return;
+    }
+    JOptionPane pane = new JOptionPane();
+    pane.setMessage(new NotLoggedInDialog());
+    JDialog dlg = pane.createDialog(Main.parent, tr("Not Logged in to Mapillary"));
+    dlg.setVisible(true);
+  }
+
+
 
   /**
    * Returns the text to be written in the status bar.
@@ -116,5 +138,9 @@ public final class PluginState {
    */
   public static String getUploadString() {
     return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload + ")");
+  }
+
+  public static void setIsSubmittingChangeset(boolean isSubmitting) {
+      isSubmittingChangeset = isSubmitting;
   }
 }

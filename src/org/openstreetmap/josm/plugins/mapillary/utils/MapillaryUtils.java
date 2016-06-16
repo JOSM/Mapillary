@@ -285,6 +285,8 @@ public final class MapillaryUtils {
       ret.append(tr("Downloading Mapillary images"));
     } else if (MapillaryLayer.getInstance().getData().size() > 0) {
       ret.append(tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getData().size()));
+    } else if (PluginState.isSubmittingChangeset()) {
+        ret.append(tr("Submitting Mapillary Changeset"));
     } else {
       ret.append(tr("No images found"));
     }
