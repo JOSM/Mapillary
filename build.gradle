@@ -5,7 +5,7 @@ apply plugin: 'java'
 apply plugin: 'pmd'
 apply plugin: 'project-report'
 
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
 
 repositories {
   // for JUnit
@@ -27,10 +27,11 @@ repositories {
     }
   }
 }
+
 dependencies {
   // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
   // When using a numeric version number you can leave out {changing=true}.
-  compile(':josm:9811')
+  compile(':josm:10327')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   compile (name: 'apache-commons'){changing=true}
   compile (name: 'apache-http'){changing=true}
@@ -74,10 +75,10 @@ eclipseProject.dependsOn cleanEclipseProject
 tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 
 pmd {
-  toolVersion '5.4.1'
+  toolVersion project.property('tools.pmd.version')
   ignoreFailures true
-  targetJdk sourceCompatibility
-  ruleSetFiles = files('.settings/pmd-ruleset.xml')
+  targetJdk 1.7 // 1.8 is not yet available
+  ruleSetConfig = resources.text.fromFile('.settings/pmd-ruleset.xml')
 }
 
 build.dependsOn jacocoTestReport
@@ -89,7 +90,7 @@ tasks.withType(Javadoc) {
 
 /** FindBugs configuration */
 findbugs {
-  toolVersion = "3.0.1"
+  toolVersion = project.property('tools.findbugs.version')
   ignoreFailures = true
   effort = "max"
   reportLevel = "low"
@@ -103,7 +104,7 @@ tasks.withType(FindBugs) {
 
 /** JaCoCo configuration */
 jacoco {
-  toolVersion = "0.7.5.201505241946"
+  toolVersion = project.property('tools.jacoco.version')
 }
 jacocoTestReport {
   reports {

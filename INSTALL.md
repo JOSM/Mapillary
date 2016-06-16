@@ -65,7 +65,7 @@ git config --local svn.authorsfile authors.txt
 mkdir .git/refs/remotes/svn
 git rev-parse master > .git/refs/remotes/svn/git-svn # creates a file containing the SHA1 of master-branch
 git svn fetch
-git reset --hard svn/git-svn
+git reset --hard svn/git-svn # Make sure you have no uncommitted changes in your repo before doing this
 ```
 
 ## Making changes to the repo and committing back to SVN (if you have git-svn set up as described above)
