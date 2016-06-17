@@ -86,6 +86,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         String json = Json.createObjectBuilder()
                 .add("change_type", "location")
                 .add("changes", changes)
+                .add("request_comment", "JOSM-created")
                 .build().toString();
         try (CloseableHttpClient httpClient = builder.build()) {
             httpPost.setEntity(new StringEntity(json));
