@@ -110,8 +110,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       Main.map.mapView.addLayer(this);
       MapView.addEditLayerChangeListener(this, false);
       MapView.addLayerChangeListener(this);
-      if (Main.map.mapView.getEditLayer() != null)
-        Main.map.mapView.getEditLayer().data.addDataSetListener(this);
+      if (Main.getLayerManager().getEditLayer() != null)
+        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)
         MapillaryDownloader.automaticDownload();
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic)
@@ -222,8 +222,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
     MapView.removeEditLayerChangeListener(this);
-    if (Main.map.mapView.getEditLayer() != null)
-      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);
+    if (Main.getLayerManager().getEditLayer() != null)
+      Main.getLayerManager().getEditLayer().data.removeDataSetListener(this);
     clearInstance();
     super.destroy();
   }
@@ -285,7 +285,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    if (Main.map.mapView.getActiveLayer() == this) {
+    if (Main.getLayerManager().getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
       g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
@@ -322,7 +322,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (selectedImage != null && selectedImage.getSequence() != null) {
       selectedImageKey = selectedImage.getSequence().getKey();
     }
-    g.setStroke(new BasicStroke(this == Main.map.mapView.getActiveLayer() ? 3 : 2));
+    g.setStroke(new BasicStroke(this == Main.getLayerManager().getActiveLayer() ? 3 : 2));
     for (MapillarySequence seq : getData().getSequences()) {
       if (selectedImageKey != null && selectedImageKey.equals(seq.getKey())) {
         g.setColor(Color.MAGENTA.brighter());

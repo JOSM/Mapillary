@@ -47,9 +47,9 @@ public class MapillaryDownloadAction extends JosmAction {
       return;
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-    Main.map.mapView.setActiveLayer(
-        Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()
-          ? Main.map.mapView.getEditLayer()
+    Main.getLayerManager().setActiveLayer(
+        Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+          ? Main.getLayerManager().getEditLayer()
           : MapillaryLayer.getInstance()
     );
   }

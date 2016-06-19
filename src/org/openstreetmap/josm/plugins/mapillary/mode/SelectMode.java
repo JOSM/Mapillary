@@ -51,12 +51,12 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1)
       return;
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer)
+    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer)
             && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       this.data.setSelectedImage(closest);
       return;
-    } else if (Main.map.mapView.getActiveLayer() != MapillaryLayer
+    } else if (Main.getLayerManager().getActiveLayer() != MapillaryLayer
             .getInstance())
       return;
     // Double click
@@ -97,7 +97,7 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance()) {
+    if (Main.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
       return;
     }
 
@@ -155,7 +155,7 @@ public class SelectMode extends AbstractMode {
    */
   @Override
   public void mouseMoved(MouseEvent e) {
-    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+    if (Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
             && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
@@ -166,22 +166,22 @@ public class SelectMode extends AbstractMode {
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
 
     if (closestTemp != null
-            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+            && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
             && !this.imageHighlighted) {
       Main.map.mapMode.putValue("active", Boolean.FALSE);
       this.imageHighlighted = true;
 
     } else if (closestTemp == null
-            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer
+            && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
             && this.imageHighlighted && this.nothingHighlighted) {
       this.nothingHighlighted = false;
       Main.map.mapMode.putValue("active", Boolean.TRUE);
 
     } else if (this.imageHighlighted && !this.nothingHighlighted
-            && Main.map.mapView.getEditLayer().data != null
-            && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {
+            && Main.getLayerManager().getEditLayer().data != null
+            && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer) {
 
-      for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data
+      for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data
               .allPrimitives()) {
         primivitive.setHighlighted(false);
       }

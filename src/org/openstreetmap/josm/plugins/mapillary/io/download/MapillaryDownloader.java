@@ -151,7 +151,7 @@ public final class MapillaryDownloader {
    */
   public static void automaticDownload() {
     MapillaryLayer layer = MapillaryLayer.getInstance();
-    if (Main.map.mapView.getEditLayer() == null)
+    if (Main.getLayerManager().getEditLayer() == null)
       return;
     if (isAreaTooBig()) {
       tooBigErrorDialog();
@@ -159,7 +159,7 @@ public final class MapillaryDownloader {
     }
     if (getMode() != MODES.Automatic)
       throw new IllegalStateException("Must be in automatic mode.");
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data
+    for (Bounds bounds : Main.getLayerManager().getEditLayer().data
         .getDataSourceBounds()) {
       if (!layer.getData().getBounds().contains(bounds)) {
         layer.getData().getBounds().add(bounds);
@@ -176,7 +176,7 @@ public final class MapillaryDownloader {
    */
   private static boolean isAreaTooBig() {
     double area = 0;
-    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {
+    for (Bounds bounds : Main.getLayerManager().getEditLayer().data.getDataSourceBounds()) {
       area += bounds.getArea();
     }
     return area > MAX_AREA;
