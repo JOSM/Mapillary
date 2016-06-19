@@ -42,13 +42,13 @@ public class MapillarySequence {
    * @throws IllegalArgumentException if the key is invalid
    *           according to {@link ValidationUtil#validateSequenceKey(String)}
    */
-<span class="nc" id="L45">  public MapillarySequence(String key, long createdAt) {</span>
-<span class="nc" id="L46">    ValidationUtil.throwExceptionForInvalidSeqKey(key, true);</span>
+<span class="fc" id="L45">  public MapillarySequence(String key, long createdAt) {</span>
+<span class="fc" id="L46">    ValidationUtil.throwExceptionForInvalidSeqKey(key, true);</span>
 
-<span class="nc" id="L48">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
-<span class="nc" id="L49">    this.key = key;</span>
-<span class="nc" id="L50">    this.createdAt = createdAt;</span>
-<span class="nc" id="L51">  }</span>
+<span class="fc" id="L48">    this.images = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">    this.key = key;</span>
+<span class="fc" id="L50">    this.createdAt = createdAt;</span>
+<span class="fc" id="L51">  }</span>
 
   /**
    * Adds a new {@link MapillaryAbstractImage} object to the database.
