@@ -4,12 +4,12 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -49,28 +49,28 @@ public class MapillaryImageInfoDownloadThread extends Thread {
 <span class="nc" id="L49">          MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), &quot;UTF-8&quot;</span>
       ));
     ) {
-<span class="nc" id="L52">      JsonObject jsonobj = Json.createReader(br).readObject();</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">      if (!jsonobj.getBoolean(&quot;more&quot;))</span>
-<span class="nc" id="L54">        this.ex.shutdown();</span>
-<span class="nc" id="L55">      JsonArray jsonarr = jsonobj.getJsonArray(&quot;ims&quot;);</span>
-      JsonObject data;
-<span class="nc bnc" id="L57" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonarr.size(); i++) {</span>
-<span class="nc" id="L58">        data = jsonarr.getJsonObject(i);</span>
-<span class="nc" id="L59">        String key = data.getString(&quot;key&quot;);</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">          if (</span>
-            image instanceof MapillaryImage
-<span class="nc bnc" id="L63" title="All 2 branches missed.">              &amp;&amp; ((MapillaryImage) image).getKey().equals(key)</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">              &amp;&amp; ((MapillaryImage) image).getUser() == null</span>
-          ) {
-<span class="nc" id="L66">            ((MapillaryImage) image).setUser(data.getString(&quot;user&quot;));</span>
-<span class="nc" id="L67">            ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(&quot;captured_at&quot;).longValue());</span>
-          }
-<span class="nc" id="L69">        }</span>
-      }
-<span class="nc bnc" id="L71" title="All 8 branches missed.">    } catch (MalformedURLException e) {</span>
-<span class="nc" id="L72">      Main.error(e);</span>
-<span class="nc" id="L73">    } catch (IOException e) {</span>
+<span class="nc" id="L52">      try (JsonReader reader = Json.createReader(br)) {</span>
+<span class="nc" id="L53">        JsonObject jsonObj = reader.readObject();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (!jsonObj.getBoolean(&quot;more&quot;))</span>
+<span class="nc" id="L55">          this.ex.shutdown();</span>
+<span class="nc" id="L56">        JsonArray jsonArr = jsonObj.getJsonArray(&quot;ims&quot;);</span>
+        JsonObject data;
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for (int i = 0; i &lt; jsonArr.size(); i++) {</span>
+<span class="nc" id="L59">          data = jsonArr.getJsonObject(i);</span>
+<span class="nc" id="L60">          String key = data.getString(&quot;key&quot;);</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">          for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (</span>
+              image instanceof MapillaryImage
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                &amp;&amp; ((MapillaryImage) image).getKey().equals(key)</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">                &amp;&amp; ((MapillaryImage) image).getUser() == null</span>
+            ) {
+<span class="nc" id="L67">              ((MapillaryImage) image).setUser(data.getString(&quot;user&quot;));</span>
+<span class="nc" id="L68">              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber(&quot;captured_at&quot;).longValue());</span>
+            }
+<span class="nc" id="L70">          }</span>
+        }
+<span class="nc bnc" id="L72" title="All 8 branches missed.">      }</span>
+<span class="nc bnc" id="L73" title="All 8 branches missed.">    } catch (IOException e) {</span>
 <span class="nc" id="L74">      Main.error(e);</span>
 <span class="nc" id="L75">    }</span>
 <span class="nc" id="L76">  }</span>

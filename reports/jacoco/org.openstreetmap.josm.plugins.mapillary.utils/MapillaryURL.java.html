@@ -78,7 +78,7 @@ public final class MapillaryURL {
    * For more than 20 images you have to use different URLs with different page numbers.
    * @param bounds the bounds in which you want to search for images
    * @param page number of the page to retrieve from the API
-   * @param selector
+   * @param selector if set, only a specific type of image is returned by the URL
    * @return the API-URL which gives you the images in the given bounds as JSON
    */
   public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
