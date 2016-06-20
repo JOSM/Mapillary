@@ -89,7 +89,7 @@ public final class MapillaryUtils {
    * @param date   The string containing the date.
    * @param format The format of the date.
    * @return The date in Epoch format.
-   * @throws ParseException
+   * @throws ParseException if the date cannot be parsed with the given format
    */
   public static long getEpoch(String date, String format) throws ParseException {
     return new SimpleDateFormat(format, Locale.UK).parse(date).getTime();
@@ -152,10 +152,10 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Joins two images into the same sequence.
+   * Joins two images into the same sequence. One of them must be the last image of a sequence, the other one the beginning of a different one.
    *
-   * @param mapillaryAbstractImage
-   * @param mapillaryAbstractImage2
+   * @param mapillaryAbstractImage the first image, into whose sequence the images from the sequence of the second image are merged
+   * @param mapillaryAbstractImage2 the second image, whose sequence is merged into the sequence of the first image
    */
   public static synchronized void join(
           MapillaryAbstractImage mapillaryAbstractImage,
@@ -209,7 +209,7 @@ public final class MapillaryUtils {
         }
       });
     } else {
-      Bounds zoomBounds = null;
+      Bounds zoomBounds;
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
@@ -235,10 +235,12 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Separates two images belonging to the same sequence.
+   * Separates two images belonging to the same sequence. The two images have to be consecutive in the same sequence.
+   * Two new sequences are created and all images up to (and including) either {@code imgA} or {@code imgB} (whichever appears first in the sequence) are put into the first of the two sequences.
+   * All others are put into the second new sequence.
    *
-   * @param mapillaryAbstractImage
-   * @param mapillaryAbstractImage2
+   * @param mapillaryAbstractImage one of the images marking where to split the sequence
+   * @param mapillaryAbstractImage2 the other image marking where to split the sequence, needs to be a direct neighbour of {@code mapillaryAbstractImage} in the sequence.
    */
   public static synchronized void unjoin(
           MapillaryAbstractImage mapillaryAbstractImage,

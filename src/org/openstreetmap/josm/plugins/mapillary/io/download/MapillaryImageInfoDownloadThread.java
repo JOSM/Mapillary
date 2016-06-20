@@ -4,12 +4,12 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -49,27 +49,27 @@ public class MapillaryImageInfoDownloadThread extends Thread {
           MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
       ));
     ) {
-      JsonObject jsonobj = Json.createReader(br).readObject();
-      if (!jsonobj.getBoolean("more"))
-        this.ex.shutdown();
-      JsonArray jsonarr = jsonobj.getJsonArray("ims");
-      JsonObject data;
-      for (int i = 0; i < jsonarr.size(); i++) {
-        data = jsonarr.getJsonObject(i);
-        String key = data.getString("key");
-        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-          if (
-            image instanceof MapillaryImage
-              && ((MapillaryImage) image).getKey().equals(key)
-              && ((MapillaryImage) image).getUser() == null
-          ) {
-            ((MapillaryImage) image).setUser(data.getString("user"));
-            ((MapillaryImage) image).setCapturedAt(data.getJsonNumber("captured_at").longValue());
+      try (JsonReader reader = Json.createReader(br)) {
+        JsonObject jsonObj = reader.readObject();
+        if (!jsonObj.getBoolean("more"))
+          this.ex.shutdown();
+        JsonArray jsonArr = jsonObj.getJsonArray("ims");
+        JsonObject data;
+        for (int i = 0; i < jsonArr.size(); i++) {
+          data = jsonArr.getJsonObject(i);
+          String key = data.getString("key");
+          for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
+            if (
+              image instanceof MapillaryImage
+                && ((MapillaryImage) image).getKey().equals(key)
+                && ((MapillaryImage) image).getUser() == null
+            ) {
+              ((MapillaryImage) image).setUser(data.getString("user"));
+              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber("captured_at").longValue());
+            }
           }
         }
       }
-    } catch (MalformedURLException e) {
-      Main.error(e);
     } catch (IOException e) {
       Main.error(e);
     }

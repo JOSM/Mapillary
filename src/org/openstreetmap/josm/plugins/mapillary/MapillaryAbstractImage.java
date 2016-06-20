@@ -31,14 +31,14 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   /** Direction of the picture. */
   protected double ca;
   /** Temporal position of the picture until it is uploaded. */
-  public LatLon tempLatLon;
+  private LatLon tempLatLon;
   /**
    * When the object is being dragged in the map, the temporal position is
    * stored here.
    */
-  public LatLon movingLatLon;
+  private LatLon movingLatLon;
   /** Temporal direction of the picture until it is uploaded */
-  public double tempCa;
+  private double tempCa;
   /**
    * When the object direction is being moved in the map, the temporal direction
    * is stored here
@@ -131,15 +131,15 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
 
   /**
    * Returns the sequence which contains this image.
+   * Never null.
    *
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-    if (this.sequence == null) {
-      this.sequence = new MapillarySequence();
-      this.sequence.add(this);
+    if (sequence == null) {
+      sequence = new MapillarySequence();
+      sequence.add(this);
     }
-
     return this.sequence;
   }
 
