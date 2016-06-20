@@ -1,5 +1,6 @@
 apply plugin: 'eclipse'
 apply plugin: 'findbugs'
+apply plugin: 'idea'
 apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'pmd'
@@ -65,8 +66,10 @@ eclipse {
   project {
     name = 'JOSM-Mapillary'
     comment = property('plugin.description')
-    natures 'org.sonarlint.eclipse.core.sonarlintNature', 'ch.acanda.eclipse.pmd.builder.PMDNature'
+    natures 'org.sonarlint.eclipse.core.sonarlintNature', 'ch.acanda.eclipse.pmd.builder.PMDNature', 'org.eclipse.buildship.core.gradleprojectnature'
+    buildCommand 'org.sonarlint.eclipse.core.sonarlintBuilder'
     buildCommand 'ch.acanda.eclipse.pmd.builder.PMDBuilder'
+    buildCommand 'org.eclipse.buildship.core.gradleprojectbuilder'
   }
 }
 eclipseClasspath.dependsOn cleanEclipseClasspath

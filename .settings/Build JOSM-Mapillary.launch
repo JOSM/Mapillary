@@ -14,5 +14,5 @@
     <listEntry value="build"/>
     <listEntry value="javadoc"/>
   </listAttribute>
-  <stringAttribute key="working_dir" value="${workspace_loc:/JOSM-Mapillary}"/>
+  <stringAttribute key="working_dir" value="${project_loc}"/>
 </launchConfiguration>

@@ -1,9 +1,18 @@
+# Eclipse
 /.classpath
 /.project
-/bin
+/bin/
+
+# IntelliJ idea
+/*.iml
+/*.iws
+/*.ipr
+/out/
+/.idea/*
+!/.idea/codeStyleSettings.xml
+
+# Gradle
 /build/
 /.gradle/
-/.settings
+
 /test/data/preferences/
-*.iml
-.idea/
