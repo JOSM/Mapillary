@@ -1,10 +1,14 @@
+sudo: required
+dist: trusty
+group: edge
+
 language: java
 cache:
   directories: $HOME/.gradle
 jdk:
+  - oraclejdk9
   - oraclejdk8
-  - oraclejdk7
-  - openjdk7
+  - openjdk8
 before_install: pip install --user codecov
 before_script: # init GUI for tests that can't run headless
   - "export DISPLAY=:99.0"

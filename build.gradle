@@ -3,7 +3,6 @@ apply plugin: 'findbugs'
 apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'pmd'
-apply plugin: 'project-report'
 
 sourceCompatibility = '1.8'
 
@@ -82,7 +81,6 @@ pmd {
 }
 
 build.dependsOn jacocoTestReport
-build.dependsOn projectReport
 
 tasks.withType(Javadoc) {
   failOnError false
