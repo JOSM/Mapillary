@@ -151,7 +151,7 @@ public final class MapillaryDownloader {
    */
   public static void automaticDownload() {
 <span class="nc" id="L153">    MapillaryLayer layer = MapillaryLayer.getInstance();</span>
-<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() == null)</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() == null)</span>
 <span class="nc" id="L155">      return;</span>
 <span class="nc bnc" id="L156" title="All 2 branches missed.">    if (isAreaTooBig()) {</span>
 <span class="nc" id="L157">      tooBigErrorDialog();</span>
@@ -159,7 +159,7 @@ public final class MapillaryDownloader {
     }
 <span class="nc bnc" id="L160" title="All 2 branches missed.">    if (getMode() != MODES.Automatic)</span>
 <span class="nc" id="L161">      throw new IllegalStateException(&quot;Must be in automatic mode.&quot;);</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">    for (Bounds bounds : Main.getLayerManager().getEditLayer().data</span>
 <span class="nc" id="L163">        .getDataSourceBounds()) {</span>
 <span class="nc bnc" id="L164" title="All 2 branches missed.">      if (!layer.getData().getBounds().contains(bounds)) {</span>
 <span class="nc" id="L165">        layer.getData().getBounds().add(bounds);</span>
@@ -176,7 +176,7 @@ public final class MapillaryDownloader {
    */
   private static boolean isAreaTooBig() {
 <span class="nc" id="L178">    double area = 0;</span>
-<span class="nc bnc" id="L179" title="All 2 branches missed.">    for (Bounds bounds : Main.map.mapView.getEditLayer().data.getDataSourceBounds()) {</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">    for (Bounds bounds : Main.getLayerManager().getEditLayer().data.getDataSourceBounds()) {</span>
 <span class="nc" id="L180">      area += bounds.getArea();</span>
 <span class="nc" id="L181">    }</span>
 <span class="nc bnc" id="L182" title="All 2 branches missed.">    return area &gt; MAX_AREA;</span>

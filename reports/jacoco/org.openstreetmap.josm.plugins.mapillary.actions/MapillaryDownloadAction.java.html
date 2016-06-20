@@ -47,9 +47,9 @@ public class MapillaryDownloadAction extends JosmAction {
 <span class="nc" id="L47">      return;</span>
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-<span class="nc" id="L50">    Main.map.mapView.setActiveLayer(</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        Main.map.mapView.getActiveLayer() == MapillaryLayer.getInstance()</span>
-<span class="nc" id="L52">          ? Main.map.mapView.getEditLayer()</span>
+<span class="nc" id="L50">    Main.getLayerManager().setActiveLayer(</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
+<span class="nc" id="L52">          ? Main.getLayerManager().getEditLayer()</span>
 <span class="nc" id="L53">          : MapillaryLayer.getInstance()</span>
     );
 <span class="nc" id="L55">  }</span>

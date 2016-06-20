@@ -110,8 +110,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L110">      Main.map.mapView.addLayer(this);</span>
 <span class="nc" id="L111">      MapView.addEditLayerChangeListener(this, false);</span>
 <span class="nc" id="L112">      MapView.addLayerChangeListener(this);</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">      if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L114">        Main.map.mapView.getEditLayer().data.addDataSetListener(this);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">      if (Main.getLayerManager().getEditLayer() != null)</span>
+<span class="nc" id="L114">        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);</span>
 <span class="nc bnc" id="L115" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)</span>
 <span class="nc" id="L116">        MapillaryDownloader.automaticDownload();</span>
 <span class="nc bnc" id="L117" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic)</span>
@@ -222,8 +222,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L222">    Main.map.mapView.removeMouseListener(this.mode);</span>
 <span class="nc" id="L223">    Main.map.mapView.removeMouseMotionListener(this.mode);</span>
 <span class="nc" id="L224">    MapView.removeEditLayerChangeListener(this);</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">    if (Main.map.mapView.getEditLayer() != null)</span>
-<span class="nc" id="L226">      Main.map.mapView.getEditLayer().data.removeDataSetListener(this);</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() != null)</span>
+<span class="nc" id="L226">      Main.getLayerManager().getEditLayer().data.removeDataSetListener(this);</span>
 <span class="nc" id="L227">    clearInstance();</span>
 <span class="nc" id="L228">    super.destroy();</span>
 <span class="nc" id="L229">  }</span>
@@ -285,7 +285,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
 <span class="nc" id="L287">    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() == this) {</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (Main.getLayerManager().getActiveLayer() == this) {</span>
       // paint remainder
 <span class="nc" id="L290">      g.setPaint(this.hatched);</span>
 <span class="nc" id="L291">      g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));</span>
@@ -322,7 +322,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc bnc" id="L322" title="All 4 branches missed.">    if (selectedImage != null &amp;&amp; selectedImage.getSequence() != null) {</span>
 <span class="nc" id="L323">      selectedImageKey = selectedImage.getSequence().getKey();</span>
     }
-<span class="nc bnc" id="L325" title="All 2 branches missed.">    g.setStroke(new BasicStroke(this == Main.map.mapView.getActiveLayer() ? 3 : 2));</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">    g.setStroke(new BasicStroke(this == Main.getLayerManager().getActiveLayer() ? 3 : 2));</span>
 <span class="nc bnc" id="L326" title="All 2 branches missed.">    for (MapillarySequence seq : getData().getSequences()) {</span>
 <span class="nc bnc" id="L327" title="All 4 branches missed.">      if (selectedImageKey != null &amp;&amp; selectedImageKey.equals(seq.getKey())) {</span>
 <span class="nc" id="L328">        g.setColor(Color.MAGENTA.brighter());</span>

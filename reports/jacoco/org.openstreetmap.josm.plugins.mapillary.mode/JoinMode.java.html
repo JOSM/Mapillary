@@ -70,7 +70,7 @@ public class JoinMode extends AbstractMode {
   @Override
   public void mouseMoved(MouseEvent e) {
 <span class="nc" id="L72">    this.lastPos = e;</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer))</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer))</span>
 <span class="nc" id="L74">      return;</span>
 <span class="nc" id="L75">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
 <span class="nc" id="L76">    this.data.setHighlightedImage(closestTemp);</span>

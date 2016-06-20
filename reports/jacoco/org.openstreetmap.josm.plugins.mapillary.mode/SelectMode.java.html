@@ -51,12 +51,12 @@ public class SelectMode extends AbstractMode {
 <span class="nc bnc" id="L51" title="All 2 branches missed.">    if (e.getButton() != MouseEvent.BUTTON1)</span>
 <span class="nc" id="L52">      return;</span>
 <span class="nc" id="L53">    MapillaryAbstractImage closest = getClosest(e.getPoint());</span>
-<span class="nc bnc" id="L54" title="All 6 branches missed.">    if (!(Main.map.mapView.getActiveLayer() instanceof MapillaryLayer)</span>
+<span class="nc bnc" id="L54" title="All 6 branches missed.">    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer)</span>
             &amp;&amp; closest != null &amp;&amp; Main.map.mapMode == Main.map.mapModeSelect) {
 <span class="nc" id="L56">      this.lastClicked = this.closest;</span>
 <span class="nc" id="L57">      this.data.setSelectedImage(closest);</span>
 <span class="nc" id="L58">      return;</span>
-<span class="nc" id="L59">    } else if (Main.map.mapView.getActiveLayer() != MapillaryLayer</span>
+<span class="nc" id="L59">    } else if (Main.getLayerManager().getActiveLayer() != MapillaryLayer</span>
 <span class="nc bnc" id="L60" title="All 2 branches missed.">            .getInstance())</span>
 <span class="nc" id="L61">      return;</span>
     // Double click
@@ -97,7 +97,7 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mouseDragged(MouseEvent e) {
-<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (Main.map.mapView.getActiveLayer() != MapillaryLayer.getInstance()) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (Main.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {</span>
 <span class="nc" id="L101">      return;</span>
     }
 
@@ -155,7 +155,7 @@ public class SelectMode extends AbstractMode {
    */
   @Override
   public void mouseMoved(MouseEvent e) {
-<span class="nc bnc" id="L158" title="All 4 branches missed.">    if (Main.map.mapView.getActiveLayer() instanceof OsmDataLayer</span>
+<span class="nc bnc" id="L158" title="All 4 branches missed.">    if (Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer</span>
             &amp;&amp; Main.map.mapMode != Main.map.mapModeSelect) {
 <span class="nc" id="L160">      return;</span>
     }
@@ -166,22 +166,22 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L166">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
 
 <span class="nc bnc" id="L168" title="All 2 branches missed.">    if (closestTemp != null</span>
-<span class="nc bnc" id="L169" title="All 4 branches missed.">            &amp;&amp; Main.map.mapView.getActiveLayer() instanceof OsmDataLayer</span>
+<span class="nc bnc" id="L169" title="All 4 branches missed.">            &amp;&amp; Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer</span>
             &amp;&amp; !this.imageHighlighted) {
 <span class="nc" id="L171">      Main.map.mapMode.putValue(&quot;active&quot;, Boolean.FALSE);</span>
 <span class="nc" id="L172">      this.imageHighlighted = true;</span>
 
 <span class="nc bnc" id="L174" title="All 2 branches missed.">    } else if (closestTemp == null</span>
-<span class="nc bnc" id="L175" title="All 6 branches missed.">            &amp;&amp; Main.map.mapView.getActiveLayer() instanceof OsmDataLayer</span>
+<span class="nc bnc" id="L175" title="All 6 branches missed.">            &amp;&amp; Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer</span>
             &amp;&amp; this.imageHighlighted &amp;&amp; this.nothingHighlighted) {
 <span class="nc" id="L177">      this.nothingHighlighted = false;</span>
 <span class="nc" id="L178">      Main.map.mapMode.putValue(&quot;active&quot;, Boolean.TRUE);</span>
 
 <span class="nc bnc" id="L180" title="All 4 branches missed.">    } else if (this.imageHighlighted &amp;&amp; !this.nothingHighlighted</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">            &amp;&amp; Main.map.mapView.getEditLayer().data != null</span>
-<span class="nc bnc" id="L182" title="All 2 branches missed.">            &amp;&amp; Main.map.mapView.getActiveLayer() instanceof OsmDataLayer) {</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">            &amp;&amp; Main.getLayerManager().getEditLayer().data != null</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            &amp;&amp; Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer) {</span>
 
-<span class="nc bnc" id="L184" title="All 2 branches missed.">      for (OsmPrimitive primivitive : Main.map.mapView.getEditLayer().data</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">      for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data</span>
 <span class="nc" id="L185">              .allPrimitives()) {</span>
 <span class="nc" id="L186">        primivitive.setHighlighted(false);</span>
 <span class="nc" id="L187">      }</span>
