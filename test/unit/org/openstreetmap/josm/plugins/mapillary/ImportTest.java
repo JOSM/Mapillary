@@ -27,8 +27,8 @@ public class ImportTest extends AbstractTest {
   public void importNoTagsTest() throws IOException {
     File image = new File("images/icon16.png");
     MapillaryImportedImage img = ImageUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
-    assertEquals(0, img.getCa(), 0.01);
-    assertTrue(new LatLon(0, 0).equalsEpsilon(img.getLatLon()));
+    assertEquals(0, img.getMovingCa(), 0.01);
+    assertTrue(new LatLon(0, 0).equalsEpsilon(img.getMovingLatLon()));
   }
 
   /**

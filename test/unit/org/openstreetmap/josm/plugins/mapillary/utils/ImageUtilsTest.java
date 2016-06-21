@@ -22,8 +22,8 @@ public class ImageUtilsTest {
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
-    assertEquals(0, images.get(0).getCa(), 1e-9);
-    assertEquals(defaultLL, images.get(0).getLatLon());
+    assertEquals(0, images.get(0).getMovingCa(), 1e-9);
+    assertEquals(defaultLL, images.get(0).getMovingLatLon());
     assertEquals(untaggedFile, images.get(0).getFile());
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
     assertTrue(images.get(0).getCapturedAt() >= startTime && images.get(0).getCapturedAt() <= endTime);
@@ -36,9 +36,9 @@ public class ImageUtilsTest {
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
-    assertEquals(0, images.get(0).getCa(), 1e-9);
-    assertEquals(55.6052777777, images.get(0).getLatLon().lat(), 1e-9);
-    assertEquals(13.0001388888, images.get(0).getLatLon().lon(), 1e-9);
+    assertEquals(0, images.get(0).getMovingCa(), 1e-9);
+    assertEquals(55.6052777777, images.get(0).getMovingLatLon().lat(), 1e-9);
+    assertEquals(13.0001388888, images.get(0).getMovingLatLon().lon(), 1e-9);
     assertEquals(untaggedFile, images.get(0).getFile());
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
     assertTrue(images.get(0).getCapturedAt() >= startTime && images.get(0).getCapturedAt() <= endTime);
@@ -51,8 +51,8 @@ public class ImageUtilsTest {
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
-    assertEquals(42.73, images.get(0).getCa(), 1e-9);
-    assertEquals(defaultLL, images.get(0).getLatLon());
+    assertEquals(42.73, images.get(0).getMovingCa(), 1e-9);
+    assertEquals(defaultLL, images.get(0).getMovingLatLon());
     assertEquals(untaggedFile, images.get(0).getFile());
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
     assertTrue(images.get(0).getCapturedAt() >= startTime && images.get(0).getCapturedAt() <= endTime);
@@ -65,8 +65,8 @@ public class ImageUtilsTest {
     LatLon defaultLL = new LatLon(42, -73);
     List<MapillaryImportedImage> images = ImageUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
-    assertEquals(0, images.get(0).getCa(), 1e-9);
-    assertEquals(defaultLL, images.get(0).getLatLon());
+    assertEquals(0, images.get(0).getMovingCa(), 1e-9);
+    assertEquals(defaultLL, images.get(0).getMovingLatLon());
     assertEquals(untaggedFile, images.get(0).getFile());
     /* http://www.wolframalpha.com/input/?i=convert+2015-12-24T01%3A02%3A03%2B0000+to+unixtime */
     assertEquals(1_450_918_923_000L /*2015-12-24 01:02:03+0000*/, images.get(0).getCapturedAt());

@@ -123,7 +123,7 @@ public class MapillaryExportWriterThread extends Thread {
 
         gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
         gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-            RationalNumber.valueOf(mimg.getCa()));
+            RationalNumber.valueOf(mimg.getMovingCa()));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         if (mimg instanceof MapillaryImportedImage) {
@@ -133,7 +133,7 @@ public class MapillaryExportWriterThread extends Thread {
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImage) mimg).getDate("yyyy/MM/dd HH/mm/ss"));
         }
-        outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon().lat());
+        outputSet.setGPSInDegrees(mimg.getMovingLatLon().lon(), mimg.getMovingLatLon().lat());
         OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"));
         new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
 

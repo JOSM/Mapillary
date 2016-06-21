@@ -135,15 +135,15 @@ public class SelectMode extends AbstractMode {
   public void mouseReleased(MouseEvent e) {
     if (this.data.getSelectedImage() == null)
       return;
-    if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getCa()) {
+    if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getMovingCa()) {
       double from = this.data.getSelectedImage().getTempCa();
-      double to = this.data.getSelectedImage().getCa();
+      double to = this.data.getSelectedImage().getMovingCa();
       this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to
               - from));
     } else if (this.data.getSelectedImage().getTempLatLon() != this.data
-            .getSelectedImage().getLatLon()) {
+            .getSelectedImage().getMovingLatLon()) {
       LatLon from = this.data.getSelectedImage().getTempLatLon();
-      LatLon to = this.data.getSelectedImage().getLatLon();
+      LatLon to = this.data.getSelectedImage().getMovingLatLon();
       this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to
               .getX() - from.getX(), to.getY() - from.getY()));
     }
