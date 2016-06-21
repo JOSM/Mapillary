@@ -172,3 +172,13 @@ task runJosm(type: JavaExec) {
   jvmArgs "-Djosm.home=$buildDir/.josm"
 }
 runJosm.dependsOn installPlugin
+
+
+task debugJosm(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'JOSM'
+    args '--offline=josm_website'
+    jvmArgs "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006", "-Djosm.home=$buildDir/.josm"
+
+}
+debugJosm.dependsOn installPlugin
