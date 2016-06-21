@@ -32,6 +32,7 @@
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
         <codeStyleSettings language="JAVA">
+          <option name="RIGHT_MARGIN" value="120" />
           <option name="SPACE_BEFORE_ANOTATION_PARAMETER_LIST" value="true" />
           <indentOptions>
             <option name="INDENT_SIZE" value="2" />
