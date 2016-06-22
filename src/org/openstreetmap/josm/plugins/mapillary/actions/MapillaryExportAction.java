@@ -75,14 +75,15 @@ public class MapillaryExportAction extends JosmAction {
         export(MapillaryLayer.getInstance().getData().getImages());
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
         Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
-        for (MapillaryAbstractImage image : MapillaryLayer.getInstance()
-            .getData().getMultiSelectedImages())
+        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getMultiSelectedImages()) {
           if (image instanceof MapillaryImage) {
-            if (!images.contains(image))
+            if (!images.contains(image)) {
               images.addAll(((MapillaryImage) image).getSequence().getImages());
+            }
           } else {
             images.add(image);
           }
+        }
         export(images);
       } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
         export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());

@@ -36,9 +36,10 @@ public class MapillaryJoinAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryLayer.getInstance().mode instanceof SelectMode)
+    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {
       MapillaryLayer.getInstance().setMode(new JoinMode());
-    else
+    } else {
       MapillaryLayer.getInstance().setMode(new SelectMode());
+    }
   }
 }

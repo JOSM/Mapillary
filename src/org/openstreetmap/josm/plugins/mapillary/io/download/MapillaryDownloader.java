@@ -77,14 +77,15 @@ public final class MapillaryDownloader {
   public static MapillaryDownloader.MODES getMode() {
     String downloadMode = Main.pref.get("mapillary.download-mode", MODES.Automatic.toString());
     boolean isTempSemiautomatic = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic;
-    if (MODES.Semiautomatic.toString().equals(downloadMode) || isTempSemiautomatic)
+    if (MODES.Semiautomatic.toString().equals(downloadMode) || isTempSemiautomatic) {
       return MODES.Semiautomatic;
-    else if (MODES.Manual.toString().equals(downloadMode))
+    } else if (MODES.Manual.toString().equals(downloadMode)) {
       return MODES.Manual;
-    else if (MODES.Automatic.toString().equals(downloadMode))
+    } else if (MODES.Automatic.toString().equals(downloadMode)) {
       return MODES.Automatic;
-    else
+    } else {
       throw new IllegalStateException();
+    }
   }
 
   private static void run(Thread t) {

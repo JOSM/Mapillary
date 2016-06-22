@@ -68,11 +68,11 @@ public class MapillaryUploadAction extends JosmAction implements
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
-    if (oldImage == null && newImage != null)
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+    if (oldImage == null && newImage != null) {
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), true);
-    else if (oldImage != null && newImage == null)
+    } else if (oldImage != null && newImage == null) {
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), false);
+    }
   }
 }

@@ -142,24 +142,28 @@ public class MapillaryImageDisplay extends JComponent {
         image = MapillaryImageDisplay.this.image;
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      if (image == null)
+      if (image == null) {
         return;
+      }
       if (e.getButton() == OPTION_BUTTON) {
-        if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0,
-            image.getWidth(null), image.getHeight(null))))
+        if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
           // Zooms to 1:1
           MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
               image.getWidth(null), image.getHeight(null));
-        else
+        } else {
           // Zooms to best fit.
-          MapillaryImageDisplay.this.visibleRect = new Rectangle(0,
-              (image.getHeight(null) - (image.getWidth(null) * getHeight())
-                  / getWidth()) / 2, image.getWidth(null),
-              (image.getWidth(null) * getHeight()) / getWidth());
+          MapillaryImageDisplay.this.visibleRect = new Rectangle(
+              0,
+              (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
+              image.getWidth(null),
+              (image.getWidth(null) * getHeight()) / getWidth()
+          );
+        }
         MapillaryImageDisplay.this.repaint();
         return;
-      } else if (e.getButton() != DRAG_BUTTON)
+      } else if (e.getButton() != DRAG_BUTTON) {
         return;
+      }
       // Calculate the translation to set the clicked point the center of
       // the view.
       Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());

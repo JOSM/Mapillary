@@ -144,15 +144,17 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     List<MapillaryCommand> commands = MapillaryRecord.getInstance().commandList;
     int position = MapillaryRecord.getInstance().position;
     ArrayList<MapillaryCommand> undoCommands = new ArrayList<>();
-    if (position >= 0)
+    if (position >= 0) {
       undoCommands = new ArrayList<>(commands.subList(0, position + 1));
-    else
+    } else {
       this.undoButton.setEnabled(false);
+    }
     ArrayList<MapillaryCommand> redoCommands = new ArrayList<>();
-    if (!commands.isEmpty() && position + 1 < commands.size())
+    if (!commands.isEmpty() && position + 1 < commands.size()) {
       redoCommands = new ArrayList<>(commands.subList(position + 1, commands.size()));
-    else
+    } else {
       this.redoButton.setEnabled(false);
+    }
 
     DefaultMutableTreeNode redoRoot = new DefaultMutableTreeNode();
     DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();

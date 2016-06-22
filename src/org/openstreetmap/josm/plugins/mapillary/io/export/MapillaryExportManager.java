@@ -128,8 +128,9 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       try {
         // If the queue is full, waits for it to have more space
         // available before executing anything else.
-        while (this.ex.getQueue().remainingCapacity() == 0)
+        while (this.ex.getQueue().remainingCapacity() == 0) {
           Thread.sleep(100);
+        }
       } catch (Exception e) {
         Main.error(e);
       }

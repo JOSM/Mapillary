@@ -86,15 +86,15 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     ) {
       this.sequence.setEnabled(false);
     }
-    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages()
-        .isEmpty()) {
+    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {
       this.selected.setEnabled(false);
     }
     this.rewrite.setEnabled(false);
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData()
-        .getImages())
-      if (img instanceof MapillaryImportedImage)
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
+      if (img instanceof MapillaryImportedImage) {
         this.rewrite.setEnabled(true);
+      }
+    }
 
     this.path = new JLabel(tr("Select a folder"));
     this.choose = new JButton(tr("Explore"));

@@ -36,10 +36,12 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-    for (MapillaryAbstractImage img : this.images)
+    for (MapillaryAbstractImage img : this.images) {
       MapillaryLayer.getInstance().getData().getImages().remove(img);
-    if (Main.main != null)
+    }
+    if (Main.main != null) {
       MapillaryData.dataUpdated();
+    }
   }
 
   @Override

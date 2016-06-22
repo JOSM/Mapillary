@@ -125,10 +125,11 @@ public class MapillaryData {
    */
   public void addMultiSelectedImage(MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
-      if (this.getSelectedImage() == null)
+      if (this.getSelectedImage() == null) {
         this.setSelectedImage(image);
-      else
+      } else {
         this.multiSelectedImages.add(image);
+      }
     }
     if (Main.main != null)
       Main.map.mapView.repaint();

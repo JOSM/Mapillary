@@ -65,8 +65,9 @@ public class MapillarySequence {
    * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images)
+    for (MapillaryAbstractImage image : images) {
       add(image);
+    }
   }
 
   /**

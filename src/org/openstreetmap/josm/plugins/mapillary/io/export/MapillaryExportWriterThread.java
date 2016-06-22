@@ -126,12 +126,13 @@ public class MapillaryExportWriterThread extends Thread {
             RationalNumber.valueOf(mimg.getCa()));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-        if (mimg instanceof MapillaryImportedImage)
+        if (mimg instanceof MapillaryImportedImage) {
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImportedImage) mimg).getDate("yyyy/MM/dd HH:mm:ss"));
-        else if (mimg instanceof MapillaryImage)
+        } else if (mimg instanceof MapillaryImage) {
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
               ((MapillaryImage) mimg).getDate("yyyy/MM/dd HH/mm/ss"));
+        }
         outputSet.setGPSInDegrees(mimg.getLatLon().lon(), mimg.getLatLon().lat());
         OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"));
         new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);

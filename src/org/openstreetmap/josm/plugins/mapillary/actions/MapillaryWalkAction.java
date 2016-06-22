@@ -90,10 +90,12 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   }
 
   private void fireWalkStarted() {
-    if (this.listeners.isEmpty())
+    if (this.listeners.isEmpty()) {
       return;
-    for (WalkListener lis : this.listeners)
+    }
+    for (WalkListener lis : this.listeners) {
       lis.walkStarted(this.thread);
+    }
   }
 
   @Override
