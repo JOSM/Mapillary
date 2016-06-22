@@ -249,12 +249,7 @@ public class MapillaryPlugin extends Plugin {
       return;
     }
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setMenuEnabled(menu, value);
-        }
-      });
+      SwingUtilities.invokeLater( () -> setMenuEnabled(menu, value));
     } else {
       menu.setEnabled(value);
       menu.getAction().setEnabled(value);

@@ -202,12 +202,7 @@ public final class MapillaryUtils {
    */
   public static void showPictures(final Set<MapillaryAbstractImage> images, final boolean select) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          showPictures(images, select);
-        }
-      });
+      SwingUtilities.invokeLater( () -> showPictures(images, select) );
     } else {
       Bounds zoomBounds;
       if (images.isEmpty()) {
