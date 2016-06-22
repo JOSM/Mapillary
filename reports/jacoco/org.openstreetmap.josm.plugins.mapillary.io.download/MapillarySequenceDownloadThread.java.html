@@ -129,7 +129,7 @@ public class MapillarySequenceDownloadThread extends Thread {
 
   private static boolean isInside(MapillaryAbstractImage image) {
 <span class="fc bfc" id="L131" title="All 2 branches covered.">    for (Bounds b : MapillaryLayer.getInstance().getData().getBounds()) {</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (b.contains(image.getLatLon())) {</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (b.contains(image.getMovingLatLon())) {</span>
 <span class="fc" id="L133">        return true;</span>
       }
 <span class="fc" id="L135">    }</span>
