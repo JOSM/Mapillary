@@ -183,7 +183,7 @@ public final class MapillaryDownloader {
     return area > MAX_AREA;
   }
 
-  protected static void tooBigErrorDialog() {
+  private static void tooBigErrorDialog() {
     if (SwingUtilities.isEventDispatchThread()) {
       MapillaryLayer.getInstance().tempSemiautomatic = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);

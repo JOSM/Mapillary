@@ -135,8 +135,6 @@ public final class ImageUtil {
     };
     private final byte[] magic = new byte[Math.max(JFIF_MAGIC.length, PNG_MAGIC.length)];
 
-    ImageFileFilter() { }
-
     @Override
     public synchronized boolean accept(File f) {
       if (!f.canRead() || !f.exists()) {

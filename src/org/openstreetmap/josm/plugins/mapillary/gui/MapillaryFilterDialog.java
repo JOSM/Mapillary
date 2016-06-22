@@ -254,11 +254,18 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     return cal.getTimeInMillis();
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
+  public static synchronized void destroyInstance() {
+    instance = null;
+  }
+
   private class DownloadCheckBoxAction extends AbstractAction {
 
     private static final long serialVersionUID = 4672634002899519496L;
 
-    public DownloadCheckBoxAction() {
+    DownloadCheckBoxAction() {
       putValue(NAME, tr("Downloaded images"));
     }
 
@@ -272,7 +279,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     private static final long serialVersionUID = -7417238601979689863L;
 
-    public UpdateAction() {
+    UpdateAction() {
       putValue(NAME, tr("Update"));
     }
 
@@ -288,7 +295,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
      */
     private static final long serialVersionUID = 1178261778165525040L;
 
-    public ResetAction() {
+    ResetAction() {
       putValue(NAME, tr("Reset"));
     }
 
@@ -302,7 +309,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     private static final long serialVersionUID = -2937440338019185723L;
 
-    public OnlySignsAction() {
+    OnlySignsAction() {
       putValue(NAME, tr("Only images with signs"));
     }
 
@@ -321,7 +328,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     private static final long serialVersionUID = 8706299665735930148L;
 
-    public SignChooserAction() {
+    SignChooserAction() {
       putValue(NAME, tr("Choose signs"));
     }
 
@@ -336,12 +343,5 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
         MapillaryFilterDialog.getInstance().refresh();
       dlg.dispose();
     }
-  }
-
-  /**
-   * Destroys the unique instance of the class.
-   */
-  public static synchronized void destroyInstance() {
-    instance = null;
   }
 }

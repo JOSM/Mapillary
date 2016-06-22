@@ -574,9 +574,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
     if (reverse) {
       this.buttonsPanel = new JPanel(new GridLayout(1, 1));
       if (!buttons.isEmpty() && buttons.get(0) != null) {
-        final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(
-                "dialog.align.left", false) ? new FlowLayout(FlowLayout.LEFT)
-                : new GridLayout(1, buttons.size()));
+        final JPanel buttonRowPanel = new JPanel(
+            Main.pref.getBoolean("dialog.align.left", false)
+            ? new FlowLayout(FlowLayout.LEFT)
+            : new GridLayout(1, buttons.size())
+        );
         this.buttonsPanel.add(buttonRowPanel);
         for (SideButton button : buttons) {
           buttonRowPanel.add(button);

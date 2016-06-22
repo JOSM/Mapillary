@@ -15,7 +15,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
  * @author nokutu
  *
  */
-public class CacheUtils {
+public final class CacheUtils {
 
   private static IgnoreDownload ignoreDownload = new IgnoreDownload();
 
@@ -27,6 +27,10 @@ public class CacheUtils {
     FULL_IMAGE,
     /** Both of them */
     BOTH;
+  }
+
+  private CacheUtils() {
+    // Private constructor to avoid instantiation
   }
 
   /**

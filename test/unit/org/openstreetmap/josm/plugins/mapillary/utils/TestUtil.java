@@ -16,10 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.tools.I18n;
 
 /**
- *
  * Utilities for tests.
- *
- * @author floscher
  */
 public final class TestUtil {
   private static boolean isInitialized;
@@ -34,7 +31,7 @@ public final class TestUtil {
    *
    * That is needed e.g. to use {@link MapillaryLayer#getInstance()}
    */
-  public static final synchronized void initPlugin() {
+  public static synchronized void initPlugin() {
     if (!isInitialized) {
       System.setProperty("josm.home", "test/data/preferences");
       Main.initApplicationPreferences();

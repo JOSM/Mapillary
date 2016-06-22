@@ -35,12 +35,9 @@ public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
 
-  private static final int DRAG_BUTTON = Main.pref.getInteger(
-      "mapillary.picture-drag-button", 3);
-  private static final int OPTION_BUTTON = Main.pref.getInteger(
-      "mapillary.picture-option-button", 2);
-  private static final int ZOOM_BUTTON = Main.pref.getInteger(
-      "mapillary.picture-zoom-button", 1);
+  private static final int DRAG_BUTTON = Main.pref.getInteger("mapillary.picture-drag-button", 3);
+  private static final int OPTION_BUTTON = Main.pref.getInteger("mapillary.picture-option-button", 2);
+  private static final int ZOOM_BUTTON = Main.pref.getInteger("mapillary.picture-zoom-button", 1);
 
   /** The image currently displayed */
   private transient BufferedImage image;
@@ -60,8 +57,7 @@ public class MapillaryImageDisplay extends JComponent {
   /** HyperlinkLabel shown in the bottom right corner. */
   protected HyperlinkLabel hyperlink;
 
-  private class ImgDisplayMouseListener implements MouseListener,
-      MouseWheelListener, MouseMotionListener {
+  private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
     private long lastTimeForMousePoint;
     private Point mousePointInImg;
@@ -430,19 +426,18 @@ public class MapillaryImageDisplay extends JComponent {
 
   private final Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-    return new Point(visibleRect.x + ((xComp - drawRect.x) * visibleRect.width)
-        / drawRect.width, visibleRect.y
-        + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
+    return new Point(
+        visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
+        visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height
+    );
   }
 
   private static final Point getCenterImgCoord(Rectangle visibleRect) {
-    return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y
-        + visibleRect.height / 2);
+    return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);
   }
 
   private Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
-    return calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0,
-        getSize().width, getSize().height));
+    return calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0, getSize().width, getSize().height));
   }
 
   /**
@@ -481,8 +476,8 @@ public class MapillaryImageDisplay extends JComponent {
     Image image;
     Rectangle visibleRect;
     synchronized (this) {
-      image = MapillaryImageDisplay.this.image;
-      visibleRect = MapillaryImageDisplay.this.visibleRect;
+      image = this.image;
+      visibleRect = this.visibleRect;
     }
     if (image == null)
       return;
