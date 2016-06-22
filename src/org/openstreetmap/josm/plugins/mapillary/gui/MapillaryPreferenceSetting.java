@@ -96,7 +96,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
     format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
     moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
-        this.hoverEnabled.setSelected(Main.pref.getBoolean("mapillary.hover-enabled", true));
+    hoverEnabled.setSelected(Main.pref.getBoolean("mapillary.hover-enabled", true));
 
     mainPanel.setLayout(new GridBagLayout());
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -169,10 +169,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     boolean mod = false;
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
-    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))
+    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString())) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Automatic.toString());
-    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))
+    }
+    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString())) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Semiautomatic.toString());
+    }
     if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
       Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Manual.toString());
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
