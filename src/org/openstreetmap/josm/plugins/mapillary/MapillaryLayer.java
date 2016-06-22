@@ -1,9 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -42,13 +39,13 @@ import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
 import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.MapView.EditLayerChangeListener;
-import org.openstreetmap.josm.gui.MapView.LayerChangeListener;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
+import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
@@ -62,6 +59,9 @@ import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 /**
  * This class represents the layer shown in JOSM. There can only exist one
  * instance of this object.
@@ -70,7 +70,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  *
  */
 public final class MapillaryLayer extends AbstractModifiableLayer implements
-    DataSetListener, EditLayerChangeListener, LayerChangeListener {
+    DataSetListener, ActiveLayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
   public static final int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
@@ -107,9 +107,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private void init() {
     if (Main.main != null && Main.map.mapView != null) {
       setMode(new SelectMode());
-      Main.map.mapView.addLayer(this);
-      MapView.addEditLayerChangeListener(this, false);
-      MapView.addLayerChangeListener(this);
+      Main.getLayerManager().addLayer(this);
+      Main.getLayerManager().addActiveLayerChangeListener(this, false);
       if (Main.getLayerManager().getEditLayer() != null)
         Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)
@@ -221,7 +220,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
     Main.map.mapView.removeMouseListener(this.mode);
     Main.map.mapView.removeMouseMotionListener(this.mode);
-    MapView.removeEditLayerChangeListener(this);
+    Main.getLayerManager().removeActiveLayerChangeListener(this);
     if (Main.getLayerManager().getEditLayer() != null)
       Main.getLayerManager().getEditLayer().data.removeDataSetListener(this);
     clearInstance();
@@ -497,11 +496,19 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   @Override
-  public void editLayerChanged(OsmDataLayer oldLayer, OsmDataLayer newLayer) {
-    if (oldLayer == null && newLayer != null) {
-      newLayer.data.addDataSetListener(this);
-    } else if (oldLayer != null && newLayer == null) {
-      oldLayer.data.removeDataSetListener(this);
+  public void activeOrEditLayerChanged(ActiveLayerChangeEvent e) {
+    if (Main.getLayerManager().getActiveLayer() == this) {
+      MapillaryUtils.updateHelpText();
+    }
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), Main.getLayerManager().getActiveLayer() == this);
+
+    if (Main.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
+      if (Main.getLayerManager().getEditLayer() != null) {
+        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
+      }
+      if (e.getPreviousEditLayer() != null) {
+        e.getPreviousEditLayer().data.removeDataSetListener(this);
+      }
     }
   }
 
@@ -549,25 +556,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
-  }
-
-  @Override
-  public void activeLayerChange(Layer oldLayer, Layer newLayer) {
-    if (newLayer == this) {
-      MapillaryUtils.updateHelpText();
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), true);
-    } else
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), false);
-  }
-
-  @Override
-  public void layerAdded(Layer newLayer) {
-    // Do nothing, we're only interested in layer change, not addition
-  }
-
-  @Override
-  public void layerRemoved(Layer oldLayer) {
-    // Do nothing, we're only interested in layer change, not removal
   }
 
   /**
