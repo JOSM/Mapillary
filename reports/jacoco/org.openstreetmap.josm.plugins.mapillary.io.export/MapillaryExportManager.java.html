@@ -128,21 +128,22 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       try {
         // If the queue is full, waits for it to have more space
         // available before executing anything else.
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0)</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0) {</span>
 <span class="nc" id="L132">          Thread.sleep(100);</span>
-<span class="nc" id="L133">      } catch (Exception e) {</span>
-<span class="nc" id="L134">        Main.error(e);</span>
-<span class="nc" id="L135">      }</span>
-<span class="nc" id="L136">    }</span>
+        }
+<span class="nc" id="L134">      } catch (Exception e) {</span>
+<span class="nc" id="L135">        Main.error(e);</span>
+<span class="nc" id="L136">      }</span>
+<span class="nc" id="L137">    }</span>
     try {
-<span class="nc" id="L138">      this.writer.join();</span>
-<span class="nc" id="L139">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L140">      Main.error(e);</span>
-<span class="nc" id="L141">    }</span>
-<span class="nc" id="L142">  }</span>
+<span class="nc" id="L139">      this.writer.join();</span>
+<span class="nc" id="L140">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L141">      Main.error(e);</span>
+<span class="nc" id="L142">    }</span>
+<span class="nc" id="L143">  }</span>
 
   @Override
   protected void finish() {
-<span class="nc" id="L146">  }</span>
+<span class="nc" id="L147">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

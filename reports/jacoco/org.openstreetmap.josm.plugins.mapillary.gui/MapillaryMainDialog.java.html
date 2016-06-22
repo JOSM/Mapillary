@@ -574,31 +574,33 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc bnc" id="L574" title="All 2 branches missed.">    if (reverse) {</span>
 <span class="nc" id="L575">      this.buttonsPanel = new JPanel(new GridLayout(1, 1));</span>
 <span class="nc bnc" id="L576" title="All 4 branches missed.">      if (!buttons.isEmpty() &amp;&amp; buttons.get(0) != null) {</span>
-<span class="nc bnc" id="L577" title="All 2 branches missed.">        final JPanel buttonRowPanel = new JPanel(Main.pref.getBoolean(</span>
-                &quot;dialog.align.left&quot;, false) ? new FlowLayout(FlowLayout.LEFT)
-<span class="nc" id="L579">                : new GridLayout(1, buttons.size()));</span>
-<span class="nc" id="L580">        this.buttonsPanel.add(buttonRowPanel);</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">        for (SideButton button : buttons) {</span>
-<span class="nc" id="L582">          buttonRowPanel.add(button);</span>
-<span class="nc" id="L583">        }</span>
+<span class="nc" id="L577">        final JPanel buttonRowPanel = new JPanel(</span>
+<span class="nc bnc" id="L578" title="All 2 branches missed.">            Main.pref.getBoolean(&quot;dialog.align.left&quot;, false)</span>
+            ? new FlowLayout(FlowLayout.LEFT)
+<span class="nc" id="L580">            : new GridLayout(1, buttons.size())</span>
+        );
+<span class="nc" id="L582">        this.buttonsPanel.add(buttonRowPanel);</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">        for (SideButton button : buttons) {</span>
+<span class="nc" id="L584">          buttonRowPanel.add(button);</span>
+<span class="nc" id="L585">        }</span>
       }
-<span class="nc" id="L585">      panel.add(this.buttonsPanel, BorderLayout.NORTH);</span>
-<span class="nc" id="L586">      createLayout(panel, true, null);</span>
+<span class="nc" id="L587">      panel.add(this.buttonsPanel, BorderLayout.NORTH);</span>
+<span class="nc" id="L588">      createLayout(panel, true, null);</span>
     } else {
-<span class="nc" id="L588">      createLayout(panel, true, buttons);</span>
+<span class="nc" id="L590">      createLayout(panel, true, buttons);</span>
     }
-<span class="nc" id="L590">    this.add(this.titleBar, BorderLayout.NORTH);</span>
-<span class="nc" id="L591">  }</span>
+<span class="nc" id="L592">    this.add(this.titleBar, BorderLayout.NORTH);</span>
+<span class="nc" id="L593">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="nc" id="L595">    setImage(newImage);</span>
-<span class="nc" id="L596">    updateImage();</span>
-<span class="nc" id="L597">  }</span>
+<span class="nc" id="L597">    setImage(newImage);</span>
+<span class="nc" id="L598">    updateImage();</span>
+<span class="nc" id="L599">  }</span>
 
   @Override
   public void imagesAdded() {
     // This method is enforced by MapillaryDataListener, but only selectedImageChanged() is needed
-<span class="nc" id="L602">  }</span>
+<span class="nc" id="L604">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

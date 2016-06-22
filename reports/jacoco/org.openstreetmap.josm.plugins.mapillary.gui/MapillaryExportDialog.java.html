@@ -86,15 +86,15 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     ) {
 <span class="nc" id="L87">      this.sequence.setEnabled(false);</span>
     }
-<span class="nc" id="L89">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages()</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        .isEmpty()) {</span>
-<span class="nc" id="L91">      this.selected.setEnabled(false);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {</span>
+<span class="nc" id="L90">      this.selected.setEnabled(false);</span>
     }
-<span class="nc" id="L93">    this.rewrite.setEnabled(false);</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L95">        .getImages())</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">      if (img instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L97">        this.rewrite.setEnabled(true);</span>
+<span class="nc" id="L92">    this.rewrite.setEnabled(false);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">      if (img instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L95">        this.rewrite.setEnabled(true);</span>
+      }
+<span class="nc" id="L97">    }</span>
 
 <span class="nc" id="L99">    this.path = new JLabel(tr(&quot;Select a folder&quot;));</span>
 <span class="nc" id="L100">    this.choose = new JButton(tr(&quot;Explore&quot;));</span>

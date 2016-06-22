@@ -68,12 +68,12 @@ public class MapillaryUploadAction extends JosmAction implements
 <span class="fc" id="L68">  }</span>
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
-<span class="fc bfc" id="L73" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="fc" id="L74">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), true);</span>
-<span class="fc bfc" id="L75" title="All 4 branches covered.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="fc" id="L76">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), false);</span>
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+<span class="fc bfc" id="L72" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null) {</span>
+<span class="fc" id="L73">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), true);</span>
+<span class="fc bfc" id="L74" title="All 4 branches covered.">    } else if (oldImage != null &amp;&amp; newImage == null) {</span>
+<span class="fc" id="L75">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), false);</span>
+    }
 <span class="fc" id="L77">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

@@ -42,16 +42,16 @@ public class MapillaryZoomAction extends JosmAction implements
 <span class="nc bnc" id="L42" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
 <span class="nc" id="L43">      throw new IllegalStateException();</span>
 <span class="nc" id="L44">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L45">        .getSelectedImage().getMovingLatLon());</span>
+<span class="nc" id="L45">        .getSelectedImage().getLatLon());</span>
 <span class="nc" id="L46">  }</span>
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage) {
-<span class="fc bfc" id="L51" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null)</span>
-<span class="fc" id="L52">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
-<span class="fc bfc" id="L53" title="All 4 branches covered.">    else if (oldImage != null &amp;&amp; newImage == null)</span>
-<span class="fc" id="L54">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+<span class="fc bfc" id="L50" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null) {</span>
+<span class="fc" id="L51">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
+<span class="fc bfc" id="L52" title="All 4 branches covered.">    } else if (oldImage != null &amp;&amp; newImage == null) {</span>
+<span class="fc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
+    }
 <span class="fc" id="L55">  }</span>
 
   @Override

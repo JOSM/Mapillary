@@ -36,10 +36,11 @@ public class MapillaryJoinAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode)</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode instanceof SelectMode) {</span>
 <span class="nc" id="L40">      MapillaryLayer.getInstance().setMode(new JoinMode());</span>
-    else
+    } else {
 <span class="nc" id="L42">      MapillaryLayer.getInstance().setMode(new SelectMode());</span>
-<span class="nc" id="L43">  }</span>
+    }
+<span class="nc" id="L44">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

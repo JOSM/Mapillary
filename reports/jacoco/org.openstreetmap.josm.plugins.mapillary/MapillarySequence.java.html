@@ -65,9 +65,10 @@ public class MapillarySequence {
    * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List&lt;MapillaryAbstractImage&gt; images) {
-<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images)</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (MapillaryAbstractImage image : images) {</span>
 <span class="fc" id="L69">      add(image);</span>
-<span class="fc" id="L70">  }</span>
+<span class="fc" id="L70">    }</span>
+<span class="fc" id="L71">  }</span>
 
   /**
    * Returns the Epoch time when the sequence was captured.
@@ -75,7 +76,7 @@ public class MapillarySequence {
    * @return A long containing the Epoch time when the sequence was captured.
    */
   public long getCreatedAt() {
-<span class="nc" id="L78">    return this.createdAt;</span>
+<span class="nc" id="L79">    return this.createdAt;</span>
   }
 
   /**
@@ -87,7 +88,7 @@ public class MapillarySequence {
    * sequence.
    */
   public List&lt;MapillaryAbstractImage&gt; getImages() {
-<span class="fc" id="L90">    return this.images;</span>
+<span class="fc" id="L91">    return this.images;</span>
   }
 
   /**
@@ -98,7 +99,7 @@ public class MapillarySequence {
    * images.
    */
   public String getKey() {
-<span class="nc" id="L101">    return this.key;</span>
+<span class="nc" id="L102">    return this.key;</span>
   }
 
   /**
@@ -112,14 +113,14 @@ public class MapillarySequence {
    *                                  the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-<span class="fc" id="L115">    int i = this.images.indexOf(image);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (i == -1) {</span>
-<span class="fc" id="L117">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L116">    int i = this.images.indexOf(image);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (i == -1) {</span>
+<span class="fc" id="L118">      throw new IllegalArgumentException();</span>
     }
-<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (i == this.images.size() - 1) {</span>
-<span class="fc" id="L120">      return null;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (i == this.images.size() - 1) {</span>
+<span class="fc" id="L121">      return null;</span>
     }
-<span class="fc" id="L122">    return this.images.get(i + 1);</span>
+<span class="fc" id="L123">    return this.images.get(i + 1);</span>
   }
 
   /**
@@ -133,14 +134,14 @@ public class MapillarySequence {
    *                                  the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-<span class="fc" id="L136">    int i = this.images.indexOf(image);</span>
-<span class="pc bpc" id="L137" title="1 of 2 branches missed.">    if (i == -1) {</span>
-<span class="nc" id="L138">      throw new IllegalArgumentException();</span>
+<span class="fc" id="L137">    int i = this.images.indexOf(image);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (i == -1) {</span>
+<span class="nc" id="L139">      throw new IllegalArgumentException();</span>
     }
-<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (i == 0) {</span>
-<span class="fc" id="L141">      return null;</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (i == 0) {</span>
+<span class="fc" id="L142">      return null;</span>
     }
-<span class="fc" id="L143">    return this.images.get(i - 1);</span>
+<span class="fc" id="L144">    return this.images.get(i - 1);</span>
   }
 
   /**
@@ -149,7 +150,7 @@ public class MapillarySequence {
    * @param image The {@link MapillaryAbstractImage} object to be removed.
    */
   public void remove(MapillaryAbstractImage image) {
-<span class="fc" id="L152">    this.images.remove(image);</span>
-<span class="fc" id="L153">  }</span>
+<span class="fc" id="L153">    this.images.remove(image);</span>
+<span class="fc" id="L154">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

@@ -90,16 +90,18 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
 <span class="nc" id="L90">  }</span>
 
   private void fireWalkStarted() {
-<span class="nc bnc" id="L93" title="All 2 branches missed.">    if (this.listeners.isEmpty())</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">    if (this.listeners.isEmpty()) {</span>
 <span class="nc" id="L94">      return;</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">    for (WalkListener lis : this.listeners)</span>
-<span class="nc" id="L96">      lis.walkStarted(this.thread);</span>
-<span class="nc" id="L97">  }</span>
+    }
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    for (WalkListener lis : this.listeners) {</span>
+<span class="nc" id="L97">      lis.walkStarted(this.thread);</span>
+<span class="nc" id="L98">    }</span>
+<span class="nc" id="L99">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), newImage != null);</span>
-<span class="fc" id="L102">  }</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), newImage != null);</span>
+<span class="fc" id="L104">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
