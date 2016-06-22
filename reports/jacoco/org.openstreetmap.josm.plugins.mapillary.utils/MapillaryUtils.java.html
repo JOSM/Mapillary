@@ -213,9 +213,9 @@ public final class MapillaryUtils {
 <span class="nc bnc" id="L213" title="All 2 branches missed.">      if (images.isEmpty()) {</span>
 <span class="nc" id="L214">        zoomBounds = new Bounds(new LatLon(0, 0));</span>
       } else {
-<span class="nc" id="L216">        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());</span>
+<span class="nc" id="L216">        zoomBounds = new Bounds(images.iterator().next().getLatLon());</span>
 <span class="nc bnc" id="L217" title="All 2 branches missed.">        for (MapillaryAbstractImage img : images) {</span>
-<span class="nc" id="L218">          zoomBounds.extend(img.getMovingLatLon());</span>
+<span class="nc" id="L218">          zoomBounds.extend(img.getLatLon());</span>
 <span class="nc" id="L219">        }</span>
       }
 
