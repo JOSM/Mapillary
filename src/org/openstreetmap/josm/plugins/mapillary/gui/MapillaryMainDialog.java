@@ -189,12 +189,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          updateImage();
-        }
-      });
+      SwingUtilities.invokeLater(() -> updateImage());
     } else {
       if (!MapillaryLayer.hasInstance()) {
         return;
@@ -297,12 +292,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized void updateTitle() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          updateTitle();
-        }
-      });
+      SwingUtilities.invokeLater(() -> updateTitle());
     } else if (this.image != null) {
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
       if (this.image instanceof MapillaryImage) {
@@ -518,15 +508,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    * {@link MapillaryImageDisplay} object.
    */
   @Override
-  public void loadingFinished(final CacheEntry data,
-                              final CacheEntryAttributes attributes, final LoadResult result) {
+  public void loadingFinished(final CacheEntry data, final CacheEntryAttributes attributes, final LoadResult result) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          loadingFinished(data, attributes, result);
-        }
-      });
+      SwingUtilities.invokeLater(() -> loadingFinished(data, attributes, result));
     } else if (data != null && result == LoadResult.SUCCESS) {
       try {
         BufferedImage img = ImageIO.read(new ByteArrayInputStream(data.getContent()));
@@ -534,9 +518,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           return;
         }
         if (
-                this.mapillaryImageDisplay.getImage() == null
-                        || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
-                ) {
+          mapillaryImageDisplay.getImage() == null
+          || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
+        ) {
           this.mapillaryImageDisplay.setImage(img);
         }
       } catch (IOException e) {
