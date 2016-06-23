@@ -107,7 +107,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="pc bpc" id="L107" title="3 of 4 branches missed.">    if (Main.main != null &amp;&amp; Main.map.mapView != null) {</span>
 <span class="nc" id="L108">      setMode(new SelectMode());</span>
 <span class="nc" id="L109">      Main.getLayerManager().addLayer(this);</span>
-<span class="nc" id="L110">      Main.getLayerManager().addActiveLayerChangeListener(this, false);</span>
+<span class="nc" id="L110">      Main.getLayerManager().addActiveLayerChangeListener(this);</span>
 <span class="nc bnc" id="L111" title="All 2 branches missed.">      if (Main.getLayerManager().getEditLayer() != null)</span>
 <span class="nc" id="L112">        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);</span>
 <span class="nc bnc" id="L113" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)</span>
