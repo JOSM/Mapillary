@@ -135,15 +135,15 @@ public class SelectMode extends AbstractMode {
   public void mouseReleased(MouseEvent e) {
 <span class="nc bnc" id="L136" title="All 2 branches missed.">    if (this.data.getSelectedImage() == null)</span>
 <span class="nc" id="L137">      return;</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getMovingCa()) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (this.data.getSelectedImage().getTempCa() != this.data.getSelectedImage().getCa()) {</span>
 <span class="nc" id="L139">      double from = this.data.getSelectedImage().getTempCa();</span>
-<span class="nc" id="L140">      double to = this.data.getSelectedImage().getMovingCa();</span>
+<span class="nc" id="L140">      double to = this.data.getSelectedImage().getCa();</span>
 <span class="nc" id="L141">      this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to</span>
               - from));
 <span class="nc" id="L143">    } else if (this.data.getSelectedImage().getTempLatLon() != this.data</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">            .getSelectedImage().getMovingLatLon()) {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            .getSelectedImage().getLatLon()) {</span>
 <span class="nc" id="L145">      LatLon from = this.data.getSelectedImage().getTempLatLon();</span>
-<span class="nc" id="L146">      LatLon to = this.data.getSelectedImage().getMovingLatLon();</span>
+<span class="nc" id="L146">      LatLon to = this.data.getSelectedImage().getLatLon();</span>
 <span class="nc" id="L147">      this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to</span>
 <span class="nc" id="L148">              .getX() - from.getX(), to.getY() - from.getY()));</span>
     }

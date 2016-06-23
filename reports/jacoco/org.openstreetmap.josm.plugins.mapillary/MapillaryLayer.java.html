@@ -298,18 +298,18 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     // Draw the blue and red line and enable/disable the buttons
 <span class="nc bnc" id="L299" title="All 2 branches missed.">    if (this.data.getSelectedImage() != null) {</span>
 <span class="nc" id="L300">      MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();</span>
-<span class="nc" id="L301">      Point selected = mv.getPoint(this.data.getSelectedImage().getMovingLatLon());</span>
+<span class="nc" id="L301">      Point selected = mv.getPoint(this.data.getSelectedImage().getLatLon());</span>
 <span class="nc bnc" id="L302" title="All 2 branches missed.">      if (closestImages[0] != null) {</span>
 <span class="nc" id="L303">        blue = closestImages[0];</span>
 <span class="nc" id="L304">        g.setColor(Color.BLUE);</span>
-<span class="nc" id="L305">        final Point p = mv.getPoint(closestImages[0].getMovingLatLon());</span>
+<span class="nc" id="L305">        final Point p = mv.getPoint(closestImages[0].getLatLon());</span>
 <span class="nc" id="L306">        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));</span>
 <span class="nc" id="L307">        MapillaryMainDialog.getInstance().blueButton.setEnabled(true);</span>
       }
 <span class="nc bnc" id="L309" title="All 2 branches missed.">      if (closestImages[1] != null) {</span>
 <span class="nc" id="L310">        red = closestImages[1];</span>
 <span class="nc" id="L311">        g.setColor(Color.RED);</span>
-<span class="nc" id="L312">        final Point p = mv.getPoint(closestImages[1].getMovingLatLon());</span>
+<span class="nc" id="L312">        final Point p = mv.getPoint(closestImages[1].getLatLon());</span>
 <span class="nc" id="L313">        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));</span>
 <span class="nc" id="L314">        MapillaryMainDialog.getInstance().redButton.setEnabled(true);</span>
       }
@@ -330,8 +330,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L330">      g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));</span>
 <span class="nc" id="L331">    }</span>
 <span class="nc bnc" id="L332" title="All 2 branches missed.">    for (MapillaryAbstractImage imageAbs : this.data.getImages()) {</span>
-<span class="nc bnc" id="L333" title="All 4 branches missed.">      if (imageAbs.isVisible() &amp;&amp; Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getMovingLatLon()))) {</span>
-<span class="nc" id="L334">        final Point p = mv.getPoint(imageAbs.getMovingLatLon());</span>
+<span class="nc bnc" id="L333" title="All 4 branches missed.">      if (imageAbs.isVisible() &amp;&amp; Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getLatLon()))) {</span>
+<span class="nc" id="L334">        final Point p = mv.getPoint(imageAbs.getLatLon());</span>
 <span class="nc" id="L335">        ImageIcon icon = MapillaryPlugin.MAP_ICON;</span>
 <span class="nc bnc" id="L336" title="All 2 branches missed.">        if (getData().getMultiSelectedImages().contains(imageAbs)) {</span>
 <span class="nc" id="L337">          icon = MapillaryPlugin.MAP_ICON_SELECTED;</span>
@@ -392,7 +392,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L392">    int height = icon.getIconHeight();</span>
 
     // Rotate the image
-<span class="nc" id="L395">    double rotationRequired = Math.toRadians(image.getMovingCa());</span>
+<span class="nc" id="L395">    double rotationRequired = Math.toRadians(image.getCa());</span>
 <span class="nc" id="L396">    double locationX = width / 2d;</span>
 <span class="nc" id="L397">    double locationY = height / 2d;</span>
 <span class="nc" id="L398">    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);</span>
@@ -445,27 +445,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         SEQUENCE_MAX_JUMP_DISTANCE,
         SEQUENCE_MAX_JUMP_DISTANCE
     };
-<span class="nc" id="L448">    LatLon selectedCoords = this.data.getSelectedImage().getMovingLatLon();</span>
+<span class="nc" id="L448">    LatLon selectedCoords = this.data.getSelectedImage().getLatLon();</span>
 <span class="nc bnc" id="L449" title="All 2 branches missed.">    for (MapillaryAbstractImage imagePrev : this.data.getImages()) {</span>
 <span class="nc bnc" id="L450" title="All 2 branches missed.">      if (!(imagePrev instanceof MapillaryImage))</span>
 <span class="nc" id="L451">        continue;</span>
 <span class="nc bnc" id="L452" title="All 2 branches missed.">      if (!imagePrev.isVisible())</span>
 <span class="nc" id="L453">        continue;</span>
 <span class="nc" id="L454">      MapillaryImage image = (MapillaryImage) imagePrev;</span>
-<span class="nc bnc" id="L455" title="All 2 branches missed.">      if (image.getMovingLatLon().greatCircleDistance(selectedCoords) &lt; SEQUENCE_MAX_JUMP_DISTANCE</span>
+<span class="nc bnc" id="L455" title="All 2 branches missed.">      if (image.getLatLon().greatCircleDistance(selectedCoords) &lt; SEQUENCE_MAX_JUMP_DISTANCE</span>
 <span class="nc bnc" id="L456" title="All 2 branches missed.">          &amp;&amp; selected.getSequence() != image.getSequence()) {</span>
 <span class="nc bnc" id="L457" title="All 4 branches missed.">        if (</span>
             ret[0] == null &amp;&amp; ret[1] == null
-<span class="nc bnc" id="L459" title="All 4 branches missed.">            || image.getMovingLatLon().greatCircleDistance(selectedCoords) &lt; distances[0]</span>
+<span class="nc bnc" id="L459" title="All 4 branches missed.">            || image.getLatLon().greatCircleDistance(selectedCoords) &lt; distances[0]</span>
 <span class="nc bnc" id="L460" title="All 2 branches missed.">            &amp;&amp; (ret[1] == null || image.getSequence() != ret[1].getSequence())</span>
         ) {
 <span class="nc" id="L462">          ret[0] = image;</span>
-<span class="nc" id="L463">          distances[0] = image.getMovingLatLon().greatCircleDistance(selectedCoords);</span>
-<span class="nc bnc" id="L464" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getMovingLatLon().greatCircleDistance(</span>
+<span class="nc" id="L463">          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc bnc" id="L464" title="All 4 branches missed.">        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(</span>
             selectedCoords) &lt; distances[1])
 <span class="nc bnc" id="L466" title="All 2 branches missed.">            &amp;&amp; image.getSequence() != ret[0].getSequence()) {</span>
 <span class="nc" id="L467">          ret[1] = image;</span>
-<span class="nc" id="L468">          distances[1] = image.getMovingLatLon().greatCircleDistance(selectedCoords);</span>
+<span class="nc" id="L468">          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);</span>
         }
       }
 <span class="nc" id="L471">    }</span>

@@ -177,7 +177,7 @@ public class UploadUtils {
 
 <span class="fc" id="L178">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
 <span class="fc" id="L179">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
-<span class="fc" id="L180">            RationalNumber.valueOf(image.getMovingCa()));</span>
+<span class="fc" id="L180">            RationalNumber.valueOf(image.getCa()));</span>
 
 <span class="fc" id="L182">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
 <span class="fc" id="L183">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
@@ -186,7 +186,7 @@ public class UploadUtils {
     // Removes the ImageDescription tag, that causes problems in the upload.
 <span class="fc" id="L187">    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);</span>
 
-<span class="fc" id="L189">    outputSet.setGPSInDegrees(image.getMovingLatLon().lon(), image.getMovingLatLon().lat());</span>
+<span class="fc" id="L189">    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());</span>
 <span class="fc" id="L190">    File tempFile = File.createTempFile(&quot;imagetoupload_&quot; + c, &quot;.tmp&quot;);</span>
 <span class="fc" id="L191">    c++;</span>
 <span class="fc" id="L192">    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));</span>
@@ -215,8 +215,8 @@ public class UploadUtils {
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
 <span class="nc" id="L217">    String key = MapillaryUser.getUsername() + &quot;/&quot; + uuid.toString() + &quot;/&quot;</span>
-<span class="nc" id="L218">            + image.getMovingLatLon().lat() + &quot;_&quot; + image.getMovingLatLon().lon() + &quot;_&quot;</span>
-<span class="nc" id="L219">            + image.getMovingCa() + &quot;_&quot; + image.getCapturedAt() + &quot;.jpg&quot;;</span>
+<span class="nc" id="L218">            + image.getLatLon().lat() + &quot;_&quot; + image.getLatLon().lon() + &quot;_&quot;</span>
+<span class="nc" id="L219">            + image.getCa() + &quot;_&quot; + image.getCapturedAt() + &quot;.jpg&quot;;</span>
 
     String policy;
     String signature;
