@@ -107,7 +107,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (Main.main != null && Main.map.mapView != null) {
       setMode(new SelectMode());
       Main.getLayerManager().addLayer(this);
-      Main.getLayerManager().addActiveLayerChangeListener(this, false);
+      Main.getLayerManager().addActiveLayerChangeListener(this);
       if (Main.getLayerManager().getEditLayer() != null)
         Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)
