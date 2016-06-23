@@ -81,7 +81,7 @@ public class JoinMode extends AbstractMode {
   public void paint(Graphics2D g, MapView mv, Bounds box) {
 <span class="nc bnc" id="L82" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
 <span class="nc" id="L83">      g.setColor(Color.WHITE);</span>
-<span class="nc" id="L84">      Point p0 = mv.getPoint(this.lastClick.getLatLon());</span>
+<span class="nc" id="L84">      Point p0 = mv.getPoint(this.lastClick.getMovingLatLon());</span>
 <span class="nc" id="L85">      Point p1 = this.lastPos.getPoint();</span>
 <span class="nc" id="L86">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
     }
