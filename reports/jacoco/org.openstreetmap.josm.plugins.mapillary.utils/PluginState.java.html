@@ -100,9 +100,14 @@ public final class PluginState {
 <span class="nc" id="L100">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
 <span class="nc" id="L101">      dlg.setVisible(true);</span>
 <span class="nc" id="L102">    } else {</span>
-<span class="nc" id="L103">      SwingUtilities.invokeLater( () -&gt; finishedUploadDialog() );</span>
+<span class="nc" id="L103">      SwingUtilities.invokeLater( new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L106">          finishedUploadDialog();</span>
+<span class="nc" id="L107">        }</span>
+      } );
     }
-<span class="nc" id="L105">  }</span>
+<span class="nc" id="L110">  }</span>
 
   /**
    * Returns the text to be written in the status bar.
@@ -110,7 +115,7 @@ public final class PluginState {
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L113">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
+<span class="nc" id="L118">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
