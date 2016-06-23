@@ -167,7 +167,7 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) < EPSILON;
+    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) > EPSILON;
   }
 
   /**

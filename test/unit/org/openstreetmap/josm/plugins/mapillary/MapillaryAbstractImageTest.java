@@ -4,6 +4,8 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.TimeZone;
 
@@ -50,4 +52,21 @@ public class MapillaryAbstractImageTest extends AbstractTest{
     assertEquals(expected, img.getDate());
   }
 
+  @Test
+  public void testIsModified() {
+    MapillaryImage img = new MapillaryImage("key___________________", new LatLon(0, 0), 0);
+    assertFalse(img.isModified());
+    img.turn(1e-4);
+    img.stopMoving();
+    assertTrue(img.isModified());
+    img.turn(-1e-4);
+    img.stopMoving();
+    assertFalse(img.isModified());
+    img.move(1e-4, 1e-4);
+    img.stopMoving();
+    assertTrue(img.isModified());
+    img.move(-1e-4, -1e-4);
+    img.stopMoving();
+    assertFalse(img.isModified());
+  }
 }
