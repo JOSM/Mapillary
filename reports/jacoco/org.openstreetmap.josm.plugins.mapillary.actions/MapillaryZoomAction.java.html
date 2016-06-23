@@ -42,7 +42,7 @@ public class MapillaryZoomAction extends JosmAction implements
 <span class="nc bnc" id="L42" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
 <span class="nc" id="L43">      throw new IllegalStateException();</span>
 <span class="nc" id="L44">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L45">        .getSelectedImage().getLatLon());</span>
+<span class="nc" id="L45">        .getSelectedImage().getMovingLatLon());</span>
 <span class="nc" id="L46">  }</span>
 
   @Override

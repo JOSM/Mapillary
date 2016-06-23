@@ -41,7 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 <span class="nc" id="L41">    double minDistance = Double.MAX_VALUE;</span>
 <span class="nc" id="L42">    MapillaryAbstractImage closest = null;</span>
 <span class="nc bnc" id="L43" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.data.getImages()) {</span>
-<span class="nc" id="L44">      Point imagePoint = Main.map.mapView.getPoint(image.getLatLon());</span>
+<span class="nc" id="L44">      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());</span>
 <span class="nc" id="L45">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
 <span class="nc" id="L46">      double dist = clickPoint.distanceSq(imagePoint);</span>
 <span class="nc bnc" id="L47" title="All 4 branches missed.">      if (minDistance &gt; dist &amp;&amp; clickPoint.distance(imagePoint) &lt; snapDistance</span>
