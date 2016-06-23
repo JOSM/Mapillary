@@ -151,7 +151,7 @@ public class MapillaryPlugin extends Plugin {
    * @return the menu-item associated with the {@link MapillaryDownloadViewAction}
    */
   public static JMenuItem getDownloadViewMenu() {
-<span class="nc" id="L154">    return downloadViewMenu;</span>
+<span class="fc" id="L154">    return downloadViewMenu;</span>
   }
 
   /**
@@ -249,16 +249,21 @@ public class MapillaryPlugin extends Plugin {
 <span class="fc" id="L249">      return;</span>
     }
 <span class="nc bnc" id="L251" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L252">      SwingUtilities.invokeLater( () -&gt; setMenuEnabled(menu, value) );</span>
+<span class="nc" id="L252">      SwingUtilities.invokeLater( new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L255">          setMenuEnabled(menu, value);</span>
+<span class="nc" id="L256">        }</span>
+      });
     } else {
-<span class="nc" id="L254">      menu.setEnabled(value);</span>
-<span class="nc" id="L255">      menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L259">      menu.setEnabled(value);</span>
+<span class="nc" id="L260">      menu.getAction().setEnabled(value);</span>
     }
-<span class="nc" id="L257">  }</span>
+<span class="nc" id="L262">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L261">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L266">    return new MapillaryPreferenceSetting();</span>
   }
 
   /**
@@ -270,10 +275,10 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="pc bpc" id="L273" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
-<span class="fc" id="L274">      return null;</span>
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="fc" id="L279">      return null;</span>
     }
-<span class="nc" id="L276">    return new ImageProvider(s);</span>
+<span class="nc" id="L281">    return new ImageProvider(s);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
