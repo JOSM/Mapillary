@@ -133,10 +133,18 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.ICON12);
     }
 
-    new Thread( () -> {
-      String username = MapillaryUser.getUsername();
-      if (username != null) {
-        SwingUtilities.invokeLater( () -> onLogin(MapillaryUser.getUsername()) );
+    new Thread( new Runnable() {
+      @Override
+      public void run() {
+        String username = MapillaryUser.getUsername();
+        if (username != null) {
+          SwingUtilities.invokeLater( new Runnable() {
+            @Override
+            public void run() {
+              onLogin(MapillaryUser.getUsername());
+            }
+          } );
+        }
       }
     }).start();
   }
