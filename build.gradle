@@ -31,7 +31,7 @@ repositories {
 dependencies {
   // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
   // When using a numeric version number you can leave out {changing=true}.
-  compile(':josm:10327')
+  compile(':josm:10338')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   compile (name: 'apache-commons'){changing=true}
   compile (name: 'apache-http'){changing=true}
