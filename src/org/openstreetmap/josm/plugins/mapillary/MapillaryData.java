@@ -375,7 +375,7 @@ public class MapillaryData {
       }
     }
     if (zoom && Main.main != null)
-      Main.map.mapView.zoomTo(getSelectedImage().getLatLon());
+      Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());
     if (Main.main != null)
       Main.map.mapView.repaint();
     fireSelectedImageChanged(oldImage, this.selectedImage);

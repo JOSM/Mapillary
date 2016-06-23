@@ -64,12 +64,12 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   }
 
   /**
-   * Returns the direction towards the image has been taken.
+   * Returns the original direction towards the image has been taken.
    *
    * @return The direction of the image (0 means north and goes clockwise).
    */
   public double getCa() {
-    return this.movingCa;
+    return this.ca;
   }
 
   /**
@@ -120,13 +120,31 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   }
 
   /**
+  * Returns a LatLon object containing the original coordinates of the object.
+  *
+  * @return The LatLon object with the position of the object.
+  */
+  public LatLon getLatLon() {
+    return latLon;
+  }
+
+  /**
+ * Returns the direction towards the image has been taken.
+ *
+ * @return The direction of the image (0 means north and goes clockwise).
+ */
+public double getMovingCa() {
+  return this.movingCa;
+}
+
+  /**
    * Returns a LatLon object containing the current coordinates of the object.
    * When you are dragging the image this changes.
    *
    * @return The LatLon object with the position of the object.
    */
-  public LatLon getLatLon() {
-    return this.movingLatLon;
+  public LatLon getMovingLatLon() {
+    return movingLatLon;
   }
 
   /**
@@ -167,7 +185,7 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-    return !this.getLatLon().equals(this.latLon) || Math.abs(this.getCa() - this.ca) > EPSILON;
+    return !this.getMovingLatLon().equals(this.latLon) || Math.abs(this.getMovingCa() - this.ca) > EPSILON;
   }
 
   /**

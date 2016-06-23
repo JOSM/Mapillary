@@ -213,9 +213,9 @@ public final class MapillaryUtils {
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
-        zoomBounds = new Bounds(images.iterator().next().getLatLon());
+        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());
         for (MapillaryAbstractImage img : images) {
-          zoomBounds.extend(img.getLatLon());
+          zoomBounds.extend(img.getMovingLatLon());
         }
       }
 

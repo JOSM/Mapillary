@@ -42,7 +42,7 @@ public class MapillaryZoomAction extends JosmAction implements
     if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)
       throw new IllegalStateException();
     Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()
-        .getSelectedImage().getLatLon());
+        .getSelectedImage().getMovingLatLon());
   }
 
   @Override

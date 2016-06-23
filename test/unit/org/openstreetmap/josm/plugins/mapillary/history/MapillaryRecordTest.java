@@ -119,24 +119,24 @@ public class MapillaryRecordTest extends AbstractTest {
 
     this.record.addCommand(cmd1);
 
-    assertEquals(0.1, this.img1.getLatLon().lat(), 0.01);
+    assertEquals(0.1, this.img1.getMovingLatLon().lat(), 0.01);
 
     this.record.undo();
 
-    assertEquals(0.0, this.img1.getLatLon().lat(), 0.01);
+    assertEquals(0.0, this.img1.getMovingLatLon().lat(), 0.01);
 
     this.record.redo();
 
-    assertEquals(0.1, this.img1.getLatLon().lat(), 0.01);
+    assertEquals(0.1, this.img1.getMovingLatLon().lat(), 0.01);
 
     this.record.addCommand(cmd2);
     this.record.undo();
 
-    assertEquals(-0.1, this.img1.getLatLon().lat(), 0.01);
+    assertEquals(-0.1, this.img1.getMovingLatLon().lat(), 0.01);
 
     this.record.redo();
 
-    assertEquals(0.1, this.img1.getLatLon().lat(), 0.01);
+    assertEquals(0.1, this.img1.getMovingLatLon().lat(), 0.01);
   }
 
   /**
@@ -154,20 +154,20 @@ public class MapillaryRecordTest extends AbstractTest {
     this.record.addCommand(cmd1);
     this.record.undo();
 
-    assertEquals(-0.1, this.img1.getCa(), 0.01);
+    assertEquals(-0.1, this.img1.getMovingCa(), 0.01);
 
     this.record.redo();
 
-    assertEquals(0.1, this.img1.getCa(), 0.01);
+    assertEquals(0.1, this.img1.getMovingCa(), 0.01);
 
     this.record.addCommand(cmd2);
     this.record.undo();
 
-    assertEquals(-0.2, this.img1.getCa(), 0.01);
+    assertEquals(-0.2, this.img1.getMovingCa(), 0.01);
 
     this.record.redo();
 
-    assertEquals(0.1, this.img1.getCa(), 0.01);
+    assertEquals(0.1, this.img1.getMovingCa(), 0.01);
   }
 
   /**

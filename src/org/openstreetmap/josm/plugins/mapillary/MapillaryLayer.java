@@ -298,18 +298,18 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     // Draw the blue and red line and enable/disable the buttons
     if (this.data.getSelectedImage() != null) {
       MapillaryImage[] closestImages = getClosestImagesFromDifferentSequences();
-      Point selected = mv.getPoint(this.data.getSelectedImage().getLatLon());
+      Point selected = mv.getPoint(this.data.getSelectedImage().getMovingLatLon());
       if (closestImages[0] != null) {
         blue = closestImages[0];
         g.setColor(Color.BLUE);
-        final Point p = mv.getPoint(closestImages[0].getLatLon());
+        final Point p = mv.getPoint(closestImages[0].getMovingLatLon());
         g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
         MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
       }
       if (closestImages[1] != null) {
         red = closestImages[1];
         g.setColor(Color.RED);
-        final Point p = mv.getPoint(closestImages[1].getLatLon());
+        final Point p = mv.getPoint(closestImages[1].getMovingLatLon());
         g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
         MapillaryMainDialog.getInstance().redButton.setEnabled(true);
       }
@@ -330,8 +330,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
-      if (imageAbs.isVisible() && Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getLatLon()))) {
-        final Point p = mv.getPoint(imageAbs.getLatLon());
+      if (imageAbs.isVisible() && Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getMovingLatLon()))) {
+        final Point p = mv.getPoint(imageAbs.getMovingLatLon());
         ImageIcon icon = MapillaryPlugin.MAP_ICON;
         if (getData().getMultiSelectedImages().contains(imageAbs)) {
           icon = MapillaryPlugin.MAP_ICON_SELECTED;
@@ -392,7 +392,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     int height = icon.getIconHeight();
 
     // Rotate the image
-    double rotationRequired = Math.toRadians(image.getCa());
+    double rotationRequired = Math.toRadians(image.getMovingCa());
     double locationX = width / 2d;
     double locationY = height / 2d;
     AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
@@ -445,27 +445,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         SEQUENCE_MAX_JUMP_DISTANCE,
         SEQUENCE_MAX_JUMP_DISTANCE
     };
-    LatLon selectedCoords = this.data.getSelectedImage().getLatLon();
+    LatLon selectedCoords = this.data.getSelectedImage().getMovingLatLon();
     for (MapillaryAbstractImage imagePrev : this.data.getImages()) {
       if (!(imagePrev instanceof MapillaryImage))
         continue;
       if (!imagePrev.isVisible())
         continue;
       MapillaryImage image = (MapillaryImage) imagePrev;
-      if (image.getLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
+      if (image.getMovingLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
           && selected.getSequence() != image.getSequence()) {
         if (
             ret[0] == null && ret[1] == null
-            || image.getLatLon().greatCircleDistance(selectedCoords) < distances[0]
+            || image.getMovingLatLon().greatCircleDistance(selectedCoords) < distances[0]
             && (ret[1] == null || image.getSequence() != ret[1].getSequence())
         ) {
           ret[0] = image;
-          distances[0] = image.getLatLon().greatCircleDistance(selectedCoords);
-        } else if ((ret[1] == null || image.getLatLon().greatCircleDistance(
+          distances[0] = image.getMovingLatLon().greatCircleDistance(selectedCoords);
+        } else if ((ret[1] == null || image.getMovingLatLon().greatCircleDistance(
             selectedCoords) < distances[1])
             && image.getSequence() != ret[0].getSequence()) {
           ret[1] = image;
-          distances[1] = image.getLatLon().greatCircleDistance(selectedCoords);
+          distances[1] = image.getMovingLatLon().greatCircleDistance(selectedCoords);
         }
       }
     }

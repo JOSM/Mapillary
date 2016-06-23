@@ -177,7 +177,7 @@ public class UploadUtils {
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
     gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-            RationalNumber.valueOf(image.getCa()));
+            RationalNumber.valueOf(image.getMovingCa()));
 
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
     exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
@@ -186,7 +186,7 @@ public class UploadUtils {
     // Removes the ImageDescription tag, that causes problems in the upload.
     rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
 
-    outputSet.setGPSInDegrees(image.getLatLon().lon(), image.getLatLon().lat());
+    outputSet.setGPSInDegrees(image.getMovingLatLon().lon(), image.getMovingLatLon().lat());
     File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");
     c++;
     OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
@@ -215,8 +215,8 @@ public class UploadUtils {
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
     String key = MapillaryUser.getUsername() + "/" + uuid.toString() + "/"
-            + image.getLatLon().lat() + "_" + image.getLatLon().lon() + "_"
-            + image.getCa() + "_" + image.getCapturedAt() + ".jpg";
+            + image.getMovingLatLon().lat() + "_" + image.getMovingLatLon().lon() + "_"
+            + image.getMovingCa() + "_" + image.getCapturedAt() + ".jpg";
 
     String policy;
     String signature;
