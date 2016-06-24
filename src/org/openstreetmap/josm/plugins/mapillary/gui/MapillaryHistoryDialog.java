@@ -202,7 +202,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     public UndoAction() {
       putValue(NAME, tr("Undo"));
-      putValue(SMALL_ICON, ImageProvider.get("undo"));
+      new ImageProvider("undo").getResource().attachImageIcon(this, true);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
 
     public RedoAction() {
       putValue(NAME, tr("Redo"));
-      putValue(SMALL_ICON, ImageProvider.get("redo"));
+      new ImageProvider("redo").getResource().attachImageIcon(this, true);
     }
 
     @Override

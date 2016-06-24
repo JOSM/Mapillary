@@ -454,7 +454,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public StopAction() {
       putValue(NAME, tr("Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
-      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryStop.png"));
+      new ImageProvider("dialogs/mapillaryStop.png").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -481,7 +481,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
-      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPlay.png"));
+      new ImageProvider("dialogs/mapillaryPlay.png").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -510,7 +510,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     public PauseAction() {
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
-      putValue(SMALL_ICON, ImageProvider.get("dialogs/mapillaryPause.png"));
+      new ImageProvider("dialogs/mapillaryPause.png").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 

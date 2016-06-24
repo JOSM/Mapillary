@@ -31,6 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -281,6 +282,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     UpdateAction() {
       putValue(NAME, tr("Update"));
+      new ImageProvider("dialogs", "refresh").getResource().attachImageIcon(this, true);
     }
 
     @Override
@@ -297,6 +299,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     ResetAction() {
       putValue(NAME, tr("Reset"));
+      new ImageProvider("preferences", "reset").getResource().attachImageIcon(this, true);
     }
 
     @Override
