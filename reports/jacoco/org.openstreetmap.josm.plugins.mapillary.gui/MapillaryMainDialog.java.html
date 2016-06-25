@@ -454,7 +454,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L454">    public StopAction() {</span>
 <span class="nc" id="L455">      putValue(NAME, tr(&quot;Stop&quot;));</span>
 <span class="nc" id="L456">      putValue(SHORT_DESCRIPTION, tr(&quot;Stops the walk.&quot;));</span>
-<span class="nc" id="L457">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryStop.png&quot;));</span>
+<span class="nc" id="L457">      new ImageProvider(&quot;dialogs/mapillaryStop.png&quot;).getResource().attachImageIcon(this, true);</span>
 <span class="nc" id="L458">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L459">    }</span>
 
@@ -481,7 +481,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L481">    public PlayAction() {</span>
 <span class="nc" id="L482">      putValue(NAME, tr(&quot;Play&quot;));</span>
 <span class="nc" id="L483">      putValue(SHORT_DESCRIPTION, tr(&quot;Continues with the paused walk.&quot;));</span>
-<span class="nc" id="L484">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPlay.png&quot;));</span>
+<span class="nc" id="L484">      new ImageProvider(&quot;dialogs/mapillaryPlay.png&quot;).getResource().attachImageIcon(this, true);</span>
 <span class="nc" id="L485">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L486">    }</span>
 
@@ -510,7 +510,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc" id="L510">    public PauseAction() {</span>
 <span class="nc" id="L511">      putValue(NAME, tr(&quot;Pause&quot;));</span>
 <span class="nc" id="L512">      putValue(SHORT_DESCRIPTION, tr(&quot;Pauses the walk.&quot;));</span>
-<span class="nc" id="L513">      putValue(SMALL_ICON, ImageProvider.get(&quot;dialogs/mapillaryPause.png&quot;));</span>
+<span class="nc" id="L513">      new ImageProvider(&quot;dialogs/mapillaryPause.png&quot;).getResource().attachImageIcon(this, true);</span>
 <span class="nc" id="L514">      MapillaryPlugin.getWalkAction().addListener(this);</span>
 <span class="nc" id="L515">    }</span>
 
