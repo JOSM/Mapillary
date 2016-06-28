@@ -3,10 +3,14 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -33,6 +37,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
+  Log logger = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);
 
   /**
    * Main constructor.
@@ -96,8 +101,8 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
       }
 
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (IOException e) {
+      logger.error(e);
       synchronized (MapillaryUtils.class) {
         Main.map.statusLine.setHelpText("Error submitting Mapillary changeset: " + e.getMessage());
       }

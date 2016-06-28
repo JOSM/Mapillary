@@ -162,7 +162,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements
 
         private static final long serialVersionUID = -2761935780353053512L;
 
-        public SubmitAction() {
+        SubmitAction() {
             putValue(NAME, tr("Submit"));
             putValue(SMALL_ICON, ImageProvider.get("upload"));
         }
