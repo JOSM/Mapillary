@@ -140,7 +140,7 @@ public final class PluginState {
     return tr("Uploading: {0}", "(" + imagesUploaded + "/" + imagesToUpload + ")");
   }
 
-  public static void setIsSubmittingChangeset(boolean isSubmitting) {
+  public static void setSubmittingChangeset(boolean isSubmitting) {
       isSubmittingChangeset = isSubmitting;
   }
 }

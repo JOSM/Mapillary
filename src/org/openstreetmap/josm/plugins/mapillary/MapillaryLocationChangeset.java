@@ -6,7 +6,7 @@ import java.util.Set;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
 public class MapillaryLocationChangeset extends HashSet<MapillaryImage> {
-  private Set<MapillaryChangesetListener> listeners = new HashSet<>();
+  private final Set<MapillaryChangesetListener> listeners = new HashSet<>();
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
     this.listeners.add(listener);

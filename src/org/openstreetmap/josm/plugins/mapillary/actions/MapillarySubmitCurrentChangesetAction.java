@@ -1,17 +1,21 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import org.apache.http.StatusLine;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -19,17 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.Shortcut;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.HashSet;
-
 import static org.openstreetmap.josm.tools.I18n.tr;
-
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * Imports a set of picture files into JOSM. They must be in jpg or png format.
@@ -59,11 +53,11 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
   @Override
   public void actionPerformed(ActionEvent event) {
     String token = Main.pref.get("mapillary.access-token");
-    if (token == null || token.trim().length() == 0) {
+    if (token == null || token.trim().isEmpty()) {
       PluginState.notLoggedInToMapillaryDialog();
       return;
     }
-    PluginState.setIsSubmittingChangeset(true);
+    PluginState.setSubmittingChangeset(true);
     MapillaryUtils.updateHelpText();
     HttpClientBuilder builder = HttpClientBuilder.create();
     HttpPost httpPost = new HttpPost(
@@ -108,7 +102,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         Main.map.statusLine.setHelpText("Error submitting Mapillary changeset: " + e.getMessage());
       }
     } finally {
-      PluginState.setIsSubmittingChangeset(false);
+      PluginState.setSubmittingChangeset(false);
     }
   }
 }

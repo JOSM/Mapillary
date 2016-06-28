@@ -1,6 +1,28 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
+
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -15,22 +37,6 @@ import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
@@ -41,7 +47,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  * @see MapillaryRecord
  * @see MapillaryCommand
  */
-public class MapillaryChangesetDialog extends ToggleDialog implements
+public final class MapillaryChangesetDialog extends ToggleDialog implements
         MapillaryChangesetListener {
 
     private static final long serialVersionUID = -3019715241209349372L;
@@ -59,6 +65,13 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
     private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
 
+    /**
+     * Destroys the unique instance of the class.
+     */
+    public static void destroyInstance() {
+        MapillaryChangesetDialog.instance = null;
+    }
+
     private MapillaryChangesetDialog() {
         super(tr("Current Mapillary changeset"), "mapillaryhistory.png",
                 tr("Open Mapillary changeset dialog"), Shortcut.registerShortcut(
@@ -74,7 +87,6 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         this.changesetTree.setCellRenderer(new MapillaryCellRenderer());
         this.changesetTree.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
-        this.changesetTree.addMouseListener(new MouseEventHandler());
 
         JPanel treesPanel = new JPanel(new GridBagLayout());
         treesPanel.add(this.spacer, GBC.eol());
@@ -108,11 +120,11 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
     private void buildTree() {
         this.submitButton.setEnabled(true);
         MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();
-        if (!changeset.isEmpty())
+        if (!changeset.isEmpty()) {
             this.submitButton.setEnabled(true);
-        else
+        } else {
             this.submitButton.setEnabled(false);
-
+        }
         DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
         this.map.clear();
@@ -178,47 +190,8 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
         }
     }
 
-    /**
-     * Destroys the unique instance of the class.
-     */
-    public static void destroyInstance() {
-        MapillaryChangesetDialog.instance = null;
-    }
 
-    private class MouseEventHandler implements MouseListener {
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // Method is enforced by MouseListener, but (currently) not needed
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            // Method is enforced by MouseListener, but (currently) not needed
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            // Method is enforced by MouseListener, but (currently) not needed
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            if (e.getClickCount() == 2) {
-                if (changesetTree.getSelectionPath() == null) {
-//                    MapillaryCommand cmd = map.get(changesetTree.getSelectionPath().getLastPathComponent());
-//                    if (!(cmd instanceof CommandDelete)) {
-//                        MapillaryUtils.showPictures(cmd.images, true);
-//                    }
-                }
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            // Method is enforced by MouseListener, but (currently) not needed
-        }
-    }
 
 
 }
