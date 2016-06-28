@@ -94,7 +94,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private final int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
 
   private volatile TexturePaint hatched;
-  private MapillaryLocationChangeset locationChangeset;
+  private MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
 
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
@@ -108,7 +108,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (Main.main != null && Main.map.mapView != null) {
       setMode(new SelectMode());
       Main.getLayerManager().addLayer(this);
-      locationChangeset = new MapillaryLocationChangeset();
       Main.getLayerManager().addActiveLayerChangeListener(this);
       if (Main.getLayerManager().getEditLayer() != null)
         Main.getLayerManager().getEditLayer().data.addDataSetListener(this);

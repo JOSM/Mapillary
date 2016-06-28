@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.NotLoggedInDialog;
  */
 public final class PluginState {
 
-  private static boolean isSubmittingChangeset;
+  private static boolean submittingChangeset;
 
   private static int runningDownloads;
   /** Images that have to be uploaded. */
@@ -61,7 +61,7 @@ public final class PluginState {
    * @return true if the plugin is submitting a changeset false otherwise.
    */
   public static boolean isSubmittingChangeset() {
-    return isSubmittingChangeset;
+    return submittingChangeset;
   }
    /**
    * Checks if there is any running upload.
@@ -141,6 +141,6 @@ public final class PluginState {
   }
 
   public static void setSubmittingChangeset(boolean isSubmitting) {
-      isSubmittingChangeset = isSubmitting;
+      submittingChangeset = isSubmitting;
   }
 }
