@@ -15,8 +15,6 @@ public interface MapillaryChangesetListener {
   /**
    * Fired when the an image is added or removed from the changeset
    *
-   * @param image
-   *          The changed image {@link MapillaryAbstractImage}
    */
-  void changesetChanged(MapillaryAbstractImage image);
+  void changesetChanged();
 }

@@ -6,6 +6,7 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitCurrentChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
@@ -64,7 +65,7 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
                         tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"),
                         KeyEvent.VK_9, Shortcut.NONE), 200);
 
-        MapillaryLayer.getInstance().getData().addChangesetListener(this);
+        MapillaryLayer.getInstance().getLocationChangeset().addChangesetListener(this);
         this.map = new ConcurrentHashMap<>();
 
         this.changesetTree.expandRow(0);
@@ -106,7 +107,7 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
     private void buildTree() {
         this.submitButton.setEnabled(true);
-        HashSet<MapillaryImage> changeset = MapillaryLayer.getInstance().getData().getChangeset();
+        MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();
         if (!changeset.isEmpty())
             this.submitButton.setEnabled(true);
         else
@@ -129,12 +130,12 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
     }
 
     @Override
-    public void changesetChanged(final MapillaryAbstractImage image) {
+    public void changesetChanged() {
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    csChanged(image);
+                    csChanged();
                 }
             });
         } else {
@@ -143,7 +144,7 @@ public class MapillaryChangesetDialog extends ToggleDialog implements
 
     }
 
-    private void csChanged(MapillaryAbstractImage image) {
+    private void csChanged() {
         buildTree();
     }
 
