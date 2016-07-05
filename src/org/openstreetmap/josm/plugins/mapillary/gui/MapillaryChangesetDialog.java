@@ -19,7 +19,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -69,10 +68,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
   private MapillaryChangesetDialog() {
     super(
-      tr("Current Mapillary changeset"), "mapillaryhistory.png", tr("Open Mapillary changeset dialog"),
+      tr("Current Mapillary changeset"),
+      "mapillaryhistory.png",
+      tr("Open Mapillary changeset dialog"),
       Shortcut.registerShortcut(
         tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
-      ), 200
+      ),
+      200
     );
 
     MapillaryLayer.getInstance().getLocationChangeset().addChangesetListener(this);
@@ -81,7 +83,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     this.changesetTree.expandRow(0);
     this.changesetTree.setShowsRootHandles(true);
     this.changesetTree.setRootVisible(false);
-    this.changesetTree.setCellRenderer(new MapillaryCellRenderer());
+    this.changesetTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
     this.changesetTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
     JPanel treesPanel = new JPanel(new GridBagLayout());
@@ -104,8 +106,9 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
    * @return The unique instance of the class.
    */
   public static synchronized MapillaryChangesetDialog getInstance() {
-    if (instance == null)
+    if (instance == null) {
       instance = new MapillaryChangesetDialog();
+    }
     return instance;
   }
 
@@ -147,7 +150,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     } else {
       buildTree();
     }
-
   }
 
   private class SubmitAction extends AbstractAction {
@@ -165,19 +167,4 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
       submitCurrentChangesetAction.actionPerformed(null);
     }
   }
-
-  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {
-
-    private static final long serialVersionUID = -3129520241562296901L;
-
-    @Override
-    public Component getTreeCellRendererComponent(
-      JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
-    ) {
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-      setIcon(ImageProvider.get("data/node.png"));
-      return this;
-    }
-  }
-
 }

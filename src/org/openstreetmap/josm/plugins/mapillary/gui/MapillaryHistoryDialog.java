@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -87,7 +86,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     this.undoTree.expandRow(0);
     this.undoTree.setShowsRootHandles(true);
     this.undoTree.setRootVisible(false);
-    this.undoTree.setCellRenderer(new MapillaryCellRenderer());
+    this.undoTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
     this.undoTree.getSelectionModel().setSelectionMode(
         TreeSelectionModel.SINGLE_TREE_SELECTION);
     this.undoTree.addMouseListener(new MouseEventHandler());
@@ -96,7 +95,7 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
         this.undoSelectionListener);
 
     this.redoTree.expandRow(0);
-    this.redoTree.setCellRenderer(new MapillaryCellRenderer());
+    this.redoTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
     this.redoTree.setShowsRootHandles(true);
     this.redoTree.setRootVisible(false);
     this.redoTree.getSelectionModel().setSelectionMode(
@@ -223,20 +222,6 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     @Override
     public void actionPerformed(ActionEvent arg0) {
       MapillaryRecord.getInstance().redo();
-    }
-  }
-
-  private static class MapillaryCellRenderer extends DefaultTreeCellRenderer {
-
-    private static final long serialVersionUID = -3129520241562296901L;
-
-    @Override
-    public Component getTreeCellRendererComponent(
-        JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
-    ) {
-      super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-      setIcon(ImageProvider.get("data/node.png"));
-      return this;
     }
   }
 
