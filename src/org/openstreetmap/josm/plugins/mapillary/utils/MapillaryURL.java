@@ -16,7 +16,8 @@ import org.openstreetmap.josm.data.Bounds;
 public final class MapillaryURL {
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   /** Base URL of the Mapillary API. */
-  private static final String BASE_API_URL = "https://a.mapillary.com/v2/";
+  private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
+  private static final String BASE_API_V3_URL = "https://a.mapillary.com/v3/";
   private static final String BASE_WEBSITE_URL = "https://www.mapillary.com/";
 
   public enum IMAGE_SELECTOR {
@@ -103,7 +104,7 @@ public final class MapillaryURL {
     putBoundsInQueryStringParts(parts, bounds);
     parts.put("page", Integer.toString(page));
     parts.put("limit", "20");
-    return string2URL(BASE_API_URL, "search/im", selectorString, queryString(parts));
+    return string2URL(BASE_API_V2_URL, "search/im", selectorString, queryString(parts));
   }
 
   /**
@@ -118,21 +119,28 @@ public final class MapillaryURL {
     putBoundsInQueryStringParts(parts, bounds);
     parts.put("page", Integer.toString(page));
     parts.put("limit", "10");
-    return string2URL(BASE_API_URL, "search/s", queryString(parts));
+    return string2URL(BASE_API_V2_URL, "search/s", queryString(parts));
   }
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-    return string2URL(BASE_API_URL, "me/uploads/secrets", queryString(null));
+    return string2URL(BASE_API_V2_URL, "me/uploads/secrets", queryString(null));
+  }
+
+  /**
+   * @return the URL where can create, get and approve changesets
+   */
+  public static URL submitChangesetURL() {
+    return string2URL(BASE_API_V3_URL, "changeset", queryString(null));
   }
 
   /**
    * @return the URL where you'll find information about the user account as JSON
    */
   public static URL userURL() {
-    return string2URL(BASE_API_URL, "me", queryString(null));
+    return string2URL(BASE_API_V2_URL, "me", queryString(null));
   }
 
   /**
