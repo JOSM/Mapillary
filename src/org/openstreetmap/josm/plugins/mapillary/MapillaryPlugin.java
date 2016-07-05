@@ -26,6 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryJoinAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryUploadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -218,6 +219,9 @@ public class MapillaryPlugin extends Plugin {
     if (oldFrame == null && newFrame != null) { // map frame added
       Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
+      if (Main.pref.getBoolean("mapillary.developer")) {
+        Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
+      }
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       setMenuEnabled(downloadMenu, true);
       if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)
@@ -228,6 +232,7 @@ public class MapillaryPlugin extends Plugin {
     if (oldFrame != null && newFrame == null) { // map frame destroyed
       MapillaryMainDialog.destroyInstance();
       MapillaryHistoryDialog.destroyInstance();
+      MapillaryChangesetDialog.destroyInstance();
       MapillaryFilterDialog.destroyInstance();
       setMenuEnabled(downloadMenu, false);
       setMenuEnabled(downloadViewMenu, false);
