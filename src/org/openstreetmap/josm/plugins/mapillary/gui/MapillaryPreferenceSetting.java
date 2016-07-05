@@ -46,8 +46,6 @@ import org.openstreetmap.josm.tools.I18n;
  *
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
-
-  private final JCheckBox reverseButtons = new JCheckBox(I18n.tr("Reverse buttons position when displaying images."));
   private final JComboBox<String> downloadModeComboBox = new JComboBox<>(new String[]{
       MapillaryDownloader.MODES.Automatic.toString(),
       MapillaryDownloader.MODES.Semiautomatic.toString(),
@@ -95,7 +93,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     container.add(loginPanel, BorderLayout.NORTH);
 
     JPanel mainPanel = new JPanel();
-    reverseButtons.setSelected(Main.pref.getBoolean("mapillary.reverse-buttons"));
     displayHour.setSelected(Main.pref.getBoolean("mapillary.display-hour", true));
     format24.setSelected(Main.pref.getBoolean("mapillary.format-24"));
     moveTo.setSelected(Main.pref.getBoolean("mapillary.move-to-picture", true));
@@ -116,13 +113,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     downloadModePanel.add(downloadModeComboBox);
     mainPanel.add(downloadModePanel, GBC.eol());
 
-    mainPanel.add(reverseButtons, GBC.eol());
     mainPanel.add(displayHour, GBC.eol());
     mainPanel.add(format24, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, reverseButtons, displayHour, format24, moveTo
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -171,7 +167,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @Override
   public boolean ok() {
     boolean mod = false;
-    Main.pref.put("mapillary.reverse-buttons", this.reverseButtons.isSelected());
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
     if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))

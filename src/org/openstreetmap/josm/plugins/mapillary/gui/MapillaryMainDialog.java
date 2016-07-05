@@ -7,8 +7,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -20,7 +18,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
@@ -59,8 +56,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
   private volatile MapillaryAbstractImage image;
 
   private final SideButton nextButton = new SideButton(new NextPictureAction());
-  private final SideButton previousButton = new SideButton(
-          new PreviousPictureAction());
+  private final SideButton previousButton = new SideButton(new PreviousPictureAction());
   /**
    * Button used to jump to the image following the red line
    */
@@ -90,8 +86,6 @@ public class MapillaryMainDialog extends ToggleDialog implements
     WALK;
   }
 
-  private JPanel buttonsPanel;
-
   /**
    * Object containing the shown image and that handles zoom and drag
    */
@@ -111,12 +105,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     this.blueButton.setForeground(Color.BLUE);
     this.redButton.setForeground(Color.RED);
 
-    createLayout(
-            this.mapillaryImageDisplay,
-            Arrays.asList(new SideButton[]{this.blueButton, this.previousButton, this.nextButton, this.redButton}),
-            Main.pref.getBoolean("mapillary.reverse-buttons"));
-    disableAllButtons();
-
+    setMode(MODE.NORMAL);
   }
 
   /**
@@ -152,28 +141,28 @@ public class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Sets a new mode for the dialog.
    *
-   * @param mode The mode to be set.
+   * @param mode The mode to be set. Must not be {@code null}.
    */
   public void setMode(MODE mode) {
     switch (mode) {
       case WALK:
         createLayout(
-                this.mapillaryImageDisplay,
-                Arrays.asList(new SideButton[]{playButton, pauseButton, stopButton}),
-                Main.pref.getBoolean("mapillary.reverse-buttons"));
+          this.mapillaryImageDisplay,
+          Arrays.asList(new SideButton[]{playButton, pauseButton, stopButton})
+        );
         break;
       case NORMAL:
       default:
         createLayout(
-                this.mapillaryImageDisplay,
-                Arrays.asList(new SideButton[]{blueButton, previousButton, nextButton, redButton}),
-                Main.pref.getBoolean("mapillary.reverse-buttons"));
+          this.mapillaryImageDisplay,
+          Arrays.asList(new SideButton[]{blueButton, previousButton, nextButton, redButton})
+        );
         break;
     }
     disableAllButtons();
-    if (mode.equals(MODE.NORMAL))
+    if (MODE.NORMAL.equals(mode)) {
       updateImage();
-
+    }
   }
 
   /**
@@ -378,8 +367,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
      */
     public PreviousPictureAction() {
       putValue(NAME, tr("Previous picture"));
-      putValue(SHORT_DESCRIPTION,
-              tr("Shows the previous picture in the sequence"));
+      putValue(SHORT_DESCRIPTION, tr("Shows the previous picture in the sequence"));
     }
 
     @Override
@@ -562,34 +550,11 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    * @param data    The content of the dialog
    * @param buttons The buttons where you can click
-   * @param reverse {@code true} if the buttons should go at the top; {@code false}
-   *                otherwise.
    */
-  public void createLayout(Component data, List<SideButton> buttons,
-                           boolean reverse) {
-    this.removeAll();
-    JPanel panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(data, BorderLayout.CENTER);
-    if (reverse) {
-      this.buttonsPanel = new JPanel(new GridLayout(1, 1));
-      if (!buttons.isEmpty() && buttons.get(0) != null) {
-        final JPanel buttonRowPanel = new JPanel(
-            Main.pref.getBoolean("dialog.align.left", false)
-            ? new FlowLayout(FlowLayout.LEFT)
-            : new GridLayout(1, buttons.size())
-        );
-        this.buttonsPanel.add(buttonRowPanel);
-        for (SideButton button : buttons) {
-          buttonRowPanel.add(button);
-        }
-      }
-      panel.add(this.buttonsPanel, BorderLayout.NORTH);
-      createLayout(panel, true, null);
-    } else {
-      createLayout(panel, true, buttons);
-    }
-    this.add(this.titleBar, BorderLayout.NORTH);
+  public void createLayout(Component data, List<SideButton> buttons) {
+    removeAll();
+    createLayout(data, true, buttons);
+    add(titleBar, BorderLayout.NORTH);
   }
 
   @Override
