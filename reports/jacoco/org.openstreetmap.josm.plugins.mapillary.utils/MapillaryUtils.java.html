@@ -285,20 +285,18 @@ public final class MapillaryUtils {
 <span class="nc" id="L285">      ret.append(tr(&quot;Downloading Mapillary images&quot;));</span>
 <span class="nc bnc" id="L286" title="All 2 branches missed.">    } else if (MapillaryLayer.getInstance().getData().size() &gt; 0) {</span>
 <span class="nc" id="L287">      ret.append(tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance().getData().size()));</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
-<span class="nc" id="L289">        ret.append(tr(&quot;Submitting Mapillary Changeset&quot;));</span>
     } else {
-<span class="nc" id="L291">      ret.append(tr(&quot;No images found&quot;));</span>
+<span class="nc" id="L289">      ret.append(tr(&quot;No images found&quot;));</span>
     }
-<span class="nc bnc" id="L293" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null) {</span>
-<span class="nc" id="L294">      ret.append(&quot; — &quot;).append(tr(MapillaryLayer.getInstance().mode.toString()));</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null) {</span>
+<span class="nc" id="L292">      ret.append(&quot; — &quot;).append(tr(MapillaryLayer.getInstance().mode.toString()));</span>
     }
-<span class="nc bnc" id="L296" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
-<span class="nc" id="L297">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
+<span class="nc" id="L295">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
     }
-<span class="nc" id="L299">    synchronized (MapillaryUtils.class) {</span>
-<span class="nc" id="L300">      Main.map.statusLine.setHelpText(ret.toString());</span>
-<span class="nc" id="L301">    }</span>
-<span class="nc" id="L302">  }</span>
+<span class="nc" id="L297">    synchronized (MapillaryUtils.class) {</span>
+<span class="nc" id="L298">      Main.map.statusLine.setHelpText(ret.toString());</span>
+<span class="nc" id="L299">    }</span>
+<span class="nc" id="L300">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
