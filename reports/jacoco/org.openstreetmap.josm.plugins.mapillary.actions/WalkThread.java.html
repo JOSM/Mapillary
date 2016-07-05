@@ -157,31 +157,21 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc" id="L157">      end();</span>
 <span class="nc" id="L158">      this.interrupt();</span>
     } else {
-<span class="nc" id="L160">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L163">          stopWalk();</span>
-<span class="nc" id="L164">        }</span>
-      });
+<span class="nc" id="L160">      SwingUtilities.invokeLater( () -&gt; stopWalk() );</span>
     }
-<span class="nc" id="L167">  }</span>
+<span class="nc" id="L162">  }</span>
 
   /**
    * Called when the walk stops by itself of forcefully.
    */
   public void end() {
-<span class="nc bnc" id="L173" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L174">      this.end = true;</span>
-<span class="nc" id="L175">      this.data.removeListener(this);</span>
-<span class="nc" id="L176">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L169">      this.end = true;</span>
+<span class="nc" id="L170">      this.data.removeListener(this);</span>
+<span class="nc" id="L171">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);</span>
     } else {
-<span class="nc" id="L178">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L181">          end();</span>
-<span class="nc" id="L182">        }</span>
-      });
+<span class="nc" id="L173">      SwingUtilities.invokeLater( () -&gt; end() );</span>
     }
-<span class="nc" id="L185">  }</span>
+<span class="nc" id="L175">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
