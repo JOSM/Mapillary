@@ -167,6 +167,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     loginPanel.repaint();
   }
 
+  @SuppressWarnings("PMD.ShortMethodName")
   @Override
   public boolean ok() {
     boolean mod = false;

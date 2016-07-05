@@ -31,7 +31,7 @@ repositories {
 dependencies {
   // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
   // When using a numeric version number you can leave out {changing=true}.
-  compile(':josm:10377')
+  compile(':josm:10485')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   compile (name: 'apache-commons'){changing=true}
   compile (name: 'apache-http'){changing=true}
@@ -79,7 +79,7 @@ tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 pmd {
   toolVersion project.property('tools.pmd.version')
   ignoreFailures true
-  targetJdk 1.7 // 1.8 is not yet available
+  targetJdk 1.7 // 1.8 is not yet available (as of Gradle 2.14, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
   ruleSetConfig = resources.text.fromFile('.settings/pmd-ruleset.xml')
 }
 
