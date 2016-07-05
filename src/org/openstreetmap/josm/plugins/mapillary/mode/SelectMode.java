@@ -114,7 +114,6 @@ public class SelectMode extends AbstractMode {
         LatLon to = Main.map.mapView.getLatLon(e.getX(), e.getY());
         LatLon from = Main.map.mapView.getLatLon(this.start.getX(), this.start.getY());
         for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
-
           img.move(to.getX() - from.getX(), to.getY() - from.getY());
         }
         Main.map.repaint();

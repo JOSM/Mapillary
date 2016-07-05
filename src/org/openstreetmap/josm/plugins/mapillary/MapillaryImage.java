@@ -27,9 +27,9 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class MapillaryImage
    *
-   * @param key  The unique identifier of the image.
-   * @param latLon  The latitude and longitude where it is positioned.
-   * @param ca  The direction of the images in degrees, meaning 0 north.
+   * @param key The unique identifier of the image.
+   * @param latLon The latitude and longitude where it is positioned.
+   * @param ca The direction of the images in degrees, meaning 0 north.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca) {
     super(latLon, ca);
@@ -49,8 +49,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Sets the location of the image.
    *
-   * @param location
-   *          A {@code String} object containing the place where the image was taken.
+   * @param location A {@code String} object containing the place where the image was taken.
    */
   public void setLocation(String location) {
     this.location = location;
@@ -68,8 +67,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Adds a new sign to the set of signs.
    *
-   * @param sign
-   *          A {@code String} that identifies the type of sign.
+   * @param sign A {@code String} that identifies the type of sign.
    */
   public void addSign(String sign) {
     this.signs.add(sign);
@@ -87,8 +85,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Sets the username of the person who took the image.
    *
-   * @param user
-   *          A {@code String} containing the username of the person who took the image.
+   * @param user A {@code String} containing the username of the person who took the image.
    */
   public void setUser(String user) {
     this.user = user;
@@ -97,8 +94,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Returns the username of the person who took the picture.
    *
-   * @return A {@code String} containing the username of the person who took the
-   *         picture.
+   * @return A {@code String} containing the username of the person who took the picture.
    */
   public String getUser() {
     return this.user;
