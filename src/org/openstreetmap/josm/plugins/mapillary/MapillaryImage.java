@@ -110,20 +110,41 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   @Override
   public boolean equals(Object object) {
-    if (object instanceof MapillaryImage)
-      return this.key.equals(((MapillaryImage) object).getKey());
-    return false;
+    return object instanceof MapillaryImage && this.key.equals(((MapillaryImage) object).getKey());
   }
 
   @Override
   public int compareTo(MapillaryAbstractImage image) {
-    if (image instanceof MapillaryImage)
+    if (image instanceof MapillaryImage) {
       return this.key.compareTo(((MapillaryImage) image).getKey());
+    }
     return super.compareTo(image);
   }
 
   @Override
   public int hashCode() {
     return this.key.hashCode();
+  }
+
+  @Override
+  public void stopMoving() {
+    super.stopMoving();
+    checkModified();
+  }
+
+  private void checkModified() {
+    MapillaryLayer mapillaryLayer = MapillaryLayer.getInstance();
+    MapillaryLocationChangeset locationChangeset = mapillaryLayer.getLocationChangeset();
+    if (this.isModified()) {
+      locationChangeset.add(this);
+    } else {
+      locationChangeset.remove(this);
+    }
+  }
+
+  @Override
+  public void turn(double ca) {
+    super.turn(ca);
+    checkModified();
   }
 }
