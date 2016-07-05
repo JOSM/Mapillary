@@ -167,30 +167,31 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="fc" id="L167">    loginPanel.repaint();</span>
 <span class="fc" id="L168">  }</span>
 
+  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   @Override
   public boolean ok() {
-<span class="nc" id="L172">    boolean mod = false;</span>
-<span class="nc" id="L173">    Main.pref.put(&quot;mapillary.reverse-buttons&quot;, this.reverseButtons.isSelected());</span>
+<span class="nc" id="L173">    boolean mod = false;</span>
+<span class="nc" id="L174">    Main.pref.put(&quot;mapillary.reverse-buttons&quot;, this.reverseButtons.isSelected());</span>
 
-<span class="nc" id="L175">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))</span>
-<span class="nc" id="L177">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Automatic.toString());</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))</span>
-<span class="nc" id="L179">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Semiautomatic.toString());</span>
-<span class="nc bnc" id="L180" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {</span>
-<span class="nc" id="L181">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Manual.toString());</span>
-<span class="nc" id="L182">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
+<span class="nc" id="L176">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString()))</span>
+<span class="nc" id="L178">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Automatic.toString());</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString()))</span>
+<span class="nc" id="L180">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Semiautomatic.toString());</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {</span>
+<span class="nc" id="L182">      Main.pref.put(&quot;mapillary.download-mode&quot;, MapillaryDownloader.MODES.Manual.toString());</span>
+<span class="nc" id="L183">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
     }
-<span class="nc" id="L184">    Main.pref.put(&quot;mapillary.display-hour&quot;, this.displayHour.isSelected());</span>
-<span class="nc" id="L185">    Main.pref.put(&quot;mapillary.format-24&quot;, this.format24.isSelected());</span>
-<span class="nc" id="L186">    Main.pref.put(&quot;mapillary.move-to-picture&quot;, this.moveTo.isSelected());</span>
-<span class="nc" id="L187">    Main.pref.put(&quot;mapillary.hover-enabled&quot;, this.hoverEnabled.isSelected());</span>
-<span class="nc" id="L188">    return mod;</span>
+<span class="nc" id="L185">    Main.pref.put(&quot;mapillary.display-hour&quot;, this.displayHour.isSelected());</span>
+<span class="nc" id="L186">    Main.pref.put(&quot;mapillary.format-24&quot;, this.format24.isSelected());</span>
+<span class="nc" id="L187">    Main.pref.put(&quot;mapillary.move-to-picture&quot;, this.moveTo.isSelected());</span>
+<span class="nc" id="L188">    Main.pref.put(&quot;mapillary.hover-enabled&quot;, this.hoverEnabled.isSelected());</span>
+<span class="nc" id="L189">    return mod;</span>
   }
 
   @Override
   public boolean isExpert() {
-<span class="nc" id="L193">    return false;</span>
+<span class="nc" id="L194">    return false;</span>
   }
 
   /**
@@ -203,20 +204,20 @@ import org.openstreetmap.josm.tools.I18n;
     private static final long serialVersionUID = -3908477563072057344L;
     private final transient MapillaryLoginListener callback;
 
-<span class="fc" id="L206">    public LoginAction(MapillaryLoginListener loginCallback) {</span>
-<span class="fc" id="L207">      this.callback = loginCallback;</span>
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L207">    public LoginAction(MapillaryLoginListener loginCallback) {</span>
+<span class="fc" id="L208">      this.callback = loginCallback;</span>
+<span class="fc" id="L209">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L212">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
-<span class="nc" id="L213">      portListener.start();</span>
+<span class="nc" id="L213">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
+<span class="nc" id="L214">      portListener.start();</span>
       try {
-<span class="nc" id="L215">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
-<span class="nc" id="L216">      } catch (IOException e) {</span>
-<span class="nc" id="L217">        Main.error(e);</span>
-<span class="nc" id="L218">      }</span>
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L216">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
+<span class="nc" id="L217">      } catch (IOException e) {</span>
+<span class="nc" id="L218">        Main.error(e);</span>
+<span class="nc" id="L219">      }</span>
+<span class="nc" id="L220">    }</span>
   }
 
   /**
@@ -225,16 +226,16 @@ import org.openstreetmap.josm.tools.I18n;
    * @author nokutu
    *
    */
-<span class="fc" id="L228">  public class LogoutAction extends AbstractAction {</span>
+<span class="fc" id="L229">  public class LogoutAction extends AbstractAction {</span>
 
     private static final long serialVersionUID = 3434780936404707219L;
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L234">      MapillaryUser.reset();</span>
-<span class="nc" id="L235">      Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
-<span class="nc" id="L236">      onLogout();</span>
-<span class="nc" id="L237">    }</span>
+<span class="nc" id="L235">      MapillaryUser.reset();</span>
+<span class="nc" id="L236">      Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
+<span class="nc" id="L237">      onLogout();</span>
+<span class="nc" id="L238">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
