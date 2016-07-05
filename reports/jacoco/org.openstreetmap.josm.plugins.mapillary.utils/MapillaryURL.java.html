@@ -16,16 +16,17 @@ import org.openstreetmap.josm.data.Bounds;
 public final class MapillaryURL {
   private static final String CLIENT_ID = &quot;T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;;
   /** Base URL of the Mapillary API. */
-  private static final String BASE_API_URL = &quot;https://a.mapillary.com/v2/&quot;;
+  private static final String BASE_API_V2_URL = &quot;https://a.mapillary.com/v2/&quot;;
+  private static final String BASE_API_V3_URL = &quot;https://a.mapillary.com/v3/&quot;;
   private static final String BASE_WEBSITE_URL = &quot;https://www.mapillary.com/&quot;;
 
-<span class="pc" id="L22">  public enum IMAGE_SELECTOR {</span>
-<span class="fc" id="L23">    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected</span>
+<span class="pc" id="L23">  public enum IMAGE_SELECTOR {</span>
+<span class="fc" id="L24">    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected</span>
   }
 
-<span class="fc" id="L26">  private MapillaryURL() {</span>
+<span class="fc" id="L27">  private MapillaryURL() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L28">  }</span>
+<span class="fc" id="L29">  }</span>
 
   /**
    * Gives you the URL for the online editor of a specific mapillary image.
@@ -35,8 +36,8 @@ public final class MapillaryURL {
    *           to {@link ValidationUtil#validateImageKey(String)}
    */
   public static URL browseEditURL(String imgKey) {
-<span class="fc" id="L38">    ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);</span>
-<span class="fc" id="L39">    return string2URL(BASE_WEBSITE_URL, &quot;map/e/&quot;, imgKey);</span>
+<span class="fc" id="L39">    ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);</span>
+<span class="fc" id="L40">    return string2URL(BASE_WEBSITE_URL, &quot;map/e/&quot;, imgKey);</span>
   }
 
   /**
@@ -47,15 +48,15 @@ public final class MapillaryURL {
    *           to {@link ValidationUtil#validateImageKey(String)}
    */
   public static URL browseImageURL(String key) {
-<span class="fc" id="L50">    ValidationUtil.throwExceptionForInvalidImgKey(key, false);</span>
-<span class="fc" id="L51">    return string2URL(BASE_WEBSITE_URL, &quot;map/im/&quot;, key);</span>
+<span class="fc" id="L51">    ValidationUtil.throwExceptionForInvalidImgKey(key, false);</span>
+<span class="fc" id="L52">    return string2URL(BASE_WEBSITE_URL, &quot;map/im/&quot;, key);</span>
   }
 
   /**
    * @return the URL where the user can view all uploaded images that are not yet published
    */
   public static URL browseUploadImageURL() {
-<span class="fc" id="L58">    return string2URL(BASE_WEBSITE_URL, &quot;map/upload/im&quot;);</span>
+<span class="fc" id="L59">    return string2URL(BASE_WEBSITE_URL, &quot;map/upload/im&quot;);</span>
   }
 
   /**
@@ -64,13 +65,13 @@ public final class MapillaryURL {
    * @return the URL that the user should visit to start the OAuth authentication
    */
   public static URL connectURL(String redirectURI) {
-<span class="fc" id="L67">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L68" title="All 4 branches covered.">    if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
-<span class="fc" id="L69">      parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
+<span class="fc" id="L68">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L69" title="All 4 branches covered.">    if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L70">      parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
     }
-<span class="fc" id="L71">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
-<span class="fc" id="L72">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="fc" id="L73">    return string2URL(BASE_WEBSITE_URL, &quot;connect&quot;, queryString(parts));</span>
+<span class="fc" id="L72">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L73">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L74">    return string2URL(BASE_WEBSITE_URL, &quot;connect&quot;, queryString(parts));</span>
   }
 
   /**
@@ -82,28 +83,28 @@ public final class MapillaryURL {
    * @return the API-URL which gives you the images in the given bounds as JSON
    */
   public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
-<span class="fc" id="L85">    String selectorString = &quot;&quot;;</span>
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (selector != null) {</span>
-<span class="pc bpc" id="L87" title="3 of 4 branches missed.">      switch (selector) {</span>
+<span class="fc" id="L86">    String selectorString = &quot;&quot;;</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (selector != null) {</span>
+<span class="pc bpc" id="L88" title="3 of 4 branches missed.">      switch (selector) {</span>
       case BLURRED_ONLY:
-<span class="nc" id="L89">        selectorString = &quot;/b&quot;;</span>
-<span class="nc" id="L90">        break;</span>
+<span class="nc" id="L90">        selectorString = &quot;/b&quot;;</span>
+<span class="nc" id="L91">        break;</span>
       case COMMENTED_ONLY:
-<span class="nc" id="L92">        selectorString = &quot;/cm&quot;;</span>
-<span class="nc" id="L93">        break;</span>
+<span class="nc" id="L93">        selectorString = &quot;/cm&quot;;</span>
+<span class="nc" id="L94">        break;</span>
       case OBJ_REC_ONLY:
-<span class="fc" id="L95">        selectorString = &quot;/or&quot;;</span>
-<span class="fc" id="L96">        break;</span>
+<span class="fc" id="L96">        selectorString = &quot;/or&quot;;</span>
+<span class="fc" id="L97">        break;</span>
       default:
-<span class="nc" id="L98">        selectorString = &quot;&quot;;</span>
+<span class="nc" id="L99">        selectorString = &quot;&quot;;</span>
         break;
       }
     }
-<span class="fc" id="L102">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L103">    putBoundsInQueryStringParts(parts, bounds);</span>
-<span class="fc" id="L104">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
-<span class="fc" id="L105">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
-<span class="fc" id="L106">    return string2URL(BASE_API_URL, &quot;search/im&quot;, selectorString, queryString(parts));</span>
+<span class="fc" id="L103">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L104">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L105">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L106">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
+<span class="fc" id="L107">    return string2URL(BASE_API_V2_URL, &quot;search/im&quot;, selectorString, queryString(parts));</span>
   }
 
   /**
@@ -114,25 +115,32 @@ public final class MapillaryURL {
    * @return the API-URL which gives you the sequences in the given bounds as JSON
    */
   public static URL searchSequenceURL(Bounds bounds, int page) {
-<span class="fc" id="L117">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L118">    putBoundsInQueryStringParts(parts, bounds);</span>
-<span class="fc" id="L119">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
-<span class="fc" id="L120">    parts.put(&quot;limit&quot;, &quot;10&quot;);</span>
-<span class="fc" id="L121">    return string2URL(BASE_API_URL, &quot;search/s&quot;, queryString(parts));</span>
+<span class="fc" id="L118">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L119">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L120">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L121">    parts.put(&quot;limit&quot;, &quot;10&quot;);</span>
+<span class="fc" id="L122">    return string2URL(BASE_API_V2_URL, &quot;search/s&quot;, queryString(parts));</span>
   }
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-<span class="fc" id="L128">    return string2URL(BASE_API_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
+<span class="fc" id="L129">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
+  }
+
+  /**
+   * @return the URL where can create, get and approve changesets
+   */
+  public static URL submitChangesetURL() {
+<span class="nc" id="L136">    return string2URL(BASE_API_V3_URL, &quot;changeset&quot;, queryString(null));</span>
   }
 
   /**
    * @return the URL where you'll find information about the user account as JSON
    */
   public static URL userURL() {
-<span class="fc" id="L135">    return string2URL(BASE_API_URL, &quot;me&quot;, queryString(null));</span>
+<span class="fc" id="L143">    return string2URL(BASE_API_V2_URL, &quot;me&quot;, queryString(null));</span>
   }
 
   /**
@@ -141,13 +149,13 @@ public final class MapillaryURL {
    * @param bounds the bounds that will be added to the query string
    */
   private static void putBoundsInQueryStringParts(Map&lt;String, String&gt; parts, Bounds bounds) {
-<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (bounds != null) {</span>
-<span class="fc" id="L145">      parts.put(&quot;min_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lat()));</span>
-<span class="fc" id="L146">      parts.put(&quot;max_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lat()));</span>
-<span class="fc" id="L147">      parts.put(&quot;min_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lon()));</span>
-<span class="fc" id="L148">      parts.put(&quot;max_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lon()));</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (bounds != null) {</span>
+<span class="fc" id="L153">      parts.put(&quot;min_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lat()));</span>
+<span class="fc" id="L154">      parts.put(&quot;max_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lat()));</span>
+<span class="fc" id="L155">      parts.put(&quot;min_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lon()));</span>
+<span class="fc" id="L156">      parts.put(&quot;max_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lon()));</span>
     }
-<span class="fc" id="L150">  }</span>
+<span class="fc" id="L158">  }</span>
 
   /**
    * Builds a query string from it's parts that are supplied as a {@link Map}
@@ -155,20 +163,20 @@ public final class MapillaryURL {
    * @return the constructed query string (including a leading ?)
    */
   private static String queryString(Map&lt;String, String&gt; parts) {
-<span class="fc" id="L158">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (parts != null) {</span>
-<span class="fc bfc" id="L160" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
+<span class="fc" id="L166">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (parts != null) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
         try {
-<span class="fc" id="L162">          ret.append('&amp;')</span>
-<span class="fc" id="L163">            .append(URLEncoder.encode(entry.getKey(), &quot;UTF-8&quot;))</span>
-<span class="fc" id="L164">            .append('=')</span>
-<span class="fc" id="L165">            .append(URLEncoder.encode(entry.getValue(), &quot;UTF-8&quot;));</span>
-<span class="nc" id="L166">        } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L167">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
-<span class="fc" id="L168">        }</span>
-<span class="fc" id="L169">      }</span>
+<span class="fc" id="L170">          ret.append('&amp;')</span>
+<span class="fc" id="L171">            .append(URLEncoder.encode(entry.getKey(), &quot;UTF-8&quot;))</span>
+<span class="fc" id="L172">            .append('=')</span>
+<span class="fc" id="L173">            .append(URLEncoder.encode(entry.getValue(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L174">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L175">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
+<span class="fc" id="L176">        }</span>
+<span class="fc" id="L177">      }</span>
     }
-<span class="fc" id="L171">    return ret.toString();</span>
+<span class="fc" id="L179">    return ret.toString();</span>
   }
 
   /**
@@ -179,19 +187,19 @@ public final class MapillaryURL {
    * @return the URL that is constructed from the given string
    */
   private static URL string2URL(String... strings) {
-<span class="fc" id="L182">    StringBuilder builder = new StringBuilder();</span>
-<span class="pc bpc" id="L183" title="1 of 4 branches missed.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
-<span class="fc" id="L184">      builder.append(strings[i]);</span>
+<span class="fc" id="L190">    StringBuilder builder = new StringBuilder();</span>
+<span class="pc bpc" id="L191" title="1 of 4 branches missed.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
+<span class="fc" id="L192">      builder.append(strings[i]);</span>
     }
     try {
-<span class="fc" id="L187">      return new URL(builder.toString());</span>
-<span class="fc" id="L188">    } catch (MalformedURLException e) {</span>
-<span class="fc" id="L189">      Main.error(new Exception(String.format(</span>
+<span class="fc" id="L195">      return new URL(builder.toString());</span>
+<span class="fc" id="L196">    } catch (MalformedURLException e) {</span>
+<span class="fc" id="L197">      Main.error(new Exception(String.format(</span>
           &quot;The class '%s' produces malformed URLs like '%s'!&quot;,
-<span class="fc" id="L191">          MapillaryURL.class.getName(),</span>
+<span class="fc" id="L199">          MapillaryURL.class.getName(),</span>
           builder
       ), e));
-<span class="fc" id="L194">      return null;</span>
+<span class="fc" id="L202">      return null;</span>
     }
   }
 }
