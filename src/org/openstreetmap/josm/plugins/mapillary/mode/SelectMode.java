@@ -9,6 +9,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -31,7 +33,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
  */
 public class SelectMode extends AbstractMode {
   private Point start;
-  private int lastButton;
   private MapillaryAbstractImage closest;
   private MapillaryAbstractImage lastClicked;
   private final MapillaryRecord record;
@@ -47,7 +48,6 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    this.lastButton = e.getButton();
     if (e.getButton() != MouseEvent.BUTTON1) {
       return;
     }
@@ -98,35 +98,29 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (Main.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
-      return;
-    }
-
-    if (!Main.pref.getBoolean("mapillary.developer")) {
-      for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
-        if (img instanceof MapillaryImage) {
-          return;
+    MapillaryAbstractImage highlightImg = data.getHighlightedImage();
+    if (
+      Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+      && SwingUtilities.isLeftMouseButton(e)
+      && highlightImg != null && highlightImg.getLatLon() != null
+    ) {
+      Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());
+      if (e.isShiftDown()) { // turn
+        for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
+          if (Main.pref.getBoolean("mapillary.developer") || !(img instanceof MapillaryImage)) {
+            img.turn(Math.toDegrees(Math.atan2((e.getX() - highlightImgPoint.getX()), -(e.getY() - highlightImgPoint.getY()))) - highlightImg.getTempCa());
+          }
+        }
+      } else { // move
+        for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
+          if (Main.pref.getBoolean("mapillary.developer") || !(img instanceof MapillaryImage)) {
+            LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());
+            LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
+            img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY());
+          }
         }
       }
-    }
-    if (this.data.getSelectedImage() != null) {
-      if (this.lastButton == MouseEvent.BUTTON1 && !e.isShiftDown()) {
-        LatLon to = Main.map.mapView.getLatLon(e.getX(), e.getY());
-        LatLon from = Main.map.mapView.getLatLon(this.start.getX(), this.start.getY());
-        for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
-          img.move(to.getX() - from.getX(), to.getY() - from.getY());
-        }
-        Main.map.repaint();
-      } else if (this.lastButton == MouseEvent.BUTTON1 && e.isShiftDown()) {
-        this.closest.turn(Math.toDegrees(Math.atan2((e.getX() - this.start.x),
-                -(e.getY() - this.start.y)))
-                - this.closest.getTempCa());
-        for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
-          img.turn(Math.toDegrees(Math.atan2((e.getX() - this.start.x),
-                  -(e.getY() - this.start.y))) - this.closest.getTempCa());
-        }
-        Main.map.repaint();
-      }
+      Main.map.repaint();
     }
   }
 
