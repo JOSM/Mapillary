@@ -1,3 +1,4 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -25,22 +26,22 @@ public class MapillaryURLTest {
     );
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseEditURL() {
     MapillaryURL.browseEditURL(null);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseEditURL2() {
     MapillaryURL.browseEditURL("123456789012345678901");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseEditURL3() {
     MapillaryURL.browseEditURL("12345678901234567890123");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseEditURL4() {
     MapillaryURL.browseEditURL("123456789012345678901+");
   }
@@ -53,22 +54,22 @@ public class MapillaryURLTest {
     );
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseImageURL() {
     MapillaryURL.browseImageURL(null);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseImageURL2() {
     MapillaryURL.browseImageURL("123456789012345678901");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseImageURL3() {
     MapillaryURL.browseImageURL("12345678901234567890123");
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllegalBrowseImageURL4() {
     MapillaryURL.browseImageURL("123456789012345678901+");
   }
@@ -211,7 +212,7 @@ public class MapillaryURLTest {
         parameterIsPresent |= actualParams[acIndex].equals(expectedParams[exIndex]);
       }
       assertTrue(
-          expectedParams[exIndex] + " was expected in the query string of " + actualUrl.toString() + " but wasn't there." ,
+          expectedParams[exIndex] + " was expected in the query string of " + actualUrl.toString() + " but wasn't there.",
           parameterIsPresent
       );
     }

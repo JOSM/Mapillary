@@ -254,7 +254,7 @@ public class MapillaryPlugin extends Plugin {
       return;
     }
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater( new Runnable() {
+      SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
           setMenuEnabled(menu, value);

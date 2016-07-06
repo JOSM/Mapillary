@@ -101,7 +101,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    * @author nokutu
    *
    */
-  public class MapillaryEpochComparator implements
+  public static class MapillaryEpochComparator implements
       Comparator<MapillaryAbstractImage> {
 
     @Override

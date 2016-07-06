@@ -11,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-public class MapillaryColorScheme {
+public final class MapillaryColorScheme {
   public static final Color MAPILLARY_GREEN = new Color(0x35af6d);
   public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);
 
@@ -32,13 +32,15 @@ public class MapillaryColorScheme {
     }
   }
 
-  public final static class MapillaryButton extends JButton {
+  public static final class MapillaryButton extends JButton {
+    private static final long serialVersionUID = 3824559897922944415L;
     public MapillaryButton(final String text, final Action action) {
       super(action);
       setText(text);
       setForeground(Color.WHITE);
-      setBorder(BorderFactory.createEmptyBorder(7,10,7,10));
+      setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
     }
+
     @Override
     protected void paintComponent(final Graphics g) {
       if (getModel().isPressed()) {
@@ -52,6 +54,7 @@ public class MapillaryColorScheme {
       ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);
       super.paintComponent(g);
     }
+
     @Override
     public boolean isContentAreaFilled() {
       return false;

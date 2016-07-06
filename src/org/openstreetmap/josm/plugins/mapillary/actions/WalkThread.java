@@ -70,12 +70,10 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             // Waits for full quality picture.
             final BufferedImage displayImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
             if (this.waitForFullQuality && image instanceof MapillaryImage) {
-              while ( displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
+              while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
                 wait(100);
               }
-            }
-            // Waits for thumbnail.
-            else {
+            } else { // Waits for thumbnail.
               while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 320) {
                 wait(100);
               }
@@ -113,7 +111,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * @param n the number of images to download
    * @param type the quality of the image (full or thumbnail)
    */
-  private void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type) {
+  private static void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type) {
     if (n >= 1 && startImage != null) {
       CacheUtils.downloadPicture(startImage, type);
       if (startImage.next() instanceof MapillaryImage && n >= 2) {

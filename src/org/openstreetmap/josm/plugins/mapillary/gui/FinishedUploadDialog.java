@@ -37,6 +37,7 @@ public class FinishedUploadDialog extends JPanel {
     text.setAlignmentX(Component.CENTER_ALIGNMENT);
     this.add(text);
     JButton web = new JButton(tr("Approve upload on the website"));
+    text.setLabelFor(web);
     web.addActionListener(new WebAction());
     web.setAlignmentX(Component.CENTER_ALIGNMENT);
     this.add(web, Component.CENTER_ALIGNMENT);

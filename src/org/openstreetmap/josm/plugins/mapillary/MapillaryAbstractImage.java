@@ -129,13 +129,13 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
   }
 
   /**
- * Returns the direction towards the image has been taken.
- *
- * @return The direction of the image (0 means north and goes clockwise).
- */
-public double getMovingCa() {
-  return this.movingCa;
-}
+   * Returns the direction towards the image has been taken.
+   *
+   * @return The direction of the image (0 means north and goes clockwise).
+   */
+  public double getMovingCa() {
+    return this.movingCa;
+  }
 
   /**
    * Returns a LatLon object containing the current coordinates of the object.

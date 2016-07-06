@@ -54,7 +54,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  *
  * @author nokutu
  */
-public class UploadUtils {
+public final class UploadUtils {
   /**
    * Required keys for POST
    */
@@ -74,7 +74,7 @@ public class UploadUtils {
     // Private constructor to avoid instantiation.
   }
 
-  private static class SequenceUploadThread extends Thread {
+  private static final class SequenceUploadThread extends Thread {
     private final Set<MapillaryAbstractImage> images;
     private final UUID uuid;
     private final boolean delete;
@@ -116,7 +116,7 @@ public class UploadUtils {
     }
   }
 
-  private static class SingleUploadThread extends Thread {
+  private static final class SingleUploadThread extends Thread {
 
     private final MapillaryImportedImage image;
     private final UUID uuid;
@@ -214,9 +214,14 @@ public class UploadUtils {
    * @param uuid  The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
-    String key = MapillaryUser.getUsername() + "/" + uuid.toString() + "/"
-            + image.getMovingLatLon().lat() + "_" + image.getMovingLatLon().lon() + "_"
-            + image.getMovingCa() + "_" + image.getCapturedAt() + ".jpg";
+    String key = new StringBuilder(MapillaryUser.getUsername())
+      .append('/').append(uuid)
+      .append('/').append(image.getMovingLatLon().lat()) // TODO: Make sure, that the double values are not appended as something like "10e-4", "Infinity" or "NaN" (all possible values of Double.toString(double))
+      .append('_').append(image.getMovingLatLon().lon())
+      .append('_').append(image.getMovingCa())
+      .append('_').append(image.getCapturedAt())
+      .append(".jpg")
+      .toString();
 
     String policy;
     String signature;
