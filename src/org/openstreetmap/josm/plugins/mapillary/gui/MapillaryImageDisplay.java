@@ -76,56 +76,56 @@ public class MapillaryImageDisplay extends JComponent {
       }
       this.mouseIsDragging = false;
       MapillaryImageDisplay.this.selectedRect = null;
-      if (image == null)
-        return;
-      // Calculate the mouse cursor position in image coordinates, so that
-      // we can center the zoom
-      // on that mouse position.
-      // To avoid issues when the user tries to zoom in on the image
-      // borders, this point is not calculated
-      // again if there was less than 1.5seconds since the last event.
-      if (e.getWhen() - this.lastTimeForMousePoint > 1500 || this.mousePointInImg == null) {
-        this.lastTimeForMousePoint = e.getWhen();
-        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+      if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
+        // Calculate the mouse cursor position in image coordinates, so that
+        // we can center the zoom
+        // on that mouse position.
+        // To avoid issues when the user tries to zoom in on the image
+        // borders, this point is not calculated
+        // again if there was less than 1.5seconds since the last event.
+        if (e.getWhen() - this.lastTimeForMousePoint > 1500 || this.mousePointInImg == null) {
+          this.lastTimeForMousePoint = e.getWhen();
+          this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        }
+        // Set the zoom to the visible rectangle in image coordinates
+        if (e.getWheelRotation() > 0) {
+          visibleRect.width = visibleRect.width * 3 / 2;
+          visibleRect.height = visibleRect.height * 3 / 2;
+        } else {
+          visibleRect.width = visibleRect.width * 2 / 3;
+          visibleRect.height = visibleRect.height * 2 / 3;
+        }
+        // Check that the zoom doesn't exceed 2:1
+        if (visibleRect.width < getSize().width / 2) {
+          visibleRect.width = getSize().width / 2;
+        }
+        if (visibleRect.height < getSize().height / 2) {
+          visibleRect.height = getSize().height / 2;
+        }
+        // Set the same ratio for the visible rectangle and the display area
+        int hFact = visibleRect.height * getSize().width;
+        int wFact = visibleRect.width * getSize().height;
+        if (hFact > wFact) {
+          visibleRect.width = hFact / getSize().height;
+        } else {
+          visibleRect.height = wFact / getSize().width;
+        }
+        // The size of the visible rectangle is limited by the image size.
+        checkVisibleRectSize(image, visibleRect);
+        // Set the position of the visible rectangle, so that the mouse
+        // cursor doesn't move on the image.
+        Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
+        visibleRect.x = this.mousePointInImg.x
+            + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
+        visibleRect.y = this.mousePointInImg.y
+            + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
+        // The position is also limited by the image size
+        checkVisibleRectPos(image, visibleRect);
+        synchronized (MapillaryImageDisplay.this) {
+          MapillaryImageDisplay.this.visibleRect = visibleRect;
+        }
+        MapillaryImageDisplay.this.repaint();
       }
-      // Set the zoom to the visible rectangle in image coordinates
-      if (e.getWheelRotation() > 0) {
-        visibleRect.width = visibleRect.width * 3 / 2;
-        visibleRect.height = visibleRect.height * 3 / 2;
-      } else {
-        visibleRect.width = visibleRect.width * 2 / 3;
-        visibleRect.height = visibleRect.height * 2 / 3;
-      }
-      // Check that the zoom doesn't exceed 2:1
-      if (visibleRect.width < getSize().width / 2) {
-        visibleRect.width = getSize().width / 2;
-      }
-      if (visibleRect.height < getSize().height / 2) {
-        visibleRect.height = getSize().height / 2;
-      }
-      // Set the same ratio for the visible rectangle and the display area
-      int hFact = visibleRect.height * getSize().width;
-      int wFact = visibleRect.width * getSize().height;
-      if (hFact > wFact) {
-        visibleRect.width = hFact / getSize().height;
-      } else {
-        visibleRect.height = wFact / getSize().width;
-      }
-      // The size of the visible rectangle is limited by the image size.
-      checkVisibleRectSize(image, visibleRect);
-      // Set the position of the visible rectangle, so that the mouse
-      // cursor doesn't move on the image.
-      Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-      visibleRect.x = this.mousePointInImg.x
-          + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
-      visibleRect.y = this.mousePointInImg.y
-          + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
-      // The position is also limited by the image size
-      checkVisibleRectPos(image, visibleRect);
-      synchronized (MapillaryImageDisplay.this) {
-        MapillaryImageDisplay.this.visibleRect = visibleRect;
-      }
-      MapillaryImageDisplay.this.repaint();
     }
 
     /** Center the display on the point that has been clicked */
@@ -138,39 +138,38 @@ public class MapillaryImageDisplay extends JComponent {
         image = MapillaryImageDisplay.this.image;
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      if (image == null) {
-        return;
-      }
-      if (e.getButton() == OPTION_BUTTON) {
-        if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
-          // Zooms to 1:1
-          MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
-              image.getWidth(null), image.getHeight(null));
-        } else {
-          // Zooms to best fit.
-          MapillaryImageDisplay.this.visibleRect = new Rectangle(
-              0,
-              (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
-              image.getWidth(null),
-              (image.getWidth(null) * getHeight()) / getWidth()
-          );
+      if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
+        if (e.getButton() == OPTION_BUTTON) {
+          if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
+            // Zooms to 1:1
+            MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
+                image.getWidth(null), image.getHeight(null));
+          } else {
+            // Zooms to best fit.
+            MapillaryImageDisplay.this.visibleRect = new Rectangle(
+                0,
+                (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
+                image.getWidth(null),
+                (image.getWidth(null) * getHeight()) / getWidth()
+            );
+          }
+          MapillaryImageDisplay.this.repaint();
+          return;
+        } else if (e.getButton() != DRAG_BUTTON) {
+          return;
+        }
+        // Calculate the translation to set the clicked point the center of
+        // the view.
+        Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        Point center = getCenterImgCoord(visibleRect);
+        visibleRect.x += click.x - center.x;
+        visibleRect.y += click.y - center.y;
+        checkVisibleRectPos(image, visibleRect);
+        synchronized (MapillaryImageDisplay.this) {
+          MapillaryImageDisplay.this.visibleRect = visibleRect;
         }
         MapillaryImageDisplay.this.repaint();
-        return;
-      } else if (e.getButton() != DRAG_BUTTON) {
-        return;
       }
-      // Calculate the translation to set the clicked point the center of
-      // the view.
-      Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
-      Point center = getCenterImgCoord(visibleRect);
-      visibleRect.x += click.x - center.x;
-      visibleRect.y += click.y - center.y;
-      checkVisibleRectPos(image, visibleRect);
-      synchronized (MapillaryImageDisplay.this) {
-        MapillaryImageDisplay.this.visibleRect = visibleRect;
-      }
-      MapillaryImageDisplay.this.repaint();
     }
 
     /**
