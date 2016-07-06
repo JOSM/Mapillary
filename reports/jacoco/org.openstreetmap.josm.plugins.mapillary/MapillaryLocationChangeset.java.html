@@ -1,40 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryLocationChangeset.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryLocationChangeset.java</span></div><h1>MapillaryLocationChangeset.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryLocationChangeset.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryLocationChangeset.java</span></div><h1>MapillaryLocationChangeset.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
-<span class="fc" id="L8">public class MapillaryLocationChangeset extends HashSet&lt;MapillaryImage&gt; {</span>
-<span class="fc" id="L9">  private final Set&lt;MapillaryChangesetListener&gt; listeners = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L9">public class MapillaryLocationChangeset extends HashSet&lt;MapillaryImage&gt; {</span>
+  private static final long serialVersionUID = 2461033584553885626L;
+<span class="fc" id="L11">  private final Set&lt;MapillaryChangesetListener&gt; listeners = new HashSet&lt;&gt;();</span>
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
-<span class="nc" id="L12">    this.listeners.add(listener);</span>
-<span class="nc" id="L13">  }</span>
+<span class="nc" id="L14">    this.listeners.add(listener);</span>
+<span class="nc" id="L15">  }</span>
 
   public void cleanChangeset() {
-<span class="nc" id="L16">    this.clear();</span>
-<span class="nc" id="L17">    fireListeners();</span>
-<span class="nc" id="L18">  }</span>
+<span class="nc" id="L18">    this.clear();</span>
+<span class="nc" id="L19">    fireListeners();</span>
+<span class="nc" id="L20">  }</span>
 
   private void fireListeners() {
-<span class="pc bpc" id="L21" title="1 of 2 branches missed.">    for (MapillaryChangesetListener listener : listeners) {</span>
-<span class="nc" id="L22">      listener.changesetChanged();</span>
-<span class="nc" id="L23">    }</span>
-<span class="fc" id="L24">  }</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">    for (MapillaryChangesetListener listener : listeners) {</span>
+<span class="nc" id="L24">      listener.changesetChanged();</span>
+<span class="nc" id="L25">    }</span>
+<span class="fc" id="L26">  }</span>
 
   @Override
   public boolean add(MapillaryImage image) {
-<span class="fc" id="L28">    boolean add = super.add(image);</span>
-<span class="fc" id="L29">    fireListeners();</span>
-<span class="fc" id="L30">    return add;</span>
+<span class="fc" id="L30">    boolean add = super.add(image);</span>
+<span class="fc" id="L31">    fireListeners();</span>
+<span class="fc" id="L32">    return add;</span>
   }
 
   @Override
   public boolean remove(Object image) {
-<span class="fc" id="L35">    boolean remove = super.remove(image);</span>
-<span class="fc" id="L36">    fireListeners();</span>
-<span class="fc" id="L37">    return remove;</span>
+<span class="fc" id="L37">    boolean remove = super.remove(image);</span>
+<span class="fc" id="L38">    fireListeners();</span>
+<span class="fc" id="L39">    return remove;</span>
   }
 
 }

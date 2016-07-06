@@ -254,7 +254,7 @@ public class MapillaryPlugin extends Plugin {
 <span class="fc" id="L254">      return;</span>
     }
 <span class="nc bnc" id="L256" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L257">      SwingUtilities.invokeLater( new Runnable() {</span>
+<span class="nc" id="L257">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
 <span class="nc" id="L260">          setMenuEnabled(menu, value);</span>

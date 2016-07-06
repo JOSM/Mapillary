@@ -11,7 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-public class MapillaryColorScheme {
+public final class MapillaryColorScheme {
 <span class="fc" id="L15">  public static final Color MAPILLARY_GREEN = new Color(0x35af6d);</span>
 <span class="fc" id="L16">  public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);</span>
 
@@ -32,29 +32,32 @@ public class MapillaryColorScheme {
     }
 <span class="fc" id="L33">  }</span>
 
-  public final static class MapillaryButton extends JButton {
+  public static final class MapillaryButton extends JButton {
+    private static final long serialVersionUID = 3824559897922944415L;
     public MapillaryButton(final String text, final Action action) {
-<span class="fc" id="L37">      super(action);</span>
-<span class="fc" id="L38">      setText(text);</span>
-<span class="fc" id="L39">      setForeground(Color.WHITE);</span>
-<span class="fc" id="L40">      setBorder(BorderFactory.createEmptyBorder(7,10,7,10));</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L38">      super(action);</span>
+<span class="fc" id="L39">      setText(text);</span>
+<span class="fc" id="L40">      setForeground(Color.WHITE);</span>
+<span class="fc" id="L41">      setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));</span>
+<span class="fc" id="L42">    }</span>
+
     @Override
     protected void paintComponent(final Graphics g) {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">      if (getModel().isPressed()) {</span>
-<span class="nc" id="L45">        g.setColor(MAPILLARY_GREEN.darker().darker());</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">      } else if (getModel().isRollover()) {</span>
-<span class="nc" id="L47">        g.setColor(MAPILLARY_GREEN.darker());</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">      if (getModel().isPressed()) {</span>
+<span class="nc" id="L47">        g.setColor(MAPILLARY_GREEN.darker().darker());</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">      } else if (getModel().isRollover()) {</span>
+<span class="nc" id="L49">        g.setColor(MAPILLARY_GREEN.darker());</span>
       } else {
-<span class="nc" id="L49">        g.setColor(MAPILLARY_GREEN);</span>
+<span class="nc" id="L51">        g.setColor(MAPILLARY_GREEN);</span>
       }
-<span class="nc" id="L51">      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
-<span class="nc" id="L52">      ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);</span>
-<span class="nc" id="L53">      super.paintComponent(g);</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L53">      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
+<span class="nc" id="L54">      ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);</span>
+<span class="nc" id="L55">      super.paintComponent(g);</span>
+<span class="nc" id="L56">    }</span>
+
     @Override
     public boolean isContentAreaFilled() {
-<span class="fc" id="L57">      return false;</span>
+<span class="fc" id="L60">      return false;</span>
     }
   }
 }

@@ -37,20 +37,21 @@ public class FinishedUploadDialog extends JPanel {
 <span class="nc" id="L37">    text.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
 <span class="nc" id="L38">    this.add(text);</span>
 <span class="nc" id="L39">    JButton web = new JButton(tr(&quot;Approve upload on the website&quot;));</span>
-<span class="nc" id="L40">    web.addActionListener(new WebAction());</span>
-<span class="nc" id="L41">    web.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L42">    this.add(web, Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L43">  }</span>
+<span class="nc" id="L40">    text.setLabelFor(web);</span>
+<span class="nc" id="L41">    web.addActionListener(new WebAction());</span>
+<span class="nc" id="L42">    web.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L43">    this.add(web, Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L44">  }</span>
 
-<span class="nc" id="L45">  private class WebAction implements ActionListener {</span>
+<span class="nc" id="L46">  private class WebAction implements ActionListener {</span>
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
-<span class="nc" id="L49">        MapillaryUtils.browse(MapillaryURL.browseUploadImageURL());</span>
-<span class="nc" id="L50">      } catch (IOException e1) {</span>
-<span class="nc" id="L51">        Main.error(e1);</span>
-<span class="nc" id="L52">      }</span>
-<span class="nc" id="L53">    }</span>
+<span class="nc" id="L50">        MapillaryUtils.browse(MapillaryURL.browseUploadImageURL());</span>
+<span class="nc" id="L51">      } catch (IOException e1) {</span>
+<span class="nc" id="L52">        Main.error(e1);</span>
+<span class="nc" id="L53">      }</span>
+<span class="nc" id="L54">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

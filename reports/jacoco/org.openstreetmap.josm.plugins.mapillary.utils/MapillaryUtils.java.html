@@ -202,12 +202,12 @@ public final class MapillaryUtils {
    */
   public static void showPictures(final Set&lt;MapillaryAbstractImage&gt; images, final boolean select) {
 <span class="nc bnc" id="L204" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L205">      SwingUtilities.invokeLater( new Runnable() {</span>
+<span class="nc" id="L205">      SwingUtilities.invokeLater(new Runnable() {</span>
         @Override
         public void run() {
 <span class="nc" id="L208">          showPictures(images, select);</span>
 <span class="nc" id="L209">        }</span>
-      } );
+      });
     } else {
       Bounds zoomBounds;
 <span class="nc bnc" id="L213" title="All 2 branches missed.">      if (images.isEmpty()) {</span>
