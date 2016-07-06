@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryImportAction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.actions</a> &gt; <span class="el_source">MapillaryImportAction.java</span></div><h1>MapillaryImportAction.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.actions;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import javax.swing.JFileChooser;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.Shortcut;
+
+/**
+ * Imports a set of picture files into JOSM. They must be in jpg or png format.
+ *
+ * @author nokutu
+ *
+ */
+public class MapillaryImportAction extends JosmAction {
+
+  private static final long serialVersionUID = 4995924098228081806L;
+
+  /**
+   * Main constructor.
+   */
+  public MapillaryImportAction() {
+<span class="fc" id="L39">    super(</span>
+<span class="fc" id="L40">        tr(&quot;Import pictures&quot;),</span>
+<span class="fc" id="L41">        MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="fc" id="L42">        tr(&quot;Import local pictures&quot;),</span>
+<span class="fc" id="L43">        Shortcut.registerShortcut(&quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        false,
+        &quot;mapillaryImport&quot;,
+        false);
+<span class="fc" id="L48">    this.setEnabled(false);</span>
+<span class="fc" id="L49">  }</span>
+
+  @Override
+  public void actionPerformed(ActionEvent event) {
+<span class="nc" id="L53">    JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L54">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
+<span class="nc" id="L55">        System.getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L56">    chooser.setCurrentDirectory(startDirectory);</span>
+<span class="nc" id="L57">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L58">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L59">    chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L60">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L61">    chooser.setMultiSelectionEnabled(true);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc" id="L63">      Set&lt;MapillaryAbstractImage&gt; images = new ConcurrentSkipListSet&lt;&gt;();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
+<span class="nc" id="L65">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
+        try {
+<span class="nc" id="L67">          images.addAll(ImageUtil.readImagesFrom(</span>
+              file,
+<span class="nc" id="L69">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
+          ));
+<span class="nc" id="L71">        } catch (IOException e) {</span>
+<span class="nc" id="L72">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
+<span class="nc" id="L73">        }</span>
+      }
+<span class="nc" id="L75">      MapillaryRecord.getInstance().addCommand(new CommandImport(images));</span>
+<span class="nc" id="L76">      MapillaryUtils.showAllPictures();</span>
+    }
+<span class="nc" id="L78">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

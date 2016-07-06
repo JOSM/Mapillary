@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractMode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.mode</a> &gt; <span class="el_source">AbstractMode.java</span></div><h1>AbstractMode.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.mode;
+
+import java.awt.Cursor;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.util.Calendar;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+
+/**
+ * Superclass for all the mode of the {@link MapillaryLayer}.
+ *
+ * @author nokutu
+ * @see MapillaryLayer
+ *
+ */
+<span class="nc" id="L26">public abstract class AbstractMode extends MouseAdapter implements</span>
+    ZoomChangeListener {
+
+  private static final int DOWNLOAD_COOLDOWN = 2000;
+
+<span class="nc" id="L31">  protected MapillaryData data = MapillaryLayer.getInstance().getData();</span>
+<span class="nc" id="L32">  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();</span>
+
+  /**
+   * Cursor that should become active when this mode is activated.
+   */
+<span class="nc" id="L37">  public int cursor = Cursor.DEFAULT_CURSOR;</span>
+
+  protected MapillaryAbstractImage getClosest(Point clickPoint) {
+<span class="nc" id="L40">    double snapDistance = 10;</span>
+<span class="nc" id="L41">    double minDistance = Double.MAX_VALUE;</span>
+<span class="nc" id="L42">    MapillaryAbstractImage closest = null;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.data.getImages()) {</span>
+<span class="nc" id="L44">      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());</span>
+<span class="nc" id="L45">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
+<span class="nc" id="L46">      double dist = clickPoint.distanceSq(imagePoint);</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">      if (minDistance &gt; dist &amp;&amp; clickPoint.distance(imagePoint) &lt; snapDistance</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">          &amp;&amp; image.isVisible()) {</span>
+<span class="nc" id="L49">        minDistance = dist;</span>
+<span class="nc" id="L50">        closest = image;</span>
+      }
+<span class="nc" id="L52">    }</span>
+<span class="nc" id="L53">    return closest;</span>
+  }
+
+  /**
+   * Paint the dataset using the engine set.
+   *
+   * @param g
+   * @param mv
+   *          The object that can translate GeoPoints to screen coordinates.
+   * @param box
+   */
+  public abstract void paint(Graphics2D g, MapView mv, Bounds box);
+
+  @Override
+  public void zoomChanged() {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
+<span class="nc" id="L70">        semiautomaticThread.start();</span>
+<span class="nc" id="L71">      semiautomaticThread.moved();</span>
+    }
+<span class="nc" id="L73">  }</span>
+
+  /**
+   * Resets the semiautomatic mode thread.
+   */
+  public static void resetThread() {
+<span class="nc" id="L79">    semiautomaticThread.interrupt();</span>
+<span class="nc" id="L80">    semiautomaticThread = new SemiautomaticThread();</span>
+<span class="nc" id="L81">  }</span>
+
+<span class="nc" id="L83">  private static class SemiautomaticThread extends Thread {</span>
+
+    /** If in semiautomatic mode, the last Epoch time when there was a download */
+    private long lastDownload;
+
+    private boolean moved;
+
+    @Override
+    public void run() {
+      while (true) {
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (this.moved</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
+<span class="nc" id="L95">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
+<span class="nc" id="L96">          MapillaryDownloader.completeView();</span>
+<span class="nc" id="L97">          this.moved = false;</span>
+<span class="nc" id="L98">          MapillaryData.dataUpdated();</span>
+        }
+<span class="nc" id="L100">        synchronized (this) {</span>
+          try {
+<span class="nc" id="L102">            wait(100);</span>
+<span class="nc" id="L103">          } catch (InterruptedException e) {</span>
+<span class="nc" id="L104">          }</span>
+<span class="nc" id="L105">        }</span>
+      }
+    }
+
+    public void moved() {
+<span class="nc" id="L110">      this.moved = true;</span>
+<span class="nc" id="L111">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

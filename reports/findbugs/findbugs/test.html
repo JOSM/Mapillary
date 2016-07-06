@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>FindBugs Report</title>
+<style type="text/css">
+		.tablerow0 {
+			background: #EEEEEE;
+		}
+
+		.tablerow1 {
+			background: white;
+		}
+
+		.detailrow0 {
+			background: #EEEEEE;
+		}
+
+		.detailrow1 {
+			background: white;
+		}
+
+		.tableheader {
+			background: #b9b9fe;
+			font-size: larger;
+		}
+
+		.tablerow0:hover, .tablerow1:hover {
+			background: #aaffaa;
+		}
+
+		.priority-1 {
+		    color: red;
+		    font-weight: bold;
+		}
+		.priority-2 {
+		    color: orange;
+		    font-weight: bold;
+		}
+		.priority-3 {
+		    color: green;
+		    font-weight: bold;
+		}
+		.priority-4 {
+		    color: blue;
+		    font-weight: bold;
+		}
+		</style>
+<script type="text/javascript">
+			function toggleRow(elid) {
+				if (document.getElementById) {
+					element = document.getElementById(elid);
+					if (element) {
+						if (element.style.display == 'none') {
+							element.style.display = 'block';
+							//window.status = 'Toggle on!';
+						} else {
+							element.style.display = 'none';
+							//window.status = 'Toggle off!';
+						}
+					}
+				}
+			}
+		</script>
+</head>
+<body>
+<h1>
+<a href="http://findbugs.sourceforge.net">FindBugs</a> Report</h1>
+<h2>Project Information</h2>
+<p>Project: 
+		</p>
+<p>FindBugs version: 3.0.1</p>
+<p>Code analyzed:</p>
+<ul>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSignTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoSignElementTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/traffico/TrafficoGlyphTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/ImportTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/MapillarySequenceTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/io/download/MapillarySequenceDownloadThreadTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListenerTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/oauth/UploadTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/MapillaryAbstractImageTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/HyperlinkLabelTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/ImageDisplayTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/MapillaryTrafficSignLayerTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/MapillaryDataTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCacheTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/ImageUtilsTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/PluginStateTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURLTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/TestUtil.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtilsTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/AbstractTest.class</li>
+<li>/home/travis/build/floscher/josm-mapillary-plugin/build/classes/test/org/openstreetmap/josm/plugins/mapillary/MapillaryLayerTest.class</li>
+</ul>
+<p>
+<br/>
+<br/>
+</p>
+<h2>Metrics</h2>
+<p>895 lines of code analyzed,
+	in 23 classes, 
+	in 8 packages.</p>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Metric</th>
+<th align="right">Total</th>
+<th align="right">Density*</th>
+</tr>
+<tr class="tablerow0">
+<td>High Priority Warnings</td>
+<td align="right">1</td>
+<td align="right">1.12</td>
+</tr>
+<tr class="tablerow1">
+<td>Medium Priority Warnings</td>
+<td align="right">4</td>
+<td align="right">4.47</td>
+</tr>
+<tr class="tablerow1">
+<td>Low Priority Warnings</td>
+<td align="right">7</td>
+<td align="right">7.82</td>
+</tr>
+<tr class="$totalClass">
+<td>
+<b>Total Warnings</b>
+</td>
+<td align="right">
+<b>12</b>
+</td>
+<td align="right">
+<b>13.41</b>
+</td>
+</tr>
+</table>
+<p>
+<i>(* Defects per Thousand lines of non-commenting source statements)</i>
+</p>
+<p>
+<br/>
+<br/>
+</p>
+<h2>Contents</h2>
+<ul>
+<li>
+<a href="#Warnings_BAD_PRACTICE">Bad practice Warnings</a>
+</li>
+<li>
+<a href="#Warnings_CORRECTNESS">Correctness Warnings</a>
+</li>
+<li>
+<a href="#Warnings_I18N">Internationalization Warnings</a>
+</li>
+<li>
+<a href="#Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
+</li>
+<li>
+<a href="#Warnings_PERFORMANCE">Performance Warnings</a>
+</li>
+<li>
+<a href="#Warnings_STYLE">Dodgy code Warnings</a>
+</li>
+<li>
+<a href="#Details">Details</a>
+</li>
+</ul>
+<h1>Summary</h1>
+<table width="500" cellpadding="5" cellspacing="2">
+<tr class="tableheader">
+<th align="left">Warning Type</th>
+<th align="right">Number</th>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_BAD_PRACTICE">Bad practice Warnings</a>
+</td>
+<td align="right">2</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_CORRECTNESS">Correctness Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_I18N">Internationalization Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
+</td>
+<td align="right">2</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<a href="#Warnings_PERFORMANCE">Performance Warnings</a>
+</td>
+<td align="right">1</td>
+</tr>
+<tr class="tablerow1">
+<td>
+<a href="#Warnings_STYLE">Dodgy code Warnings</a>
+</td>
+<td align="right">5</td>
+</tr>
+<tr class="tablerow0">
+<td>
+<b>Total</b>
+</td>
+<td align="right">
+<b>12</b>
+</td>
+</tr>
+</table>
+<h1>Warnings</h1>
+<p>Click on a warning row to see full context information.</p>
+<h2>
+<a name="Warnings_BAD_PRACTICE">Bad practice Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N65989');">
+<td>
+<span class="priority-2">OS</span>
+</td>
+<td>org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest() may fail to close stream</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65989" style="display: none;">
+<a href="#OS_OPEN_STREAM">Bug type OS_OPEN_STREAM (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>Need to close java.io.Reader <br/>At OAuthPortListenerTest.java:[line 38]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66311');">
+<td>
+<span class="priority-2">RV</span>
+</td>
+<td>Exceptional return value of java.io.File.delete() ignored in org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N66311" style="display: none;">
+<a href="#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">Bug type RV_RETURN_VALUE_IGNORED_BAD_PRACTICE (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()<br/>Called method java.io.File.delete()<br/>At UploadTest.java:[line 75]</p>
+</td>
+</tr>
+</table>
+<h2>
+<a name="Warnings_CORRECTNESS">Correctness Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66215');">
+<td>
+<span class="priority-2">NP</span>
+</td>
+<td>Possible null pointer dereference of updatedFile in org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest() on exception path</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66215" style="display: none;">
+<a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Bug type NP_NULL_ON_SOME_PATH_EXCEPTION (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()<br/>Value loaded from updatedFile<br/>Dereferenced at UploadTest.java:[line 75]<br/>Null value at UploadTest.java:[line 40]<br/>Known null at UploadTest.java:[line 42]</p>
+</td>
+</tr>
+</table>
+<h2>
+<a name="Warnings_I18N">Internationalization Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N65920');">
+<td>
+<span class="priority-1">Dm</span>
+</td>
+<td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest(): new java.io.InputStreamReader(InputStream)</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65920" style="display: none;">
+<a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthPortListenerTest.java:[line 39]</p>
+</td>
+</tr>
+</table>
+<h2>
+<a name="Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66109');">
+<td>
+<span class="priority-3">UW</span>
+</td>
+<td>Unconditional wait in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66109" style="display: none;">
+<a href="#UW_UNCOND_WAIT">Bug type UW_UNCOND_WAIT (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 31]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66162');">
+<td>
+<span class="priority-3">Wa</span>
+</td>
+<td>Wait not in loop in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N66162" style="display: none;">
+<a href="#WA_NOT_IN_LOOP">Bug type WA_NOT_IN_LOOP (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 31]</p>
+</td>
+</tr>
+</table>
+<h2>
+<a name="Warnings_PERFORMANCE">Performance Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66381');">
+<td>
+<span class="priority-3">Bx</span>
+</td>
+<td>org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoGlyphTest.testGetGlyph() invokes inefficient new Character(char) constructor; use Character.valueOf(char) instead</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66381" style="display: none;">
+<a href="#DM_NUMBER_CTOR">Bug type DM_NUMBER_CTOR (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoGlyphTest<br/>In method org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoGlyphTest.testGetGlyph()<br/>Called method new Character(char)<br/>Should call Character.valueOf(char) instead<br/>At TrafficoGlyphTest.java:[line 13]</p>
+</td>
+</tr>
+</table>
+<h2>
+<a name="Warnings_STYLE">Dodgy code Warnings</a>
+</h2>
+<table class="warningtable" width="100%" cellspacing="0">
+<tr class="tableheader">
+<th align="left">Code</th>
+<th align="left">Warning</th>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N66055');">
+<td>
+<span class="priority-2">REC</span>
+</td>
+<td>Exception is caught when Exception is not thrown in org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66055" style="display: none;">
+<a href="#REC_CATCH_EXCEPTION">Bug type REC_CATCH_EXCEPTION (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 42]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N65652');">
+<td>
+<span class="priority-3">UwF</span>
+</td>
+<td>MapillarySequenceTest.img1 not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N65652" style="display: none;">
+<a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img1<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 51]</p>
+</td>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N65719');">
+<td>
+<span class="priority-3">UwF</span>
+</td>
+<td>MapillarySequenceTest.img2 not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65719" style="display: none;">
+<a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img2<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 54]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N65786');">
+<td>
+<span class="priority-3">UwF</span>
+</td>
+<td>MapillarySequenceTest.img4 not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()</td>
+</tr>
+<tr class="detailrow0">
+<td/>
+<td>
+<p id="N65786" style="display: none;">
+<a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img4<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 57]</p>
+</td>
+</tr>
+<tr class="tablerow1" onclick="toggleRow('N65853');">
+<td>
+<span class="priority-3">UwF</span>
+</td>
+<td>MapillarySequenceTest.seq not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65853" style="display: none;">
+<a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.seq<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 52]</p>
+</td>
+</tr>
+</table>
+<h1>
+<a name="Details">Details</a>
+</h1>
+<h2>
+<a name="DM_NUMBER_CTOR">DM_NUMBER_CTOR: Method invokes inefficient Number constructor; use static valueOf instead</a>
+</h2>
+      
+      <p>
+      Using <code>new Integer(int)</code> is guaranteed to always result in a new object whereas
+      <code>Integer.valueOf(int)</code> allows caching of values to be done by the compiler, class library, or JVM.
+      Using of cached values avoids object allocation and the code will be faster.
+      </p>
+      <p>
+      Values between -128 and 127 are guaranteed to have corresponding cached instances
+      and using <code>valueOf</code> is approximately 3.5 times faster than using constructor.
+      For values outside the constant range the performance of both styles is the same.
+      </p>
+      <p>
+      Unless the class must be compatible with JVMs predating Java 1.5,
+      use either autoboxing or the <code>valueOf()</code> method when creating instances of
+      <code>Long</code>, <code>Integer</code>, <code>Short</code>, <code>Character</code>, and <code>Byte</code>.
+      </p>
+      
+    
+<h2>
+<a name="DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING: Reliance on default encoding</a>
+</h2>
+
+<p> Found a call to a method which will perform a byte to String (or String to byte) conversion, and will assume that the default platform encoding is suitable. This will cause the application behaviour to vary between platforms. Use an alternative API and specify a charset name or Charset object explicitly.  </p>
+
+      
+<h2>
+<a name="NP_NULL_ON_SOME_PATH_EXCEPTION">NP_NULL_ON_SOME_PATH_EXCEPTION: Possible null pointer dereference in method on exception path</a>
+</h2>
+
+<p> A reference value which is null on some exception control path is
+dereferenced here.&nbsp; This may lead to a <code>NullPointerException</code>
+when the code is executed.&nbsp;
+Note that because FindBugs currently does not prune infeasible exception paths,
+this may be a false warning.</p>
+
+<p> Also note that FindBugs considers the default case of a switch statement to
+be an exception path, since the default case is often infeasible.</p>
+
+    
+<h2>
+<a name="OS_OPEN_STREAM">OS_OPEN_STREAM: Method may fail to close stream</a>
+</h2>
+
+<p> The method creates an IO stream object, does not assign it to any
+fields, pass it to other methods that might close it,
+or return it, and does not appear to close
+the stream on all paths out of the method.&nbsp; This may result in
+a file descriptor leak.&nbsp; It is generally a good
+idea to use a <code>finally</code> block to ensure that streams are
+closed.</p>
+
+    
+<h2>
+<a name="REC_CATCH_EXCEPTION">REC_CATCH_EXCEPTION: Exception is caught when Exception is not thrown</a>
+</h2>
+  
+  <p>
+  This method uses a try-catch block that catches Exception objects, but Exception is not
+  thrown within the try block, and RuntimeException is not explicitly caught.  It is a common bug pattern to
+  say try { ... } catch (Exception e) { something } as a shorthand for catching a number of types of exception
+  each of whose catch blocks is identical, but this construct also accidentally catches RuntimeException as well,
+  masking potential bugs.
+  </p>
+  <p>A better approach is to either explicitly catch the specific exceptions that are thrown,
+  or to explicitly catch RuntimeException exception, rethrow it, and then catch all non-Runtime Exceptions, as shown below:</p>
+  <pre>
+  try {
+    ...
+  } catch (RuntimeException e) {
+    throw e;
+  } catch (Exception e) {
+    ... deal with all non-runtime exceptions ...
+  }</pre>
+  
+     
+<h2>
+<a name="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">RV_RETURN_VALUE_IGNORED_BAD_PRACTICE: Method ignores exceptional return value</a>
+</h2>
+
+   <p> This method returns a value that is not checked. The return value should be checked
+since it can indicate an unusual or unexpected function execution. For
+example, the <code>File.delete()</code> method returns false
+if the file could not be successfully deleted (rather than
+throwing an Exception).
+If you don't check the result, you won't notice if the method invocation
+signals unexpected behavior by returning an atypical return value.
+</p>
+
+    
+<h2>
+<a name="UW_UNCOND_WAIT">UW_UNCOND_WAIT: Unconditional wait</a>
+</h2>
+
+  <p> This method contains a call to <code>java.lang.Object.wait()</code> which
+  is not guarded by conditional control flow.&nbsp; The code should
+    verify that condition it intends to wait for is not already satisfied
+    before calling wait; any previous notifications will be ignored.
+  </p>
+
+    
+<h2>
+<a name="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR: Field not initialized in constructor but dereferenced without null check</a>
+</h2>
+
+  <p> This field is never initialized within any constructor, and is therefore could be null after
+the object is constructed. Elsewhere, it is loaded and dereferenced without a null check.
+This could be a either an error or a questionable design, since
+it means a null pointer exception will be generated if that field is dereferenced
+before being initialized.
+</p>
+
+    
+<h2>
+<a name="WA_NOT_IN_LOOP">WA_NOT_IN_LOOP: Wait not in loop </a>
+</h2>
+
+  <p> This method contains a call to <code>java.lang.Object.wait()</code>
+  which is not in a loop.&nbsp; If the monitor is used for multiple conditions,
+  the condition the caller intended to wait for might not be the one
+  that actually occurred.</p>
+
+    </body>
+</html>
