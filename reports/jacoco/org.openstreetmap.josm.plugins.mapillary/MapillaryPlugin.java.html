@@ -254,16 +254,21 @@ public class MapillaryPlugin extends Plugin {
 <span class="fc" id="L254">      return;</span>
     }
 <span class="nc bnc" id="L256" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L257">      SwingUtilities.invokeLater(() -&gt; setMenuEnabled(menu, value));</span>
+<span class="nc" id="L257">      SwingUtilities.invokeLater(new Runnable() {</span>
+        @Override
+        public void run() {
+<span class="nc" id="L260">          setMenuEnabled(menu, value);</span>
+<span class="nc" id="L261">        }</span>
+      });
     } else {
-<span class="nc" id="L259">      menu.setEnabled(value);</span>
-<span class="nc" id="L260">      menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L264">      menu.setEnabled(value);</span>
+<span class="nc" id="L265">      menu.getAction().setEnabled(value);</span>
     }
-<span class="nc" id="L262">  }</span>
+<span class="nc" id="L267">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L266">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L271">    return new MapillaryPreferenceSetting();</span>
   }
 
   /**
@@ -275,10 +280,10 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
-<span class="fc" id="L279">      return null;</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="fc" id="L284">      return null;</span>
     }
-<span class="nc" id="L281">    return new ImageProvider(s);</span>
+<span class="nc" id="L286">    return new ImageProvider(s);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
