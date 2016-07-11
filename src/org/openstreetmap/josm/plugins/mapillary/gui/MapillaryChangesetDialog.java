@@ -69,7 +69,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private MapillaryChangesetDialog() {
     super(
       tr("Current Mapillary changeset"),
-      "mapillaryhistory.png",
+      "mapillary-upload.svg",
       tr("Open Mapillary changeset dialog"),
       Shortcut.registerShortcut(
         tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE

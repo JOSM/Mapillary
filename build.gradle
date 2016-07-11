@@ -49,7 +49,7 @@ sourceSets {
       include 'data/**'
       include 'images/**'
       include 'README'
-      include 'GPL-v*.txt'
+      include 'LICENSE*'
     }
   }
   test {
