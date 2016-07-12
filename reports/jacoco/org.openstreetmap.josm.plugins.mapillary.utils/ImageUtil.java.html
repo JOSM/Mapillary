@@ -145,18 +145,21 @@ public final class ImageUtil {
       }
 <span class="pc" id="L146">      try (FileInputStream fis = new FileInputStream(f)) {</span>
 <span class="fc" id="L147">        int numBytes = fis.read(magic);</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">        return Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">            || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)));</span>
-<span class="pc bpc" id="L150" title="6 of 8 branches missed.">      } catch (FileNotFoundException e) {</span>
-<span class="nc" id="L151">        return false;</span>
-<span class="nc" id="L152">      } catch (IOException e) {</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        return numBytes &gt;= 0 &amp;&amp; (</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">          Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)))</span>
+        );
+<span class="pc bpc" id="L152" title="6 of 8 branches missed.">      } catch (FileNotFoundException e) {</span>
 <span class="nc" id="L153">        return false;</span>
+<span class="nc" id="L154">      } catch (IOException e) {</span>
+<span class="nc" id="L155">        Main.warn(&quot;IO-exception while reading file &quot;+f.getAbsolutePath());</span>
+<span class="nc" id="L156">        return false;</span>
       }
     }
 
     @Override
     public String getDescription() {
-<span class="nc" id="L159">      return I18n.tr(&quot;Supported image formats (JPG and PNG)&quot;);</span>
+<span class="nc" id="L162">      return I18n.tr(&quot;Supported image formats (JPG and PNG)&quot;);</span>
     }
 
   }
