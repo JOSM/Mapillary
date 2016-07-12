@@ -145,11 +145,14 @@ public final class ImageUtil {
       }
       try (FileInputStream fis = new FileInputStream(f)) {
         int numBytes = fis.read(magic);
-        return Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))
-            || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)));
+        return numBytes >= 0 && (
+          Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))
+          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)))
+        );
       } catch (FileNotFoundException e) {
         return false;
       } catch (IOException e) {
+        Main.warn("IO-exception while reading file "+f.getAbsolutePath());
         return false;
       }
     }
