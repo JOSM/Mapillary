@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -88,6 +89,12 @@ public class ImageUtilsTest {
   @Test
   public void testUtilityClass() {
     TestUtil.testUtilityClass(ImageUtil.class);
+  }
+
+  @Test
+  public void testFileFilterAgainstEmptyFile() throws URISyntaxException {
+    File f = new File(ImageUtil.class.getResource("/zeroByteFile").toURI());
+    assertFalse(ImageUtil.IMAGE_FILE_FILTER.accept(f));
   }
 
 }
