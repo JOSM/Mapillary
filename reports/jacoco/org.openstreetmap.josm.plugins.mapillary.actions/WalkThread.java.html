@@ -155,31 +155,21 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 <span class="nc" id="L155">      end();</span>
 <span class="nc" id="L156">      this.interrupt();</span>
     } else {
-<span class="nc" id="L158">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L161">          stopWalk();</span>
-<span class="nc" id="L162">        }</span>
-      });
+<span class="nc" id="L158">      SwingUtilities.invokeLater(() -&gt; stopWalk());</span>
     }
-<span class="nc" id="L165">  }</span>
+<span class="nc" id="L160">  }</span>
 
   /**
    * Called when the walk stops by itself of forcefully.
    */
   public void end() {
-<span class="nc bnc" id="L171" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L172">      this.end = true;</span>
-<span class="nc" id="L173">      this.data.removeListener(this);</span>
-<span class="nc" id="L174">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L167">      this.end = true;</span>
+<span class="nc" id="L168">      this.data.removeListener(this);</span>
+<span class="nc" id="L169">      MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);</span>
     } else {
-<span class="nc" id="L176">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L179">          end();</span>
-<span class="nc" id="L180">        }</span>
-      });
+<span class="nc" id="L171">      SwingUtilities.invokeLater(() -&gt; end());</span>
     }
-<span class="nc" id="L183">  }</span>
+<span class="nc" id="L173">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
