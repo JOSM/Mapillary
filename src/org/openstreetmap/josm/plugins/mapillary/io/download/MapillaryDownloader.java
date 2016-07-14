@@ -17,6 +17,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.tools.I18n;
 
 /**
  * Class that concentrates all the ways of downloading of the plugin. All the
@@ -28,7 +29,56 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 public final class MapillaryDownloader {
 
   /** Possible download modes. */
-  public enum MODES {Automatic, Semiautomatic, Manual}
+  public enum DOWNLOAD_MODE {
+    VISIBLE_AREA("visibleArea", I18n.tr("everything in the visible area")),
+    OSM_AREA("osmArea", I18n.tr("areas with downloaded OSM-data")),
+    MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
+
+    private String prefId;
+    private String label;
+
+    private DOWNLOAD_MODE(String prefId, String label) {
+      this.prefId = prefId;
+      this.label = label;
+    }
+
+    public String getPrefId() {
+      return prefId;
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public static DOWNLOAD_MODE fromPrefId(String prefId) {
+      if (MANUAL_ONLY.getPrefId().equals(prefId) || "Manual".equals(prefId)) {
+        return MANUAL_ONLY;
+      }
+      if (OSM_AREA.getPrefId().equals(prefId) || "Automatic".equals(prefId)) {
+        return OSM_AREA;
+      }
+      if (VISIBLE_AREA.getPrefId().equals(prefId) || "Semiautomatic".equals(prefId)) {
+        return VISIBLE_AREA;
+      }
+      return getDefault();
+    }
+    public static DOWNLOAD_MODE fromLabel(String label) {
+      if (MANUAL_ONLY.getLabel().equals(label)) {
+        return MANUAL_ONLY;
+      }
+      if (OSM_AREA.getLabel().equals(label)) {
+        return OSM_AREA;
+      }
+      if (VISIBLE_AREA.getLabel().equals(label)) {
+        return VISIBLE_AREA;
+      }
+      return getDefault();
+    }
+
+    public static DOWNLOAD_MODE getDefault() {
+      return OSM_AREA;
+    }
+  }
 
   /** All the Threads that have been run. Used to interrupt them properly. */
   private static List<Thread> threads = new ArrayList<>();
@@ -72,20 +122,12 @@ public final class MapillaryDownloader {
   /**
    * Returns the current download mode.
    *
-   * @return the currently enabled of the available {@link MODES}
+   * @return the currently enabled {@link DOWNLOAD_MODE}
    */
-  public static MapillaryDownloader.MODES getMode() {
-    String downloadMode = Main.pref.get("mapillary.download-mode", MODES.Automatic.toString());
-    boolean isTempSemiautomatic = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic;
-    if (MODES.Semiautomatic.toString().equals(downloadMode) || isTempSemiautomatic) {
-      return MODES.Semiautomatic;
-    } else if (MODES.Manual.toString().equals(downloadMode)) {
-      return MODES.Manual;
-    } else if (MODES.Automatic.toString().equals(downloadMode)) {
-      return MODES.Automatic;
-    } else {
-      throw new IllegalStateException();
-    }
+  public static MapillaryDownloader.DOWNLOAD_MODE getMode() {
+   return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
+     ? DOWNLOAD_MODE.VISIBLE_AREA
+     : DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode"));
   }
 
   private static void run(Thread t) {
@@ -97,13 +139,16 @@ public final class MapillaryDownloader {
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void completeView() {
-    if (getMode() != MODES.Semiautomatic && getMode() != MODES.Manual)
-      throw new IllegalStateException("Must be in semiautomatic or manual mode");
+    if (getMode() != DOWNLOAD_MODE.VISIBLE_AREA && getMode() != DOWNLOAD_MODE.MANUAL_ONLY) {
+      throw new IllegalStateException("Download mode must be 'visible area' or 'manual only'");
+    }
     Bounds view = Main.map.mapView.getRealBounds();
-    if (view.getArea() > MAX_AREA)
+    if (view.getArea() > MAX_AREA) {
       return;
-    if (isViewDownloaded(view))
+    }
+    if (isViewDownloaded(view)) {
       return;
+    }
     MapillaryLayer.getInstance().getData().getBounds().add(view);
     getImages(view);
   }
@@ -158,7 +203,7 @@ public final class MapillaryDownloader {
       tooBigErrorDialog();
       return;
     }
-    if (getMode() != MODES.Automatic)
+    if (getMode() != DOWNLOAD_MODE.OSM_AREA)
       throw new IllegalStateException("Must be in automatic mode.");
     for (Bounds bounds : Main.getLayerManager().getEditLayer().data
         .getDataSourceBounds()) {

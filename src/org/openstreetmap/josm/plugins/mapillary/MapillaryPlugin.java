@@ -31,9 +31,10 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
 /**
  * This is the main class of the Mapillary plugin.
@@ -144,8 +145,14 @@ public class MapillaryPlugin extends Plugin {
       Main.error(e);
     }
 
-    if (Main.pref.get("mapillary.access-token") == null)
+    if (Main.pref.get("mapillary.access-token") == null) {
       MapillaryUser.setTokenValid(false);
+    }
+    // Normalize download mode preference setting
+    Main.pref.put(
+      "mapillary.download-mode",
+      DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode")).getPrefId()
+    );
   }
 
   /**
@@ -224,7 +231,7 @@ public class MapillaryPlugin extends Plugin {
       }
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       setMenuEnabled(downloadMenu, true);
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Manual)
+      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY)
         setMenuEnabled(downloadViewMenu, true);
       setMenuEnabled(importMenu, true);
       setMenuEnabled(importIntoSequenceMenu, true);

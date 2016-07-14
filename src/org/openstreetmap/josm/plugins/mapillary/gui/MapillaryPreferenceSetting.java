@@ -28,7 +28,7 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
@@ -47,9 +47,9 @@ import org.openstreetmap.josm.tools.I18n;
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
   private final JComboBox<String> downloadModeComboBox = new JComboBox<>(new String[]{
-      MapillaryDownloader.MODES.Automatic.toString(),
-      MapillaryDownloader.MODES.Semiautomatic.toString(),
-      MapillaryDownloader.MODES.Manual.toString()
+      DOWNLOAD_MODE.VISIBLE_AREA.getLabel(),
+      DOWNLOAD_MODE.OSM_AREA.getLabel(),
+      DOWNLOAD_MODE.MANUAL_ONLY.getLabel()
   });
   private final JCheckBox displayHour = new JCheckBox(I18n.tr("Display hour when the picture was taken"));
   private final JCheckBox format24 = new JCheckBox(I18n.tr("Use 24 hour format"));
@@ -101,13 +101,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.setLayout(new GridBagLayout());
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    // Sets the value of the ComboBox.
-    String downloadMode = Main.pref.get("mapillary.download-mode");
-    if (MapillaryDownloader.MODES.Automatic.toString().equals(downloadMode)
-        || MapillaryDownloader.MODES.Semiautomatic.toString().equals(downloadMode)
-        || MapillaryDownloader.MODES.Manual.toString().equals(downloadMode)) {
-      downloadModeComboBox.setSelectedItem(Main.pref.get("mapillary.download-mode"));
-    }
+    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode")).getLabel());
+
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(I18n.tr("Download mode")));
     downloadModePanel.add(downloadModeComboBox);
@@ -169,16 +164,16 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     boolean mod = false;
 
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
-    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Automatic.toString())) {
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Automatic.toString());
-    }
-    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Semiautomatic.toString())) {
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Semiautomatic.toString());
-    }
-    if (this.downloadModeComboBox.getSelectedItem().equals(MapillaryDownloader.MODES.Manual.toString())) {
-      Main.pref.put("mapillary.download-mode", MapillaryDownloader.MODES.Manual.toString());
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
-    }
+    Main.pref.put(
+      "mapillary.download-mode",
+      DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId()
+    );
+    MapillaryPlugin.setMenuEnabled(
+      MapillaryPlugin.getDownloadViewMenu(),
+      DOWNLOAD_MODE.MANUAL_ONLY.getPrefId().equals(
+        Main.pref.get("mapillary.download-mode", DOWNLOAD_MODE.getDefault().getPrefId())
+      )
+    );
     Main.pref.put("mapillary.display-hour", this.displayHour.isSelected());
     Main.pref.put("mapillary.format-24", this.format24.isSelected());
     Main.pref.put("mapillary.move-to-picture", this.moveTo.isSelected());
@@ -197,7 +192,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    * @author nokutu
    *
    */
-  public class LoginAction extends AbstractAction {
+  private class LoginAction extends AbstractAction {
     private static final long serialVersionUID = -3908477563072057344L;
     private final transient MapillaryLoginListener callback;
 
@@ -223,7 +218,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    * @author nokutu
    *
    */
-  public class LogoutAction extends AbstractAction {
+  private class LogoutAction extends AbstractAction {
 
     private static final long serialVersionUID = 3434780936404707219L;
 

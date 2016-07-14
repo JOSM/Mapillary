@@ -1,6 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -52,14 +55,12 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -109,18 +110,22 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       setMode(new SelectMode());
       Main.getLayerManager().addLayer(this);
       Main.getLayerManager().addActiveLayerChangeListener(this);
-      if (Main.getLayerManager().getEditLayer() != null)
+      if (Main.getLayerManager().getEditLayer() != null) {
         Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Automatic)
+      }
+      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
         MapillaryDownloader.automaticDownload();
-      if (MapillaryDownloader.getMode() == MapillaryDownloader.MODES.Semiautomatic)
+      }
+      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.VISIBLE_AREA) {
         this.mode.zoomChanged();
+      }
     }
     // Does not execute when in headless mode
     if (MapillaryPlugin.getExportMenu() != null) {
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), true);
-      if (!MapillaryMainDialog.getInstance().isShowing())
+      if (!MapillaryMainDialog.getInstance().isShowing()) {
         MapillaryMainDialog.getInstance().getButton().doClick();
+      }
     }
     createHatchTexture();
     if (Main.main != null) {
@@ -131,8 +136,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
           .put("MapillaryDel", new DeleteImageAction());
     }
 
-    if (Main.main != null)
+    if (Main.main != null) {
       MapillaryData.dataUpdated();
+    }
   }
 
   /**

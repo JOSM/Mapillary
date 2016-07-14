@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,6 +17,7 @@ import org.junit.Test;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.tools.I18n;
 
 public class MapillaryPreferenceSettingTest extends AbstractTest {
@@ -117,8 +116,12 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     for (int i = 0; i < ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getItemCount(); i++) {
       ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).setSelectedIndex(i);
       settings.ok();
-      assertEquals(Main.pref.get("mapillary.download-mode"),
-          ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getSelectedItem());
+      assertEquals(
+        Main.pref.get("mapillary.download-mode"),
+        DOWNLOAD_MODE.fromLabel(
+          ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getSelectedItem().toString()
+        ).getPrefId()
+      );
     }
   }
 
