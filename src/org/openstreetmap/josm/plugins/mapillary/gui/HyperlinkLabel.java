@@ -109,7 +109,7 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
     private final JMenuItem copyTag;
     private final JMenuItem edit;
 
-    public LinkPopUp(final String key) {
+    LinkPopUp(final String key) {
       this.copy = new JMenuItem(tr("Copy key"));
       this.copy.addActionListener(new ActionListener() {
         @Override

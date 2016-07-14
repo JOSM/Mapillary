@@ -48,8 +48,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @see MapillaryCommand
  *
  */
-public class MapillaryHistoryDialog extends ToggleDialog implements
-    MapillaryRecordListener {
+public final class MapillaryHistoryDialog extends ToggleDialog implements MapillaryRecordListener {
 
   private static final long serialVersionUID = -3019715241209349372L;
 
@@ -58,10 +57,8 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
   private final transient UndoRedoSelectionListener undoSelectionListener;
   private final transient UndoRedoSelectionListener redoSelectionListener;
 
-  private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(
-      new DefaultMutableTreeNode());
-  private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(
-      new DefaultMutableTreeNode());
+  private final DefaultTreeModel undoTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+  private final DefaultTreeModel redoTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
   private final JTree undoTree = new JTree(this.undoTreeModel);
   private final JTree redoTree = new JTree(this.redoTreeModel);
 
@@ -87,43 +84,34 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     this.undoTree.setShowsRootHandles(true);
     this.undoTree.setRootVisible(false);
     this.undoTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
-    this.undoTree.getSelectionModel().setSelectionMode(
-        TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.undoTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     this.undoTree.addMouseListener(new MouseEventHandler());
     this.undoSelectionListener = new UndoRedoSelectionListener(this.undoTree);
-    this.undoTree.getSelectionModel().addTreeSelectionListener(
-        this.undoSelectionListener);
+    this.undoTree.getSelectionModel().addTreeSelectionListener(this.undoSelectionListener);
 
     this.redoTree.expandRow(0);
     this.redoTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
     this.redoTree.setShowsRootHandles(true);
     this.redoTree.setRootVisible(false);
-    this.redoTree.getSelectionModel().setSelectionMode(
-        TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.redoTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     this.redoTree.addMouseListener(new MouseEventHandler());
     this.redoSelectionListener = new UndoRedoSelectionListener(this.redoTree);
-    this.redoTree.getSelectionModel().addTreeSelectionListener(
-        this.redoSelectionListener);
+    this.redoTree.getSelectionModel().addTreeSelectionListener(this.redoSelectionListener);
 
     JPanel treesPanel = new JPanel(new GridBagLayout());
     treesPanel.add(this.spacer, GBC.eol());
     this.spacer.setVisible(false);
-    treesPanel
-        .add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(this.undoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     this.separator.setVisible(false);
-    treesPanel.add(this.separator, GBC.eol()
-        .fill(GridBagConstraints.HORIZONTAL));
-    treesPanel
-        .add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)),
-        GBC.std().weight(0, 1));
+    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(this.redoTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));
     treesPanel.setBackground(this.redoTree.getBackground());
 
     this.undoButton = new SideButton(new UndoAction());
     this.redoButton = new SideButton(new RedoAction());
 
-    createLayout(treesPanel, true,
-        Arrays.asList(new SideButton[] { this.undoButton, this.redoButton }));
+    createLayout(treesPanel, true, Arrays.asList(new SideButton[] {this.undoButton, this.redoButton}));
   }
 
   /**
@@ -195,11 +183,11 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     }
   }
 
-  private class UndoAction extends AbstractAction {
+  private static class UndoAction extends AbstractAction {
 
     private static final long serialVersionUID = -6435832206342007269L;
 
-    public UndoAction() {
+    UndoAction() {
       putValue(NAME, tr("Undo"));
       new ImageProvider("undo").getResource().attachImageIcon(this, true);
     }
@@ -210,11 +198,11 @@ public class MapillaryHistoryDialog extends ToggleDialog implements
     }
   }
 
-  private class RedoAction extends AbstractAction {
+  private static class RedoAction extends AbstractAction {
 
     private static final long serialVersionUID = -2761935780353053512L;
 
-    public RedoAction() {
+    RedoAction() {
       putValue(NAME, tr("Redo"));
       new ImageProvider("redo").getResource().attachImageIcon(this, true);
     }

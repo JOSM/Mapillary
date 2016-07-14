@@ -44,7 +44,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  * @author nokutu
  */
-public class MapillaryMainDialog extends ToggleDialog implements
+public final class MapillaryMainDialog extends ToggleDialog implements
         ICachedLoaderListener, MapillaryDataListener {
 
   private static final long serialVersionUID = 6856496736429480600L;
@@ -342,7 +342,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     /**
      * Constructs a normal NextPictureAction
      */
-    public NextPictureAction() {
+    NextPictureAction() {
       putValue(NAME, tr("Next picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
     }
@@ -358,14 +358,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    * @author nokutu
    */
-  private class PreviousPictureAction extends AbstractAction {
+  private static class PreviousPictureAction extends AbstractAction {
 
     private static final long serialVersionUID = -6420511632957956012L;
 
     /**
      * Constructs a normal PreviousPictureAction
      */
-    public PreviousPictureAction() {
+    PreviousPictureAction() {
       putValue(NAME, tr("Previous picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the previous picture in the sequence"));
     }
@@ -381,14 +381,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    * @author nokutu
    */
-  private class RedAction extends AbstractAction {
+  private static class RedAction extends AbstractAction {
 
     private static final long serialVersionUID = -6480229431481386376L;
 
     /**
      * Constructs a normal RedAction
      */
-    public RedAction() {
+    RedAction() {
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
               tr("Jumps to the picture at the other side of the red line"));
@@ -408,14 +408,14 @@ public class MapillaryMainDialog extends ToggleDialog implements
    *
    * @author nokutu
    */
-  private class BlueAction extends AbstractAction {
+  private static class BlueAction extends AbstractAction {
 
     private static final long serialVersionUID = 6250690644594703314L;
 
     /**
      * Constructs a normal BlueAction
      */
-    public BlueAction() {
+    BlueAction() {
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,
               tr("Jumps to the picture at the other side of the blue line"));
@@ -430,7 +430,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     }
   }
 
-  private class StopAction extends AbstractAction implements WalkListener {
+  private static class StopAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -6561451575815789198L;
 
@@ -439,7 +439,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     /**
      * Constructs a normal StopAction
      */
-    public StopAction() {
+    StopAction() {
       putValue(NAME, tr("Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
       new ImageProvider("dialogs/mapillaryStop.png").getResource().attachImageIcon(this, true);
@@ -458,7 +458,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     }
   }
 
-  private class PlayAction extends AbstractAction implements WalkListener {
+  private static class PlayAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = -17943404752082788L;
     private transient WalkThread thread;
@@ -466,7 +466,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     /**
      * Constructs a normal PlayAction
      */
-    public PlayAction() {
+    PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
       new ImageProvider("dialogs/mapillaryPlay.png").getResource().attachImageIcon(this, true);
@@ -486,7 +486,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     }
   }
 
-  private class PauseAction extends AbstractAction implements WalkListener {
+  private static class PauseAction extends AbstractAction implements WalkListener {
 
     private static final long serialVersionUID = 4400240686337741192L;
 
@@ -495,7 +495,7 @@ public class MapillaryMainDialog extends ToggleDialog implements
     /**
      * Constructs a normal PauseAction
      */
-    public PauseAction() {
+    PauseAction() {
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
       new ImageProvider("dialogs/mapillaryPause.png").getResource().attachImageIcon(this, true);

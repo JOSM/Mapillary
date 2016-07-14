@@ -276,7 +276,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     }
   }
 
-  private class UpdateAction extends AbstractAction {
+  private static class UpdateAction extends AbstractAction {
 
     private static final long serialVersionUID = -7417238601979689863L;
 
@@ -291,7 +291,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     }
   }
 
-  private class ResetAction extends AbstractAction {
+  private static class ResetAction extends AbstractAction {
     /**
      *
      */
@@ -327,7 +327,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    *
    * @author nokutu
    */
-  private class SignChooserAction extends AbstractAction {
+  private static class SignChooserAction extends AbstractAction {
 
     private static final long serialVersionUID = 8706299665735930148L;
 

@@ -416,14 +416,14 @@ public class MapillaryImageDisplay extends JComponent {
     }
   }
 
-  private final Point img2compCoord(Rectangle visibleRect, int xImg, int yImg) {
+  private Point img2compCoord(Rectangle visibleRect, int xImg, int yImg) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
     return new Point(drawRect.x + ((xImg - visibleRect.x) * drawRect.width)
         / visibleRect.width, drawRect.y
         + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
   }
 
-  private final Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
+  private Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
     return new Point(
         visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
@@ -431,7 +431,7 @@ public class MapillaryImageDisplay extends JComponent {
     );
   }
 
-  private static final Point getCenterImgCoord(Rectangle visibleRect) {
+  private static Point getCenterImgCoord(Rectangle visibleRect) {
     return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);
   }
 
@@ -498,7 +498,7 @@ public class MapillaryImageDisplay extends JComponent {
     repaint();
   }
 
-  private static final void checkVisibleRectPos(Image image, Rectangle visibleRect) {
+  private static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
     if (visibleRect.x < 0) {
       visibleRect.x = 0;
     }
