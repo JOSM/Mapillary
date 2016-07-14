@@ -124,17 +124,17 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="fc" id="L124">      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.ICON12);</span>
 <span class="pc" id="L125">    }</span>
 
-<span class="fc" id="L127">    new Thread( new Runnable() {</span>
+<span class="fc" id="L127">    new Thread(new Runnable() {</span>
       @Override
       public void run() {
 <span class="fc" id="L130">        String username = MapillaryUser.getUsername();</span>
 <span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (username != null) {</span>
-<span class="nc" id="L132">          SwingUtilities.invokeLater( new Runnable() {</span>
+<span class="nc" id="L132">          SwingUtilities.invokeLater(new Runnable() {</span>
             @Override
             public void run() {
 <span class="nc" id="L135">              onLogin(MapillaryUser.getUsername());</span>
 <span class="nc" id="L136">            }</span>
-          } );
+          });
         }
 <span class="fc" id="L139">      }</span>
 <span class="fc" id="L140">    }).start();</span>
@@ -196,7 +196,7 @@ import org.openstreetmap.josm.tools.I18n;
     private static final long serialVersionUID = -3908477563072057344L;
     private final transient MapillaryLoginListener callback;
 
-<span class="fc" id="L199">    public LoginAction(MapillaryLoginListener loginCallback) {</span>
+<span class="fc" id="L199">    LoginAction(MapillaryLoginListener loginCallback) {</span>
 <span class="fc" id="L200">      this.callback = loginCallback;</span>
 <span class="fc" id="L201">    }</span>
 
