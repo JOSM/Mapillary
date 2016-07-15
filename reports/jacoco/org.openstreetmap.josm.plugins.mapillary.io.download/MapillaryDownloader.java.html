@@ -236,33 +236,28 @@ public final class MapillaryDownloader {
               Main.parent,
 <span class="nc" id="L237">              I18n.tr(&quot;The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted.&quot;));</span>
     } else {
-<span class="nc" id="L239">      SwingUtilities.invokeLater( new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L242">          tooBigErrorDialog();</span>
-<span class="nc" id="L243">        }</span>
-      });
+<span class="nc" id="L239">      SwingUtilities.invokeLater(() -&gt; tooBigErrorDialog());</span>
     }
-<span class="nc" id="L246">  }</span>
+<span class="nc" id="L241">  }</span>
 
   /**
    * Stops all running threads.
    */
   public static void stopAll() {
-<span class="nc bnc" id="L252" title="All 2 branches missed.">    for (Thread t : threads) {</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">      if (t.isAlive())</span>
-<span class="nc" id="L254">        Main.info(t+&quot; is still alive!&quot;);</span>
-<span class="nc" id="L255">      t.interrupt();</span>
-<span class="nc" id="L256">    }</span>
-<span class="nc" id="L257">    threads.clear();</span>
-<span class="nc" id="L258">    executor.shutdownNow();</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">    for (Thread t : threads) {</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">      if (t.isAlive())</span>
+<span class="nc" id="L249">        Main.info(t+&quot; is still alive!&quot;);</span>
+<span class="nc" id="L250">      t.interrupt();</span>
+<span class="nc" id="L251">    }</span>
+<span class="nc" id="L252">    threads.clear();</span>
+<span class="nc" id="L253">    executor.shutdownNow();</span>
     try {
-<span class="nc" id="L260">      executor.awaitTermination(30, TimeUnit.SECONDS);</span>
-<span class="nc" id="L261">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L262">      Main.error(e);</span>
-<span class="nc" id="L263">    }</span>
-<span class="nc" id="L264">    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,</span>
+<span class="nc" id="L255">      executor.awaitTermination(30, TimeUnit.SECONDS);</span>
+<span class="nc" id="L256">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L257">      Main.error(e);</span>
+<span class="nc" id="L258">    }</span>
+<span class="nc" id="L259">    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,</span>
         new ArrayBlockingQueue&lt;Runnable&gt;(100));
-<span class="nc" id="L266">  }</span>
+<span class="nc" id="L261">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

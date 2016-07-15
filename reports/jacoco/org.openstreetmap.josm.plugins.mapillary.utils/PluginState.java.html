@@ -110,26 +110,21 @@ public final class PluginState {
 <span class="nc" id="L110">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Finished upload&quot;));</span>
 <span class="nc" id="L111">      dlg.setVisible(true);</span>
 <span class="nc" id="L112">    } else {</span>
-<span class="nc" id="L113">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L116">          finishedUploadDialog();</span>
-<span class="nc" id="L117">        }</span>
-      });
+<span class="nc" id="L113">      SwingUtilities.invokeLater(() -&gt; finishedUploadDialog());</span>
     }
-<span class="nc" id="L120">  }</span>
+<span class="nc" id="L115">  }</span>
 
   public static void notLoggedInToMapillaryDialog() {
-<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (Main.main == null) {</span>
-<span class="nc" id="L124">      return;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    if (Main.main == null) {</span>
+<span class="nc" id="L119">      return;</span>
     }
-<span class="nc" id="L126">    JOptionPane.showMessageDialog(</span>
+<span class="nc" id="L121">    JOptionPane.showMessageDialog(</span>
         Main.parent,
-<span class="nc" id="L128">        tr(&quot;You are not logged in, please log in to Mapillary in the preferences&quot;),</span>
-<span class="nc" id="L129">        tr(&quot;Not Logged in to Mapillary&quot;),</span>
+<span class="nc" id="L123">        tr(&quot;You are not logged in, please log in to Mapillary in the preferences&quot;),</span>
+<span class="nc" id="L124">        tr(&quot;Not Logged in to Mapillary&quot;),</span>
         JOptionPane.WARNING_MESSAGE
     );
-<span class="nc" id="L132">  }</span>
+<span class="nc" id="L127">  }</span>
 
 
 
@@ -139,11 +134,11 @@ public final class PluginState {
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L142">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
+<span class="nc" id="L137">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
   }
 
   public static void setSubmittingChangeset(boolean isSubmitting) {
-<span class="nc" id="L146">      submittingChangeset = isSubmitting;</span>
-<span class="nc" id="L147">  }</span>
+<span class="nc" id="L141">      submittingChangeset = isSubmitting;</span>
+<span class="nc" id="L142">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

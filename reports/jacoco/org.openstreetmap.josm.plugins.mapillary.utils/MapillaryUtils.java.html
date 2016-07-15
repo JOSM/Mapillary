@@ -196,37 +196,32 @@ public final class MapillaryUtils {
    */
   public static void showPictures(final Set&lt;MapillaryAbstractImage&gt; images, final boolean select) {
 <span class="nc bnc" id="L198" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L199">      SwingUtilities.invokeLater(new Runnable() {</span>
-        @Override
-        public void run() {
-<span class="nc" id="L202">          showPictures(images, select);</span>
-<span class="nc" id="L203">        }</span>
-      });
+<span class="nc" id="L199">      SwingUtilities.invokeLater(() -&gt; showPictures(images, select));</span>
     } else {
       Bounds zoomBounds;
-<span class="nc bnc" id="L207" title="All 2 branches missed.">      if (images.isEmpty()) {</span>
-<span class="nc" id="L208">        zoomBounds = new Bounds(new LatLon(0, 0));</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">      if (images.isEmpty()) {</span>
+<span class="nc" id="L203">        zoomBounds = new Bounds(new LatLon(0, 0));</span>
       } else {
-<span class="nc" id="L210">        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());</span>
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        for (MapillaryAbstractImage img : images) {</span>
-<span class="nc" id="L212">          zoomBounds.extend(img.getMovingLatLon());</span>
-<span class="nc" id="L213">        }</span>
+<span class="nc" id="L205">        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        for (MapillaryAbstractImage img : images) {</span>
+<span class="nc" id="L207">          zoomBounds.extend(img.getMovingLatLon());</span>
+<span class="nc" id="L208">        }</span>
       }
 
       // The zoom rectangle must have a minimum size.
-<span class="nc" id="L217">      double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);</span>
-<span class="nc" id="L218">      double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);</span>
-<span class="nc" id="L219">      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);</span>
+<span class="nc" id="L212">      double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);</span>
+<span class="nc" id="L213">      double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);</span>
+<span class="nc" id="L214">      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);</span>
 
-<span class="nc" id="L221">      Main.map.mapView.zoomTo(zoomBounds);</span>
-<span class="nc" id="L222">      MapillaryLayer.getInstance().getData().setSelectedImage(null);</span>
-<span class="nc bnc" id="L223" title="All 2 branches missed.">      if (select)</span>
-<span class="nc" id="L224">        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">      if (Main.main != null)</span>
-<span class="nc" id="L226">        MapillaryData.dataUpdated();</span>
+<span class="nc" id="L216">      Main.map.mapView.zoomTo(zoomBounds);</span>
+<span class="nc" id="L217">      MapillaryLayer.getInstance().getData().setSelectedImage(null);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">      if (select)</span>
+<span class="nc" id="L219">        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">      if (Main.main != null)</span>
+<span class="nc" id="L221">        MapillaryData.dataUpdated();</span>
     }
 
-<span class="nc" id="L229">  }</span>
+<span class="nc" id="L224">  }</span>
 
   /**
    * Separates two images belonging to the same sequence. The two images have to be consecutive in the same sequence.
@@ -237,63 +232,63 @@ public final class MapillaryUtils {
    * @param imgB the other image marking where to split the sequence, needs to be a direct neighbour of {@code imgA} in the sequence.
    */
   public static synchronized void unjoin(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
-<span class="pc bpc" id="L240" title="2 of 4 branches missed.">    if (imgA == null || imgB == null) {</span>
-<span class="nc" id="L241">      throw new IllegalArgumentException(&quot;Both images must be non-null for unjoining.&quot;);</span>
+<span class="pc bpc" id="L235" title="2 of 4 branches missed.">    if (imgA == null || imgB == null) {</span>
+<span class="nc" id="L236">      throw new IllegalArgumentException(&quot;Both images must be non-null for unjoining.&quot;);</span>
     }
-<span class="pc bpc" id="L243" title="1 of 2 branches missed.">    if (imgA.getSequence() != imgB.getSequence()) {</span>
-<span class="nc" id="L244">      throw new IllegalArgumentException(&quot;You can only unjoin with two images from the same sequence.&quot;);</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    if (imgA.getSequence() != imgB.getSequence()) {</span>
+<span class="nc" id="L239">      throw new IllegalArgumentException(&quot;You can only unjoin with two images from the same sequence.&quot;);</span>
     }
-<span class="pc bpc" id="L246" title="2 of 4 branches missed.">    if (imgB.equals(imgA.next()) &amp;&amp; imgA.equals(imgB.next())) {</span>
-<span class="nc" id="L247">      throw new IllegalArgumentException(&quot;When unjoining with two images these must be consecutive in one sequence.&quot;);</span>
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">    if (imgB.equals(imgA.next()) &amp;&amp; imgA.equals(imgB.next())) {</span>
+<span class="nc" id="L242">      throw new IllegalArgumentException(&quot;When unjoining with two images these must be consecutive in one sequence.&quot;);</span>
     }
 
-<span class="pc bpc" id="L250" title="1 of 2 branches missed.">    if (imgA.equals(imgB.next())) {</span>
-<span class="nc" id="L251">      unjoin(imgB, imgA);</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">    if (imgA.equals(imgB.next())) {</span>
+<span class="nc" id="L246">      unjoin(imgB, imgA);</span>
     } else {
-<span class="fc" id="L253">      MapillarySequence seqA = new MapillarySequence();</span>
-<span class="fc" id="L254">      MapillarySequence seqB = new MapillarySequence();</span>
-<span class="fc" id="L255">      boolean insideFirstHalf = true;</span>
-<span class="fc bfc" id="L256" title="All 2 branches covered.">      for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {</span>
-<span class="fc bfc" id="L257" title="All 2 branches covered.">        if (insideFirstHalf) {</span>
-<span class="fc" id="L258">          img.setSequence(seqA);</span>
-<span class="fc" id="L259">          seqA.add(img);</span>
+<span class="fc" id="L248">      MapillarySequence seqA = new MapillarySequence();</span>
+<span class="fc" id="L249">      MapillarySequence seqB = new MapillarySequence();</span>
+<span class="fc" id="L250">      boolean insideFirstHalf = true;</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">      for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (insideFirstHalf) {</span>
+<span class="fc" id="L253">          img.setSequence(seqA);</span>
+<span class="fc" id="L254">          seqA.add(img);</span>
         } else {
-<span class="fc" id="L261">          img.setSequence(seqB);</span>
-<span class="fc" id="L262">          seqB.add(img);</span>
+<span class="fc" id="L256">          img.setSequence(seqB);</span>
+<span class="fc" id="L257">          seqB.add(img);</span>
         }
-<span class="fc bfc" id="L264" title="All 2 branches covered.">        if (img.equals(imgA)) {</span>
-<span class="fc" id="L265">          insideFirstHalf = false;</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">        if (img.equals(imgA)) {</span>
+<span class="fc" id="L260">          insideFirstHalf = false;</span>
         }
-<span class="fc" id="L267">      }</span>
-<span class="pc bpc" id="L268" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
-<span class="nc" id="L269">        MapillaryData.dataUpdated();</span>
+<span class="fc" id="L262">      }</span>
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
+<span class="nc" id="L264">        MapillaryData.dataUpdated();</span>
       }
     }
-<span class="fc" id="L272">  }</span>
+<span class="fc" id="L267">  }</span>
 
   /**
    * Updates the help text at the bottom of the window.
    */
   public static void updateHelpText() {
-<span class="nc" id="L278">    StringBuilder ret = new StringBuilder();</span>
-<span class="nc bnc" id="L279" title="All 2 branches missed.">    if (PluginState.isDownloading()) {</span>
-<span class="nc" id="L280">      ret.append(tr(&quot;Downloading Mapillary images&quot;));</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">    } else if (MapillaryLayer.getInstance().getData().size() &gt; 0) {</span>
-<span class="nc" id="L282">      ret.append(tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance().getData().size()));</span>
-<span class="nc bnc" id="L283" title="All 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
-<span class="nc" id="L284">        ret.append(tr(&quot;Submitting Mapillary Changeset&quot;));</span>
+<span class="nc" id="L273">    StringBuilder ret = new StringBuilder();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">    if (PluginState.isDownloading()) {</span>
+<span class="nc" id="L275">      ret.append(tr(&quot;Downloading Mapillary images&quot;));</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">    } else if (MapillaryLayer.getInstance().getData().size() &gt; 0) {</span>
+<span class="nc" id="L277">      ret.append(tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance().getData().size()));</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
+<span class="nc" id="L279">        ret.append(tr(&quot;Submitting Mapillary Changeset&quot;));</span>
     } else {
-<span class="nc" id="L286">      ret.append(tr(&quot;No images found&quot;));</span>
+<span class="nc" id="L281">      ret.append(tr(&quot;No images found&quot;));</span>
     }
-<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null) {</span>
-<span class="nc" id="L289">      ret.append(&quot; — &quot;).append(tr(MapillaryLayer.getInstance().mode.toString()));</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null) {</span>
+<span class="nc" id="L284">      ret.append(&quot; — &quot;).append(tr(MapillaryLayer.getInstance().mode.toString()));</span>
     }
-<span class="nc bnc" id="L291" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
-<span class="nc" id="L292">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
+<span class="nc" id="L287">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
     }
-<span class="nc" id="L294">    synchronized (MapillaryUtils.class) {</span>
-<span class="nc" id="L295">      Main.map.statusLine.setHelpText(ret.toString());</span>
-<span class="nc" id="L296">    }</span>
-<span class="nc" id="L297">  }</span>
+<span class="nc" id="L289">    synchronized (MapillaryUtils.class) {</span>
+<span class="nc" id="L290">      Main.map.statusLine.setHelpText(ret.toString());</span>
+<span class="nc" id="L291">    }</span>
+<span class="nc" id="L292">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
