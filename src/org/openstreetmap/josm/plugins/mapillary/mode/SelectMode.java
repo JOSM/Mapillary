@@ -32,7 +32,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
  * @author nokutu
  */
 public class SelectMode extends AbstractMode {
-  private Point start;
   private MapillaryAbstractImage closest;
   private MapillaryAbstractImage lastClicked;
   private final MapillaryRecord record;
@@ -66,7 +65,6 @@ public class SelectMode extends AbstractMode {
         this.data.addMultiSelectedImage(img);
       }
     }
-    this.start = e.getPoint();
     this.lastClicked = this.closest;
     this.closest = closest;
     if (closest != null && this.data.getMultiSelectedImages().contains(closest)) {
@@ -108,7 +106,7 @@ public class SelectMode extends AbstractMode {
       if (e.isShiftDown()) { // turn
         for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
           if (Main.pref.getBoolean("mapillary.developer") || !(img instanceof MapillaryImage)) {
-            img.turn(Math.toDegrees(Math.atan2((e.getX() - highlightImgPoint.getX()), -(e.getY() - highlightImgPoint.getY()))) - highlightImg.getTempCa());
+            img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa());
           }
         }
       } else { // move

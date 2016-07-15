@@ -110,14 +110,15 @@ public final class PluginState {
       JDialog dlg = pane.createDialog(Main.parent, tr("Finished upload"));
       dlg.setVisible(true);
     } else {
-      SwingUtilities.invokeLater( new Runnable() {
+      SwingUtilities.invokeLater(new Runnable() {
         @Override
         public void run() {
           finishedUploadDialog();
         }
-      } );
+      });
     }
   }
+
   public static void notLoggedInToMapillaryDialog() {
     if (Main.main == null) {
       return;

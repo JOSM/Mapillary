@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -37,7 +35,7 @@ public final class MapillaryDownloader {
     private String prefId;
     private String label;
 
-    private DOWNLOAD_MODE(String prefId, String label) {
+    DOWNLOAD_MODE(String prefId, String label) {
       this.prefId = prefId;
       this.label = label;
     }
@@ -62,6 +60,7 @@ public final class MapillaryDownloader {
       }
       return getDefault();
     }
+
     public static DOWNLOAD_MODE fromLabel(String label) {
       if (MANUAL_ONLY.getLabel().equals(label)) {
         return MANUAL_ONLY;
@@ -196,19 +195,19 @@ public final class MapillaryDownloader {
    * for automatic download.
    */
   public static void automaticDownload() {
-    MapillaryLayer layer = MapillaryLayer.getInstance();
-    if (Main.getLayerManager().getEditLayer() == null)
+    if (Main.getLayerManager().getEditLayer() == null) {
       return;
+    }
     if (isAreaTooBig()) {
       tooBigErrorDialog();
       return;
     }
-    if (getMode() != DOWNLOAD_MODE.OSM_AREA)
+    if (getMode() != DOWNLOAD_MODE.OSM_AREA) {
       throw new IllegalStateException("Must be in automatic mode.");
-    for (Bounds bounds : Main.getLayerManager().getEditLayer().data
-        .getDataSourceBounds()) {
-      if (!layer.getData().getBounds().contains(bounds)) {
-        layer.getData().getBounds().add(bounds);
+    }
+    for (Bounds bounds : Main.getLayerManager().getEditLayer().data.getDataSourceBounds()) {
+      if (!MapillaryLayer.getInstance().getData().getBounds().contains(bounds)) {
+        MapillaryLayer.getInstance().getData().getBounds().add(bounds);
         MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
       }
     }
@@ -235,7 +234,7 @@ public final class MapillaryDownloader {
       JOptionPane
           .showMessageDialog(
               Main.parent,
-              tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
+              I18n.tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
     } else {
       SwingUtilities.invokeLater( new Runnable() {
         @Override
