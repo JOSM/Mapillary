@@ -139,26 +139,33 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   @Override
   public void changesetChanged() {
 <span class="nc bnc" id="L141" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L142">      SwingUtilities.invokeLater(() -&gt; buildTree());</span>
+<span class="nc" id="L142">      SwingUtilities.invokeLater(</span>
+<span class="nc" id="L143">        new Runnable() {</span>
+          @Override
+          public void run() {
+<span class="nc" id="L146">            buildTree();</span>
+<span class="nc" id="L147">          }</span>
+        }
+      );
     } else {
-<span class="nc" id="L144">      buildTree();</span>
+<span class="nc" id="L151">      buildTree();</span>
     }
-<span class="nc" id="L146">  }</span>
+<span class="nc" id="L153">  }</span>
 
   private class SubmitAction extends AbstractAction {
 
     private static final long serialVersionUID = -2761935780353053512L;
 
-<span class="nc" id="L152">    SubmitAction() {</span>
-<span class="nc" id="L153">      putValue(NAME, tr(&quot;Submit&quot;));</span>
-<span class="nc" id="L154">      putValue(SMALL_ICON, ImageProvider.get(&quot;upload&quot;));</span>
-<span class="nc" id="L155">    }</span>
+<span class="nc" id="L159">    SubmitAction() {</span>
+<span class="nc" id="L160">      putValue(NAME, tr(&quot;Submit&quot;));</span>
+<span class="nc" id="L161">      putValue(SMALL_ICON, ImageProvider.get(&quot;upload&quot;));</span>
+<span class="nc" id="L162">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L159">      MapillarySubmitCurrentChangesetAction submitCurrentChangesetAction = new MapillarySubmitCurrentChangesetAction();</span>
-<span class="nc" id="L160">      submitCurrentChangesetAction.actionPerformed(null);</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L166">      MapillarySubmitCurrentChangesetAction submitCurrentChangesetAction = new MapillarySubmitCurrentChangesetAction();</span>
+<span class="nc" id="L167">      submitCurrentChangesetAction.actionPerformed(null);</span>
+<span class="nc" id="L168">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
