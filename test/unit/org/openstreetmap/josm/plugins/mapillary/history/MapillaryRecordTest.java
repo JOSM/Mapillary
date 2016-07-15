@@ -176,8 +176,8 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandJoinClass() {
-    CommandJoin cmd1 = new CommandJoin(Arrays.asList(new MapillaryAbstractImage[]{img1, img2}));
-    CommandJoin cmd2 = new CommandJoin(Arrays.asList(new MapillaryAbstractImage[]{img2, img3}));
+    CommandJoin cmd1 = new CommandJoin(img1, img2);
+    CommandJoin cmd2 = new CommandJoin(img2, img3);
 
     this.record.addCommand(cmd1);
     assertEquals(2, img1.getSequence().getImages().size());
@@ -188,13 +188,16 @@ public class MapillaryRecordTest extends AbstractTest {
     this.record.addCommand(cmd2);
     assertEquals(3, img1.getSequence().getImages().size());
     assertEquals(img3, img1.next().next());
-
-    try {
-      this.record.addCommand(new CommandJoin(Arrays.asList(new MapillaryAbstractImage[]{img1, img2, img3})));
-      fail();
-    } catch (IllegalArgumentException e) {
-      // Expected output.
-    }
+  }
+  
+  @Test(expected=NullPointerException.class)
+  public void commandJoinNull1() {
+    new CommandJoin(img1, null);
+  }
+  
+  @Test(expected=NullPointerException.class)
+  public void commandJoinNull2() {
+    new CommandJoin(null, img1);
   }
 
   /**
@@ -202,10 +205,8 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandUnjoinClass() {
-    CommandJoin join1 = new CommandJoin(
-            Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2}));
-    CommandJoin join2 = new CommandJoin(
-            Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3}));
+    CommandJoin join1 = new CommandJoin(this.img1, this.img2);
+    CommandJoin join2 = new CommandJoin(this.img2, this.img3);
 
     CommandUnjoin cmd1 = new CommandUnjoin(
             Arrays.asList(new MapillaryAbstractImage[]{this.img1, this.img2}));
@@ -237,8 +238,8 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Test
   public void commandDeleteTest() {
-    CommandJoin join1 = new CommandJoin(Arrays.asList(new MapillaryAbstractImage[]{img1, img2}));
-    CommandJoin join2 = new CommandJoin(Arrays.asList(new MapillaryAbstractImage[]{img2, img3}));
+    CommandJoin join1 = new CommandJoin(img1, img2);
+    CommandJoin join2 = new CommandJoin(img2, img3);
 
     CommandDelete cmd1 = new CommandDelete(
             new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{img1})));

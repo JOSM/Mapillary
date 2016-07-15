@@ -154,36 +154,30 @@ public final class MapillaryUtils {
   /**
    * Joins two images into the same sequence. One of them must be the last image of a sequence, the other one the beginning of a different one.
    *
-   * @param mapillaryAbstractImage the first image, into whose sequence the images from the sequence of the second image are merged
-   * @param mapillaryAbstractImage2 the second image, whose sequence is merged into the sequence of the first image
+   * @param imgA the first image, into whose sequence the images from the sequence of the second image are merged
+   * @param imgB the second image, whose sequence is merged into the sequence of the first image
    */
-  public static synchronized void join(
-          MapillaryAbstractImage mapillaryAbstractImage,
-          MapillaryAbstractImage mapillaryAbstractImage2) {
-    MapillaryAbstractImage firstImage = mapillaryAbstractImage;
-    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
-
-    if (mapillaryAbstractImage.next() != null) {
-      firstImage = mapillaryAbstractImage2;
-      secondImage = mapillaryAbstractImage;
+  public static synchronized void join(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
+    if (imgA == null || imgB == null) {
+      throw new IllegalArgumentException("Both images must be non-null for joining.");
     }
-    if (firstImage.getSequence() == null) {
-      MapillarySequence seq = new MapillarySequence();
-      seq.add(firstImage);
-      firstImage.setSequence(seq);
+    if (imgA.getSequence() == imgB.getSequence()) {
+      throw new IllegalArgumentException("You can only join images of different sequences.");
     }
-    if (secondImage.getSequence() == null) {
-      MapillarySequence seq = new MapillarySequence();
-      seq.add(secondImage);
-      mapillaryAbstractImage2.setSequence(seq);
+    if ((imgA.next() != null || imgB.previous() != null) && (imgB.next() != null || imgA.previous() != null)) {
+      throw new IllegalArgumentException("You can only join an image at the end of a sequence with one at the beginning of another sequence.");
     }
-
-    for (MapillaryAbstractImage img : secondImage.getSequence().getImages()) {
-      firstImage.getSequence().add(img);
-      img.setSequence(firstImage.getSequence());
+    if (imgA.next() != null || imgB.previous() != null) {
+      join(imgB, imgA);
+    } else {
+      for (MapillaryAbstractImage img : imgB.getSequence().getImages()) {
+        imgA.getSequence().add(img);
+        img.setSequence(imgA.getSequence());
+      }
+      if (Main.main != null) {
+        MapillaryData.dataUpdated();
+      }
     }
-    if (Main.main != null)
-      MapillaryData.dataUpdated();
   }
 
   /**
@@ -239,41 +233,42 @@ public final class MapillaryUtils {
    * Two new sequences are created and all images up to (and including) either {@code imgA} or {@code imgB} (whichever appears first in the sequence) are put into the first of the two sequences.
    * All others are put into the second new sequence.
    *
-   * @param mapillaryAbstractImage one of the images marking where to split the sequence
-   * @param mapillaryAbstractImage2 the other image marking where to split the sequence, needs to be a direct neighbour of {@code mapillaryAbstractImage} in the sequence.
+   * @param imgA one of the images marking where to split the sequence
+   * @param imgB the other image marking where to split the sequence, needs to be a direct neighbour of {@code imgA} in the sequence.
    */
-  public static synchronized void unjoin(
-          MapillaryAbstractImage mapillaryAbstractImage,
-          MapillaryAbstractImage mapillaryAbstractImage2) {
-    MapillaryAbstractImage firstImage = mapillaryAbstractImage;
-    MapillaryAbstractImage secondImage = mapillaryAbstractImage2;
-
-    if (mapillaryAbstractImage.next() != mapillaryAbstractImage2) {
-      firstImage = mapillaryAbstractImage2;
-      secondImage = mapillaryAbstractImage;
+  public static synchronized void unjoin(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
+    if (imgA == null || imgB == null) {
+      throw new IllegalArgumentException("Both images must be non-null for unjoining.");
+    }
+    if (imgA.getSequence() != imgB.getSequence()) {
+      throw new IllegalArgumentException("You can only unjoin with two images from the same sequence.");
+    }
+    if (imgB.equals(imgA.next()) && imgA.equals(imgB.next())) {
+      throw new IllegalArgumentException("When unjoining with two images these must be consecutive in one sequence.");
     }
 
-    ArrayList<MapillaryAbstractImage> firstHalf = new ArrayList<>(
-            firstImage.getSequence().getImages().subList(0,
-                    firstImage.getSequence().getImages().indexOf(secondImage)));
-    ArrayList<MapillaryAbstractImage> secondHalf = new ArrayList<>(
-            firstImage.getSequence().getImages().subList(
-                    firstImage.getSequence().getImages().indexOf(secondImage),
-                    firstImage.getSequence().getImages().size()));
-
-    MapillarySequence seq1 = new MapillarySequence();
-    MapillarySequence seq2 = new MapillarySequence();
-
-    for (MapillaryAbstractImage img : firstHalf) {
-      img.setSequence(seq1);
-      seq1.add(img);
+    if (imgA.equals(imgB.next())) {
+      unjoin(imgB, imgA);
+    } else {
+      MapillarySequence seqA = new MapillarySequence();
+      MapillarySequence seqB = new MapillarySequence();
+      boolean insideFirstHalf = true;
+      for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {
+        if (insideFirstHalf) {
+          img.setSequence(seqA);
+          seqA.add(img);
+        } else {
+          img.setSequence(seqB);
+          seqB.add(img);
+        }
+        if (img.equals(imgA)) {
+          insideFirstHalf = false;
+        }
+      }
+      if (Main.main != null) {
+        MapillaryData.dataUpdated();
+      }
     }
-    for (MapillaryAbstractImage img : secondHalf) {
-      img.setSequence(seq2);
-      seq2.add(img);
-    }
-    if (Main.main != null)
-      MapillaryData.dataUpdated();
   }
 
   /**

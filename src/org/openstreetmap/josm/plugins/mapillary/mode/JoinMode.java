@@ -50,12 +50,9 @@ public class JoinMode extends AbstractMode {
       if (
         (this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null
           || this.data.getHighlightedImage().next() == null && this.lastClick.previous() == null)
-        && (this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence() || this.lastClick.getSequence() == null)
+        && this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence()
       ) {
-
-        MapillaryRecord.getInstance().addCommand(
-            new CommandJoin(Arrays.asList(new MapillaryAbstractImage[] {
-                this.lastClick, this.data.getHighlightedImage() })));
+        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, this.data.getHighlightedImage()));
       } else if (this.lastClick.next() == this.data.getHighlightedImage()
           || this.lastClick.previous() == this.data.getHighlightedImage()) {
         MapillaryRecord.getInstance().addCommand(

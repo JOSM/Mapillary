@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -29,17 +29,18 @@ public class CommandJoin extends MapillaryExecutableCommand {
    * @throws IllegalArgumentException
    *           if the List size is different from 2.
    */
-  public CommandJoin(List<MapillaryAbstractImage> images) {
-    super(new ConcurrentSkipListSet<>(images));
-    a = images.get(0);
-    b = images.get(1);
-    if (images.size() != 2)
-      throw new IllegalArgumentException();
+  public CommandJoin(final MapillaryAbstractImage a, final MapillaryAbstractImage b) {
+    super(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{a, b}))); // throws NPE if a or b is null
+    if (a.getSequence() == b.getSequence()) {
+      throw new IllegalArgumentException("Both images must be in different sequences for joining.");
+    }
+    this.a = a;
+    this.b = b;
   }
 
   @Override
   public void execute() {
-    this.redo();
+    redo();
   }
 
   @Override
