@@ -29,9 +29,14 @@ repositories {
 }
 
 dependencies {
-  // The JOSM-version can be specified as "latest", "tested" or the numeric version number.
-  // When using a numeric version number you can leave out {changing=true}.
-  compile(':josm:10580')
+  /**
+   * The JOSM-version can be specified as "latest", "tested" or the numeric version number.
+   * When using a numeric version number you can leave out {changing=true}.
+   *
+   * Please check for numeric versions, if that specific version is available for download from https://josm.openstreetmap.de/download/ .
+   * If not, choose the next higher number that is available, or the gradle build will break.
+   */
+  compile(':josm:10583')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   compile (name: 'apache-commons'){changing=true}
   compile (name: 'apache-http'){changing=true}
