@@ -5,6 +5,14 @@ apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'pmd'
 
+configurations {
+  compile.extendsFrom(requiredPlugin)
+}
+
+apply from: 'gradle/manifest.gradle'
+apply from: 'gradle/josm-tasks.gradle'
+apply from: 'gradle/tool-config.gradle'
+
 sourceCompatibility = '1.8'
 
 repositories {
@@ -38,8 +46,8 @@ dependencies {
    */
   compile(':josm:10583')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
-  compile (name: 'apache-commons'){changing=true}
-  compile (name: 'apache-http'){changing=true}
+  requiredPlugin (name: 'apache-commons'){changing=true}
+  requiredPlugin (name: 'apache-http'){changing=true}
 
   testCompile 'junit:junit:4.12'
 }
@@ -81,42 +89,8 @@ eclipseClasspath.dependsOn cleanEclipseClasspath
 eclipseProject.dependsOn cleanEclipseProject
 tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 
-pmd {
-  toolVersion project.property('tools.pmd.version')
-  ignoreFailures true
-  targetJdk 1.7 // 1.8 is not yet available (as of Gradle 2.14, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
-  ruleSetConfig = resources.text.fromFile('.settings/pmd-ruleset.xml')
-}
-
-build.dependsOn jacocoTestReport
-
 tasks.withType(Javadoc) {
   failOnError false
-}
-
-/** FindBugs configuration */
-findbugs {
-  toolVersion = project.property('tools.findbugs.version')
-  ignoreFailures = true
-  effort = "max"
-  reportLevel = "low"
-}
-tasks.withType(FindBugs) {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
-}
-
-/** JaCoCo configuration */
-jacoco {
-  toolVersion = project.property('tools.jacoco.version')
-}
-jacocoTestReport {
-  reports {
-    xml.enabled true
-    html.destination "$buildDir/reports/jacoco"
-  }
 }
 
 test {
@@ -125,64 +99,3 @@ test {
     events "started", "passed", "skipped", "failed", "standardOut", "standardError"
   }
 }
-
-jar {
-  manifest {
-    attributes(
-      "Gradle-Version": project.getGradle().getGradleVersion(),
-      "Created-By": System.getProperty("java.version")+" ("+System.getProperty("java.vendor")+")",
-      "Plugin-Mainversion": project.property('plugin.main.version'),
-      "Plugin-Version": project.property('plugin.svnrevision'),
-      "Plugin-SemVersion": project.property('plugin.version'),
-      "Plugin-Class": project.property('plugin.class'),
-      "Plugin-Description": project.property('plugin.description'),
-      "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
-      "Author": project.property('plugin.author'),
-      "Plugin-Link": project.property('plugin.link'),
-      "Plugin-Icon": project.property("plugin.icon"),
-      "Plugin-Requires": project.property("plugin.requires"),
-      "Plugin-Canloadatruntime": project.property('plugin.canloadatruntime')
-    )
-  }
-}
-
-task activatePlugin(type: Copy) {
-  if (!new File("$buildDir/.josm/preferences.xml").exists()) {
-    from "gradle/josm-preferences.xml"
-    into "$buildDir/.josm"
-    rename 'josm-preferences.xml', 'preferences.xml'
-  }
-}
-
-task installPlugin(type: Copy) {
- from "$buildDir/libs/${project.name}.jar"
- from configurations.runtime
- into "$buildDir/.josm/plugins"
- include 'apache*.jar'
- include "${project.name}.jar"
- rename "${project.name}.jar", 'Mapillary.jar'
- rename 'apache-(.*)-.*.jar', 'apache-$1.jar'
-}
-installPlugin.dependsOn jar
-installPlugin.dependsOn activatePlugin
-
-/**
- * This runs the JOSM-version specified in the dependency configuration above.
- * The home-directory of this JOSM is located in $buildDir/.josm, so it doesn't interfere with any other JOSM-installations.
- */
-task runJosm(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'JOSM'
-  args '--offline=josm_website'
-  jvmArgs "-Djosm.home=$buildDir/.josm"
-}
-runJosm.dependsOn installPlugin
-
-
-task debugJosm(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'JOSM'
-  args '--offline=josm_website'
-  jvmArgs "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006", "-Djosm.home=$buildDir/.josm"
-}
-debugJosm.dependsOn installPlugin

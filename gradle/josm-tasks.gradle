@@ -1,0 +1,52 @@
+// Custom tasks for running JOSM with the plugin loaded
+
+/**
+ * Reset the JOSM home directory
+ */
+task cleanJosm(type: Delete) {
+  delete "$buildDir/.josm"
+}
+
+/**
+ * Initialize the JOSM preferences
+ */
+task initJosmPrefs(type: Copy) {
+  if (!new File("$buildDir/.josm/preferences.xml").exists()) {
+    from "config/josm/preferences.xml"
+    into "$buildDir/.josm"
+  }
+}
+
+/**
+ * Puts the freshly compiled plugin jar into the JOSM home dir that is used from Gradle
+ */
+task updateJosmPlugin(type: Copy) {
+  dependsOn jar
+  dependsOn initJosmPrefs
+  from configurations.requiredPlugin
+  from "$buildDir/libs/${project.name}.jar"
+  into "$buildDir/.josm/plugins"
+  rename('(.*)-\\.jar', '$1.jar')
+  rename(project.name, project.hasProperty('plugin.jar.name') ? project.property('plugin.jar.name') : project.name)
+}
+
+/**
+ * This runs the JOSM-version specified in the dependency configuration above.
+ * The home-directory of this JOSM is located in $buildDir/.josm, so it doesn't interfere with any other JOSM-installations.
+ */
+task runJosm(type: JavaExec) {
+  dependsOn updateJosmPlugin
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'JOSM'
+  jvmArgs "-Djosm.home=$buildDir/.josm"
+}
+
+/**
+ * Starts an instance of JOSM that is debuggable
+ */
+task debugJosm(type: JavaExec) {
+  dependsOn updateJosmPlugin
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'JOSM'
+  jvmArgs "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=7051", "-Djosm.home=$buildDir/.josm"
+}

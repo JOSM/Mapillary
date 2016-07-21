@@ -1,0 +1,30 @@
+findbugs {
+  toolVersion = project.property('tool.findbugs.version')
+  ignoreFailures = true
+  effort = "max"
+  reportLevel = "low"
+}
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+jacoco {
+  toolVersion = project.property('tool.jacoco.version')
+}
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.destination "$buildDir/reports/jacoco"
+  }
+}
+build.dependsOn jacocoTestReport
+
+pmd {
+  toolVersion project.property('tool.pmd.version')
+  ignoreFailures true
+  targetJdk 1.7 // 1.8 is not yet available (as of Gradle 2.14.1, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
+  ruleSetConfig = resources.text.fromFile('config/pmd/ruleset.xml')
+}
