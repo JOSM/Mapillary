@@ -139,14 +139,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   @Override
   public void changesetChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(
-        new Runnable() {
-          @Override
-          public void run() {
-            buildTree();
-          }
-        }
-      );
+      SwingUtilities.invokeLater(() -> buildTree());
     } else {
       buildTree();
     }

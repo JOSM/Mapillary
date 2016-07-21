@@ -172,12 +172,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   @Override
   public void recordChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          recordChanged();
-        }
-      });
+      SwingUtilities.invokeLater(() -> recordChanged());
     } else {
       buildTree();
     }
