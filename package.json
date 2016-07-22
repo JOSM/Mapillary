@@ -1,0 +1,26 @@
+{
+  "name": "sprite-source",
+  "version": "0.0.1",
+  "description": "SVG sources for generating sprites",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf bundle .tmp sprites",
+    "flatten": "find .tmp -iname '*.svg' -exec cp \\{\\} bundle/ \\;",
+    "prepare": "mkdir -p bundle && mkdir -p .tmp && cp -r ./package_* .tmp && mkdir -p sprites && npm run flatten",
+    "generate:all": "cd sprites && spritezero sprites ../bundle && spritezero sprites@2x ../bundle --retina",
+    "build:all": "npm run clean && npm run prepare && npm run generate:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapillary/sprite-source.git"
+  },
+  "author": "Kamil Nikel",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mapillary/sprite-source/issues"
+  },
+  "homepage": "https://github.com/mapillary/sprite-source#readme",
+  "devDependencies": {
+    "spritezero-cli": "1.1.0"
+  }
+}
