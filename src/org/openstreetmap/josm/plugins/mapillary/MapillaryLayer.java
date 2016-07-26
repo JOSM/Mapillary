@@ -60,6 +60,7 @@ import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -333,16 +334,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
     // Draw sequence line
     final MapillaryAbstractImage selectedImage = MapillaryLayer.getInstance().getData().getSelectedImage();
-    String selectedImageKey = null; // Intentionally not null to avoid null-check before .equals()
+    String selectedImageKey = null;
     if (selectedImage != null && selectedImage.getSequence() != null) {
       selectedImageKey = selectedImage.getSequence().getKey();
     }
     g.setStroke(new BasicStroke(this == Main.getLayerManager().getActiveLayer() ? 3 : 2));
     for (MapillarySequence seq : getData().getSequences()) {
       if (selectedImageKey != null && selectedImageKey.equals(seq.getKey())) {
-        g.setColor(Color.MAGENTA.brighter());
+        g.setColor(MapillaryColorScheme.SEQ_SELECTED);
       } else {
-        g.setColor(Color.WHITE);
+        g.setColor(MapillaryColorScheme.SEQ_UNSELECTED);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }

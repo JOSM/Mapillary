@@ -12,6 +12,13 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 public final class MapillaryColorScheme {
+  public static final Color SEQ_UNSELECTED = new Color(0x37a860);
+  public static final Color SEQ_UNSELECTED_VIEW = new Color(0x177542);
+  public static final Color SEQ_SELECTED = new Color(0x00b5f5);
+  public static final Color SEQ_SELECTED_VIEW = new Color(0x00769d);
+  public static final Color SEQ_HIGHLIGHTED_IMAGE = new Color(0xf5811a);
+  public static final Color SEQ_HIGHLIGHTED_IMG_VIEW = new Color(0xf5b81a);
+
   public static final Color MAPILLARY_GREEN = new Color(0x35af6d);
   public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);
 

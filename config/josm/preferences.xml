@@ -5,6 +5,7 @@
     <entry value='apache-commons'/>
     <entry value='apache-http'/>
   </list>
+  <tag key='mapillary.developer' value='true'/>
   <tag key='pluginmanager.time-based-update.policy' value='never'/>
   <tag key='pluginmanager.version-based-update.policy' value='never'/>
 </preferences>
