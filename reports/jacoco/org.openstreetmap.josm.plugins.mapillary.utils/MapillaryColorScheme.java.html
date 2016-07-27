@@ -12,12 +12,19 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 public final class MapillaryColorScheme {
-<span class="fc" id="L15">  public static final Color MAPILLARY_GREEN = new Color(0x35af6d);</span>
-<span class="fc" id="L16">  public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);</span>
+<span class="fc" id="L15">  public static final Color SEQ_UNSELECTED = new Color(0x37a860);</span>
+<span class="fc" id="L16">  public static final Color SEQ_UNSELECTED_VIEW = new Color(0x177542);</span>
+<span class="fc" id="L17">  public static final Color SEQ_SELECTED = new Color(0x00b5f5);</span>
+<span class="fc" id="L18">  public static final Color SEQ_SELECTED_VIEW = new Color(0x00769d);</span>
+<span class="fc" id="L19">  public static final Color SEQ_HIGHLIGHTED_IMAGE = new Color(0xf5811a);</span>
+<span class="fc" id="L20">  public static final Color SEQ_HIGHLIGHTED_IMG_VIEW = new Color(0xf5b81a);</span>
 
-<span class="nc" id="L18">  private MapillaryColorScheme() {</span>
+<span class="fc" id="L22">  public static final Color MAPILLARY_GREEN = new Color(0x35af6d);</span>
+<span class="fc" id="L23">  public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);</span>
+
+<span class="nc" id="L25">  private MapillaryColorScheme() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L20">  }</span>
+<span class="nc" id="L27">  }</span>
 
   /**
    * Styles the given components as default panels (currently only the background is set to white)
@@ -25,39 +32,39 @@ public final class MapillaryColorScheme {
    *   not only JPanels are accepted)
    */
   public static void styleAsDefaultPanel(JComponent... components) {
-<span class="pc bpc" id="L28" title="2 of 4 branches missed.">    if (components != null &amp;&amp; components.length &gt;= 1) {</span>
-<span class="fc bfc" id="L29" title="All 2 branches covered.">      for (JComponent component : components) {</span>
-<span class="fc" id="L30">        component.setBackground(Color.WHITE);</span>
+<span class="pc bpc" id="L35" title="2 of 4 branches missed.">    if (components != null &amp;&amp; components.length &gt;= 1) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">      for (JComponent component : components) {</span>
+<span class="fc" id="L37">        component.setBackground(Color.WHITE);</span>
       }
     }
-<span class="fc" id="L33">  }</span>
+<span class="fc" id="L40">  }</span>
 
   public static final class MapillaryButton extends JButton {
     private static final long serialVersionUID = 3824559897922944415L;
     public MapillaryButton(final String text, final Action action) {
-<span class="fc" id="L38">      super(action);</span>
-<span class="fc" id="L39">      setText(text);</span>
-<span class="fc" id="L40">      setForeground(Color.WHITE);</span>
-<span class="fc" id="L41">      setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L45">      super(action);</span>
+<span class="fc" id="L46">      setText(text);</span>
+<span class="fc" id="L47">      setForeground(Color.WHITE);</span>
+<span class="fc" id="L48">      setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));</span>
+<span class="fc" id="L49">    }</span>
 
     @Override
     protected void paintComponent(final Graphics g) {
-<span class="nc bnc" id="L46" title="All 2 branches missed.">      if (getModel().isPressed()) {</span>
-<span class="nc" id="L47">        g.setColor(MAPILLARY_GREEN.darker().darker());</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">      } else if (getModel().isRollover()) {</span>
-<span class="nc" id="L49">        g.setColor(MAPILLARY_GREEN.darker());</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">      if (getModel().isPressed()) {</span>
+<span class="nc" id="L54">        g.setColor(MAPILLARY_GREEN.darker().darker());</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">      } else if (getModel().isRollover()) {</span>
+<span class="nc" id="L56">        g.setColor(MAPILLARY_GREEN.darker());</span>
       } else {
-<span class="nc" id="L51">        g.setColor(MAPILLARY_GREEN);</span>
+<span class="nc" id="L58">        g.setColor(MAPILLARY_GREEN);</span>
       }
-<span class="nc" id="L53">      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
-<span class="nc" id="L54">      ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);</span>
-<span class="nc" id="L55">      super.paintComponent(g);</span>
-<span class="nc" id="L56">    }</span>
+<span class="nc" id="L60">      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span>
+<span class="nc" id="L61">      ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);</span>
+<span class="nc" id="L62">      super.paintComponent(g);</span>
+<span class="nc" id="L63">    }</span>
 
     @Override
     public boolean isContentAreaFilled() {
-<span class="fc" id="L60">      return false;</span>
+<span class="fc" id="L67">      return false;</span>
     }
   }
 }
