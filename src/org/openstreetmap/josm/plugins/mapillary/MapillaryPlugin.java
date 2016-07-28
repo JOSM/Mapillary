@@ -226,9 +226,7 @@ public class MapillaryPlugin extends Plugin {
     if (oldFrame == null && newFrame != null) { // map frame added
       Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
-      if (Main.pref.getBoolean("mapillary.developer")) {
-        Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
-      }
+      Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       setMenuEnabled(downloadMenu, true);
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY)
