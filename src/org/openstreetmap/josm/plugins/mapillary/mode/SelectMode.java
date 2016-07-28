@@ -105,13 +105,13 @@ public class SelectMode extends AbstractMode {
       Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
         for (MapillaryAbstractImage img : data.getMultiSelectedImages()) {
-          if (Main.pref.getBoolean("mapillary.developer") || !(img instanceof MapillaryImage)) {
+          if (!(img instanceof MapillaryImage)) {
             img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa());
           }
         }
       } else { // move
         for (MapillaryAbstractImage img : this.data.getMultiSelectedImages()) {
-          if (Main.pref.getBoolean("mapillary.developer") || !(img instanceof MapillaryImage)) {
+          if (!(img instanceof MapillaryImage)) {
             LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());
             LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
             img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY());
