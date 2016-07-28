@@ -226,27 +226,25 @@ public class MapillaryPlugin extends Plugin {
 <span class="nc bnc" id="L226" title="All 4 branches missed.">    if (oldFrame == null &amp;&amp; newFrame != null) { // map frame added</span>
 <span class="nc" id="L227">      Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);</span>
 <span class="nc" id="L228">      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">      if (Main.pref.getBoolean(&quot;mapillary.developer&quot;)) {</span>
-<span class="nc" id="L230">        Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);</span>
-      }
-<span class="nc" id="L232">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
-<span class="nc" id="L233">      setMenuEnabled(downloadMenu, true);</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY)</span>
-<span class="nc" id="L235">        setMenuEnabled(downloadViewMenu, true);</span>
-<span class="nc" id="L236">      setMenuEnabled(importMenu, true);</span>
-<span class="nc" id="L237">      setMenuEnabled(importIntoSequenceMenu, true);</span>
+<span class="nc" id="L229">      Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);</span>
+<span class="nc" id="L230">      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);</span>
+<span class="nc" id="L231">      setMenuEnabled(downloadMenu, true);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY)</span>
+<span class="nc" id="L233">        setMenuEnabled(downloadViewMenu, true);</span>
+<span class="nc" id="L234">      setMenuEnabled(importMenu, true);</span>
+<span class="nc" id="L235">      setMenuEnabled(importIntoSequenceMenu, true);</span>
     }
-<span class="nc bnc" id="L239" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
-<span class="nc" id="L240">      MapillaryMainDialog.destroyInstance();</span>
-<span class="nc" id="L241">      MapillaryHistoryDialog.destroyInstance();</span>
-<span class="nc" id="L242">      MapillaryChangesetDialog.destroyInstance();</span>
-<span class="nc" id="L243">      MapillaryFilterDialog.destroyInstance();</span>
-<span class="nc" id="L244">      setMenuEnabled(downloadMenu, false);</span>
-<span class="nc" id="L245">      setMenuEnabled(downloadViewMenu, false);</span>
-<span class="nc" id="L246">      setMenuEnabled(importMenu, false);</span>
-<span class="nc" id="L247">      setMenuEnabled(importIntoSequenceMenu, false);</span>
+<span class="nc bnc" id="L237" title="All 4 branches missed.">    if (oldFrame != null &amp;&amp; newFrame == null) { // map frame destroyed</span>
+<span class="nc" id="L238">      MapillaryMainDialog.destroyInstance();</span>
+<span class="nc" id="L239">      MapillaryHistoryDialog.destroyInstance();</span>
+<span class="nc" id="L240">      MapillaryChangesetDialog.destroyInstance();</span>
+<span class="nc" id="L241">      MapillaryFilterDialog.destroyInstance();</span>
+<span class="nc" id="L242">      setMenuEnabled(downloadMenu, false);</span>
+<span class="nc" id="L243">      setMenuEnabled(downloadViewMenu, false);</span>
+<span class="nc" id="L244">      setMenuEnabled(importMenu, false);</span>
+<span class="nc" id="L245">      setMenuEnabled(importIntoSequenceMenu, false);</span>
     }
-<span class="nc" id="L249">  }</span>
+<span class="nc" id="L247">  }</span>
 
   /**
    * Enables/disables a {@link JMenuItem}.
@@ -257,20 +255,20 @@ public class MapillaryPlugin extends Plugin {
    *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">    if (menu == null) { // In headless mode the menu items are initialized to null</span>
-<span class="fc" id="L261">      return;</span>
+<span class="pc bpc" id="L258" title="1 of 2 branches missed.">    if (menu == null) { // In headless mode the menu items are initialized to null</span>
+<span class="fc" id="L259">      return;</span>
     }
-<span class="nc bnc" id="L263" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L264">      SwingUtilities.invokeLater(() -&gt; setMenuEnabled(menu, value));</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L262">      SwingUtilities.invokeLater(() -&gt; setMenuEnabled(menu, value));</span>
     } else {
-<span class="nc" id="L266">      menu.setEnabled(value);</span>
-<span class="nc" id="L267">      menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L264">      menu.setEnabled(value);</span>
+<span class="nc" id="L265">      menu.getAction().setEnabled(value);</span>
     }
-<span class="nc" id="L269">  }</span>
+<span class="nc" id="L267">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L273">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L271">    return new MapillaryPreferenceSetting();</span>
   }
 
   /**
@@ -282,10 +280,10 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="pc bpc" id="L285" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
-<span class="fc" id="L286">      return null;</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="fc" id="L284">      return null;</span>
     }
-<span class="nc" id="L288">    return new ImageProvider(s);</span>
+<span class="nc" id="L286">    return new ImageProvider(s);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
