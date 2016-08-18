@@ -56,7 +56,7 @@ public final class MapillaryURL {
    * @return the URL where the user can view all uploaded images that are not yet published
    */
   public static URL browseUploadImageURL() {
-    return string2URL(BASE_WEBSITE_URL, "map/upload/im");
+    return string2URL(BASE_WEBSITE_URL, "app/uploader");
   }
 
   /**
