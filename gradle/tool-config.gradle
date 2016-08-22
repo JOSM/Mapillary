@@ -25,6 +25,6 @@ build.dependsOn jacocoTestReport
 pmd {
   toolVersion project.property('tool.pmd.version')
   ignoreFailures true
-  targetJdk 1.7 // 1.8 is not yet available (as of Gradle 2.14.1, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
+  targetJdk 1.7 // 1.8 is not yet available (as of Gradle 3.0, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
   ruleSetConfig = resources.text.fromFile('config/pmd/ruleset.xml')
 }
