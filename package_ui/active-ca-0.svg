@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>active-ca-0</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="active-ca">
+            <circle id="ghost" fill-opacity="0" fill="#FCC24C" cx="18" cy="18" r="18"></circle>
+            <path d="M27.3563612,2.62082036 C24.6295024,0.957990827 21.4257407,0 17.9982283,0 C14.5706759,0 11.3668795,0.958013179 8.64,2.62087856 L17.998103,18.42 L27.3563612,2.62082036 L27.3563612,2.62082036 Z" id="ca" fill="#356685"></path>
+            <circle id="blue" fill="#00BCFF" cx="18" cy="18" r="6"></circle>
+        </g>
+    </g>
+</svg>
