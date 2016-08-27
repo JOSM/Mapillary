@@ -35,7 +35,6 @@ public final class TestUtil {
   public static synchronized void initPlugin() {
     if (!isInitialized) {
       System.setProperty("josm.home", "test/data/preferences");
-      Main.initApplicationPreferences();
       Main.pref.enableSaveOnPut(false);
       I18n.init();
       Main.determinePlatformHook();
