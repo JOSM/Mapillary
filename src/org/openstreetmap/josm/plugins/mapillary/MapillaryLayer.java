@@ -246,19 +246,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public boolean isModified() {
-    for (MapillaryAbstractImage image : this.data.getImages()) {
-      if (image.isModified())
-        return true;
-    }
-    return false;
+    return this.data.getImages().parallelStream().anyMatch(MapillaryAbstractImage::isModified);
   }
 
   @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
-    for (MapillaryAbstractImage img : this.data.getImages()) {
-      img.setVisible(visible);
-    }
+    this.data.getImages().parallelStream().forEach(img -> img.setVisible(visible));
     if (Main.map != null) {
       MapillaryFilterDialog.getInstance().refresh();
     }

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
@@ -71,26 +72,26 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * The list of sign names
    */
   private static final String[] SIGN_TAGS = {"prohibitory--maximum-speed-limit",
-          "regulatory|priority--stop", "regulatory|priority--give_way|yield", "warning|mandatory--roundabout",
-          "prohibitory|regulatory--no-entry|no-traffic-both-ways",
-          "crossroads|junction", "mandatory--turn|straight", "uneven|slippery",
-          "no-parking", "no_overtaking",
-          "danger_pedestrian_crossing", "no_*_turn"};
+    "regulatory|priority--stop", "regulatory|priority--give_way|yield", "warning|mandatory--roundabout",
+    "prohibitory|regulatory--no-entry|no-traffic-both-ways",
+    "crossroads|junction", "mandatory--turn|straight", "uneven|slippery",
+    "no-parking", "no_overtaking",
+    "danger_pedestrian_crossing", "no_*_turn"};
   /**
    * The {@link JCheckBox} where the respective tag should be searched
    */
   private final JCheckBox[] SIGN_CHECKBOXES = {this.signFilter.maxSpeed,
-          this.signFilter.stop, this.signFilter.giveWay,
-          this.signFilter.roundabout, this.signFilter.access, this.signFilter.intersection,
-          this.signFilter.direction, this.signFilter.uneven,
-          this.signFilter.noParking, this.signFilter.noOvertaking,
-          this.signFilter.crossing, this.signFilter.noTurn};
+    this.signFilter.stop, this.signFilter.giveWay,
+    this.signFilter.roundabout, this.signFilter.access, this.signFilter.intersection,
+    this.signFilter.direction, this.signFilter.uneven,
+    this.signFilter.noParking, this.signFilter.noOvertaking,
+    this.signFilter.crossing, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter.svg",
-            tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
-                    tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
-                    KeyEvent.VK_M, Shortcut.NONE), 200);
+      tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
+        tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
+        KeyEvent.VK_M, Shortcut.NONE), 200);
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
@@ -178,56 +179,44 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     boolean downloaded = this.downloaded.isSelected();
     boolean onlySigns = this.onlySigns.isSelected();
 
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      img.setVisible(true);
-      if (img instanceof MapillaryImportedImage) {
-        if (!imported)
-          img.setVisible(false);
-        continue;
-      } else if (img instanceof MapillaryImage) {
-        if (!downloaded) {
-          img.setVisible(false);
-          continue;
-        }
-        if (onlySigns) {
-          if (((MapillaryImage) img).getSigns().isEmpty()) {
-            img.setVisible(false);
-            continue;
-          }
-          if (!checkSigns((MapillaryImage) img)) {
-            img.setVisible(false);
-            continue;
-          }
-        }
-        if (!"".equals(user.getText())
-                && !this.user.getText().equals(((MapillaryImage) img).getUser())) {
-          img.setVisible(false);
-          continue;
-        }
-      }
-      // Calculates the amount of days since the image was taken
-      Long currentTime = currentTime();
-      long[] timeFactor = new long[]{
-              31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
-              2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
-              86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
-      };
-      for (int i = 1; i <= 3; i++) {
-        if (TIME_LIST[i].equals(time.getSelectedItem())
-                && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
-                ) {
-          img.setVisible(false);
-        }
+    // This predicate returns true is the image should be made invisible
+    Predicate<MapillaryAbstractImage> p =
+      img ->
+        (img instanceof MapillaryImportedImage && !imported) ||
+          (img instanceof MapillaryImage &&
+            (!downloaded ||
+              (onlySigns && (((MapillaryImage) img).getSigns().isEmpty() || !checkSigns((MapillaryImage) img))) ||
+              (!user.getText().equals("") && !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||
+          checkValidTime(img);
+
+    MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!p.test(img)));
+
+    Main.map.repaint();
+  }
+
+  private boolean checkValidTime(MapillaryAbstractImage img) {
+    Long currentTime = currentTime();
+    long[] timeFactor = new long[]{
+      31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
+      2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
+      86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
+    };
+    for (int i = 1; i <= 3; i++) {
+      if (TIME_LIST[i].equals(time.getSelectedItem())
+        && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
+        ) {
+        return true;
       }
     }
-    Main.map.repaint();
+    return false;
   }
 
   /**
    * Checks if the image fulfills the sign conditions.
    *
    * @param img The {@link MapillaryAbstractImage} object that is going to be
-   *            checked.
+   * checked.
+   *
    * @return {@code true} if it fulfills the conditions; {@code false}
    * otherwise.
    */
@@ -244,7 +233,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     for (MapillarySign sign : img.getSigns()) {
       String[] parts = signTag.split("--");
       if (Pattern.compile(parts[0]).matcher(sign.getCategory()).find() &&
-              Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
+        Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
         contains = true;
       }
     }
@@ -340,7 +329,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     public void actionPerformed(ActionEvent arg0) {
       JPanel dialog = MapillaryFilterChooseSigns.getInstance();
       JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-              JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.OK_CANCEL_OPTION);
       JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
       dlg.setVisible(true);
       if ((int) pane.getValue() == JOptionPane.OK_OPTION)

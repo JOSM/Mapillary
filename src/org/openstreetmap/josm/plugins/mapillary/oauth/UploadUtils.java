@@ -272,7 +272,9 @@ public final class UploadUtils {
         }
       }
     }
-    file.delete();
+    if (!file.delete()) {
+      Main.error("MapillaryPlugin: File could not be deleted during upload");
+    }
     MapillaryUtils.updateHelpText();
   }
 

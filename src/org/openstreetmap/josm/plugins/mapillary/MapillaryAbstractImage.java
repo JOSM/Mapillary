@@ -16,7 +16,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author nokutu
  *
  */
-public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage> {
+public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage> {
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */
@@ -290,8 +290,13 @@ public class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage
     this.movingCa = this.tempCa + ca;
   }
 
-  @Override
+  /*@Override
   public int compareTo(MapillaryAbstractImage mapillaryAbstractImage) {
     return hashCode() - mapillaryAbstractImage.hashCode();
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof MapillaryAbstractImage && hashCode() == obj.hashCode();
+  }*/
 }

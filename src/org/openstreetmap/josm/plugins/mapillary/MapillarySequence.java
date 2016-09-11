@@ -37,10 +37,11 @@ public class MapillarySequence {
   /**
    * Creates a sequence object with the given parameters.
    *
-   * @param key       The unique identifier of the sequence.
+   * @param key The unique identifier of the sequence.
    * @param createdAt The date the sequence was created.
+   *
    * @throws IllegalArgumentException if the key is invalid
-   *           according to {@link ValidationUtil#validateSequenceKey(String)}
+   * according to {@link ValidationUtil#validateSequenceKey(String)}
    */
   public MapillarySequence(String key, long createdAt) {
     ValidationUtil.throwExceptionForInvalidSeqKey(key, true);
@@ -65,9 +66,7 @@ public class MapillarySequence {
    * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(List<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images) {
-      add(image);
-    }
+    images.forEach(this::add);
   }
 
   /**
@@ -107,10 +106,12 @@ public class MapillarySequence {
    * {@link MapillaryAbstractImage} object.
    *
    * @param image The {@link MapillaryAbstractImage} object whose next image is
-   *              going to be returned.
+   * going to be returned.
+   *
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
+   *
    * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong
-   *                                  the this sequence.
+   * the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -128,10 +129,12 @@ public class MapillarySequence {
    * given {@link MapillaryAbstractImage} object.
    *
    * @param image The {@link MapillaryAbstractImage} object whose previous image is
-   *              going to be returned.
+   * going to be returned.
+   *
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
+   *
    * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong
-   *                                  the this sequence.
+   * the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);

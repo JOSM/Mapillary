@@ -89,9 +89,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   @Override
   public int compareTo(MapillaryAbstractImage image) {
-    if (image instanceof MapillaryImage)
+    if (image instanceof MapillaryImportedImage)
       return this.file.compareTo(((MapillaryImportedImage) image).getFile());
-    return super.compareTo(image);
+    return hashCode() - image.hashCode();
   }
 
   @Override

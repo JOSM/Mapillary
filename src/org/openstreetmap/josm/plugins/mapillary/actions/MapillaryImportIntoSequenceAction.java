@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -102,7 +103,7 @@ public class MapillaryImportIntoSequenceAction extends JosmAction {
    *
    */
   public static class MapillaryEpochComparator implements
-      Comparator<MapillaryAbstractImage> {
+      Comparator<MapillaryAbstractImage>, Serializable {
 
     @Override
     public int compare(MapillaryAbstractImage arg0, MapillaryAbstractImage arg1) {

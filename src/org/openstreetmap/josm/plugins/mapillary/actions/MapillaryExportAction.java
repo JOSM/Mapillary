@@ -97,7 +97,7 @@ public class MapillaryExportAction extends JosmAction {
         }
       }
       try {
-        Main.worker.submit(new Thread(new MapillaryExportManager(images)));
+        Main.worker.submit(new MapillaryExportManager(images));
       } catch (IOException e1) {
         Main.error(e1);
       }
@@ -112,8 +112,8 @@ public class MapillaryExportAction extends JosmAction {
    *          The set of images to be exported.
    */
   public void export(Set<MapillaryAbstractImage> images) {
-    Main.worker.submit(new Thread(new MapillaryExportManager(images,
-        this.dialog.chooser.getSelectedFile().toString())));
+    Main.worker.submit(new MapillaryExportManager(images,
+        this.dialog.chooser.getSelectedFile().toString()));
   }
 
   private static class OKAction implements ActionListener {

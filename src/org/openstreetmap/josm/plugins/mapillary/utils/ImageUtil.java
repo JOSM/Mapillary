@@ -47,7 +47,7 @@ public final class ImageUtil {
     } else if (f.isDirectory()) {
       for (File child : f.listFiles()) {
         try {
-          images.addAll(readImagesFrom(child, defaultLL));
+          assert images.addAll(readImagesFrom(child, defaultLL));
         } catch (IOException e) {
           // Don't throw an exception here to allow other files that might be readable to be read.
           // Might not be the best solution, but the easiest workaround I could imagine.

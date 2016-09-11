@@ -184,7 +184,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    * @author nokutu
    *
    */
-  private class LoginAction extends AbstractAction {
+  private static class LoginAction extends AbstractAction {
     private static final long serialVersionUID = -3908477563072057344L;
     private final transient MapillaryLoginListener callback;
 

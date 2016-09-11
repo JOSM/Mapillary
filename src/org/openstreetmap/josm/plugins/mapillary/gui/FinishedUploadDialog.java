@@ -43,7 +43,7 @@ public class FinishedUploadDialog extends JPanel {
     this.add(web, Component.CENTER_ALIGNMENT);
   }
 
-  private class WebAction implements ActionListener {
+  private static class WebAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       try {

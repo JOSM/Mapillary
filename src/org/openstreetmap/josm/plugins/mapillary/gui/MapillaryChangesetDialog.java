@@ -145,7 +145,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     }
   }
 
-  private class SubmitAction extends AbstractAction {
+  private static class SubmitAction extends AbstractAction {
 
     private static final long serialVersionUID = -2761935780353053512L;
 
