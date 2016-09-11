@@ -83,7 +83,7 @@ public class MapillaryURLTest {
   public void testConnectURL() {
     assertUrlEquals(
         MapillaryURL.connectURL("http://redirect-host/ä"),
-        "https://www.mapillary.com/connect",
+        "https://legacy.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token",
@@ -92,7 +92,7 @@ public class MapillaryURLTest {
 
     assertUrlEquals(
         MapillaryURL.connectURL(null),
-        "https://www.mapillary.com/connect",
+        "https://legacy.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token"
@@ -100,7 +100,7 @@ public class MapillaryURLTest {
 
     assertUrlEquals(
         MapillaryURL.connectURL(""),
-        "https://www.mapillary.com/connect",
+        "https://legacy.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
         "scope=user%3Aread+public%3Aupload+public%3Awrite",
         "response_type=token"
