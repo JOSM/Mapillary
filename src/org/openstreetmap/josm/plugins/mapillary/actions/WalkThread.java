@@ -17,7 +17,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
  * Thread containing the walk process.
  *
  * @author nokutu
- *
  */
 public class WalkThread extends Thread implements MapillaryDataListener {
   private final int interval;
@@ -32,18 +31,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   /**
    * Main constructor.
    *
-   * @param interval
-   *          How often the images switch.
-   * @param waitForPicture
-   *          If it must wait for the full resolution picture or just the
-   *          thumbnail.
-   * @param followSelected
-   *          Zoom to each image that is selected.
-   * @param goForward
-   *          true to go forward; false to go backwards.
+   * @param interval How often the images switch.
+   * @param waitForPicture If it must wait for the full resolution picture or just the
+   * thumbnail.
+   * @param followSelected Zoom to each image that is selected.
+   * @param goForward true to go forward; false to go backwards.
    */
   public WalkThread(int interval, boolean waitForPicture,
-      boolean followSelected, boolean goForward) {
+                    boolean followSelected, boolean goForward) {
     this.interval = interval;
     this.waitForFullQuality = waitForPicture;
     this.followSelected = followSelected;
@@ -66,33 +61,29 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           }
         }
         try {
-          synchronized (this) {
-            // Waits for full quality picture.
-            final BufferedImage displayImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
-            if (this.waitForFullQuality && image instanceof MapillaryImage) {
-              while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
-                wait(100);
-              }
-            } else { // Waits for thumbnail.
-              while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 320) {
-                wait(100);
-              }
+          // Waits for full quality picture.
+          final BufferedImage displayImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
+          if (this.waitForFullQuality && image instanceof MapillaryImage) {
+            while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
+              Thread.sleep(100);
             }
-            while (this.paused) {
-              wait(100);
-            }
-            wait(this.interval);
-            while (this.paused) {
-              wait(100);
+          } else { // Waits for thumbnail.
+            while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 320) {
+              Thread.sleep(100);
             }
           }
+          while (this.paused) {
+            Thread.sleep(100);
+          }
+          wait(this.interval);
+          while (this.paused) {
+            Thread.sleep(100);
+          }
           this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
-          synchronized (this) {
-            if (this.goForward) {
-              this.data.selectNext(this.followSelected);
-            } else {
-              this.data.selectPrevious(this.followSelected);
-            }
+          if (this.goForward) {
+            this.data.selectNext(this.followSelected);
+          } else {
+            this.data.selectPrevious(this.followSelected);
           }
         } catch (InterruptedException e) {
           return;
@@ -107,6 +98,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 
   /**
    * Downloads n images into the cache beginning from the supplied start-image (including the start-image itself).
+   *
    * @param startImage the image to start with (this and the next n-1 images in the same sequence are downloaded)
    * @param n the number of images to download
    * @param type the quality of the image (full or thumbnail)

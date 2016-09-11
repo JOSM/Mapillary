@@ -31,7 +31,7 @@ public class MapillarySign {
       HashMap<String, MapillarySign> countryMap = new HashMap<>();
       try (
         BufferedReader br = new BufferedReader(new InputStreamReader(
-          MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson")
+          MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson"), "UTF-8"
         ));
       ) {
         String line = "";

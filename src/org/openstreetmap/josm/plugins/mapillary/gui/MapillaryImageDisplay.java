@@ -40,13 +40,13 @@ public class MapillaryImageDisplay extends JComponent {
   private static final int ZOOM_BUTTON = Main.pref.getInteger("mapillary.picture-zoom-button", 1);
 
   /** The image currently displayed */
-  private transient BufferedImage image;
+  private volatile BufferedImage image;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
    * rectangle is calculated each time the zoom is modified
    */
-  private Rectangle visibleRect;
+  private volatile Rectangle visibleRect;
 
   /**
    * When a selection is done, the rectangle of the selection (in image
