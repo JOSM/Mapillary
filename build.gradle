@@ -44,7 +44,7 @@ dependencies {
    * Please check for numeric versions, if that specific version is available for download from https://josm.openstreetmap.de/download/ .
    * If not, choose the next higher number that is available, or the gradle build will break.
    */
-  compile(':josm:10583')
+  compile(':josm:10966')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   requiredPlugin (name: 'apache-commons'){changing=true}
   requiredPlugin (name: 'apache-http'){changing=true}

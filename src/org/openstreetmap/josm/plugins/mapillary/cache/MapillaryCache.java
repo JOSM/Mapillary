@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
@@ -43,7 +44,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-    super(MapillaryPlugin.getCache(), 50000, 50000, new HashMap<>());
+    this(MapillaryPlugin.getCache(), key, type);
+  }
+
+  protected MapillaryCache(CacheAccess<String, BufferedImageCacheEntry> cache, String key, Type type) {
+    super(cache, 50000, 50000, new HashMap<>());
     String k = null;
     URL u = null;
     if (key != null && type != null) {
