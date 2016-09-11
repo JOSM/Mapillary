@@ -35,6 +35,6 @@ public class MapillaryDownloadViewAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    MapillaryDownloader.completeView();
+    MapillaryDownloader.downloadVisibleArea();
   }
 }

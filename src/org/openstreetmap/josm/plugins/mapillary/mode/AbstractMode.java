@@ -91,7 +91,7 @@ public abstract class AbstractMode extends MouseAdapter implements
         if (this.moved
           && Calendar.getInstance().getTimeInMillis() - this.lastDownload >= DOWNLOAD_COOLDOWN) {
           this.lastDownload = Calendar.getInstance().getTimeInMillis();
-          MapillaryDownloader.completeView();
+          MapillaryDownloader.downloadVisibleArea();
           this.moved = false;
           MapillaryData.dataUpdated();
         }

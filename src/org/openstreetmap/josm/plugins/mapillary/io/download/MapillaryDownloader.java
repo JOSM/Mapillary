@@ -121,14 +121,13 @@ public final class MapillaryDownloader {
   }
 
   private static void run(Runnable t) {
-    //threads.add(t);
     executor.execute(t);
   }
 
   /**
    * If some part of the current view has not been downloaded, it is downloaded.
    */
-  public static void completeView() {
+  public static void downloadVisibleArea() {
     if (getMode() != DOWNLOAD_MODE.VISIBLE_AREA && getMode() != DOWNLOAD_MODE.MANUAL_ONLY) {
       throw new IllegalStateException("Download mode must be 'visible area' or 'manual only'");
     }
@@ -178,15 +177,14 @@ public final class MapillaryDownloader {
   }
 
   /**
-   * Downloads all images of the area covered by the OSM data. This is only just
-   * for automatic download.
+   * Downloads all images of the area covered by the OSM data.
    */
-  public static void automaticDownload() {
+  public static void downloadOSMArea() {
     if (Main.getLayerManager().getEditLayer() == null) {
       return;
     }
-    if (isAreaTooBig()) {
-      tooBigErrorDialog();
+    if (isOSMAreaTooBig()) {
+      showOSMAreaTooBigErrorDialog();
       return;
     }
     if (getMode() != DOWNLOAD_MODE.OSM_AREA) {
@@ -204,21 +202,21 @@ public final class MapillaryDownloader {
    * program too much. To solve this the automatic is stopped, an alert is shown
    * and you will have to download areas manually.
    */
-  private static boolean isAreaTooBig() {
+  private static boolean isOSMAreaTooBig() {
     double area = Main.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);
     return area > MAX_AREA;
   }
 
-  private static void tooBigErrorDialog() {
+  private static void showOSMAreaTooBigErrorDialog() {
     if (SwingUtilities.isEventDispatchThread()) {
       MapillaryLayer.getInstance().tempSemiautomatic = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
       JOptionPane
         .showMessageDialog(
           Main.parent,
-          I18n.tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
+          I18n.tr("The downloaded OSM area is too big. Download mode has been changed to OSM area until the layer is restarted."));
     } else {
-      SwingUtilities.invokeLater(MapillaryDownloader::tooBigErrorDialog);
+      SwingUtilities.invokeLater(MapillaryDownloader::showOSMAreaTooBigErrorDialog);
     }
   }
 

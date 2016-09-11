@@ -115,7 +115,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
       }
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
-        MapillaryDownloader.automaticDownload();
+        MapillaryDownloader.downloadOSMArea();
       }
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.VISIBLE_AREA) {
         this.mode.zoomChanged();
@@ -582,7 +582,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       } catch (InterruptedException e) {
         Main.error(e);
       }
-      MapillaryDownloader.automaticDownload();
+      MapillaryDownloader.downloadOSMArea();
     }
   }
 
