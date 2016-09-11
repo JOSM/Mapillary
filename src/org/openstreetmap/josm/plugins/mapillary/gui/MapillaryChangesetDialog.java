@@ -77,7 +77,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
       200
     );
 
-    MapillaryLayer.getInstance().getLocationChangeset().addChangesetListener(this);
     this.map = new ConcurrentHashMap<>();
 
     this.changesetTree.expandRow(0);
@@ -97,7 +96,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     this.submitButton = new SideButton(new SubmitAction());
 
     createLayout(treesPanel, true, Collections.singletonList(this.submitButton));
-    buildTree();
   }
 
   /**

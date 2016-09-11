@@ -50,6 +50,7 @@ import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -139,6 +140,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (Main.main != null) {
       MapillaryData.dataUpdated();
     }
+
+    getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
   }
 
   /**
