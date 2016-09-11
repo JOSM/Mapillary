@@ -19,6 +19,7 @@ public final class MapillaryURL {
   private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
   private static final String BASE_API_V3_URL = "https://a.mapillary.com/v3/";
   private static final String BASE_WEBSITE_URL = "https://www.mapillary.com/";
+  private static final String LEGACY_WEBSITE_URL = "https://legacy.mapillary.com/";
 
   public enum IMAGE_SELECTOR {
     BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected
@@ -71,7 +72,7 @@ public final class MapillaryURL {
     }
     parts.put("response_type", "token");
     parts.put("scope", "user:read public:upload public:write");
-    return string2URL(BASE_WEBSITE_URL, "connect", queryString(parts));
+    return string2URL(LEGACY_WEBSITE_URL, "connect", queryString(parts));
   }
 
   /**
