@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 
 /**
  * Each {@link MapillarySign} represents a traffic sign detected by the Mapillary's system.
@@ -25,6 +26,7 @@ public class MapillarySign {
   private final String type;
   private final String country;
   private String variant;
+  private TrafficoSign trafficoSign;
 
   static {
     map = new HashMap<>();
@@ -83,6 +85,7 @@ public class MapillarySign {
     if (parts.length == 4) {
       variant = parts[3];
     }
+    trafficoSign = TrafficoSign.getSign(country, type);
   }
 
   public String getFullName() {

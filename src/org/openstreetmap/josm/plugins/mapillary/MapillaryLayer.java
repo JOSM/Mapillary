@@ -135,13 +135,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
       MapillaryMainDialog.getInstance().getActionMap()
         .put("MapillaryDel", new DeleteImageAction());
-    }
 
-    if (Main.main != null) {
       MapillaryData.dataUpdated();
+      getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
     }
-
-    getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
   }
 
   /**
