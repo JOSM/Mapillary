@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -22,7 +23,6 @@ import org.openstreetmap.josm.tools.I18n;
  * download petitions will be managed one by one.
  *
  * @author nokutu
- *
  */
 public final class MapillaryDownloader {
 
@@ -79,14 +79,11 @@ public final class MapillaryDownloader {
     }
   }
 
-  /** All the Threads that have been run. Used to interrupt them properly. */
-  //private static List<Thread> threads = new ArrayList<>();
-
   /** Max area to be downloaded */
-  public static final double MAX_AREA = Main.pref.getDouble("mapillary.max-download-area", 0.015);
+  private static final double MAX_AREA = Main.pref.getDouble("mapillary.max-download-area", 0.015);
 
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
+  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
 
   private MapillaryDownloader() {
     // Private constructor to avoid instantiation
@@ -96,10 +93,8 @@ public final class MapillaryDownloader {
    * Gets all the images in a square. It downloads all the images of all the
    * sequences that pass through the given rectangle.
    *
-   * @param minLatLon
-   *          The minimum latitude and longitude of the rectangle.
-   * @param maxLatLon
-   *          The maximum latitude and longitude of the rectangle
+   * @param minLatLon The minimum latitude and longitude of the rectangle.
+   * @param maxLatLon The maximum latitude and longitude of the rectangle
    */
   public static void getImages(LatLon minLatLon, LatLon maxLatLon) {
     if (minLatLon == null || maxLatLon == null) {
@@ -111,8 +106,7 @@ public final class MapillaryDownloader {
   /**
    * Gets the images within the given bounds.
    *
-   * @param bounds
-   *          A {@link Bounds} object containing the area to be downloaded.
+   * @param bounds A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
     run(new MapillarySquareDownloadManagerThread(bounds));
@@ -124,9 +118,9 @@ public final class MapillaryDownloader {
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
   public static MapillaryDownloader.DOWNLOAD_MODE getMode() {
-   return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
-     ? DOWNLOAD_MODE.VISIBLE_AREA
-     : DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode"));
+    return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
+      ? DOWNLOAD_MODE.VISIBLE_AREA
+      : DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode"));
   }
 
   private static void run(Runnable t) {
@@ -158,9 +152,9 @@ public final class MapillaryDownloader {
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
         if (isInBounds(new LatLon(view.getMinLat()
-            + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
-            view.getMinLon() + (view.getMaxLon() - view.getMinLon())
-                * ((double) j / n)))) {
+          + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
+          view.getMinLon() + (view.getMaxLon() - view.getMinLon())
+            * ((double) j / n)))) {
           inside[i][j] = true;
         }
       }
@@ -178,16 +172,12 @@ public final class MapillaryDownloader {
    * Checks if the given {@link LatLon} object lies inside the bounds of the
    * image.
    *
-   * @param latlon
-   *          The coordinates to check.
+   * @param latlon The coordinates to check.
+   *
    * @return true if it lies inside the bounds; false otherwise;
    */
   private static boolean isInBounds(LatLon latlon) {
-    for (Bounds bounds : MapillaryLayer.getInstance().getData().getBounds()) {
-      if (bounds.contains(latlon))
-        return true;
-    }
-    return false;
+    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -> b.contains(latlon));
   }
 
   /**
@@ -205,12 +195,10 @@ public final class MapillaryDownloader {
     if (getMode() != DOWNLOAD_MODE.OSM_AREA) {
       throw new IllegalStateException("Must be in automatic mode.");
     }
-    for (Bounds bounds : Main.getLayerManager().getEditLayer().data.getDataSourceBounds()) {
-      if (!MapillaryLayer.getInstance().getData().getBounds().contains(bounds)) {
-        MapillaryLayer.getInstance().getData().getBounds().add(bounds);
-        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
-      }
-    }
+    Main.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
+      MapillaryLayer.getInstance().getData().getBounds().add(bounds);
+      MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
+    });
   }
 
   /**
@@ -220,10 +208,7 @@ public final class MapillaryDownloader {
    * and you will have to download areas manually.
    */
   private static boolean isAreaTooBig() {
-    double area = 0;
-    for (Bounds bounds : Main.getLayerManager().getEditLayer().data.getDataSourceBounds()) {
-      area += bounds.getArea();
-    }
+    double area = Main.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);
     return area > MAX_AREA;
   }
 
@@ -232,11 +217,11 @@ public final class MapillaryDownloader {
       MapillaryLayer.getInstance().tempSemiautomatic = true;
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
       JOptionPane
-          .showMessageDialog(
-              Main.parent,
-              I18n.tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
+        .showMessageDialog(
+          Main.parent,
+          I18n.tr("The downloaded OSM area is too big. Download mode has been changed to semiautomatic until the layer is restarted."));
     } else {
-      SwingUtilities.invokeLater(() -> tooBigErrorDialog());
+      SwingUtilities.invokeLater(MapillaryDownloader::tooBigErrorDialog);
     }
   }
 
@@ -244,12 +229,6 @@ public final class MapillaryDownloader {
    * Stops all running threads.
    */
   public static void stopAll() {
-    /*for (Thread t : threads) {
-      if (t.isAlive())
-        Main.info(t+" is still alive!");
-      t.interrupt();
-    }
-    threads.clear();*/
     executor.shutdownNow();
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);
@@ -257,6 +236,6 @@ public final class MapillaryDownloader {
       Main.error(e);
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(100));
+      new ArrayBlockingQueue<>(100));
   }
 }
