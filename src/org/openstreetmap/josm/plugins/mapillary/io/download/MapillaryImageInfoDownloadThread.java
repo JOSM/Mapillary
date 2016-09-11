@@ -54,9 +54,8 @@ public class MapillaryImageInfoDownloadThread extends Thread {
         if (!jsonObj.getBoolean("more"))
           this.ex.shutdown();
         JsonArray jsonArr = jsonObj.getJsonArray("ims");
-        JsonObject data;
         for (int i = 0; i < jsonArr.size(); i++) {
-          data = jsonArr.getJsonObject(i);
+          final JsonObject data = jsonArr.getJsonObject(i);
           String key = data.getString("key");
           MapillaryLayer.getInstance().getData().getImages().stream().filter(image -> image instanceof MapillaryImage
             && ((MapillaryImage) image).getKey().equals(key)
