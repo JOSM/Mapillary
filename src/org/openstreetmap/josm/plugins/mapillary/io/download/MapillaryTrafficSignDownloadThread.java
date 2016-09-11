@@ -16,6 +16,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySign;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.IMAGE_SELECTOR;
 
@@ -23,7 +24,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.IMAGE_SELECTO
  * Downloads the signs information in a given area.
  *
  * @author nokutu
- *
  */
 public class MapillaryTrafficSignDownloadThread extends Thread {
   private final Bounds bounds;
@@ -33,9 +33,9 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param ex {@link ExecutorService} object that is executing this thread.
+   * @param ex     {@link ExecutorService} object that is executing this thread.
    * @param bounds the bounds in which the traffic signs should be downloaded
-   * @param page the pagenumber of the results page that should be retrieved
+   * @param page   the pagenumber of the results page that should be retrieved
    */
   public MapillaryTrafficSignDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;
@@ -45,11 +45,10 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
 
   @Override
   public void run() {
-
     try (
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-        MapillaryURL.searchImageInfoURL(bounds, page, IMAGE_SELECTOR.OBJ_REC_ONLY).openStream(), "UTF-8"
-      ));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    MapillaryURL.searchImageInfoURL(bounds, page, IMAGE_SELECTOR.OBJ_REC_ONLY).openStream(), "UTF-8"
+            ));
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {
@@ -59,7 +58,7 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
       for (int i = 0; i < jsonarr.size(); i++) {
         JsonArray rects = jsonarr.getJsonObject(i).getJsonArray("rects");
         JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(
-            "rectversions");
+                "rectversions");
         String key = jsonarr.getJsonObject(i).getString("key");
         if (rectversions != null) {
           for (int j = 0; j < rectversions.size(); j++) {
@@ -67,8 +66,9 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
             for (int k = 0; k < rects.size(); k++) {
               JsonObject data = rects.getJsonObject(k);
               for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-                if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key))
-                  ((MapillaryImage) image).addSign(data.getString("type"));
+                if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key)) {
+                  ((MapillaryImage) image).addSign(MapillarySign.getSign(data.getString("type"), rectversions.getJsonObject(j).getString("package").split("_")[1]));
+                }
               }
             }
           }
@@ -80,14 +80,12 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
             JsonObject data = rects.getJsonObject(j);
             for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
               if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key)) {
-                ((MapillaryImage) image).addSign(data.getString("type"));
+                ((MapillaryImage) image).addSign(MapillarySign.getSign(data.getString("type"), data.getString("package").split("_")[1]));
               }
             }
           }
         }
       }
-    } catch (MalformedURLException e) {
-      Main.error(e);
     } catch (IOException e) {
       Main.error(e);
     }

@@ -15,21 +15,29 @@ import org.openstreetmap.josm.plugins.mapillary.utils.ValidationUtil;
  * @see MapillaryData
  */
 public class MapillaryImage extends MapillaryAbstractImage {
-  /** Unique identifier of the object. */
+  /**
+   * Unique identifier of the object.
+   */
   private final String key;
-  /** The user that made the image. */
+  /**
+   * The user that made the image.
+   */
   private String user;
-  /** Set of traffic signs in the image. */
-  private final List<String> signs = new ArrayList<>();
-  /** Where the picture was taken. */
+  /**
+   * Set of traffic signs in the image.
+   */
+  private final List<MapillarySign> signs = new ArrayList<>();
+  /**
+   * Where the picture was taken.
+   */
   private String location;
 
   /**
    * Main constructor of the class MapillaryImage
    *
-   * @param key The unique identifier of the image.
+   * @param key    The unique identifier of the image.
    * @param latLon The latitude and longitude where it is positioned.
-   * @param ca The direction of the images in degrees, meaning 0 north.
+   * @param ca     The direction of the images in degrees, meaning 0 north.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca) {
     super(latLon, ca);
@@ -69,8 +77,10 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *
    * @param sign A {@code String} that identifies the type of sign.
    */
-  public void addSign(String sign) {
-    this.signs.add(sign);
+  public void addSign(MapillarySign sign) {
+    if (sign != null) {
+      this.signs.add(sign);
+    }
   }
 
   /**
@@ -78,7 +88,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *
    * @return A {@link List} object containing the signs assigned to this image.
    */
-  public List<String> getSigns() {
+  public List<MapillarySign> getSigns() {
     return this.signs;
   }
 
@@ -103,8 +113,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
   @Override
   public String toString() {
     return String.format(
-      "Image[key=%s,lat=%f,lon=%f,ca=%f,location=%s,user=%s,capturedAt=%d]",
-      key, latLon.lat(), latLon.lon(), ca, location, user, capturedAt
+            "Image[key=%s,lat=%f,lon=%f,ca=%f,location=%s,user=%s,capturedAt=%d]",
+            key, latLon.lat(), latLon.lon(), ca, location, user, capturedAt
     );
   }
 

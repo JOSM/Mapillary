@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -31,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySign;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -68,25 +70,21 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   /**
    * The list of sign names
    */
-  private static final String[] SIGN_TAGS = {"prohibitory_speed_limit",
-          "priority_stop", "other_give_way", "mandatory_roundabout",
-          "other_no_entry", "prohibitory_no_traffic_both_ways",
-          "danger_intersection", "mandatory_go", "mandatory_keep",
-          "danger_priority_next_intersection", "danger_uneven_road",
-          "prohibitory_no_parking", "prohibitory_on_overtaking",
-          "danger_pedestrian_crossing", "prohibitory_no_u_turn",
-          "prohibitory_noturn"};
+  private static final String[] SIGN_TAGS = {"prohibitory--maximum-speed-limit",
+          "regulatory|priority--stop", "regulatory|priority--give_way|yield", "warning|mandatory--roundabout",
+          "prohibitory|regulatory--no-entry|no-traffic-both-ways",
+          "crossroads|junction", "mandatory--turn|straight", "uneven|slippery",
+          "no-parking", "no_overtaking",
+          "danger_pedestrian_crossing", "no_*_turn"};
   /**
    * The {@link JCheckBox} where the respective tag should be searched
    */
   private final JCheckBox[] SIGN_CHECKBOXES = {this.signFilter.maxSpeed,
           this.signFilter.stop, this.signFilter.giveWay,
-          this.signFilter.roundabout, this.signFilter.access,
-          this.signFilter.access, this.signFilter.intersection,
-          this.signFilter.direction, this.signFilter.direction,
-          this.signFilter.intersection, this.signFilter.uneven,
+          this.signFilter.roundabout, this.signFilter.access, this.signFilter.intersection,
+          this.signFilter.direction, this.signFilter.uneven,
           this.signFilter.noParking, this.signFilter.noOvertaking,
-          this.signFilter.crossing, this.signFilter.noTurn, this.signFilter.noTurn};
+          this.signFilter.crossing, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter.svg",
@@ -241,11 +239,14 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     return false;
   }
 
-  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String singString) {
+  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
     boolean contains = false;
-    for (String sign : img.getSigns()) {
-      if (sign.contains(singString))
+    for (MapillarySign sign : img.getSigns()) {
+      String[] parts = signTag.split("--");
+      if (Pattern.compile(parts[0]).matcher(sign.getCategory()).find() &&
+              Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
         contains = true;
+      }
     }
     return contains == signCheckBox.isSelected() && contains;
   }
