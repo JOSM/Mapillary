@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillarySquareDownloadManagerThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.io.download</a> &gt; <span class="el_source">MapillarySquareDownloadManagerThread.java</span></div><h1>MapillarySquareDownloadManagerThread.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.io.download;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+
+/**
+ * This Class is needed to create an indeterminate amount of downloads, because
+ * the Mapillary API has a parameter called page which is needed when the amount
+ * of requested images is quite big.
+ *
+ * @author nokutu
+ *
+ * @see MapillaryDownloader
+ * @see MapillarySequenceDownloadThread
+ * @see MapillaryImageInfoDownloadThread
+ * @see MapillaryTrafficSignDownloadThread
+ */
+public class MapillarySquareDownloadManagerThread implements Runnable {
+
+  private final Bounds bounds;
+
+  private ThreadPoolExecutor downloadExecutor;
+  private ThreadPoolExecutor completeExecutor;
+  private ThreadPoolExecutor signsExecutor;
+
+  /**
+   * Main constructor.
+   *
+   * @param bounds the bounds of the area that should be downloaded
+   *
+   */
+<span class="nc" id="L42">  public MapillarySquareDownloadManagerThread(Bounds bounds) {</span>
+<span class="nc" id="L43">    this.bounds = bounds;</span>
+<span class="nc" id="L44">  }</span>
+
+  @Override
+  public void run() {
+<span class="nc" id="L48">    downloadExecutor = new ThreadPoolExecutor(3, 5,</span>
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(5));
+<span class="nc" id="L50">    completeExecutor = new ThreadPoolExecutor(3, 5,</span>
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(5));
+<span class="nc" id="L52">    signsExecutor = new ThreadPoolExecutor(3, 5, 25,</span>
+      TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(5));
+
+    try {
+<span class="nc" id="L56">      PluginState.startDownload();</span>
+<span class="nc" id="L57">      MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L58">      downloadSequences();</span>
+<span class="nc" id="L59">      completeImages();</span>
+<span class="nc" id="L60">      MapillaryMainDialog.getInstance().updateTitle();</span>
+<span class="nc" id="L61">      downloadSigns();</span>
+<span class="nc" id="L62">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L63">      Main.error(&quot;Mapillary download interrupted (probably because of closing the layer).&quot;);</span>
+    } finally {
+<span class="nc" id="L65">      PluginState.finishDownload();</span>
+<span class="nc" id="L66">    }</span>
+<span class="nc" id="L67">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L68">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L69">    MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L70">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L71">  }</span>
+
+  /**
+   * Downloads the sequence positions, directions and keys.
+   *
+   * @throws InterruptedException if the thread is interrupted while running this method.
+   */
+  private void downloadSequences() throws InterruptedException {
+<span class="nc" id="L79">    int page = 0;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    while (!this.downloadExecutor.isShutdown()) {</span>
+<span class="nc" id="L81">      this.downloadExecutor.execute(new MapillarySequenceDownloadThread(this.downloadExecutor, bounds, page));</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      while (this.downloadExecutor.getQueue().remainingCapacity() == 0) {</span>
+<span class="nc" id="L83">        Thread.sleep(100);</span>
+      }
+<span class="nc" id="L85">      page++;</span>
+    }
+<span class="nc" id="L87">    this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L88">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L89">  }</span>
+
+  /**
+   * Downloads the image's author's username and the image's location.
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
+  private void completeImages() throws InterruptedException {
+<span class="nc" id="L98">    int page = 0;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    while (!this.completeExecutor.isShutdown()) {</span>
+<span class="nc" id="L100">      this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(completeExecutor, bounds, page));</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">      while (this.completeExecutor.getQueue().remainingCapacity() == 0) {</span>
+<span class="nc" id="L102">        Thread.sleep(100);</span>
+      }
+<span class="nc" id="L104">      page++;</span>
+    }
+<span class="nc" id="L106">    this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L107">  }</span>
+
+  /**
+   * Downloads the traffic signs in the images.
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
+  private void downloadSigns() throws InterruptedException {
+<span class="nc" id="L116">    int page = 0;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    while (!this.signsExecutor.isShutdown()) {</span>
+<span class="nc" id="L118">      this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(this.signsExecutor, bounds, page));</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">      while (this.signsExecutor.getQueue().remainingCapacity() == 0) {</span>
+<span class="nc" id="L120">        Thread.sleep(100);</span>
+      }
+<span class="nc" id="L122">      page++;</span>
+    }
+<span class="nc" id="L124">    this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L125">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

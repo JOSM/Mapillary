@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryUtils.java</span></div><h1>MapillaryUtils.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+
+/**
+ * Set of utilities.
+ *
+ * @author nokutu
+ */
+public final class MapillaryUtils {
+
+  private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
+
+<span class="fc" id="L37">  private MapillaryUtils() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L39">  }</span>
+
+  /**
+   * Open the default browser in the given URL.
+   *
+   * @param url The (not-null) URL that is going to be opened.
+   * @throws IOException when the URL could not be opened
+   */
+  public static void browse(URL url) throws IOException {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (url == null) {</span>
+<span class="nc" id="L49">      throw new IllegalArgumentException();</span>
+    }
+<span class="nc" id="L51">    Desktop desktop = Desktop.getDesktop();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (desktop.isSupported(Desktop.Action.BROWSE)) {</span>
+      try {
+<span class="nc" id="L54">        desktop.browse(url.toURI());</span>
+<span class="nc" id="L55">      } catch (URISyntaxException e1) {</span>
+<span class="nc" id="L56">        throw new IOException(e1);</span>
+<span class="nc" id="L57">      }</span>
+    } else {
+<span class="nc" id="L59">      Runtime runtime = Runtime.getRuntime();</span>
+<span class="nc" id="L60">      runtime.exec(&quot;xdg-open &quot; + url);</span>
+    }
+<span class="nc" id="L62">  }</span>
+
+  /**
+   * Returns the current date formatted as EXIF timestamp.
+   * As timezone the default timezone of the JVM is used ({@link java.util.TimeZone#getDefault()}).
+   *
+   * @return A {@code String} object containing the current date.
+   */
+  public static String currentDate() {
+<span class="fc" id="L71">    return new SimpleDateFormat(&quot;yyyy:MM:dd HH:mm:ss&quot;, Locale.UK).format(Calendar.getInstance().getTime());</span>
+  }
+
+  /**
+   * Returns current time in Epoch format (milliseconds since 1970-01-01T00:00:00+0000)
+   *
+   * @return The current date in Epoch format.
+   */
+  public static long currentTime() {
+<span class="nc" id="L80">    return Calendar.getInstance().getTimeInMillis();</span>
+  }
+
+  /**
+   * Parses a string with a given format and returns the Epoch time.
+   * If no timezone information is given, the default timezone of the JVM is used
+   * ({@link java.util.TimeZone#getDefault()}).
+   *
+   * @param date   The string containing the date.
+   * @param format The format of the date.
+   * @return The date in Epoch format.
+   * @throws ParseException if the date cannot be parsed with the given format
+   */
+  public static long getEpoch(String date, String format) throws ParseException {
+<span class="fc" id="L94">    return new SimpleDateFormat(format, Locale.UK).parse(date).getTime();</span>
+  }
+
+  /**
+   * Calculates the decimal degree-value from a degree value given in
+   * degrees-minutes-seconds-format
+   *
+   * @param degMinSec an array of length 3, the values in there are (in this order)
+   *                  degrees, minutes and seconds
+   * @param ref       the latitude or longitude reference determining if the given value
+   *                  is:
+   *                  &lt;ul&gt;
+   *                  &lt;li&gt;north (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH}) or
+   *                  south (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH}) of
+   *                  the equator&lt;/li&gt;
+   *                  &lt;li&gt;east (
+   *                  {@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST}) or
+   *                  west ({@link GpsTagConstants#GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST}
+   *                  ) of the equator&lt;/li&gt;
+   *                  &lt;/ul&gt;
+   * @return the decimal degree-value for the given input, negative when west of
+   * 0-meridian or south of equator, positive otherwise
+   * @throws IllegalArgumentException if {@code degMinSec} doesn't have length 3 or if {@code ref} is
+   *                                  not one of the values mentioned above
+   */
+  public static double degMinSecToDouble(RationalNumber[] degMinSec, String ref) {
+<span class="pc bpc" id="L122" title="2 of 4 branches missed.">    if (degMinSec == null || degMinSec.length != 3) {</span>
+<span class="nc" id="L123">      throw new IllegalArgumentException(&quot;Array's length must be 3.&quot;);</span>
+    }
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    for (int i = 0; i &lt; 3; i++) {</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">      if (degMinSec[i] == null)</span>
+<span class="nc" id="L127">        throw new IllegalArgumentException(&quot;Null value in array.&quot;);</span>
+    }
+
+<span class="pc bpc" id="L130" title="8 of 15 branches missed.">    switch (ref) {</span>
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
+      case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
+      case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST:
+<span class="fc" id="L135">        break;</span>
+      default:
+<span class="nc" id="L137">        throw new IllegalArgumentException(&quot;Invalid ref.&quot;);</span>
+    }
+
+<span class="fc" id="L140">    double result = degMinSec[0].doubleValue(); // degrees</span>
+<span class="fc" id="L141">    result += degMinSec[1].doubleValue() / 60; // minutes</span>
+<span class="fc" id="L142">    result += degMinSec[2].doubleValue() / 3600; // seconds</span>
+
+<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH.equals(ref)</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">            || GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_WEST.equals(ref)) {</span>
+<span class="fc" id="L146">      result *= -1;</span>
+    }
+
+<span class="fc" id="L149">    result = 360 * ((result + 180) / 360 - Math.floor((result + 180) / 360)) - 180;</span>
+<span class="fc" id="L150">    return result;</span>
+  }
+
+  /**
+   * Joins two images into the same sequence. One of them must be the last image of a sequence, the other one the beginning of a different one.
+   *
+   * @param imgA the first image, into whose sequence the images from the sequence of the second image are merged
+   * @param imgB the second image, whose sequence is merged into the sequence of the first image
+   */
+  public static synchronized void join(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
+<span class="pc bpc" id="L160" title="2 of 4 branches missed.">    if (imgA == null || imgB == null) {</span>
+<span class="nc" id="L161">      throw new IllegalArgumentException(&quot;Both images must be non-null for joining.&quot;);</span>
+    }
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (imgA.getSequence() == imgB.getSequence()) {</span>
+<span class="nc" id="L164">      throw new IllegalArgumentException(&quot;You can only join images of different sequences.&quot;);</span>
+    }
+<span class="pc bpc" id="L166" title="6 of 8 branches missed.">    if ((imgA.next() != null || imgB.previous() != null) &amp;&amp; (imgB.next() != null || imgA.previous() != null)) {</span>
+<span class="nc" id="L167">      throw new IllegalArgumentException(&quot;You can only join an image at the end of a sequence with one at the beginning of another sequence.&quot;);</span>
+    }
+<span class="pc bpc" id="L169" title="2 of 4 branches missed.">    if (imgA.next() != null || imgB.previous() != null) {</span>
+<span class="nc" id="L170">      join(imgB, imgA);</span>
+    } else {
+<span class="fc bfc" id="L172" title="All 2 branches covered.">      for (MapillaryAbstractImage img : imgB.getSequence().getImages()) {</span>
+<span class="fc" id="L173">        imgA.getSequence().add(img);</span>
+<span class="fc" id="L174">        img.setSequence(imgA.getSequence());</span>
+<span class="fc" id="L175">      }</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
+<span class="nc" id="L177">        MapillaryData.dataUpdated();</span>
+      }
+    }
+<span class="fc" id="L180">  }</span>
+
+  /**
+   * Zooms to fit all the {@link MapillaryAbstractImage} objects stored in the
+   * database.
+   */
+  public static void showAllPictures() {
+<span class="nc" id="L187">    showPictures(MapillaryLayer.getInstance().getData().getImages(), false);</span>
+<span class="nc" id="L188">  }</span>
+
+  /**
+   * Zooms to fit all the given {@link MapillaryAbstractImage} objects.
+   *
+   * @param images The images your are zooming to.
+   * @param select Whether the added images must be selected or not.
+   */
+  public static void showPictures(final Set&lt;MapillaryAbstractImage&gt; images, final boolean select) {
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L198">      SwingUtilities.invokeLater(() -&gt; showPictures(images, select));</span>
+    } else {
+      Bounds zoomBounds;
+<span class="nc bnc" id="L201" title="All 2 branches missed.">      if (images.isEmpty()) {</span>
+<span class="nc" id="L202">        zoomBounds = new Bounds(new LatLon(0, 0));</span>
+      } else {
+<span class="nc" id="L204">        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        for (MapillaryAbstractImage img : images) {</span>
+<span class="nc" id="L206">          zoomBounds.extend(img.getMovingLatLon());</span>
+<span class="nc" id="L207">        }</span>
+      }
+
+      // The zoom rectangle must have a minimum size.
+<span class="nc" id="L211">      double latExtent = Math.max(zoomBounds.getMaxLat() - zoomBounds.getMinLat(), MIN_ZOOM_SQUARE_SIDE);</span>
+<span class="nc" id="L212">      double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);</span>
+<span class="nc" id="L213">      zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);</span>
+
+<span class="nc" id="L215">      Main.map.mapView.zoomTo(zoomBounds);</span>
+<span class="nc" id="L216">      MapillaryLayer.getInstance().getData().setSelectedImage(null);</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">      if (select)</span>
+<span class="nc" id="L218">        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">      if (Main.main != null)</span>
+<span class="nc" id="L220">        MapillaryData.dataUpdated();</span>
+    }
+
+<span class="nc" id="L223">  }</span>
+
+  /**
+   * Separates two images belonging to the same sequence. The two images have to be consecutive in the same sequence.
+   * Two new sequences are created and all images up to (and including) either {@code imgA} or {@code imgB} (whichever appears first in the sequence) are put into the first of the two sequences.
+   * All others are put into the second new sequence.
+   *
+   * @param imgA one of the images marking where to split the sequence
+   * @param imgB the other image marking where to split the sequence, needs to be a direct neighbour of {@code imgA} in the sequence.
+   */
+  public static synchronized void unjoin(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
+<span class="pc bpc" id="L234" title="2 of 4 branches missed.">    if (imgA == null || imgB == null) {</span>
+<span class="nc" id="L235">      throw new IllegalArgumentException(&quot;Both images must be non-null for unjoining.&quot;);</span>
+    }
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">    if (imgA.getSequence() != imgB.getSequence()) {</span>
+<span class="nc" id="L238">      throw new IllegalArgumentException(&quot;You can only unjoin with two images from the same sequence.&quot;);</span>
+    }
+<span class="pc bpc" id="L240" title="2 of 4 branches missed.">    if (imgB.equals(imgA.next()) &amp;&amp; imgA.equals(imgB.next())) {</span>
+<span class="nc" id="L241">      throw new IllegalArgumentException(&quot;When unjoining with two images these must be consecutive in one sequence.&quot;);</span>
+    }
+
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">    if (imgA.equals(imgB.next())) {</span>
+<span class="nc" id="L245">      unjoin(imgB, imgA);</span>
+    } else {
+<span class="fc" id="L247">      MapillarySequence seqA = new MapillarySequence();</span>
+<span class="fc" id="L248">      MapillarySequence seqB = new MapillarySequence();</span>
+<span class="fc" id="L249">      boolean insideFirstHalf = true;</span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">      for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (insideFirstHalf) {</span>
+<span class="fc" id="L252">          img.setSequence(seqA);</span>
+<span class="fc" id="L253">          seqA.add(img);</span>
+        } else {
+<span class="fc" id="L255">          img.setSequence(seqB);</span>
+<span class="fc" id="L256">          seqB.add(img);</span>
+        }
+<span class="fc bfc" id="L258" title="All 2 branches covered.">        if (img.equals(imgA)) {</span>
+<span class="fc" id="L259">          insideFirstHalf = false;</span>
+        }
+<span class="fc" id="L261">      }</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
+<span class="nc" id="L263">        MapillaryData.dataUpdated();</span>
+      }
+    }
+<span class="fc" id="L266">  }</span>
+
+  /**
+   * Updates the help text at the bottom of the window.
+   */
+  public static void updateHelpText() {
+<span class="nc" id="L272">    StringBuilder ret = new StringBuilder();</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">    if (PluginState.isDownloading()) {</span>
+<span class="nc" id="L274">      ret.append(tr(&quot;Downloading Mapillary images&quot;));</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">    } else if (MapillaryLayer.getInstance().getData().size() &gt; 0) {</span>
+<span class="nc" id="L276">      ret.append(tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance().getData().size()));</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
+<span class="nc" id="L278">        ret.append(tr(&quot;Submitting Mapillary Changeset&quot;));</span>
+    } else {
+<span class="nc" id="L280">      ret.append(tr(&quot;No images found&quot;));</span>
+    }
+<span class="nc bnc" id="L282" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().mode != null) {</span>
+<span class="nc" id="L283">      ret.append(&quot; — &quot;).append(tr(MapillaryLayer.getInstance().mode.toString()));</span>
+    }
+<span class="nc bnc" id="L285" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
+<span class="nc" id="L286">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
+    }
+<span class="nc" id="L288">    synchronized (MapillaryUtils.class) {</span>
+<span class="nc" id="L289">      Main.map.statusLine.setHelpText(ret.toString());</span>
+<span class="nc" id="L290">    }</span>
+<span class="nc" id="L291">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

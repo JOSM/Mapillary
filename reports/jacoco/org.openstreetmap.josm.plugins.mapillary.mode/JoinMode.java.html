@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinMode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.mode</a> &gt; <span class="el_source">JoinMode.java</span></div><h1>JoinMode.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.mode;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandJoin;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
+
+/**
+ * In this mode the user can join pictures to make sequences or unjoin them.
+ *
+ * @author nokutu
+ *
+ */
+public class JoinMode extends AbstractMode {
+
+  private MapillaryImportedImage lastClick;
+  private MouseEvent lastPos;
+
+  /**
+   * Main constructor.
+   */
+<span class="nc" id="L38">  public JoinMode() {</span>
+<span class="nc" id="L39">    this.cursor = Cursor.CROSSHAIR_CURSOR;</span>
+<span class="nc" id="L40">  }</span>
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (this.data.getHighlightedImage() == null)</span>
+<span class="nc" id="L45">      return;</span>
+<span class="nc bnc" id="L46" title="All 4 branches missed.">    if (this.lastClick == null &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L47">      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    } else if (this.lastClick != null</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L50">      if (</span>
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        (this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick.next() == null</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">          || this.data.getHighlightedImage().next() == null &amp;&amp; this.lastClick.previous() == null)</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence()</span>
+      ) {
+<span class="nc" id="L55">        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, this.data.getHighlightedImage()));</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">      } else if (this.lastClick.next() == this.data.getHighlightedImage()</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">          || this.lastClick.previous() == this.data.getHighlightedImage()) {</span>
+<span class="nc" id="L58">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L59">            new CommandUnjoin(Arrays.asList(this.lastClick, this.data.getHighlightedImage())));</span>
+      }
+<span class="nc" id="L61">      this.lastClick = null;</span>
+    }
+<span class="nc" id="L63">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L64">  }</span>
+
+  @Override
+  public void mouseMoved(MouseEvent e) {
+<span class="nc" id="L68">    this.lastPos = e;</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer))</span>
+<span class="nc" id="L70">      return;</span>
+<span class="nc" id="L71">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
+<span class="nc" id="L72">    this.data.setHighlightedImage(closestTemp);</span>
+<span class="nc" id="L73">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L74">  }</span>
+
+  @Override
+  public void paint(Graphics2D g, MapView mv, Bounds box) {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
+<span class="nc" id="L79">      g.setColor(Color.WHITE);</span>
+<span class="nc" id="L80">      Point p0 = mv.getPoint(this.lastClick.getMovingLatLon());</span>
+<span class="nc" id="L81">      Point p1 = this.lastPos.getPoint();</span>
+<span class="nc" id="L82">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
+    }
+<span class="nc" id="L84">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L88">    return tr(&quot;Join mode&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

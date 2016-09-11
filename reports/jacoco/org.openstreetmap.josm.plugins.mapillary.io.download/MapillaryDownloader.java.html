@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryDownloader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.io.download</a> &gt; <span class="el_source">MapillaryDownloader.java</span></div><h1>MapillaryDownloader.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.io.download;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.tools.I18n;
+
+/**
+ * Class that concentrates all the ways of downloading of the plugin. All the
+ * download petitions will be managed one by one.
+ *
+ * @author nokutu
+ */
+public final class MapillaryDownloader {
+
+  /** Possible download modes. */
+<span class="pc" id="L27">  public enum DOWNLOAD_MODE {</span>
+<span class="fc" id="L28">    VISIBLE_AREA(&quot;visibleArea&quot;, I18n.tr(&quot;everything in the visible area&quot;)),</span>
+<span class="fc" id="L29">    OSM_AREA(&quot;osmArea&quot;, I18n.tr(&quot;areas with downloaded OSM-data&quot;)),</span>
+<span class="fc" id="L30">    MANUAL_ONLY(&quot;manualOnly&quot;, I18n.tr(&quot;only when manually requested&quot;));</span>
+
+    private String prefId;
+    private String label;
+
+<span class="fc" id="L35">    DOWNLOAD_MODE(String prefId, String label) {</span>
+<span class="fc" id="L36">      this.prefId = prefId;</span>
+<span class="fc" id="L37">      this.label = label;</span>
+<span class="fc" id="L38">    }</span>
+
+    public String getPrefId() {
+<span class="fc" id="L41">      return prefId;</span>
+    }
+
+    public String getLabel() {
+<span class="fc" id="L45">      return label;</span>
+    }
+
+    public static DOWNLOAD_MODE fromPrefId(String prefId) {
+<span class="pc bpc" id="L49" title="3 of 4 branches missed.">      if (MANUAL_ONLY.getPrefId().equals(prefId) || &quot;Manual&quot;.equals(prefId)) {</span>
+<span class="fc" id="L50">        return MANUAL_ONLY;</span>
+      }
+<span class="nc bnc" id="L52" title="All 4 branches missed.">      if (OSM_AREA.getPrefId().equals(prefId) || &quot;Automatic&quot;.equals(prefId)) {</span>
+<span class="nc" id="L53">        return OSM_AREA;</span>
+      }
+<span class="nc bnc" id="L55" title="All 4 branches missed.">      if (VISIBLE_AREA.getPrefId().equals(prefId) || &quot;Semiautomatic&quot;.equals(prefId)) {</span>
+<span class="nc" id="L56">        return VISIBLE_AREA;</span>
+      }
+<span class="nc" id="L58">      return getDefault();</span>
+    }
+
+    public static DOWNLOAD_MODE fromLabel(String label) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">      if (MANUAL_ONLY.getLabel().equals(label)) {</span>
+<span class="fc" id="L63">        return MANUAL_ONLY;</span>
+      }
+<span class="fc bfc" id="L65" title="All 2 branches covered.">      if (OSM_AREA.getLabel().equals(label)) {</span>
+<span class="fc" id="L66">        return OSM_AREA;</span>
+      }
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (VISIBLE_AREA.getLabel().equals(label)) {</span>
+<span class="fc" id="L69">        return VISIBLE_AREA;</span>
+      }
+<span class="nc" id="L71">      return getDefault();</span>
+    }
+
+    public static DOWNLOAD_MODE getDefault() {
+<span class="fc" id="L75">      return OSM_AREA;</span>
+    }
+  }
+
+  /** Max area to be downloaded */
+<span class="nc" id="L80">  private static final double MAX_AREA = Main.pref.getDouble(&quot;mapillary.max-download-area&quot;, 0.015);</span>
+
+  /** Executor that will run the petitions. */
+<span class="nc" id="L83">  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(100));</span>
+
+<span class="nc" id="L85">  private MapillaryDownloader() {</span>
+    // Private constructor to avoid instantiation
+<span class="nc" id="L87">  }</span>
+
+  /**
+   * Gets all the images in a square. It downloads all the images of all the
+   * sequences that pass through the given rectangle.
+   *
+   * @param minLatLon The minimum latitude and longitude of the rectangle.
+   * @param maxLatLon The maximum latitude and longitude of the rectangle
+   */
+  public static void getImages(LatLon minLatLon, LatLon maxLatLon) {
+<span class="nc bnc" id="L97" title="All 4 branches missed.">    if (minLatLon == null || maxLatLon == null) {</span>
+<span class="nc" id="L98">      throw new IllegalArgumentException();</span>
+    }
+<span class="nc" id="L100">    getImages(new Bounds(minLatLon, maxLatLon));</span>
+<span class="nc" id="L101">  }</span>
+
+  /**
+   * Gets the images within the given bounds.
+   *
+   * @param bounds A {@link Bounds} object containing the area to be downloaded.
+   */
+  public static void getImages(Bounds bounds) {
+<span class="nc" id="L109">    run(new MapillarySquareDownloadManagerThread(bounds));</span>
+<span class="nc" id="L110">  }</span>
+
+  /**
+   * Returns the current download mode.
+   *
+   * @return the currently enabled {@link DOWNLOAD_MODE}
+   */
+  public static MapillaryDownloader.DOWNLOAD_MODE getMode() {
+<span class="nc bnc" id="L118" title="All 4 branches missed.">    return MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic</span>
+      ? DOWNLOAD_MODE.VISIBLE_AREA
+<span class="nc" id="L120">      : DOWNLOAD_MODE.fromPrefId(Main.pref.get(&quot;mapillary.download-mode&quot;));</span>
+  }
+
+  private static void run(Runnable t) {
+<span class="nc" id="L124">    executor.execute(t);</span>
+<span class="nc" id="L125">  }</span>
+
+  /**
+   * If some part of the current view has not been downloaded, it is downloaded.
+   */
+  public static void downloadVisibleArea() {
+<span class="nc bnc" id="L131" title="All 4 branches missed.">    if (getMode() != DOWNLOAD_MODE.VISIBLE_AREA &amp;&amp; getMode() != DOWNLOAD_MODE.MANUAL_ONLY) {</span>
+<span class="nc" id="L132">      throw new IllegalStateException(&quot;Download mode must be 'visible area' or 'manual only'&quot;);</span>
+    }
+<span class="nc" id="L134">    Bounds view = Main.map.mapView.getRealBounds();</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (view.getArea() &gt; MAX_AREA) {</span>
+<span class="nc" id="L136">      return;</span>
+    }
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (isViewDownloaded(view)) {</span>
+<span class="nc" id="L139">      return;</span>
+    }
+<span class="nc" id="L141">    MapillaryLayer.getInstance().getData().getBounds().add(view);</span>
+<span class="nc" id="L142">    getImages(view);</span>
+<span class="nc" id="L143">  }</span>
+
+  private static boolean isViewDownloaded(Bounds view) {
+<span class="nc" id="L146">    int n = 15;</span>
+<span class="nc" id="L147">    boolean[][] inside = new boolean[n][n];</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (isInBounds(new LatLon(view.getMinLat()</span>
+<span class="nc" id="L151">          + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),</span>
+<span class="nc" id="L152">          view.getMinLon() + (view.getMaxLon() - view.getMinLon())</span>
+            * ((double) j / n)))) {
+<span class="nc" id="L154">          inside[i][j] = true;</span>
+        }
+      }
+    }
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">      for (int j = 0; j &lt; n; j++) {</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (!inside[i][j])</span>
+<span class="nc" id="L161">          return false;</span>
+      }
+    }
+<span class="nc" id="L164">    return true;</span>
+  }
+
+  /**
+   * Checks if the given {@link LatLon} object lies inside the bounds of the
+   * image.
+   *
+   * @param latlon The coordinates to check.
+   *
+   * @return true if it lies inside the bounds; false otherwise;
+   */
+  private static boolean isInBounds(LatLon latlon) {
+<span class="nc" id="L176">    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -&gt; b.contains(latlon));</span>
+  }
+
+  /**
+   * Downloads all images of the area covered by the OSM data.
+   */
+  public static void downloadOSMArea() {
+<span class="nc bnc" id="L183" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() == null) {</span>
+<span class="nc" id="L184">      return;</span>
+    }
+<span class="nc bnc" id="L186" title="All 2 branches missed.">    if (isOSMAreaTooBig()) {</span>
+<span class="nc" id="L187">      showOSMAreaTooBigErrorDialog();</span>
+<span class="nc" id="L188">      return;</span>
+    }
+<span class="nc bnc" id="L190" title="All 2 branches missed.">    if (getMode() != DOWNLOAD_MODE.OSM_AREA) {</span>
+<span class="nc" id="L191">      throw new IllegalStateException(&quot;Must be in automatic mode.&quot;);</span>
+    }
+<span class="nc bnc" id="L193" title="All 2 branches missed.">    Main.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -&gt; !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -&gt; {</span>
+<span class="nc" id="L194">      MapillaryLayer.getInstance().getData().getBounds().add(bounds);</span>
+<span class="nc" id="L195">      MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());</span>
+<span class="nc" id="L196">    });</span>
+<span class="nc" id="L197">  }</span>
+
+  /**
+   * Checks if the area of the OSM data is too big. This means that probably
+   * lots of Mapillary images are going to be downloaded, slowing down the
+   * program too much. To solve this the automatic is stopped, an alert is shown
+   * and you will have to download areas manually.
+   */
+  private static boolean isOSMAreaTooBig() {
+<span class="nc" id="L206">    double area = Main.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    return area &gt; MAX_AREA;</span>
+  }
+
+  private static void showOSMAreaTooBigErrorDialog() {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    if (SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L212">      MapillaryLayer.getInstance().tempSemiautomatic = true;</span>
+<span class="nc" id="L213">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);</span>
+<span class="nc" id="L214">      JOptionPane</span>
+<span class="nc" id="L215">        .showMessageDialog(</span>
+          Main.parent,
+<span class="nc" id="L217">          I18n.tr(&quot;The downloaded OSM area is too big. Download mode has been changed to OSM area until the layer is restarted.&quot;));</span>
+    } else {
+<span class="nc" id="L219">      SwingUtilities.invokeLater(MapillaryDownloader::showOSMAreaTooBigErrorDialog);</span>
+    }
+<span class="nc" id="L221">  }</span>
+
+  /**
+   * Stops all running threads.
+   */
+  public static void stopAll() {
+<span class="nc" id="L227">    executor.shutdownNow();</span>
+    try {
+<span class="nc" id="L229">      executor.awaitTermination(30, TimeUnit.SECONDS);</span>
+<span class="nc" id="L230">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L231">      Main.error(e);</span>
+<span class="nc" id="L232">    }</span>
+<span class="nc" id="L233">    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,</span>
+      new ArrayBlockingQueue&lt;&gt;(100));
+<span class="nc" id="L235">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

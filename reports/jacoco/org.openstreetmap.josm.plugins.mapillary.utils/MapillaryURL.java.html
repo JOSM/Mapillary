@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryURL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">josm-mapillary-plugin</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryURL.java</span></div><h1>MapillaryURL.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+
+public final class MapillaryURL {
+  private static final String CLIENT_ID = &quot;T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;;
+  /** Base URL of the Mapillary API. */
+  private static final String BASE_API_V2_URL = &quot;https://a.mapillary.com/v2/&quot;;
+  private static final String BASE_API_V3_URL = &quot;https://a.mapillary.com/v3/&quot;;
+  private static final String BASE_WEBSITE_URL = &quot;https://www.mapillary.com/&quot;;
+
+<span class="pc" id="L23">  public enum IMAGE_SELECTOR {</span>
+<span class="fc" id="L24">    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected</span>
+  }
+
+<span class="fc" id="L27">  private MapillaryURL() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L29">  }</span>
+
+  /**
+   * Gives you the URL for the online editor of a specific mapillary image.
+   * @param imgKey the key of the image to which you want to link
+   * @return the URL of the online editor for the image with the given image key
+   * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt; or invalid according
+   *           to {@link ValidationUtil#validateImageKey(String)}
+   */
+  public static URL browseEditURL(String imgKey) {
+<span class="fc" id="L39">    ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);</span>
+<span class="fc" id="L40">    return string2URL(BASE_WEBSITE_URL, &quot;map/e/&quot;, imgKey);</span>
+  }
+
+  /**
+   * Gives you the URL for the online viewer of a specific mapillary image.
+   * @param key the key of the image to which you want to link
+   * @return the URL of the online viewer for the image with the given image key
+   * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt; or invalid according
+   *           to {@link ValidationUtil#validateImageKey(String)}
+   */
+  public static URL browseImageURL(String key) {
+<span class="fc" id="L51">    ValidationUtil.throwExceptionForInvalidImgKey(key, false);</span>
+<span class="fc" id="L52">    return string2URL(BASE_WEBSITE_URL, &quot;map/im/&quot;, key);</span>
+  }
+
+  /**
+   * @return the URL where the user can view all uploaded images that are not yet published
+   */
+  public static URL browseUploadImageURL() {
+<span class="fc" id="L59">    return string2URL(BASE_WEBSITE_URL, &quot;map/upload/im&quot;);</span>
+  }
+
+  /**
+   * Gives you the URL which the user should visit to initiate the OAuth authentication process
+   * @param redirectURI the URI to which the user will be redirected when the authentication is finished
+   * @return the URL that the user should visit to start the OAuth authentication
+   */
+  public static URL connectURL(String redirectURI) {
+<span class="fc" id="L68">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L69" title="All 4 branches covered.">    if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L70">      parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
+    }
+<span class="fc" id="L72">    parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L73">    parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L74">    return string2URL(BASE_WEBSITE_URL, &quot;connect&quot;, queryString(parts));</span>
+  }
+
+  /**
+   * Gives you the API-URL where you get 20 images within the given bounds.
+   * For more than 20 images you have to use different URLs with different page numbers.
+   * @param bounds the bounds in which you want to search for images
+   * @param page number of the page to retrieve from the API
+   * @param selector if set, only a specific type of image is returned by the URL
+   * @return the API-URL which gives you the images in the given bounds as JSON
+   */
+  public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
+<span class="fc" id="L86">    String selectorString = &quot;&quot;;</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (selector != null) {</span>
+<span class="pc bpc" id="L88" title="3 of 4 branches missed.">      switch (selector) {</span>
+      case BLURRED_ONLY:
+<span class="nc" id="L90">        selectorString = &quot;/b&quot;;</span>
+<span class="nc" id="L91">        break;</span>
+      case COMMENTED_ONLY:
+<span class="nc" id="L93">        selectorString = &quot;/cm&quot;;</span>
+<span class="nc" id="L94">        break;</span>
+      case OBJ_REC_ONLY:
+<span class="fc" id="L96">        selectorString = &quot;/or&quot;;</span>
+<span class="fc" id="L97">        break;</span>
+      default:
+<span class="nc" id="L99">        selectorString = &quot;&quot;;</span>
+        break;
+      }
+    }
+<span class="fc" id="L103">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L104">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L105">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L106">    parts.put(&quot;limit&quot;, &quot;20&quot;);</span>
+<span class="fc" id="L107">    return string2URL(BASE_API_V2_URL, &quot;search/im&quot;, selectorString, queryString(parts));</span>
+  }
+
+  /**
+   * Gives you the API-URL where you get 10 sequences within the given bounds.
+   * For more than 10 sequences you have to use different URLs with different page numbers.
+   * @param bounds the bounds in which you want to search for sequences
+   * @param page number of the page to retrieve from the API
+   * @return the API-URL which gives you the sequences in the given bounds as JSON
+   */
+  public static URL searchSequenceURL(Bounds bounds, int page) {
+<span class="fc" id="L118">    HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L119">    putBoundsInQueryStringParts(parts, bounds);</span>
+<span class="fc" id="L120">    parts.put(&quot;page&quot;, Integer.toString(page));</span>
+<span class="fc" id="L121">    parts.put(&quot;limit&quot;, &quot;10&quot;);</span>
+<span class="fc" id="L122">    return string2URL(BASE_API_V2_URL, &quot;search/s&quot;, queryString(parts));</span>
+  }
+
+  /**
+   * @return the URL where you'll find the upload secrets as JSON
+   */
+  public static URL uploadSecretsURL() {
+<span class="fc" id="L129">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
+  }
+
+  /**
+   * @return the URL where can create, get and approve changesets
+   */
+  public static URL submitChangesetURL() {
+<span class="nc" id="L136">    return string2URL(BASE_API_V3_URL, &quot;changeset&quot;, queryString(null));</span>
+  }
+
+  /**
+   * @return the URL where you'll find information about the user account as JSON
+   */
+  public static URL userURL() {
+<span class="fc" id="L143">    return string2URL(BASE_API_V2_URL, &quot;me&quot;, queryString(null));</span>
+  }
+
+  /**
+   * Adds the given {@link Bounds} to a {@link Map} that contains the parts of a query string.
+   * @param parts the parts of a query string
+   * @param bounds the bounds that will be added to the query string
+   */
+  private static void putBoundsInQueryStringParts(Map&lt;String, String&gt; parts, Bounds bounds) {
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (bounds != null) {</span>
+<span class="fc" id="L153">      parts.put(&quot;min_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lat()));</span>
+<span class="fc" id="L154">      parts.put(&quot;max_lat&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lat()));</span>
+<span class="fc" id="L155">      parts.put(&quot;min_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMin().lon()));</span>
+<span class="fc" id="L156">      parts.put(&quot;max_lon&quot;, String.format(Locale.UK, &quot;%f&quot;, bounds.getMax().lon()));</span>
+    }
+<span class="fc" id="L158">  }</span>
+
+  /**
+   * Builds a query string from it's parts that are supplied as a {@link Map}
+   * @param parts the parts of the query string
+   * @return the constructed query string (including a leading ?)
+   */
+  private static String queryString(Map&lt;String, String&gt; parts) {
+<span class="fc" id="L166">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    if (parts != null) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
+        try {
+<span class="fc" id="L170">          ret.append('&amp;')</span>
+<span class="fc" id="L171">            .append(URLEncoder.encode(entry.getKey(), &quot;UTF-8&quot;))</span>
+<span class="fc" id="L172">            .append('=')</span>
+<span class="fc" id="L173">            .append(URLEncoder.encode(entry.getValue(), &quot;UTF-8&quot;));</span>
+<span class="nc" id="L174">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L175">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
+<span class="fc" id="L176">        }</span>
+<span class="fc" id="L177">      }</span>
+    }
+<span class="fc" id="L179">    return ret.toString();</span>
+  }
+
+  /**
+   * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
+   * Instead such an exception will lead to an {@link Main#error(Throwable)}.
+   * So you should be very confident that your URL is well-formed when calling this method.
+   * @param string the String describing the URL
+   * @return the URL that is constructed from the given string
+   */
+  private static URL string2URL(String... strings) {
+<span class="fc" id="L190">    StringBuilder builder = new StringBuilder();</span>
+<span class="pc bpc" id="L191" title="1 of 4 branches missed.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
+<span class="fc" id="L192">      builder.append(strings[i]);</span>
+    }
+    try {
+<span class="fc" id="L195">      return new URL(builder.toString());</span>
+<span class="fc" id="L196">    } catch (MalformedURLException e) {</span>
+<span class="fc" id="L197">      Main.error(new Exception(String.format(</span>
+          &quot;The class '%s' produces malformed URLs like '%s'!&quot;,
+<span class="fc" id="L199">          MapillaryURL.class.getName(),</span>
+          builder
+      ), e));
+<span class="fc" id="L202">      return null;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
