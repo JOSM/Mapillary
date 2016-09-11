@@ -25,16 +25,13 @@ import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
  * @see MapillaryImageInfoDownloadThread
  * @see MapillaryTrafficSignDownloadThread
  */
-public class MapillarySquareDownloadManagerThread extends Thread {
+public class MapillarySquareDownloadManagerThread implements Runnable {
 
   private final Bounds bounds;
 
-  private final ThreadPoolExecutor downloadExecutor = new ThreadPoolExecutor(3, 5,
-      25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
-  private final ThreadPoolExecutor completeExecutor = new ThreadPoolExecutor(3, 5,
-      25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
-  private final ThreadPoolExecutor signsExecutor = new ThreadPoolExecutor(3, 5, 25,
-      TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+  private ThreadPoolExecutor downloadExecutor;
+  private ThreadPoolExecutor completeExecutor;
+  private ThreadPoolExecutor signsExecutor;
 
   /**
    * Main constructor.
@@ -48,6 +45,13 @@ public class MapillarySquareDownloadManagerThread extends Thread {
 
   @Override
   public void run() {
+    downloadExecutor = new ThreadPoolExecutor(3, 5,
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
+    completeExecutor = new ThreadPoolExecutor(3, 5,
+      25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
+    signsExecutor = new ThreadPoolExecutor(3, 5, 25,
+      TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
+
     try {
       PluginState.startDownload();
       MapillaryUtils.updateHelpText();
@@ -76,7 +80,7 @@ public class MapillarySquareDownloadManagerThread extends Thread {
     while (!this.downloadExecutor.isShutdown()) {
       this.downloadExecutor.execute(new MapillarySequenceDownloadThread(this.downloadExecutor, bounds, page));
       while (this.downloadExecutor.getQueue().remainingCapacity() == 0) {
-        Thread.sleep(500);
+        Thread.sleep(100);
       }
       page++;
     }
@@ -118,20 +122,5 @@ public class MapillarySquareDownloadManagerThread extends Thread {
       page++;
     }
     this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);
-  }
-
-  @Override
-  public void interrupt() {
-    super.interrupt();
-    this.downloadExecutor.shutdownNow();
-    this.completeExecutor.shutdownNow();
-    this.signsExecutor.shutdownNow();
-    try {
-      this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);
-      this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
-      this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      Main.error(e);
-    }
   }
 }

@@ -80,7 +80,7 @@ public final class MapillaryDownloader {
   }
 
   /** All the Threads that have been run. Used to interrupt them properly. */
-  private static List<Thread> threads = new ArrayList<>();
+  //private static List<Thread> threads = new ArrayList<>();
 
   /** Max area to be downloaded */
   public static final double MAX_AREA = Main.pref.getDouble("mapillary.max-download-area", 0.015);
@@ -129,8 +129,8 @@ public final class MapillaryDownloader {
      : DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode"));
   }
 
-  private static void run(Thread t) {
-    threads.add(t);
+  private static void run(Runnable t) {
+    //threads.add(t);
     executor.execute(t);
   }
 
@@ -244,12 +244,12 @@ public final class MapillaryDownloader {
    * Stops all running threads.
    */
   public static void stopAll() {
-    for (Thread t : threads) {
+    /*for (Thread t : threads) {
       if (t.isAlive())
         Main.info(t+" is still alive!");
       t.interrupt();
     }
-    threads.clear();
+    threads.clear();*/
     executor.shutdownNow();
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);

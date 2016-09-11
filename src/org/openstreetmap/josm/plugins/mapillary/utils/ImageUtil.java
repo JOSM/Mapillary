@@ -45,7 +45,9 @@ public final class ImageUtil {
     if (!f.exists() || !f.canRead()) {
       throw new IOException(f.getAbsolutePath() + " not found or not readable!");
     } else if (f.isDirectory()) {
-      for (File child : f.listFiles()) {
+      File[] files = f.listFiles();
+      assert files != null;
+      for (File child : files) {
         try {
           images.addAll(readImagesFrom(child, defaultLL));
         } catch (IOException e) {
