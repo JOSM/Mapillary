@@ -46,7 +46,7 @@ public class MapillaryImageInfoDownloadThread extends Thread {
   public void run() {
     try (
       BufferedReader br = new BufferedReader(new InputStreamReader(
-          MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
+        MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
       ));
     ) {
       try (JsonReader reader = Json.createReader(br)) {
@@ -63,10 +63,12 @@ public class MapillaryImageInfoDownloadThread extends Thread {
               image instanceof MapillaryImage
                 && ((MapillaryImage) image).getKey().equals(key)
                 && ((MapillaryImage) image).getUser() == null
-            ) {
+              ) {
               ((MapillaryImage) image).setUser(data.getString("user"));
               ((MapillaryImage) image).setCapturedAt(data.getJsonNumber("captured_at").longValue());
-              ((MapillaryImage) image).setLocation(data.getString("location"));
+              if (!data.isNull("location")) {
+                ((MapillaryImage) image).setLocation(data.getString("location"));
+              }
             }
           }
         }

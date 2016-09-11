@@ -29,9 +29,9 @@ public class MapillarySign {
     for (String country : COUNTRIES) {
       HashMap<String, MapillarySign> countryMap = new HashMap<>();
       try (
-              BufferedReader br = new BufferedReader(new InputStreamReader(
-                      MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson")
-              ));
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+          MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson")
+        ));
       ) {
         String line = "";
         while ((line = br.readLine()) != null) {
@@ -57,19 +57,22 @@ public class MapillarySign {
     if (countryMap.containsKey(name)) {
       return countryMap.get(name);
     } else {
-      if (name.split("--").length >= 3 && countryMap.containsValue(new MapillarySign(name))) {
-        Optional<MapillarySign> p = countryMap.values().stream().filter(sign -> sign.toString().equals(name)).findFirst();
-        assert p.isPresent();
-        return p.get();
+      if (name.split("--").length >= 3) {
+        if (countryMap.containsValue(new MapillarySign(name))) {
+          Optional<MapillarySign> p = countryMap.values().stream().filter(sign -> sign.toString().equals(name)).findFirst();
+          assert p.isPresent();
+          return p.get();
+        } else {
+          return new MapillarySign(name);
+        }
       } else {
-        Main.warn("Sign '" + name + "' does not exist in the plugin database. Please contanct the developer to add it.");
+        Main.warn("Sign '" + name + "' does not exist in the plugin database. Please contact the developer to add it.");
         return null;
       }
     }
   }
 
   public MapillarySign(String fullName) {
-    Main.info(fullName);
     this.fullName = fullName;
     String[] parts = fullName.split("--");
     category = parts[0];
