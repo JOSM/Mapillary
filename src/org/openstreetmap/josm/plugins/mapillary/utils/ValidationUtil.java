@@ -55,8 +55,9 @@ public final class ValidationUtil {
    * @param seqKey the sequence key to validate
    * @param nullAllowed this controls the behaviour when the key is <code>null</code>. If this variable is
    *          <code>false</code>, an {@link IllegalArgumentException} is then thrown, otherwise nothing is done.
-   * @see {@link #validateSequenceKey(String)}
+   * @see #validateSequenceKey(String)
    */
+  @SuppressWarnings ("ConstantConditions")
   public static void throwExceptionForInvalidSeqKey(String seqKey, boolean nullAllowed) {
     if (!validateSequenceKey(seqKey)) {
       throw new IllegalArgumentException(I18n.tr("The sequence key ''{0}'' is invalid!", seqKey));

@@ -108,7 +108,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       return;
     }
     this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<Runnable>(10));
+      new ArrayBlockingQueue<>(10));
     for (MapillaryAbstractImage image : this.images) {
       if (image instanceof MapillaryImage) {
         try {

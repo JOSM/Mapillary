@@ -46,6 +46,7 @@ import org.openstreetmap.josm.tools.I18n;
  *
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
+
   private final JComboBox<String> downloadModeComboBox = new JComboBox<>(new String[]{
       DOWNLOAD_MODE.VISIBLE_AREA.getLabel(),
       DOWNLOAD_MODE.OSM_AREA.getLabel(),
@@ -153,8 +154,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @SuppressWarnings("PMD.ShortMethodName")
   @Override
   public boolean ok() {
-    boolean mod = false;
-
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
     Main.pref.put(
       "mapillary.download-mode",
@@ -170,7 +169,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     Main.pref.put("mapillary.format-24", this.format24.isSelected());
     Main.pref.put("mapillary.move-to-picture", this.moveTo.isSelected());
     Main.pref.put("mapillary.hover-enabled", this.hoverEnabled.isSelected());
-    return mod;
+
+    //Restart is enver required
+    return false;
   }
 
   @Override

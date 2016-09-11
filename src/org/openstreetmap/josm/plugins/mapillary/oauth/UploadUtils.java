@@ -84,7 +84,7 @@ public final class UploadUtils {
                                  boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(15));
+      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(15));
       this.delete = delete;
     }
 
@@ -136,7 +136,7 @@ public final class UploadUtils {
    * Returns a file containing the picture and an updated version of the EXIF
    * tags.
    *
-   * @param image
+   * @param image The image to be uploaded
    * @return A File object containing the picture and an updated version of the
    * EXIF tags.
    * @throws ImageReadException  if there are errors reading the image from the file.
@@ -144,7 +144,7 @@ public final class UploadUtils {
    *                             the output.
    * @throws ImageWriteException if there are errors writing the image in the file.
    */
-  public static File updateFile(MapillaryImportedImage image)
+  private static File updateFile(MapillaryImportedImage image)
           throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory;
@@ -152,12 +152,9 @@ public final class UploadUtils {
     TiffOutputDirectory rootDirectory;
 
     // If the image is imported, loads the rest of the EXIF data.
-    JpegImageMetadata jpegMetadata = null;
-    try {
-      ImageMetadata metadata = Imaging.getMetadata(image.getFile());
-      jpegMetadata = (JpegImageMetadata) metadata;
-    } catch (Exception e) {
-    }
+    ImageMetadata metadata = Imaging.getMetadata(image.getFile());
+    JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+
     if (null != jpegMetadata) {
       final TiffImageMetadata exif = jpegMetadata.getExif();
       if (null != exif) {
@@ -203,30 +200,35 @@ public final class UploadUtils {
   /**
    * Uploads the given MapillaryImportedImage object.
    *
-   * @param image
+   * @param image The image to be uploaded
+   * @throws IllegalStateException If {@link MapillaryUser#getSecrets()} returns null
    */
   public static void upload(MapillaryImportedImage image) {
     upload(image, UUID.randomUUID());
   }
 
   /**
-   * @param image
+   * @param image The image to be uploaded
    * @param uuid  The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID uuid) {
-    String key = new StringBuilder(MapillaryUser.getUsername())
-      .append('/').append(uuid)
-      .append('/').append(image.getMovingLatLon().lat()) // TODO: Make sure, that the double values are not appended as something like "10e-4", "Infinity" or "NaN" (all possible values of Double.toString(double))
-      .append('_').append(image.getMovingLatLon().lon())
-      .append('_').append(image.getMovingCa())
-      .append('_').append(image.getCapturedAt())
-      .append(".jpg")
-      .toString();
+    Map<String, String> secretMap = MapillaryUser.getSecrets();
+    if (secretMap == null) {
+      throw new IllegalStateException("Can't obtain secrents from user");
+    }
+
+    String key = MapillaryUser.getUsername() +
+      '/' + uuid +
+      '/' + image.getMovingLatLon().lat() + // TODO: Make sure, that the double values are not appended as something like "10e-4", "Infinity" or "NaN" (all possible values of Double.toString(double))
+      '_' + image.getMovingLatLon().lon() +
+      '_' + image.getMovingCa() +
+      '_' + image.getCapturedAt() +
+      ".jpg";
 
     String policy;
     String signature;
-    policy = MapillaryUser.getSecrets().get("images_policy");
-    signature = MapillaryUser.getSecrets().get("images_hash");
+    policy = secretMap.get("images_policy");
+    signature = secretMap.get("images_hash");
 
     Map<String, String> hash = new HashMap<>();
     hash.put("key", key);
@@ -243,12 +245,11 @@ public final class UploadUtils {
   }
 
   /**
-   * @param file
-   * @param hash
-   * @throws IOException
+   * @param file File that is going to be uploaded
+   * @param hash Information attached to the upload
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    */
-  public static void uploadFile(File file, Map<String, String> hash) throws IOException {
+  private static void uploadFile(File file, Map<String, String> hash) throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();
     HttpPost httpPost = new HttpPost(UPLOAD_URL);
 

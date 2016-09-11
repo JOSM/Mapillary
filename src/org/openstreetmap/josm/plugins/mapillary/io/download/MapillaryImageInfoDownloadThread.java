@@ -47,7 +47,7 @@ public class MapillaryImageInfoDownloadThread extends Thread {
     try (
       BufferedReader br = new BufferedReader(new InputStreamReader(
         MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
-      ));
+      ))
     ) {
       try (JsonReader reader = Json.createReader(br)) {
         JsonObject jsonObj = reader.readObject();
@@ -58,19 +58,15 @@ public class MapillaryImageInfoDownloadThread extends Thread {
         for (int i = 0; i < jsonArr.size(); i++) {
           data = jsonArr.getJsonObject(i);
           String key = data.getString("key");
-          for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-            if (
-              image instanceof MapillaryImage
-                && ((MapillaryImage) image).getKey().equals(key)
-                && ((MapillaryImage) image).getUser() == null
-              ) {
-              ((MapillaryImage) image).setUser(data.getString("user"));
-              ((MapillaryImage) image).setCapturedAt(data.getJsonNumber("captured_at").longValue());
-              if (!data.isNull("location")) {
-                ((MapillaryImage) image).setLocation(data.getString("location"));
-              }
+          MapillaryLayer.getInstance().getData().getImages().stream().filter(image -> image instanceof MapillaryImage
+            && ((MapillaryImage) image).getKey().equals(key)
+            && ((MapillaryImage) image).getUser() == null).forEach(image -> {
+            ((MapillaryImage) image).setUser(data.getString("user"));
+            image.setCapturedAt(data.getJsonNumber("captured_at").longValue());
+            if (!data.isNull("location")) {
+              ((MapillaryImage) image).setLocation(data.getString("location"));
             }
-          }
+          });
         }
       }
     } catch (IOException e) {

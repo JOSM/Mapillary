@@ -111,32 +111,19 @@ public class HyperlinkLabel extends JLabel implements ActionListener {
 
     LinkPopUp(final String key) {
       this.copy = new JMenuItem(tr("Copy key"));
-      this.copy.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent paramActionEvent) {
-          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(key), null);
-        }
-      });
+      this.copy.addActionListener(paramActionEvent -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(key), null));
       add(this.copy);
 
       this.copyTag = new JMenuItem(tr("Copy key tag"));
-      this.copyTag.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent paramActionEvent) {
-          Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection("mapillary=" + key), null);
-        }
-      });
+      this.copyTag.addActionListener(paramActionEvent -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection("mapillary=" + key), null));
       add(this.copyTag);
 
       this.edit = new JMenuItem(tr("Edit on website"));
-      this.edit.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent paramActionEvent) {
-          try {
-            MapillaryUtils.browse(MapillaryURL.browseEditURL(key));
-          } catch (IOException e) {
-            Main.error(e);
-          }
+      this.edit.addActionListener(paramActionEvent -> {
+        try {
+          MapillaryUtils.browse(MapillaryURL.browseEditURL(key));
+        } catch (IOException e) {
+          Main.error(e);
         }
       });
       add(this.edit);

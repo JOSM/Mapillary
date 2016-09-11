@@ -9,7 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.AbstractAction;
@@ -96,7 +96,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
     this.submitButton = new SideButton(new SubmitAction());
 
-    createLayout(treesPanel, true, Arrays.asList(new SideButton[] { this.submitButton }));
+    createLayout(treesPanel, true, Collections.singletonList(this.submitButton));
     buildTree();
   }
 
@@ -123,13 +123,11 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
-    for (MapillaryImage command : changeset) {
-      if (command != null) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
-        this.map.put(node, command);
-        changesetRoot.add(node);
-      }
-    }
+    changeset.parallelStream().filter(command -> command != null).forEach(command -> {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
+      this.map.put(node, command);
+      changesetRoot.add(node);
+    });
 
     this.spacer.setVisible(changeset.isEmpty());
 
@@ -139,7 +137,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   @Override
   public void changesetChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> buildTree());
+      SwingUtilities.invokeLater(this::buildTree);
     } else {
       buildTree();
     }

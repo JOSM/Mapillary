@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -39,9 +40,9 @@ public class MapillarySequenceDownloadThread extends Thread {
   /**
    * Main constructor.
    *
-   * @param ex     {@link ExecutorService} executing this thread.
+   * @param ex {@link ExecutorService} executing this thread.
    * @param bounds The bounds inside which the sequences should be downloaded
-   * @param page   the pagenumber of the results that should be retrieved
+   * @param page the pagenumber of the results that should be retrieved
    */
   public MapillarySequenceDownloadThread(ExecutorService ex, Bounds bounds, int page) {
     this.bounds = bounds;
@@ -52,9 +53,9 @@ public class MapillarySequenceDownloadThread extends Thread {
   @Override
   public void run() {
     try (
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-            MapillaryURL.searchSequenceURL(bounds, page).openStream(), "UTF-8"
-        ));
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+        MapillaryURL.searchSequenceURL(bounds, page).openStream(), "UTF-8"
+      ))
     ) {
       JsonObject jsonall = Json.createReader(br).readObject();
 
@@ -71,12 +72,12 @@ public class MapillarySequenceDownloadThread extends Thread {
         for (int j = 0; j < cas.size(); j++) {
           try {
             images.add(new MapillaryImage(
-                keys.getString(j),
-                new LatLon(
-                    coords.getJsonArray(j).getJsonNumber(1).doubleValue(),
-                    coords.getJsonArray(j).getJsonNumber(0).doubleValue()
-                ),
-                cas.getJsonNumber(j).doubleValue()));
+              keys.getString(j),
+              new LatLon(
+                coords.getJsonArray(j).getJsonNumber(1).doubleValue(),
+                coords.getJsonArray(j).getJsonNumber(0).doubleValue()
+              ),
+              cas.getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
             Main.warn("Mapillary bug at " + MapillaryURL.searchSequenceURL(bounds, page));
             isSequenceWrong = true;
@@ -85,26 +86,24 @@ public class MapillarySequenceDownloadThread extends Thread {
         if (isSequenceWrong)
           break;
         MapillarySequence sequence = new MapillarySequence(
-                jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
-                .longValue());
+          jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
+          .longValue());
         List<MapillaryImage> finalImages = new ArrayList<>(images);
         // Here it gets only those images which are in the downloaded
         // area.
-        for (MapillaryAbstractImage img : images) {
-          if (!isInside(img))
-            finalImages.remove(img);
-        }
-        synchronized (this.getClass()) {
+        finalImages = images.parallelStream().filter(MapillarySequenceDownloadThread::isInside).collect(Collectors.toList());
+
+        synchronized (MapillarySequenceDownloadThread.class) {
           synchronized (MapillaryAbstractImage.class) {
             for (MapillaryImage img : finalImages) {
               if (MapillaryLayer.getInstance().getData().getImages().contains(img)) {
                 // The image in finalImages is substituted by the one in the
                 // database, as they represent the same picture.
-                for (MapillaryAbstractImage source : MapillaryLayer.getInstance().getData().getImages()) {
-                  if (source.equals(img)) {
-                    img = (MapillaryImage) source;
-                  }
-                }
+
+                final MapillaryImage lambdaImg = img;
+                //noinspection OptionalGetWithoutIsPresent
+                img = (MapillaryImage) MapillaryLayer.getInstance().getData().getImages().parallelStream().filter(source -> source.equals(lambdaImg)).findAny().get();
+
                 sequence.add(img);
                 img.setSequence(sequence);
                 finalImages.set(finalImages.indexOf(img), img);
@@ -116,23 +115,18 @@ public class MapillarySequenceDownloadThread extends Thread {
           }
         }
 
-        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<MapillaryAbstractImage>(finalImages), false);
+        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<>(finalImages), false);
       }
     } catch (IOException e) {
       Main.error(String.format(
-          "Error reading the url %s, this might be a Mapillary problem.",
-          MapillaryURL.searchSequenceURL(bounds, page)
+        "Error reading the url %s, this might be a Mapillary problem.",
+        MapillaryURL.searchSequenceURL(bounds, page)
       ), e);
     }
     MapillaryData.dataUpdated();
   }
 
   private static boolean isInside(MapillaryAbstractImage image) {
-    for (Bounds b : MapillaryLayer.getInstance().getData().getBounds()) {
-      if (b.contains(image.getMovingLatLon())) {
-        return true;
-      }
-    }
-    return false;
+    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -> b.contains(image.getLatLon()));
   }
 }

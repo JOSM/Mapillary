@@ -83,7 +83,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     /**
      * Mode when in walk.
      */
-    WALK;
+    WALK
   }
 
   /**
@@ -148,14 +148,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       case WALK:
         createLayout(
           this.mapillaryImageDisplay,
-          Arrays.asList(new SideButton[]{playButton, pauseButton, stopButton})
+          Arrays.asList(playButton, pauseButton, stopButton)
         );
         break;
       case NORMAL:
       default:
         createLayout(
           this.mapillaryImageDisplay,
-          Arrays.asList(new SideButton[]{blueButton, previousButton, nextButton, redButton})
+          Arrays.asList(blueButton, previousButton, nextButton, redButton)
         );
         break;
     }
@@ -189,7 +189,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> updateImage());
+      SwingUtilities.invokeLater(this::updateImage);
     } else {
       if (!MapillaryLayer.hasInstance()) {
         return;
@@ -292,7 +292,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized void updateTitle() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> updateTitle());
+      SwingUtilities.invokeLater(this::updateTitle);
     } else if (this.image != null) {
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
       if (this.image instanceof MapillaryImage) {

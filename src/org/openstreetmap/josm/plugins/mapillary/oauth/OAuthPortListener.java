@@ -42,11 +42,11 @@ public class OAuthPortListener extends Thread {
         ServerSocket serverSocket = new ServerSocket(PORT);
         Socket clientSocket = serverSocket.accept();
         PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
-        Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+        Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"))
     ) {
       String s;
       String accessToken = null;
-      while (in.hasNextLine() && accessToken == null) {
+      while (in.hasNextLine()) {
         s = in.nextLine();
         Matcher tokenMatcher = Pattern.compile("^.*&access_token=([^&]+)&.*$").matcher('&'+s+'&');
         if (tokenMatcher.matches()) {
@@ -75,7 +75,6 @@ public class OAuthPortListener extends Thread {
       }
     } catch (BindException e) {
       Main.warn(e);
-      return;
     } catch (IOException e) {
       Main.error(e);
     }

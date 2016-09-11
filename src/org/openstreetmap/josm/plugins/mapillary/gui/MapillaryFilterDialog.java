@@ -51,6 +51,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static final String[] TIME_LIST = {tr("All"), tr("Years"), tr("Months"), tr("Days")};
 
+  private final static long[] TIME_FACTOR = new long[]{
+    31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
+    2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
+    86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
+  };
+
   /**
    * Spinner to choose the range of dates.
    */
@@ -135,7 +141,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     c.gridx = 1;
     panel.add(signChooserPanel, c);
 
-    createLayout(panel, true, Arrays.asList(new SideButton[]{updateButton, resetButton}));
+    createLayout(panel, true, Arrays.asList(updateButton, resetButton));
   }
 
   /**
@@ -196,15 +202,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private boolean checkValidTime(MapillaryAbstractImage img) {
     Long currentTime = currentTime();
-    long[] timeFactor = new long[]{
-      31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
-      2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
-      86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
-    };
     for (int i = 1; i <= 3; i++) {
-      if (TIME_LIST[i].equals(time.getSelectedItem())
-        && img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * timeFactor[i - 1]
-        ) {
+      if (TIME_LIST[i].equals(time.getSelectedItem()) &&
+        img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * TIME_FACTOR[i - 1]) {
         return true;
       }
     }

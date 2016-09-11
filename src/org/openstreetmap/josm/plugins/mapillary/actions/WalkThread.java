@@ -147,7 +147,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
       end();
       this.interrupt();
     } else {
-      SwingUtilities.invokeLater(() -> stopWalk());
+      SwingUtilities.invokeLater(this::stopWalk);
     }
   }
 
@@ -160,7 +160,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
       this.data.removeListener(this);
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
     } else {
-      SwingUtilities.invokeLater(() -> end());
+      SwingUtilities.invokeLater(this::end);
     }
   }
 }

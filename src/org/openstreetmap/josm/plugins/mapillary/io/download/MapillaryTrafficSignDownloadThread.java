@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
@@ -48,7 +47,7 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
     try (
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     MapillaryURL.searchImageInfoURL(bounds, page, IMAGE_SELECTOR.OBJ_REC_ONLY).openStream(), "UTF-8"
-            ));
+            ))
     ) {
       JsonObject jsonobj = Json.createReader(br).readObject();
       if (!jsonobj.getBoolean("more")) {

@@ -58,7 +58,7 @@ public final class MapillaryColorScheme {
         g.setColor(MAPILLARY_GREEN);
       }
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      ((Graphics2D) g).fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);
+      g.fillRoundRect(0, 0, getWidth(), getHeight(), 3, 3);
       super.paintComponent(g);
     }
 

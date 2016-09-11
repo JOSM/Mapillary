@@ -56,10 +56,10 @@ public abstract class AbstractMode extends MouseAdapter implements
   /**
    * Paint the dataset using the engine set.
    *
-   * @param g
+   * @param g {@link Graphics2D} used for painting
    * @param mv
    *          The object that can translate GeoPoints to screen coordinates.
-   * @param box
+   * @param box Area where painting is going to be performed
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);
 

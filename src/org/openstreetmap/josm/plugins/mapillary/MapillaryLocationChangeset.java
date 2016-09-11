@@ -20,9 +20,7 @@ public class MapillaryLocationChangeset extends HashSet<MapillaryImage> {
   }
 
   private void fireListeners() {
-    for (MapillaryChangesetListener listener : listeners) {
-      listener.changesetChanged();
-    }
+    listeners.forEach(MapillaryChangesetListener::changesetChanged);
   }
 
   @Override

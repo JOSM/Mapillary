@@ -68,14 +68,13 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * instance of this object.
  *
  * @author nokutu
- *
  */
 public final class MapillaryLayer extends AbstractModifiableLayer implements
-    DataSetListener, ActiveLayerChangeListener {
+  DataSetListener, ActiveLayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
   public static final int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
-      "mapillary.sequence-max-jump-distance", 100);
+    "mapillary.sequence-max-jump-distance", 100);
 
   /** If the download is in semiautomatic during this object lifetime. */
   public boolean tempSemiautomatic;
@@ -131,10 +130,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     createHatchTexture();
     if (Main.main != null) {
       MapillaryMainDialog.getInstance()
-          .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-          .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
       MapillaryMainDialog.getInstance().getActionMap()
-          .put("MapillaryDel", new DeleteImageAction());
+        .put("MapillaryDel", new DeleteImageAction());
     }
 
     if (Main.main != null) {
@@ -145,8 +144,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Changes the mode the the given one.
    *
-   * @param mode
-   *          The mode that is going to be activated.
+   * @param mode The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
     if (this.mode != null) {
@@ -353,10 +351,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         draw(g, imageAbs, icon, p);
         if (imageAbs instanceof MapillaryImage && !((MapillaryImage) imageAbs).getSigns().isEmpty()) {
           g.drawImage(
-              MapillaryPlugin.MAP_SIGN.getImage(),
-              p.x - MapillaryPlugin.MAP_SIGN.getIconWidth() / 2,
-              p.y - MapillaryPlugin.MAP_SIGN.getIconHeight() / 2,
-              Main.map.mapView
+            MapillaryPlugin.MAP_SIGN.getImage(),
+            p.x - MapillaryPlugin.MAP_SIGN.getIconWidth() / 2,
+            p.y - MapillaryPlugin.MAP_SIGN.getIconHeight() / 2,
+            Main.map.mapView
           );
         }
       }
@@ -369,15 +367,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Draws the highlight of the icon.
    *
-   * @param g  the graphics context
-   * @param p  the {@link Point} where the image must be set.
-   * @param size  the width in pixels of the highlight.
+   * @param g the graphics context
+   * @param p the {@link Point} where the image must be set.
+   * @param size the width in pixels of the highlight.
    */
   private void drawPointHighlight(Graphics2D g, Point p, int size) {
     Color oldColor = g.getColor();
     Color highlightColor = PaintColors.HIGHLIGHT.get();
     Color highlightColorTransparent = new Color(highlightColor.getRed(),
-        highlightColor.getGreen(), highlightColor.getBlue(), 100);
+      highlightColor.getGreen(), highlightColor.getBlue(), 100);
     g.setColor(highlightColorTransparent);
     int s = size + this.highlightPointRadius;
     while (s >= size) {
@@ -392,10 +390,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Draws the given icon of an image. Also checks if the mouse is over the
    * image.
    *
-   * @param g  the graphics context
-   * @param image  The {@link MapillaryAbstractImage} which is being drown.
-   * @param icon  The {@link ImageIcon} that represents the image.
-   * @param p  The P¡{@link Point} when the image lies.
+   * @param g the graphics context
+   * @param image The {@link MapillaryAbstractImage} which is being drown.
+   * @param icon The {@link ImageIcon} that represents the image.
+   * @param p The P¡{@link Point} when the image lies.
    */
   private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
     Image imagetemp = icon.getImage();
@@ -429,7 +427,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void mergeFrom(Layer from) {
     throw new UnsupportedOperationException(
-        "This layer does not support merging yet");
+      "This layer does not support merging yet");
   }
 
   @Override
@@ -446,7 +444,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * different from the currently selected one.
    *
    * @return An array of length 2 containing the two closest images belonging to
-   *         different sequences.
+   * different sequences.
    */
   private MapillaryImage[] getClosestImagesFromDifferentSequences() {
     if (!(this.data.getSelectedImage() instanceof MapillaryImage))
@@ -454,8 +452,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryImage selected = (MapillaryImage) this.data.getSelectedImage();
     MapillaryImage[] ret = new MapillaryImage[2];
     double[] distances = {
-        SEQUENCE_MAX_JUMP_DISTANCE,
-        SEQUENCE_MAX_JUMP_DISTANCE
+      SEQUENCE_MAX_JUMP_DISTANCE,
+      SEQUENCE_MAX_JUMP_DISTANCE
     };
     LatLon selectedCoords = this.data.getSelectedImage().getMovingLatLon();
     for (MapillaryAbstractImage imagePrev : this.data.getImages()) {
@@ -465,17 +463,17 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         continue;
       MapillaryImage image = (MapillaryImage) imagePrev;
       if (image.getMovingLatLon().greatCircleDistance(selectedCoords) < SEQUENCE_MAX_JUMP_DISTANCE
-          && selected.getSequence() != image.getSequence()) {
+        && selected.getSequence() != image.getSequence()) {
         if (
-            ret[0] == null && ret[1] == null
+          ret[0] == null && ret[1] == null
             || image.getMovingLatLon().greatCircleDistance(selectedCoords) < distances[0]
             && (ret[1] == null || image.getSequence() != ret[1].getSequence())
-        ) {
+          ) {
           ret[0] = image;
           distances[0] = image.getMovingLatLon().greatCircleDistance(selectedCoords);
         } else if ((ret[1] == null || image.getMovingLatLon().greatCircleDistance(
-            selectedCoords) < distances[1])
-            && image.getSequence() != ret[0].getSequence()) {
+          selectedCoords) < distances[1])
+          && image.getSequence() != ret[0].getSequence()) {
           ret[1] = image;
           distances[1] = image.getMovingLatLon().greatCircleDistance(selectedCoords);
         }
@@ -491,14 +489,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Object getInfoComponent() {
-    return new StringBuilder(35)
-      .append(tr("Mapillary layer"))
-      .append('\n')
-      .append(tr("Total images:"))
-      .append(' ')
-      .append(this.data.size())
-      .append('\n')
-      .toString();
+    return tr("Mapillary layer") +
+      '\n' +
+      tr("Total images:") +
+      ' ' +
+      this.data.size() +
+      '\n';
   }
 
   @Override
@@ -573,7 +569,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Threads that runs a delayed Mapillary download.
    *
    * @author nokutu
-   *
    */
   private static class DelayedDownload extends Thread {
 
@@ -592,7 +587,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Action used to delete images.
    *
    * @author nokutu
-   *
    */
   private class DeleteImageAction extends AbstractAction {
 
@@ -602,7 +596,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     public void actionPerformed(ActionEvent e) {
       if (instance != null)
         MapillaryRecord.getInstance().addCommand(
-            new CommandDelete(getData().getMultiSelectedImages()));
+          new CommandDelete(getData().getMultiSelectedImages()));
     }
   }
 }

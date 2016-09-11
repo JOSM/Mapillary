@@ -111,7 +111,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     this.undoButton = new SideButton(new UndoAction());
     this.redoButton = new SideButton(new RedoAction());
 
-    createLayout(treesPanel, true, Arrays.asList(new SideButton[] {this.undoButton, this.redoButton}));
+    createLayout(treesPanel, true, Arrays.asList(this.undoButton, this.redoButton));
   }
 
   /**
@@ -147,20 +147,16 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
-    for (MapillaryCommand command : undoCommands) {
-      if (command != null) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
-        this.map.put(node, command);
-        undoRoot.add(node);
-      }
-    }
-    for (MapillaryCommand command : redoCommands) {
-      if (command != null) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
-        this.map.put(node, command);
-        redoRoot.add(node);
-      }
-    }
+    undoCommands.stream().filter(command -> command != null).forEach(command -> {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
+      this.map.put(node, command);
+      undoRoot.add(node);
+    });
+    redoCommands.stream().filter(command -> command != null).forEach(command -> {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
+      this.map.put(node, command);
+      redoRoot.add(node);
+    });
 
     this.separator.setVisible(!undoCommands.isEmpty() || !redoCommands.isEmpty());
     this.spacer.setVisible(undoCommands.isEmpty() && !redoCommands.isEmpty());
@@ -172,7 +168,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   @Override
   public void recordChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> recordChanged());
+      SwingUtilities.invokeLater(this::recordChanged);
     } else {
       buildTree();
     }

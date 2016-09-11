@@ -62,14 +62,12 @@ public class MapillaryExportDownloadThread extends Thread implements
   public synchronized void loadingFinished(CacheEntry data,
       CacheEntryAttributes attributes, LoadResult result) {
     try {
-      synchronized (this.getClass()) {
+      synchronized (MapillaryExportDownloadThread.class) {
         this.queue
             .put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
         this.queueImages.put(this.image);
       }
-    } catch (InterruptedException e) {
-      Main.error(e);
-    } catch (IOException e) {
+    } catch (InterruptedException | IOException e) {
       Main.error(e);
     }
   }

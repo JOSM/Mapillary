@@ -128,10 +128,10 @@ public class MapillaryExportWriterThread extends Thread {
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         if (mimg instanceof MapillaryImportedImage) {
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-              ((MapillaryImportedImage) mimg).getDate("yyyy/MM/dd HH:mm:ss"));
+              mimg.getDate("yyyy/MM/dd HH:mm:ss"));
         } else if (mimg instanceof MapillaryImage) {
           exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-              ((MapillaryImage) mimg).getDate("yyyy/MM/dd HH/mm/ss"));
+              mimg.getDate("yyyy/MM/dd HH/mm/ss"));
         }
         outputSet.setGPSInDegrees(mimg.getMovingLatLon().lon(), mimg.getMovingLatLon().lat());
         OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"));
@@ -141,11 +141,7 @@ public class MapillaryExportWriterThread extends Thread {
       } catch (InterruptedException e) {
         Main.info("Mapillary export cancelled");
         return;
-      } catch (IOException e) {
-        Main.error(e);
-      } catch (ImageWriteException e) {
-        Main.error(e);
-      } catch (ImageReadException e) {
+      } catch (IOException | ImageReadException | ImageWriteException e) {
         Main.error(e);
       }
 

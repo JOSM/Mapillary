@@ -108,7 +108,7 @@ public final class TrafficoSign {
     synchronized (signs) {
       // Create Map for country if not already exists
       if (!signs.containsKey(sign.getCountry())) {
-        signs.put(sign.getCountry(), new TreeMap<String, TrafficoSign>());
+        signs.put(sign.getCountry(), new TreeMap<>());
       }
       // Don't overwrite existing sign with same country-name-combination
       if (signs.get(sign.getCountry()).containsKey(sign.getName())) {

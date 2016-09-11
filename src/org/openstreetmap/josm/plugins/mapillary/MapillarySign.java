@@ -1,17 +1,18 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
-import org.openstreetmap.josm.Main;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.openstreetmap.josm.Main;
+
 /**
- * Created by nokutu on 30/07/16.
+ * Each {@link MapillarySign} represents a traffic sign detected by the Mapillary's system.
+ *
+ * @author nokutu
  */
 public class MapillarySign {
 
@@ -32,7 +33,7 @@ public class MapillarySign {
       try (
         BufferedReader br = new BufferedReader(new InputStreamReader(
           MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson"), "UTF-8"
-        ));
+        ))
       ) {
         String line = "";
         while ((line = br.readLine()) != null) {

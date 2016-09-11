@@ -26,7 +26,7 @@ public final class CacheUtils {
     /** Full quality picture (2048 p) */
     FULL_IMAGE,
     /** Both of them */
-    BOTH;
+    BOTH
   }
 
   private CacheUtils() {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -142,15 +143,13 @@ public class MapillaryData {
    * @param images A List object containing the set of images to be added.
    */
   public void addMultiSelectedImage(Set<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage image : images) {
-      if (!this.multiSelectedImages.contains(image)) {
-        if (this.getSelectedImage() == null) {
-          this.setSelectedImage(image);
-        } else {
-          this.multiSelectedImages.add(image);
-        }
+    images.stream().filter(image -> !this.multiSelectedImages.contains(image)).forEach(image -> {
+      if (this.getSelectedImage() == null) {
+        this.setSelectedImage(image);
+      } else {
+        this.multiSelectedImages.add(image);
       }
-    }
+    });
     Main.map.mapView.repaint();
   }
 
@@ -185,9 +184,7 @@ public class MapillaryData {
    *               going to be removed.
    */
   public synchronized void remove(Set<MapillaryAbstractImage> images) {
-    for (MapillaryAbstractImage img : images) {
-      remove(img);
-    }
+    images.forEach(this::remove);
   }
 
   /**
@@ -239,10 +236,7 @@ public class MapillaryData {
    * @return
    */
   public synchronized Set<MapillarySequence> getSequences() {
-    Set<MapillarySequence> result = new HashSet<>();
-    for (MapillaryAbstractImage img : getImages()) {
-      result.add(img.getSequence());
-    }
+    Set<MapillarySequence> result = getImages().stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
     return result;
   }
 
@@ -258,10 +252,7 @@ public class MapillaryData {
   private void fireImagesAdded() {
     if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : this.listeners) {
-      if (lis != null)
-        lis.imagesAdded();
-    }
+    this.listeners.stream().filter(lis -> lis != null).forEach(MapillaryDataListener::imagesAdded);
   }
 
   /**
@@ -384,10 +375,7 @@ public class MapillaryData {
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (this.listeners.isEmpty())
       return;
-    for (MapillaryDataListener lis : this.listeners) {
-      if (lis != null)
-        lis.selectedImageChanged(oldImage, newImage);
-    }
+    this.listeners.stream().filter(lis -> lis != null).forEach(lis -> lis.selectedImageChanged(oldImage, newImage));
   }
 
   /**

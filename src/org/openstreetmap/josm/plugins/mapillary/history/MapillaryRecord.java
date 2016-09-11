@@ -121,10 +121,7 @@ public class MapillaryRecord {
   }
 
   private void fireRecordChanged() {
-    for (MapillaryRecordListener lis : this.listeners) {
-      if (lis != null)
-        lis.recordChanged();
-    }
+    this.listeners.stream().filter(lis -> lis != null).forEach(MapillaryRecordListener::recordChanged);
   }
 
   /**
