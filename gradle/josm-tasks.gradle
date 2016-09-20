@@ -11,10 +11,14 @@ task cleanJosm(type: Delete) {
  * Initialize the JOSM preferences
  */
 task initJosmPrefs(type: Copy) {
-  if (!new File("$buildDir/.josm/preferences.xml").exists()) {
-    from "config/josm/preferences.xml"
-    into "$buildDir/.josm"
+  doFirst {
+    if (new File("$buildDir/.josm/preferences.xml").exists()) {
+      println "JOSM preferences not copied, file is already present.\nIf you want to replace it, run the task 'cleanJosm' additionally."
+      exclude '*'
+    }
   }
+  from "config/josm/preferences.xml"
+  into "$buildDir/.josm"
 }
 
 /**
