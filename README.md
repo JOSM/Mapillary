@@ -1,10 +1,10 @@
 # Mapillary-plugin for [JOSM](https://josm.openstreetmap.de)
 
-[![build status](https://img.shields.io/travis/floscher/josm-mapillary-plugin/master.svg?style=flat-square)](https://travis-ci.org/floscher/josm-mapillary-plugin)
-[![code coverage](https://img.shields.io/codecov/c/github/floscher/josm-mapillary-plugin/master.svg?style=flat-square)](https://codecov.io/github/floscher/josm-mapillary-plugin?branch=master)
+[![build status](https://img.shields.io/travis/JOSM/Mapillary/master.svg?style=flat-square)](https://travis-ci.org/JOSM/Mapillary)
+[![code coverage](https://img.shields.io/codecov/c/github/JOSM/Mapillary/master.svg?style=flat-square)](https://codecov.io/github/JOSM/Mapillary?branch=master)
 [![technical debt](https://img.shields.io/sonar/https/josm.openstreetmap.de/sonar/josm-plugins:mapillary/sqale_debt_ratio.svg?style=flat-square)](https://josm.openstreetmap.de/sonar/drilldown/measures/3325?metric=sqale_index)
-[![code quality](https://img.shields.io/codacy/49bb5717d8a64575b0b4ce771c62f1d7.svg?style=flat-square)](https://www.codacy.com/app/floscher/josm-mapillary-plugin)
-[![latest release](https://img.shields.io/github/release/floscher/josm-mapillary-plugin.svg?style=flat-square)](https://github.com/floscher/josm-mapillary-plugin/releases/latest)
+[![code quality](https://img.shields.io/codacy/efb93251413e4736b3763ed477bfbe30.svg?style=flat-square)](https://www.codacy.com/app/floscher/Mapillary)
+[![latest release](https://img.shields.io/github/release/JOSM/josm-mapillary-plugin.svg?style=flat-square)](https://github.com/JOSM/Mapillary/releases/latest)
 ![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2 or later-blue.svg?style=flat-square)
 
 A plugin for showing Mapillary images inside the OpenStreetMap-Editor JOSM.

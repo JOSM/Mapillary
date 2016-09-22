@@ -5,7 +5,7 @@ But if you want to explore the sourcecode and maybe even improve it, first of al
 ## Setting up your local git-repo
 
 ```shell
-git clone git@github.com:floscher/josm-mapillary-plugin.git
+git clone git@github.com:JOSM/Mapillary.git
 cd josm-mapillary-plugin
 ```
 
@@ -43,96 +43,3 @@ For info about other available tasks you can run
 ```shell
 ./gradlew tasks
 ```
-
----
-
-If you don't have push-access to the SVN-server, you should now be ready to go.
-
-The following paragraphs only deal with transferring commits from the git-repository to the SVN-server and the other way around.
-
----
-
-## Connecting the git-repo to the SVN-server (optional)
-
-This step is normally only relevant, if you either have push-access to the SVN-server and want to push your commits from the git-repo to the SVN-repo. Otherwise just skip it.
-
-First, you need to have [`git-svn`](https://git-scm.com/docs/git-svn) installed. E.g. on Ubuntu, just run `sudo apt install git-svn`. On Windows you probably already installed it together with `git`.
-
-Then run the following commands:
-```shell
-git svn init --prefix=svn/ http://svn.openstreetmap.org/applications/editors/josm/plugins/mapillary #You have to use http://, _not_ https://
-git config --local svn.authorsfile authors.txt
-mkdir .git/refs/remotes/svn
-git rev-parse master > .git/refs/remotes/svn/git-svn # creates a file containing the SHA1 of master-branch
-git svn fetch
-git reset --hard svn/git-svn # Make sure you have no uncommitted changes in your repo before doing this
-```
-
-## Making changes to the repo and committing back to SVN (if you have git-svn set up as described above)
-
-The following steps are for those with commit-privileges for the SVN repository containing the plugins for JOSM.
-All others can simply file pull requests against the master-branch on github.
-
-We recommend, that you start your development at the head of the master-branch in a separate branch (in this example
-it's called _‹foo›_, you can name it what you like, but best call it after the feature you are working on):
-```shell
-git checkout origin/master
-git branch ‹foo›
-```
-
----
-
-Then commit your changes to this branch _‹foo›_ until you feel it's time for committing them back to SVN:
-```shell
-git commit
-```
-
----
-
-If you want to push (or in SVN-terms _commit_) all of the commits that you made on the _‹foo›_-branch back to SVN, then you can skip this step.
-
-Otherwise execute the following line to preserve the other commits:
-```shell
-git branch tmp
-```
-This creates a new branch called _tmp_ which saves those commits for later, which are not rebased.
-
----
-
-Then fetch the current state of the SVN-repository to avoid merge conflicts:
-```shell
-git svn fetch
-```
-
----
-
-Now you should rebase onto the current state of the SVN-repository:
-```shell
-git rebase --interactive svn/git-svn
-```
-A text editor should open with all commits on the _‹foo›_-branch that are currently not in SVN. Delete all lines except
-the ones containing those commits you want to commit to SVN.
-
-Watch the command line. If it says, that merge conflicts have occured you'll first have to resolve these conflicts.
-For example with the following command:
-```shell
-git mergetool --tool=‹name_of_your_mergetool›
-```
-Possible mergetools include emerge, gvimdiff, kdiff3, meld, vimdiff and tortoisemerge.
-
-After merging you'll have to tell git that it should complete the rebasing:
-```shell
-git rebase --continue
-```
-
-If it still says that there are merge conflicts, go back to the `git mergetool`-command and repeat the steps from there on.
-
----
-
-You have reached the final step, the following command will now interact with the SVN-server to commit your changes
-to the SVN-repository:
-```shell
-git svn dcommit --interactive --username=‹your_svn_username›
-```
-This command will ask for your password and shows you the commit message of every git-commit before it
-applies it to the SVN-repo.

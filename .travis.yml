@@ -36,7 +36,7 @@ after_script: |
     git config --global credential.helper store
     echo "https://${GH_USERNAME}:${GH_TOKEN}@github.com" > $HOME/.git-credentials
 
-    git remote add deploy "https://github.com/floscher/josm-mapillary-plugin.git"
+    git remote add deploy "https://github.com/JOSM/Mapillary.git"
     git fetch --depth=1 origin gh-pages:gh-pages
     git checkout gh-pages
     git rm -r reports/ docs/
