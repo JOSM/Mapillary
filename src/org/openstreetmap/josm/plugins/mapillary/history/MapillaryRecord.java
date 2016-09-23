@@ -102,8 +102,9 @@ public class MapillaryRecord {
    * Undo latest command.
    */
   public void undo() {
-    if (this.position == -1)
-      throw new IllegalStateException();
+    if (this.position <= -1) {
+      return;
+    }
     this.commandList.get(this.position).undo();
     this.position--;
     fireRecordChanged();
@@ -113,8 +114,9 @@ public class MapillaryRecord {
    * Redoes latest undone action.
    */
   public void redo() {
-    if (this.position + 1 >= this.commandList.size())
-      throw new IllegalStateException();
+    if (position + 1 >= commandList.size()) {
+      return;
+    }
     this.position++;
     this.commandList.get(this.position).redo();
     fireRecordChanged();
