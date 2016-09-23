@@ -102,34 +102,36 @@ public class MapillaryRecord {
    * Undo latest command.
    */
   public void undo() {
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    if (this.position == -1)</span>
-<span class="nc" id="L106">      throw new IllegalStateException();</span>
-<span class="fc" id="L107">    this.commandList.get(this.position).undo();</span>
-<span class="fc" id="L108">    this.position--;</span>
-<span class="fc" id="L109">    fireRecordChanged();</span>
-<span class="fc" id="L110">  }</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    if (this.position &lt;= -1) {</span>
+<span class="nc" id="L106">      return;</span>
+    }
+<span class="fc" id="L108">    this.commandList.get(this.position).undo();</span>
+<span class="fc" id="L109">    this.position--;</span>
+<span class="fc" id="L110">    fireRecordChanged();</span>
+<span class="fc" id="L111">  }</span>
 
   /**
    * Redoes latest undone action.
    */
   public void redo() {
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    if (this.position + 1 &gt;= this.commandList.size())</span>
-<span class="nc" id="L117">      throw new IllegalStateException();</span>
-<span class="fc" id="L118">    this.position++;</span>
-<span class="fc" id="L119">    this.commandList.get(this.position).redo();</span>
-<span class="fc" id="L120">    fireRecordChanged();</span>
-<span class="fc" id="L121">  }</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    if (position + 1 &gt;= commandList.size()) {</span>
+<span class="nc" id="L118">      return;</span>
+    }
+<span class="fc" id="L120">    this.position++;</span>
+<span class="fc" id="L121">    this.commandList.get(this.position).redo();</span>
+<span class="fc" id="L122">    fireRecordChanged();</span>
+<span class="fc" id="L123">  }</span>
 
   private void fireRecordChanged() {
-<span class="pc bnc" id="L124" title="All 2 branches missed.">    this.listeners.stream().filter(lis -&gt; lis != null).forEach(MapillaryRecordListener::recordChanged);</span>
-<span class="fc" id="L125">  }</span>
+<span class="pc bnc" id="L126" title="All 2 branches missed.">    this.listeners.stream().filter(lis -&gt; lis != null).forEach(MapillaryRecordListener::recordChanged);</span>
+<span class="fc" id="L127">  }</span>
 
   /**
    * Resets the object to its start state.
    */
   public void reset() {
-<span class="nc" id="L131">    this.commandList.clear();</span>
-<span class="nc" id="L132">    this.position = -1;</span>
-<span class="nc" id="L133">  }</span>
+<span class="nc" id="L133">    this.commandList.clear();</span>
+<span class="nc" id="L134">    this.position = -1;</span>
+<span class="nc" id="L135">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
