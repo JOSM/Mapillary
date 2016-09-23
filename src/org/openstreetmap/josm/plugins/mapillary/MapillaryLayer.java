@@ -38,7 +38,7 @@ import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
 import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
 import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.osm.visitor.paint.PaintColors;
+import org.openstreetmap.josm.data.preferences.ColorProperty;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -270,7 +270,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @return background color for downloaded areas. Black by default.
    */
   private static Color getBackgroundColor() {
-    return Main.pref.getColor(marktr("background"), Color.BLACK);
+    return new ColorProperty(marktr("background"), Color.BLACK).get();
   }
 
   /**
@@ -279,7 +279,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @return background color for non-downloaded areas. Yellow by default.
    */
   private static Color getOutsideColor() {
-    return Main.pref.getColor(marktr("outside downloaded area"), Color.YELLOW);
+    return new ColorProperty(marktr("outside downloaded area"), Color.YELLOW).get();
   }
 
   /**
