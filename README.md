@@ -4,7 +4,7 @@
 [![code coverage](https://img.shields.io/codecov/c/github/JOSM/Mapillary/master.svg?style=flat-square&maxAge=2592000)](https://codecov.io/github/JOSM/Mapillary?branch=master)
 [![technical debt](https://img.shields.io/sonar/https/josm.openstreetmap.de/sonar/josm-plugins:mapillary/sqale_debt_ratio.svg?style=flat-square&maxAge=2592000)](https://josm.openstreetmap.de/sonar/drilldown/measures/3325?metric=sqale_index)
 [![code quality](https://img.shields.io/codacy/efb93251413e4736b3763ed477bfbe30.svg?style=flat-square&maxAge=2592000)](https://www.codacy.com/app/floscher/Mapillary)
-[![latest release](https://img.shields.io/github/release/JOSM/josm-mapillary-plugin.svg?style=flat-square&maxAge=2592000)](https://github.com/JOSM/Mapillary/releases/latest)
+[![latest release](https://img.shields.io/github/release/JOSM/Mapillary.svg?style=flat-square&maxAge=2592000)](https://github.com/JOSM/Mapillary/releases/latest)
 ![download count for latest release](https://img.shields.io/github/downloads/JOSM/Mapillary/latest/Mapillary.jar.svg?style=flat-square&maxAge=2592000)
 ![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2 or later-blue.svg?style=flat-square&maxAge=2592000)
 

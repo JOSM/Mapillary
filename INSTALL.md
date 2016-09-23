@@ -6,7 +6,7 @@ But if you want to explore the sourcecode and maybe even improve it, first of al
 
 ```shell
 git clone git@github.com:JOSM/Mapillary.git
-cd josm-mapillary-plugin
+cd Mapillary
 ```
 
 ## Building the plugin with Gradle

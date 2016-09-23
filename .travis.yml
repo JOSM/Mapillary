@@ -17,7 +17,6 @@ before_script: # init GUI for tests that can't run headless
 script: ./gradlew build javadoc
 
 # Release the plugin via GitHub releases when pushing a tag
-before_deploy: 'cp -T build/libs/josm-mapillary-plugin.jar build/libs/Mapillary.jar'
 deploy:
   provider: releases
   api_key: "${GH_TOKEN}"
