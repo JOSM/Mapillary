@@ -9,15 +9,13 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.awt.image.AffineTransformOp;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
@@ -77,6 +75,19 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public static final int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
     "mapillary.sequence-max-jump-distance", 100);
 
+  /** The radius of the image marker */
+  private static final int IMG_MARKER_RADIUS = 7;
+  /** The radius of the circular sector that indicates the camera angle */
+  private static final int CA_INDICATOR_RADIUS = 15;
+  /** The angle of the circular sector that indicates the camera angle */
+  private static final int CA_INDICATOR_ANGLE = 40;
+  /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
+  private static final int TRAFFIC_SIGN_SIZE = 6;
+  /** A third of the height of the sign, for easier calculations */
+  private static final double TRAFFIC_SIGN_HEIGHT_3RD = Math.sqrt(
+    Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
+  ) / 3;
+
   /** If the download is in semiautomatic during this object lifetime. */
   public boolean tempSemiautomatic;
 
@@ -91,9 +102,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   /** Mode of the layer. */
   public AbstractMode mode;
-
-  private final int highlightPointRadius = Main.pref.getInteger("mappaint.highlight.radius", 7);
-  private final int highlightStep = Main.pref.getInteger("mappaint.highlight.step", 4);
 
   private volatile TexturePaint hatched;
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
@@ -325,38 +333,23 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Draw sequence line
-    final MapillaryAbstractImage selectedImage = MapillaryLayer.getInstance().getData().getSelectedImage();
-    String selectedImageKey = null;
-    if (selectedImage != null && selectedImage.getSequence() != null) {
-      selectedImageKey = selectedImage.getSequence().getKey();
-    }
-    g.setStroke(new BasicStroke(this == Main.getLayerManager().getActiveLayer() ? 3 : 2));
+    g.setStroke(new BasicStroke(2));
+    final MapillaryAbstractImage selectedImage = getData().getSelectedImage();
     for (MapillarySequence seq : getData().getSequences()) {
-      if (selectedImageKey != null && selectedImageKey.equals(seq.getKey())) {
-        g.setColor(MapillaryColorScheme.SEQ_SELECTED);
+      if (seq.getImages().contains(selectedImage)) {
+        g.setColor(
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED
+        );
       } else {
-        g.setColor(MapillaryColorScheme.SEQ_UNSELECTED);
+        g.setColor(
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
+        );
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
       if (imageAbs.isVisible() && Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getMovingLatLon()))) {
-        final Point p = mv.getPoint(imageAbs.getMovingLatLon());
-        ImageIcon icon = MapillaryPlugin.MAP_ICON;
-        if (getData().getMultiSelectedImages().contains(imageAbs)) {
-          icon = MapillaryPlugin.MAP_ICON_SELECTED;
-        } else if (imageAbs instanceof MapillaryImportedImage) {
-          icon = MapillaryPlugin.MAP_ICON_IMPORTED;
-        }
-        draw(g, imageAbs, icon, p);
-        if (imageAbs instanceof MapillaryImage && !((MapillaryImage) imageAbs).getSigns().isEmpty()) {
-          g.drawImage(
-            MapillaryPlugin.MAP_SIGN.getImage(),
-            p.x - MapillaryPlugin.MAP_SIGN.getIconWidth() / 2,
-            p.y - MapillaryPlugin.MAP_SIGN.getIconHeight() / 2,
-            Main.map.mapView
-          );
-        }
+        drawImageMarker(g, imageAbs);
       }
     }
     if (this.mode instanceof JoinMode) {
@@ -365,52 +358,70 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Draws the highlight of the icon.
-   *
-   * @param g the graphics context
-   * @param p the {@link Point} where the image must be set.
-   * @param size the width in pixels of the highlight.
+   * Draws an image marker onto the given Graphics context.
+   * @param g the Graphics context
+   * @param img the image to be drawn onto the Graphics context
    */
-  private void drawPointHighlight(Graphics2D g, Point p, int size) {
-    Color oldColor = g.getColor();
-    Color highlightColor = PaintColors.HIGHLIGHT.get();
-    Color highlightColorTransparent = new Color(highlightColor.getRed(),
-      highlightColor.getGreen(), highlightColor.getBlue(), 100);
-    g.setColor(highlightColorTransparent);
-    int s = size + this.highlightPointRadius;
-    while (s >= size) {
-      int r = (int) Math.floor(s / 2d);
-      g.fillRoundRect(p.x - r, p.y - r, s, s, r, r);
-      s -= this.highlightStep;
+  private void drawImageMarker(final Graphics2D g, final MapillaryAbstractImage img) {
+    if (img == null || img.getLatLon() == null) {
+      Main.warn("An image is not painted, because it is null or has no LatLon!");
+      return;
     }
-    g.setColor(oldColor);
-  }
+    final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
+    final Point p = Main.map.mapView.getPoint(img.getLatLon());
 
-  /**
-   * Draws the given icon of an image. Also checks if the mouse is over the
-   * image.
-   *
-   * @param g the graphics context
-   * @param image The {@link MapillaryAbstractImage} which is being drown.
-   * @param icon The {@link ImageIcon} that represents the image.
-   * @param p The P¡{@link Point} when the image lies.
-   */
-  private void draw(Graphics2D g, MapillaryAbstractImage image, ImageIcon icon, Point p) {
-    Image imagetemp = icon.getImage();
-    BufferedImage bi = (BufferedImage) imagetemp;
-    int width = icon.getIconWidth();
-    int height = icon.getIconHeight();
+    // Determine colors
+    final Color markerC;
+    final Color directionC;
+    if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
+      markerC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED
+        : MapillaryColorScheme.SEQ_HIGHLIGHTED;
+      directionC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA
+        : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+    } else if (selectedImg != null && selectedImg.getSequence() != null && selectedImg.getSequence().equals(img.getSequence())) {
+      markerC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
+        : MapillaryColorScheme.SEQ_SELECTED;
+      directionC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA
+        : MapillaryColorScheme.SEQ_SELECTED_CA;
+    } else {
+      markerC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
+        : MapillaryColorScheme.SEQ_UNSELECTED;
+      directionC = img instanceof MapillaryImportedImage
+        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA
+        : MapillaryColorScheme.SEQ_UNSELECTED_CA;
+    }
 
-    // Rotate the image
-    double rotationRequired = Math.toRadians(image.getMovingCa());
-    double locationX = width / 2d;
-    double locationY = height / 2d;
-    AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+    // Paint direction indicator
+    g.setColor(directionC);
+    g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getCa() - CA_INDICATOR_ANGLE / 2), CA_INDICATOR_ANGLE);
+    // Paint image marker
+    g.setColor(markerC);
+    g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
 
-    g.drawImage(op.filter(bi, null), p.x - (width / 2), p.y - (height / 2), Main.map.mapView);
-    if (this.data.getHighlightedImage() == image) {
-      drawPointHighlight(g, p, 16);
+    // Paint highlight for selected or highlighted images
+    if (img.equals(getData().getHighlightedImage()) || getData().getMultiSelectedImages().contains(img)) {
+      g.setColor(Color.WHITE);
+      g.setStroke(new BasicStroke(2));
+      g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+    }
+
+
+    if (img instanceof MapillaryImage && !((MapillaryImage) img).getSigns().isEmpty()) {
+      Path2D trafficSign = new Path2D.Double();
+      trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
+      trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
+      trafficSign.lineTo(p.getX(), p.getY() + 2 * TRAFFIC_SIGN_HEIGHT_3RD);
+      trafficSign.closePath();
+      g.setColor(Color.WHITE);
+      g.fill(trafficSign);
+      g.setStroke(new BasicStroke(1));
+      g.setColor(Color.RED);
+      g.draw(trafficSign);
     }
   }
 

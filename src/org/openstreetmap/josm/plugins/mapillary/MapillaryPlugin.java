@@ -52,14 +52,6 @@ public class MapillaryPlugin extends Plugin {
   public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
   /** 12x12 icon. */
   public static final ImageIcon ICON12 = new ImageIcon(ICON24.getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH));
-  /** Icon representing an image in the map. */
-  public static final ImageIcon MAP_ICON = new ImageProvider("mapicon.png").get();
-  /** Icon representing a selected image in the map. */
-  public static final ImageIcon MAP_ICON_SELECTED = new ImageProvider("mapiconselected.png").get();
-  /** Icon representing an imported image in the map. */
-  public static final ImageIcon MAP_ICON_IMPORTED = new ImageProvider("mapiconimported.png").get();
-  /** Icon used to identify which images have signs on them */
-  public static final ImageIcon MAP_SIGN = new ImageProvider("sign.png").get();
 
   /** Cache that stores the pictures the downloaded pictures. */
   private static CacheAccess<String, BufferedImageCacheEntry> cache;
