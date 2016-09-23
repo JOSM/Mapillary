@@ -21,7 +21,9 @@ before_deploy: 'cp -T build/libs/josm-mapillary-plugin.jar build/libs/Mapillary.
 deploy:
   provider: releases
   api_key: "${GH_TOKEN}"
-  file: "build/libs/Mapillary.jar"
+  file:
+    - "build/libs/Mapillary.jar"
+    - "build/tmp/jar/MANIFEST.MF"
   skip_cleanup: true
   on:
     tags: true

@@ -9,13 +9,13 @@ def manifestAtts = [
   "Plugin-Date": String.format("%1\$tY-%1\$tm-%1\$tdT%1\$tH:%1\$tM:%1\$tS%1\$tz", new GregorianCalendar()),
   "Plugin-Description": property('plugin.description'),
   "Plugin-Mainversion": property('plugin.main.version'),
-  "Plugin-Version": property('plugin.svnrevision')
+  "Plugin-Version": "‹unknown version›"
 ]
 
 try {
-  manifestAtts["Plugin-SemVersion"] = getVersionName()
+  manifestAtts["Plugin-Version"] = getVersionName()
 } catch (ExecException e) {
-  System.out.println("This is probably not a git-repository. So the semantic version number is not available.")
+  System.err.println("This is probably not a git-repository. So the current version number is not available.")
 }
 
 // Optional attributes
