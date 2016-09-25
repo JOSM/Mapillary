@@ -148,28 +148,21 @@ public class SelectMode extends AbstractMode {
 
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
 
-    if (closestTemp != null
-      && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
-      && !this.imageHighlighted) {
-      Main.map.mapMode.putValue("active", Boolean.FALSE);
-      this.imageHighlighted = true;
-
-    } else if (closestTemp == null
-      && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
-      && this.imageHighlighted && this.nothingHighlighted) {
-      this.nothingHighlighted = false;
-      Main.map.mapMode.putValue("active", Boolean.TRUE);
-
-    } else if (this.imageHighlighted && !this.nothingHighlighted
-      && Main.getLayerManager().getEditLayer().data != null
-      && Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer) {
-
-      for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data
-        .allPrimitives()) {
-        primivitive.setHighlighted(false);
+    final OsmDataLayer editLayer = Main.getLayerManager().getEditLayer();
+    if (editLayer != null) {
+      if (closestTemp != null && !this.imageHighlighted) {
+        Main.map.mapMode.putValue("active", Boolean.FALSE);
+        imageHighlighted = true;
+      } else if (closestTemp == null && imageHighlighted && nothingHighlighted) {
+        nothingHighlighted = false;
+        Main.map.mapMode.putValue("active", Boolean.TRUE);
+      } else if (imageHighlighted && !nothingHighlighted && editLayer.data != null) {
+        for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data.allPrimitives()) {
+          primivitive.setHighlighted(false);
+        }
+        imageHighlighted = false;
+        nothingHighlighted = true;
       }
-      this.imageHighlighted = false;
-      this.nothingHighlighted = true;
     }
 
     if (this.data.getHighlightedImage() != closestTemp && closestTemp != null) {
