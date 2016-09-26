@@ -1,21 +1,27 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.AbstractSet;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
-public class MapillaryLocationChangeset extends HashSet<MapillaryImage> {
+public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage>{
   private static final long serialVersionUID = 2461033584553885626L;
   private final Set<MapillaryChangesetListener> listeners = new HashSet<>();
+  private final Set<MapillaryImage> changeset = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
     this.listeners.add(listener);
   }
 
   public void cleanChangeset() {
-    this.clear();
+    changeset.clear();
     fireListeners();
   }
 
@@ -23,18 +29,25 @@ public class MapillaryLocationChangeset extends HashSet<MapillaryImage> {
     listeners.forEach(MapillaryChangesetListener::changesetChanged);
   }
 
-  @Override
   public boolean add(MapillaryImage image) {
-    boolean add = super.add(image);
+    boolean add = changeset.add(image);
     fireListeners();
     return add;
   }
 
   @Override
+  public Iterator<MapillaryImage> iterator() {
+    return changeset.iterator();
+  }
+
+  @Override
+  public int size() {
+    return changeset.size();
+  }
+
   public boolean remove(Object image) {
-    boolean remove = super.remove(image);
+    boolean remove = changeset.remove(image);
     fireListeners();
     return remove;
   }
-
 }

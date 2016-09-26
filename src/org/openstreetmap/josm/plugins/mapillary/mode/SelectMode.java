@@ -52,7 +52,7 @@ public class SelectMode extends AbstractMode {
     }
     MapillaryAbstractImage closest = getClosest(e.getPoint());
     if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer)
-      && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
+            && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
       this.lastClicked = this.closest;
       this.data.setSelectedImage(closest);
       return;
@@ -73,17 +73,17 @@ public class SelectMode extends AbstractMode {
       this.data.addMultiSelectedImage(closest);
       // shift + click
     } else if (
-      e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)
-        && this.lastClicked instanceof MapillaryImage
-      ) {
+            e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)
+                    && this.lastClicked instanceof MapillaryImage
+            ) {
       if (this.closest != null
-        && this.closest.getSequence() == (this.lastClicked).getSequence()) {
+              && this.closest.getSequence() == (this.lastClicked).getSequence()) {
         int i = this.closest.getSequence().getImages().indexOf(this.closest);
         int j = this.lastClicked.getSequence().getImages().indexOf(this.lastClicked);
         this.data.addMultiSelectedImage(
-          i < j
-            ? new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(i, j + 1))
-            : new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(j, i + 1))
+                i < j
+                        ? new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(i, j + 1))
+                        : new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(j, i + 1))
         );
       }
       // click
@@ -96,19 +96,19 @@ public class SelectMode extends AbstractMode {
   public void mouseDragged(MouseEvent e) {
     MapillaryAbstractImage highlightImg = data.getHighlightedImage();
     if (
-      Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
-        && SwingUtilities.isLeftMouseButton(e)
-        && highlightImg != null && highlightImg.getLatLon() != null
-      ) {
+            Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+                    && SwingUtilities.isLeftMouseButton(e)
+                    && highlightImg != null && highlightImg.getLatLon() != null
+            ) {
       Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
-        this.data.getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage))
-          .forEach(img -> img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));
+        this.data.getMultiSelectedImages().parallelStream()
+                .forEach(img -> img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));
       } else { // move
         LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());
         LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
-        this.data.getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage))
-          .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
+        this.data.getMultiSelectedImages().parallelStream()
+                .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
       Main.map.repaint();
     }
@@ -122,13 +122,13 @@ public class SelectMode extends AbstractMode {
       double from = this.data.getSelectedImage().getTempCa();
       double to = this.data.getSelectedImage().getMovingCa();
       this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to
-        - from));
+              - from));
     } else if (this.data.getSelectedImage().getTempLatLon() != this.data
-      .getSelectedImage().getMovingLatLon()) {
+            .getSelectedImage().getMovingLatLon()) {
       LatLon from = this.data.getSelectedImage().getTempLatLon();
       LatLon to = this.data.getSelectedImage().getMovingLatLon();
       this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to
-        .getX() - from.getX(), to.getY() - from.getY()));
+              .getX() - from.getX(), to.getY() - from.getY()));
     }
     this.data.getMultiSelectedImages().parallelStream().filter(img -> img != null).forEach(MapillaryAbstractImage::stopMoving);
   }
@@ -139,7 +139,7 @@ public class SelectMode extends AbstractMode {
   @Override
   public void mouseMoved(MouseEvent e) {
     if (Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
-      && Main.map.mapMode != Main.map.mapModeSelect) {
+            && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
     if (!Main.pref.getBoolean("mapillary.hover-enabled", true)) {
@@ -151,11 +151,15 @@ public class SelectMode extends AbstractMode {
     final OsmDataLayer editLayer = Main.getLayerManager().getEditLayer();
     if (editLayer != null) {
       if (closestTemp != null && !this.imageHighlighted) {
-        Main.map.mapMode.putValue("active", Boolean.FALSE);
+        if (Main.map.mapMode != null) {
+          Main.map.mapMode.putValue("active", Boolean.FALSE);
+        }
         imageHighlighted = true;
       } else if (closestTemp == null && imageHighlighted && nothingHighlighted) {
+        if (Main.map.mapMode != null) {
+          Main.map.mapMode.putValue("active", Boolean.TRUE);
+        }
         nothingHighlighted = false;
-        Main.map.mapMode.putValue("active", Boolean.TRUE);
       } else if (imageHighlighted && !nothingHighlighted && editLayer.data != null) {
         for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data.allPrimitives()) {
           primivitive.setHighlighted(false);

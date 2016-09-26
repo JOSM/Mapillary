@@ -25,7 +25,6 @@ import javax.swing.tree.TreeSelectionModel;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitCurrentChangesetAction;
@@ -68,13 +67,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
   private MapillaryChangesetDialog() {
     super(
-      tr("Current Mapillary changeset"),
-      "mapillary-upload.svg",
-      tr("Open Mapillary changeset dialog"),
-      Shortcut.registerShortcut(
-        tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
-      ),
-      200
+            tr("Current Mapillary changeset"),
+            "mapillary-upload.svg",
+            tr("Open Mapillary changeset dialog"),
+            Shortcut.registerShortcut(
+                    tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
+            ),
+            200
     );
 
     this.map = new ConcurrentHashMap<>();
