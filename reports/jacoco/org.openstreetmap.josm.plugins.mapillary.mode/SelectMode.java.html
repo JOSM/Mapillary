@@ -52,7 +52,7 @@ public class SelectMode extends AbstractMode {
     }
 <span class="nc" id="L53">    MapillaryAbstractImage closest = getClosest(e.getPoint());</span>
 <span class="nc bnc" id="L54" title="All 6 branches missed.">    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer)</span>
-      &amp;&amp; closest != null &amp;&amp; Main.map.mapMode == Main.map.mapModeSelect) {
+            &amp;&amp; closest != null &amp;&amp; Main.map.mapMode == Main.map.mapModeSelect) {
 <span class="nc" id="L56">      this.lastClicked = this.closest;</span>
 <span class="nc" id="L57">      this.data.setSelectedImage(closest);</span>
 <span class="nc" id="L58">      return;</span>
@@ -73,17 +73,17 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L73">      this.data.addMultiSelectedImage(closest);</span>
       // shift + click
 <span class="nc" id="L75">    } else if (</span>
-<span class="nc bnc" id="L76" title="All 4 branches missed.">      e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)</span>
-        &amp;&amp; this.lastClicked instanceof MapillaryImage
-      ) {
+<span class="nc bnc" id="L76" title="All 4 branches missed.">            e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)</span>
+                    &amp;&amp; this.lastClicked instanceof MapillaryImage
+            ) {
 <span class="nc bnc" id="L79" title="All 2 branches missed.">      if (this.closest != null</span>
-<span class="nc bnc" id="L80" title="All 2 branches missed.">        &amp;&amp; this.closest.getSequence() == (this.lastClicked).getSequence()) {</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">              &amp;&amp; this.closest.getSequence() == (this.lastClicked).getSequence()) {</span>
 <span class="nc" id="L81">        int i = this.closest.getSequence().getImages().indexOf(this.closest);</span>
 <span class="nc" id="L82">        int j = this.lastClicked.getSequence().getImages().indexOf(this.lastClicked);</span>
 <span class="nc bnc" id="L83" title="All 2 branches missed.">        this.data.addMultiSelectedImage(</span>
-          i &lt; j
-<span class="nc" id="L85">            ? new ConcurrentSkipListSet&lt;&gt;(this.closest.getSequence().getImages().subList(i, j + 1))</span>
-<span class="nc" id="L86">            : new ConcurrentSkipListSet&lt;&gt;(this.closest.getSequence().getImages().subList(j, i + 1))</span>
+                i &lt; j
+<span class="nc" id="L85">                        ? new ConcurrentSkipListSet&lt;&gt;(this.closest.getSequence().getImages().subList(i, j + 1))</span>
+<span class="nc" id="L86">                        : new ConcurrentSkipListSet&lt;&gt;(this.closest.getSequence().getImages().subList(j, i + 1))</span>
         );
 <span class="nc" id="L88">      }</span>
       // click
@@ -96,19 +96,19 @@ public class SelectMode extends AbstractMode {
   public void mouseDragged(MouseEvent e) {
 <span class="nc" id="L97">    MapillaryAbstractImage highlightImg = data.getHighlightedImage();</span>
     if (
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
-<span class="nc bnc" id="L100" title="All 4 branches missed.">        &amp;&amp; SwingUtilities.isLeftMouseButton(e)</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        &amp;&amp; highlightImg != null &amp;&amp; highlightImg.getLatLon() != null</span>
-      ) {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
+<span class="nc bnc" id="L100" title="All 4 branches missed.">                    &amp;&amp; SwingUtilities.isLeftMouseButton(e)</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                    &amp;&amp; highlightImg != null &amp;&amp; highlightImg.getLatLon() != null</span>
+            ) {
 <span class="nc" id="L103">      Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());</span>
 <span class="nc bnc" id="L104" title="All 2 branches missed.">      if (e.isShiftDown()) { // turn</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        this.data.getMultiSelectedImages().parallelStream().filter(img -&gt; !(img instanceof MapillaryImage))</span>
-<span class="nc" id="L106">          .forEach(img -&gt; img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));</span>
+<span class="nc" id="L105">        this.data.getMultiSelectedImages().parallelStream()</span>
+<span class="nc" id="L106">                .forEach(img -&gt; img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));</span>
       } else { // move
 <span class="nc" id="L108">        LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());</span>
 <span class="nc" id="L109">        LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        this.data.getMultiSelectedImages().parallelStream().filter(img -&gt; !(img instanceof MapillaryImage))</span>
-<span class="nc" id="L111">          .forEach(img -&gt; img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));</span>
+<span class="nc" id="L110">        this.data.getMultiSelectedImages().parallelStream()</span>
+<span class="nc" id="L111">                .forEach(img -&gt; img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));</span>
       }
 <span class="nc" id="L113">      Main.map.repaint();</span>
     }
@@ -122,13 +122,13 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L122">      double from = this.data.getSelectedImage().getTempCa();</span>
 <span class="nc" id="L123">      double to = this.data.getSelectedImage().getMovingCa();</span>
 <span class="nc" id="L124">      this.record.addCommand(new CommandTurn(this.data.getMultiSelectedImages(), to</span>
-        - from));
+              - from));
 <span class="nc" id="L126">    } else if (this.data.getSelectedImage().getTempLatLon() != this.data</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">      .getSelectedImage().getMovingLatLon()) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">            .getSelectedImage().getMovingLatLon()) {</span>
 <span class="nc" id="L128">      LatLon from = this.data.getSelectedImage().getTempLatLon();</span>
 <span class="nc" id="L129">      LatLon to = this.data.getSelectedImage().getMovingLatLon();</span>
 <span class="nc" id="L130">      this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to</span>
-<span class="nc" id="L131">        .getX() - from.getX(), to.getY() - from.getY()));</span>
+<span class="nc" id="L131">              .getX() - from.getX(), to.getY() - from.getY()));</span>
     }
 <span class="nc bnc" id="L133" title="All 2 branches missed.">    this.data.getMultiSelectedImages().parallelStream().filter(img -&gt; img != null).forEach(MapillaryAbstractImage::stopMoving);</span>
 <span class="nc" id="L134">  }</span>
@@ -139,7 +139,7 @@ public class SelectMode extends AbstractMode {
   @Override
   public void mouseMoved(MouseEvent e) {
 <span class="nc bnc" id="L141" title="All 4 branches missed.">    if (Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer</span>
-      &amp;&amp; Main.map.mapMode != Main.map.mapModeSelect) {
+            &amp;&amp; Main.map.mapMode != Main.map.mapModeSelect) {
 <span class="nc" id="L143">      return;</span>
     }
 <span class="nc bnc" id="L145" title="All 2 branches missed.">    if (!Main.pref.getBoolean(&quot;mapillary.hover-enabled&quot;, true)) {</span>
@@ -151,39 +151,43 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L151">    final OsmDataLayer editLayer = Main.getLayerManager().getEditLayer();</span>
 <span class="nc bnc" id="L152" title="All 2 branches missed.">    if (editLayer != null) {</span>
 <span class="nc bnc" id="L153" title="All 4 branches missed.">      if (closestTemp != null &amp;&amp; !this.imageHighlighted) {</span>
-<span class="nc" id="L154">        Main.map.mapMode.putValue(&quot;active&quot;, Boolean.FALSE);</span>
-<span class="nc" id="L155">        imageHighlighted = true;</span>
-<span class="nc bnc" id="L156" title="All 6 branches missed.">      } else if (closestTemp == null &amp;&amp; imageHighlighted &amp;&amp; nothingHighlighted) {</span>
-<span class="nc" id="L157">        nothingHighlighted = false;</span>
-<span class="nc" id="L158">        Main.map.mapMode.putValue(&quot;active&quot;, Boolean.TRUE);</span>
-<span class="nc bnc" id="L159" title="All 6 branches missed.">      } else if (imageHighlighted &amp;&amp; !nothingHighlighted &amp;&amp; editLayer.data != null) {</span>
-<span class="nc bnc" id="L160" title="All 2 branches missed.">        for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data.allPrimitives()) {</span>
-<span class="nc" id="L161">          primivitive.setHighlighted(false);</span>
-<span class="nc" id="L162">        }</span>
-<span class="nc" id="L163">        imageHighlighted = false;</span>
-<span class="nc" id="L164">        nothingHighlighted = true;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (Main.map.mapMode != null) {</span>
+<span class="nc" id="L155">          Main.map.mapMode.putValue(&quot;active&quot;, Boolean.FALSE);</span>
+        }
+<span class="nc" id="L157">        imageHighlighted = true;</span>
+<span class="nc bnc" id="L158" title="All 6 branches missed.">      } else if (closestTemp == null &amp;&amp; imageHighlighted &amp;&amp; nothingHighlighted) {</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (Main.map.mapMode != null) {</span>
+<span class="nc" id="L160">          Main.map.mapMode.putValue(&quot;active&quot;, Boolean.TRUE);</span>
+        }
+<span class="nc" id="L162">        nothingHighlighted = false;</span>
+<span class="nc bnc" id="L163" title="All 6 branches missed.">      } else if (imageHighlighted &amp;&amp; !nothingHighlighted &amp;&amp; editLayer.data != null) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data.allPrimitives()) {</span>
+<span class="nc" id="L165">          primivitive.setHighlighted(false);</span>
+<span class="nc" id="L166">        }</span>
+<span class="nc" id="L167">        imageHighlighted = false;</span>
+<span class="nc" id="L168">        nothingHighlighted = true;</span>
       }
     }
 
-<span class="nc bnc" id="L168" title="All 4 branches missed.">    if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp != null) {</span>
-<span class="nc" id="L169">      this.data.setHighlightedImage(closestTemp);</span>
-<span class="nc" id="L170">      MapillaryMainDialog.getInstance().setImage(closestTemp);</span>
-<span class="nc" id="L171">      MapillaryMainDialog.getInstance().updateImage(false);</span>
-<span class="nc bnc" id="L172" title="All 4 branches missed.">    } else if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp == null) {</span>
-<span class="nc" id="L173">      this.data.setHighlightedImage(null);</span>
-<span class="nc" id="L174">      MapillaryMainDialog.getInstance().setImage(this.data.getSelectedImage());</span>
-<span class="nc" id="L175">      MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc bnc" id="L172" title="All 4 branches missed.">    if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp != null) {</span>
+<span class="nc" id="L173">      this.data.setHighlightedImage(closestTemp);</span>
+<span class="nc" id="L174">      MapillaryMainDialog.getInstance().setImage(closestTemp);</span>
+<span class="nc" id="L175">      MapillaryMainDialog.getInstance().updateImage(false);</span>
+<span class="nc bnc" id="L176" title="All 4 branches missed.">    } else if (this.data.getHighlightedImage() != closestTemp &amp;&amp; closestTemp == null) {</span>
+<span class="nc" id="L177">      this.data.setHighlightedImage(null);</span>
+<span class="nc" id="L178">      MapillaryMainDialog.getInstance().setImage(this.data.getSelectedImage());</span>
+<span class="nc" id="L179">      MapillaryMainDialog.getInstance().updateImage();</span>
     }
-<span class="nc" id="L177">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L178">  }</span>
-
-  @Override
-  public void paint(Graphics2D g, MapView mv, Bounds box) {
+<span class="nc" id="L181">    MapillaryData.dataUpdated();</span>
 <span class="nc" id="L182">  }</span>
 
   @Override
+  public void paint(Graphics2D g, MapView mv, Bounds box) {
+<span class="nc" id="L186">  }</span>
+
+  @Override
   public String toString() {
-<span class="nc" id="L186">    return tr(&quot;Select mode&quot;);</span>
+<span class="nc" id="L190">    return tr(&quot;Select mode&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
