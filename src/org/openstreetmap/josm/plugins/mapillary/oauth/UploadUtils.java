@@ -103,6 +103,7 @@ public final class UploadUtils {
             Main.error(e);
           }
         }
+        uploadDoneFile(this.uuid);
       }
       this.ex.shutdown();
       try {
@@ -213,40 +214,70 @@ public final class UploadUtils {
   }
 
   /**
-   * @param image The image to be uploaded
-   * @param uuid  The UUID used to create the sequence.
+   * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
+   * @param sequenceUUID  The UUID used to create the sequence.
    */
-  public static void upload(MapillaryImportedImage image, UUID uuid) {
+  public static void uploadDoneFile(UUID sequenceUUID) {
+    Map<String, String> secretMap = MapillaryUser.getSecrets();
+    if (secretMap == null) {
+      throw new IllegalStateException("Can't obtain secrents from user");
+    }
+    String key = MapillaryUser.getUsername() +
+      '/' + sequenceUUID +
+      "/DONE";
+    Map<String, String> hash = getUploadParts(secretMap);
+    hash.put("key", key);
+    try {
+      uploadFile(File.createTempFile("DONE", "donefile"), hash);
+    } catch (IOException e) {
+      Main.error(e);
+    }
+  }
+  /**
+   * @param image The image to be uploaded
+   * @param sequenceUUID  The UUID used to create the sequence.
+   */
+  public static void upload(MapillaryImportedImage image, UUID sequenceUUID) {
     Map<String, String> secretMap = MapillaryUser.getSecrets();
     if (secretMap == null) {
       throw new IllegalStateException("Can't obtain secrents from user");
     }
 
     String key = MapillaryUser.getUsername() +
-      '/' + uuid +
+      '/' + sequenceUUID +
       '/' + image.getMovingLatLon().lat() + // TODO: Make sure, that the double values are not appended as something like "10e-4", "Infinity" or "NaN" (all possible values of Double.toString(double))
       '_' + image.getMovingLatLon().lon() +
       '_' + image.getMovingCa() +
       '_' + image.getCapturedAt() +
       ".jpg";
 
+    Map<String, String> hash = getUploadParts(secretMap);
+    hash.put("key", key);
+    try {
+      uploadFile(updateFile(image), hash);
+    } catch (ImageReadException | ImageWriteException | IOException e) {
+      Main.error(e);
+    }
+  }
+
+  /**
+   * Constructs the parameters necessary to upload files to Amazon S3
+   * @param secretMap the upload policy
+   * @return the parts map
+  */
+  private static Map<String, String> getUploadParts(Map<String, String> secretMap) {
     String policy;
     String signature;
     policy = secretMap.get("images_policy");
     signature = secretMap.get("images_hash");
 
     Map<String, String> hash = new HashMap<>();
-    hash.put("key", key);
     hash.put("AWSAccessKeyId", "AKIAI2X3BJAT2W75HILA");
     hash.put("acl", "private");
     hash.put("policy", policy);
     hash.put("signature", signature);
     hash.put("Content-Type", "image/jpeg");
-    try {
-      uploadFile(updateFile(image), hash);
-    } catch (ImageReadException | ImageWriteException | IOException e) {
-      Main.error(e);
-    }
+    return hash;
   }
 
   /**
