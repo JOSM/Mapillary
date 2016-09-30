@@ -36,21 +36,5 @@ public class FinishedUploadDialog extends JPanel {
     JLabel text = new JLabel(tr("Uploaded {0} images", PluginState.getImagesUploaded()));
     text.setAlignmentX(Component.CENTER_ALIGNMENT);
     this.add(text);
-    JButton web = new JButton(tr("Approve upload on the website"));
-    text.setLabelFor(web);
-    web.addActionListener(new WebAction());
-    web.setAlignmentX(Component.CENTER_ALIGNMENT);
-    this.add(web, Component.CENTER_ALIGNMENT);
-  }
-
-  private static class WebAction implements ActionListener {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      try {
-        MapillaryUtils.browse(MapillaryURL.browseUploadImageURL());
-      } catch (IOException e1) {
-        Main.error(e1);
-      }
-    }
   }
 }
