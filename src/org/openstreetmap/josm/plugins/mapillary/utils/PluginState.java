@@ -3,12 +3,9 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.gui.FinishedUploadDialog;
 
 /**
  * @author nokutu
@@ -99,19 +96,17 @@ public final class PluginState {
   public static void imageUploaded() {
     imagesUploaded++;
     if (imagesToUpload == imagesUploaded && Main.main != null) {
-        finishedUploadDialog();
+        finishedUploadDialog(imagesUploaded);
     }
   }
 
-  private static void finishedUploadDialog() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      JOptionPane pane = new JOptionPane();
-      pane.setMessage(new FinishedUploadDialog());
-      JDialog dlg = pane.createDialog(Main.parent, tr("Finished upload"));
-      dlg.setVisible(true);
-    } else {
-      SwingUtilities.invokeLater(PluginState::finishedUploadDialog);
-    }
+  private static void finishedUploadDialog(int numImages) {
+    JOptionPane.showMessageDialog(
+      Main.parent,
+      tr("You have successfully uploaded {0} images to mapillary.com", numImages),
+      tr("Finished upload"),
+      JOptionPane.INFORMATION_MESSAGE
+    );
   }
 
   public static void notLoggedInToMapillaryDialog() {
