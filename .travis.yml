@@ -14,7 +14,12 @@ before_script: # init GUI for tests that can't run headless
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
-script: ./gradlew build javadoc
+script: |
+  if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; then
+    ./gradlew build javadoc sonarqube -Dsonar.host.url=https://sonarqube.com -Dsonar.login=$SONAR_TOKEN
+  else
+    ./gradlew build javadoc
+  fi
 
 # Release the plugin via GitHub releases when pushing a tag
 deploy:

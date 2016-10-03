@@ -1,6 +1,7 @@
 # Eclipse
 /.classpath
 /.project
+/.settings/org.sonarlint.*
 /bin/
 
 # IntelliJ idea

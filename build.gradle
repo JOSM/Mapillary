@@ -1,3 +1,7 @@
+plugins {
+  id "org.sonarqube" version "2.1"
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'findbugs'
 apply plugin: 'idea'

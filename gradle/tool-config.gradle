@@ -28,3 +28,13 @@ pmd {
   targetJdk 1.7 // 1.8 is not yet available (as of Gradle 3.0, see https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/quality/TargetJdk.html)
   ruleSetConfig = resources.text.fromFile('config/pmd/ruleset.xml')
 }
+
+sonarqube {
+  properties {
+    property 'sonar.projectKey', 'org.openstreetmap.josm.plugins:Mapillary'
+    property 'sonar.projectName', 'josm-mapillary-plugin'
+    property 'sonar.projectVersion', getVersionName()
+    property 'sonar.projectDescription', property('plugin.description')
+    property 'sonar.sources', ['src']
+  }
+}
