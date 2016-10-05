@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mainDir=`pwd`
-pagesDir=`realpath ../gh-pages`
+pagesDir=`readlink -f ../gh-pages`
 masterCommit=`git rev-parse master`
 
 if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; then
