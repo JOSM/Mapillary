@@ -235,8 +235,7 @@ public class MapillaryData {
    * @return
    */
   public synchronized Set<MapillarySequence> getSequences() {
-    Set<MapillarySequence> result = getImages().stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
-    return result;
+    return getImages().stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
   }
 
   /**

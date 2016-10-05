@@ -58,7 +58,7 @@ public final class UploadUtils {
   /**
    * Required keys for POST
    */
-  private static final String[] keys = {"key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type"};
+  private static final String[] KEYS = {"key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type"};
 
   /**
    * Mapillary upload URL
@@ -74,14 +74,13 @@ public final class UploadUtils {
     // Private constructor to avoid instantiation.
   }
 
-  private static final class SequenceUploadThread extends Thread {
+  private static final class SequenceUploadRunnable implements Runnable {
     private final Set<MapillaryAbstractImage> images;
     private final UUID uuid;
     private final boolean delete;
     private final ThreadPoolExecutor ex;
 
-    private SequenceUploadThread(Set<MapillaryAbstractImage> images,
-                                 boolean delete) {
+    public SequenceUploadRunnable(Set<MapillaryAbstractImage> images, boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
       this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(15));
@@ -93,9 +92,10 @@ public final class UploadUtils {
       PluginState.addImagesToUpload(this.images.size());
       MapillaryUtils.updateHelpText();
       for (MapillaryAbstractImage img : this.images) {
-        if (!(img instanceof MapillaryImportedImage))
+        if (!(img instanceof MapillaryImportedImage)) {
           throw new IllegalArgumentException("The sequence contains downloaded images.");
-        this.ex.execute(new SingleUploadThread((MapillaryImportedImage) img, this.uuid));
+        }
+        this.ex.execute(() -> upload((MapillaryImportedImage) img, this.uuid));
         while (this.ex.getQueue().remainingCapacity() == 0) {
           try {
             Thread.sleep(100);
@@ -111,25 +111,9 @@ public final class UploadUtils {
       } catch (InterruptedException e) {
         Main.error(e);
       }
-      if (this.delete)
-        MapillaryRecord.getInstance()
-                .addCommand(new CommandDelete(images));
-    }
-  }
-
-  private static final class SingleUploadThread extends Thread {
-
-    private final MapillaryImportedImage image;
-    private final UUID uuid;
-
-    private SingleUploadThread(MapillaryImportedImage image, UUID uuid) {
-      this.image = image;
-      this.uuid = uuid;
-    }
-
-    @Override
-    public void run() {
-      upload(this.image, this.uuid);
+      if (this.delete) {
+        MapillaryRecord.getInstance().addCommand(new CommandDelete(images));
+      }
     }
   }
 
@@ -145,8 +129,7 @@ public final class UploadUtils {
    *                             the output.
    * @throws ImageWriteException if there are errors writing the image in the file.
    */
-  static File updateFile(MapillaryImportedImage image)
-          throws ImageReadException, IOException, ImageWriteException {
+  static File updateFile(MapillaryImportedImage image) throws ImageReadException, IOException, ImageWriteException {
     TiffOutputSet outputSet = null;
     TiffOutputDirectory exifDirectory;
     TiffOutputDirectory gpsDirectory;
@@ -291,7 +274,7 @@ public final class UploadUtils {
 
     try (CloseableHttpClient httpClient = builder.build()) {
       MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-      for (String key : keys) {
+      for (String key : KEYS) {
         if (hash.get(key) == null)
           throw new IllegalArgumentException();
         entityBuilder.addPart(key, new StringBody(hash.get(key),
@@ -323,6 +306,6 @@ public final class UploadUtils {
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    Main.worker.submit(new SequenceUploadThread(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
+    Main.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
   }
 }
