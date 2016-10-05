@@ -192,7 +192,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
           (img instanceof MapillaryImage &amp;&amp;
             (!downloaded ||
 <span class="nc bnc" id="L194" title="All 4 branches missed.">              (onlySigns &amp;&amp; (((MapillaryImage) img).getSigns().isEmpty() || !checkSigns((MapillaryImage) img))) ||</span>
-<span class="nc bnc" id="L195" title="All 4 branches missed.">              (!user.getText().equals(&quot;&quot;) &amp;&amp; !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">              (!&quot;&quot;.equals(user.getText()) &amp;&amp; !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||</span>
 <span class="nc bnc" id="L196" title="All 2 branches missed.">          checkValidTime(img);</span>
 
 <span class="nc bnc" id="L198" title="All 2 branches missed.">    MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -&gt; img.setVisible(!p.test(img)));</span>

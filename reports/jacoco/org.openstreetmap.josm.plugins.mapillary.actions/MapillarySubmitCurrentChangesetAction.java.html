@@ -34,7 +34,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
-<span class="nc" id="L37">  private static final Log logger = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);</span>
+<span class="nc" id="L37">  private static final Log LOGGER = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);</span>
 
   /**
    * Main constructor.
@@ -105,7 +105,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       }
 
 <span class="nc bnc" id="L107" title="All 8 branches missed.">    } catch (IOException e) {</span>
-<span class="nc" id="L108">      logger.error(&quot;got exception&quot;, e);</span>
+<span class="nc" id="L108">      LOGGER.error(&quot;got exception&quot;, e);</span>
 <span class="nc" id="L109">      synchronized (MapillaryUtils.class) {</span>
 <span class="nc" id="L110">        Main.map.statusLine.setHelpText(&quot;Error submitting Mapillary changeset: &quot; + e.getMessage());</span>
 <span class="nc" id="L111">      }</span>

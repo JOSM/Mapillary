@@ -34,7 +34,7 @@ public final class TrafficoSign {
   /**
    * The signs that are already created from the JSON source file
    */
-<span class="fc" id="L37">  private static final Map&lt;String, Map&lt;String, TrafficoSign&gt;&gt; signs = new TreeMap&lt;&gt;();</span>
+<span class="fc" id="L37">  private static final Map&lt;String, Map&lt;String, TrafficoSign&gt;&gt; SIGNS = new TreeMap&lt;&gt;();</span>
 
   private final String country;
   private final String name;
@@ -93,31 +93,31 @@ public final class TrafficoSign {
    * @return the requested sign or &lt;code&gt;null&lt;/code&gt; if this sign is unavailable
    */
   public static TrafficoSign getSign(String country, String signName) {
-<span class="fc" id="L96">    synchronized (signs) {</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (!signs.containsKey(country)) {</span>
+<span class="fc" id="L96">    synchronized (SIGNS) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">      if (!SIGNS.containsKey(country)) {</span>
 <span class="fc" id="L98">        buildSignsFromJsonDefinition(country);</span>
       }
-<span class="fc bfc" id="L100" title="All 4 branches covered.">      if (signs.containsKey(country) &amp;&amp; signs.get(country).containsKey(signName)) {</span>
-<span class="fc" id="L101">        return signs.get(country).get(signName);</span>
+<span class="fc bfc" id="L100" title="All 4 branches covered.">      if (SIGNS.containsKey(country) &amp;&amp; SIGNS.get(country).containsKey(signName)) {</span>
+<span class="fc" id="L101">        return SIGNS.get(country).get(signName);</span>
       }
 <span class="fc" id="L103">      return null;</span>
 <span class="nc" id="L104">    }</span>
   }
 
   private static void addSign(TrafficoSign sign) {
-<span class="fc" id="L108">    synchronized (signs) {</span>
+<span class="fc" id="L108">    synchronized (SIGNS) {</span>
       // Create Map for country if not already exists
-<span class="fc bfc" id="L110" title="All 2 branches covered.">      if (!signs.containsKey(sign.getCountry())) {</span>
-<span class="fc" id="L111">        signs.put(sign.getCountry(), new TreeMap&lt;&gt;());</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">      if (!SIGNS.containsKey(sign.getCountry())) {</span>
+<span class="fc" id="L111">        SIGNS.put(sign.getCountry(), new TreeMap&lt;&gt;());</span>
       }
       // Don't overwrite existing sign with same country-name-combination
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">      if (signs.get(sign.getCountry()).containsKey(sign.getName())) {</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">      if (SIGNS.get(sign.getCountry()).containsKey(sign.getName())) {</span>
 <span class="nc" id="L115">        Main.warn(</span>
             &quot;The sign {0}--{1} was found multiple times in the traffico sign-definitions.&quot;,
 <span class="nc" id="L117">            sign.getName(), sign.getCountry()</span>
         );
       } else {
-<span class="fc" id="L120">        signs.get(sign.getCountry()).put(sign.getName(), sign);</span>
+<span class="fc" id="L120">        SIGNS.get(sign.getCountry()).put(sign.getName(), sign);</span>
       }
 <span class="pc" id="L122">    }</span>
 <span class="fc" id="L123">  }</span>
