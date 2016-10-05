@@ -192,7 +192,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
           (img instanceof MapillaryImage &&
             (!downloaded ||
               (onlySigns && (((MapillaryImage) img).getSigns().isEmpty() || !checkSigns((MapillaryImage) img))) ||
-              (!user.getText().equals("") && !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||
+              (!"".equals(user.getText()) && !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||
           checkValidTime(img);
 
     MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!p.test(img)));

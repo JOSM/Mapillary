@@ -18,19 +18,18 @@ import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
  */
 public class MapillarySign {
 
-  private final static String[] COUNTRIES = {"au", "br", "ca", "eu", "us"};
+  private static final String[] COUNTRIES = {"au", "br", "ca", "eu", "us"};
 
-  private static Map<String, HashMap<String, MapillarySign>> map;
+  private static Map<String, HashMap<String, MapillarySign>> map = new HashMap<>();
 
   private final String fullName;
   private final String category;
   private final String type;
   private final String country;
-  private String variant;
-  private TrafficoSign trafficoSign;
+  private final String variant;
+  private final TrafficoSign trafficoSign;
 
   static {
-    map = new HashMap<>();
     for (String country : COUNTRIES) {
       HashMap<String, MapillarySign> countryMap = new HashMap<>();
       try (
@@ -40,7 +39,7 @@ public class MapillarySign {
       ) {
         String line = "";
         while ((line = br.readLine()) != null) {
-          if (!line.equals("")) {
+          if (!"".equals(line)) {
             String[] pair = line.replace("'", "").split(":");
             countryMap.put(pair[0].trim(), new MapillarySign(pair[1].trim()));
           }
@@ -54,29 +53,11 @@ public class MapillarySign {
     }
   }
 
-  public static MapillarySign getSign(String name, String country) {
-    Map<String, MapillarySign> countryMap = map.get(country);
-    if (countryMap == null) {
-      throw new IllegalArgumentException("Country does not exist");
-    }
-    if (countryMap.containsKey(name)) {
-      return countryMap.get(name);
-    } else {
-      if (name.split("--").length >= 3) {
-        if (countryMap.containsValue(new MapillarySign(name))) {
-          Optional<MapillarySign> p = countryMap.values().stream().filter(sign -> sign.toString().equals(name)).findFirst();
-          assert p.isPresent();
-          return p.get();
-        } else {
-          return new MapillarySign(name);
-        }
-      } else {
-        Main.warn("Sign '" + name + "' does not exist in the plugin database. Please contact the developer to add it.");
-        return null;
-      }
-    }
-  }
-
+  /**
+   * @param fullName the name of the sign
+   * @throws NullPointerException if the name does not match the regex <code>.*--.*--.*</code> or if it is
+   *   <code>null</code>.
+   */
   public MapillarySign(String fullName) {
     this.fullName = fullName;
     String[] parts = fullName.split("--");
@@ -85,8 +66,31 @@ public class MapillarySign {
     country = parts[2];
     if (parts.length == 4) {
       variant = parts[3];
+    } else {
+      variant = null;
     }
     trafficoSign = TrafficoSign.getSign(country, type);
+  }
+
+  public static MapillarySign getSign(String name, String country) {
+    Map<String, MapillarySign> countryMap = map.get(country);
+    if (countryMap == null) {
+      throw new IllegalArgumentException("Country does not exist");
+    }
+    if (countryMap.containsKey(name)) {
+      return countryMap.get(name);
+    } else  if (name.split("--").length >= 3) {
+      if (countryMap.containsValue(new MapillarySign(name))) {
+        Optional<MapillarySign> p = countryMap.values().stream().filter(sign -> sign.toString().equals(name)).findFirst();
+        assert p.isPresent();
+        return p.get();
+      } else {
+        return new MapillarySign(name);
+      }
+    } else {
+      Main.warn("Sign '{0}' does not exist in the plugin database. Please contact the developer to add it.", name);
+      return null;
+    }
   }
 
   public String getFullName() {
@@ -116,17 +120,20 @@ public class MapillarySign {
 
   @Override
   public int hashCode() {
-    return fullName.hashCode();
+    return 31 + ((fullName == null) ? 0 : fullName.hashCode());
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    MapillarySign that = (MapillarySign) o;
-
-    return fullName.equals(that.fullName);
-
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (fullName == null) {
+      return ((MapillarySign) o).fullName == null;
+    }
+    return fullName.equals(((MapillarySign) o).fullName);
   }
 }

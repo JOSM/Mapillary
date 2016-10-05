@@ -75,11 +75,6 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testBrowseUploadImageURL() throws MalformedURLException {
-    assertEquals(new URL("https://www.mapillary.com/map/upload/im"), MapillaryURL.browseUploadImageURL());
-  }
-
-  @Test
   public void testConnectURL() {
     assertUrlEquals(
         MapillaryURL.connectURL("http://redirect-host/ä"),

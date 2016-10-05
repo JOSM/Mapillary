@@ -34,7 +34,7 @@ public final class TrafficoSign {
   /**
    * The signs that are already created from the JSON source file
    */
-  private static final Map<String, Map<String, TrafficoSign>> signs = new TreeMap<>();
+  private static final Map<String, Map<String, TrafficoSign>> SIGNS = new TreeMap<>();
 
   private final String country;
   private final String name;
@@ -93,31 +93,31 @@ public final class TrafficoSign {
    * @return the requested sign or <code>null</code> if this sign is unavailable
    */
   public static TrafficoSign getSign(String country, String signName) {
-    synchronized (signs) {
-      if (!signs.containsKey(country)) {
+    synchronized (SIGNS) {
+      if (!SIGNS.containsKey(country)) {
         buildSignsFromJsonDefinition(country);
       }
-      if (signs.containsKey(country) && signs.get(country).containsKey(signName)) {
-        return signs.get(country).get(signName);
+      if (SIGNS.containsKey(country) && SIGNS.get(country).containsKey(signName)) {
+        return SIGNS.get(country).get(signName);
       }
       return null;
     }
   }
 
   private static void addSign(TrafficoSign sign) {
-    synchronized (signs) {
+    synchronized (SIGNS) {
       // Create Map for country if not already exists
-      if (!signs.containsKey(sign.getCountry())) {
-        signs.put(sign.getCountry(), new TreeMap<>());
+      if (!SIGNS.containsKey(sign.getCountry())) {
+        SIGNS.put(sign.getCountry(), new TreeMap<>());
       }
       // Don't overwrite existing sign with same country-name-combination
-      if (signs.get(sign.getCountry()).containsKey(sign.getName())) {
+      if (SIGNS.get(sign.getCountry()).containsKey(sign.getName())) {
         Main.warn(
             "The sign {0}--{1} was found multiple times in the traffico sign-definitions.",
             sign.getName(), sign.getCountry()
         );
       } else {
-        signs.get(sign.getCountry()).put(sign.getName(), sign);
+        SIGNS.get(sign.getCountry()).put(sign.getName(), sign);
       }
     }
   }

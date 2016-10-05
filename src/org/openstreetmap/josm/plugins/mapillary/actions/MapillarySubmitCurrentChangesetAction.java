@@ -34,7 +34,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
-  private static final Log logger = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);
+  private static final Log LOGGER = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);
 
   /**
    * Main constructor.
@@ -105,7 +105,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       }
 
     } catch (IOException e) {
-      logger.error("got exception", e);
+      LOGGER.error("got exception", e);
       synchronized (MapillaryUtils.class) {
         Main.map.statusLine.setHelpText("Error submitting Mapillary changeset: " + e.getMessage());
       }
