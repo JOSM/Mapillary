@@ -17,7 +17,7 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; 
   cd "$pagesDir"
   git rm -r "*"
   mkdir -p reports/ docs/
-  cp -R "$mainDir/gh-pages/" .
+  cp -TR $mainDir/gh-pages .
   cp -R "$mainDir/build/docs/javadoc/" docs/javadoc/
   cp -R "$mainDir/build/reports/tests/" reports/junit/
   cp -R "$mainDir/build/reports/jacoco/" reports/jacoco/
