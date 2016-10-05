@@ -54,13 +54,6 @@ public final class MapillaryURL {
   }
 
   /**
-   * @return the URL where the user can view all uploaded images that are not yet published
-   */
-  public static URL browseUploadImageURL() {
-    return string2URL(BASE_WEBSITE_URL, "map/upload/im");
-  }
-
-  /**
    * Gives you the URL which the user should visit to initiate the OAuth authentication process
    * @param redirectURI the URI to which the user will be redirected when the authentication is finished
    * @return the URL that the user should visit to start the OAuth authentication
