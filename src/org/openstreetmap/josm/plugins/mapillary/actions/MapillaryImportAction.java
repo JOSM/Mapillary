@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -31,6 +32,10 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryImportAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228081806L;
+
+  private final StringProperty startDirProp =
+    new StringProperty("mapillary.start-directory", System.getProperty("user.home"));
+
 
   /**
    * Main constructor.
@@ -51,9 +56,7 @@ public class MapillaryImportAction extends JosmAction {
   @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser chooser = new JFileChooser();
-    File startDirectory = new File(Main.pref.get("mapillary.start-directory",
-        System.getProperty("user.home")));
-    chooser.setCurrentDirectory(startDirectory);
+    chooser.setCurrentDirectory(new File(startDirProp.get()));
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
@@ -62,7 +65,6 @@ public class MapillaryImportAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
       for (File file : chooser.getSelectedFiles()) {
-        Main.pref.put("mapillary.start-directory", file.getParent());
         try {
           images.addAll(ImageUtil.readImagesFrom(
               file,
@@ -71,6 +73,12 @@ public class MapillaryImportAction extends JosmAction {
         } catch (IOException e) {
           Main.error("Could not read image(s) from "+file.getAbsolutePath());
         }
+      }
+      if (chooser.getSelectedFiles().length >= 1) {
+        final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];
+        startDirProp.put(
+          lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()
+        );
       }
       MapillaryRecord.getInstance().addCommand(new CommandImport(images));
       MapillaryUtils.showAllPictures();

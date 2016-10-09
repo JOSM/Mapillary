@@ -15,6 +15,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -142,7 +143,7 @@ public class SelectMode extends AbstractMode {
             && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
-    if (!Main.pref.getBoolean("mapillary.hover-enabled", true)) {
+    if (!new BooleanProperty("mapillary.hover-enabled", true).get()) {
       return;
     }
 

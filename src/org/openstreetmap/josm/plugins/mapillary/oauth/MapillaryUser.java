@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
@@ -80,7 +81,7 @@ public final class MapillaryUser {
     imagesPolicy = null;
     imagesHash = null;
     isTokenValid = false;
-    Main.pref.put("mapillary.access-token", null);
+    new StringProperty("mapillary.access-token", null).put(null);
   }
 
   public static synchronized void setTokenValid(boolean value) {
