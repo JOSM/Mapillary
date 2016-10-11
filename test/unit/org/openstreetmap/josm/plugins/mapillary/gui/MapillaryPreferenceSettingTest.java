@@ -4,9 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateField;
 
 import java.awt.GraphicsEnvironment;
-import java.lang.reflect.Field;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.junit.Test;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
@@ -67,19 +66,6 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     assertEquals(I18n.tr("You are logged in as ''{0}''.", username), ((JLabel) getPrivateField(setting, "loginLabel")).getText());
     assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
     assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
-  }
-
-  /**
-   * Helper method for obtaining the value of a private field
-   * @param object the object of which you want the private field
-   * @param name the name of the private field
-   * @return the current value that field has
-   */
-  private static Object getPrivateField(MapillaryPreferenceSetting object, String name)
-      throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    Field field = object.getClass().getDeclaredField(name);
-    field.setAccessible(true);
-    return field.get(object);
   }
 
   @SuppressWarnings("unchecked")
