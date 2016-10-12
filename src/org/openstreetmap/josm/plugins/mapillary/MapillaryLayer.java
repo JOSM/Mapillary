@@ -115,7 +115,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    if (Main.main != null && Main.map.mapView != null) {
+    if (Main.main != null && Main.isDisplayingMapView()) {
       setMode(new SelectMode());
       Main.getLayerManager().addLayer(this);
       Main.getLayerManager().addActiveLayerChangeListener(this);
