@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.1" timestamp="2016-10-05T22:39:11.165">
+<pmd version="5.5.1" timestamp="2016-10-12T21:11:17.837">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
-<violation beginline="2" endline="407" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#GodClass" priority="3">
+<violation beginline="2" endline="408" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=61, ATFD=15, TCC=0.005263157894736842)
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer.java">
-<violation beginline="2" endline="612" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="613" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
-<violation beginline="2" endline="612" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#GodClass" priority="3">
+<violation beginline="2" endline="613" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=99, ATFD=99, TCC=0.012698412698412698)
 </violation>
-<violation beginline="575" endline="576" begincolumn="53" endcolumn="3" rule="UncommentedEmptyMethodBody" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryLayer" method="visitBoundingBox" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#UncommentedEmptyMethodBody" priority="3">
+<violation beginline="576" endline="577" begincolumn="53" endcolumn="3" rule="UncommentedEmptyMethodBody" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryLayer" method="visitBoundingBox" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#UncommentedEmptyMethodBody" priority="3">
 Document empty method body
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryPlugin.java">
-<violation beginline="2" endline="282" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="280" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
-<violation beginline="57" endline="57" begincolumn="63" endcolumn="67" rule="AssignmentToNonFinalStatic" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="cache" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#AssignmentToNonFinalStatic" priority="3">
+<violation beginline="58" endline="58" begincolumn="63" endcolumn="67" rule="AssignmentToNonFinalStatic" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="cache" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#AssignmentToNonFinalStatic" priority="3">
 Possible unsafe assignment to a non-final static field in a constructor.
 </violation>
-<violation beginline="59" endline="59" begincolumn="48" endcolumn="61" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="60" endline="60" begincolumn="48" endcolumn="61" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'downloadAction' is not all capitals.
 </violation>
-<violation beginline="60" endline="60" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="exportAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="61" endline="61" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="exportAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'exportAction' is not all capitals.
 </violation>
-<violation beginline="62" endline="62" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="63" endline="63" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'importAction' is not all capitals.
 </violation>
-<violation beginline="64" endline="64" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="zoomAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="65" endline="65" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="zoomAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'zoomAction' is not all capitals.
 </violation>
-<violation beginline="65" endline="65" begincolumn="52" endcolumn="69" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadViewAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="66" endline="66" begincolumn="52" endcolumn="69" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadViewAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'downloadViewAction' is not all capitals.
 </violation>
-<violation beginline="66" endline="66" begincolumn="58" endcolumn="81" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importIntoSequenceAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="67" endline="67" begincolumn="58" endcolumn="81" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importIntoSequenceAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'importIntoSequenceAction' is not all capitals.
 </violation>
-<violation beginline="67" endline="67" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="joinAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="68" endline="68" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="joinAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'joinAction' is not all capitals.
 </violation>
-<violation beginline="69" endline="69" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="walkAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="70" endline="70" begincolumn="44" endcolumn="53" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="walkAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'walkAction' is not all capitals.
 </violation>
-<violation beginline="71" endline="71" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="uploadAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="72" endline="72" begincolumn="46" endcolumn="57" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="uploadAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'uploadAction' is not all capitals.
 </violation>
-<violation beginline="74" endline="74" begincolumn="34" endcolumn="45" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="75" endline="75" begincolumn="34" endcolumn="45" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'downloadMenu' is not all capitals.
 </violation>
-<violation beginline="76" endline="76" begincolumn="35" endcolumn="44" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="exportMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="77" endline="77" begincolumn="35" endcolumn="44" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="exportMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'exportMenu' is not all capitals.
 </violation>
-<violation beginline="78" endline="78" begincolumn="34" endcolumn="43" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="79" endline="79" begincolumn="34" endcolumn="43" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'importMenu' is not all capitals.
 </violation>
-<violation beginline="80" endline="80" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="zoomMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="81" endline="81" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="zoomMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'zoomMenu' is not all capitals.
 </violation>
-<violation beginline="82" endline="82" begincolumn="34" endcolumn="49" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadViewMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="83" endline="83" begincolumn="34" endcolumn="49" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="downloadViewMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'downloadViewMenu' is not all capitals.
 </violation>
-<violation beginline="84" endline="84" begincolumn="34" endcolumn="55" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importIntoSequenceMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="85" endline="85" begincolumn="34" endcolumn="55" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="importIntoSequenceMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'importIntoSequenceMenu' is not all capitals.
 </violation>
-<violation beginline="86" endline="86" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="joinMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="87" endline="87" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="joinMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'joinMenu' is not all capitals.
 </violation>
-<violation beginline="88" endline="88" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="walkMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="89" endline="89" begincolumn="34" endcolumn="41" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="walkMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'walkMenu' is not all capitals.
 </violation>
-<violation beginline="90" endline="90" begincolumn="34" endcolumn="43" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="uploadMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+<violation beginline="91" endline="91" begincolumn="34" endcolumn="43" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="uploadMenu" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'uploadMenu' is not all capitals.
 </violation>
 </file>
@@ -164,7 +164,7 @@ The String literal &quot; — &quot; appears 4 times in this file; the first occ
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java">
-<violation beginline="2" endline="225" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="223" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
 </file>
@@ -200,7 +200,7 @@ Field moved has the same name as a method
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java">
-<violation beginline="185" endline="186" begincolumn="59" endcolumn="3" rule="UncommentedEmptyMethodBody" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.mode" class="SelectMode" method="paint" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#UncommentedEmptyMethodBody" priority="3">
+<violation beginline="186" endline="187" begincolumn="59" endcolumn="3" rule="UncommentedEmptyMethodBody" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.mode" class="SelectMode" method="paint" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/design.html#UncommentedEmptyMethodBody" priority="3">
 Document empty method body
 </violation>
 </file>

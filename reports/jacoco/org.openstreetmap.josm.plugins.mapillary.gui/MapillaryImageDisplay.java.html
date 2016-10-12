@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.preferences.IntegerProperty;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -35,9 +35,9 @@ public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
 
-<span class="fc" id="L38">  private static final int DRAG_BUTTON = Main.pref.getInteger(&quot;mapillary.picture-drag-button&quot;, 3);</span>
-<span class="fc" id="L39">  private static final int OPTION_BUTTON = Main.pref.getInteger(&quot;mapillary.picture-option-button&quot;, 2);</span>
-<span class="fc" id="L40">  private static final int ZOOM_BUTTON = Main.pref.getInteger(&quot;mapillary.picture-zoom-button&quot;, 1);</span>
+<span class="fc" id="L38">  private static final int DRAG_BUTTON = new IntegerProperty(&quot;mapillary.picture-drag-button&quot;, 3).get();</span>
+<span class="fc" id="L39">  private static final int OPTION_BUTTON = new IntegerProperty(&quot;mapillary.picture-option-button&quot;, 2).get();</span>
+<span class="fc" id="L40">  private static final int ZOOM_BUTTON = new IntegerProperty(&quot;mapillary.picture-zoom-button&quot;, 1).get();</span>
 
   /** The image currently displayed */
   private volatile BufferedImage image;

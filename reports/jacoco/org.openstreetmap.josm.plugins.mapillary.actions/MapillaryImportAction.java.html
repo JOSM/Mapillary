@@ -7,13 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -29,52 +31,96 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  */
 public class MapillaryImportAction extends JosmAction {
+  private static final long serialVersionUID = 4086660991261961490L;
+<span class="fc" id="L35">  private final StringProperty startDirProp =</span>
+<span class="fc" id="L36">    new StringProperty(&quot;mapillary.start-directory&quot;, System.getProperty(&quot;user.home&quot;));</span>
 
-  private static final long serialVersionUID = 4995924098228081806L;
+  public MapillaryImportAction() {
+<span class="fc" id="L39">    this(</span>
+<span class="fc" id="L40">      tr(&quot;Import pictures&quot;),</span>
+<span class="fc" id="L41">      tr(&quot;Import local pictures&quot;),</span>
+      &quot;Import Mapillary&quot;,
+<span class="fc" id="L43">      tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+      &quot;mapillaryImport&quot;
+    );
+<span class="fc" id="L46">  }</span>
 
   /**
-   * Main constructor.
+   * Convenience constructor, which calls the super-constructor and disables the action.
+   * @param name the name of the {@link JosmAction}, as displayed in the menu
+   * @param tooltip a longer description of the {@link JosmAction}, that is displayed as tooltip
+   * @param shortcutId an ID for the {@link Shortcut} as described in
+   *   {@link Shortcut#registerShortcut(String, String, int, int)} (the passage about the second parameter)
+   * @param shortcutName a name for the shortcut (displayed to the user, so use a self-explanatory and translated
+   *   {@link String}). See the description of the second parameter in
+   *   {@link Shortcut#registerShortcut(String, String, int, int)}
+   * @param toolbarId identifier for the toolbar preferences
+   * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
+   * @see Shortcut#registerShortcut(String, String, int, int)
    */
-  public MapillaryImportAction() {
-<span class="fc" id="L39">    super(</span>
-<span class="fc" id="L40">        tr(&quot;Import pictures&quot;),</span>
-<span class="fc" id="L41">        MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
-<span class="fc" id="L42">        tr(&quot;Import local pictures&quot;),</span>
-<span class="fc" id="L43">        Shortcut.registerShortcut(&quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;),</span>
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-        false,
-        &quot;mapillaryImport&quot;,
-        false);
-<span class="fc" id="L48">    this.setEnabled(false);</span>
-<span class="fc" id="L49">  }</span>
+  protected MapillaryImportAction(
+    String name, String tooltip, String shortcutId, String shortcutName, String toolbarId
+  ) {
+<span class="fc" id="L64">    super(</span>
+      name,
+<span class="fc" id="L66">      MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+      tooltip,
+<span class="fc" id="L68">      Shortcut.registerShortcut(shortcutId, shortcutName, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),</span>
+      false,
+      toolbarId,
+      false
+    );
+<span class="fc" id="L73">    setEnabled(false);</span>
+<span class="fc" id="L74">  }</span>
+
+  /**
+   * Shows the {@link JFileChooser} for selecting images and loads the chosen images into a {@link List}.
+   * @return A {@link List} containing the loaded {@link MapillaryAbstractImage}s (might be empty but never null).
+   */
+  public List&lt;MapillaryAbstractImage&gt; chooseImages() {
+<span class="nc" id="L81">    final JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L82">    chooser.setCurrentDirectory(new File(startDirProp.get()));</span>
+<span class="nc" id="L83">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L84">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L85">    chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L86">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L87">    chooser.setMultiSelectionEnabled(true);</span>
+
+<span class="nc" id="L89">    final List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
+        try {
+<span class="nc" id="L94">          images.addAll(ImageUtil.readImagesFrom(</span>
+              file,
+<span class="nc" id="L96">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
+          ));
+<span class="nc" id="L98">        } catch (IOException e) {</span>
+<span class="nc" id="L99">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
+<span class="nc" id="L100">        }</span>
+      }
+<span class="nc bnc" id="L102" title="All 2 branches missed.">      if (chooser.getSelectedFiles().length &gt;= 1) {</span>
+<span class="nc" id="L103">        final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];</span>
+<span class="nc" id="L104">        startDirProp.put(</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">          lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()</span>
+        );
+      }
+    }
+<span class="nc" id="L109">    return images;</span>
+  }
+
+  /**
+   * Records in the history, that the given images were loaded
+   * @param addedImages the images that have been loaded
+   */
+  public void recordChanges(List&lt;MapillaryAbstractImage&gt; addedImages) {
+<span class="nc" id="L117">    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(addedImages)));</span>
+<span class="nc" id="L118">    MapillaryUtils.showAllPictures();</span>
+<span class="nc" id="L119">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent event) {
-<span class="nc" id="L53">    JFileChooser chooser = new JFileChooser();</span>
-<span class="nc" id="L54">    File startDirectory = new File(Main.pref.get(&quot;mapillary.start-directory&quot;,</span>
-<span class="nc" id="L55">        System.getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L56">    chooser.setCurrentDirectory(startDirectory);</span>
-<span class="nc" id="L57">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
-<span class="nc" id="L58">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
-<span class="nc" id="L59">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L60">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
-<span class="nc" id="L61">    chooser.setMultiSelectionEnabled(true);</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc" id="L63">      Set&lt;MapillaryAbstractImage&gt; images = new ConcurrentSkipListSet&lt;&gt;();</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
-<span class="nc" id="L65">        Main.pref.put(&quot;mapillary.start-directory&quot;, file.getParent());</span>
-        try {
-<span class="nc" id="L67">          images.addAll(ImageUtil.readImagesFrom(</span>
-              file,
-<span class="nc" id="L69">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
-          ));
-<span class="nc" id="L71">        } catch (IOException e) {</span>
-<span class="nc" id="L72">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
-<span class="nc" id="L73">        }</span>
-      }
-<span class="nc" id="L75">      MapillaryRecord.getInstance().addCommand(new CommandImport(images));</span>
-<span class="nc" id="L76">      MapillaryUtils.showAllPictures();</span>
-    }
-<span class="nc" id="L78">  }</span>
+<span class="nc" id="L123">    recordChanges(chooseImages());</span>
+<span class="nc" id="L124">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

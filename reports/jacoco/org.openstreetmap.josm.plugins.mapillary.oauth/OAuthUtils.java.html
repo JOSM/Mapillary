@@ -10,7 +10,7 @@ import java.net.URL;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 
 /**
  * A set of utilities related to OAuth.
@@ -19,10 +19,11 @@ import org.openstreetmap.josm.Main;
  *
  */
 public final class OAuthUtils {
+<span class="fc" id="L22">  public static final StringProperty PROP_ACCESS_TOKEN = new StringProperty(&quot;mapillary.access-token&quot;, null);</span>
 
-<span class="nc" id="L23">  private OAuthUtils() {</span>
+<span class="nc" id="L24">  private OAuthUtils() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L25">  }</span>
+<span class="nc" id="L26">  }</span>
 
   /**
    * Returns a JsonObject containing the result of making a GET request with the
@@ -35,15 +36,15 @@ public final class OAuthUtils {
    *           Errors relating to the connection.
    */
   public static JsonObject getWithHeader(URL url) throws IOException {
-<span class="fc" id="L38">    HttpURLConnection con = (HttpURLConnection) url.openConnection();</span>
-<span class="fc" id="L39">    con.setRequestMethod(&quot;GET&quot;);</span>
-<span class="fc" id="L40">    con.setRequestProperty(&quot;Authorization&quot;, &quot;Bearer &quot; + Main.pref.get(&quot;mapillary.access-token&quot;));</span>
+<span class="fc" id="L39">    HttpURLConnection con = (HttpURLConnection) url.openConnection();</span>
+<span class="fc" id="L40">    con.setRequestMethod(&quot;GET&quot;);</span>
+<span class="fc" id="L41">    con.setRequestProperty(&quot;Authorization&quot;, &quot;Bearer &quot; + PROP_ACCESS_TOKEN.get());</span>
 
-<span class="nc" id="L42">    try (</span>
-<span class="nc" id="L43">      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;))</span>
+<span class="nc" id="L43">    try (</span>
+<span class="nc" id="L44">      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;))</span>
     ) {
-<span class="nc" id="L45">      return Json.createReader(in).readObject();</span>
-<span class="nc bnc" id="L46" title="All 8 branches missed.">    }</span>
+<span class="nc" id="L46">      return Json.createReader(in).readObject();</span>
+<span class="nc bnc" id="L47" title="All 8 branches missed.">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

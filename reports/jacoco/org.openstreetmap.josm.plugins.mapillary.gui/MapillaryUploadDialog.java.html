@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
@@ -47,7 +47,7 @@ public class MapillaryUploadDialog extends JPanel {
 <span class="nc" id="L47">      add(this.sequence);</span>
 <span class="nc" id="L48">      group.setSelected(this.sequence.getModel(), true);</span>
 <span class="nc" id="L49">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
-<span class="nc" id="L50">      this.delete.setSelected(Main.pref.getBoolean(&quot;mapillary.delete-after-upload&quot;, true));</span>
+<span class="nc" id="L50">      this.delete.setSelected(new BooleanProperty(&quot;mapillary.delete-after-upload&quot;, true).get());</span>
 <span class="nc" id="L51">      add(this.delete);</span>
     }
 <span class="nc" id="L53">  }</span>

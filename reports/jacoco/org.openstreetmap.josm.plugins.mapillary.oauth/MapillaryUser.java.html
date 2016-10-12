@@ -80,7 +80,7 @@ public final class MapillaryUser {
 <span class="fc" id="L80">    imagesPolicy = null;</span>
 <span class="fc" id="L81">    imagesHash = null;</span>
 <span class="fc" id="L82">    isTokenValid = false;</span>
-<span class="fc" id="L83">    Main.pref.put(&quot;mapillary.access-token&quot;, null);</span>
+<span class="fc" id="L83">    OAuthUtils.PROP_ACCESS_TOKEN.put(OAuthUtils.PROP_ACCESS_TOKEN.getDefaultValue());</span>
 <span class="fc" id="L84">  }</span>
 
   public static synchronized void setTokenValid(boolean value) {
