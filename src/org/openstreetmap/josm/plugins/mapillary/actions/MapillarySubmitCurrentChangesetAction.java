@@ -19,11 +19,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
@@ -58,7 +58,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    String token = new StringProperty("mapillary.access-token", null).get();
+    String token = OAuthUtils.PROP_ACCESS_TOKEN.get();
     if (token == null || token.trim().isEmpty()) {
       PluginState.notLoggedInToMapillaryDialog();
       return;

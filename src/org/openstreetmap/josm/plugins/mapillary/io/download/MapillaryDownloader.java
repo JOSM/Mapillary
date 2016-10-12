@@ -31,6 +31,9 @@ public final class MapillaryDownloader {
     OSM_AREA("osmArea", I18n.tr("areas with downloaded OSM-data")),
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
 
+    public static final StringProperty PROPERTY =
+      new StringProperty("mapillary.download-mode", getDefault().getPrefId());
+
     private String prefId;
     private String label;
 
@@ -116,10 +119,10 @@ public final class MapillaryDownloader {
    *
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
-  public static MapillaryDownloader.DOWNLOAD_MODE getMode() {
+  public static DOWNLOAD_MODE getMode() {
     return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
       ? DOWNLOAD_MODE.VISIBLE_AREA
-      : DOWNLOAD_MODE.fromPrefId(new StringProperty("mapillary.download-mode", DOWNLOAD_MODE.getDefault().getPrefId()).get());
+      : DOWNLOAD_MODE.fromPrefId(DOWNLOAD_MODE.PROPERTY.get());
   }
 
   private static void run(Runnable t) {

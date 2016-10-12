@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -11,8 +13,6 @@ import javax.swing.JFrame;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link MapillaryImageDisplay}
