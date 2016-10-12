@@ -6,8 +6,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
  * Abstract superclass for all image objects. At the moment there are just 2,
@@ -88,13 +89,13 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    */
   public String getDate() {
     final StringBuilder format = new StringBuilder(26);
-    if (Main.pref.getBoolean("iso.dates")) {
+    if (DateUtils.PROP_ISO_DATES.get()) {
       format.append("yyyy-MM-dd");
     } else {
       format.append("dd/MM/yyyy");
     }
-    if (Main.pref.getBoolean("mapillary.display-hour", true)) {
-      if (Main.pref.getBoolean("mapillary.format-24")) {
+    if (MapillaryPreferenceSetting.PROP_DISPLAY_HOUR.get()) {
+      if (MapillaryPreferenceSetting.PROP_TIME_FORMAT_24.get()) {
         format.append(" - HH:mm:ss (z)");
       } else {
         format.append(" - h:mm:ss a (z)");

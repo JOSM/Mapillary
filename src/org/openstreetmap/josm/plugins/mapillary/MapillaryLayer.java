@@ -38,6 +38,7 @@ import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
 import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.preferences.ColorProperty;
+import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -71,8 +72,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   DataSetListener, ActiveLayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-  public static final int SEQUENCE_MAX_JUMP_DISTANCE = Main.pref.getInteger(
-    "mapillary.sequence-max-jump-distance", 100);
+  public static final int SEQUENCE_MAX_JUMP_DISTANCE =
+    new IntegerProperty("mapillary.sequence-max-jump-distance", 100).get();
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -114,7 +115,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    if (Main.main != null && Main.map.mapView != null) {
+    if (Main.main != null && Main.isDisplayingMapView()) {
       setMode(new SelectMode());
       Main.getLayerManager().addLayer(this);
       Main.getLayerManager().addActiveLayerChangeListener(this);

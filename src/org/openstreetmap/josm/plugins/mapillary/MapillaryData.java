@@ -12,6 +12,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -262,7 +263,7 @@ public class MapillaryData {
    *                               belong to a sequence.
    */
   public void selectNext() {
-    selectNext(Main.pref.getBoolean("mapillary.move-to-picture", true));
+    selectNext(MapillaryPreferenceSetting.PROP_MOVE_TO_IMG.get());
   }
 
   /**
@@ -298,7 +299,7 @@ public class MapillaryData {
    *                               belong to a sequence.
    */
   public void selectPrevious() {
-    selectPrevious(Main.pref.getBoolean("mapillary.move-to-picture", true));
+    selectPrevious(MapillaryPreferenceSetting.PROP_MOVE_TO_IMG.get());
   }
 
   /**

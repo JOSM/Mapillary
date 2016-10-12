@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,6 +25,19 @@ public final class TestUtil {
 
   private TestUtil() {
     // Prevent instantiation
+  }
+
+  /**
+   * Helper method for obtaining the value of a private field
+   * @param object the object of which you want the private field
+   * @param name the name of the private field
+   * @return the current value that field has
+   */
+  public static Object getPrivateField(Object object, String name)
+      throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    Field field = object.getClass().getDeclaredField(name);
+    field.setAccessible(true);
+    return field.get(object);
   }
 
   /**
@@ -52,7 +66,7 @@ public final class TestUtil {
   /**
    * This method tests utility classes for common coding standards (exactly one constructor that's private,
    * only static methods, …) and fails the current test if one of those standards is not met.
-   * This is inspired by http://stackoverflow.com/questions/4520216 .
+   * This is inspired by https://stackoverflow.com/a/10872497 .
    * @param c the class under test
    */
   public static void testUtilityClass(final Class<?> c) {

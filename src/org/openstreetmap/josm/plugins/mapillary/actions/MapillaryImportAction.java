@@ -7,13 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.JFileChooser;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -29,40 +31,65 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  */
 public class MapillaryImportAction extends JosmAction {
+  private static final long serialVersionUID = 4086660991261961490L;
+  private final StringProperty startDirProp =
+    new StringProperty("mapillary.start-directory", System.getProperty("user.home"));
 
-  private static final long serialVersionUID = 4995924098228081806L;
-
-  /**
-   * Main constructor.
-   */
   public MapillaryImportAction() {
-    super(
-        tr("Import pictures"),
-        MapillaryPlugin.getProvider("icon24.png"),
-        tr("Import local pictures"),
-        Shortcut.registerShortcut("Import Mapillary", tr("Import pictures into Mapillary layer"),
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-        false,
-        "mapillaryImport",
-        false);
-    this.setEnabled(false);
+    this(
+      tr("Import pictures"),
+      tr("Import local pictures"),
+      "Import Mapillary",
+      tr("Import pictures into Mapillary layer"),
+      "mapillaryImport"
+    );
   }
 
-  @Override
-  public void actionPerformed(ActionEvent event) {
-    JFileChooser chooser = new JFileChooser();
-    File startDirectory = new File(Main.pref.get("mapillary.start-directory",
-        System.getProperty("user.home")));
-    chooser.setCurrentDirectory(startDirectory);
+  /**
+   * Convenience constructor, which calls the super-constructor and disables the action.
+   * @param name the name of the {@link JosmAction}, as displayed in the menu
+   * @param tooltip a longer description of the {@link JosmAction}, that is displayed as tooltip
+   * @param shortcutId an ID for the {@link Shortcut} as described in
+   *   {@link Shortcut#registerShortcut(String, String, int, int)} (the passage about the second parameter)
+   * @param shortcutName a name for the shortcut (displayed to the user, so use a self-explanatory and translated
+   *   {@link String}). See the description of the second parameter in
+   *   {@link Shortcut#registerShortcut(String, String, int, int)}
+   * @param toolbarId identifier for the toolbar preferences
+   * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
+   * @see Shortcut#registerShortcut(String, String, int, int)
+   */
+  protected MapillaryImportAction(
+    String name, String tooltip, String shortcutId, String shortcutName, String toolbarId
+  ) {
+    super(
+      name,
+      MapillaryPlugin.getProvider("icon24.png"),
+      tooltip,
+      Shortcut.registerShortcut(shortcutId, shortcutName, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      false,
+      toolbarId,
+      false
+    );
+    setEnabled(false);
+  }
+
+  /**
+   * Shows the {@link JFileChooser} for selecting images and loads the chosen images into a {@link List}.
+   * @return A {@link List} containing the loaded {@link MapillaryAbstractImage}s (might be empty but never null).
+   */
+  public List<MapillaryAbstractImage> chooseImages() {
+    final JFileChooser chooser = new JFileChooser();
+    chooser.setCurrentDirectory(new File(startDirProp.get()));
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
     chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);
     chooser.setMultiSelectionEnabled(true);
+
+    final List<MapillaryAbstractImage> images = new ArrayList<>();
+
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
-      Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
       for (File file : chooser.getSelectedFiles()) {
-        Main.pref.put("mapillary.start-directory", file.getParent());
         try {
           images.addAll(ImageUtil.readImagesFrom(
               file,
@@ -72,8 +99,27 @@ public class MapillaryImportAction extends JosmAction {
           Main.error("Could not read image(s) from "+file.getAbsolutePath());
         }
       }
-      MapillaryRecord.getInstance().addCommand(new CommandImport(images));
-      MapillaryUtils.showAllPictures();
+      if (chooser.getSelectedFiles().length >= 1) {
+        final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];
+        startDirProp.put(
+          lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()
+        );
+      }
     }
+    return images;
+  }
+
+  /**
+   * Records in the history, that the given images were loaded
+   * @param addedImages the images that have been loaded
+   */
+  public void recordChanges(List<MapillaryAbstractImage> addedImages) {
+    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet<>(addedImages)));
+    MapillaryUtils.showAllPictures();
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    recordChanges(chooseImages());
   }
 }

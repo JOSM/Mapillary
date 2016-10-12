@@ -9,13 +9,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.jcs.access.CacheAccess;
-import org.junit.Before;
 import org.junit.Test;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
 
 public class MapillaryCacheTest extends AbstractTest {

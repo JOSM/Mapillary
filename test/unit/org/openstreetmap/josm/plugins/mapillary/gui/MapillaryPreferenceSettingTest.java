@@ -4,9 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateField;
 
 import java.awt.GraphicsEnvironment;
-import java.lang.reflect.Field;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,7 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.junit.Test;
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
@@ -67,34 +68,24 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
   }
 
-  /**
-   * Helper method for obtaining the value of a private field
-   * @param object the object of which you want the private field
-   * @param name the name of the private field
-   * @return the current value that field has
-   */
-  private static Object getPrivateField(MapillaryPreferenceSetting object, String name)
-      throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    Field field = object.getClass().getDeclaredField(name);
-    field.setAccessible(true);
-    return field.get(object);
-  }
-
   @SuppressWarnings("unchecked")
   @Test
   public void testOk() throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
     MapillaryPreferenceSetting settings = new MapillaryPreferenceSetting();
 
+    // Initialize the properties with some arbitrary value to make sure they are not unset
+    new StringProperty("mapillary.display-hour", "default").put("arbitrary");
+    new StringProperty("mapillary.format-24", "default").put("arbitrary");
+    new StringProperty("mapillary.move-to-picture", "default").put("arbitrary");
+    new StringProperty("mapillary.hover-enabled", "default").put("arbitrary");
+    new StringProperty("mapillary.download-mode", "default").put("arbitrary");
+
     // Test checkboxes
     settings.ok();
-    assertEquals(Main.pref.get("mapillary.display-hour"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "displayHour")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.format-24"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "format24")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.move-to-picture"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "moveTo")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.hover-enabled"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "hoverEnabled")).isSelected()));
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "displayHour"), "mapillary.display-hour");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "format24"), "mapillary.format-24");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "moveTo"), "mapillary.move-to-picture");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "hoverEnabled"), "mapillary.hover-enabled");
 
     // Toggle state of the checkboxes
     toggleCheckbox((JCheckBox) getPrivateField(settings, "displayHour"));
@@ -104,26 +95,31 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
 
     // Test the second state of the checkboxes
     settings.ok();
-    assertEquals(Main.pref.get("mapillary.display-hour"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "displayHour")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.format-24"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "format24")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.move-to-picture"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "moveTo")).isSelected()));
-    assertEquals(Main.pref.get("mapillary.hover-enabled"),
-        Boolean.toString(((JCheckBox) getPrivateField(settings, "hoverEnabled")).isSelected()));
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "displayHour"), "mapillary.display-hour");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "format24"), "mapillary.format-24");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "moveTo"), "mapillary.move-to-picture");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "hoverEnabled"), "mapillary.hover-enabled");
 
     // Test combobox
     for (int i = 0; i < ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getItemCount(); i++) {
       ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).setSelectedIndex(i);
       settings.ok();
       assertEquals(
-        Main.pref.get("mapillary.download-mode"),
+        new StringProperty("mapillary.download-mode", "default").get(),
         DOWNLOAD_MODE.fromLabel(
           ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getSelectedItem().toString()
         ).getPrefId()
       );
     }
+  }
+
+  /**
+   * Checks, if a certain {@link BooleanProperty} (identified by the {@code propName} attribute) matches the selected-state of the given {@link JCheckBox}
+   * @param cb the {@link JCheckBox}, which should be checked against the {@link BooleanProperty}
+   * @param propName the name of the property against which the selected-state of the given {@link JCheckBox} should be checked
+   */
+  private static void assertPropertyMatchesCheckboxSelection(JCheckBox cb, String propName) {
+    assertEquals(cb.isSelected(), new BooleanProperty(propName, !cb.isSelected()).get());
   }
 
   private static void toggleCheckbox(JCheckBox jcb) {

@@ -11,6 +11,8 @@ import javax.swing.SwingUtilities;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.preferences.DoubleProperty;
+import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.I18n;
@@ -28,6 +30,9 @@ public final class MapillaryDownloader {
     VISIBLE_AREA("visibleArea", I18n.tr("everything in the visible area")),
     OSM_AREA("osmArea", I18n.tr("areas with downloaded OSM-data")),
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
+
+    public static final StringProperty PROPERTY =
+      new StringProperty("mapillary.download-mode", getDefault().getPrefId());
 
     private String prefId;
     private String label;
@@ -77,7 +82,7 @@ public final class MapillaryDownloader {
   }
 
   /** Max area to be downloaded */
-  private static final double MAX_AREA = Main.pref.getDouble("mapillary.max-download-area", 0.015);
+  private static final double MAX_AREA = new DoubleProperty("mapillary.max-download-area", 0.015).get();
 
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
@@ -114,10 +119,10 @@ public final class MapillaryDownloader {
    *
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
-  public static MapillaryDownloader.DOWNLOAD_MODE getMode() {
+  public static DOWNLOAD_MODE getMode() {
     return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
       ? DOWNLOAD_MODE.VISIBLE_AREA
-      : DOWNLOAD_MODE.fromPrefId(Main.pref.get("mapillary.download-mode"));
+      : DOWNLOAD_MODE.fromPrefId(DOWNLOAD_MODE.PROPERTY.get());
   }
 
   private static void run(Runnable t) {
