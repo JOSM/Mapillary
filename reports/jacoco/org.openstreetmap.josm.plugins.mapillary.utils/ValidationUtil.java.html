@@ -59,12 +59,12 @@ public final class ValidationUtil {
    */
   @SuppressWarnings (&quot;ConstantConditions&quot;)
   public static void throwExceptionForInvalidSeqKey(String seqKey, boolean nullAllowed) {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (!validateSequenceKey(seqKey)) {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (!validateSequenceKey(seqKey)) {</span>
 <span class="nc" id="L63">      throw new IllegalArgumentException(I18n.tr(&quot;The sequence key ''{0}'' is invalid!&quot;, seqKey));</span>
     }
-<span class="pc bpc" id="L65" title="3 of 4 branches missed.">    if (!nullAllowed &amp;&amp; seqKey == null) {</span>
+<span class="nc bnc" id="L65" title="All 4 branches missed.">    if (!nullAllowed &amp;&amp; seqKey == null) {</span>
 <span class="nc" id="L66">      throw new IllegalArgumentException(I18n.tr(&quot;The sequence key must not be null here!&quot;));</span>
     }
-<span class="fc" id="L68">  }</span>
+<span class="nc" id="L68">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

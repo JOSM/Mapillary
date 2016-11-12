@@ -130,11 +130,11 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="pc" id="L130">    }</span>
 
 <span class="fc" id="L132">    new Thread(() -&gt; {</span>
-<span class="nc" id="L133">      String username = MapillaryUser.getUsername();</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">      if (username != null) {</span>
+<span class="fc" id="L133">      String username = MapillaryUser.getUsername();</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">      if (username != null) {</span>
 <span class="nc" id="L135">        SwingUtilities.invokeLater(() -&gt; onLogin(MapillaryUser.getUsername()));</span>
       }
-<span class="pc" id="L137">    }).start();</span>
+<span class="fc" id="L137">    }).start();</span>
 <span class="fc" id="L138">  }</span>
 
   @Override

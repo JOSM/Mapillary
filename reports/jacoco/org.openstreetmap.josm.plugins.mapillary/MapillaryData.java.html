@@ -82,7 +82,7 @@ public class MapillaryData {
 <span class="fc bfc" id="L82" title="All 2 branches covered.">    if (!this.images.contains(image)) {</span>
 <span class="fc" id="L83">      this.images.add(image);</span>
     }
-<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (update) {</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    if (update) {</span>
 <span class="fc" id="L86">      dataUpdated();</span>
     }
 <span class="fc" id="L88">    fireImagesAdded();</span>
@@ -364,7 +364,7 @@ public class MapillaryData {
 <span class="nc" id="L364">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());</span>
       }
     }
-<span class="pc bpc" id="L367" title="1 of 4 branches missed.">    if (zoom &amp;&amp; Main.main != null)</span>
+<span class="pc bpc" id="L367" title="3 of 4 branches missed.">    if (zoom &amp;&amp; Main.main != null)</span>
 <span class="nc" id="L368">      Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());</span>
 <span class="pc bpc" id="L369" title="1 of 2 branches missed.">    if (Main.main != null)</span>
 <span class="nc" id="L370">      Main.map.mapView.repaint();</span>
