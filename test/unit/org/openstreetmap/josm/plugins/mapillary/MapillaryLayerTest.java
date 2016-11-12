@@ -14,7 +14,7 @@ import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 
 public class MapillaryLayerTest extends AbstractTest {
-  private Layer dummyLayer = ImageryLayer.create(new ImageryInfo());
+  private Layer dummyLayer = ImageryLayer.create(new ImageryInfo("dummy", "http://dummy.io"));
 
   @Test
   public void testGetIcon() {
