@@ -11,6 +11,7 @@ apply plugin: 'pmd'
 
 configurations {
   compile.extendsFrom(requiredPlugin)
+  minJosmVersionCompile.extendsFrom(requiredPlugin)
 }
 
 apply from: 'gradle/manifest.gradle'
@@ -69,6 +70,15 @@ sourceSets {
       include 'LICENSE*'
     }
   }
+  minJosmVersion {
+    java {
+      srcDirs = sourceSets.main.java.srcDirs
+    }
+    resources {
+      srcDirs = sourceSets.main.resources.srcDirs
+      includes = sourceSets.main.resources.includes
+    }
+  }
   test {
     java {
       srcDirs = ['test/unit']
@@ -78,6 +88,18 @@ sourceSets {
     }
   }
 }
+
+task addMinJosmVersionDependency {
+  doLast {
+    def minJosmVersion = getNextJosmVersion(project.property('plugin.main.version'))
+    if (minJosmVersion == null) {
+      throw new GradleException("Could not determine the minimum required JOSM version from the given version number '" + project.property('plugin.main.version') + "'")
+    }
+    println 'Use JOSM version ' + minJosmVersion + ' for compiling against the minimum required version'
+    configurations.minJosmVersionCompile.dependencies.add(project.getDependencies().create(':josm:'+ minJosmVersion))
+  }
+}
+compileMinJosmVersionJava.dependsOn addMinJosmVersionDependency
 
 eclipse {
   project {
