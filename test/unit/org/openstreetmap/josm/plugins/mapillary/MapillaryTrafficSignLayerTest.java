@@ -13,7 +13,7 @@ import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 
 public class MapillaryTrafficSignLayerTest extends AbstractTest {
-  private Layer dummyLayer = ImageryLayer.create(new ImageryInfo());
+  private Layer dummyLayer = ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
 
   @Test
   public void test() throws IOException {
