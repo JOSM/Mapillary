@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-mainDir=`pwd`
-pagesDir=`readlink -f ../gh-pages`
-masterCommit=`git rev-parse master`
-
 if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; then
+  mainDir=`pwd`
+  pagesDir=`readlink -f ../gh-pages`
+  masterCommit=`git rev-parse master`
+
   git config --global user.email "deploy@travis"
   git config --global user.name "Travis CI"
 
