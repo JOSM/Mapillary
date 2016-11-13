@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,30 +70,8 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
     HttpPost httpPost = new HttpPost(MapillaryURL.submitChangesetURL().toString());
     httpPost.addHeader("content-type", "application/json");
     httpPost.addHeader("Authorization", "Bearer " + token);
-    JsonArrayBuilder changes = Json.createArrayBuilder();
     MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
-    for (MapillaryImage image : locationChangeset) {
-      changes.add(Json.createObjectBuilder()
-        .add("image_key", image.getKey())
-        .add("values", Json.createObjectBuilder()
-          .add("from", Json.createObjectBuilder()
-            .add("ca", image.getCa())
-            .add("lat", image.getLatLon().getY())
-            .add("lon", image.getLatLon().getX())
-          )
-          .add("to", Json.createObjectBuilder()
-            .add("ca", image.getTempCa())
-            .add("lat", image.getTempLatLon().getY())
-            .add("lon", image.getTempLatLon().getX())
-          )
-        )
-      );
-    }
-    String json = Json.createObjectBuilder()
-      .add("change_type", "location")
-      .add("changes", changes)
-      .add("request_comment", "JOSM-created")
-      .build().toString();
+    String json = buildLocationChangesetJson(locationChangeset).build().toString();
     try (CloseableHttpClient httpClient = builder.build()) {
       httpPost.setEntity(new StringEntity(json));
       CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -113,5 +92,33 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
     } finally {
       PluginState.setSubmittingChangeset(false);
     }
+  }
+
+  private static JsonObjectBuilder buildImgChangeJson(MapillaryImage img) {
+    return Json.createObjectBuilder()
+      .add("image_key", img.getKey())
+      .add("values", Json.createObjectBuilder()
+        .add("from", Json.createObjectBuilder()
+          .add("ca", img.getCa())
+          .add("lat", img.getLatLon().getY())
+          .add("lon", img.getLatLon().getX())
+        )
+        .add("to", Json.createObjectBuilder()
+          .add("ca", img.getTempCa())
+          .add("lat", img.getTempLatLon().getY())
+          .add("lon", img.getTempLatLon().getX())
+        )
+      );
+  }
+
+  private static JsonObjectBuilder buildLocationChangesetJson(MapillaryLocationChangeset changeset) {
+    JsonArrayBuilder imgChanges = Json.createArrayBuilder();
+    for (MapillaryImage img : changeset) {
+      imgChanges.add(buildImgChangeJson(img));
+    }
+    return Json.createObjectBuilder()
+      .add("change_type", "location")
+      .add("changes", imgChanges.build())
+      .add("request_comment", "JOSM-created");
   }
 }
