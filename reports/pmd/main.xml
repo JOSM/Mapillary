@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.2" timestamp="2016-11-14T01:02:38.702">
+<pmd version="5.5.2" timestamp="2016-11-14T01:25:31.557">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
 <violation beginline="2" endline="408" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=61, ATFD=15, TCC=0.005263157894736842)
@@ -94,6 +94,14 @@ Avoid assignments in operands
 Avoid unused local variables such as 'imgLoc'.
 </violation>
 </file>
+<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/actions/MapillarySubmitCurrentChangesetAction.java">
+<violation beginline="15" endline="15" begincolumn="1" endcolumn="38" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.actions" class="MapillarySubmitCurrentChangesetAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.apache.commons.logging.Log'
+</violation>
+<violation beginline="16" endline="16" begincolumn="1" endcolumn="45" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.actions" class="MapillarySubmitCurrentChangesetAction" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.apache.commons.logging.LogFactory'
+</violation>
+</file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryUploadAction.java">
 <violation beginline="67" endline="68" begincolumn="29" endcolumn="3" rule="UncommentedEmptyMethodBody" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.actions" class="MapillaryUploadAction" method="imagesAdded" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#UncommentedEmptyMethodBody" priority="3">
 Document empty method body
@@ -116,8 +124,11 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryChangesetDialog.java">
-<violation beginline="2" endline="158" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryChangesetDialog" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="157" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryChangesetDialog" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
+</violation>
+<violation beginline="60" endline="60" begincolumn="11" endcolumn="32" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryChangesetDialog" variable="uploadPending" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#SingularField" priority="3">
+Perhaps 'uploadPending' could be replaced by a local variable.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryExportDialog.java">
