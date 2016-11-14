@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ]; then
-  ./gradlew build javadoc sonarqube -Dsonar.host.url=https://sonarqube.com -Dsonar.login=$SONAR_TOKEN
-else
-  ./gradlew build javadoc
+set -e
+
+./gradlew build compileMinJosmVersion javadoc
+
+echo "branch $TRAVIS_BRANCH | JDK $TRAVIS_JDK_VERSION | PR #$TRAVIS_PULL_REQUEST"
+
+if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] && [ "$TRAVIS_PULL_REQUEST" == false ]; then
+  ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
 fi
