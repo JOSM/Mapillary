@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,10 +21,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -35,15 +39,15 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
-  private static final Log LOGGER = LogFactory.getLog(MapillarySubmitCurrentChangesetAction.class);
+  private final MapillaryChangesetDialog changesetDialog;
 
   /**
    * Main constructor.
    */
-  public MapillarySubmitCurrentChangesetAction() {
+  public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(
       tr("Submit changeset"),
-      MapillaryPlugin.getProvider("icon24.png"),
+      MapillaryPlugin.getProvider("dialogs/mapillary-upload"),
       tr("Submit the current changeset"),
       Shortcut.registerShortcut(
         "Submit changeset to Mapillary", tr("Submit the current changeset to Mapillary"),
@@ -53,65 +57,91 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       "mapillarySubmitChangeset",
       false
     );
-    this.setEnabled(false);
+    this.changesetDialog = changesetDialog;
+    setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    String token = OAuthUtils.PROP_ACCESS_TOKEN.get();
-    if (token == null || token.trim().isEmpty()) {
-      PluginState.notLoggedInToMapillaryDialog();
-      return;
-    }
-    PluginState.setSubmittingChangeset(true);
-    MapillaryUtils.updateHelpText();
-    HttpClientBuilder builder = HttpClientBuilder.create();
-    HttpPost httpPost = new HttpPost(MapillaryURL.submitChangesetURL().toString());
-    httpPost.addHeader("content-type", "application/json");
-    httpPost.addHeader("Authorization", "Bearer " + token);
-    JsonArrayBuilder changes = Json.createArrayBuilder();
-    MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
-    for (MapillaryImage image : locationChangeset) {
-      changes.add(Json.createObjectBuilder()
-        .add("image_key", image.getKey())
-        .add("values", Json.createObjectBuilder()
-          .add("from", Json.createObjectBuilder()
-            .add("ca", image.getCa())
-            .add("lat", image.getLatLon().getY())
-            .add("lon", image.getLatLon().getX())
-          )
-          .add("to", Json.createObjectBuilder()
-            .add("ca", image.getTempCa())
-            .add("lat", image.getTempLatLon().getY())
-            .add("lon", image.getTempLatLon().getX())
-          )
+    new Thread(() -> {
+      changesetDialog.setUploadPending(true);
+      String token = OAuthUtils.PROP_ACCESS_TOKEN.get();
+      if (token != null && !token.trim().isEmpty()) {
+        PluginState.setSubmittingChangeset(true);
+        MapillaryUtils.updateHelpText();
+        HttpClientBuilder builder = HttpClientBuilder.create();
+        HttpPost httpPost = new HttpPost(MapillaryURL.submitChangesetURL().toString());
+        httpPost.addHeader("content-type", "application/json");
+        httpPost.addHeader("Authorization", "Bearer " + token);
+        MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
+        String json = buildLocationChangesetJson(locationChangeset).build().toString();
+        Main.debug("Sending JSON to " + MapillaryURL.submitChangesetURL() + "\n  " + json);
+        try (CloseableHttpClient httpClient = builder.build()) {
+          httpPost.setEntity(new StringEntity(json));
+          CloseableHttpResponse response = httpClient.execute(httpPost);
+          Main.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
+          if (response.getStatusLine().getStatusCode() == 200) {
+            String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
+            Main.debug("Received key " + key);
+            synchronized (MapillaryUtils.class) {
+              Main.map.statusLine.setHelpText(String.format("%s images submitted, Changeset key: %s", locationChangeset.size(), key));
+            }
+            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
+          } else {
+            Notification n = new Notification(
+              tr("Changeset upload failed with {0} error ''{1} {2}''!",
+                response.getStatusLine().getProtocolVersion(),
+                response.getStatusLine().getStatusCode(),
+                response.getStatusLine().getReasonPhrase()
+              )
+            );
+            n.setIcon(JOptionPane.ERROR_MESSAGE);
+            n.setDuration(Notification.TIME_LONG);
+            n.show();
+          }
+        } catch (IOException e) {
+          Main.error(e, "Exception while trying to submit a changeset to mapillary.com");
+          Notification n = new Notification(
+            tr("An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.")
+          );
+          n.setDuration(Notification.TIME_LONG);
+          n.setIcon(JOptionPane.ERROR_MESSAGE);
+          n.show();
+        } finally {
+          PluginState.setSubmittingChangeset(false);
+        }
+      } else {
+        PluginState.notLoggedInToMapillaryDialog();
+      }
+      changesetDialog.setUploadPending(false);
+    }, "Mapillary changeset upload").start();
+  }
+
+  private static JsonObjectBuilder buildImgChangeJson(MapillaryImage img) {
+    return Json.createObjectBuilder()
+      .add("image_key", img.getKey())
+      .add("values", Json.createObjectBuilder()
+        .add("from", Json.createObjectBuilder()
+          .add("ca", img.getCa())
+          .add("lat", img.getLatLon().getY())
+          .add("lon", img.getLatLon().getX())
+        )
+        .add("to", Json.createObjectBuilder()
+          .add("ca", img.getTempCa())
+          .add("lat", img.getTempLatLon().getY())
+          .add("lon", img.getTempLatLon().getX())
         )
       );
+  }
+
+  private static JsonObjectBuilder buildLocationChangesetJson(MapillaryLocationChangeset changeset) {
+    JsonArrayBuilder imgChanges = Json.createArrayBuilder();
+    for (MapillaryImage img : changeset) {
+      imgChanges.add(buildImgChangeJson(img));
     }
-    String json = Json.createObjectBuilder()
+    return Json.createObjectBuilder()
       .add("change_type", "location")
-      .add("changes", changes)
-      .add("request_comment", "JOSM-created")
-      .build().toString();
-    try (CloseableHttpClient httpClient = builder.build()) {
-      httpPost.setEntity(new StringEntity(json));
-      CloseableHttpResponse response = httpClient.execute(httpPost);
-      if (response.getStatusLine().getStatusCode() == 200) {
-        String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
-        synchronized (MapillaryUtils.class) {
-          Main.map.statusLine.setHelpText(String.format("%s images submitted, Changeset key: %s", locationChangeset.size(), key));
-        }
-        locationChangeset.cleanChangeset();
-
-      }
-
-    } catch (IOException e) {
-      LOGGER.error("got exception", e);
-      synchronized (MapillaryUtils.class) {
-        Main.map.statusLine.setHelpText("Error submitting Mapillary changeset: " + e.getMessage());
-      }
-    } finally {
-      PluginState.setSubmittingChangeset(false);
-    }
+      .add("changes", imgChanges.build())
+      .add("request_comment", "JOSM-created");
   }
 }

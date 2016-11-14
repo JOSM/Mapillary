@@ -3,18 +3,19 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -32,7 +33,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -54,7 +54,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final JSeparator separator = new JSeparator();
   private final Component spacer = Box.createRigidArea(new Dimension(0, 3));
 
-  private final SideButton submitButton;
+  private final JScrollPane mainPane;
+  private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
+  private final JProgressBar uploadPendingProgress = new JProgressBar();
+  private boolean uploadPending;
 
   private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
 
@@ -67,13 +70,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
   private MapillaryChangesetDialog() {
     super(
-            tr("Current Mapillary changeset"),
-            "mapillary-upload.svg",
-            tr("Open Mapillary changeset dialog"),
-            Shortcut.registerShortcut(
-                    tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
-            ),
-            200
+      tr("Current Mapillary changeset"),
+      "mapillary-upload.svg",
+      tr("Open Mapillary changeset dialog"),
+      Shortcut.registerShortcut(
+        tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
+      ),
+      200
     );
 
     this.map = new ConcurrentHashMap<>();
@@ -91,10 +94,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     this.separator.setVisible(false);
     treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));
+    mainPane = new JScrollPane(treesPanel);
 
-    this.submitButton = new SideButton(new SubmitAction());
+    uploadPendingProgress.setIndeterminate(true);
+    uploadPendingProgress.setString(tr("Submitting changeset to server…"));
+    uploadPendingProgress.setStringPainted(true);
 
-    createLayout(treesPanel, true, Collections.singletonList(this.submitButton));
+    setUploadPending(false);
   }
 
   /**
@@ -110,13 +116,8 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   }
 
   private void buildTree() {
-    this.submitButton.setEnabled(true);
     MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();
-    if (!changeset.isEmpty()) {
-      this.submitButton.setEnabled(true);
-    } else {
-      this.submitButton.setEnabled(false);
-    }
+    submitButton.setEnabled(!changeset.isEmpty());
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
@@ -131,28 +132,26 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     this.changesetTreeModel.setRoot(changesetRoot);
   }
 
+  public void setUploadPending(final boolean isUploadPending) {
+    uploadPending = isUploadPending;
+    removeAll();
+    if (uploadPending) {
+      setLayout(new BorderLayout());
+      add(mainPane, BorderLayout.CENTER);
+      add(uploadPendingProgress, BorderLayout.SOUTH);
+    } else {
+      createLayout(mainPane, false, Collections.singletonList(this.submitButton));
+    }
+    revalidate();
+    repaint();
+  }
+
   @Override
   public void changesetChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(this::buildTree);
     } else {
       buildTree();
-    }
-  }
-
-  private static class SubmitAction extends AbstractAction {
-
-    private static final long serialVersionUID = -2761935780353053512L;
-
-    SubmitAction() {
-      putValue(NAME, tr("Submit"));
-      putValue(SMALL_ICON, ImageProvider.get("upload"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      MapillarySubmitCurrentChangesetAction submitCurrentChangesetAction = new MapillarySubmitCurrentChangesetAction();
-      submitCurrentChangesetAction.actionPerformed(null);
     }
   }
 }
