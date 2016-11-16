@@ -1,0 +1,25 @@
+import groovy.io.FileType
+
+task prepareMarkdown(type:Sync) {
+  from projectDir
+  into "$buildDir/src/markdown"
+  include 'LICENSE.md'
+  include 'README.md'
+}
+
+markdownToHtml {
+  dependsOn prepareMarkdown
+  sourceDir new File("$buildDir/src/markdown")
+  inputEncoding 'UTF-8'
+  outputEncoding 'UTF-8'
+  fencedCodeBlocks true
+  autoLinks true
+
+  doLast {
+    new File("$outputDir").eachFileRecurse(FileType.FILES) { file ->
+      file.text = '<!DOCTYPE html><meta charset="utf-8">' + file.text
+    }
+  }
+}
+jar.dependsOn markdownToHtml
+jar.from markdownToHtml.outputDir

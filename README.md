@@ -5,7 +5,7 @@
 [![code quality](https://img.shields.io/codacy/efb93251413e4736b3763ed477bfbe30.svg?style=flat-square&maxAge=7200)](https://www.codacy.com/app/floscher/Mapillary)
 [![latest release](https://img.shields.io/github/release/JOSM/Mapillary.svg?style=flat-square&maxAge=7200)](https://github.com/JOSM/Mapillary/releases/latest)
 ![download count for latest release](https://img.shields.io/github/downloads/JOSM/Mapillary/latest/Mapillary.jar.svg?style=flat-square&maxAge=7200)
-![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2 or later-blue.svg?style=flat-square&maxAge=7200)
+![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2_or_later-blue.svg?style=flat-square&maxAge=7200)
 
 A plugin for showing Mapillary images inside the OpenStreetMap-Editor JOSM.
 
@@ -18,5 +18,5 @@ For instructions on setting up your local copy of this repository, see [INSTALL.
 Our contribution guidelines can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 * Maintainer: nokutu <nokutu@openmailbox.org>
-* License: GPL v2 or later
+* License: [GPL v2 or later](./LICENSE.md)
 * Feel free to contact me for any bug or suggestion.
