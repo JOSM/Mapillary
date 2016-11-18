@@ -144,7 +144,7 @@ public class SelectMode extends AbstractMode {
             && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
-    if (!new BooleanProperty("mapillary.hover-enabled", true).get()) {
+    if (!MapillaryProperties.HOVER_ENABLED.get()) {
       return;
     }
 

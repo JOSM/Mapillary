@@ -34,7 +34,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -136,11 +136,11 @@ public class MapillaryPlugin extends Plugin {
       cache = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
     }
 
-    if (OAuthUtils.PROP_ACCESS_TOKEN.get() == null) {
+    if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
       MapillaryUser.setTokenValid(false);
     }
     // Normalize download mode preference setting
-    DOWNLOAD_MODE.PROPERTY.put(DOWNLOAD_MODE.fromPrefId(DOWNLOAD_MODE.PROPERTY.get()).getPrefId());
+    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getPrefId());
   }
 
   /**

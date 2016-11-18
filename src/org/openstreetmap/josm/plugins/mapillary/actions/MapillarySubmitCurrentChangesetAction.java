@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
@@ -63,7 +63,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
   public void actionPerformed(ActionEvent event) {
     new Thread(() -> {
       changesetDialog.setUploadPending(true);
-      String token = OAuthUtils.PROP_ACCESS_TOKEN.get();
+      String token = MapillaryProperties.ACCESS_TOKEN.get();
       if (token != null && !token.trim().isEmpty()) {
         PluginState.setSubmittingChangeset(true);
         MapillaryUtils.updateHelpText();

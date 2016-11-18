@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.AlphaComposite;
@@ -37,7 +36,6 @@ import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
 import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
 import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.preferences.ColorProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
@@ -60,6 +58,7 @@ import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -72,8 +71,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   DataSetListener, ActiveLayerChangeListener {
 
   /** Maximum distance for the red/blue lines. */
-  public static final int SEQUENCE_MAX_JUMP_DISTANCE =
-    new IntegerProperty("mapillary.sequence-max-jump-distance", 100).get();
+  public static final int SEQUENCE_MAX_JUMP_DISTANCE = MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get();
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -265,34 +263,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Replies background color for downloaded areas.
-   *
-   * @return background color for downloaded areas. Black by default.
-   */
-  private static Color getBackgroundColor() {
-    return new ColorProperty(marktr("background"), Color.BLACK).get();
-  }
-
-  /**
-   * Replies background color for non-downloaded areas.
-   *
-   * @return background color for non-downloaded areas. Yellow by default.
-   */
-  private static Color getOutsideColor() {
-    return new ColorProperty(marktr("outside downloaded area"), Color.YELLOW).get();
-  }
-
-  /**
    * Initialize the hatch pattern used to paint the non-downloaded area.
    */
   private void createHatchTexture() {
     BufferedImage bi = new BufferedImage(15, 15, BufferedImage.TYPE_INT_ARGB);
     Graphics2D big = bi.createGraphics();
-    big.setColor(getBackgroundColor());
+    big.setColor(MapillaryProperties.BACKGROUND.get());
     Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
     big.setComposite(comp);
     big.fillRect(0, 0, 15, 15);
-    big.setColor(getOutsideColor());
+    big.setColor(MapillaryProperties.OUTSIDE_DOWNLOADED_AREA.get());
     big.drawLine(0, 15, 15, 0);
     Rectangle r = new Rectangle(0, 0, 15, 15);
     this.hatched = new TexturePaint(bi, r);
@@ -459,7 +439,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getClosestImagesFromDifferentSequences() {
     if (!(this.data.getSelectedImage() instanceof MapillaryImage))
-      return new MapillaryImage[]{null, null};
+      return new MapillaryImage[2];
     MapillaryImage selected = (MapillaryImage) this.data.getSelectedImage();
     MapillaryImage[] ret = new MapillaryImage[2];
     double[] distances = {

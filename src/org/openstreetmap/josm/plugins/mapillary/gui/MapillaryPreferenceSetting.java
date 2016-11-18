@@ -24,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
@@ -35,6 +34,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme.MapillaryButton;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
@@ -53,18 +53,14 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       DOWNLOAD_MODE.MANUAL_ONLY.getLabel()
   });
 
-  public static final BooleanProperty PROP_DISPLAY_HOUR = new BooleanProperty("mapillary.display-hour", true);
   private final JCheckBox displayHour =
-    new JCheckBox(I18n.tr("Display hour when the picture was taken"), PROP_DISPLAY_HOUR.get());
-  public static final BooleanProperty PROP_TIME_FORMAT_24 = new BooleanProperty("mapillary.format-24", true);
+    new JCheckBox(I18n.tr("Display hour when the picture was taken"), MapillaryProperties.DISPLAY_HOUR.get());
   private final JCheckBox format24 =
-    new JCheckBox(I18n.tr("Use 24 hour format"), PROP_TIME_FORMAT_24.get());
-  public static final BooleanProperty PROP_MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
+    new JCheckBox(I18n.tr("Use 24 hour format"), MapillaryProperties.TIME_FORMAT_24.get());
   private final JCheckBox moveTo =
-    new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"), PROP_MOVE_TO_IMG.get());
-  public static final BooleanProperty PROP_HOVER_ENABLED = new BooleanProperty("mapillary.hover-enabled", true);
+    new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"), MapillaryProperties.MOVE_TO_IMG.get());
   private final JCheckBox hoverEnabled =
-    new JCheckBox(I18n.tr("Preview images when hovering its icon"), PROP_HOVER_ENABLED.get());
+    new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
 
   private final JButton loginButton = new MapillaryButton(I18n.tr("Login"), new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(I18n.tr("Logout"), new LogoutAction());
@@ -106,7 +102,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.setLayout(new GridBagLayout());
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(DOWNLOAD_MODE.PROPERTY.get()).getLabel());
+    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getLabel());
 
     JPanel downloadModePanel = new JPanel();
     downloadModePanel.add(new JLabel(I18n.tr("Download mode")));
@@ -159,15 +155,15 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @Override
   public boolean ok() {
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
-    DOWNLOAD_MODE.PROPERTY.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());
+    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());
     MapillaryPlugin.setMenuEnabled(
       MapillaryPlugin.getDownloadViewMenu(),
-      DOWNLOAD_MODE.MANUAL_ONLY.getPrefId().equals(DOWNLOAD_MODE.PROPERTY.get())
+      DOWNLOAD_MODE.MANUAL_ONLY.getPrefId().equals(MapillaryProperties.DOWNLOAD_MODE.get())
     );
-    PROP_DISPLAY_HOUR.put(displayHour.isSelected());
-    PROP_TIME_FORMAT_24.put(format24.isSelected());
-    PROP_MOVE_TO_IMG.put(moveTo.isSelected());
-    PROP_HOVER_ENABLED.put(hoverEnabled.isSelected());
+    MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
+    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
+    MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
+    MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
 
     //Restart is never required
     return false;
