@@ -388,7 +388,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-                .setSelectedImage(MapillaryLayer.getInstance().getRed(), true);
+                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(1), true);
       }
     }
   }
@@ -415,7 +415,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryLayer.getInstance().getData()
-                .setSelectedImage(MapillaryLayer.getInstance().getBlue(), true);
+                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(2), true);
       }
     }
   }

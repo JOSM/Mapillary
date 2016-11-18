@@ -68,7 +68,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @author nokutu
  */
 public final class MapillaryLayer extends AbstractModifiableLayer implements
-  DataSetListener, ActiveLayerChangeListener {
+  DataSetListener, ActiveLayerChangeListener, MapillaryDataListener {
 
   /** Maximum distance for the red/blue lines. */
   public static final int SEQUENCE_MAX_JUMP_DISTANCE = MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get();
@@ -91,10 +91,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
-  /** The image pointed by the blue line. */
-  private MapillaryImage blue;
-  /** The image pointed by the red line. */
-  private MapillaryImage red;
+  /** The nearest images to the selected image from different sequences sorted by distance from selection. */
+  private MapillaryImage[] nearestImages = {};
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
@@ -107,6 +105,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private MapillaryLayer() {
     super(tr("Mapillary Images"));
     this.data = new MapillaryData();
+    data.addListener(this);
   }
 
   /**
@@ -216,17 +215,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * @return The image that is linked to the current image with a blue line
+   * Returns the n-nearest image, for n=1 the nearest one is returned, for n=2 the second nearest one and so on.
+   * The "n-nearest image" is picked from the list of one image from every sequence that is nearest to the currently
+   * selected image, excluding the sequence to which the selected image belongs.
+   * @param n the index for picking from the list of "nearest images", beginning from 1
+   * @return the n-nearest image to the currently selected image
    */
-  public MapillaryImage getBlue() {
-    return blue;
-  }
-
-  /**
-   * @return The image that is linked to the current image with a blue line
-   */
-  public MapillaryImage getRed() {
-    return red;
+  public MapillaryImage getNNearestImage(final int n) {
+    return n >= 1 && n <= nearestImages.length ? nearestImages[n - 1] : null;
   }
 
   @Override
@@ -287,30 +283,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
     }
 
-    // Draw colored lines
-    MapillaryMainDialog.getInstance().blueButton.setEnabled(false);
-    MapillaryMainDialog.getInstance().redButton.setEnabled(false);
-    blue = null;
-    red = null;
-
     // Draw the blue and red line and enable/disable the buttons
-    if (this.data.getSelectedImage() != null) {
-      MapillaryImage[] closestImages = getNearestImagesFromDifferentSequences(data.getSelectedImage(), 2);
-      for (int i = 0; i < 2 && i < closestImages.length; i++) {
-        if (i == 0) {
-          g.setColor(Color.RED);
-          red = closestImages[i];
-          MapillaryMainDialog.getInstance().redButton.setEnabled(true);
-        } else {
-          g.setColor(Color.BLUE);
-          blue = closestImages[i];
-          MapillaryMainDialog.getInstance().blueButton.setEnabled(true);
-        }
-        final Point selected = mv.getPoint(this.data.getSelectedImage().getMovingLatLon());
-        final Point p = mv.getPoint(closestImages[i].getMovingLatLon());
-        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
-        CacheUtils.downloadPicture(closestImages[i]);
+    for (int i = 0; i < nearestImages.length; i++) {
+      if (i == 0) {
+        g.setColor(Color.RED);
+      } else {
+        g.setColor(Color.BLUE);
       }
+      final Point selected = mv.getPoint(data.getSelectedImage().getMovingLatLon());
+      final Point p = mv.getPoint(nearestImages[i].getMovingLatLon());
+      g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
     }
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
@@ -430,51 +412,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     };
   }
 
-  /**
-   * Returns the closest images belonging to a different sequence and
-   * different from the specified target image.
-   *
-   * @param target the image for which you want to find the nearest other images
-   * @param limit the maximum length of the returned array
-   * @return An array containing the closest images belonging to different sequences sorted by distance from target.
-   */
-  private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
-    return data.getSequences().parallelStream()
-      .filter((seq) -> target.getSequence() == null || seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
-      .map((seq) -> { // Maps sequence to image from sequence that is nearest to target
-        Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter((img) -> img instanceof MapillaryImage && img.isVisible())
-          .sorted(new NearestImgToTargetComparator(target))
-          .findFirst();
-        return resImg.isPresent() ? resImg.get() : null;
-      })
-      .filter((img) -> // Filters out images too far away from target
-        img != null &&
-        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
-          < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()
-       )
-      .sorted(new NearestImgToTargetComparator(target))
-      .limit(limit)
-      .toArray(MapillaryImage[]::new);
-  }
-
-  private class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
-    private final MapillaryAbstractImage target;
-    public NearestImgToTargetComparator(MapillaryAbstractImage target) {
-      this.target = target;
-    }
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
-    @Override
-    public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
-      return (int) Math.signum(
-        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -
-        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
-      );
-    }
-  }
-
   @Override
   public Object getInfoComponent() {
     return tr("Mapillary layer") +
@@ -553,6 +490,69 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public void visitBoundingBox(BoundingXYVisitor v) {
   }
 
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
+   */
+  @Override
+  public void imagesAdded() {
+    updateNearestImages();
+  }
+
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
+   */
+  @Override
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+    updateNearestImages();
+  }
+
+  /**
+   * Returns the closest images belonging to a different sequence and
+   * different from the specified target image.
+   *
+   * @param target the image for which you want to find the nearest other images
+   * @param limit the maximum length of the returned array
+   * @return An array containing the closest images belonging to different sequences sorted by distance from target.
+   */
+  private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
+    return data.getSequences().parallelStream()
+      .filter((seq) -> target.getSequence() == null || seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
+      .map((seq) -> { // Maps sequence to image from sequence that is nearest to target
+        Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
+          .filter((img) -> img instanceof MapillaryImage && img.isVisible())
+          .sorted(new NearestImgToTargetComparator(target))
+          .findFirst();
+        return resImg.isPresent() ? resImg.get() : null;
+      })
+      .filter((img) -> // Filters out images too far away from target
+        img != null &&
+        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
+          < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()
+       )
+      .sorted(new NearestImgToTargetComparator(target))
+      .limit(limit)
+      .toArray(MapillaryImage[]::new);
+  }
+
+  private void updateNearestImages() {
+    final MapillaryAbstractImage selected = data.getSelectedImage();
+    if (selected != null) {
+      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
+    } else {
+      nearestImages = new MapillaryImage[0];
+    }
+    if (Main.main != null) {
+      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
+      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
+    }
+    if (nearestImages.length >= 1) {
+      CacheUtils.downloadPicture(nearestImages[0]);
+      if (nearestImages.length >= 2) {
+        CacheUtils.downloadPicture(nearestImages[1]);
+      }
+    }
+  }
+
   /**
    * Threads that runs a delayed Mapillary download.
    *
@@ -585,6 +585,23 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (instance != null)
         MapillaryRecord.getInstance().addCommand(
           new CommandDelete(getData().getMultiSelectedImages()));
+    }
+  }
+
+  private class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
+    private final MapillaryAbstractImage target;
+    public NearestImgToTargetComparator(MapillaryAbstractImage target) {
+      this.target = target;
+    }
+    /* (non-Javadoc)
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
+      return (int) Math.signum(
+        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -
+        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
+      );
     }
   }
 }
