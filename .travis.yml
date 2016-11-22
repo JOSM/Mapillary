@@ -13,9 +13,8 @@
 # - set `GH_TOKEN` to one of your personal access tokens from GitHub (https://help.github.com/articles/creating-an-access-token-for-command-line-use/), disable displaying the value in the build log!
 # - set `GH_USERNAME` to the GitHub username to which the personal access token belongs
 
-sudo: required
+sudo: false
 dist: trusty
-group: edge
 
 language: java
 cache:
