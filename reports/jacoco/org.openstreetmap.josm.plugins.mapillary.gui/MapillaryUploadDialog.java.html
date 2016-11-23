@@ -14,6 +14,7 @@ import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
  * JPanel used when uploading pictures.
@@ -33,37 +34,37 @@ public class MapillaryUploadDialog extends JPanel {
   /**
    * Creates the JPanel and adds the needed elements.
    */
-<span class="nc" id="L36">  public MapillaryUploadDialog() {</span>
-<span class="nc" id="L37">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
-<span class="nc" id="L39">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
+<span class="nc" id="L37">  public MapillaryUploadDialog() {</span>
+<span class="nc" id="L38">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
+<span class="nc" id="L40">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
     } else {
-<span class="nc" id="L41">      ButtonGroup group = new ButtonGroup();</span>
-<span class="nc" id="L42">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
-<span class="nc" id="L44">        this.sequence.setEnabled(false);</span>
+<span class="nc" id="L42">      ButtonGroup group = new ButtonGroup();</span>
+<span class="nc" id="L43">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L45">        this.sequence.setEnabled(false);</span>
       }
-<span class="nc" id="L46">      group.add(this.sequence);</span>
-<span class="nc" id="L47">      add(this.sequence);</span>
-<span class="nc" id="L48">      group.setSelected(this.sequence.getModel(), true);</span>
-<span class="nc" id="L49">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
-<span class="nc" id="L50">      this.delete.setSelected(new BooleanProperty(&quot;mapillary.delete-after-upload&quot;, true).get());</span>
-<span class="nc" id="L51">      add(this.delete);</span>
+<span class="nc" id="L47">      group.add(this.sequence);</span>
+<span class="nc" id="L48">      add(this.sequence);</span>
+<span class="nc" id="L49">      group.setSelected(this.sequence.getModel(), true);</span>
+<span class="nc" id="L50">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
+<span class="nc" id="L51">      this.delete.setSelected(MapillaryProperties.DELETE_AFTER_UPLOAD.get());</span>
+<span class="nc" id="L52">      add(this.delete);</span>
     }
-<span class="nc" id="L53">  }</span>
+<span class="nc" id="L54">  }</span>
 
   /**
    * @return the delete checkbox of the dialog
    */
   public JCheckBox getDelete() {
-<span class="nc" id="L59">    return delete;</span>
+<span class="nc" id="L60">    return delete;</span>
   }
 
   /**
    * @return the sequence radio button of the dialog
    */
   public JRadioButton getSequence() {
-<span class="nc" id="L66">    return sequence;</span>
+<span class="nc" id="L67">    return sequence;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

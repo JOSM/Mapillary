@@ -12,7 +12,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -263,7 +263,7 @@ public class MapillaryData {
    *                               belong to a sequence.
    */
   public void selectNext() {
-<span class="fc" id="L266">    selectNext(MapillaryPreferenceSetting.PROP_MOVE_TO_IMG.get());</span>
+<span class="fc" id="L266">    selectNext(MapillaryProperties.MOVE_TO_IMG.get());</span>
 <span class="fc" id="L267">  }</span>
 
   /**
@@ -299,7 +299,7 @@ public class MapillaryData {
    *                               belong to a sequence.
    */
   public void selectPrevious() {
-<span class="fc" id="L302">    selectPrevious(MapillaryPreferenceSetting.PROP_MOVE_TO_IMG.get());</span>
+<span class="fc" id="L302">    selectPrevious(MapillaryProperties.MOVE_TO_IMG.get());</span>
 <span class="fc" id="L303">  }</span>
 
   /**
@@ -364,7 +364,7 @@ public class MapillaryData {
 <span class="nc" id="L364">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());</span>
       }
     }
-<span class="pc bpc" id="L367" title="3 of 4 branches missed.">    if (zoom &amp;&amp; Main.main != null)</span>
+<span class="pc bpc" id="L367" title="1 of 4 branches missed.">    if (zoom &amp;&amp; Main.main != null)</span>
 <span class="nc" id="L368">      Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());</span>
 <span class="pc bpc" id="L369" title="1 of 2 branches missed.">    if (Main.main != null)</span>
 <span class="nc" id="L370">      Main.map.mapView.repaint();</span>

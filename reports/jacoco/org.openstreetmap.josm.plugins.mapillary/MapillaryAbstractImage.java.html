@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
@@ -94,8 +94,8 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
     } else {
 <span class="fc" id="L95">      format.append(&quot;dd/MM/yyyy&quot;);</span>
     }
-<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (MapillaryPreferenceSetting.PROP_DISPLAY_HOUR.get()) {</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (MapillaryPreferenceSetting.PROP_TIME_FORMAT_24.get()) {</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (MapillaryProperties.DISPLAY_HOUR.get()) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">      if (MapillaryProperties.TIME_FORMAT_24.get()) {</span>
 <span class="fc" id="L99">        format.append(&quot; - HH:mm:ss (z)&quot;);</span>
       } else {
 <span class="fc" id="L101">        format.append(&quot; - h:mm:ss a (z)&quot;);</span>

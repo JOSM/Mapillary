@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils</a> &gt; <span class="el_source">MapillaryProperties.java</span></div><h1>MapillaryProperties.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils;
+
+import java.awt.Color;
+
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.data.preferences.ColorProperty;
+import org.openstreetmap.josm.data.preferences.DoubleProperty;
+import org.openstreetmap.josm.data.preferences.IntegerProperty;
+import org.openstreetmap.josm.data.preferences.StringProperty;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+
+<span class="nc" id="L14">public final class MapillaryProperties {</span>
+<span class="fc" id="L15">  public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty(&quot;mapillary.delete-after-upload&quot;, true);</span>
+<span class="fc" id="L16">  public static final BooleanProperty DEVELOPER = new BooleanProperty(&quot;mapillary.developer&quot;, false);</span>
+<span class="fc" id="L17">  public static final BooleanProperty DISPLAY_HOUR = new BooleanProperty(&quot;mapillary.display-hour&quot;, true);</span>
+<span class="fc" id="L18">  public static final BooleanProperty HOVER_ENABLED = new BooleanProperty(&quot;mapillary.hover-enabled&quot;, true);</span>
+<span class="fc" id="L19">  public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty(&quot;mapillary.move-to-picture&quot;, true);</span>
+<span class="fc" id="L20">  public static final BooleanProperty TIME_FORMAT_24 = new BooleanProperty(&quot;mapillary.format-24&quot;, true);</span>
+
+  /**
+   * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
+   */
+<span class="fc" id="L25">  public static final ColorProperty BACKGROUND = new ColorProperty(&quot;background&quot;, Color.BLACK);</span>
+  /**
+   * @see OsmDataLayer#PROPERTY_OUTSIDE_COLOR
+   */
+<span class="fc" id="L29">  public static final ColorProperty OUTSIDE_DOWNLOADED_AREA = new ColorProperty(&quot;outside downloaded area&quot;, Color.YELLOW);</span>
+
+<span class="fc" id="L31">  public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty(&quot;mapillary.max-download-area&quot;, 0.015);</span>
+
+<span class="fc" id="L33">  public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty(&quot;mapillary.picture-drag-button&quot;, 3);</span>
+<span class="fc" id="L34">  public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty(&quot;mapillary.picture-option-button&quot;, 2);</span>
+<span class="fc" id="L35">  public static final IntegerProperty PICTURE_ZOOM_BUTTON = new IntegerProperty(&quot;mapillary.picture-zoom-button&quot;, 1);</span>
+<span class="fc" id="L36">  public static final IntegerProperty SEQUENCE_MAX_JUMP_DISTANCE =</span>
+    new IntegerProperty(&quot;mapillary.sequence-max-jump-distance&quot;, 100);
+
+<span class="fc" id="L39">  public static final StringProperty ACCESS_TOKEN = new StringProperty(&quot;mapillary.access-token&quot;, null);</span>
+<span class="fc" id="L40">  public static final StringProperty DOWNLOAD_MODE =</span>
+<span class="fc" id="L41">    new StringProperty(&quot;mapillary.download-mode&quot;, MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());</span>
+<span class="fc" id="L42">  public static final StringProperty START_DIR =</span>
+<span class="fc" id="L43">    new StringProperty(&quot;mapillary.start-directory&quot;, System.getProperty(&quot;user.home&quot;));</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

@@ -388,7 +388,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
 <span class="nc bnc" id="L389" title="All 2 branches missed.">      if (MapillaryMainDialog.getInstance().getImage() != null) {</span>
 <span class="nc" id="L390">        MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L391">                .setSelectedImage(MapillaryLayer.getInstance().getRed(), true);</span>
+<span class="nc" id="L391">                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(1), true);</span>
       }
 <span class="nc" id="L393">    }</span>
   }
@@ -415,7 +415,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     public void actionPerformed(ActionEvent e) {
 <span class="nc bnc" id="L416" title="All 2 branches missed.">      if (MapillaryMainDialog.getInstance().getImage() != null) {</span>
 <span class="nc" id="L417">        MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L418">                .setSelectedImage(MapillaryLayer.getInstance().getBlue(), true);</span>
+<span class="nc" id="L418">                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(2), true);</span>
       }
 <span class="nc" id="L420">    }</span>
   }
