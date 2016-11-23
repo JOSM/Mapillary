@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.openstreetmap.josm.data.preferences.IntegerProperty;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -34,10 +34,6 @@ import org.openstreetmap.josm.data.preferences.IntegerProperty;
 public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
-
-  private static final int DRAG_BUTTON = new IntegerProperty("mapillary.picture-drag-button", 3).get();
-  private static final int OPTION_BUTTON = new IntegerProperty("mapillary.picture-option-button", 2).get();
-  private static final int ZOOM_BUTTON = new IntegerProperty("mapillary.picture-zoom-button", 1).get();
 
   /** The image currently displayed */
   private volatile BufferedImage image;
@@ -139,7 +135,7 @@ public class MapillaryImageDisplay extends JComponent {
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
-        if (e.getButton() == OPTION_BUTTON) {
+        if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
           if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
             // Zooms to 1:1
             MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
@@ -155,7 +151,7 @@ public class MapillaryImageDisplay extends JComponent {
           }
           MapillaryImageDisplay.this.repaint();
           return;
-        } else if (e.getButton() != DRAG_BUTTON) {
+        } else if (e.getButton() != MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
           return;
         }
         // Calculate the translation to set the clicked point the center of
@@ -191,11 +187,11 @@ public class MapillaryImageDisplay extends JComponent {
       }
       if (image == null)
         return;
-      if (e.getButton() == DRAG_BUTTON) {
+      if (e.getButton() == MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
         this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
         this.mouseIsDragging = true;
         MapillaryImageDisplay.this.selectedRect = null;
-      } else if (e.getButton() == ZOOM_BUTTON) {
+      } else if (e.getButton() == MapillaryProperties.PICTURE_ZOOM_BUTTON.get()) {
         this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
         checkPointInVisibleRect(this.mousePointInImg, visibleRect);
         this.mouseIsDragging = false;

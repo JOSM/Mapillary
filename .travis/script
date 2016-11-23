@@ -3,8 +3,8 @@ set -e
 
 ./gradlew build compileMinJosmVersion javadoc
 
-echo "branch $TRAVIS_BRANCH | JDK $TRAVIS_JDK_VERSION | PR #$TRAVIS_PULL_REQUEST"
+echo "branch $TRAVIS_BRANCH | JDK $TRAVIS_JDK_VERSION | PR #$TRAVIS_PULL_REQUEST | Submit to SonarQube? $SUBMIT_TO_SONARQUBE"
 
-if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] && [ "$TRAVIS_PULL_REQUEST" == false ]; then
+if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] && [ "$TRAVIS_PULL_REQUEST" = false ] && [ "$SUBMIT_TO_SONARQUBE" = true ]; then
   ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
 fi

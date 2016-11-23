@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
@@ -94,8 +94,8 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
     } else {
       format.append("dd/MM/yyyy");
     }
-    if (MapillaryPreferenceSetting.PROP_DISPLAY_HOUR.get()) {
-      if (MapillaryPreferenceSetting.PROP_TIME_FORMAT_24.get()) {
+    if (MapillaryProperties.DISPLAY_HOUR.get()) {
+      if (MapillaryProperties.TIME_FORMAT_24.get()) {
         format.append(" - HH:mm:ss (z)");
       } else {
         format.append(" - h:mm:ss a (z)");

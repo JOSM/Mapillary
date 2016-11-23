@@ -1,6 +1,20 @@
-sudo: required
+# For some special functionality you'll need to set some environment variables in Travis (https://docs.travis-ci.com/user/environment-variables#Defining-Variables-in-Repository-Settings).
+#
+# If you want to deploy to GitHub releases (when a git-tag is built):
+# - set `DEPLOY_GITHUB_RELEASES` to true
+# - set `GH_TOKEN` to one of your personal access tokens from GitHub (https://help.github.com/articles/creating-an-access-token-for-command-line-use/), disable displaying the value in the build log!
+#
+# If you want to send build information to sonarqube.com (when on master):
+# - set `SUBMIT_TO_SONARQUBE` to true
+# - set `SONAR_TOKEN` to one of your user tokens from sonarqube.com (http://docs.sonarqube.org/display/SONAR/User+Token), disable displaying the value in the build log!
+#
+# If you want to publish the build results onto the gh-pages branch (when on master):
+# - set `PUBLISH_GH_PAGES` to true
+# - set `GH_TOKEN` to one of your personal access tokens from GitHub (https://help.github.com/articles/creating-an-access-token-for-command-line-use/), disable displaying the value in the build log!
+# - set `GH_USERNAME` to the GitHub username to which the personal access token belongs
+
+sudo: false
 dist: trusty
-group: edge
 
 language: java
 cache:
@@ -10,7 +24,7 @@ jdk:
   - oraclejdk8
   - openjdk8
 before_install: pip install --user codecov
-before_script: # init GUI for tests that can't run headless
+before_script: # init GUI for tests that can't run headless (https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI)
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
@@ -25,6 +39,7 @@ deploy:
     - "build/tmp/jar/MANIFEST.MF"
   skip_cleanup: true
   on:
+    condition: "$DEPLOY_GITHUB_RELEASES = true"
     tags: true
 
 # Deploy to GitHub pages

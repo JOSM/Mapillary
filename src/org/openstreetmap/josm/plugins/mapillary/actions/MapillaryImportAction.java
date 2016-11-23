@@ -15,12 +15,12 @@ import javax.swing.JFileChooser;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -32,8 +32,6 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapillaryImportAction extends JosmAction {
   private static final long serialVersionUID = 4086660991261961490L;
-  private final StringProperty startDirProp =
-    new StringProperty("mapillary.start-directory", System.getProperty("user.home"));
 
   public MapillaryImportAction() {
     this(
@@ -79,7 +77,7 @@ public class MapillaryImportAction extends JosmAction {
    */
   public List<MapillaryAbstractImage> chooseImages() {
     final JFileChooser chooser = new JFileChooser();
-    chooser.setCurrentDirectory(new File(startDirProp.get()));
+    chooser.setCurrentDirectory(new File(MapillaryProperties.START_DIR.get()));
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
@@ -101,7 +99,7 @@ public class MapillaryImportAction extends JosmAction {
       }
       if (chooser.getSelectedFiles().length >= 1) {
         final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];
-        startDirProp.put(
+        MapillaryProperties.START_DIR.put(
           lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()
         );
       }

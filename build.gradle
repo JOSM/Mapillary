@@ -1,5 +1,6 @@
 plugins {
   id "org.sonarqube" version "2.2"
+  id "org.kordamp.markdown.convert" version "1.1.0"
 }
 
 apply plugin: 'eclipse'
@@ -17,6 +18,7 @@ configurations {
 apply from: 'gradle/manifest.gradle'
 apply from: 'gradle/josm-tasks.gradle'
 apply from: 'gradle/tool-config.gradle'
+apply from: 'gradle/markdown.gradle'
 
 sourceCompatibility = '1.8'
 
@@ -66,8 +68,8 @@ sourceSets {
       srcDirs = ["$projectDir"]
       include 'data/**'
       include 'images/**'
-      include 'README'
-      include 'LICENSE*'
+      include 'LICENSE'
+      include 'LICENSE_*'
     }
   }
   minJosmVersion {

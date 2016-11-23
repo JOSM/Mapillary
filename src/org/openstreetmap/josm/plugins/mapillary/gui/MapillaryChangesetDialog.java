@@ -57,7 +57,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final JScrollPane mainPane;
   private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
   private final JProgressBar uploadPendingProgress = new JProgressBar();
-  private boolean uploadPending;
 
   private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
 
@@ -133,9 +132,8 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   }
 
   public void setUploadPending(final boolean isUploadPending) {
-    uploadPending = isUploadPending;
     removeAll();
-    if (uploadPending) {
+    if (isUploadPending) {
       setLayout(new BorderLayout());
       add(mainPane, BorderLayout.CENTER);
       add(uploadPendingProgress, BorderLayout.SOUTH);

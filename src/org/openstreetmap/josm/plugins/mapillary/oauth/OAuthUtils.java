@@ -10,7 +10,7 @@ import java.net.URL;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.openstreetmap.josm.data.preferences.StringProperty;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
  * A set of utilities related to OAuth.
@@ -19,7 +19,6 @@ import org.openstreetmap.josm.data.preferences.StringProperty;
  *
  */
 public final class OAuthUtils {
-  public static final StringProperty PROP_ACCESS_TOKEN = new StringProperty("mapillary.access-token", null);
 
   private OAuthUtils() {
     // Private constructor to avoid instantiation
@@ -38,7 +37,7 @@ public final class OAuthUtils {
   public static JsonObject getWithHeader(URL url) throws IOException {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Bearer " + PROP_ACCESS_TOKEN.get());
+    con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
 
     try (
       BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))

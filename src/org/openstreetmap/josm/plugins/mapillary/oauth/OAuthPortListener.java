@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 
 /**
@@ -66,7 +67,7 @@ public class OAuthPortListener extends Thread {
       // Saves the access token in preferences.
       MapillaryUser.setTokenValid(true);
       if (Main.main != null) {
-        OAuthUtils.PROP_ACCESS_TOKEN.put(accessToken);
+        MapillaryProperties.ACCESS_TOKEN.put(accessToken);
         String username = MapillaryUser.getUsername();
         Main.info("The username is: " + username);
         if (callback != null) {

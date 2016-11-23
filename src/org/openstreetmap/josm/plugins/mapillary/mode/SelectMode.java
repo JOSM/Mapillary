@@ -26,6 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
@@ -103,12 +104,12 @@ public class SelectMode extends AbstractMode {
             ) {
       Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
-        this.data.getMultiSelectedImages().parallelStream()
+        this.data.getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));
       } else { // move
         LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());
         LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
-        this.data.getMultiSelectedImages().parallelStream()
+        this.data.getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
       Main.map.repaint();
@@ -143,7 +144,7 @@ public class SelectMode extends AbstractMode {
             && Main.map.mapMode != Main.map.mapModeSelect) {
       return;
     }
-    if (!new BooleanProperty("mapillary.hover-enabled", true).get()) {
+    if (!MapillaryProperties.HOVER_ENABLED.get()) {
       return;
     }
 
