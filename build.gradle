@@ -25,6 +25,9 @@ sourceCompatibility = '1.8'
 repositories {
   // for JUnit
   mavenCentral()
+  maven {
+    url "https://oss.sonatype.org/content/repositories/snapshots"
+  }
   //for josm-(latest|tested).jar
   ivy {
     url 'https://josm.openstreetmap.de/download'

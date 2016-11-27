@@ -46,8 +46,3 @@ deploy:
 after_script: ./.travis/after_script
 
 after_success: codecov
-
-matrix:
-  fast_finish: true
-  allow_failures:
-  - jdk: oraclejdk9
