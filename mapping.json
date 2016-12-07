@@ -1,4 +1,4 @@
-export const mapping = {
+{
     "complementary--both-directions--g1": {
         "regions": [
             "us"
