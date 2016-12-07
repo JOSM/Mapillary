@@ -1,7 +1,3 @@
-declare module 'mapillary_sprite_source' {
-
-  export let mapping: { [index: string]: {
-    regions: string[]
-  } };
-
-}
+export const mapping: { [index: string]: {
+  regions: string[]
+} };
