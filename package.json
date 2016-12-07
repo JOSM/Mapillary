@@ -1,6 +1,6 @@
 {
   "name": "mapillary_sprite_source",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "SVG sources for generating sprites",
   "main": "index.js",
   "scripts": {
