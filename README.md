@@ -1,4 +1,6 @@
-# sprite-source
+# mapillary_sprite_source
+
+Source repository of `svg` files to generate sprites for mapillary.com
 
 ## Requirements
 * `node` & `npm`
