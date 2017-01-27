@@ -25,9 +25,6 @@ sourceCompatibility = '1.8'
 repositories {
   // for JUnit
   mavenCentral()
-  maven {
-    url "https://oss.sonatype.org/content/repositories/snapshots"
-  }
   //for josm-(latest|tested).jar
   ivy {
     url 'https://josm.openstreetmap.de/download'
@@ -54,7 +51,7 @@ dependencies {
    * Please check for numeric versions, if that specific version is available for download from https://josm.openstreetmap.de/download/ .
    * If not, choose the next higher number that is available, or the gradle build will break.
    */
-  compile(':josm:11223')
+  compile(':josm:11514')
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   requiredPlugin (name: 'apache-commons'){changing=true}
   requiredPlugin (name: 'apache-http'){changing=true}
