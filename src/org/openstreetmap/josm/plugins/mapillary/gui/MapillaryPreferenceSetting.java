@@ -11,6 +11,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,12 +29,12 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -62,8 +63,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox hoverEnabled =
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
 
-  private final JButton loginButton = new MapillaryButton(I18n.tr("Login"), new LoginAction(this));
-  private final JButton logoutButton = new MapillaryButton(I18n.tr("Logout"), new LogoutAction());
+  private final JButton loginButton = new MapillaryButton(new LoginAction(this));
+  private final JButton logoutButton = new MapillaryButton(new LogoutAction());
   private final JLabel loginLabel = new JLabel();
   private final JPanel loginPanel = new JPanel();
 
@@ -185,6 +186,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     private final transient MapillaryLoginListener callback;
 
     LoginAction(MapillaryLoginListener loginCallback) {
+      super(I18n.tr("Login"));
       this.callback = loginCallback;
     }
 
@@ -207,9 +209,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    *
    */
   private class LogoutAction extends AbstractAction {
-
     private static final long serialVersionUID = 3434780936404707219L;
 
+    private LogoutAction() {
+      super(I18n.tr("Logout"));
+    }
     @Override
     public void actionPerformed(ActionEvent arg0) {
       MapillaryUser.reset();
