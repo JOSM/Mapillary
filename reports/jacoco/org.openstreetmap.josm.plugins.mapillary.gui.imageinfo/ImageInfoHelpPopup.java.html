@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageInfoHelpPopup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.imageinfo</a> &gt; <span class="el_source">ImageInfoHelpPopup.java</span></div><h1>ImageInfoHelpPopup.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextPane;
+
+import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
+import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+
+/**
+ *
+ */
+public class ImageInfoHelpPopup extends JPopupMenu {
+  private final Component invokerComp;
+  private boolean alreadyDisplayed;
+
+<span class="nc" id="L29">  public ImageInfoHelpPopup(Component invoker) {</span>
+<span class="nc" id="L30">    this.invokerComp = invoker;</span>
+<span class="nc" id="L31">    removeAll();</span>
+<span class="nc" id="L32">    setLayout(new BorderLayout());</span>
+
+<span class="nc" id="L34">    JPanel topBar = new JPanel();</span>
+<span class="nc" id="L35">    topBar.add(new JLabel(ImageProvider.get(&quot;mapillary-logo-white&quot;)));</span>
+<span class="nc" id="L36">    topBar.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);</span>
+<span class="nc" id="L37">    add(topBar, BorderLayout.NORTH);</span>
+
+<span class="nc" id="L39">    JTextPane mainText = new JTextPane();</span>
+<span class="nc" id="L40">    mainText.setContentType(&quot;text/html&quot;);</span>
+<span class="nc" id="L41">    mainText.setFont(SelectableLabel.DEFAULT_FONT);</span>
+<span class="nc" id="L42">    mainText.setText(</span>
+      &quot;&lt;html&gt;&lt;div style='width:250px'&gt;&quot; +
+<span class="nc" id="L44">      I18n.tr(&quot;The Mapillary plugin now uses a separate panel to display extra information (like the image key) and actions for the currently selected Mapillary image (like viewing it in a browser).&quot;) +</span>
+      &quot;&lt;br&gt;&lt;br&gt;&quot; +
+<span class="nc" id="L46">      I18n.tr(&quot;It can be activated by clicking the left button at the bottom of this message or the button in the toolbar on the left, which uses the same icon.&quot;) +</span>
+      &quot;&lt;/div&gt;&lt;/html&gt;&quot;
+    );
+<span class="nc" id="L49">    add(mainText, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L51">    JPanel bottomBar = new JPanel();</span>
+<span class="nc" id="L52">    bottomBar.setBackground(new Color(0x00FFFFFF, true));</span>
+<span class="nc" id="L53">    MapillaryButton infoButton = new MapillaryButton(ImageInfoPanel.getInstance().getToggleAction());</span>
+<span class="nc" id="L54">    infoButton.addActionListener(e -&gt; setVisible(false));</span>
+<span class="nc" id="L55">    bottomBar.add(infoButton);</span>
+<span class="nc" id="L56">    MapillaryButton closeBtn = new MapillaryButton(new AbstractAction() {</span>
+      @Override
+      public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L59">        setVisible(false);</span>
+<span class="nc" id="L60">        MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(0);</span>
+<span class="nc" id="L61">      }</span>
+    });
+<span class="nc" id="L63">    closeBtn.setText(I18n.tr(&quot;I got it, close this.&quot;));</span>
+<span class="nc" id="L64">    bottomBar.add(closeBtn);</span>
+<span class="nc" id="L65">    add(bottomBar, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L67">    setBackground(Color.WHITE);</span>
+<span class="nc" id="L68">  }</span>
+
+  /**
+   * @return &lt;code&gt;true&lt;/code&gt; if the popup is displayed
+   */
+  public boolean showPopup() {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">    if (alreadyDisplayed) {</span>
+<span class="nc" id="L75">      return false;</span>
+    }
+<span class="nc" id="L77">    show(invokerComp, invokerComp.getWidth(), 0);</span>
+<span class="nc" id="L78">    alreadyDisplayed = true;</span>
+<span class="nc" id="L79">    return true;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

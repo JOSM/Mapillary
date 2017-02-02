@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebLinkAction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.imageinfo</a> &gt; <span class="el_source">WebLinkAction.java</span></div><h1>WebLinkAction.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
+
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.swing.AbstractAction;
+
+import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+
+/**
+ *
+ */
+public class WebLinkAction extends AbstractAction {
+  private static final long serialVersionUID = 2397830510179013823L;
+
+  private URL url;
+
+  public WebLinkAction(final String name, final URL url) {
+<span class="nc" id="L25">    super(name, ImageProvider.get(&quot;link&quot;, ImageSizes.SMALLICON));</span>
+<span class="nc" id="L26">    setURL(url);</span>
+<span class="nc" id="L27">  }</span>
+
+  /**
+   * @param url the url to set
+   */
+  public final void setURL(URL url) {
+<span class="nc" id="L33">    this.url = url;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    setEnabled(url != null);</span>
+<span class="nc" id="L35">  }</span>
+
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    try {
+<span class="nc" id="L43">      MapillaryUtils.browse(url);</span>
+<span class="nc" id="L44">    } catch (IOException e1) {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">      new Notification(I18n.tr(&quot;Could not open the URL {0} in a browser&quot;, url == null ? &quot;‹null›&quot; : url)).show();</span>
+<span class="nc" id="L46">    }</span>
+<span class="nc" id="L47">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

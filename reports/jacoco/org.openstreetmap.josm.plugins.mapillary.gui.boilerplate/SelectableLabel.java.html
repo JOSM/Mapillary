@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectableLabel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.boilerplate</a> &gt; <span class="el_source">SelectableLabel.java</span></div><h1>SelectableLabel.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.boilerplate;
+
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.JTextPane;
+import javax.swing.UIManager;
+
+public class SelectableLabel extends JTextPane {
+  private static final long serialVersionUID = 6385815019929685047L;
+<span class="nc" id="L12">  public static final Font DEFAULT_FONT = UIManager.getFont(&quot;Label.font&quot;).deriveFont(Font.PLAIN);</span>
+<span class="nc" id="L13">  public static final Color DEFAULT_BACKGROUND = UIManager.getColor(&quot;Panel.background&quot;);</span>
+
+  public SelectableLabel() {
+<span class="nc" id="L16">    super();</span>
+<span class="nc" id="L17">    init();</span>
+<span class="nc" id="L18">  }</span>
+
+  public SelectableLabel(String text) {
+<span class="nc" id="L21">    this();</span>
+<span class="nc" id="L22">    setText(text);</span>
+<span class="nc" id="L23">  }</span>
+
+  private void init() {
+<span class="nc" id="L26">    setEditable(false);</span>
+<span class="nc" id="L27">    setFont(DEFAULT_FONT);</span>
+<span class="nc" id="L28">    setContentType(&quot;text/html&quot;);</span>
+<span class="nc" id="L29">    setBackground(DEFAULT_BACKGROUND);</span>
+<span class="nc" id="L30">    setBorder(null);</span>
+<span class="nc" id="L31">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

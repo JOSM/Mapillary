@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
@@ -23,7 +22,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  *
  */
 public class MapillaryUploadDialog extends JPanel {
-
   private static final long serialVersionUID = 2517368588113991767L;
 
   /** Upload the whole sequence. */
@@ -34,37 +32,37 @@ public class MapillaryUploadDialog extends JPanel {
   /**
    * Creates the JPanel and adds the needed elements.
    */
-<span class="nc" id="L37">  public MapillaryUploadDialog() {</span>
-<span class="nc" id="L38">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
-<span class="nc" id="L40">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
+<span class="nc" id="L35">  public MapillaryUploadDialog() {</span>
+<span class="nc" id="L36">    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">    if (MapillaryUser.getUsername() == null) {</span>
+<span class="nc" id="L38">      this.add(new JLabel(tr(&quot;Go to setting and log in to Mapillary before uploading.&quot;)));</span>
     } else {
-<span class="nc" id="L42">      ButtonGroup group = new ButtonGroup();</span>
-<span class="nc" id="L43">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
-<span class="nc" id="L45">        this.sequence.setEnabled(false);</span>
+<span class="nc" id="L40">      ButtonGroup group = new ButtonGroup();</span>
+<span class="nc" id="L41">      this.sequence = new JRadioButton(tr(&quot;Upload selected sequence&quot;));</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">      if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L43">        this.sequence.setEnabled(false);</span>
       }
-<span class="nc" id="L47">      group.add(this.sequence);</span>
-<span class="nc" id="L48">      add(this.sequence);</span>
-<span class="nc" id="L49">      group.setSelected(this.sequence.getModel(), true);</span>
-<span class="nc" id="L50">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
-<span class="nc" id="L51">      this.delete.setSelected(MapillaryProperties.DELETE_AFTER_UPLOAD.get());</span>
-<span class="nc" id="L52">      add(this.delete);</span>
+<span class="nc" id="L45">      group.add(this.sequence);</span>
+<span class="nc" id="L46">      add(this.sequence);</span>
+<span class="nc" id="L47">      group.setSelected(this.sequence.getModel(), true);</span>
+<span class="nc" id="L48">      this.delete = new JCheckBox(tr(&quot;Delete after upload&quot;));</span>
+<span class="nc" id="L49">      this.delete.setSelected(MapillaryProperties.DELETE_AFTER_UPLOAD.get());</span>
+<span class="nc" id="L50">      add(this.delete);</span>
     }
-<span class="nc" id="L54">  }</span>
+<span class="nc" id="L52">  }</span>
 
   /**
    * @return the delete checkbox of the dialog
    */
   public JCheckBox getDelete() {
-<span class="nc" id="L60">    return delete;</span>
+<span class="nc" id="L58">    return delete;</span>
   }
 
   /**
    * @return the sequence radio button of the dialog
    */
   public JRadioButton getSequence() {
-<span class="nc" id="L67">    return sequence;</span>
+<span class="nc" id="L65">    return sequence;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201611140741</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

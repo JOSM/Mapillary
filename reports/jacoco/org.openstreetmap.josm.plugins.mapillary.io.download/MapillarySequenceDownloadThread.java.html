@@ -17,6 +17,7 @@ import javax.json.JsonObject;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -44,90 +45,92 @@ public class MapillarySequenceDownloadThread extends Thread {
    * @param bounds The bounds inside which the sequences should be downloaded
    * @param page the pagenumber of the results that should be retrieved
    */
-<span class="nc" id="L47">  public MapillarySequenceDownloadThread(ExecutorService ex, Bounds bounds, int page) {</span>
-<span class="nc" id="L48">    this.bounds = bounds;</span>
-<span class="nc" id="L49">    this.page = page;</span>
-<span class="nc" id="L50">    this.ex = ex;</span>
-<span class="nc" id="L51">  }</span>
+<span class="nc" id="L48">  public MapillarySequenceDownloadThread(ExecutorService ex, Bounds bounds, int page) {</span>
+<span class="nc" id="L49">    this.bounds = bounds;</span>
+<span class="nc" id="L50">    this.page = page;</span>
+<span class="nc" id="L51">    this.ex = ex;</span>
+<span class="nc" id="L52">  }</span>
 
   @Override
   public void run() {
-<span class="nc" id="L55">    try (</span>
-<span class="nc" id="L56">      BufferedReader br = new BufferedReader(new InputStreamReader(</span>
-<span class="nc" id="L57">        MapillaryURL.searchSequenceURL(bounds, page).openStream(), &quot;UTF-8&quot;</span>
+<span class="nc" id="L56">    try (</span>
+<span class="nc" id="L57">      BufferedReader br = new BufferedReader(new InputStreamReader(</span>
+<span class="nc" id="L58">        MapillaryURL.searchSequenceURL(bounds, page).openStream(), &quot;UTF-8&quot;</span>
       ))
     ) {
-<span class="nc" id="L60">      JsonObject jsonall = Json.createReader(br).readObject();</span>
+<span class="nc" id="L61">      JsonObject jsonall = Json.createReader(br).readObject();</span>
 
-<span class="nc bnc" id="L62" title="All 4 branches missed.">      if (!jsonall.getBoolean(&quot;more&quot;) &amp;&amp; !this.ex.isShutdown())</span>
-<span class="nc" id="L63">        this.ex.shutdown();</span>
-<span class="nc" id="L64">      JsonArray jsonseq = jsonall.getJsonArray(&quot;ss&quot;);</span>
-<span class="nc" id="L65">      boolean isSequenceWrong = false;</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonseq.size(); i++) {</span>
-<span class="nc" id="L67">        JsonObject jsonobj = jsonseq.getJsonObject(i);</span>
-<span class="nc" id="L68">        JsonArray cas = jsonobj.getJsonArray(&quot;cas&quot;);</span>
-<span class="nc" id="L69">        JsonArray coords = jsonobj.getJsonArray(&quot;coords&quot;);</span>
-<span class="nc" id="L70">        JsonArray keys = jsonobj.getJsonArray(&quot;keys&quot;);</span>
-<span class="nc" id="L71">        ArrayList&lt;MapillaryImage&gt; images = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        for (int j = 0; j &lt; cas.size(); j++) {</span>
+<span class="nc bnc" id="L63" title="All 4 branches missed.">      if (!jsonall.getBoolean(&quot;more&quot;) &amp;&amp; !this.ex.isShutdown())</span>
+<span class="nc" id="L64">        this.ex.shutdown();</span>
+<span class="nc" id="L65">      JsonArray jsonseq = jsonall.getJsonArray(&quot;ss&quot;);</span>
+<span class="nc" id="L66">      boolean isSequenceWrong = false;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">      for (int i = 0; i &lt; jsonseq.size(); i++) {</span>
+<span class="nc" id="L68">        JsonObject jsonobj = jsonseq.getJsonObject(i);</span>
+<span class="nc" id="L69">        JsonArray cas = jsonobj.getJsonArray(&quot;cas&quot;);</span>
+<span class="nc" id="L70">        JsonArray coords = jsonobj.getJsonArray(&quot;coords&quot;);</span>
+<span class="nc" id="L71">        JsonArray keys = jsonobj.getJsonArray(&quot;keys&quot;);</span>
+<span class="nc" id="L72">        ArrayList&lt;MapillaryImage&gt; images = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (int j = 0; j &lt; cas.size(); j++) {</span>
           try {
-<span class="nc" id="L74">            images.add(new MapillaryImage(</span>
-<span class="nc" id="L75">              keys.getString(j),</span>
+<span class="nc" id="L75">            images.add(new MapillaryImage(</span>
+<span class="nc" id="L76">              keys.getString(j),</span>
               new LatLon(
-<span class="nc" id="L77">                coords.getJsonArray(j).getJsonNumber(1).doubleValue(),</span>
-<span class="nc" id="L78">                coords.getJsonArray(j).getJsonNumber(0).doubleValue()</span>
+<span class="nc" id="L78">                coords.getJsonArray(j).getJsonNumber(1).doubleValue(),</span>
+<span class="nc" id="L79">                coords.getJsonArray(j).getJsonNumber(0).doubleValue()</span>
               ),
-<span class="nc" id="L80">              cas.getJsonNumber(j).doubleValue()));</span>
-<span class="nc" id="L81">          } catch (IndexOutOfBoundsException e) {</span>
-<span class="nc" id="L82">            Main.warn(&quot;Mapillary bug at &quot; + MapillaryURL.searchSequenceURL(bounds, page));</span>
-<span class="nc" id="L83">            isSequenceWrong = true;</span>
-<span class="nc" id="L84">          }</span>
+<span class="nc" id="L81">              cas.getJsonNumber(j).doubleValue()));</span>
+<span class="nc" id="L82">          } catch (IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L83">            Main.warn(&quot;Mapillary bug at &quot; + MapillaryURL.searchSequenceURL(bounds, page));</span>
+<span class="nc" id="L84">            isSequenceWrong = true;</span>
+<span class="nc" id="L85">          }</span>
         }
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (isSequenceWrong)</span>
-<span class="nc" id="L87">          break;</span>
-<span class="nc" id="L88">        MapillarySequence sequence = new MapillarySequence(</span>
-<span class="nc" id="L89">          jsonobj.getString(&quot;key&quot;), jsonobj.getJsonNumber(&quot;captured_at&quot;)</span>
-<span class="nc" id="L90">          .longValue());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (isSequenceWrong)</span>
+<span class="nc" id="L88">          break;</span>
+<span class="nc" id="L89">        MapillarySequence sequence = new MapillarySequence(</span>
+<span class="nc" id="L90">          jsonobj.getString(&quot;key&quot;), jsonobj.getJsonNumber(&quot;captured_at&quot;)</span>
+<span class="nc" id="L91">          .longValue());</span>
 
         // Here it gets only those images which are in the downloaded
         // area.
-<span class="nc" id="L94">        List&lt;MapillaryImage&gt; finalImages = images.parallelStream().filter(MapillarySequenceDownloadThread::isInside).collect(Collectors.toList());</span>
+<span class="nc" id="L95">        List&lt;MapillaryImage&gt; finalImages = images.parallelStream().filter(MapillarySequenceDownloadThread::isInside).collect(Collectors.toList());</span>
 
-<span class="nc" id="L96">        synchronized (MapillarySequenceDownloadThread.class) {</span>
-<span class="nc" id="L97">          synchronized (MapillaryAbstractImage.class) {</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">            for (MapillaryImage img : finalImages) {</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">              if (MapillaryLayer.getInstance().getData().getImages().contains(img)) {</span>
+<span class="nc" id="L97">        synchronized (MapillarySequenceDownloadThread.class) {</span>
+<span class="nc" id="L98">          synchronized (MapillaryAbstractImage.class) {</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            for (MapillaryImage img : finalImages) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">              if (MapillaryLayer.getInstance().getData().getImages().contains(img)) {</span>
                 // The image in finalImages is substituted by the one in the
                 // database, as they represent the same picture.
 
-<span class="nc" id="L103">                final MapillaryImage lambdaImg = img;</span>
+<span class="nc" id="L104">                final MapillaryImage lambdaImg = img;</span>
                 //noinspection OptionalGetWithoutIsPresent
-<span class="nc" id="L105">                img = (MapillaryImage) MapillaryLayer.getInstance().getData().getImages().parallelStream().filter(source -&gt; source.equals(lambdaImg)).findAny().get();</span>
+<span class="nc" id="L106">                img = (MapillaryImage) MapillaryLayer.getInstance().getData().getImages().parallelStream().filter(source -&gt; source.equals(lambdaImg)).findAny().get();</span>
 
-<span class="nc" id="L107">                sequence.add(img);</span>
-<span class="nc" id="L108">                img.setSequence(sequence);</span>
-<span class="nc" id="L109">                finalImages.set(finalImages.indexOf(img), img);</span>
-<span class="nc" id="L110">              } else {</span>
-<span class="nc" id="L111">                img.setSequence(sequence);</span>
-<span class="nc" id="L112">                sequence.add(img);</span>
+<span class="nc" id="L108">                sequence.add(img);</span>
+<span class="nc" id="L109">                img.setSequence(sequence);</span>
+<span class="nc" id="L110">                finalImages.set(finalImages.indexOf(img), img);</span>
+<span class="nc" id="L111">              } else {</span>
+<span class="nc" id="L112">                img.setSequence(sequence);</span>
+<span class="nc" id="L113">                sequence.add(img);</span>
               }
-<span class="nc" id="L114">            }</span>
-<span class="nc" id="L115">          }</span>
-<span class="nc" id="L116">        }</span>
+<span class="nc" id="L115">            }</span>
+<span class="nc" id="L116">          }</span>
+<span class="nc" id="L117">        }</span>
 
-<span class="nc" id="L118">        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet&lt;&gt;(finalImages), false);</span>
+<span class="nc" id="L119">        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet&lt;&gt;(finalImages), false);</span>
       }
-<span class="nc bnc" id="L120" title="All 8 branches missed.">    } catch (IOException e) {</span>
-<span class="nc" id="L121">      Main.error(String.format(</span>
+<span class="nc bnc" id="L121" title="All 8 branches missed.">    } catch (IOException e) {</span>
+<span class="nc" id="L122">      String message = String.format(</span>
         &quot;Error reading the url %s, this might be a Mapillary problem.&quot;,
-<span class="nc" id="L123">        MapillaryURL.searchSequenceURL(bounds, page)</span>
-      ), e);
-<span class="nc" id="L125">    }</span>
-<span class="nc" id="L126">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L127">  }</span>
+<span class="nc" id="L124">        MapillaryURL.searchSequenceURL(bounds, page)</span>
+      );
+<span class="nc" id="L126">      new Notification(message).show();</span>
+<span class="nc" id="L127">      Main.error(message, e);</span>
+<span class="nc" id="L128">    }</span>
+<span class="nc" id="L129">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L130">  }</span>
 
   private static boolean isInside(MapillaryAbstractImage image) {
-<span class="nc" id="L130">    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -&gt; b.contains(image.getLatLon()));</span>
+<span class="nc" id="L133">    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -&gt; b.contains(image.getLatLon()));</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201611140741</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

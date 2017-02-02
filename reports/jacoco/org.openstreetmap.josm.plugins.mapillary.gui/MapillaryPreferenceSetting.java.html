@@ -28,12 +28,12 @@ import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -62,8 +62,8 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="fc" id="L62">  private final JCheckBox hoverEnabled =</span>
 <span class="fc" id="L63">    new JCheckBox(I18n.tr(&quot;Preview images when hovering its icon&quot;), MapillaryProperties.HOVER_ENABLED.get());</span>
 
-<span class="fc" id="L65">  private final JButton loginButton = new MapillaryButton(I18n.tr(&quot;Login&quot;), new LoginAction(this));</span>
-<span class="fc" id="L66">  private final JButton logoutButton = new MapillaryButton(I18n.tr(&quot;Logout&quot;), new LogoutAction());</span>
+<span class="fc" id="L65">  private final JButton loginButton = new MapillaryButton(new LoginAction(this));</span>
+<span class="fc" id="L66">  private final JButton logoutButton = new MapillaryButton(new LogoutAction());</span>
 <span class="fc" id="L67">  private final JLabel loginLabel = new JLabel();</span>
 <span class="fc" id="L68">  private final JPanel loginPanel = new JPanel();</span>
 
@@ -126,11 +126,11 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="pc" id="L126">    }</span>
 
 <span class="fc" id="L128">    new Thread(() -&gt; {</span>
-<span class="nc" id="L129">      String username = MapillaryUser.getUsername();</span>
-<span class="nc bnc" id="L130" title="All 2 branches missed.">      if (username != null) {</span>
+<span class="fc" id="L129">      String username = MapillaryUser.getUsername();</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">      if (username != null) {</span>
 <span class="nc" id="L131">        SwingUtilities.invokeLater(() -&gt; onLogin(MapillaryUser.getUsername()));</span>
       }
-<span class="pc" id="L133">    }).start();</span>
+<span class="fc" id="L133">    }).start();</span>
 <span class="fc" id="L134">  }</span>
 
   @Override
@@ -184,20 +184,21 @@ import org.openstreetmap.josm.tools.I18n;
     private static final long serialVersionUID = -3908477563072057344L;
     private final transient MapillaryLoginListener callback;
 
-<span class="fc" id="L187">    LoginAction(MapillaryLoginListener loginCallback) {</span>
-<span class="fc" id="L188">      this.callback = loginCallback;</span>
-<span class="fc" id="L189">    }</span>
+    LoginAction(MapillaryLoginListener loginCallback) {
+<span class="fc" id="L188">      super(I18n.tr(&quot;Login&quot;));</span>
+<span class="fc" id="L189">      this.callback = loginCallback;</span>
+<span class="fc" id="L190">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L193">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
-<span class="nc" id="L194">      portListener.start();</span>
+<span class="nc" id="L194">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
+<span class="nc" id="L195">      portListener.start();</span>
       try {
-<span class="nc" id="L196">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
-<span class="nc" id="L197">      } catch (IOException e) {</span>
-<span class="nc" id="L198">        Main.error(e);</span>
-<span class="nc" id="L199">      }</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L197">        MapillaryUtils.browse(MapillaryURL.connectURL(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
+<span class="nc" id="L198">      } catch (IOException e) {</span>
+<span class="nc" id="L199">        Main.error(e);</span>
+<span class="nc" id="L200">      }</span>
+<span class="nc" id="L201">    }</span>
   }
 
   /**
@@ -206,15 +207,17 @@ import org.openstreetmap.josm.tools.I18n;
    * @author nokutu
    *
    */
-<span class="fc" id="L209">  private class LogoutAction extends AbstractAction {</span>
-
+  private class LogoutAction extends AbstractAction {
     private static final long serialVersionUID = 3434780936404707219L;
 
+<span class="fc" id="L213">    private LogoutAction() {</span>
+<span class="fc" id="L214">      super(I18n.tr(&quot;Logout&quot;));</span>
+<span class="fc" id="L215">    }</span>
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L215">      MapillaryUser.reset();</span>
-<span class="nc" id="L216">      onLogout();</span>
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L218">      MapillaryUser.reset();</span>
+<span class="nc" id="L219">      onLogout();</span>
+<span class="nc" id="L220">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201611140741</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

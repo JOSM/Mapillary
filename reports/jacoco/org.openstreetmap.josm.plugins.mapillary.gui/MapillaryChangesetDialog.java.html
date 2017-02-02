@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,20 +44,18 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @see MapillaryCommand
  */
 public final class MapillaryChangesetDialog extends ToggleDialog implements MapillaryChangesetListener {
-
   private static final long serialVersionUID = -3019715241209349372L;
-
   private static MapillaryChangesetDialog instance;
 
-<span class="nc" id="L51">  private final DefaultTreeModel changesetTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());</span>
-<span class="nc" id="L52">  private final JTree changesetTree = new JTree(this.changesetTreeModel);</span>
+<span class="nc" id="L50">  private final DefaultTreeModel changesetTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());</span>
+<span class="nc" id="L51">  private final JTree changesetTree = new JTree(this.changesetTreeModel);</span>
 
-<span class="nc" id="L54">  private final JSeparator separator = new JSeparator();</span>
-<span class="nc" id="L55">  private final Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
+<span class="nc" id="L53">  private final JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L54">  private final Component spacer = Box.createRigidArea(new Dimension(0, 3));</span>
 
-  private final JScrollPane mainPane;
-<span class="nc" id="L58">  private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));</span>
-<span class="nc" id="L59">  private final JProgressBar uploadPendingProgress = new JProgressBar();</span>
+<span class="nc" id="L56">  private final Container rootComponent = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L57">  private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));</span>
+<span class="nc" id="L58">  private final JProgressBar uploadPendingProgress = new JProgressBar();</span>
 
   private final ConcurrentHashMap&lt;Object, MapillaryAbstractImage&gt; map;
 
@@ -64,19 +63,20 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
    * Destroys the unique instance of the class.
    */
   public static void destroyInstance() {
-<span class="nc" id="L67">    MapillaryChangesetDialog.instance = null;</span>
-<span class="nc" id="L68">  }</span>
+<span class="nc" id="L66">    MapillaryChangesetDialog.instance = null;</span>
+<span class="nc" id="L67">  }</span>
 
   private MapillaryChangesetDialog() {
-<span class="nc" id="L71">    super(</span>
-<span class="nc" id="L72">      tr(&quot;Current Mapillary changeset&quot;),</span>
-      &quot;mapillary-upload.svg&quot;,
-<span class="nc" id="L74">      tr(&quot;Open Mapillary changeset dialog&quot;),</span>
-<span class="nc" id="L75">      Shortcut.registerShortcut(</span>
-<span class="nc" id="L76">        tr(&quot;Mapillary changeset&quot;), tr(&quot;Open Mapillary changeset dialog&quot;), KeyEvent.VK_9, Shortcut.NONE</span>
+<span class="nc" id="L70">    super(</span>
+<span class="nc" id="L71">      tr(&quot;Current Mapillary changeset&quot;),</span>
+      &quot;mapillary-upload&quot;,
+<span class="nc" id="L73">      tr(&quot;Open Mapillary changeset dialog&quot;),</span>
+<span class="nc" id="L74">      Shortcut.registerShortcut(</span>
+<span class="nc" id="L75">        tr(&quot;Mapillary changeset&quot;), tr(&quot;Open Mapillary changeset dialog&quot;), KeyEvent.VK_9, Shortcut.NONE</span>
       ),
       200
     );
+<span class="nc" id="L79">    createLayout(rootComponent, false, Collections.singletonList(submitButton));</span>
 
 <span class="nc" id="L81">    this.map = new ConcurrentHashMap&lt;&gt;();</span>
 
@@ -88,19 +88,17 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
 <span class="nc" id="L89">    JPanel treesPanel = new JPanel(new GridBagLayout());</span>
 <span class="nc" id="L90">    treesPanel.add(this.spacer, GBC.eol());</span>
-<span class="nc" id="L91">    this.spacer.setVisible(false);</span>
-<span class="nc" id="L92">    treesPanel.add(this.changesetTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
-<span class="nc" id="L93">    this.separator.setVisible(false);</span>
-<span class="nc" id="L94">    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
-<span class="nc" id="L95">    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));</span>
-<span class="nc" id="L96">    mainPane = new JScrollPane(treesPanel);</span>
+<span class="nc" id="L91">    treesPanel.add(this.changesetTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
+<span class="nc" id="L92">    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));</span>
+<span class="nc" id="L93">    treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));</span>
+<span class="nc" id="L94">    rootComponent.add(new JScrollPane(treesPanel), BorderLayout.CENTER);</span>
 
-<span class="nc" id="L98">    uploadPendingProgress.setIndeterminate(true);</span>
-<span class="nc" id="L99">    uploadPendingProgress.setString(tr(&quot;Submitting changeset to server…&quot;));</span>
-<span class="nc" id="L100">    uploadPendingProgress.setStringPainted(true);</span>
+<span class="nc" id="L96">    uploadPendingProgress.setIndeterminate(true);</span>
+<span class="nc" id="L97">    uploadPendingProgress.setString(tr(&quot;Submitting changeset to server…&quot;));</span>
+<span class="nc" id="L98">    uploadPendingProgress.setStringPainted(true);</span>
 
-<span class="nc" id="L102">    setUploadPending(false);</span>
-<span class="nc" id="L103">  }</span>
+<span class="nc" id="L100">    setUploadPending(false);</span>
+<span class="nc" id="L101">  }</span>
 
   /**
    * Returns the unique instance of the class.
@@ -108,49 +106,47 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
    * @return The unique instance of the class.
    */
   public static synchronized MapillaryChangesetDialog getInstance() {
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (instance == null) {</span>
-<span class="nc" id="L112">      instance = new MapillaryChangesetDialog();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">    if (instance == null) {</span>
+<span class="nc" id="L110">      instance = new MapillaryChangesetDialog();</span>
     }
-<span class="nc" id="L114">    return instance;</span>
+<span class="nc" id="L112">    return instance;</span>
   }
 
   private void buildTree() {
-<span class="nc" id="L118">    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">    submitButton.setEnabled(!changeset.isEmpty());</span>
-<span class="nc" id="L120">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
+<span class="nc" id="L116">    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    submitButton.setEnabled(!changeset.isEmpty());</span>
+<span class="nc" id="L118">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
 
-<span class="nc" id="L122">    this.map.clear();</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">    changeset.parallelStream().filter(command -&gt; command != null).forEach(command -&gt; {</span>
-<span class="nc" id="L124">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());</span>
-<span class="nc" id="L125">      this.map.put(node, command);</span>
-<span class="nc" id="L126">      changesetRoot.add(node);</span>
-<span class="nc" id="L127">    });</span>
+<span class="nc" id="L120">    this.map.clear();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">    changeset.parallelStream().filter(command -&gt; command != null).forEach(command -&gt; {</span>
+<span class="nc" id="L122">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());</span>
+<span class="nc" id="L123">      this.map.put(node, command);</span>
+<span class="nc" id="L124">      changesetRoot.add(node);</span>
+<span class="nc" id="L125">    });</span>
 
-<span class="nc" id="L129">    this.spacer.setVisible(changeset.isEmpty());</span>
+<span class="nc" id="L127">    this.spacer.setVisible(changeset.isEmpty());</span>
 
-<span class="nc" id="L131">    this.changesetTreeModel.setRoot(changesetRoot);</span>
-<span class="nc" id="L132">  }</span>
+<span class="nc" id="L129">    this.changesetTreeModel.setRoot(changesetRoot);</span>
+<span class="nc" id="L130">  }</span>
 
   public void setUploadPending(final boolean isUploadPending) {
-<span class="nc" id="L135">    removeAll();</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (isUploadPending) {</span>
-<span class="nc" id="L137">      setLayout(new BorderLayout());</span>
-<span class="nc" id="L138">      add(mainPane, BorderLayout.CENTER);</span>
-<span class="nc" id="L139">      add(uploadPendingProgress, BorderLayout.SOUTH);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">    if (isUploadPending) {</span>
+<span class="nc" id="L134">      rootComponent.add(uploadPendingProgress, BorderLayout.SOUTH);</span>
     } else {
-<span class="nc" id="L141">      createLayout(mainPane, false, Collections.singletonList(this.submitButton));</span>
+<span class="nc" id="L136">      rootComponent.remove(uploadPendingProgress);</span>
     }
-<span class="nc" id="L143">    revalidate();</span>
-<span class="nc" id="L144">    repaint();</span>
-<span class="nc" id="L145">  }</span>
+<span class="nc bnc" id="L138" title="All 6 branches missed.">    submitButton.setEnabled(!isUploadPending &amp;&amp; MapillaryLayer.hasInstance() &amp;&amp; !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());</span>
+<span class="nc" id="L139">    rootComponent.revalidate();</span>
+<span class="nc" id="L140">    rootComponent.repaint();</span>
+<span class="nc" id="L141">  }</span>
 
   @Override
   public void changesetChanged() {
-<span class="nc bnc" id="L149" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L150">      SwingUtilities.invokeLater(this::buildTree);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L146">      SwingUtilities.invokeLater(this::buildTree);</span>
     } else {
-<span class="nc" id="L152">      buildTree();</span>
+<span class="nc" id="L148">      buildTree();</span>
     }
-<span class="nc" id="L154">  }</span>
+<span class="nc" id="L150">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201611140741</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

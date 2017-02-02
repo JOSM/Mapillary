@@ -10,45 +10,44 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
-<span class="fc" id="L13">public class MapillaryLocationChangeset extends AbstractSet&lt;MapillaryImage&gt;{</span>
-  private static final long serialVersionUID = 2461033584553885626L;
-<span class="fc" id="L15">  private final Set&lt;MapillaryChangesetListener&gt; listeners = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L16">  private final Set&lt;MapillaryImage&gt; changeset = Collections.newSetFromMap(new ConcurrentHashMap&lt;&gt;());</span>
+<span class="fc" id="L13">public class MapillaryLocationChangeset extends AbstractSet&lt;MapillaryImage&gt; {</span>
+<span class="fc" id="L14">  private final Set&lt;MapillaryChangesetListener&gt; listeners = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L15">  private final Set&lt;MapillaryImage&gt; changeset = Collections.newSetFromMap(new ConcurrentHashMap&lt;&gt;());</span>
 
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
-<span class="nc" id="L20">    this.listeners.add(listener);</span>
-<span class="nc" id="L21">  }</span>
+<span class="nc" id="L19">    this.listeners.add(listener);</span>
+<span class="nc" id="L20">  }</span>
 
   public void cleanChangeset() {
-<span class="nc" id="L24">    changeset.clear();</span>
-<span class="nc" id="L25">    fireListeners();</span>
-<span class="nc" id="L26">  }</span>
+<span class="nc" id="L23">    changeset.clear();</span>
+<span class="nc" id="L24">    fireListeners();</span>
+<span class="nc" id="L25">  }</span>
 
   private void fireListeners() {
-<span class="fc" id="L29">    listeners.forEach(MapillaryChangesetListener::changesetChanged);</span>
-<span class="fc" id="L30">  }</span>
+<span class="fc" id="L28">    listeners.forEach(MapillaryChangesetListener::changesetChanged);</span>
+<span class="fc" id="L29">  }</span>
 
   public boolean add(MapillaryImage image) {
-<span class="fc" id="L33">    boolean add = changeset.add(image);</span>
-<span class="fc" id="L34">    fireListeners();</span>
-<span class="fc" id="L35">    return add;</span>
+<span class="fc" id="L32">    boolean add = changeset.add(image);</span>
+<span class="fc" id="L33">    fireListeners();</span>
+<span class="fc" id="L34">    return add;</span>
   }
 
   @Override
   public Iterator&lt;MapillaryImage&gt; iterator() {
-<span class="nc" id="L40">    return changeset.iterator();</span>
+<span class="nc" id="L39">    return changeset.iterator();</span>
   }
 
   @Override
   public int size() {
-<span class="nc" id="L45">    return changeset.size();</span>
+<span class="nc" id="L44">    return changeset.size();</span>
   }
 
   public boolean remove(Object image) {
-<span class="fc" id="L49">    boolean remove = changeset.remove(image);</span>
-<span class="fc" id="L50">    fireListeners();</span>
-<span class="fc" id="L51">    return remove;</span>
+<span class="fc" id="L48">    boolean remove = changeset.remove(image);</span>
+<span class="fc" id="L49">    fireListeners();</span>
+<span class="fc" id="L50">    return remove;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201611140741</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.2" timestamp="2016-11-27T18:18:41.742">
+<pmd version="5.5.3" timestamp="2017-02-02T17:46:33.633">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/AbstractTest.java">
-<violation beginline="15" endline="24" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
+<violation beginline="15" endline="24" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
 This abstract class does not have any abstract methods
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/MapillaryDataTest.java">
-<violation beginline="27" endline="27" begincolumn="11" endcolumn="32" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" variable="seq" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#SingularField" priority="3">
+<violation beginline="27" endline="27" begincolumn="11" endcolumn="32" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" variable="seq" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/design.html#SingularField" priority="3">
 Perhaps 'seq' could be replaced by a local variable.
 </violation>
-<violation beginline="128" endline="129" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="128" endline="129" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="135" endline="136" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="135" endline="136" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryDataTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/MapillaryLayerTest.java">
-<violation beginline="17" endline="17" begincolumn="17" endcolumn="26" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryLayerTest" variable="dummyLayer" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#ImmutableField" priority="3">
+<violation beginline="17" endline="17" begincolumn="17" endcolumn="26" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryLayerTest" variable="dummyLayer" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/design.html#ImmutableField" priority="3">
 Private field 'dummyLayer' could be made final; it is only initialized in the declaration or constructor.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/MapillarySequenceTest.java">
-<violation beginline="23" endline="23" begincolumn="11" endcolumn="30" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" variable="img3" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#SingularField" priority="3">
+<violation beginline="23" endline="23" begincolumn="11" endcolumn="30" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" variable="img3" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/design.html#SingularField" priority="3">
 Perhaps 'img3' could be replaced by a local variable.
 </violation>
-<violation beginline="68" endline="69" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="68" endline="69" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="75" endline="76" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="75" endline="76" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary" class="MapillarySequenceTest" method="nextAndPreviousTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/MapillaryTrafficSignLayerTest.java">
-<violation beginline="16" endline="16" begincolumn="17" endcolumn="26" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryTrafficSignLayerTest" variable="dummyLayer" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/design.html#ImmutableField" priority="3">
+<violation beginline="16" endline="16" begincolumn="17" endcolumn="26" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryTrafficSignLayerTest" variable="dummyLayer" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/design.html#ImmutableField" priority="3">
 Private field 'dummyLayer' could be made final; it is only initialized in the declaration or constructor.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.java">
-<violation beginline="57" endline="57" begincolumn="72" endcolumn="84" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="57" endline="57" begincolumn="72" endcolumn="84" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;loginButton&quot; appears 4 times in this file; the first occurrence is on line 57
 </violation>
-<violation beginline="59" endline="59" begincolumn="52" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="59" endline="59" begincolumn="52" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;loginPanel&quot; appears 4 times in this file; the first occurrence is on line 59
 </violation>
-<violation beginline="77" endline="77" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="77" endline="77" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;arbitrary&quot; appears 5 times in this file; the first occurrence is on line 77
 </violation>
-<violation beginline="77" endline="77" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="77" endline="77" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;default&quot; appears 6 times in this file; the first occurrence is on line 77
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordTest.java">
-<violation beginline="231" endline="233" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="231" endline="233" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListenerTest.java">
-<violation beginline="43" endline="43" begincolumn="14" endcolumn="22" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="OAuthPortListenerTest" method="responseTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
+<violation beginline="43" endline="43" begincolumn="14" endcolumn="22" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="OAuthPortListenerTest" method="responseTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.3/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </violation>
 </file>
