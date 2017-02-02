@@ -135,7 +135,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     } else {
       rootComponent.remove(uploadPendingProgress);
     }
-    submitButton.setEnabled(!isUploadPending && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
+    submitButton.setEnabled(!isUploadPending && MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
     rootComponent.revalidate();
     rootComponent.repaint();
   }
