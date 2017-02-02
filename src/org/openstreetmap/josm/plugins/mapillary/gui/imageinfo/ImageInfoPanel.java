@@ -58,9 +58,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr("Add Mapillary tag"));
 
-    JPanel imgButtons = new JPanel(new FlowLayout());
+    JPanel imgKey = new JPanel();
+    imgKey.add(imgKeyValue);
+    imgKey.add(copyButton);
+    JPanel imgButtons = new JPanel();
     imgButtons.add(new MapillaryButton(imgLinkAction, true));
-    imgButtons.add(copyButton);
     imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));
     seqKeyValue = new SelectableLabel();
 
@@ -72,9 +74,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_END;
-    root.add(new JLabel(I18n.tr("Image key")), gbc);
-    gbc.gridy++;
     root.add(new JLabel(I18n.tr("Image actions")), gbc);
+    gbc.gridy++;
+    root.add(new JLabel(I18n.tr("Image key")), gbc);
     gbc.gridy++;
     root.add(new JLabel(I18n.tr("Sequence key")), gbc);
 
@@ -83,9 +85,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx++;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_START;
-    root.add(imgKeyValue, gbc);
-    gbc.gridy++;
     root.add(imgButtons, gbc);
+    gbc.gridy++;
+    root.add(imgKey, gbc);
     gbc.gridy++;
     root.add(seqKeyValue, gbc);
 
@@ -126,7 +128,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    */
   @Override
   public void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
-    L.info(String.format(
+    L.debug(String.format(
       "Selected Mapillary image changed from %s to %s.",
       oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
       newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
@@ -157,7 +159,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    */
   @Override
   public void selectionChanged(final Collection<? extends OsmPrimitive> sel) {
-    L.info(String.format("Selection changed. %d primitives are selected.", sel.size()));
+    L.debug(String.format("Selection changed. %d primitives are selected.", sel.size()));
     synchronized (sel) {
       addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
     }
