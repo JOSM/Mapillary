@@ -282,9 +282,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   }
 
   private static class ResetAction extends AbstractAction {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1178261778165525040L;
 
     ResetAction() {
