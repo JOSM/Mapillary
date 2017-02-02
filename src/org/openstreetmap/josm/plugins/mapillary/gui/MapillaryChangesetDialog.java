@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -52,11 +53,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final JSeparator separator = new JSeparator();
   private final Component spacer = Box.createRigidArea(new Dimension(0, 3));
 
-  private final JScrollPane mainPane;
   private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
+  private final JPanel uploadPendingPanel = new JPanel();
   private final JProgressBar uploadPendingProgress = new JProgressBar();
 
   private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
+
+  private final Container rootComponent = new JPanel(new BorderLayout());
 
   /**
    * Destroys the unique instance of the class.
@@ -75,6 +78,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
       ),
       200
     );
+    createLayout(rootComponent, false, Collections.singletonList(submitButton));
 
     this.map = new ConcurrentHashMap<>();
 
@@ -86,12 +90,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
     JPanel treesPanel = new JPanel(new GridBagLayout());
     treesPanel.add(this.spacer, GBC.eol());
-    this.spacer.setVisible(false);
     treesPanel.add(this.changesetTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    this.separator.setVisible(false);
     treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));
-    mainPane = new JScrollPane(treesPanel);
+    rootComponent.add(new JScrollPane(treesPanel), BorderLayout.CENTER);
 
     uploadPendingProgress.setIndeterminate(true);
     uploadPendingProgress.setString(tr("Submitting changeset to server…"));
@@ -130,16 +132,14 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   }
 
   public void setUploadPending(final boolean isUploadPending) {
-    removeAll();
     if (isUploadPending) {
-      setLayout(new BorderLayout());
-      add(mainPane, BorderLayout.CENTER);
-      add(uploadPendingProgress, BorderLayout.SOUTH);
+      rootComponent.add(uploadPendingProgress, BorderLayout.SOUTH);
     } else {
-      createLayout(mainPane, false, Collections.singletonList(this.submitButton));
+      rootComponent.remove(uploadPendingProgress);
     }
-    revalidate();
-    repaint();
+    submitButton.setEnabled(!isUploadPending && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
+    rootComponent.revalidate();
+    rootComponent.repaint();
   }
 
   @Override
