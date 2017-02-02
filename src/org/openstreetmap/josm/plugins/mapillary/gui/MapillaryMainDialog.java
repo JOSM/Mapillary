@@ -209,11 +209,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
 
-      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0) {
-        if (imageInfoHelp.showPopup()) {
-          // Count down the number of times the popup will be displayed
-          MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() - 1);
-        }
+      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0 && imageInfoHelp.showPopup()) {
+        // Count down the number of times the popup will be displayed
+        MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() - 1);
       }
 
       // Enables/disables next/previous buttons

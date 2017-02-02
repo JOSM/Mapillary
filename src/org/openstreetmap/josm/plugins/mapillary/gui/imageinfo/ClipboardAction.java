@@ -34,7 +34,7 @@ public class ClipboardAction extends AbstractAction {
   /**
    * The UNIX epoch time when the popup for this action was shown the last time
    */
-  private long lastPopupShowTime = 0;
+  private long lastPopupShowTime;
   /**
    * The contents that are transfered into the clipboard when the action is executed.
    * If this is <code>null</code>, the clipboard won't be changed.

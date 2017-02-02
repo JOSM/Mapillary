@@ -23,7 +23,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  */
 public class ImageInfoHelpPopup extends JPopupMenu {
-  private Component invokerComp;
+  private final Component invokerComp;
   private boolean alreadyDisplayed;
 
   public ImageInfoHelpPopup(Component invoker) {

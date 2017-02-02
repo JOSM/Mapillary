@@ -53,13 +53,11 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final JSeparator separator = new JSeparator();
   private final Component spacer = Box.createRigidArea(new Dimension(0, 3));
 
+  private final Container rootComponent = new JPanel(new BorderLayout());
   private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
-  private final JPanel uploadPendingPanel = new JPanel();
   private final JProgressBar uploadPendingProgress = new JProgressBar();
 
   private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
-
-  private final Container rootComponent = new JPanel(new BorderLayout());
 
   /**
    * Destroys the unique instance of the class.

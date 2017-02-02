@@ -28,7 +28,7 @@ public class WebLinkAction extends AbstractAction {
   /**
    * @param url the url to set
    */
-  public void setURL(URL url) {
+  public final void setURL(URL url) {
     this.url = url;
     setEnabled(url != null);
   }
