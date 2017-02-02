@@ -30,18 +30,6 @@ public final class MapillaryURL {
   }
 
   /**
-   * Gives you the URL for the online editor of a specific mapillary image.
-   * @param imgKey the key of the image to which you want to link
-   * @return the URL of the online editor for the image with the given image key
-   * @throws IllegalArgumentException if the image key is <code>null</code> or invalid according
-   *           to {@link ValidationUtil#validateImageKey(String)}
-   */
-  public static URL browseEditURL(String imgKey) {
-    ValidationUtil.throwExceptionForInvalidImgKey(imgKey, false);
-    return string2URL(BASE_WEBSITE_URL, "map/e/", imgKey);
-  }
-
-  /**
    * Gives you the URL for the online viewer of a specific mapillary image.
    * @param key the key of the image to which you want to link
    * @return the URL of the online viewer for the image with the given image key

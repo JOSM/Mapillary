@@ -19,34 +19,6 @@ public class MapillaryURLTest {
   private static final String LIMIT_20_QUERY_PART = "limit=20";
 
   @Test
-  public void testBrowseEditURL() throws MalformedURLException {
-    assertEquals(
-        new URL("https://www.mapillary.com/map/e/1234567890123456789012"),
-        MapillaryURL.browseEditURL("1234567890123456789012")
-    );
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseEditURL() {
-    MapillaryURL.browseEditURL(null);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseEditURL2() {
-    MapillaryURL.browseEditURL("123456789012345678901");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseEditURL3() {
-    MapillaryURL.browseEditURL("12345678901234567890123");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseEditURL4() {
-    MapillaryURL.browseEditURL("123456789012345678901+");
-  }
-
-  @Test
   public void testBrowseImageURL() throws MalformedURLException {
     assertEquals(
         new URL("https://www.mapillary.com/map/im/1234567890123456789012"),
