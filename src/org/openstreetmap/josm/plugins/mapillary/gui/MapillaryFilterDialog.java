@@ -94,7 +94,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     this.signFilter.crossing, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
-    super(tr("Mapillary filter"), "mapillary-filter.svg",
+    super(tr("Mapillary filter"), "mapillary-filter",
       tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
         tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
         KeyEvent.VK_M, Shortcut.NONE), 200);

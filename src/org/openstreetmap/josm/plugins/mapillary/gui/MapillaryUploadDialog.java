@@ -22,7 +22,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  *
  */
 public class MapillaryUploadDialog extends JPanel {
-
   private static final long serialVersionUID = 2517368588113991767L;
 
   /** Upload the whole sequence. */

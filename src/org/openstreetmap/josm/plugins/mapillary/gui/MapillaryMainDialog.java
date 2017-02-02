@@ -95,7 +95,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private MapillaryCache thumbnailCache;
 
   private MapillaryMainDialog() {
-    super(tr(BASE_TITLE), "mapillary-main.svg", tr("Open Mapillary window"),
+    super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
             Shortcut.registerShortcut(tr("Mapillary dialog"),
                     tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
             200, false, MapillaryPreferenceSetting.class);

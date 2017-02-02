@@ -43,9 +43,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @see MapillaryCommand
  */
 public final class MapillaryChangesetDialog extends ToggleDialog implements MapillaryChangesetListener {
-
   private static final long serialVersionUID = -3019715241209349372L;
-
   private static MapillaryChangesetDialog instance;
 
   private final DefaultTreeModel changesetTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
@@ -70,7 +68,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private MapillaryChangesetDialog() {
     super(
       tr("Current Mapillary changeset"),
-      "mapillary-upload.svg",
+      "mapillary-upload",
       tr("Open Mapillary changeset dialog"),
       Shortcut.registerShortcut(
         tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
