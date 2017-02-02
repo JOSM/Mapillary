@@ -104,6 +104,17 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   }
 
   /* (non-Javadoc)
+   * @see org.openstreetmap.josm.gui.dialogs.ToggleDialog#stateChanged()
+   */
+  @Override
+  protected void stateChanged() {
+    super.stateChanged();
+    if (isDialogShowing()) { // If the user opens the dialog once, no longer show the help message
+      MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(0);
+    }
+  }
+
+  /* (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
    */
   @Override

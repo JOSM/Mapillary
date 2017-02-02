@@ -36,6 +36,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -69,6 +71,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private final SideButton playButton = new SideButton(new PlayAction());
   private final SideButton pauseButton = new SideButton(new PauseAction());
   private final SideButton stopButton = new SideButton(new StopAction());
+
+  private ImageInfoHelpPopup imageInfoHelp;
 
   /**
    * Buttons mode.
@@ -138,6 +142,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     return instance;
   }
 
+  public void setImageInfoHelp(ImageInfoHelpPopup popup) {
+    this.imageInfoHelp = popup;
+  }
+
   /**
    * Sets a new mode for the dialog.
    *
@@ -200,6 +208,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         disableAllButtons();
         return;
       }
+
+      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0) {
+        if (imageInfoHelp.showPopup()) {
+          // Count down the number of times the popup will be displayed
+          MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() - 1);
+        }
+      }
+
       // Enables/disables next/previous buttons
       this.nextButton.setEnabled(false);
       this.previousButton.setEnabled(false);

@@ -12,6 +12,7 @@ import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.Setting;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
 public final class MapillaryProperties {
@@ -44,6 +45,14 @@ public final class MapillaryProperties {
     new StringProperty("mapillary.download-mode", MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());
   public static final StringProperty START_DIR =
     new StringProperty("mapillary.start-directory", System.getProperty("user.home"));
+
+  /**
+   * The number of times the help popup for the {@link ImageInfoPanel} will be displayed.
+   * But regardless of this number, the popup will only show up at most once between two (re)starts of JOSM.
+   * Or opening the {@link ImageInfoPanel} immediately brings this number down to zero.
+   */
+  public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =
+    new IntegerProperty("mapillary.imageInfo.helpDisplayedCountdown", 4);
 
   static {
     // Convert old settings (e.g. mapillary-filter.svg) for ToggleDialogs with new ones without ".svg" at the end (e.g. mapillary-filter)
