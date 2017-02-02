@@ -224,9 +224,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         }
       }
       if (this.image instanceof MapillaryImage) {
-        this.mapillaryImageDisplay.hyperlink.setVisible(true);
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        this.mapillaryImageDisplay.hyperlink.setURL(mapillaryImage.getKey());
         // Downloads the thumbnail.
         this.mapillaryImageDisplay.setImage(null);
         if (this.thumbnailCache != null)
@@ -253,8 +251,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           }
         }
       } else if (this.image instanceof MapillaryImportedImage) {
-        this.mapillaryImageDisplay.hyperlink.setVisible(false);
-        this.mapillaryImageDisplay.hyperlink.setURL(null);
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           this.mapillaryImageDisplay.setImage(mapillaryImage.getImage());
@@ -275,7 +271,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     this.previousButton.setEnabled(false);
     this.blueButton.setEnabled(false);
     this.redButton.setEnabled(false);
-    this.mapillaryImageDisplay.hyperlink.setVisible(false);
   }
 
   /**

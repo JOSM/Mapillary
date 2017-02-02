@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,7 +18,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
@@ -49,9 +47,6 @@ public class MapillaryImageDisplay extends JComponent {
    * coordinates)
    */
   private Rectangle selectedRect;
-
-  /** HyperlinkLabel shown in the bottom right corner. */
-  protected HyperlinkLabel hyperlink;
 
   private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
@@ -333,14 +328,6 @@ public class MapillaryImageDisplay extends JComponent {
     addMouseListener(mouseListener);
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
-    this.setLayout(new BorderLayout());
-    JPanel southPanel = new JPanel();
-    southPanel.setLayout(new BorderLayout());
-    this.hyperlink = new HyperlinkLabel();
-    southPanel.add(this.hyperlink, BorderLayout.EAST);
-    southPanel.setOpaque(false);
-
-    add(southPanel, BorderLayout.SOUTH);
   }
 
   /**
