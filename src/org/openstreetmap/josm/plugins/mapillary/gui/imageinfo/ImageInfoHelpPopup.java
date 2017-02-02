@@ -43,7 +43,7 @@ public class ImageInfoHelpPopup extends JPopupMenu {
       "<html><div style='width:250px'>" +
       I18n.tr("The Mapillary plugin now uses a separate panel to display extra information (like the image key) and actions for the currently selected Mapillary image (like viewing it in a browser).") +
       "<br><br>" +
-      I18n.tr("It can be activated via a button in the toolbar on the left or by clicking the left button at the bottom of this message.") +
+      I18n.tr("It can be activated by clicking the left button at the bottom of this message or the button in the toolbar on the left, which uses the same icon.") +
       "</div></html>"
     );
     add(mainText, BorderLayout.CENTER);
