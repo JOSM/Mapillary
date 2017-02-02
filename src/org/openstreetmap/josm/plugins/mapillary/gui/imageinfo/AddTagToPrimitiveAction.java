@@ -11,6 +11,7 @@ import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public class AddTagToPrimitiveAction extends AbstractAction {
   private static final long serialVersionUID = 4834918715956633953L;
@@ -19,7 +20,7 @@ public class AddTagToPrimitiveAction extends AbstractAction {
   private AbstractPrimitive target;
 
   public AddTagToPrimitiveAction(final String name) {
-    super(name, ImageProvider.get("dialogs/add"));
+    super(name, ImageProvider.get("dialogs/add", ImageSizes.SMALLICON));
   }
 
   public void setTag(Tag tag) {

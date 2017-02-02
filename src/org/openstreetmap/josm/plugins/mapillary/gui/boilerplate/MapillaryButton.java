@@ -16,9 +16,13 @@ public class MapillaryButton extends JButton {
   private static final long serialVersionUID = 2619282066157874464L;
 
   public MapillaryButton(final Action action) {
+    this(action, false);
+  }
+
+  public MapillaryButton(final Action action, boolean slim) {
     super(action);
     setForeground(Color.WHITE);
-    setBorder(BorderFactory.createEmptyBorder(7, 10, 7, 10));
+    setBorder(slim ? BorderFactory.createEmptyBorder(3, 4, 3, 4) : BorderFactory.createEmptyBorder(7, 10, 7, 10));
   }
 
   @Override

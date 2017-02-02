@@ -1,9 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.util.Collection;
 
@@ -53,21 +53,20 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     imgLinkAction = new WebLinkAction("View in browser", null);
 
     copyImgKeyAction = new ClipboardAction("Copy key", null);
-    MapillaryButton copyButton = new MapillaryButton(copyImgKeyAction);
+    MapillaryButton copyButton = new MapillaryButton(copyImgKeyAction, true);
     copyImgKeyAction.setPopupParent(copyButton);
 
     addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr("Add Mapillary tag"));
 
     JPanel imgButtons = new JPanel(new FlowLayout());
-    imgButtons.add(new MapillaryButton(imgLinkAction));
+    imgButtons.add(new MapillaryButton(imgLinkAction, true));
     imgButtons.add(copyButton);
-    imgButtons.add(new MapillaryButton(addMapillaryTagAction));
+    imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));
     seqKeyValue = new SelectableLabel();
 
     JPanel root = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
-    gbc.ipadx = 10;
-    gbc.ipady = 5;
+    gbc.insets = new Insets(0, 5, 0, 5);
 
     // Left column
     gbc.gridx = 0;

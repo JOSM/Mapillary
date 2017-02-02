@@ -15,6 +15,7 @@ import javax.swing.JPopupMenu;
 
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public class ClipboardAction extends AbstractAction {
   private static final long serialVersionUID = 3323536079627210533L;
@@ -42,7 +43,7 @@ public class ClipboardAction extends AbstractAction {
   private Transferable contents;
 
   public ClipboardAction(final String name, final Transferable contents) {
-    super(name, ImageProvider.get("copy"));
+    super(name, ImageProvider.get("copy", ImageSizes.SMALLICON));
     this.contents = contents;
 
     // Init popup
