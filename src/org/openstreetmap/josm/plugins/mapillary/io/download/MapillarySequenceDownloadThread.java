@@ -17,6 +17,7 @@ import javax.json.JsonObject;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -118,10 +119,12 @@ public class MapillarySequenceDownloadThread extends Thread {
         MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<>(finalImages), false);
       }
     } catch (IOException e) {
-      Main.error(String.format(
+      String message = String.format(
         "Error reading the url %s, this might be a Mapillary problem.",
         MapillaryURL.searchSequenceURL(bounds, page)
-      ), e);
+      );
+      new Notification(message).show();
+      Main.error(message, e);
     }
     MapillaryData.dataUpdated();
   }
