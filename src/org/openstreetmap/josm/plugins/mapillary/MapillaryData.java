@@ -12,6 +12,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
@@ -57,8 +58,10 @@ public class MapillaryData {
     addListener(MapillaryPlugin.getWalkAction());
     addListener(MapillaryPlugin.getZoomAction());
     addListener(MapillaryPlugin.getUploadAction());
-    if (Main.main != null)
+    if (Main.main != null) {
       addListener(MapillaryMainDialog.getInstance());
+      addListener(ImageInfoPanel.getInstance());
+    }
   }
 
   /**

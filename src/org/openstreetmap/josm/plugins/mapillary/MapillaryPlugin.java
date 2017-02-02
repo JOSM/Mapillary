@@ -31,6 +31,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
@@ -213,6 +214,7 @@ public class MapillaryPlugin extends Plugin {
   public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
     if (oldFrame == null && newFrame != null) { // map frame added
       Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
+      Main.map.addToggleDialog(ImageInfoPanel.getInstance(), false);
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
