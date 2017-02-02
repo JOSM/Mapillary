@@ -10,8 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
-public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage>{
-  private static final long serialVersionUID = 2461033584553885626L;
+public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage> {
   private final Set<MapillaryChangesetListener> listeners = new HashSet<>();
   private final Set<MapillaryImage> changeset = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
