@@ -14,9 +14,11 @@ task initJosmPrefs(type: Copy) {
     if (new File("$tmpJosmHome/preferences.xml").exists()) {
       println "JOSM preferences not copied, file is already present.\nIf you want to replace it, run the task 'cleanJosm' additionally."
       exclude '*'
+    } else {
+      include 'preferences.xml'
     }
   }
-  from "config/josm/preferences.xml"
+  from "config/josm"
   into "$buildDir/.josm"
 }
 
