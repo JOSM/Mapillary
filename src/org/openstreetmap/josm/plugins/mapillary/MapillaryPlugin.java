@@ -130,6 +130,7 @@ public class MapillaryPlugin extends Plugin {
    *
    * @param info
    *          Required information of the plugin. Obtained from the jar file.
+   * @throws IOException if the mapillary cache directory is not found
    */
   public MapillaryPlugin(PluginInformation info) throws IOException {
     super(info);

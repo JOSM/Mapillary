@@ -23,11 +23,10 @@ public class CommandJoin extends MapillaryExecutableCommand {
   /**
    * Main constructor.
    *
-   * @param images
-   *          The two images that are going to be joined. Must be of exactly
-   *          size 2. The first one joins to the second one.
-   * @throws IllegalArgumentException
-   *           if the List size is different from 2.
+   * @param a the first image, that is joined with the second one
+   * @param b the second image, that is joined with the first one
+   * @throws IllegalArgumentException if the images are already in the same sequence
+   * @throws NullPointerException if {@code a} or {@code b} is null
    */
   public CommandJoin(final MapillaryAbstractImage a, final MapillaryAbstractImage b) {
     super(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{a, b}))); // throws NPE if a or b is null

@@ -236,7 +236,7 @@ public class MapillaryData {
 
   /**
    * Returns a Set of all sequences, that the images are part of.
-   * @return
+   * @return all sequences that are contained in the Mapillary data
    */
   public synchronized Set<MapillarySequence> getSequences() {
     return getImages().stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());

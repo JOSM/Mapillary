@@ -75,7 +75,7 @@ public final class TrafficoSign {
    *
    * @param index the index which is assigned to the sign element in question
    * @return the sign element (=layer) with the given index
-   * @throws ArrayIndexOutOfBoundsException if index >= {@link #getNumElements()} or index < 0
+   * @throws ArrayIndexOutOfBoundsException if index &gt;= {@link #getNumElements()} or index &lt; 0
    */
   public TrafficoSignElement getElement(int index) {
     return elements[index];
