@@ -130,29 +130,20 @@ public final class UploadUtils {
    * @throws ImageWriteException if there are errors writing the image in the file.
    */
   static File updateFile(MapillaryImportedImage image) throws ImageReadException, IOException, ImageWriteException {
-    TiffOutputSet outputSet = null;
+    TiffOutputSet outputSet = new TiffOutputSet();
     TiffOutputDirectory exifDirectory;
     TiffOutputDirectory gpsDirectory;
     TiffOutputDirectory rootDirectory;
 
     // If the image is imported, loads the rest of the EXIF data.
-    JpegImageMetadata jpegMetadata = null;
-    try {
-      ImageMetadata metadata = Imaging.getMetadata(image.getFile());
-      jpegMetadata = (JpegImageMetadata) metadata;
-    } catch (Exception e) {
-      Main.warn(e);
-    }
-
-    if (null != jpegMetadata) {
-      final TiffImageMetadata exif = jpegMetadata.getExif();
-      if (null != exif) {
+    final ImageMetadata metadata = Imaging.getMetadata(image.getFile());
+    if (metadata instanceof JpegImageMetadata) {
+      final TiffImageMetadata exif = ((JpegImageMetadata) metadata).getExif();
+      if (exif != null) {
         outputSet = exif.getOutputSet();
       }
     }
-    if (null == outputSet) {
-      outputSet = new TiffOutputSet();
-    }
+
     gpsDirectory = outputSet.getOrCreateGPSDirectory();
     exifDirectory = outputSet.getOrCreateExifDirectory();
     rootDirectory = outputSet.getOrCreateRootDirectory();

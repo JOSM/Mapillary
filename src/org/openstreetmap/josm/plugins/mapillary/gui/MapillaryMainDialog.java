@@ -342,7 +342,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
      * Constructs a normal NextPictureAction
      */
     NextPictureAction() {
-      putValue(NAME, tr("Next picture"));
+      super(tr("Next picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
     }
 
@@ -365,7 +365,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
      * Constructs a normal PreviousPictureAction
      */
     PreviousPictureAction() {
-      putValue(NAME, tr("Previous picture"));
+      super(tr("Previous picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the previous picture in the sequence"));
     }
 

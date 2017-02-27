@@ -134,11 +134,12 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
     ));
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
-    if (newImage instanceof MapillaryImage) {
-      imgKeyValue.setText(((MapillaryImage) newImage).getKey());
-      imgLinkAction.setURL(MapillaryURL.browseImageURL(((MapillaryImage) newImage).getKey()));
-      copyImgKeyAction.setContents(new StringSelection(((MapillaryImage) newImage).getKey()));
-      addMapillaryTagAction.setTag(new Tag("mapillary", ((MapillaryImage) newImage).getKey()));
+    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
+    if (newImageKey != null) {
+      imgKeyValue.setText(newImageKey);
+      imgLinkAction.setURL(MapillaryURL.browseImageURL(newImageKey));
+      copyImgKeyAction.setContents(new StringSelection(newImageKey));
+      addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
     } else {
       imgKeyValue.setText('‹' + I18n.tr("image has no key") + '›');
       imgLinkAction.setURL(null);

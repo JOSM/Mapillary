@@ -134,7 +134,7 @@ public class MapillarySequence {
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
-    if (i == -1) {
+    if (i < 0) {
       throw new IllegalArgumentException();
     }
     if (i == 0) {
