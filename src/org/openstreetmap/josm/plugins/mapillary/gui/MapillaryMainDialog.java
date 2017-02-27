@@ -142,7 +142,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     return instance;
   }
 
-  public void setImageInfoHelp(ImageInfoHelpPopup popup) {
+  public synchronized void setImageInfoHelp(ImageInfoHelpPopup popup) {
     this.imageInfoHelp = popup;
   }
 

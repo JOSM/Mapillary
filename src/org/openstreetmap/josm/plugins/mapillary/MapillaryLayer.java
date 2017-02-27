@@ -548,7 +548,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
   }
 
-  private class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
+  private static class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
     private final MapillaryAbstractImage target;
     public NearestImgToTargetComparator(MapillaryAbstractImage target) {
       this.target = target;

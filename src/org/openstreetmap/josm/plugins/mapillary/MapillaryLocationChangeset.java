@@ -14,7 +14,6 @@ public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage> {
   private final Set<MapillaryChangesetListener> listeners = new HashSet<>();
   private final Set<MapillaryImage> changeset = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-
   public void addChangesetListener(MapillaryChangesetListener listener) {
     this.listeners.add(listener);
   }

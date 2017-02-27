@@ -38,7 +38,7 @@ public class MapillaryDataTest extends AbstractTest {
     this.img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90);
     this.seq = new MapillarySequence();
 
-    this.seq.add(Arrays.asList(new MapillaryAbstractImage[] { img1, img2, img3, img4 }));
+    this.seq.add(Arrays.asList(new MapillaryAbstractImage[] {img1, img2, img3, img4}));
     this.img1.setSequence(this.seq);
     this.img2.setSequence(this.seq);
     this.img3.setSequence(this.seq);
@@ -60,9 +60,9 @@ public class MapillaryDataTest extends AbstractTest {
     assertEquals(1, this.data.getImages().size());
     this.data.add(this.img1);
     assertEquals(1, this.data.getImages().size());
-    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] { this.img2, this.img3 })));
+    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] {this.img2, this.img3})));
     assertEquals(3, this.data.getImages().size());
-    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] { this.img3, this.img4 })));
+    this.data.add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] {this.img3, this.img4})));
     assertEquals(4, this.data.getImages().size());
   }
 
@@ -120,20 +120,18 @@ public class MapillaryDataTest extends AbstractTest {
     assertEquals(this.img2, this.data.getSelectedImage());
 
     this.data.setSelectedImage(null);
-    // Test IllegalStateException thrown by selectNext() when the selectedImage
-    // is null.
-    try {
-      this.data.selectNext();
-      fail();
-    } catch (IllegalStateException e) {
-    }
-    // Test IllegalStateException thrown by selectPrevious() when the
-    // selectedImage is null.
-    try {
-      this.data.selectPrevious();
-      fail();
-    } catch (IllegalStateException e) {
-    }
+  }
+
+  @Test(expected=IllegalStateException.class)
+  public void nextOfNullImgTest() {
+    data.setSelectedImage(null);
+    data.selectNext();
+  }
+
+  @Test(expected=IllegalStateException.class)
+  public void previousOfNullImgTest() {
+    data.setSelectedImage(null);
+    data.selectPrevious();
   }
 
   /**

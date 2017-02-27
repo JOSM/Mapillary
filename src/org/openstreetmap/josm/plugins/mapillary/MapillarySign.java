@@ -79,7 +79,7 @@ public class MapillarySign {
     }
     if (countryMap.containsKey(name)) {
       return countryMap.get(name);
-    } else  if (name.split("--").length >= 3) {
+    } else if (name.split("--").length >= 3) {
       if (countryMap.containsValue(new MapillarySign(name))) {
         Optional<MapillarySign> p = countryMap.values().stream().filter(sign -> sign.toString().equals(name)).findFirst();
         assert p.isPresent();

@@ -76,7 +76,7 @@ public class MapillaryPlugin extends Plugin {
   /** Menu button for the {@link MapillaryDownloadAction} action. */
   private static final JMenuItem DOWNLOAD_MENU;
   /** Menu button for the {@link MapillaryExportAction} action. */
-  private static final  JMenuItem EXPORT_MENU;
+  private static final JMenuItem EXPORT_MENU;
   /** Menu button for the {@link MapillaryImportAction} action. */
   private static final JMenuItem IMPORT_MENU;
   /** Menu button for the {@link MapillaryZoomAction} action. */
