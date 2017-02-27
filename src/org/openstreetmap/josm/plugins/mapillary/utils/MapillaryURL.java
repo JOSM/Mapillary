@@ -37,7 +37,9 @@ public final class MapillaryURL {
    *           to {@link ValidationUtil#validateImageKey(String)}
    */
   public static URL browseImageURL(String key) {
-    ValidationUtil.throwExceptionForInvalidImgKey(key, false);
+    if (key == null) {
+      throw new IllegalArgumentException("The image key must not be null!");
+    }
     return string2URL(BASE_WEBSITE_URL, "map/im/", key);
   }
 

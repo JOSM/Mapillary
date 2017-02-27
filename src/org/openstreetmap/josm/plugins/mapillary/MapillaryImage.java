@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.utils.ValidationUtil;
 
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
@@ -41,7 +40,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca) {
     super(latLon, ca);
-    ValidationUtil.throwExceptionForInvalidImgKey(key, true);
     this.key = key;
   }
 

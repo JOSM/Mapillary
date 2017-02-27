@@ -4,8 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.openstreetmap.josm.plugins.mapillary.utils.ValidationUtil;
-
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
  *
@@ -44,8 +42,6 @@ public class MapillarySequence {
    * according to {@link ValidationUtil#validateSequenceKey(String)}
    */
   public MapillarySequence(String key, long createdAt) {
-    ValidationUtil.throwExceptionForInvalidSeqKey(key, true);
-
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.createdAt = createdAt;

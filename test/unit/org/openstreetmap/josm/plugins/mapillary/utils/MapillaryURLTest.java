@@ -31,21 +31,6 @@ public class MapillaryURLTest {
     MapillaryURL.browseImageURL(null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseImageURL2() {
-    MapillaryURL.browseImageURL("123456789012345678901");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseImageURL3() {
-    MapillaryURL.browseImageURL("12345678901234567890123");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllegalBrowseImageURL4() {
-    MapillaryURL.browseImageURL("123456789012345678901+");
-  }
-
   @Test
   public void testConnectURL() {
     assertUrlEquals(
