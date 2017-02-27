@@ -27,15 +27,8 @@ import javax.swing.KeyStroke;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataSetListener;
-import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
-import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
-import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
-import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
-import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
-import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
@@ -68,7 +61,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @author nokutu
  */
 public final class MapillaryLayer extends AbstractModifiableLayer implements
-  DataSetListener, ActiveLayerChangeListener, MapillaryDataListener {
+  ActiveLayerChangeListener, MapillaryDataListener {
 
   /** Maximum distance for the red/blue lines. */
   public static final int SEQUENCE_MAX_JUMP_DISTANCE = MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get();
@@ -85,6 +78,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private static final double TRAFFIC_SIGN_HEIGHT_3RD = Math.sqrt(
     Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
   ) / 3;
+
+  private static final DataSetListenerAdapter DATASET_LISTENER =
+    new DataSetListenerAdapter((e) -> {
+      if (e instanceof DataChangedEvent) {
+        // When more data is downloaded, a delayed update is thrown, in order to
+        // wait for the data bounds to be set.
+        Main.worker.submit(new DelayedDownload());
+      }
+    });
 
   /** If the download is in semiautomatic during this object lifetime. */
   public boolean tempSemiautomatic;
@@ -117,7 +119,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       Main.getLayerManager().addLayer(this);
       Main.getLayerManager().addActiveLayerChangeListener(this);
       if (Main.getLayerManager().getEditLayer() != null) {
-        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
+        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
       }
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
         MapillaryDownloader.downloadOSMArea();
@@ -239,7 +241,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Main.map.mapView.removeMouseMotionListener(this.mode);
     Main.getLayerManager().removeActiveLayerChangeListener(this);
     if (Main.getLayerManager().getEditLayer() != null)
-      Main.getLayerManager().getEditLayer().data.removeDataSetListener(this);
+      Main.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
     clearInstance();
     super.destroy();
   }
@@ -436,54 +438,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     if (Main.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
       if (Main.getLayerManager().getEditLayer() != null) {
-        Main.getLayerManager().getEditLayer().data.addDataSetListener(this);
+        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
       }
       if (e.getPreviousEditLayer() != null) {
-        e.getPreviousEditLayer().data.removeDataSetListener(this);
+        e.getPreviousEditLayer().data.removeDataSetListener(DATASET_LISTENER);
       }
     }
-  }
-
-  @Override
-  public void dataChanged(DataChangedEvent event) {
-    // When more data is downloaded, a delayed update is thrown, in order to
-    // wait for the data bounds to be set.
-    Main.worker.submit(new DelayedDownload());
-  }
-
-  @Override
-  public void primitivesAdded(PrimitivesAddedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void primitivesRemoved(PrimitivesRemovedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void tagsChanged(TagsChangedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void nodeMoved(NodeMovedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void wayNodesChanged(WayNodesChangedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void relationMembersChanged(RelationMembersChangedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
-  }
-
-  @Override
-  public void otherDatasetChange(AbstractDatasetChangedEvent event) {
-    // Required by DataSetListener. But we are not interested in what changed, only _that_ something changed.
   }
 
   @Override
