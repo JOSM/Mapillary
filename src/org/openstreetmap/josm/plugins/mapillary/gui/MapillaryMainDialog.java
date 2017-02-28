@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -99,10 +98,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private MapillaryCache thumbnailCache;
 
   private MapillaryMainDialog() {
-    super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
-            Shortcut.registerShortcut(tr("Mapillary dialog"),
-                    tr("Open Mapillary main dialog"), KeyEvent.VK_M, Shortcut.NONE),
-            200, false, MapillaryPreferenceSetting.class);
+    super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"), null, 200,
+        true, MapillaryPreferenceSetting.class);
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 

@@ -71,10 +71,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   private final ConcurrentHashMap<Object, MapillaryCommand> map;
 
   private MapillaryHistoryDialog() {
-    super(tr("Mapillary history"), "mapillary-history",
-        tr("Open Mapillary history dialog"), Shortcut.registerShortcut(
-            tr("Mapillary history"), tr("Open Mapillary history dialog"),
-            KeyEvent.VK_M, Shortcut.NONE), 200);
+    super(tr("Mapillary history"), "mapillary-history", tr("Open Mapillary history dialog"), null, 200,
+        false, MapillaryPreferenceSetting.class);
 
     MapillaryRecord.getInstance().addListener(this);
 

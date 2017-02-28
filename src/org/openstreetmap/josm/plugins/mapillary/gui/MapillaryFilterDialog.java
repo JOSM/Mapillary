@@ -94,10 +94,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     this.signFilter.crossing, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
-    super(tr("Mapillary filter"), "mapillary-filter",
-      tr("Open Mapillary filter dialog"), Shortcut.registerShortcut(
-        tr("Mapillary filter"), tr("Open Mapillary filter dialog"),
-        KeyEvent.VK_M, Shortcut.NONE), 200);
+    super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
+        false, MapillaryPreferenceSetting.class);
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();

@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
@@ -368,7 +369,7 @@ public class MapillaryImageDisplay extends JComponent {
     }
     if (image == null) {
       g.setColor(Color.black);
-      String noImageStr = tr("No image");
+      String noImageStr = MapillaryLayer.hasInstance() ? tr("No image selected") : tr("Press Shift+, to download images");
       Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(
           noImageStr, g);
       Dimension size = getSize();
