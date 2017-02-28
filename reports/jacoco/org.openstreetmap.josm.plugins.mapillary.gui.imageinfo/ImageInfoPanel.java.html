@@ -134,35 +134,36 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 <span class="nc" id="L134">      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : &quot;‹none›&quot;</span>
     ));
 <span class="nc" id="L136">    imgKeyValue.setEnabled(newImage instanceof MapillaryImage);</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (newImage instanceof MapillaryImage) {</span>
-<span class="nc" id="L138">      imgKeyValue.setText(((MapillaryImage) newImage).getKey());</span>
-<span class="nc" id="L139">      imgLinkAction.setURL(MapillaryURL.browseImageURL(((MapillaryImage) newImage).getKey()));</span>
-<span class="nc" id="L140">      copyImgKeyAction.setContents(new StringSelection(((MapillaryImage) newImage).getKey()));</span>
-<span class="nc" id="L141">      addMapillaryTagAction.setTag(new Tag(&quot;mapillary&quot;, ((MapillaryImage) newImage).getKey()));</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (newImageKey != null) {</span>
+<span class="nc" id="L139">      imgKeyValue.setText(newImageKey);</span>
+<span class="nc" id="L140">      imgLinkAction.setURL(MapillaryURL.browseImageURL(newImageKey));</span>
+<span class="nc" id="L141">      copyImgKeyAction.setContents(new StringSelection(newImageKey));</span>
+<span class="nc" id="L142">      addMapillaryTagAction.setTag(new Tag(&quot;mapillary&quot;, newImageKey));</span>
     } else {
-<span class="nc" id="L143">      imgKeyValue.setText('‹' + I18n.tr(&quot;image has no key&quot;) + '›');</span>
-<span class="nc" id="L144">      imgLinkAction.setURL(null);</span>
-<span class="nc" id="L145">      copyImgKeyAction.setContents(null);</span>
-<span class="nc" id="L146">      addMapillaryTagAction.setTag(null);</span>
+<span class="nc" id="L144">      imgKeyValue.setText('‹' + I18n.tr(&quot;image has no key&quot;) + '›');</span>
+<span class="nc" id="L145">      imgLinkAction.setURL(null);</span>
+<span class="nc" id="L146">      copyImgKeyAction.setContents(null);</span>
+<span class="nc" id="L147">      addMapillaryTagAction.setTag(null);</span>
     }
 
-<span class="nc bnc" id="L149" title="All 6 branches missed.">    final boolean partOfSequence = newImage != null &amp;&amp; newImage.getSequence() != null &amp;&amp; newImage.getSequence().getKey() != null;</span>
-<span class="nc" id="L150">    seqKeyValue.setEnabled(partOfSequence);</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">    if (partOfSequence) {</span>
-<span class="nc" id="L152">      seqKeyValue.setText(newImage.getSequence().getKey());</span>
+<span class="nc bnc" id="L150" title="All 6 branches missed.">    final boolean partOfSequence = newImage != null &amp;&amp; newImage.getSequence() != null &amp;&amp; newImage.getSequence().getKey() != null;</span>
+<span class="nc" id="L151">    seqKeyValue.setEnabled(partOfSequence);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">    if (partOfSequence) {</span>
+<span class="nc" id="L153">      seqKeyValue.setText(newImage.getSequence().getKey());</span>
     } else {
-<span class="nc" id="L154">      seqKeyValue.setText('‹' + I18n.tr(&quot;sequence has no key&quot;) + '›');</span>
+<span class="nc" id="L155">      seqKeyValue.setText('‹' + I18n.tr(&quot;sequence has no key&quot;) + '›');</span>
     }
-<span class="nc" id="L156">  }</span>
+<span class="nc" id="L157">  }</span>
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
   public void selectionChanged(final Collection&lt;? extends OsmPrimitive&gt; sel) {
-<span class="nc" id="L162">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel.size()));</span>
-<span class="nc" id="L163">    synchronized (sel) {</span>
-<span class="nc bnc" id="L164" title="All 4 branches missed.">      addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
-<span class="nc" id="L165">    }</span>
-<span class="nc" id="L166">  }</span>
+<span class="nc" id="L163">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel.size()));</span>
+<span class="nc" id="L164">    synchronized (sel) {</span>
+<span class="nc bnc" id="L165" title="All 4 branches missed.">      addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
+<span class="nc" id="L166">    }</span>
+<span class="nc" id="L167">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

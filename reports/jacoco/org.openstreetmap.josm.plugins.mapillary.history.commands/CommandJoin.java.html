@@ -23,43 +23,42 @@ public class CommandJoin extends MapillaryExecutableCommand {
   /**
    * Main constructor.
    *
-   * @param images
-   *          The two images that are going to be joined. Must be of exactly
-   *          size 2. The first one joins to the second one.
-   * @throws IllegalArgumentException
-   *           if the List size is different from 2.
+   * @param a the first image, that is joined with the second one
+   * @param b the second image, that is joined with the first one
+   * @throws IllegalArgumentException if the images are already in the same sequence
+   * @throws NullPointerException if {@code a} or {@code b} is null
    */
   public CommandJoin(final MapillaryAbstractImage a, final MapillaryAbstractImage b) {
-<span class="fc" id="L33">    super(new ConcurrentSkipListSet&lt;&gt;(Arrays.asList(new MapillaryAbstractImage[]{a, b}))); // throws NPE if a or b is null</span>
-<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    if (a.getSequence() == b.getSequence()) {</span>
-<span class="nc" id="L35">      throw new IllegalArgumentException(&quot;Both images must be in different sequences for joining.&quot;);</span>
+<span class="fc" id="L32">    super(new ConcurrentSkipListSet&lt;&gt;(Arrays.asList(new MapillaryAbstractImage[]{a, b}))); // throws NPE if a or b is null</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">    if (a.getSequence() == b.getSequence()) {</span>
+<span class="nc" id="L34">      throw new IllegalArgumentException(&quot;Both images must be in different sequences for joining.&quot;);</span>
     }
-<span class="fc" id="L37">    this.a = a;</span>
-<span class="fc" id="L38">    this.b = b;</span>
-<span class="fc" id="L39">  }</span>
+<span class="fc" id="L36">    this.a = a;</span>
+<span class="fc" id="L37">    this.b = b;</span>
+<span class="fc" id="L38">  }</span>
 
   @Override
   public void execute() {
-<span class="fc" id="L43">    redo();</span>
-<span class="fc" id="L44">  }</span>
+<span class="fc" id="L42">    redo();</span>
+<span class="fc" id="L43">  }</span>
 
   @Override
   public void undo() {
-<span class="fc" id="L48">    MapillaryUtils.unjoin(a, b);</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L47">    MapillaryUtils.unjoin(a, b);</span>
+<span class="fc" id="L48">  }</span>
 
   @Override
   public void redo() {
-<span class="fc" id="L53">    MapillaryUtils.join(a, b);</span>
-<span class="fc" id="L54">  }</span>
+<span class="fc" id="L52">    MapillaryUtils.join(a, b);</span>
+<span class="fc" id="L53">  }</span>
 
   @Override
   public void sum(MapillaryCommand command) {
-<span class="nc" id="L58">  }</span>
+<span class="nc" id="L57">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L62">    return tr(&quot;2 images joined&quot;);</span>
+<span class="nc" id="L61">    return tr(&quot;2 images joined&quot;);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
