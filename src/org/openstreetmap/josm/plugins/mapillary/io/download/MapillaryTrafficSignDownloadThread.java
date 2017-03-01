@@ -4,11 +4,14 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -17,7 +20,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySign;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.IMAGE_SELECTOR;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.DETECTION_PACKAGE;
 
 /**
  * Downloads the signs information in a given area.
@@ -44,47 +47,32 @@ public class MapillaryTrafficSignDownloadThread extends Thread {
 
   @Override
   public void run() {
-    try (
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    MapillaryURL.searchImageInfoURL(bounds, page, IMAGE_SELECTOR.OBJ_REC_ONLY).openStream(), "UTF-8"
-            ))
-    ) {
-      JsonObject jsonobj = Json.createReader(br).readObject();
-      if (!jsonobj.getBoolean("more")) {
-        this.ex.shutdown();
-      }
-      JsonArray jsonarr = jsonobj.getJsonArray("ims");
-      for (int i = 0; i < jsonarr.size(); i++) {
-        JsonArray rects = jsonarr.getJsonObject(i).getJsonArray("rects");
-        JsonArray rectversions = jsonarr.getJsonObject(i).getJsonArray(
-                "rectversions");
-        String key = jsonarr.getJsonObject(i).getString("key");
-        if (rectversions != null) {
-          for (int j = 0; j < rectversions.size(); j++) {
-            rects = rectversions.getJsonObject(j).getJsonArray("rects");
-            for (int k = 0; k < rects.size(); k++) {
-              JsonObject data = rects.getJsonObject(k);
-              for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-                if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key)) {
-                  ((MapillaryImage) image).addSign(MapillarySign.getSign(data.getString("type"), rectversions.getJsonObject(j).getString("package").split("_")[1]));
-                }
-              }
-            }
-          }
-        }
+      URL searchImageDetectionsURL = MapillaryURL.searchImageDetectionsURL(bounds, page, DETECTION_PACKAGE.TRAFFICSIGNS);
 
-        // Just one sign on the picture
-        else if (rects != null) {
-          for (int j = 0; j < rects.size(); j++) {
-            JsonObject data = rects.getJsonObject(j);
-            for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-              if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(key)) {
-                ((MapillaryImage) image).addSign(MapillarySign.getSign(data.getString("type"), data.getString("package").split("_")[1]));
-              }
-            }
+      try {
+          URLConnection urlConnection = searchImageDetectionsURL.openConnection();
+          BufferedReader br = new BufferedReader(new InputStreamReader(
+                  urlConnection.getInputStream(), "UTF-8"
+          ));
+
+          JsonReader reader = Json.createReader(br);
+          URLConnection connection = searchImageDetectionsURL.openConnection();
+          JsonObject jsonObj = reader.readObject();
+          String headerFieldLink = urlConnection.getHeaderField("Link");
+          if (headerFieldLink == null || !headerFieldLink.contains("next")) {
+            this.ex.shutdown();
           }
-        }
-      }
+          JsonArray features = jsonObj.getJsonArray("features");
+          for (int i = 0; i < features.size(); i++) {
+              final JsonObject detectionFeature = features.getJsonObject(i);
+              final JsonObject detectionProperties = detectionFeature.getJsonObject("properties");
+              for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
+                  if (image instanceof MapillaryImage && ((MapillaryImage) image).getKey().equals(detectionProperties.getString("image_key"))) {
+                      ((MapillaryImage) image).addSign(new MapillarySign(
+                              detectionProperties.getString("value"), detectionProperties.getString("key")));
+                  }
+              }
+          }
     } catch (IOException e) {
       Main.error(e);
     }

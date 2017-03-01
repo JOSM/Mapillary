@@ -76,7 +76,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @param sign A {@code String} that identifies the type of sign.
    */
   public void addSign(MapillarySign sign) {
-    if (sign != null) {
+    if (sign != null && !this.signs.stream().anyMatch(element -> element.getKey().equals(sign.getKey()) )) {
       this.signs.add(sign);
     }
   }
