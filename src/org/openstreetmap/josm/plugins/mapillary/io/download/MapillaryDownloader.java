@@ -30,8 +30,8 @@ public final class MapillaryDownloader {
     OSM_AREA("osmArea", I18n.tr("areas with downloaded OSM-data")),
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
 
-    private String prefId;
-    private String label;
+    private final String prefId;
+    private final String label;
 
     DOWNLOAD_MODE(String prefId, String label) {
       this.prefId = prefId;

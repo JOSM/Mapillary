@@ -48,8 +48,8 @@ public class JoinMode extends AbstractMode {
     } else if (this.lastClick != null
         && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
       if (
-        (this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null
-          || this.data.getHighlightedImage().next() == null && this.lastClick.previous() == null)
+        ((this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null)
+          || (this.data.getHighlightedImage().next() == null && this.lastClick.previous() == null))
         && this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence()
       ) {
         MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, this.data.getHighlightedImage()));

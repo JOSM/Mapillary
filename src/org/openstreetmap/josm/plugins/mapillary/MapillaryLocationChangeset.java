@@ -27,6 +27,7 @@ public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage> {
     listeners.forEach(MapillaryChangesetListener::changesetChanged);
   }
 
+  @Override
   public boolean add(MapillaryImage image) {
     boolean add = changeset.add(image);
     fireListeners();
@@ -43,6 +44,7 @@ public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage> {
     return changeset.size();
   }
 
+  @Override
   public boolean remove(Object image) {
     boolean remove = changeset.remove(image);
     fireListeners();
