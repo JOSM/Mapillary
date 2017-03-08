@@ -234,6 +234,7 @@ public class MapillaryPlugin extends Plugin {
       MapillaryHistoryDialog.destroyInstance();
       MapillaryChangesetDialog.destroyInstance();
       MapillaryFilterDialog.destroyInstance();
+      ImageInfoPanel.destroyInstance();
       setMenuEnabled(DOWNLOAD_MENU, false);
       setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
       setMenuEnabled(IMPORT_MENU, false);
