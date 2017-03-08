@@ -36,9 +36,10 @@ public final class PluginState {
    * Called when a download is finished.
    */
   public static void finishDownload() {
-    if (runningDownloads == 0)
-      throw new IllegalStateException(
-          "The amount of running downlaods is less or equals to 0");
+    if (runningDownloads == 0) {
+      Main.warn("The amount of running downloads is equal to 0");
+      return;
+    }
     runningDownloads--;
   }
 
