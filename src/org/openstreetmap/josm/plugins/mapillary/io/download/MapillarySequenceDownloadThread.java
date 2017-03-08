@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonException;
 import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
@@ -80,18 +82,16 @@ public class MapillarySequenceDownloadThread extends Thread {
               ),
               cas.getJsonNumber(j).doubleValue()));
           } catch (IndexOutOfBoundsException e) {
-            Main.warn("Mapillary bug at " + MapillaryURL.searchSequenceURL(bounds, page));
+            Main.warn(e, "Mapillary bug at " + MapillaryURL.searchSequenceURL(bounds, page));
             isSequenceWrong = true;
           }
         }
         if (isSequenceWrong)
           break;
         MapillarySequence sequence = new MapillarySequence(
-          jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at")
-          .longValue());
+          jsonobj.getString("key"), jsonobj.getJsonNumber("captured_at").longValue());
 
-        // Here it gets only those images which are in the downloaded
-        // area.
+        // Here it gets only those images which are in the downloaded area.
         List<MapillaryImage> finalImages = images.parallelStream().filter(MapillarySequenceDownloadThread::isInside).collect(Collectors.toList());
 
         synchronized (MapillarySequenceDownloadThread.class) {
@@ -118,12 +118,14 @@ public class MapillarySequenceDownloadThread extends Thread {
 
         MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<>(finalImages), false);
       }
-    } catch (IOException e) {
+    } catch (IOException | JsonException e) {
       String message = String.format(
         "Error reading the url %s, this might be a Mapillary problem.",
         MapillaryURL.searchSequenceURL(bounds, page)
       );
-      new Notification(message).show();
+      if (!GraphicsEnvironment.isHeadless()) {
+        new Notification(message).show();
+      }
       Main.error(message, e);
     }
     MapillaryData.dataUpdated();
