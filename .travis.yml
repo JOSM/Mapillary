@@ -41,6 +41,7 @@ deploy:
   on:
     condition: "$DEPLOY_GITHUB_RELEASES = true"
     tags: true
+    jdk: openjdk8
 
 # Deploy to GitHub pages
 after_script: ./.travis/after_script

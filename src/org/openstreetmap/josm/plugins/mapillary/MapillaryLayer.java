@@ -286,17 +286,21 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
     }
 
-    // Draw the blue and red line and enable/disable the buttons
-    for (int i = 0; i < nearestImages.length; i++) {
-      if (i == 0) {
-        g.setColor(Color.RED);
-      } else {
-        g.setColor(Color.BLUE);
+    // Draw the blue and red line
+    synchronized (nearestImages) {
+      final MapillaryAbstractImage selectedImg = data.getSelectedImage();
+      for (int i = 0; i < nearestImages.length && selectedImg != null; i++) {
+        if (i == 0) {
+          g.setColor(Color.RED);
+        } else {
+          g.setColor(Color.BLUE);
+        }
+        final Point selected = mv.getPoint(selectedImg.getMovingLatLon());
+        final Point p = mv.getPoint(nearestImages[i].getMovingLatLon());
+        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
       }
-      final Point selected = mv.getPoint(data.getSelectedImage().getMovingLatLon());
-      final Point p = mv.getPoint(nearestImages[i].getMovingLatLon());
-      g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
     }
+
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
     final MapillaryAbstractImage selectedImage = getData().getSelectedImage();
