@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonException;
 import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
@@ -117,7 +118,7 @@ public class MapillarySequenceDownloadThread extends Thread {
 
         MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<>(finalImages), false);
       }
-    } catch (IOException e) {
+    } catch (IOException | JsonException e) {
       String message = String.format(
         "Error reading the url %s, this might be a Mapillary problem.",
         MapillaryURL.searchSequenceURL(bounds, page)
