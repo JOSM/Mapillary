@@ -36,11 +36,12 @@ public final class PluginState {
    * Called when a download is finished.
    */
   public static void finishDownload() {
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">    if (runningDownloads == 0)</span>
-<span class="nc" id="L40">      throw new IllegalStateException(</span>
-          &quot;The amount of running downlaods is less or equals to 0&quot;);
-<span class="fc" id="L42">    runningDownloads--;</span>
-<span class="fc" id="L43">  }</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">    if (runningDownloads == 0) {</span>
+<span class="nc" id="L40">      Main.warn(&quot;The amount of running downloads is equal to 0&quot;);</span>
+<span class="nc" id="L41">      return;</span>
+    }
+<span class="fc" id="L43">    runningDownloads--;</span>
+<span class="fc" id="L44">  }</span>
 
   /**
    * Checks if there is any running download.
@@ -48,7 +49,7 @@ public final class PluginState {
    * @return true if the plugin is downloading; false otherwise.
    */
   public static boolean isDownloading() {
-<span class="fc bfc" id="L51" title="All 2 branches covered.">    return runningDownloads &gt; 0;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    return runningDownloads &gt; 0;</span>
   }
 
   /**
@@ -57,7 +58,7 @@ public final class PluginState {
    * @return true if the plugin is submitting a changeset false otherwise.
    */
   public static boolean isSubmittingChangeset() {
-<span class="nc" id="L60">    return submittingChangeset;</span>
+<span class="nc" id="L61">    return submittingChangeset;</span>
   }
    /**
    * Checks if there is any running upload.
@@ -65,7 +66,7 @@ public final class PluginState {
    * @return true if the plugin is uploading; false otherwise.
    */
   public static boolean isUploading() {
-<span class="fc bfc" id="L68" title="All 2 branches covered.">    return imagesToUpload &gt; imagesUploaded;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">    return imagesToUpload &gt; imagesUploaded;</span>
   }
 
   /**
@@ -75,51 +76,51 @@ public final class PluginState {
    *          The amount of images that are going to be uploaded.
    */
   public static void addImagesToUpload(int amount) {
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
-<span class="fc" id="L79">      imagesToUpload = 0;</span>
-<span class="fc" id="L80">      imagesUploaded = 0;</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    if (imagesToUpload &lt;= imagesUploaded) {</span>
+<span class="fc" id="L80">      imagesToUpload = 0;</span>
+<span class="fc" id="L81">      imagesUploaded = 0;</span>
     }
-<span class="fc" id="L82">    imagesToUpload += amount;</span>
-<span class="fc" id="L83">  }</span>
+<span class="fc" id="L83">    imagesToUpload += amount;</span>
+<span class="fc" id="L84">  }</span>
 
   public static int getImagesToUpload() {
-<span class="fc" id="L86">    return imagesToUpload;</span>
+<span class="fc" id="L87">    return imagesToUpload;</span>
   }
 
   public static int getImagesUploaded() {
-<span class="fc" id="L90">    return imagesUploaded;</span>
+<span class="fc" id="L91">    return imagesUploaded;</span>
   }
 
   /**
    * Called when an image is uploaded.
    */
   public static void imageUploaded() {
-<span class="fc" id="L97">    imagesUploaded++;</span>
-<span class="pc bpc" id="L98" title="1 of 4 branches missed.">    if (imagesToUpload == imagesUploaded &amp;&amp; Main.main != null) {</span>
-<span class="nc" id="L99">        finishedUploadDialog(imagesUploaded);</span>
+<span class="fc" id="L98">    imagesUploaded++;</span>
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">    if (imagesToUpload == imagesUploaded &amp;&amp; Main.main != null) {</span>
+<span class="nc" id="L100">        finishedUploadDialog(imagesUploaded);</span>
     }
-<span class="fc" id="L101">  }</span>
+<span class="fc" id="L102">  }</span>
 
   private static void finishedUploadDialog(int numImages) {
-<span class="nc" id="L104">    JOptionPane.showMessageDialog(</span>
+<span class="nc" id="L105">    JOptionPane.showMessageDialog(</span>
       Main.parent,
-<span class="nc" id="L106">      tr(&quot;You have successfully uploaded {0} images to mapillary.com&quot;, numImages),</span>
-<span class="nc" id="L107">      tr(&quot;Finished upload&quot;),</span>
+<span class="nc" id="L107">      tr(&quot;You have successfully uploaded {0} images to mapillary.com&quot;, numImages),</span>
+<span class="nc" id="L108">      tr(&quot;Finished upload&quot;),</span>
       JOptionPane.INFORMATION_MESSAGE
     );
-<span class="nc" id="L110">  }</span>
+<span class="nc" id="L111">  }</span>
 
   public static void notLoggedInToMapillaryDialog() {
-<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (Main.main == null) {</span>
-<span class="nc" id="L114">      return;</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">    if (Main.main == null) {</span>
+<span class="nc" id="L115">      return;</span>
     }
-<span class="nc" id="L116">    JOptionPane.showMessageDialog(</span>
+<span class="nc" id="L117">    JOptionPane.showMessageDialog(</span>
         Main.parent,
-<span class="nc" id="L118">        tr(&quot;You are not logged in, please log in to Mapillary in the preferences&quot;),</span>
-<span class="nc" id="L119">        tr(&quot;Not Logged in to Mapillary&quot;),</span>
+<span class="nc" id="L119">        tr(&quot;You are not logged in, please log in to Mapillary in the preferences&quot;),</span>
+<span class="nc" id="L120">        tr(&quot;Not Logged in to Mapillary&quot;),</span>
         JOptionPane.WARNING_MESSAGE
     );
-<span class="nc" id="L122">  }</span>
+<span class="nc" id="L123">  }</span>
 
 
 
@@ -129,11 +130,11 @@ public final class PluginState {
    * @return The {@code String} that is going to be written in the status bar.
    */
   public static String getUploadString() {
-<span class="nc" id="L132">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
+<span class="nc" id="L133">    return tr(&quot;Uploading: {0}&quot;, &quot;(&quot; + imagesUploaded + &quot;/&quot; + imagesToUpload + &quot;)&quot;);</span>
   }
 
   public static void setSubmittingChangeset(boolean isSubmitting) {
-<span class="nc" id="L136">      submittingChangeset = isSubmitting;</span>
-<span class="nc" id="L137">  }</span>
+<span class="nc" id="L137">      submittingChangeset = isSubmitting;</span>
+<span class="nc" id="L138">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
