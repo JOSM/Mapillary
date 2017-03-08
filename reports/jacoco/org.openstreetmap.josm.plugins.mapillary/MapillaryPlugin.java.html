@@ -234,12 +234,13 @@ public class MapillaryPlugin extends Plugin {
 <span class="nc" id="L234">      MapillaryHistoryDialog.destroyInstance();</span>
 <span class="nc" id="L235">      MapillaryChangesetDialog.destroyInstance();</span>
 <span class="nc" id="L236">      MapillaryFilterDialog.destroyInstance();</span>
-<span class="nc" id="L237">      setMenuEnabled(DOWNLOAD_MENU, false);</span>
-<span class="nc" id="L238">      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);</span>
-<span class="nc" id="L239">      setMenuEnabled(IMPORT_MENU, false);</span>
-<span class="nc" id="L240">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);</span>
+<span class="nc" id="L237">      ImageInfoPanel.destroyInstance();</span>
+<span class="nc" id="L238">      setMenuEnabled(DOWNLOAD_MENU, false);</span>
+<span class="nc" id="L239">      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);</span>
+<span class="nc" id="L240">      setMenuEnabled(IMPORT_MENU, false);</span>
+<span class="nc" id="L241">      setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);</span>
     }
-<span class="nc" id="L242">  }</span>
+<span class="nc" id="L243">  }</span>
 
   /**
    * Enables/disables a {@link JMenuItem}.
@@ -250,20 +251,20 @@ public class MapillaryPlugin extends Plugin {
    *          true to enable the JMenuItem; false to disable it.
    */
   public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
-<span class="pc bpc" id="L253" title="1 of 2 branches missed.">    if (menu == null) { // In headless mode the menu items are initialized to null</span>
-<span class="fc" id="L254">      return;</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">    if (menu == null) { // In headless mode the menu items are initialized to null</span>
+<span class="fc" id="L255">      return;</span>
     }
-<span class="nc bnc" id="L256" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="nc" id="L257">      SwingUtilities.invokeLater(() -&gt; setMenuEnabled(menu, value));</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L258">      SwingUtilities.invokeLater(() -&gt; setMenuEnabled(menu, value));</span>
     } else {
-<span class="nc" id="L259">      menu.setEnabled(value);</span>
-<span class="nc" id="L260">      menu.getAction().setEnabled(value);</span>
+<span class="nc" id="L260">      menu.setEnabled(value);</span>
+<span class="nc" id="L261">      menu.getAction().setEnabled(value);</span>
     }
-<span class="nc" id="L262">  }</span>
+<span class="nc" id="L263">  }</span>
 
   @Override
   public PreferenceSetting getPreferenceSetting() {
-<span class="nc" id="L266">    return new MapillaryPreferenceSetting();</span>
+<span class="nc" id="L267">    return new MapillaryPreferenceSetting();</span>
   }
 
   /**
@@ -275,14 +276,14 @@ public class MapillaryPlugin extends Plugin {
    *         mode.
    */
   public static ImageProvider getProvider(String s) {
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
-<span class="fc" id="L279">      return null;</span>
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">    if (Main.main == null) {</span>
+<span class="fc" id="L280">      return null;</span>
     }
-<span class="nc" id="L281">    return new ImageProvider(s);</span>
+<span class="nc" id="L282">    return new ImageProvider(s);</span>
   }
 
   public static CacheAccess&lt;String, BufferedImageCacheEntry&gt; getCache() {
-<span class="nc" id="L285">    return cache;</span>
+<span class="nc" id="L286">    return cache;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
