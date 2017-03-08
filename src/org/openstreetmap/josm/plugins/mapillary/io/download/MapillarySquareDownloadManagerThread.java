@@ -1,7 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.lang.reflect.Constructor;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -45,12 +47,9 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 
   @Override
   public void run() {
-    downloadExecutor = new ThreadPoolExecutor(3, 5,
-      25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
-    completeExecutor = new ThreadPoolExecutor(3, 5,
-      25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
-    signsExecutor = new ThreadPoolExecutor(3, 5, 25,
-      TimeUnit.SECONDS, new ArrayBlockingQueue<>(5));
+    downloadExecutor = newThreadPoolExecutor();
+    completeExecutor = newThreadPoolExecutor();
+    signsExecutor = newThreadPoolExecutor();
 
     try {
       PluginState.startDownload();
@@ -60,7 +59,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
       MapillaryMainDialog.getInstance().updateTitle();
       downloadSigns();
     } catch (InterruptedException e) {
-      Main.error("Mapillary download interrupted (probably because of closing the layer).");
+      Main.error(e, "Mapillary download interrupted (probably because of closing the layer).");
     } finally {
       PluginState.finishDownload();
     }
@@ -71,20 +70,22 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
   }
 
   /**
+   * Constructs a new {@code ThreadPoolExecutor}.
+   *
+   * @return new {@code ThreadPoolExecutor}
+   */
+  private static ThreadPoolExecutor newThreadPoolExecutor() {
+    return new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
+      new ArrayBlockingQueue<>(5));
+  }
+
+  /**
    * Downloads the sequence positions, directions and keys.
    *
    * @throws InterruptedException if the thread is interrupted while running this method.
    */
   private void downloadSequences() throws InterruptedException {
-    int page = 0;
-    while (!this.downloadExecutor.isShutdown()) {
-      this.downloadExecutor.execute(new MapillarySequenceDownloadThread(this.downloadExecutor, bounds, page));
-      while (this.downloadExecutor.getQueue().remainingCapacity() == 0) {
-        Thread.sleep(100);
-      }
-      page++;
-    }
-    this.downloadExecutor.awaitTermination(15, TimeUnit.SECONDS);
+    download(downloadExecutor, MapillarySequenceDownloadThread.class);
     MapillaryData.dataUpdated();
   }
 
@@ -95,15 +96,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
    *           if the thread is interrupted while running this method.
    */
   private void completeImages() throws InterruptedException {
-    int page = 0;
-    while (!this.completeExecutor.isShutdown()) {
-      this.completeExecutor.execute(new MapillaryImageInfoDownloadThread(completeExecutor, bounds, page));
-      while (this.completeExecutor.getQueue().remainingCapacity() == 0) {
-        Thread.sleep(100);
-      }
-      page++;
-    }
-    this.completeExecutor.awaitTermination(15, TimeUnit.SECONDS);
+    download(completeExecutor, MapillaryImageInfoDownloadThread.class);
   }
 
   /**
@@ -113,14 +106,39 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
    *           if the thread is interrupted while running this method.
    */
   private void downloadSigns() throws InterruptedException {
-    int page = 0;
-    while (!this.signsExecutor.isShutdown()) {
-      this.signsExecutor.execute(new MapillaryTrafficSignDownloadThread(this.signsExecutor, bounds, page));
-      while (this.signsExecutor.getQueue().remainingCapacity() == 0) {
-        Thread.sleep(100);
+    download(signsExecutor, MapillaryTrafficSignDownloadThread.class);
+  }
+
+  /**
+   * Common download method.
+   * 
+   * @param <T> Thread class
+   * @param threadpool Thread pool executor
+   * @param klass Thread class, must have a constructor with three arguments:
+   * <ol>
+   * <li>ThreadPoolExecutor executor</li>
+   * <li>Bounds bounds</li>
+   * <li>int page</li>
+   * </ol>
+   *
+   * @throws InterruptedException
+   *           if the thread is interrupted while running this method.
+   */
+  private <T extends Thread> void download(ThreadPoolExecutor threadpool, Class<T> klass)
+    throws InterruptedException {
+    try {
+      int page = 0;
+      Constructor<T> constructor = klass.getConstructor(ExecutorService.class, Bounds.class, int.class);
+      while (!threadpool.isShutdown()) {
+        threadpool.execute(constructor.newInstance(threadpool, bounds, page));
+        while (threadpool.getQueue().remainingCapacity() == 0) {
+          Thread.sleep(100);
+        }
+        page++;
       }
-      page++;
+      threadpool.awaitTermination(15, TimeUnit.SECONDS);
+    } catch (ReflectiveOperationException e) {
+      Main.error(e);
     }
-    this.signsExecutor.awaitTermination(15, TimeUnit.SECONDS);
   }
 }
