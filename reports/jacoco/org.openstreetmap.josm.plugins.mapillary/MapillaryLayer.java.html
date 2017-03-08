@@ -477,7 +477,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
 <span class="nc" id="L479">    return data.getSequences().parallelStream()</span>
-<span class="nc bnc" id="L480" title="All 6 branches missed.">      .filter((seq) -&gt; target.getSequence() == null || seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey()))</span>
+<span class="nc bnc" id="L480" title="All 6 branches missed.">      .filter((seq) -&gt; target.getSequence() == null || (seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey())))</span>
 <span class="nc" id="L481">      .map((seq) -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
 <span class="nc" id="L482">        Optional&lt;MapillaryAbstractImage&gt; resImg = seq.getImages().parallelStream()</span>
 <span class="nc bnc" id="L483" title="All 4 branches missed.">          .filter((img) -&gt; img instanceof MapillaryImage &amp;&amp; img.isVisible())</span>

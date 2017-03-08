@@ -48,8 +48,8 @@ public class JoinMode extends AbstractMode {
 <span class="nc bnc" id="L48" title="All 2 branches missed.">    } else if (this.lastClick != null</span>
 <span class="nc bnc" id="L49" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage() instanceof MapillaryImportedImage) {</span>
 <span class="nc" id="L50">      if (</span>
-<span class="nc bnc" id="L51" title="All 4 branches missed.">        (this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick.next() == null</span>
-<span class="nc bnc" id="L52" title="All 4 branches missed.">          || this.data.getHighlightedImage().next() == null &amp;&amp; this.lastClick.previous() == null)</span>
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        ((this.data.getHighlightedImage().previous() == null &amp;&amp; this.lastClick.next() == null)</span>
+<span class="nc bnc" id="L52" title="All 4 branches missed.">          || (this.data.getHighlightedImage().next() == null &amp;&amp; this.lastClick.previous() == null))</span>
 <span class="nc bnc" id="L53" title="All 2 branches missed.">        &amp;&amp; this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence()</span>
       ) {
 <span class="nc" id="L55">        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, this.data.getHighlightedImage()));</span>
