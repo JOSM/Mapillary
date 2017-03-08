@@ -104,6 +104,13 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     }
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
+  public static synchronized void destroyInstance() {
+    instance = null;
+  }
+
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.gui.dialogs.ToggleDialog#stateChanged()
    */
