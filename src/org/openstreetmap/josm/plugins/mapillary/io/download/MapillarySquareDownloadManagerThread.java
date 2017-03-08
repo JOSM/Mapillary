@@ -76,7 +76,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
    */
   private static ThreadPoolExecutor newThreadPoolExecutor() {
     return new ThreadPoolExecutor(3, 5, 25, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(5));
+      new ArrayBlockingQueue<>(5), new ThreadPoolExecutor.DiscardPolicy());
   }
 
   /**
