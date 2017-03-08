@@ -33,8 +33,7 @@ public final class MapillaryURL {
    * Gives you the URL for the online viewer of a specific mapillary image.
    * @param key the key of the image to which you want to link
    * @return the URL of the online viewer for the image with the given image key
-   * @throws IllegalArgumentException if the image key is <code>null</code> or invalid according
-   *           to {@link ValidationUtil#validateImageKey(String)}
+   * @throws IllegalArgumentException if the image key is <code>null</code>
    */
   public static URL browseImageURL(String key) {
     if (key == null) {

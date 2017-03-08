@@ -37,9 +37,6 @@ public class MapillarySequence {
    *
    * @param key The unique identifier of the sequence.
    * @param createdAt The date the sequence was created.
-   *
-   * @throws IllegalArgumentException if the key is invalid
-   * according to {@link ValidationUtil#validateSequenceKey(String)}
    */
   public MapillarySequence(String key, long createdAt) {
     this.images = new CopyOnWriteArrayList<>();
