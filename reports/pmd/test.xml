@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.4" timestamp="2017-03-08T20:23:00.306">
+<pmd version="5.5.4" timestamp="2017-03-08T20:56:48.790">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/AbstractTest.java">
 <violation beginline="15" endline="24" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
 This abstract class does not have any abstract methods
