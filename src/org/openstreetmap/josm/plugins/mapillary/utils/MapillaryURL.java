@@ -21,8 +21,12 @@ public final class MapillaryURL {
   private static final String BASE_WEBSITE_URL = "https://www.mapillary.com/";
   private static final String LEGACY_WEBSITE_URL = "https://legacy.mapillary.com/";
 
-  public enum IMAGE_SELECTOR {
-    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected
+    public static String trafficSignIconUrl(String signName) {
+        return BASE_WEBSITE_URL + "developer/api-documentation/images/traffic_sign/" + signName + ".png";
+    }
+
+    public enum DETECTION_PACKAGE {
+     TRAFFICSIGNS // null is used when all images should be selected
   }
 
   private MapillaryURL() {
@@ -62,35 +66,34 @@ public final class MapillaryURL {
    * For more than 20 images you have to use different URLs with different page numbers.
    * @param bounds the bounds in which you want to search for images
    * @param page number of the page to retrieve from the API
-   * @param selector if set, only a specific type of image is returned by the URL
    * @return the API-URL which gives you the images in the given bounds as JSON
    */
-  public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
-    String selectorString = "";
-    if (selector != null) {
-      switch (selector) {
-      case BLURRED_ONLY:
-        selectorString = "/b";
-        break;
-      case COMMENTED_ONLY:
-        selectorString = "/cm";
-        break;
-      case OBJ_REC_ONLY:
-        selectorString = "/or";
-        break;
-      default:
-        selectorString = "";
-        break;
-      }
-    }
+  public static URL searchImageInfoURL(Bounds bounds, int page) {
     HashMap<String, String> parts = new HashMap<>();
-    putBoundsInQueryStringParts(parts, bounds);
-    parts.put("page", Integer.toString(page));
-    parts.put("limit", "20");
-    return string2URL(BASE_API_V2_URL, "search/im", selectorString, queryString(parts));
+    putBoundsInQueryStringPartsV3(parts, bounds);
+    parts.put("per_page", "20");
+    parts.put("page", page +"");
+    return string2URL(BASE_API_V3_URL, "images", queryString(parts));
   }
 
-  /**
+    /**
+     * Gives you the API-URL where you get 20 images within the given bounds.
+     * For more than 20 images you have to use different URLs with different page numbers.
+     * @param bounds the bounds in which you want to search for images
+     * @param page number of the page to retrieve from the API
+     * @param detectionPackage if set, only a specific type of detections is returned by the URL
+     * @return the API-URL which gives you the images in the given bounds as JSON
+     */
+    public static URL searchImageDetectionsURL(Bounds bounds, int page, DETECTION_PACKAGE detectionPackage) {
+        HashMap<String, String> parts = new HashMap<>();
+        putBoundsInQueryStringPartsV3(parts, bounds);
+        parts.put("per_page", "20");
+        parts.put("page", page + "");
+        parts.put("packages", detectionPackage.name());
+        return string2URL(BASE_API_V3_URL, "detections", queryString(parts));
+    }
+
+    /**
    * Gives you the API-URL where you get 10 sequences within the given bounds.
    * For more than 10 sequences you have to use different URLs with different page numbers.
    * @param bounds the bounds in which you want to search for sequences
@@ -139,6 +142,21 @@ public final class MapillaryURL {
       parts.put("max_lon", String.format(Locale.UK, "%f", bounds.getMax().lon()));
     }
   }
+
+    /**
+     * Adds the given {@link Bounds} to a {@link String} that contains the parts of a query string.
+     * @param parts the parts of a query string
+     * @param bounds the bounds that will be added to the query string
+     */
+    private static void putBoundsInQueryStringPartsV3(Map<String, String> parts, Bounds bounds) {
+        if (bounds != null) {
+            parts.put("bbox", String.format(Locale.UK, "%f,%f,%f,%f",
+                    bounds.getMin().lon(),
+                    bounds.getMin().lat(),
+                    bounds.getMax().lon(),
+                    bounds.getMax().lat()));
+        }
+    }
 
   /**
    * Builds a query string from it's parts that are supplied as a {@link Map}

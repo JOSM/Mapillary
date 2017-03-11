@@ -227,11 +227,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
     boolean contains = false;
     for (MapillarySign sign : img.getSigns()) {
-      String[] parts = signTag.split("--");
-      if (Pattern.compile(parts[0]).matcher(sign.getCategory()).find() &&
-        Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
+//      String[] parts = signTag.split("--");
+//      if (Pattern.compile(parts[0]).matcher(sign.getCategory()).find() &&
+//        Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
         contains = true;
-      }
+//      }
     }
     return contains == signCheckBox.isSelected() && contains;
   }

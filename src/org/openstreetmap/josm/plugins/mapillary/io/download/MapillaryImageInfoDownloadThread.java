@@ -4,6 +4,10 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 
 import javax.json.Json;
@@ -43,30 +47,32 @@ public class MapillaryImageInfoDownloadThread extends Thread {
 
   @Override
   public void run() {
-    try (
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-        MapillaryURL.searchImageInfoURL(bounds, page, null).openStream(), "UTF-8"
-      ))
-    ) {
-      try (JsonReader reader = Json.createReader(br)) {
+      URL imageInfoURL = MapillaryURL.searchImageInfoURL(bounds, page);
+      try {
+        URLConnection urlConnection = imageInfoURL.openConnection();
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                  urlConnection.getInputStream(), "UTF-8"
+        ));
+
+        JsonReader reader = Json.createReader(br);
         JsonObject jsonObj = reader.readObject();
-        if (!jsonObj.getBoolean("more"))
+        String headerFieldLink = urlConnection.getHeaderField("Link");
+        if (headerFieldLink == null || !headerFieldLink.contains("next")) {
           this.ex.shutdown();
-        JsonArray jsonArr = jsonObj.getJsonArray("ims");
-        for (int i = 0; i < jsonArr.size(); i++) {
-          final JsonObject data = jsonArr.getJsonObject(i);
-          String key = data.getString("key");
+        }
+        JsonArray features = jsonObj.getJsonArray("features");
+        for (int i = 0; i < features.size(); i++) {
+          final JsonObject imageFeature = features.getJsonObject(i);
+          final JsonObject imageProperties = imageFeature.getJsonObject("properties");
+          String key = imageProperties.getString("key");
           MapillaryLayer.getInstance().getData().getImages().stream().filter(image -> image instanceof MapillaryImage
             && ((MapillaryImage) image).getKey().equals(key)
             && ((MapillaryImage) image).getUser() == null).forEach(image -> {
-            ((MapillaryImage) image).setUser(data.getString("user"));
-            image.setCapturedAt(data.getJsonNumber("captured_at").longValue());
-            if (!data.isNull("location")) {
-              ((MapillaryImage) image).setLocation(data.getString("location"));
-            }
+            ((MapillaryImage) image).setUser(imageProperties.getString("user_key"));
+              long epochMilli = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(imageProperties.getString("captured_at"))).toEpochMilli();
+              image.setCapturedAt(epochMilli);
           });
         }
-      }
     } catch (IOException e) {
       Main.error(e);
     }

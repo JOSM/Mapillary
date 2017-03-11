@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -73,11 +74,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /** The angle of the circular sector that indicates the camera angle */
   private static final int CA_INDICATOR_ANGLE = 40;
   /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
-  private static final int TRAFFIC_SIGN_SIZE = 6;
-  /** A third of the height of the sign, for easier calculations */
-  private static final double TRAFFIC_SIGN_HEIGHT_3RD = Math.sqrt(
-    Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
-  ) / 3;
+  private static final int TRAFFIC_SIGN_SIZE = 30;
 
   private static final DataSetListenerAdapter DATASET_LISTENER =
     new DataSetListenerAdapter((e) -> {
@@ -379,18 +376,29 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
     }
 
-
+    // display only the first sign detection for now to avoid clutter
     if (img instanceof MapillaryImage && !((MapillaryImage) img).getSigns().isEmpty()) {
-      Path2D trafficSign = new Path2D.Double();
-      trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.lineTo(p.getX(), p.getY() + 2 * TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.closePath();
-      g.setColor(Color.WHITE);
-      g.fill(trafficSign);
-      g.setStroke(new BasicStroke(1));
-      g.setColor(Color.RED);
-      g.draw(trafficSign);
+        if (((MapillaryImage) img).getSigns().get(0).getIcon() != null) {
+
+            BufferedImage resizedImage = new BufferedImage(
+                    TRAFFIC_SIGN_SIZE,
+                    TRAFFIC_SIGN_SIZE,
+                    BufferedImage.TYPE_INT_ARGB);
+            Graphics2D gr = resizedImage.createGraphics();
+            gr.drawImage(
+                    ((MapillaryImage) img).getSigns().get(0).getIcon(),
+                    0,
+                    0,
+                    TRAFFIC_SIGN_SIZE,
+                    TRAFFIC_SIGN_SIZE,
+                    null);
+            gr.dispose();
+            g.drawImage(
+                    resizedImage,
+                    ((Double) p.getX()).intValue(),
+                    ((Double) p.getY()).intValue(),
+                    null);
+        }
     }
   }
 
