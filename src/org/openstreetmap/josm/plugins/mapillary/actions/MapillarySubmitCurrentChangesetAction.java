@@ -26,7 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -68,12 +68,12 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         PluginState.setSubmittingChangeset(true);
         MapillaryUtils.updateHelpText();
         HttpClientBuilder builder = HttpClientBuilder.create();
-        HttpPost httpPost = new HttpPost(MapillaryURL.submitChangesetURL().toString());
+        HttpPost httpPost = new HttpPost(APIv3.submitChangeset().toString());
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("Authorization", "Bearer " + token);
         MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
         String json = buildLocationChangesetJson(locationChangeset).build().toString();
-        Main.debug("Sending JSON to " + MapillaryURL.submitChangesetURL() + "\n  " + json);
+        Main.debug("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
           CloseableHttpResponse response = httpClient.execute(httpPost);

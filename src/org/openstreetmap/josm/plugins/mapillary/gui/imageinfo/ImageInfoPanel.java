@@ -144,7 +144,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
       imgKeyValue.setText(newImageKey);
-      imgLinkAction.setURL(MapillaryURL.browseImageURL(newImageKey));
+      imgLinkAction.setURL(MapillaryURL.MainWebsite.browseImage(newImageKey));
       copyImgKeyAction.setContents(new StringSelection(newImageKey));
       addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
     } else {

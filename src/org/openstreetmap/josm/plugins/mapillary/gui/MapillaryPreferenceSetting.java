@@ -194,7 +194,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       OAuthPortListener portListener = new OAuthPortListener(callback);
       portListener.start();
       try {
-        MapillaryUtils.browse(MapillaryURL.connectURL("http://localhost:"+OAuthPortListener.PORT+'/'));
+        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect("http://localhost:"+OAuthPortListener.PORT+'/'));
       } catch (IOException e) {
         Main.error(e);
       }
