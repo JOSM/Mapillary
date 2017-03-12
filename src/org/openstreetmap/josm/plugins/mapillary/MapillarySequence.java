@@ -18,11 +18,11 @@ public class MapillarySequence {
   /**
    * Unique identifier. Used only for {@link MapillaryImage} sequences.
    */
-  private String key;
+  private final String key;
   /**
    * Epoch time when the sequence was created
    */
-  private long createdAt;
+  private final long capturedAt;
 
   /**
    * Creates a sequence without key or timestamp. Used for
@@ -30,18 +30,20 @@ public class MapillarySequence {
    */
   public MapillarySequence() {
     this.images = new CopyOnWriteArrayList<>();
+    this.capturedAt = -1l;
+    this.key = null;
   }
 
   /**
    * Creates a sequence object with the given parameters.
    *
    * @param key The unique identifier of the sequence.
-   * @param createdAt The date the sequence was created.
+   * @param capturedAt The date the sequence was created.
    */
-  public MapillarySequence(String key, long createdAt) {
+  public MapillarySequence(String key, long capturedAt) {
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
-    this.createdAt = createdAt;
+    this.capturedAt = capturedAt;
   }
 
   /**
@@ -65,10 +67,12 @@ public class MapillarySequence {
   /**
    * Returns the Epoch time when the sequence was captured.
    *
+   * Negative values mean, no value is set.
+   *
    * @return A long containing the Epoch time when the sequence was captured.
    */
-  public long getCreatedAt() {
-    return this.createdAt;
+  public long getCapturedAt() {
+    return this.capturedAt;
   }
 
   /**
