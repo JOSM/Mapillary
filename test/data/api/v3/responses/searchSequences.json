@@ -1,0 +1,51 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "camera_make": "Apple",
+        "captured_at": "2016-03-14T13:44:53.860Z",
+        "created_at": "2016-03-17T10:47:53.106Z",
+        "coordinateProperties": {
+          "cas": [
+            323.0319999999999,
+            320.8918,
+            333.62239999999997,
+            329.94820000000004
+          ],
+          "image_keys": [
+            "LwrHXqFRN_pszCopTKHF_Q",
+            "Aufjv2hdCKwg9LySWWVSwg",
+            "QEVZ1tp-PmrwtqhSwdW9fQ",
+            "G_SIwxNcioYeutZuA8Rurw"
+          ]
+        },
+        "key": "LMlIPUNhaj24h_q9v4ArNw",
+        "pano": false,
+        "user_key": "AGfe-07BEJX0-kxpu9J3rA"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            16.432958,
+            7.246497
+          ],
+          [
+            16.432955,
+            7.246567
+          ],
+          [
+            16.432971,
+            7.248372
+          ],
+          [
+            16.432976,
+            7.249027
+          ]
+        ]
+      }
+    }
+  ]
+}
