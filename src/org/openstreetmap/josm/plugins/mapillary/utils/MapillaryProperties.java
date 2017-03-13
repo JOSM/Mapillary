@@ -22,6 +22,12 @@ public final class MapillaryProperties {
   public static final BooleanProperty HOVER_ENABLED = new BooleanProperty("mapillary.hover-enabled", true);
   public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
   public static final BooleanProperty TIME_FORMAT_24 = new BooleanProperty("mapillary.format-24", true);
+  /**
+   * If false, all sequences that cross the download bounds are put completely into the MapillaryData object.
+   * Otherwise only all images (!) inside the download bounds are added, the others are discarded.
+   */
+  public static final BooleanProperty CUT_OFF_SEQUENCES_AT_BOUNDS =
+    new BooleanProperty("mapillary.cut-off-sequences-at-bounds", false);
 
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
