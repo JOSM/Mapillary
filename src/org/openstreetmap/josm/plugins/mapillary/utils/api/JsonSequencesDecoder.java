@@ -78,7 +78,9 @@ public final class JsonSequencesDecoder {
           final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
           for (int i = 0; i < sequenceLength; i++) {
             if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-              result.add(new MapillaryImage(imageKeys[i], geometry[i], cas[i]));
+              MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
+              result.add(img);
+              img.setSequence(result);
             }
           }
           if (result.getImages().size() <= 0) {
@@ -150,7 +152,7 @@ public final class JsonSequencesDecoder {
           ((JsonArray)coord).get(0) instanceof JsonNumber &&
           ((JsonArray)coord).get(1) instanceof JsonNumber
         ) {
-          result[i] = new LatLon(((JsonArray)coord).getJsonNumber(0).doubleValue(), ((JsonArray)coord).getJsonNumber(1).doubleValue());
+          result[i] = new LatLon(((JsonArray)coord).getJsonNumber(1).doubleValue(), ((JsonArray)coord).getJsonNumber(0).doubleValue());
         }
       }
       return result;
