@@ -155,21 +155,6 @@ public final class MapillaryURL {
   }
 
   /**
-   * Gives you the API-URL where you get 10 sequences within the given bounds.
-   * For more than 10 sequences you have to use different URLs with different page numbers.
-   * @param bounds the bounds in which you want to search for sequences
-   * @param page number of the page to retrieve from the API
-   * @return the API-URL which gives you the sequences in the given bounds as JSON
-   */
-  public static URL searchSequenceURL(Bounds bounds, int page) {
-    HashMap<String, String> parts = new HashMap<>();
-    putBoundsInQueryStringParts(parts, bounds);
-    parts.put("page", Integer.toString(page));
-    parts.put("limit", "10");
-    return string2URL(BASE_API_V2_URL, "search/s", queryString(parts));
-  }
-
-  /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {

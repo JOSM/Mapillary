@@ -140,28 +140,6 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testSearchSequenceURL() {
-    assertUrlEquals(
-        MapillaryURL.searchSequenceURL(new Bounds(-55.55555, -66.666666, 77.7777777, 88.88888888, false), 42),
-        "https://a.mapillary.com/v2/search/s",
-        CLIENT_ID_QUERY_PART,
-        "min_lon=-66.666666",
-        "max_lon=88.888889",
-        "min_lat=-55.555550",
-        "max_lat=77.777778",
-        "limit=10",
-        "page=42"
-    );
-    assertUrlEquals(
-        MapillaryURL.searchSequenceURL(null, -73),
-        "https://a.mapillary.com/v2/search/s",
-        CLIENT_ID_QUERY_PART,
-        "limit=10",
-        "page=-73"
-    );
-  }
-
-  @Test
   public void testSearchTrafficSignURL() {
     assertUrlEquals(
         MapillaryURL.searchImageInfoURL(new Bounds(1.1, 2.22, 3.333, 4.4444), -42, IMAGE_SELECTOR.OBJ_REC_ONLY),
