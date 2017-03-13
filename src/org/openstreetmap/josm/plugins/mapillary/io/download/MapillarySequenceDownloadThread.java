@@ -116,7 +116,7 @@ public class MapillarySequenceDownloadThread extends Thread {
           }
         }
 
-        MapillaryLayer.getInstance().getData().add(new ConcurrentSkipListSet<>(finalImages), false);
+        MapillaryLayer.getInstance().getData().addAll(new ConcurrentSkipListSet<>(finalImages), false);
       }
     } catch (IOException | JsonException e) {
       String message = String.format(

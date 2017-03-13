@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -82,9 +83,7 @@ public class MapillaryData {
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
   public synchronized void add(MapillaryAbstractImage image, boolean update) {
-    if (!this.images.contains(image)) {
-      this.images.add(image);
-    }
+    this.images.add(image);
     if (update) {
       dataUpdated();
     }
@@ -96,8 +95,8 @@ public class MapillaryData {
    *
    * @param images The set of images to be added.
    */
-  public synchronized void add(Set<MapillaryAbstractImage> images) {
-    add(images, true);
+  public synchronized void addAll(Collection<MapillaryAbstractImage> images) {
+    addAll(images, true);
   }
 
   /**
@@ -106,10 +105,12 @@ public class MapillaryData {
    * @param images The set of images to be added.
    * @param update Whether the map must be updated or not.
    */
-  public synchronized void add(Set<MapillaryAbstractImage> images, boolean update) {
-    for (MapillaryAbstractImage image : images) {
-      add(image, update);
+  public synchronized void addAll(Collection<MapillaryAbstractImage> images, boolean update) {
+    this.images.addAll(images);
+    if (update) {
+      dataUpdated();
     }
+    fireImagesAdded();
   }
 
   /**
@@ -143,9 +144,9 @@ public class MapillaryData {
    * Adds a set of {@code MapillaryAbstractImage} objects to the list of
    * selected images.
    *
-   * @param images A List object containing the set of images to be added.
+   * @param images A {@link Collection} object containing the set of images to be added.
    */
-  public void addMultiSelectedImage(Set<MapillaryAbstractImage> images) {
+  public void addMultiSelectedImage(Collection<MapillaryAbstractImage> images) {
     images.stream().filter(image -> !this.multiSelectedImages.contains(image)).forEach(image -> {
       if (this.getSelectedImage() == null) {
         this.setSelectedImage(image);
@@ -183,10 +184,10 @@ public class MapillaryData {
   /**
    * Removes a set of images from the database.
    *
-   * @param images A {@link List} of {@link MapillaryAbstractImage} objects that are
+   * @param images A {@link Collection} of {@link MapillaryAbstractImage} objects that are
    *               going to be removed.
    */
-  public synchronized void remove(Set<MapillaryAbstractImage> images) {
+  public synchronized void remove(Collection<MapillaryAbstractImage> images) {
     images.forEach(this::remove);
   }
 
@@ -391,11 +392,12 @@ public class MapillaryData {
   }
 
   /**
-   * Sets a new ArrayList object as the used set of images.
+   * Sets a new {@link Collection} object as the used set of images.
+   * Any images that are already present, are removed.
    *
    * @param images the new image list (previously set images are completely replaced)
    */
-  public synchronized void setImages(Set<MapillaryAbstractImage> images) {
+  public synchronized void setImages(Collection<MapillaryAbstractImage> images) {
     this.images.clear();
     this.images.addAll(images);
   }

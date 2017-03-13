@@ -252,7 +252,7 @@ public class MapillaryRecordTest extends AbstractTest {
     MapillaryLayer
         .getInstance()
         .getData()
-        .add(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{img1, img2, img3})));
+        .addAll(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{img1, img2, img3})));
 
     this.record.addCommand(cmd1);
     assertFalse(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));

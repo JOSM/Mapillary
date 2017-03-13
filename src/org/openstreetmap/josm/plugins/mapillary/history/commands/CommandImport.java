@@ -31,7 +31,7 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void execute() {
-    MapillaryLayer.getInstance().getData().add(this.images);
+    MapillaryLayer.getInstance().getData().addAll(this.images);
   }
 
   @Override
