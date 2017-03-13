@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -85,7 +86,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
    * @throws InterruptedException if the thread is interrupted while running this method.
    */
   private void downloadSequences() throws InterruptedException {
-    download(downloadExecutor, MapillarySequenceDownloadThread.class);
+    downloadExecutor.execute(new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
     MapillaryData.dataUpdated();
   }
 
@@ -111,7 +112,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
 
   /**
    * Common download method.
-   * 
+   *
    * @param <T> Thread class
    * @param threadpool Thread pool executor
    * @param klass Thread class, must have a constructor with three arguments:
