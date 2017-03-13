@@ -30,23 +30,26 @@ public class MapillarySign {
   static {
     for (String country : COUNTRIES) {
       HashMap<String, MapillarySign> countryMap = new HashMap<>();
-      try (
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-          MapillarySign.class.getResourceAsStream("/data/signs/" + country + ".cson"), "UTF-8"
-        ))
-      ) {
-        String line = "";
-        while ((line = br.readLine()) != null) {
-          if (!"".equals(line)) {
-            String[] pair = line.replace("'", "").split(":");
-            countryMap.put(pair[0].trim(), new MapillarySign(pair[1].trim()));
+      String fileName = "/data/signs/" + country + ".cson";
+      if (MapillarySign.class.getResource(fileName) != null) {
+        try (
+          BufferedReader br = new BufferedReader(new InputStreamReader(
+            MapillarySign.class.getResourceAsStream(fileName), "UTF-8"
+          ))
+        ) {
+          String line = "";
+          while ((line = br.readLine()) != null) {
+            if (!"".equals(line)) {
+              String[] pair = line.replace("'", "").split(":");
+              countryMap.put(pair[0].trim(), new MapillarySign(pair[1].trim()));
+            }
           }
-        }
-        map.put(country, countryMap);
+          map.put(country, countryMap);
 
-        br.close();
-      } catch (IOException e) {
-        Main.error(e);
+          br.close();
+        } catch (IOException e) {
+          Main.error(e);
+        }
       }
     }
   }
@@ -72,7 +75,8 @@ public class MapillarySign {
   public static MapillarySign getSign(String name, String country) {
     Map<String, MapillarySign> countryMap = map.get(country);
     if (countryMap == null) {
-      throw new IllegalArgumentException("Country does not exist");
+      Main.warn("Country does not exist");
+      return null;
     }
     if (countryMap.containsKey(name)) {
       return countryMap.get(name);
