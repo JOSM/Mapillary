@@ -81,7 +81,8 @@ public final class MapillaryDownloader {
   private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();
 
   /** Executor that will run the petitions. */
-  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100));
+  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(
+    3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
 
   private MapillaryDownloader() {
     // Private constructor to avoid instantiation
