@@ -66,30 +66,30 @@ public final class JsonSequencesDecoder {
     MapillarySequence result = null;
     if ("Feature".equals(json.getString("type", null))) {
       final JsonObject properties = json.getJsonObject("properties");
-      try {
-        if (properties != null && properties.getString("key", null) != null && properties.getString("captured_at", null) != null) {
-          result = new MapillarySequence(
-            properties.getString("key", null),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.UK).parse(properties.getString("captured_at", null)).getTime()
-          );
-          Double[] cas = decodeCoordinateProperty(properties, "cas", (val) -> { return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null; }, Double.class);
-          String[] imageKeys = decodeCoordinateProperty(properties, "image_keys", (val) -> { return val instanceof JsonString ? ((JsonString) val).getString() : null;}, String.class);
-          LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
-          final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
-          for (int i = 0; i < sequenceLength; i++) {
-            if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-              MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
-              result.add(img);
-              img.setSequence(result);
-            }
-          }
-          if (result.getImages().size() <= 0) {
-            result = null;
+      final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
+      if (properties != null && properties.getString("key", null) != null && capturedAt != null) {
+        result = new MapillarySequence(properties.getString("key", null), capturedAt);
+
+        final Double[] cas = decodeCoordinateProperty(properties, "cas",
+          val -> {
+            return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
+          }, Double.class);
+        final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
+          val -> {
+            return val instanceof JsonString ? ((JsonString) val).getString() : null;
+          }, String.class);
+        final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
+        final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
+        for (int i = 0; i < sequenceLength; i++) {
+          if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
+            final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
+            result.add(img);
+            img.setSequence(result);
           }
         }
-      } catch (ParseException e) {
-        Main.warn(e, "Invalid date `" + properties.getString("captured_at", null) +
-          "` for a sequence returned by the API, which could not be decoded!");
+        if (result.getImages().size() <= 0) {
+          result = null;
+        }
       }
     }
     return result;
@@ -146,13 +146,8 @@ public final class JsonSequencesDecoder {
       final LatLon[] result = new LatLon[((JsonArray)coords).size()];
       for (int i = 0; i < ((JsonArray)coords).size(); i++) {
         final JsonValue coord = ((JsonArray)coords).get(i);
-        if (
-          coord instanceof JsonArray &&
-          ((JsonArray)coord).size() == 2 &&
-          ((JsonArray)coord).get(0) instanceof JsonNumber &&
-          ((JsonArray)coord).get(1) instanceof JsonNumber
-        ) {
-          result[i] = new LatLon(((JsonArray)coord).getJsonNumber(1).doubleValue(), ((JsonArray)coord).getJsonNumber(0).doubleValue());
+        if (coord instanceof JsonArray) {
+          result[i] = JsonDecoder.decodeLatLon((JsonArray) coord);
         }
       }
       return result;
