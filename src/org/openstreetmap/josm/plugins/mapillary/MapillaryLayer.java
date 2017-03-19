@@ -53,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -396,7 +397,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Icon getIcon() {
-    return MapillaryPlugin.ICON16;
+    return MapillaryPlugin.LOGO.setSize(ImageSizes.LAYER).get();
   }
 
   @Override

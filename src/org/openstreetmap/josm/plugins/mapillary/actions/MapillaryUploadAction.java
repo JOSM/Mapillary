@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -18,7 +17,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryUploadDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
-import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
  * Action called when an upload to the Mapillary servers is going to be
@@ -36,10 +36,8 @@ public class MapillaryUploadAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryUploadAction() {
-    super(tr("Upload pictures"), MapillaryPlugin.getProvider("icon24.png"),
-        tr("Upload pictures"), Shortcut.registerShortcut("Upload Mapillary",
-            tr("Upload Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
-            Shortcut.NONE), false, "mapillaryUpload", false);
+    super(tr("Upload pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+        tr("Upload Mapillary pictures"), null, false, "mapillaryUpload", false);
     this.setEnabled(false);
   }
 

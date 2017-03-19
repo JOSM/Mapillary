@@ -25,6 +25,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -43,7 +45,7 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-    super(tr("Export pictures"), MapillaryPlugin.getProvider("icon24.png"),
+    super(tr("Export pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Export pictures"), Shortcut.registerShortcut("Export Mapillary",
             tr("Export Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryExport", false);

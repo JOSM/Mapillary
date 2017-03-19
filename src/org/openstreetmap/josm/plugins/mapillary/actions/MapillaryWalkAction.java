@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryWalkDialog;
-import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
  * Walks forward at a given interval.
@@ -38,9 +38,8 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
    *
    */
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), MapillaryPlugin.getProvider("icon24.png"),
-        tr("Walk mode"), Shortcut.registerShortcut("Mapillary walk",
-            tr("Start walk mode"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+        tr("Walk mode"), null,
         false, "mapillaryWalk", false);
     this.setEnabled(false);
   }

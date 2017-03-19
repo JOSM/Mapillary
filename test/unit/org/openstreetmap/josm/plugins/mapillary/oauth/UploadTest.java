@@ -2,7 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -36,25 +36,19 @@ public class UploadTest extends AbstractTest {
    */
   @Test
   public void updateFileTest() throws IOException {
-    File image = new File("images/icon16.png");
+    File image = new File(getClass().getResource("/exifTestImages/untagged.png").getFile());
     MapillaryImportedImage img = ImageUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
     File updatedFile = null;
     try {
       updatedFile = UploadUtils.updateFile(img);
       ImageMetadata metadata = Imaging.getMetadata(updatedFile);
       final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF) != null);
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE) != null);
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF) != null);
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE) != null);
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION) != null);
-      assertTrue(jpegMetadata
-          .findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL) != null);
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF));
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LATITUDE));
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF));
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_LONGITUDE));
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION));
+      assertNotNull(jpegMetadata.findEXIFValueWithExactMatch(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL));
       assertEquals(0, MapillaryUtils.degMinSecToDouble(
           (RationalNumber[]) jpegMetadata.findEXIFValueWithExactMatch(
               GpsTagConstants.GPS_TAG_GPS_LATITUDE).getValue(),
@@ -71,7 +65,7 @@ public class UploadTest extends AbstractTest {
               .toString()), 0.01);
 
     } catch (ImageReadException | ImageWriteException | IOException e) {
-      fail();
+      fail(e.getLocalizedMessage());
     } finally {
       updatedFile.delete();
     }

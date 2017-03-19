@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 

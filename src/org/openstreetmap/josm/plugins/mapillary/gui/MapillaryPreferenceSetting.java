@@ -125,7 +125,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
     synchronized (gui.getDisplayPreference().getTabPane()) {
       gui.getDisplayPreference().addSubTab(this, "Mapillary", new JScrollPane(container));
-      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.ICON12);
+      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.LOGO.setSize(12, 12).get());
     }
 
     new Thread(() -> {

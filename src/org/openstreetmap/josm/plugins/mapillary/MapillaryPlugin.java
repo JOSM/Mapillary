@@ -1,10 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.awt.Image;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
@@ -47,14 +45,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class MapillaryPlugin extends Plugin {
 
-  /** OS route separator */
-  public static final String SEPARATOR = System.getProperty("file.separator");
-  /** 24x24 icon. */
-  public static final ImageIcon ICON24 = new ImageProvider("icon24.png").get();
-  /** 16x16 icon. */
-  public static final ImageIcon ICON16 = new ImageProvider("icon16.png").get();
-  /** 12x12 icon. */
-  public static final ImageIcon ICON12 = new ImageIcon(ICON24.getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH));
+  public static final ImageProvider LOGO = new ImageProvider("mapillary-logo");
 
   /** Cache that stores the pictures the downloaded pictures. */
   private static CacheAccess<String, BufferedImageCacheEntry> cache;
@@ -265,21 +256,6 @@ public class MapillaryPlugin extends Plugin {
   @Override
   public PreferenceSetting getPreferenceSetting() {
     return new MapillaryPreferenceSetting();
-  }
-
-  /**
-   * Returns a ImageProvider for the given string or null if in headless mode.
-   *
-   * @param s
-   *          The name of the file where the picture is.
-   * @return A ImageProvider object for the given string or null if in headless
-   *         mode.
-   */
-  public static ImageProvider getProvider(String s) {
-    if (Main.main == null) {
-      return null;
-    }
-    return new ImageProvider(s);
   }
 
   public static CacheAccess<String, BufferedImageCacheEntry> getCache() {

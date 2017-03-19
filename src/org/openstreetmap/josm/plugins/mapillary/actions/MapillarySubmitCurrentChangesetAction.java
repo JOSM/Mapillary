@@ -23,12 +23,13 @@ import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -45,7 +46,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
   public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(
       tr("Submit changeset"),
-      MapillaryPlugin.getProvider("dialogs/mapillary-upload"),
+      new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       tr("Submit the current changeset"),
       Shortcut.registerShortcut(
         "Submit changeset to Mapillary", tr("Submit the current changeset to Mapillary"),

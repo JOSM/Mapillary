@@ -15,12 +15,12 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public final class SequenceDownloadRunnable implements Runnable {
@@ -68,7 +68,7 @@ public final class SequenceDownloadRunnable implements Runnable {
       String message = I18n.tr("Could not read sequences from URL {0}!", nextURL.toString());
       Main.warn(e, message);
       new Notification(message)
-        .setIcon(ImageProvider.get("mapillary_icon_256", ImageSizes.LARGEICON))
+        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
         .setDuration(Notification.TIME_LONG)
         .show();
     }

@@ -22,6 +22,8 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -61,7 +63,7 @@ public class MapillaryImportAction extends JosmAction {
   ) {
     super(
       name,
-      MapillaryPlugin.getProvider("icon24.png"),
+      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
       tooltip,
       Shortcut.registerShortcut(shortcutId, shortcutName, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       false,

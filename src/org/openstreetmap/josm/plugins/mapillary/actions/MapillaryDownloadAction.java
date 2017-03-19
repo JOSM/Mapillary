@@ -10,6 +10,8 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -29,7 +31,7 @@ public class MapillaryDownloadAction extends JosmAction {
   public MapillaryDownloadAction() {
     super(
         tr("Mapillary"),
-        MapillaryPlugin.getProvider("icon24.png"),
+        new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Create Mapillary layer"),
         Shortcut.registerShortcut("Mapillary", tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
         false,
