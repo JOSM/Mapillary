@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JMenuItem;
@@ -127,7 +128,7 @@ public class MapillaryPlugin extends Plugin {
     super(info);
 
     if (cache == null) {
-      cache = JCSCacheManager.getCache("mapillary", 10, 10000, this.getPluginDir() + "/cache/");
+      cache = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
     }
 
     if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
@@ -258,5 +259,13 @@ public class MapillaryPlugin extends Plugin {
 
   public static CacheAccess<String, BufferedImageCacheEntry> getCache() {
     return cache;
+  }
+
+  public static File getCacheDirectory() {
+    final File f = new File(Main.pref.getPluginsDirectory().getPath() + "/Mapillary/cache");
+    if (!f.exists()) {
+      f.mkdirs();
+    }
+    return f;
   }
 }
