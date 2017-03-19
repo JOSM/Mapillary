@@ -133,8 +133,6 @@ public class MapillaryPlugin extends Plugin {
     if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
       MapillaryUser.setTokenValid(false);
     }
-    // Normalize download mode preference setting
-    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getPrefId());
   }
 
   /**

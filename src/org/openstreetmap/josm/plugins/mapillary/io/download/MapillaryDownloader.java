@@ -47,27 +47,19 @@ public final class MapillaryDownloader {
     }
 
     public static DOWNLOAD_MODE fromPrefId(String prefId) {
-      if (MANUAL_ONLY.getPrefId().equals(prefId) || "Manual".equals(prefId)) {
-        return MANUAL_ONLY;
-      }
-      if (OSM_AREA.getPrefId().equals(prefId) || "Automatic".equals(prefId)) {
-        return OSM_AREA;
-      }
-      if (VISIBLE_AREA.getPrefId().equals(prefId) || "Semiautomatic".equals(prefId)) {
-        return VISIBLE_AREA;
+      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {
+        if (mode.getPrefId().equals(prefId)) {
+          return mode;
+        }
       }
       return getDefault();
     }
 
     public static DOWNLOAD_MODE fromLabel(String label) {
-      if (MANUAL_ONLY.getLabel().equals(label)) {
-        return MANUAL_ONLY;
-      }
-      if (OSM_AREA.getLabel().equals(label)) {
-        return OSM_AREA;
-      }
-      if (VISIBLE_AREA.getLabel().equals(label)) {
-        return VISIBLE_AREA;
+      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {
+        if (mode.getLabel().equals(label)) {
+          return mode;
+        }
       }
       return getDefault();
     }
