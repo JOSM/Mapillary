@@ -108,6 +108,8 @@ public class JsonSequencesDecoderTest {
 
   @Test
   public void testDecodeSequenceInvalid() {
+    // null input
+    assertNull(JsonSequencesDecoder.decodeSequence(null));
     // `properties` key is not set
     assertNull(JsonSequencesDecoder.decodeSequence(Json.createReader(new ByteArrayInputStream(
       "{\"type\": \"Feature\"}".getBytes()

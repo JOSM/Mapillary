@@ -30,33 +30,34 @@ public final class JsonSequencesDecoder {
    *         returned.
    */
   public static MapillarySequence decodeSequence(final JsonObject json) {
+    if (json == null || !"Feature".equals(json.getString("type", null))) {
+      return null;
+    }
     MapillarySequence result = null;
-    if ("Feature".equals(json.getString("type", null))) {
-      final JsonObject properties = json.getJsonObject("properties");
-      final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
-      if (properties != null && properties.getString("key", null) != null && capturedAt != null) {
-        result = new MapillarySequence(properties.getString("key", null), capturedAt);
+    final JsonObject properties = json.getJsonObject("properties");
+    final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
+    if (properties != null && properties.getString("key", null) != null && capturedAt != null) {
+      result = new MapillarySequence(properties.getString("key", null), capturedAt);
 
-        final Double[] cas = decodeCoordinateProperty(properties, "cas",
-          val -> {
-            return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
-          }, Double.class);
-        final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
-          val -> {
-            return val instanceof JsonString ? ((JsonString) val).getString() : null;
-          }, String.class);
-        final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
-        final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
-        for (int i = 0; i < sequenceLength; i++) {
-          if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-            final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
-            result.add(img);
-            img.setSequence(result);
-          }
+      final Double[] cas = decodeCoordinateProperty(properties, "cas",
+        val -> {
+          return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
+        }, Double.class);
+      final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
+        val -> {
+          return val instanceof JsonString ? ((JsonString) val).getString() : null;
+        }, String.class);
+      final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
+      final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
+      for (int i = 0; i < sequenceLength; i++) {
+        if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
+          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
+          result.add(img);
+          img.setSequence(result);
         }
-        if (result.getImages().size() <= 0) {
-          result = null;
-        }
+      }
+      if (result.getImages().size() <= 0) {
+        result = null;
       }
     }
     return result;
