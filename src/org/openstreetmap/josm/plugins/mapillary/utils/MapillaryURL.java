@@ -37,12 +37,12 @@ public final class MapillaryURL {
       return string2URL(APIv3.BASE_URL, "changeset", queryString(null));
     }
 
+    public static URL searchMapObjects(final Bounds bounds) {
+      return string2URL(APIv3.BASE_URL, "objects", queryString(bounds));
+    }
+
     public static URL searchSequences(final Bounds bounds) {
-      final Map<String, String> parts = new HashMap<>();
-      if (bounds != null) {
-        parts.put("bbox", bounds.toBBox().toStringCSV(","));
-      }
-      return string2URL(APIv3.BASE_URL, "sequences", queryString(parts));
+      return string2URL(APIv3.BASE_URL, "sequences", queryString(bounds));
     }
 
     /**
@@ -61,7 +61,7 @@ public final class MapillaryURL {
           // Iterate over the parts of each entry (typically it's one `rel="‹linkType›"` and one like `<https://URL>`)
           for (String linkPart : link.split(";")) {
             linkPart = linkPart.trim();
-            isNext = isNext || linkPart.matches("rel\\s*=\\s*\"next\"");
+            isNext |= linkPart.matches("rel\\s*=\\s*\"next\"");
             if (linkPart.length() >= 1 && linkPart.charAt(0) == '<' && linkPart.endsWith(">")) {
               try {
                 url = new URL(linkPart.substring(1, linkPart.length() - 1));
@@ -77,6 +77,15 @@ public final class MapillaryURL {
         }
       }
       return null;
+    }
+
+    public static String queryString(final Bounds bounds) {
+      if (bounds != null) {
+        final Map<String, String> parts = new HashMap<>();
+        parts.put("bbox", bounds.toBBox().toStringCSV(","));
+        return MapillaryURL.queryString(parts);
+      }
+      return MapillaryURL.queryString(null);
     }
   }
 
@@ -114,6 +123,10 @@ public final class MapillaryURL {
       parts.put("response_type", "token");
       parts.put("scope", "user:read public:upload public:write");
       return string2URL(BASE_URL, "connect", queryString(parts));
+    }
+
+    public static URL mapObjectIcon(String key) {
+      return string2URL(BASE_URL, "developer/api-documentation/images/traffic_sign/" + key + ".png");
     }
   }
 
