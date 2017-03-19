@@ -34,15 +34,15 @@ public final class MapillaryURL {
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-      return string2URL(APIv3.BASE_URL, "changeset", queryString(null));
+      return string2URL(BASE_URL, "changeset", queryString(null));
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(APIv3.BASE_URL, "objects", queryString(bounds));
+      return string2URL(BASE_URL, "objects", queryString(bounds));
     }
 
     public static URL searchSequences(final Bounds bounds) {
-      return string2URL(APIv3.BASE_URL, "sequences", queryString(bounds));
+      return string2URL(BASE_URL, "sequences", queryString(bounds));
     }
 
     /**
@@ -200,7 +200,7 @@ public final class MapillaryURL {
    * @param parts the parts of the query string
    * @return the constructed query string (including a leading ?)
    */
-  private static String queryString(Map<String, String> parts) {
+  static String queryString(Map<String, String> parts) {
     StringBuilder ret = new StringBuilder("?client_id=").append(CLIENT_ID);
     if (parts != null) {
       for (Entry<String, String> entry : parts.entrySet()) {
@@ -224,7 +224,7 @@ public final class MapillaryURL {
    * @param string the String describing the URL
    * @return the URL that is constructed from the given string
    */
-  private static URL string2URL(String... strings) {
+  static URL string2URL(String... strings) {
     StringBuilder builder = new StringBuilder();
     for (int i = 0; strings != null && i < strings.length; i++) {
       builder.append(strings[i]);

@@ -17,7 +17,6 @@
   <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
   <rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape"/>
   <rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses"/>
-  <rule ref="rulesets/java/controversial.xml/DefaultPackage"/>
 
   <rule ref="rulesets/java/coupling.xml">
     <exclude name="LoosePackageCoupling" />

@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
-import javax.json.JsonString;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -15,12 +14,12 @@ import org.openstreetmap.josm.data.coor.LatLon;
 /**
  *
  */
-public class JsonDecoder {
+public final class JsonDecoder {
   private JsonDecoder() {
     // Private constructor to avoid instantiation
   }
 
-  protected static LatLon decodeLatLon(final JsonArray json) {
+  static LatLon decodeLatLon(final JsonArray json) {
     if (
       json.size() == 2 &&
       json.get(0) instanceof JsonNumber &&
@@ -31,7 +30,7 @@ public class JsonDecoder {
     return null;
   }
 
-  protected static Long decodeTimestamp(final String timestamp) {
+  static Long decodeTimestamp(final String timestamp) {
     if (timestamp != null) {
       try {
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.UK).parse(timestamp).getTime();
