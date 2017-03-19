@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "accuracy": 1,
+        "altitude": 3.688496,
+        "first_seen_at": "2016-10-16T09:42:56.060Z",
+        "key": "qpku21qv8rjn7fll1v671732th",
+        "last_seen_at": "2016-10-16T09:42:56.060Z",
+        "package": "trafficsign",
+        "updated_at": "2016-11-29T12:21:22.275Z",
+        "value": "regulatory--no-parking--g1",
+        "detections": [
+          {
+            "detection_key": "cpatpdftmogffmhihau9792tua",
+            "image_key": "bsw3H-ajJD42zZSg2P64hA"
+          }
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.005650520324707,
+          55.608367919921875
+        ]
+      }
+    }
+  ]
+}

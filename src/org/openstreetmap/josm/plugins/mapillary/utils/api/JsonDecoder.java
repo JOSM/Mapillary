@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.function.Function;
@@ -16,7 +15,6 @@ import javax.json.JsonValue.ValueType;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
 /**
  *
@@ -31,8 +29,8 @@ public final class JsonDecoder {
    * of the desired Java objects. The method, which converts the GeoJSON features into Java objects
    * is given as a parameter to this method.
    * @param json the {@link JsonObject} to be parsed
-   * @return a {@link Collection} of {@link MapillarySequence}s that are parsed from the given {@link JsonObject}.
-   *         Currently a {@link HashMap} is used, but please don't rely on it, this could change at any time without
+   * @return a {@link Collection} which is parsed from the given {@link JsonObject}, which contains GeoJSON.
+   *         Currently a {@link HashSet} is used, but please don't rely on it, this could change at any time without
    *         prior notice. The return value will not be <code>null</code>.
    */
   public static <T> Collection<T> decodeFeatureCollection(final JsonObject json, Function<JsonObject, T> featureDecoder) {
