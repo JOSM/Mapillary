@@ -19,6 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -40,9 +41,10 @@ public final class SequenceDownloadRunnable implements Runnable {
       while (nextURL != null) {
         Main.debug("Download sequences from " + nextURL);
         final URLConnection con = nextURL.openConnection();
-        Collection<MapillarySequence> sequences = JsonSequencesDecoder.decodeSequences(Json.createReader(
-          new BufferedInputStream(con.getInputStream())
-        ).readObject());
+        Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
+          Json.createReader(new BufferedInputStream(con.getInputStream())).readObject(),
+          JsonSequencesDecoder::decodeSequence
+        );
         for (MapillarySequence seq : sequences) {
           if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
             for (MapillaryAbstractImage img : seq.getImages()) {

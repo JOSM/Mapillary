@@ -2,9 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.function.Function;
 
 import javax.json.JsonArray;
@@ -12,7 +9,6 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -24,31 +20,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 public final class JsonSequencesDecoder {
   private JsonSequencesDecoder() {
     // Private constructor to avoid instantiation
-  }
-
-  /**
-   * Parses a given {@link JsonObject} as a GeoJSON FeatureCollection into a {@link Collection}
-   * of multiple {@link MapillarySequence}.
-   * @param json the {@link JsonObject} to be parsed
-   * @return a {@link Collection} of {@link MapillarySequence}s that are parsed from the given {@link JsonObject}.
-   *         Currently a {@link HashMap} is used, but please don't rely on it, this could change at any time without
-   *         prior notice. The return value will not be <code>null</code>.
-   */
-  public static Collection<MapillarySequence> decodeSequences(final JsonObject json) {
-    final Collection<MapillarySequence> result = new HashSet<>();
-    if (
-      json != null && "FeatureCollection".equals(json.getString("type", null)) &&
-      json.containsKey("features") && json.get("features").getValueType() == ValueType.ARRAY
-    ) {
-      final JsonArray features = json.getJsonArray("features");
-      for (int i = 0; i < features.size(); i++) {
-        final MapillarySequence seq = decodeSequence(features.getJsonObject(i));
-        if (seq != null) {
-          result.add(seq);
-        }
-      }
-    }
-    return result;
   }
 
   /**
