@@ -7,6 +7,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -22,7 +23,7 @@ public class ImageDisplayTest {
   private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp() throws IOException {
     TestUtil.initPlugin();
   }
 
