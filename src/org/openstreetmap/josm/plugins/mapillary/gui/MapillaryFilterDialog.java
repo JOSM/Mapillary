@@ -27,6 +27,7 @@ import javax.swing.SpinnerNumberModel;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -110,7 +111,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    this.user = new JTextField(10);
+    this.user = new DisableShortcutsOnFocusGainedTextField(10);
     this.user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel(tr("User")));
     userSearchPanel.add(this.user);
