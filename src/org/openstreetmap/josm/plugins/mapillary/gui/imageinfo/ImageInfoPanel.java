@@ -134,7 +134,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
-  public void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
+  public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
     L.debug(String.format(
       "Selected Mapillary image changed from %s to %s.",
       oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
@@ -166,10 +166,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
-  public void selectionChanged(final Collection<? extends OsmPrimitive> sel) {
-    L.debug(String.format("Selection changed. %d primitives are selected.", sel.size()));
-    synchronized (sel) {
-      addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
-    }
+  public synchronized void selectionChanged(final Collection<? extends OsmPrimitive> sel) {
+    L.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
+    addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
   }
 }

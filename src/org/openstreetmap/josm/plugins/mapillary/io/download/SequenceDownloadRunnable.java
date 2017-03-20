@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -41,26 +42,28 @@ public final class SequenceDownloadRunnable implements Runnable {
       while (nextURL != null) {
         Main.debug("Download sequences from " + nextURL);
         final URLConnection con = nextURL.openConnection();
-        Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
-          Json.createReader(new BufferedInputStream(con.getInputStream())).readObject(),
-          JsonSequencesDecoder::decodeSequence
-        );
-        for (MapillarySequence seq : sequences) {
-          if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
-            for (MapillaryAbstractImage img : seq.getImages()) {
-              if (bounds.contains(img.getLatLon())) {
-                dataStorage.add(img);
-              } else {
-                seq.remove(img);
+        try (final JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+          Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
+            reader.readObject(),
+            JsonSequencesDecoder::decodeSequence
+          );
+          for (MapillarySequence seq : sequences) {
+            if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
+              for (MapillaryAbstractImage img : seq.getImages()) {
+                if (bounds.contains(img.getLatLon())) {
+                  dataStorage.add(img);
+                } else {
+                  seq.remove(img);
+                }
               }
-            }
-          } else {
-            boolean sequenceCrossesThroughBounds = false;
-            for (int i = 0; i < seq.getImages().size() && !sequenceCrossesThroughBounds; i++) {
-              sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());
-            }
-            if (sequenceCrossesThroughBounds) {
-              dataStorage.addAll(seq.getImages(), true);
+            } else {
+              boolean sequenceCrossesThroughBounds = false;
+              for (int i = 0; i < seq.getImages().size() && !sequenceCrossesThroughBounds; i++) {
+                sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());
+              }
+              if (sequenceCrossesThroughBounds) {
+                dataStorage.addAll(seq.getImages(), true);
+              }
             }
           }
         }

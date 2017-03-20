@@ -56,7 +56,7 @@ public final class JsonSequencesDecoder {
           img.setSequence(result);
         }
       }
-      if (result.getImages().size() <= 0) {
+      if (result.getImages().isEmpty()) {
         result = null;
       }
     }
@@ -75,7 +75,7 @@ public final class JsonSequencesDecoder {
   private static <T> T[] decodeJsonArray(final JsonArray array, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz) {
     @SuppressWarnings("unchecked")
     final T[] result = (T[]) Array.newInstance(clazz, array == null ? 0 : array.size());
-    for (int i = 0; i < result.length; i++) {
+    for (int i = 0; i < result.length && array != null; i++) {
       result[i] = decodeValueFunction.apply(array.get(i));
     }
     return result;

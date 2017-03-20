@@ -79,8 +79,6 @@ public class MapillaryExportWriterThread extends Thread {
       try {
         img = this.queue.take();
         mimg = this.queueImages.take();
-        if (img == null || mimg == null)
-          throw new IllegalStateException("Null image");
         if (this.path == null && mimg instanceof MapillaryImportedImage) {
           String path = ((MapillaryImportedImage) mimg).getFile().getPath();
           finalPath = path.substring(0, path.lastIndexOf('.'));
