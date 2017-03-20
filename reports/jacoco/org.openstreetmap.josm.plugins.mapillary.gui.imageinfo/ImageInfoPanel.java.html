@@ -144,7 +144,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 <span class="nc bnc" id="L144" title="All 2 branches missed.">    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;</span>
 <span class="nc bnc" id="L145" title="All 2 branches missed.">    if (newImageKey != null) {</span>
 <span class="nc" id="L146">      imgKeyValue.setText(newImageKey);</span>
-<span class="nc" id="L147">      imgLinkAction.setURL(MapillaryURL.browseImageURL(newImageKey));</span>
+<span class="nc" id="L147">      imgLinkAction.setURL(MapillaryURL.MainWebsite.browseImage(newImageKey));</span>
 <span class="nc" id="L148">      copyImgKeyAction.setContents(new StringSelection(newImageKey));</span>
 <span class="nc" id="L149">      addMapillaryTagAction.setTag(new Tag(&quot;mapillary&quot;, newImageKey));</span>
     } else {

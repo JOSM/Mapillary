@@ -9,132 +9,133 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.traffico.TrafficoSign;
 
 /**
  * Each {@link MapillarySign} represents a traffic sign detected by the Mapillary's system.
  *
  * @author nokutu
  */
-<span class="nc bnc" id="L19" title="All 2 branches missed.">public class MapillarySign {</span>
+<span class="nc bnc" id="L18" title="All 2 branches missed.">public class MapillarySign {</span>
 
-<span class="nc" id="L21">  private static final String[] COUNTRIES = {&quot;au&quot;, &quot;br&quot;, &quot;ca&quot;, &quot;eu&quot;, &quot;us&quot;};</span>
+<span class="nc" id="L20">  private static final String[] COUNTRIES = {&quot;au&quot;, &quot;br&quot;, &quot;ca&quot;, &quot;eu&quot;, &quot;us&quot;};</span>
 
-<span class="nc" id="L23">  private static Map&lt;String, HashMap&lt;String, MapillarySign&gt;&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L22">  private static Map&lt;String, HashMap&lt;String, MapillarySign&gt;&gt; map = new HashMap&lt;&gt;();</span>
 
   private final String fullName;
   private final String category;
   private final String type;
   private final String country;
   private final String variant;
-  private final TrafficoSign trafficoSign;
 
   static {
-<span class="nc bnc" id="L33" title="All 2 branches missed.">    for (String country : COUNTRIES) {</span>
-<span class="nc" id="L34">      HashMap&lt;String, MapillarySign&gt; countryMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L35">      try (</span>
-<span class="nc" id="L36">        BufferedReader br = new BufferedReader(new InputStreamReader(</span>
-<span class="nc" id="L37">          MapillarySign.class.getResourceAsStream(&quot;/data/signs/&quot; + country + &quot;.cson&quot;), &quot;UTF-8&quot;</span>
-        ))
-      ) {
-<span class="nc" id="L40">        String line = &quot;&quot;;</span>
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        while ((line = br.readLine()) != null) {</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">          if (!&quot;&quot;.equals(line)) {</span>
-<span class="nc" id="L43">            String[] pair = line.replace(&quot;'&quot;, &quot;&quot;).split(&quot;:&quot;);</span>
-<span class="nc" id="L44">            countryMap.put(pair[0].trim(), new MapillarySign(pair[1].trim()));</span>
-<span class="nc" id="L45">          }</span>
-        }
-<span class="nc" id="L47">        map.put(country, countryMap);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">    for (String country : COUNTRIES) {</span>
+<span class="nc" id="L32">      HashMap&lt;String, MapillarySign&gt; countryMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L33">      String fileName = &quot;/data/signs/&quot; + country + &quot;.cson&quot;;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">      if (MapillarySign.class.getResource(fileName) != null) {</span>
+<span class="nc" id="L35">        try (</span>
+<span class="nc" id="L36">          BufferedReader br = new BufferedReader(new InputStreamReader(</span>
+<span class="nc" id="L37">            MapillarySign.class.getResourceAsStream(fileName), &quot;UTF-8&quot;</span>
+          ))
+        ) {
+<span class="nc" id="L40">          String line = &quot;&quot;;</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">          while ((line = br.readLine()) != null) {</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">            if (!&quot;&quot;.equals(line)) {</span>
+<span class="nc" id="L43">              String[] pair = line.replace(&quot;'&quot;, &quot;&quot;).split(&quot;:&quot;);</span>
+<span class="nc" id="L44">              countryMap.put(pair[0].trim(), new MapillarySign(pair[1].trim()));</span>
+<span class="nc" id="L45">            }</span>
+          }
+<span class="nc" id="L47">          map.put(country, countryMap);</span>
 
-<span class="nc" id="L49">        br.close();</span>
-<span class="nc bnc" id="L50" title="All 8 branches missed.">      } catch (IOException e) {</span>
-<span class="nc" id="L51">        Main.error(e);</span>
-<span class="nc" id="L52">      }</span>
+<span class="nc" id="L49">          br.close();</span>
+<span class="nc bnc" id="L50" title="All 8 branches missed.">        } catch (IOException e) {</span>
+<span class="nc" id="L51">          Main.error(e);</span>
+<span class="nc" id="L52">        }</span>
+      }
     }
-<span class="nc" id="L54">  }</span>
+<span class="nc" id="L55">  }</span>
 
   /**
    * @param fullName the name of the sign
    * @throws NullPointerException if the name does not match the regex &lt;code&gt;.*--.*--.*&lt;/code&gt; or if it is
    *   &lt;code&gt;null&lt;/code&gt;.
    */
-<span class="nc" id="L61">  public MapillarySign(String fullName) {</span>
-<span class="nc" id="L62">    this.fullName = fullName;</span>
-<span class="nc" id="L63">    String[] parts = fullName.split(&quot;--&quot;);</span>
-<span class="nc" id="L64">    category = parts[0];</span>
-<span class="nc" id="L65">    type = parts[1];</span>
-<span class="nc" id="L66">    country = parts[2];</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (parts.length == 4) {</span>
-<span class="nc" id="L68">      variant = parts[3];</span>
+<span class="nc" id="L62">  public MapillarySign(String fullName) {</span>
+<span class="nc" id="L63">    this.fullName = fullName;</span>
+<span class="nc" id="L64">    String[] parts = fullName.split(&quot;--&quot;);</span>
+<span class="nc" id="L65">    category = parts[0];</span>
+<span class="nc" id="L66">    type = parts[1];</span>
+<span class="nc" id="L67">    country = parts[2];</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (parts.length == 4) {</span>
+<span class="nc" id="L69">      variant = parts[3];</span>
     } else {
-<span class="nc" id="L70">      variant = null;</span>
+<span class="nc" id="L71">      variant = null;</span>
     }
-<span class="nc" id="L72">    trafficoSign = TrafficoSign.getSign(country, type);</span>
 <span class="nc" id="L73">  }</span>
 
   public static MapillarySign getSign(String name, String country) {
 <span class="nc" id="L76">    Map&lt;String, MapillarySign&gt; countryMap = map.get(country);</span>
 <span class="nc bnc" id="L77" title="All 2 branches missed.">    if (countryMap == null) {</span>
-<span class="nc" id="L78">      throw new IllegalArgumentException(&quot;Country does not exist&quot;);</span>
+<span class="nc" id="L78">      Main.warn(&quot;Country does not exist&quot;);</span>
+<span class="nc" id="L79">      return null;</span>
     }
-<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (countryMap.containsKey(name)) {</span>
-<span class="nc" id="L81">      return countryMap.get(name);</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    } else if (name.split(&quot;--&quot;).length &gt;= 3) {</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">      if (countryMap.containsValue(new MapillarySign(name))) {</span>
-<span class="nc" id="L84">        Optional&lt;MapillarySign&gt; p = countryMap.values().stream().filter(sign -&gt; sign.toString().equals(name)).findFirst();</span>
-<span class="nc bnc" id="L85" title="All 4 branches missed.">        assert p.isPresent();</span>
-<span class="nc" id="L86">        return p.get();</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (countryMap.containsKey(name)) {</span>
+<span class="nc" id="L82">      return countryMap.get(name);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    } else if (name.split(&quot;--&quot;).length &gt;= 3) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">      if (countryMap.containsValue(new MapillarySign(name))) {</span>
+<span class="nc" id="L85">        Optional&lt;MapillarySign&gt; p = countryMap.values().stream().filter(sign -&gt; sign.toString().equals(name)).findFirst();</span>
+<span class="nc bnc" id="L86" title="All 4 branches missed.">        assert p.isPresent();</span>
+<span class="nc" id="L87">        return p.get();</span>
       } else {
-<span class="nc" id="L88">        return new MapillarySign(name);</span>
+<span class="nc" id="L89">        return new MapillarySign(name);</span>
       }
     } else {
-<span class="nc" id="L91">      Main.warn(&quot;Sign '{0}' does not exist in the plugin database. Please contact the developer to add it.&quot;, name);</span>
-<span class="nc" id="L92">      return null;</span>
+<span class="nc" id="L92">      Main.warn(&quot;Sign '{0}' does not exist in the plugin database. Please contact the developer to add it.&quot;, name);</span>
+<span class="nc" id="L93">      return null;</span>
     }
   }
 
   public String getFullName() {
-<span class="nc" id="L97">    return fullName;</span>
+<span class="nc" id="L98">    return fullName;</span>
   }
 
   public String getCategory() {
-<span class="nc" id="L101">    return category;</span>
+<span class="nc" id="L102">    return category;</span>
   }
 
   public String getType() {
-<span class="nc" id="L105">    return type;</span>
+<span class="nc" id="L106">    return type;</span>
   }
 
   public String getCountry() {
-<span class="nc" id="L109">    return country;</span>
+<span class="nc" id="L110">    return country;</span>
   }
 
   public String getVariant() {
-<span class="nc" id="L113">    return variant;</span>
+<span class="nc" id="L114">    return variant;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L118">    return fullName;</span>
+<span class="nc" id="L119">    return fullName;</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc bnc" id="L123" title="All 2 branches missed.">    return 31 + ((fullName == null) ? 0 : fullName.hashCode());</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    return 31 + ((fullName == null) ? 0 : fullName.hashCode());</span>
   }
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L129">      return true;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L130">      return true;</span>
     }
-<span class="nc bnc" id="L131" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L132">      return false;</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L133">      return false;</span>
     }
-<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (fullName == null) {</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">      return ((MapillarySign) o).fullName == null;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (fullName == null) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">      return ((MapillarySign) o).fullName == null;</span>
     }
-<span class="nc" id="L137">    return fullName.equals(((MapillarySign) o).fullName);</span>
+<span class="nc" id="L138">    return fullName.equals(((MapillarySign) o).fullName);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

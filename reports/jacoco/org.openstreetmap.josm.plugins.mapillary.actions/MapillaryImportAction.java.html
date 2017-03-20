@@ -22,6 +22,8 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -34,14 +36,14 @@ public class MapillaryImportAction extends JosmAction {
   private static final long serialVersionUID = 4086660991261961490L;
 
   public MapillaryImportAction() {
-<span class="fc" id="L37">    this(</span>
-<span class="fc" id="L38">      tr(&quot;Import pictures&quot;),</span>
-<span class="fc" id="L39">      tr(&quot;Import local pictures&quot;),</span>
+<span class="fc" id="L39">    this(</span>
+<span class="fc" id="L40">      tr(&quot;Import pictures&quot;),</span>
+<span class="fc" id="L41">      tr(&quot;Import local pictures&quot;),</span>
       &quot;Import Mapillary&quot;,
-<span class="fc" id="L41">      tr(&quot;Import pictures into Mapillary layer&quot;),</span>
+<span class="fc" id="L43">      tr(&quot;Import pictures into Mapillary layer&quot;),</span>
       &quot;mapillaryImport&quot;
     );
-<span class="fc" id="L44">  }</span>
+<span class="fc" id="L46">  }</span>
 
   /**
    * Convenience constructor, which calls the super-constructor and disables the action.
@@ -59,52 +61,52 @@ public class MapillaryImportAction extends JosmAction {
   protected MapillaryImportAction(
     String name, String tooltip, String shortcutId, String shortcutName, String toolbarId
   ) {
-<span class="fc" id="L62">    super(</span>
+<span class="fc" id="L64">    super(</span>
       name,
-<span class="fc" id="L64">      MapillaryPlugin.getProvider(&quot;icon24.png&quot;),</span>
+<span class="fc" id="L66">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
       tooltip,
-<span class="fc" id="L66">      Shortcut.registerShortcut(shortcutId, shortcutName, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),</span>
+<span class="fc" id="L68">      Shortcut.registerShortcut(shortcutId, shortcutName, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),</span>
       false,
       toolbarId,
       false
     );
-<span class="fc" id="L71">    setEnabled(false);</span>
-<span class="fc" id="L72">  }</span>
+<span class="fc" id="L73">    setEnabled(false);</span>
+<span class="fc" id="L74">  }</span>
 
   /**
    * Shows the {@link JFileChooser} for selecting images and loads the chosen images into a {@link List}.
    * @return A {@link List} containing the loaded {@link MapillaryAbstractImage}s (might be empty but never null).
    */
   public List&lt;MapillaryAbstractImage&gt; chooseImages() {
-<span class="nc" id="L79">    final JFileChooser chooser = new JFileChooser();</span>
-<span class="nc" id="L80">    chooser.setCurrentDirectory(new File(MapillaryProperties.START_DIR.get()));</span>
-<span class="nc" id="L81">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
-<span class="nc" id="L82">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
-<span class="nc" id="L83">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L84">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
-<span class="nc" id="L85">    chooser.setMultiSelectionEnabled(true);</span>
+<span class="nc" id="L81">    final JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L82">    chooser.setCurrentDirectory(new File(MapillaryProperties.START_DIR.get()));</span>
+<span class="nc" id="L83">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
+<span class="nc" id="L84">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
+<span class="nc" id="L85">    chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L86">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L87">    chooser.setMultiSelectionEnabled(true);</span>
 
-<span class="nc" id="L87">    final List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L89">    final List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
 
-<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
         try {
-<span class="nc" id="L92">          images.addAll(ImageUtil.readImagesFrom(</span>
+<span class="nc" id="L94">          images.addAll(ImageUtil.readImagesFrom(</span>
               file,
-<span class="nc" id="L94">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
+<span class="nc" id="L96">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
           ));
-<span class="nc" id="L96">        } catch (IOException e) {</span>
-<span class="nc" id="L97">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
-<span class="nc" id="L98">        }</span>
+<span class="nc" id="L98">        } catch (IOException e) {</span>
+<span class="nc" id="L99">          Main.error(&quot;Could not read image(s) from &quot;+file.getAbsolutePath());</span>
+<span class="nc" id="L100">        }</span>
       }
-<span class="nc bnc" id="L100" title="All 2 branches missed.">      if (chooser.getSelectedFiles().length &gt;= 1) {</span>
-<span class="nc" id="L101">        final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];</span>
-<span class="nc" id="L102">        MapillaryProperties.START_DIR.put(</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">          lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">      if (chooser.getSelectedFiles().length &gt;= 1) {</span>
+<span class="nc" id="L103">        final File lastSelectedFile = chooser.getSelectedFiles()[chooser.getSelectedFiles().length - 1];</span>
+<span class="nc" id="L104">        MapillaryProperties.START_DIR.put(</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">          lastSelectedFile.getParent() == null ? lastSelectedFile.getAbsolutePath() : lastSelectedFile.getParent()</span>
         );
       }
     }
-<span class="nc" id="L107">    return images;</span>
+<span class="nc" id="L109">    return images;</span>
   }
 
   /**
@@ -112,13 +114,13 @@ public class MapillaryImportAction extends JosmAction {
    * @param addedImages the images that have been loaded
    */
   public void recordChanges(List&lt;MapillaryAbstractImage&gt; addedImages) {
-<span class="nc" id="L115">    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(addedImages)));</span>
-<span class="nc" id="L116">    MapillaryUtils.showAllPictures();</span>
-<span class="nc" id="L117">  }</span>
+<span class="nc" id="L117">    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(addedImages)));</span>
+<span class="nc" id="L118">    MapillaryUtils.showAllPictures();</span>
+<span class="nc" id="L119">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent event) {
-<span class="nc" id="L121">    recordChanges(chooseImages());</span>
-<span class="nc" id="L122">  }</span>
+<span class="nc" id="L123">    recordChanges(chooseImages());</span>
+<span class="nc" id="L124">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
@@ -12,7 +11,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
  * Zooms to the currently selected image.
@@ -29,34 +29,38 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-<span class="fc" id="L32">    super(tr(&quot;Zoom to selected image&quot;), MapillaryPlugin</span>
-<span class="fc" id="L33">        .getProvider(&quot;icon24.png&quot;), tr(&quot;Zoom to selected image&quot;),</span>
-<span class="fc" id="L34">        Shortcut.registerShortcut(&quot;Zoom Mapillary&quot;, tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
-            KeyEvent.CHAR_UNDEFINED, Shortcut.NONE), false, &quot;mapillaryZoom&quot;,
-        false);
-<span class="fc" id="L37">    this.setEnabled(false);</span>
-<span class="fc" id="L38">  }</span>
+<span class="fc" id="L32">    super(</span>
+<span class="fc" id="L33">      tr(&quot;Zoom to selected image&quot;),</span>
+<span class="fc" id="L34">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="fc" id="L35">      tr(&quot;Zoom to the currently selected Mapillary image&quot;),</span>
+      null,
+      false,
+      &quot;mapillaryZoom&quot;,
+      false
+    );
+<span class="fc" id="L41">    this.setEnabled(false);</span>
+<span class="fc" id="L42">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
-<span class="nc" id="L43">      throw new IllegalStateException();</span>
-<span class="nc" id="L44">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
-<span class="nc" id="L45">        .getSelectedImage().getMovingLatLon());</span>
-<span class="nc" id="L46">  }</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)</span>
+<span class="nc" id="L47">      throw new IllegalStateException();</span>
+<span class="nc" id="L48">    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()</span>
+<span class="nc" id="L49">        .getSelectedImage().getMovingLatLon());</span>
+<span class="nc" id="L50">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="fc bfc" id="L50" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null) {</span>
-<span class="fc" id="L51">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
-<span class="fc bfc" id="L52" title="All 4 branches covered.">    } else if (oldImage != null &amp;&amp; newImage == null) {</span>
-<span class="fc" id="L53">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">    if (oldImage == null &amp;&amp; newImage != null) {</span>
+<span class="fc" id="L55">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);</span>
+<span class="fc bfc" id="L56" title="All 4 branches covered.">    } else if (oldImage != null &amp;&amp; newImage == null) {</span>
+<span class="fc" id="L57">      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);</span>
     }
-<span class="fc" id="L55">  }</span>
+<span class="fc" id="L59">  }</span>
 
   @Override
   public void imagesAdded() {
     // Nothing
-<span class="fc" id="L60">  }</span>
+<span class="fc" id="L64">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
