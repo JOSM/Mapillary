@@ -9,6 +9,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -25,6 +26,7 @@ public class MapObject {
         "mapillaryObjectIcons", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath()
       );
     } catch (IOException e) {
+      Main.warn(e, "Could not initialize cache for map objects");
       o = null;
     }
     MAP_OBJECT_ICON_CACHE = o;

@@ -27,9 +27,9 @@ public class JsonMapObjectDecoderTest {
 
     MapObject exampleMapObject = exampleMapObjects.iterator().next();
 
-    assertEquals(1_476_610_976_060l, exampleMapObject.getFirstSeenTime()); // 2016-10-16T09:42:56.060 UTC
-    assertEquals(1_476_610_976_060l, exampleMapObject.getLastSeenTime()); // 2016-10-16T09:42:56.060 UTC
-    assertEquals(1_480_422_082_275l, exampleMapObject.getUpdatedTime()); // 2016-11-29T12:21:22.275 UTC
+    assertEquals(1_476_610_976_060L, exampleMapObject.getFirstSeenTime()); // 2016-10-16T09:42:56.060 UTC
+    assertEquals(1_476_610_976_060L, exampleMapObject.getLastSeenTime()); // 2016-10-16T09:42:56.060 UTC
+    assertEquals(1_480_422_082_275L, exampleMapObject.getUpdatedTime()); // 2016-11-29T12:21:22.275 UTC
     assertEquals("trafficsign", exampleMapObject.getPackage());
     assertEquals("regulatory--no-parking--g1", exampleMapObject.getValue());
     assertEquals("qpku21qv8rjn7fll1v671732th", exampleMapObject.getKey());
@@ -45,9 +45,9 @@ public class JsonMapObjectDecoderTest {
     assertEquals("9f3tl0z2xanom2inyyks65negx", exampleMapObject.getKey());
     assertEquals("trafficsign", exampleMapObject.getPackage());
     assertEquals("regulatory--no-entry--g1", exampleMapObject.getValue());
-    assertEquals(1_467_377_348_553l, exampleMapObject.getLastSeenTime()); // 2016-07-01T12:49:08.553 UTC
-    assertEquals(1_467_377_348_553l, exampleMapObject.getFirstSeenTime()); // 2016-07-01T12:49:08.553 UTC
-    assertEquals(1_486_566_123_778l, exampleMapObject.getUpdatedTime()); // 2017-02-08T15:02:03.778 UTC
+    assertEquals(1_467_377_348_553L, exampleMapObject.getLastSeenTime()); // 2016-07-01T12:49:08.553 UTC
+    assertEquals(1_467_377_348_553L, exampleMapObject.getFirstSeenTime()); // 2016-07-01T12:49:08.553 UTC
+    assertEquals(1_486_566_123_778L, exampleMapObject.getUpdatedTime()); // 2017-02-08T15:02:03.778 UTC
   }
 
   @Test
@@ -59,10 +59,22 @@ public class JsonMapObjectDecoderTest {
     assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{ \"type\":\"bla\"}, \"properties\":{}}");
     assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\"}}");
     assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\"}}");
-    assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\"}}");
-    assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\", \"first_seen_at\":\"1970-01-01T00:00:00.000+0100\"}}");
-    assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\", \"first_seen_at\":\"1970-01-01T00:00:00.000+0100\", \"last_seen_at\":\"2000-12-31T23:59:59.999Z\"}}");
-    assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\", \"first_seen_at\":\"1970-01-01T00:00:00.000+0100\", \"last_seen_at\":\"2000-12-31T23:59:59.999Z\", \"updated_at\": \"1970-01-01T00:00:00.000Z\"}}");
+    assertMapObjectInvalid(
+      "{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\"}}"
+    );
+    assertMapObjectInvalid(
+      "{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", " +
+      "\"value\":\"c\", \"first_seen_at\":\"1970-01-01T00:00:00.000+0100\"}}"
+    );
+    assertMapObjectInvalid(
+      "{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\", " +
+      "\"first_seen_at\":\"1970-01-01T00:00:00.000+0100\", \"last_seen_at\":\"2000-12-31T23:59:59.999Z\"}}"
+    );
+    assertMapObjectInvalid(
+      "{\"type\":\"Feature\", \"geometry\":{}, \"properties\":{\"key\":\"a\", \"package\":\"b\", \"value\":\"c\", " +
+      "\"first_seen_at\":\"1970-01-01T00:00:00.000+0100\", \"last_seen_at\":\"2000-12-31T23:59:59.999Z\", " +
+      "\"updated_at\": \"1970-01-01T00:00:00.000Z\"}}"
+    );
   }
 
   private static void assertMapObjectInvalid(String json) {

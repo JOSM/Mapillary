@@ -31,7 +31,7 @@ public final class JsonMapObjectDecoder {
       final JsonValue coordVal = "Point".equals(((JsonObject) geometry).getString("type", null))
         ? ((JsonObject) geometry).get("coordinates")
         : null;
-      final LatLon coordinate =  coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;
+      final LatLon coordinate = coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;
 
       if (
         key != null &&

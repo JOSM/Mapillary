@@ -41,7 +41,7 @@ public final class JsonSequencesDecoder {
 
       final Double[] cas = decodeCoordinateProperty(properties, "cas",
         val -> {
-          return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
+          return val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null;
         }, Double.class);
       final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
         val -> {
@@ -97,7 +97,9 @@ public final class JsonSequencesDecoder {
    *         an array, then an empty array of the desired type is returned.
    */
   @SuppressWarnings("unchecked")
-  private static <T> T[] decodeCoordinateProperty(final JsonObject json, final String key, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz) {
+  private static <T> T[] decodeCoordinateProperty(
+    final JsonObject json, final String key, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz
+  ) {
     final JsonValue coordinateProperties = json.get("coordinateProperties");
     if (coordinateProperties instanceof JsonObject) {
       JsonValue valueArray = ((JsonObject) coordinateProperties).get(key);
@@ -111,9 +113,9 @@ public final class JsonSequencesDecoder {
   private static LatLon[] decodeLatLons(final JsonObject json) {
     final JsonValue coords = json == null ? null : json.get("coordinates");
     if (coords instanceof JsonArray && "LineString".equals(json.getString("type", null))) {
-      final LatLon[] result = new LatLon[((JsonArray)coords).size()];
-      for (int i = 0; i < ((JsonArray)coords).size(); i++) {
-        final JsonValue coord = ((JsonArray)coords).get(i);
+      final LatLon[] result = new LatLon[((JsonArray) coords).size()];
+      for (int i = 0; i < ((JsonArray) coords).size(); i++) {
+        final JsonValue coord = ((JsonArray) coords).get(i);
         if (coord instanceof JsonArray) {
           result[i] = JsonDecoder.decodeLatLon((JsonArray) coord);
         }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -23,22 +24,34 @@ public class MapObjectTest {
   private static final MapObject MO_NULL_KEY = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
   private static final MapObject MO_NULL_KEY2 = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
 
-  @Test(expected=IllegalArgumentException.class)
+  static {
+    try {
+      // Sets the keys of the null-key-constants to null
+      Field keyField = MapObject.class.getDeclaredField("key");
+      keyField.setAccessible(true);
+      keyField.set(MO_NULL_KEY, null);
+      keyField.set(MO_NULL_KEY2, null);
+    } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+      fail();
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx1() {
     new MapObject(new LatLon(0, 0), null, "", "", 0, 0, 0);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx2() {
     new MapObject(new LatLon(0, 0), "", null, "", 0, 0, 0);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx3() {
     new MapObject(new LatLon(0, 0), "", "", null, 0, 0, 0);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx4() {
     new MapObject(null, "", "", "", 0, 0, 0);
   }
@@ -48,7 +61,9 @@ public class MapObjectTest {
     // Replace method for generating icon URL with one that searches the local resources for files
     Field iconUrlGen = MapObject.class.getDeclaredField("iconUrlGen");
     iconUrlGen.setAccessible(true);
-    iconUrlGen.set(null, (Function<String, URL>)(str -> { return MapObject.class.getResource(str); }) );
+    iconUrlGen.set(null, (Function<String, URL>) (str -> {
+      return MapObject.class.getResource(str);
+    }));
 
     assertNotNull(new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0).getIcon());
     assertNotNull(new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0).getIcon());
@@ -70,11 +85,6 @@ public class MapObjectTest {
 
   @Test
   public void testEquals() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    Field keyField = MapObject.class.getDeclaredField("key");
-    keyField.setAccessible(true);
-    keyField.set(MO_NULL_KEY, null);
-    keyField.set(MO_NULL_KEY2, null);
-
     assertEquals(31, MO_NULL_KEY.hashCode());
     assertTrue(MO_1.equals(MO_1));
     assertFalse(MO_1.equals(null));

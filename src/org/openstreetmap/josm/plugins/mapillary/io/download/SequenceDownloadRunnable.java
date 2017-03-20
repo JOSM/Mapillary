@@ -42,7 +42,7 @@ public final class SequenceDownloadRunnable implements Runnable {
       while (nextURL != null) {
         Main.debug("Download sequences from " + nextURL);
         final URLConnection con = nextURL.openConnection();
-        try (final JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
           Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
             reader.readObject(),
             JsonSequencesDecoder::decodeSequence
