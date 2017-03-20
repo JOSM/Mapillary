@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonMapObjectDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils.api</a> &gt; <span class="el_source">JsonMapObjectDecoder.java</span></div><h1>JsonMapObjectDecoder.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils.api;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.objects.MapObject;
+
+public final class JsonMapObjectDecoder {
+<span class="fc" id="L12">  private JsonMapObjectDecoder() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L14">  }</span>
+
+  public static MapObject decodeMapObject(final JsonObject json) {
+<span class="fc bfc" id="L17" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L18">      return null;</span>
+    }
+
+<span class="fc" id="L21">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
+<span class="fc" id="L22">    final JsonValue geometry = json.get(&quot;geometry&quot;);</span>
+<span class="fc bfc" id="L23" title="All 4 branches covered.">    if (properties instanceof JsonObject &amp;&amp; geometry instanceof JsonObject) {</span>
+<span class="fc" id="L24">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
+<span class="fc" id="L25">      final String packg = ((JsonObject) properties).getString(&quot;package&quot;, null);</span>
+<span class="fc" id="L26">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
+<span class="fc" id="L27">      final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;first_seen_at&quot;, null));</span>
+<span class="fc" id="L28">      final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;last_seen_at&quot;, null));</span>
+<span class="fc" id="L29">      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;updated_at&quot;, null));</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">      final JsonValue coordVal = &quot;Point&quot;.equals(((JsonObject) geometry).getString(&quot;type&quot;, null))</span>
+<span class="fc" id="L32">        ? ((JsonObject) geometry).get(&quot;coordinates&quot;)</span>
+        : null;
+<span class="fc bfc" id="L34" title="All 2 branches covered.">      final LatLon coordinate =  coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;</span>
+
+<span class="fc bfc" id="L36" title="All 14 branches covered.">      if (</span>
+        key != null &amp;&amp;
+        packg != null &amp;&amp;
+        value != null &amp;&amp;
+        firstSeenTime != null &amp;&amp;
+        lastSeenTime != null &amp;&amp;
+        updatedTime != null &amp;&amp;
+        coordinate != null
+      ) {
+<span class="fc" id="L45">        return new MapObject(</span>
+          coordinate,
+          key,
+          packg,
+          value,
+<span class="fc" id="L50">          firstSeenTime, lastSeenTime, updatedTime</span>
+        );
+      }
+    }
+<span class="fc" id="L54">    return null;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

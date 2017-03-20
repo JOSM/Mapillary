@@ -134,7 +134,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
-  public void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
+  public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
 <span class="nc bnc" id="L138" title="All 2 branches missed.">    L.debug(String.format(</span>
       &quot;Selected Mapillary image changed from %s to %s.&quot;,
 <span class="nc bnc" id="L140" title="All 2 branches missed.">      oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : &quot;‹none›&quot;,</span>
@@ -166,11 +166,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
-  public void selectionChanged(final Collection&lt;? extends OsmPrimitive&gt; sel) {
-<span class="nc" id="L170">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel.size()));</span>
-<span class="nc" id="L171">    synchronized (sel) {</span>
-<span class="nc bnc" id="L172" title="All 4 branches missed.">      addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
-<span class="nc" id="L173">    }</span>
-<span class="nc" id="L174">  }</span>
+  public synchronized void selectionChanged(final Collection&lt;? extends OsmPrimitive&gt; sel) {
+<span class="nc bnc" id="L170" title="All 2 branches missed.">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel == null ? 0 : sel.size()));</span>
+<span class="nc bnc" id="L171" title="All 4 branches missed.">    addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
+<span class="nc" id="L172">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

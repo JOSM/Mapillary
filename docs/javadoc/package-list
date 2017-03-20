@@ -10,5 +10,6 @@ org.openstreetmap.josm.plugins.mapillary.io.download
 org.openstreetmap.josm.plugins.mapillary.io.export
 org.openstreetmap.josm.plugins.mapillary.mode
 org.openstreetmap.josm.plugins.mapillary.oauth
+org.openstreetmap.josm.plugins.mapillary.objects
 org.openstreetmap.josm.plugins.mapillary.utils
 org.openstreetmap.josm.plugins.mapillary.utils.api

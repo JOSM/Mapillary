@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.4" timestamp="2017-03-20T00:16:37.347">
+<pmd version="5.5.4" timestamp="2017-03-20T00:57:54.792">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/AbstractTest.java">
-<violation beginline="15" endline="24" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
+<violation beginline="17" endline="27" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
 This abstract class does not have any abstract methods
 </violation>
 </file>
@@ -56,6 +56,14 @@ Avoid empty catch blocks
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListenerTest.java">
 <violation beginline="43" endline="43" begincolumn="14" endcolumn="22" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="OAuthPortListenerTest" method="responseTest" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+</violation>
+</file>
+<file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/objects/MapObjectTest.java">
+<violation beginline="80" endline="80" begincolumn="17" endcolumn="33" rule="EqualsNull" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.objects" class="MapObjectTest" method="testEquals" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#EqualsNull" priority="1">
+Avoid using equals() to compare against null
+</violation>
+<violation beginline="81" endline="81" begincolumn="17" endcolumn="31" rule="PositionLiteralsFirstInComparisons" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.objects" class="MapObjectTest" method="testEquals" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#PositionLiteralsFirstInComparisons" priority="3">
+Position literals first in String comparisons
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURLTest.java">

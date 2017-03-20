@@ -3,11 +3,15 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.function.Function;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
-import javax.json.JsonString;
+import javax.json.JsonObject;
+import javax.json.JsonValue.ValueType;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -15,35 +19,61 @@ import org.openstreetmap.josm.data.coor.LatLon;
 /**
  *
  */
-public class JsonDecoder {
-<span class="nc" id="L19">  private JsonDecoder() {</span>
+public final class JsonDecoder {
+<span class="fc" id="L23">  private JsonDecoder() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L21">  }</span>
+<span class="fc" id="L25">  }</span>
 
-  protected static LatLon decodeLatLon(final JsonArray json) {
-<span class="fc" id="L24">    if (</span>
-<span class="fc bfc" id="L25" title="All 2 branches covered.">      json.size() == 2 &amp;&amp;</span>
-<span class="fc bfc" id="L26" title="All 2 branches covered.">      json.get(0) instanceof JsonNumber &amp;&amp;</span>
-<span class="fc bfc" id="L27" title="All 2 branches covered.">      json.get(1) instanceof JsonNumber</span>
+  /**
+   * Parses a given {@link JsonObject} as a GeoJSON FeatureCollection into a {@link Collection}
+   * of the desired Java objects. The method, which converts the GeoJSON features into Java objects
+   * is given as a parameter to this method.
+   * @param json the {@link JsonObject} to be parsed
+   * @return a {@link Collection} which is parsed from the given {@link JsonObject}, which contains GeoJSON.
+   *         Currently a {@link HashSet} is used, but please don't rely on it, this could change at any time without
+   *         prior notice. The return value will not be &lt;code&gt;null&lt;/code&gt;.
+   */
+  public static &lt;T&gt; Collection&lt;T&gt; decodeFeatureCollection(final JsonObject json, Function&lt;JsonObject, T&gt; featureDecoder) {
+<span class="fc" id="L37">    final Collection&lt;T&gt; result = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    if (</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      json != null &amp;&amp; &quot;FeatureCollection&quot;.equals(json.getString(&quot;type&quot;, null)) &amp;&amp;</span>
+<span class="fc bfc" id="L40" title="All 4 branches covered.">      json.containsKey(&quot;features&quot;) &amp;&amp; json.get(&quot;features&quot;).getValueType() == ValueType.ARRAY</span>
     ) {
-<span class="fc" id="L29">      return new LatLon(json.getJsonNumber(1).doubleValue(), json.getJsonNumber(0).doubleValue());</span>
+<span class="fc" id="L42">      final JsonArray features = json.getJsonArray(&quot;features&quot;);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">      for (int i = 0; i &lt; features.size(); i++) {</span>
+<span class="fc" id="L44">        final T feature = featureDecoder.apply(features.getJsonObject(i));</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (feature != null) {</span>
+<span class="fc" id="L46">          result.add(feature);</span>
+        }
+      }
     }
-<span class="fc" id="L31">    return null;</span>
+<span class="fc" id="L50">    return result;</span>
   }
 
-  protected static Long decodeTimestamp(final String timestamp) {
-<span class="fc bfc" id="L35" title="All 2 branches covered.">    if (timestamp != null) {</span>
+  static LatLon decodeLatLon(final JsonArray json) {
+<span class="fc" id="L54">    if (</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">      json.size() == 2 &amp;&amp;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">      json.get(0) instanceof JsonNumber &amp;&amp;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">      json.get(1) instanceof JsonNumber</span>
+    ) {
+<span class="fc" id="L59">      return new LatLon(json.getJsonNumber(1).doubleValue(), json.getJsonNumber(0).doubleValue());</span>
+    }
+<span class="fc" id="L61">    return null;</span>
+  }
+
+  static Long decodeTimestamp(final String timestamp) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (timestamp != null) {</span>
       try {
-<span class="fc" id="L37">        return new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ss.SSSX&quot;, Locale.UK).parse(timestamp).getTime();</span>
-<span class="fc" id="L38">      } catch (ParseException e) {</span>
-<span class="fc" id="L39">        StackTraceElement calledBy = e.getStackTrace()[Math.min(e.getStackTrace().length - 1, 2)];</span>
-<span class="fc" id="L40">        Main.warn(e, String.format(</span>
+<span class="fc" id="L67">        return new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ss.SSSX&quot;, Locale.UK).parse(timestamp).getTime();</span>
+<span class="fc" id="L68">      } catch (ParseException e) {</span>
+<span class="fc" id="L69">        StackTraceElement calledBy = e.getStackTrace()[Math.min(e.getStackTrace().length - 1, 2)];</span>
+<span class="fc" id="L70">        Main.warn(e, String.format(</span>
           &quot;Could not decode time from the timestamp `%s` (called by %s.%s:%d)&quot;,
-<span class="fc" id="L42">          timestamp, calledBy.getClassName(), calledBy.getMethodName(), calledBy.getLineNumber()</span>
+<span class="fc" id="L72">          timestamp, calledBy.getClassName(), calledBy.getMethodName(), calledBy.getLineNumber()</span>
         ));
       }
     }
-<span class="fc" id="L46">    return null;</span>
+<span class="fc" id="L76">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -34,15 +34,15 @@ public final class MapillaryURL {
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-<span class="fc" id="L37">      return string2URL(APIv3.BASE_URL, &quot;changeset&quot;, queryString(null));</span>
+<span class="fc" id="L37">      return string2URL(BASE_URL, &quot;changeset&quot;, queryString(null));</span>
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-<span class="nc" id="L41">      return string2URL(APIv3.BASE_URL, &quot;objects&quot;, queryString(bounds));</span>
+<span class="nc" id="L41">      return string2URL(BASE_URL, &quot;objects&quot;, queryString(bounds));</span>
     }
 
     public static URL searchSequences(final Bounds bounds) {
-<span class="fc" id="L45">      return string2URL(APIv3.BASE_URL, &quot;sequences&quot;, queryString(bounds));</span>
+<span class="fc" id="L45">      return string2URL(BASE_URL, &quot;sequences&quot;, queryString(bounds));</span>
     }
 
     /**
@@ -200,7 +200,7 @@ public final class MapillaryURL {
    * @param parts the parts of the query string
    * @return the constructed query string (including a leading ?)
    */
-  private static String queryString(Map&lt;String, String&gt; parts) {
+  static String queryString(Map&lt;String, String&gt; parts) {
 <span class="fc" id="L204">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
 <span class="fc bfc" id="L205" title="All 2 branches covered.">    if (parts != null) {</span>
 <span class="fc bfc" id="L206" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
@@ -224,7 +224,7 @@ public final class MapillaryURL {
    * @param string the String describing the URL
    * @return the URL that is constructed from the given string
    */
-  private static URL string2URL(String... strings) {
+  static URL string2URL(String... strings) {
 <span class="fc" id="L228">    StringBuilder builder = new StringBuilder();</span>
 <span class="pc bpc" id="L229" title="1 of 4 branches missed.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
 <span class="fc" id="L230">      builder.append(strings[i]);</span>
