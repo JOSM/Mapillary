@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
@@ -16,9 +18,10 @@ public abstract class AbstractTest {
 
   /**
    * Initiates the basic parts of JOSM.
+   * @throws IOException
    */
   @BeforeClass
-  public static void setUpBeforeClass() {
+  public static void setUpBeforeClass() throws IOException {
     TestUtil.initPlugin();
   }
 }

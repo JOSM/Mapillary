@@ -29,8 +29,9 @@ public class JsonSequencesDecoderTest {
 
   @Test
   public void testDecodeSequences() {
-    Collection<MapillarySequence> exampleSequences = JsonSequencesDecoder.decodeSequences(
-      Json.createReader(this.getClass().getResourceAsStream("/api/v3/responses/searchSequences.json")).readObject()
+    Collection<MapillarySequence> exampleSequences = JsonDecoder.decodeFeatureCollection(
+      Json.createReader(this.getClass().getResourceAsStream("/api/v3/responses/searchSequences.json")).readObject(),
+      JsonSequencesDecoder::decodeSequence
     );
     assertNotNull(exampleSequences);
     assertEquals(1, exampleSequences.size());
@@ -58,7 +59,7 @@ public class JsonSequencesDecoderTest {
   @Test
   public void testDecodeSequencesInvalid() {
     // null input
-    assertEquals(0, JsonSequencesDecoder.decodeSequences(null).size());
+    assertEquals(0, JsonDecoder.decodeFeatureCollection(null, JsonSequencesDecoder::decodeSequence).size());
     // empty object
     assertNumberOfDecodedSequences(0, "{}");
     // object without type=FeatureCollection
@@ -79,8 +80,9 @@ public class JsonSequencesDecoderTest {
   private static void assertNumberOfDecodedSequences(int expectedNumberOfSequences, String jsonString) {
     assertEquals(
       expectedNumberOfSequences,
-      JsonSequencesDecoder.decodeSequences(
-        Json.createReader(new ByteArrayInputStream(jsonString.getBytes())).readObject()
+      JsonDecoder.decodeFeatureCollection(
+        Json.createReader(new ByteArrayInputStream(jsonString.getBytes())).readObject(),
+        JsonSequencesDecoder::decodeSequence
       ).size()
     );
   }
@@ -106,6 +108,8 @@ public class JsonSequencesDecoderTest {
 
   @Test
   public void testDecodeSequenceInvalid() {
+    // null input
+    assertNull(JsonSequencesDecoder.decodeSequence(null));
     // `properties` key is not set
     assertNull(JsonSequencesDecoder.decodeSequence(Json.createReader(new ByteArrayInputStream(
       "{\"type\": \"Feature\"}".getBytes()

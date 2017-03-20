@@ -1,0 +1,21 @@
+{
+  "type": "Feature",
+  "properties": {
+    "accuracy": 1,
+    "altitude": 1.7983143,
+    "first_seen_at": "2016-07-01T12:49:08.553Z",
+    "key": "9f3tl0z2xanom2inyyks65negx",
+    "last_seen_at": "2016-07-01T12:49:08.553Z",
+    "package": "trafficsign",
+    "updated_at": "2017-02-08T15:02:03.778Z",
+    "value": "regulatory--no-entry--g1",
+    "detections": []
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      13.017088890075684,
+      55.60746765136719
+    ]
+  }
+}

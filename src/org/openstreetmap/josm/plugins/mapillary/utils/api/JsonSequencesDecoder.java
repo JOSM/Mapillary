@@ -2,12 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.function.Function;
 
 import javax.json.JsonArray;
@@ -15,9 +9,7 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -31,31 +23,6 @@ public final class JsonSequencesDecoder {
   }
 
   /**
-   * Parses a given {@link JsonObject} as a GeoJSON FeatureCollection into a {@link Collection}
-   * of multiple {@link MapillarySequence}.
-   * @param json the {@link JsonObject} to be parsed
-   * @return a {@link Collection} of {@link MapillarySequence}s that are parsed from the given {@link JsonObject}.
-   *         Currently a {@link HashMap} is used, but please don't rely on it, this could change at any time without
-   *         prior notice. The return value will not be <code>null</code>.
-   */
-  public static Collection<MapillarySequence> decodeSequences(final JsonObject json) {
-    final Collection<MapillarySequence> result = new HashSet<>();
-    if (
-      json != null && "FeatureCollection".equals(json.getString("type", null)) &&
-      json.containsKey("features") && json.get("features").getValueType() == ValueType.ARRAY
-    ) {
-      final JsonArray features = json.getJsonArray("features");
-      for (int i = 0; i < features.size(); i++) {
-        final MapillarySequence seq = decodeSequence(features.getJsonObject(i));
-        if (seq != null) {
-          result.add(seq);
-        }
-      }
-    }
-    return result;
-  }
-
-  /**
    * Parses a given {@link JsonObject} as a GeoJSON Feature into a {@link MapillarySequence}.
    * @param json the {@link JsonObject} to be parsed
    * @return a {@link MapillarySequence} that is parsed from the given {@link JsonObject}. If mandatory information is
@@ -63,33 +30,34 @@ public final class JsonSequencesDecoder {
    *         returned.
    */
   public static MapillarySequence decodeSequence(final JsonObject json) {
+    if (json == null || !"Feature".equals(json.getString("type", null))) {
+      return null;
+    }
     MapillarySequence result = null;
-    if ("Feature".equals(json.getString("type", null))) {
-      final JsonObject properties = json.getJsonObject("properties");
-      final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
-      if (properties != null && properties.getString("key", null) != null && capturedAt != null) {
-        result = new MapillarySequence(properties.getString("key", null), capturedAt);
+    final JsonObject properties = json.getJsonObject("properties");
+    final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
+    if (properties != null && properties.getString("key", null) != null && capturedAt != null) {
+      result = new MapillarySequence(properties.getString("key", null), capturedAt);
 
-        final Double[] cas = decodeCoordinateProperty(properties, "cas",
-          val -> {
-            return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
-          }, Double.class);
-        final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
-          val -> {
-            return val instanceof JsonString ? ((JsonString) val).getString() : null;
-          }, String.class);
-        final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
-        final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
-        for (int i = 0; i < sequenceLength; i++) {
-          if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-            final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
-            result.add(img);
-            img.setSequence(result);
-          }
+      final Double[] cas = decodeCoordinateProperty(properties, "cas",
+        val -> {
+          return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;
+        }, Double.class);
+      final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
+        val -> {
+          return val instanceof JsonString ? ((JsonString) val).getString() : null;
+        }, String.class);
+      final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
+      final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
+      for (int i = 0; i < sequenceLength; i++) {
+        if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
+          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
+          result.add(img);
+          img.setSequence(result);
         }
-        if (result.getImages().size() <= 0) {
-          result = null;
-        }
+      }
+      if (result.getImages().size() <= 0) {
+        result = null;
       }
     }
     return result;

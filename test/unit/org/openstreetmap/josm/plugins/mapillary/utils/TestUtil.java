@@ -5,11 +5,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.projection.Projections;
@@ -45,10 +53,26 @@ public final class TestUtil {
    * the preferences from test/data/preferences.
    *
    * That is needed e.g. to use {@link MapillaryLayer#getInstance()}
+   * @throws IOException
    */
-  public static synchronized void initPlugin() {
+  public static synchronized void initPlugin() throws IOException {
+    final String josmHomeForUnitTests = "build/.josm_test";
+    if (new File(josmHomeForUnitTests).exists()) {
+      Files.walkFileTree(Paths.get(josmHomeForUnitTests), new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+          Files.delete(dir);
+          return super.postVisitDirectory(dir, exc);
+        }
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          Files.delete(file);
+          return super.visitFile(file, attrs);
+        }
+      });
+    }
     if (!isInitialized) {
-      System.setProperty("josm.home", "test/data/preferences");
+      System.setProperty("josm.home", josmHomeForUnitTests);
       Main.pref.enableSaveOnPut(false);
       I18n.init();
       Main.determinePlatformHook();
