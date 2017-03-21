@@ -3,9 +3,11 @@ package org.openstreetmap.josm.plugins.mapillary.objects;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.function.Function;
 
-import javax.swing.Icon;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.jcs.access.CacheAccess;
@@ -16,13 +18,13 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 
 public class MapObject {
-  private static final CacheAccess<String, Icon> MAP_OBJECT_ICON_CACHE;
+  private static final CacheAccess<String, ImageIcon> MAP_OBJECT_ICON_CACHE;
   private static Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
 
   static {
-    CacheAccess<String, Icon> o;
+    CacheAccess<String, ImageIcon> o;
     try {
-      o = JCSCacheManager.<String, Icon>getCache(
+      o = JCSCacheManager.getCache(
         "mapillaryObjectIcons", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath()
       );
     } catch (IOException e) {
@@ -33,6 +35,7 @@ public class MapObject {
   }
 
   private final LatLon coordinate;
+  private ImageIcon icon;
   private final String key;
   private final String objPackage;
   private final String value;
@@ -40,7 +43,10 @@ public class MapObject {
   private final long lastSeenTime;
   private final long updatedTime;
 
-  public MapObject(final LatLon coordinate, final String key, final String objPackage, final String value, long firstSeenTime, long lastSeenTime, long updatedTime) {
+  public MapObject(
+    final LatLon coordinate, final String key, final String objPackage, final String value,
+    long firstSeenTime, long lastSeenTime, long updatedTime
+  ) {
     if (key == null || objPackage == null || value == null || coordinate == null) {
       throw new IllegalArgumentException("The fields of a MapObject must not be null!");
     }
@@ -57,14 +63,29 @@ public class MapObject {
     return coordinate;
   }
 
-  public Icon getIcon() {
-    final Icon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(value) : null;
-    if (cachedIcon == null) {
-      final Icon downloadedIcon = new ImageIcon(iconUrlGen.apply(value));
-      if (MAP_OBJECT_ICON_CACHE != null) {
-        MAP_OBJECT_ICON_CACHE.put(value, downloadedIcon);
+  /**
+   * @param allowDownload <code>true</code> if this method is allowed to download the icon.
+   *        Otherwise, it won't connect to a {@link URL} in order to download the icon,
+   *        it will only look in the icon field of this object and in the icon cache.
+   * @return the icon which should be displayed for this map object
+   */
+  public ImageIcon getIcon(boolean allowDownload) {
+    if (icon != null) {
+      return icon;
+    }
+    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(value) : null;
+    if (cachedIcon == null && allowDownload) {
+      try {
+        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(value)));
+        if (MAP_OBJECT_ICON_CACHE != null) {
+          MAP_OBJECT_ICON_CACHE.put(value, downloadedIcon);
+        }
+        icon = downloadedIcon;
+        return icon;
+      } catch (IOException e) {
+        Main.warn(e, "Failed to download icon " + iconUrlGen.apply(value));
+        return null;
       }
-      return downloadedIcon;
     }
     return cachedIcon;
   }
