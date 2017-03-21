@@ -36,6 +36,18 @@ public class MapillaryURLTest {
     }
 
     @Test
+    public void testSearchMapObjects() throws UnsupportedEncodingException {
+      assertUrlEquals(
+        MapillaryURL.APIv3.searchMapObjects(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
+        "https://a.mapillary.com/v3/objects",
+        CLIENT_ID_QUERY_PART,
+        "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name())
+      );
+
+      assertUrlEquals(MapillaryURL.APIv3.searchMapObjects(null), "https://a.mapillary.com/v3/objects", CLIENT_ID_QUERY_PART);
+    }
+
+    @Test
     public void testSubmitChangeset() throws MalformedURLException {
       assertEquals(
         new URL("https://a.mapillary.com/v3/changeset?" + CLIENT_ID_QUERY_PART),
