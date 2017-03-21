@@ -19,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
-import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -83,7 +83,7 @@ public class MapillaryImportAction extends JosmAction {
 <span class="nc" id="L83">    chooser.setDialogTitle(tr(&quot;Select pictures&quot;));</span>
 <span class="nc" id="L84">    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);</span>
 <span class="nc" id="L85">    chooser.setAcceptAllFileFilterUsed(false);</span>
-<span class="nc" id="L86">    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L86">    chooser.addChoosableFileFilter(ImageImportUtil.IMAGE_FILE_FILTER);</span>
 <span class="nc" id="L87">    chooser.setMultiSelectionEnabled(true);</span>
 
 <span class="nc" id="L89">    final List&lt;MapillaryAbstractImage&gt; images = new ArrayList&lt;&gt;();</span>
@@ -91,7 +91,7 @@ public class MapillaryImportAction extends JosmAction {
 <span class="nc bnc" id="L91" title="All 2 branches missed.">    if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {</span>
 <span class="nc bnc" id="L92" title="All 2 branches missed.">      for (File file : chooser.getSelectedFiles()) {</span>
         try {
-<span class="nc" id="L94">          images.addAll(ImageUtil.readImagesFrom(</span>
+<span class="nc" id="L94">          images.addAll(ImageImportUtil.readImagesFrom(</span>
               file,
 <span class="nc" id="L96">              Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())</span>
           ));

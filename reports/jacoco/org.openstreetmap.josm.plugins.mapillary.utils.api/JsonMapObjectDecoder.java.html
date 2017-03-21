@@ -31,7 +31,7 @@ public final class JsonMapObjectDecoder {
 <span class="fc bfc" id="L31" title="All 2 branches covered.">      final JsonValue coordVal = &quot;Point&quot;.equals(((JsonObject) geometry).getString(&quot;type&quot;, null))</span>
 <span class="fc" id="L32">        ? ((JsonObject) geometry).get(&quot;coordinates&quot;)</span>
         : null;
-<span class="fc bfc" id="L34" title="All 2 branches covered.">      final LatLon coordinate =  coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">      final LatLon coordinate = coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;</span>
 
 <span class="fc bfc" id="L36" title="All 14 branches covered.">      if (</span>
         key != null &amp;&amp;

@@ -41,7 +41,7 @@ public final class JsonSequencesDecoder {
 
 <span class="fc" id="L42">      final Double[] cas = decodeCoordinateProperty(properties, &quot;cas&quot;,</span>
         val -&gt; {
-<span class="fc bfc" id="L44" title="All 2 branches covered.">          return val instanceof JsonNumber ? ((JsonNumber)val).doubleValue() : null;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">          return val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null;</span>
         }, Double.class);
 <span class="fc" id="L46">      final String[] imageKeys = decodeCoordinateProperty(properties, &quot;image_keys&quot;,</span>
         val -&gt; {
@@ -97,30 +97,32 @@ public final class JsonSequencesDecoder {
    *         an array, then an empty array of the desired type is returned.
    */
   @SuppressWarnings(&quot;unchecked&quot;)
-  private static &lt;T&gt; T[] decodeCoordinateProperty(final JsonObject json, final String key, final Function&lt;JsonValue, T&gt; decodeValueFunction, final Class&lt;T&gt; clazz) {
-<span class="fc" id="L101">    final JsonValue coordinateProperties = json.get(&quot;coordinateProperties&quot;);</span>
-<span class="fc bfc" id="L102" title="All 2 branches covered.">    if (coordinateProperties instanceof JsonObject) {</span>
-<span class="fc" id="L103">      JsonValue valueArray = ((JsonObject) coordinateProperties).get(key);</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">      if (valueArray instanceof JsonArray) {</span>
-<span class="fc" id="L105">        return decodeJsonArray((JsonArray) valueArray, decodeValueFunction, clazz);</span>
+  private static &lt;T&gt; T[] decodeCoordinateProperty(
+    final JsonObject json, final String key, final Function&lt;JsonValue, T&gt; decodeValueFunction, final Class&lt;T&gt; clazz
+  ) {
+<span class="fc" id="L103">    final JsonValue coordinateProperties = json.get(&quot;coordinateProperties&quot;);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (coordinateProperties instanceof JsonObject) {</span>
+<span class="fc" id="L105">      JsonValue valueArray = ((JsonObject) coordinateProperties).get(key);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">      if (valueArray instanceof JsonArray) {</span>
+<span class="fc" id="L107">        return decodeJsonArray((JsonArray) valueArray, decodeValueFunction, clazz);</span>
       }
     }
-<span class="fc" id="L108">    return (T[]) Array.newInstance(clazz, 0);</span>
+<span class="fc" id="L110">    return (T[]) Array.newInstance(clazz, 0);</span>
   }
 
   private static LatLon[] decodeLatLons(final JsonObject json) {
-<span class="fc bfc" id="L112" title="All 2 branches covered.">    final JsonValue coords = json == null ? null : json.get(&quot;coordinates&quot;);</span>
-<span class="fc bfc" id="L113" title="All 4 branches covered.">    if (coords instanceof JsonArray &amp;&amp; &quot;LineString&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
-<span class="fc" id="L114">      final LatLon[] result = new LatLon[((JsonArray)coords).size()];</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">      for (int i = 0; i &lt; ((JsonArray)coords).size(); i++) {</span>
-<span class="fc" id="L116">        final JsonValue coord = ((JsonArray)coords).get(i);</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (coord instanceof JsonArray) {</span>
-<span class="fc" id="L118">          result[i] = JsonDecoder.decodeLatLon((JsonArray) coord);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    final JsonValue coords = json == null ? null : json.get(&quot;coordinates&quot;);</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">    if (coords instanceof JsonArray &amp;&amp; &quot;LineString&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L116">      final LatLon[] result = new LatLon[((JsonArray) coords).size()];</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">      for (int i = 0; i &lt; ((JsonArray) coords).size(); i++) {</span>
+<span class="fc" id="L118">        final JsonValue coord = ((JsonArray) coords).get(i);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (coord instanceof JsonArray) {</span>
+<span class="fc" id="L120">          result[i] = JsonDecoder.decodeLatLon((JsonArray) coord);</span>
         }
       }
-<span class="fc" id="L121">      return result;</span>
+<span class="fc" id="L123">      return result;</span>
     }
-<span class="fc" id="L123">    return new LatLon[0];</span>
+<span class="fc" id="L125">    return new LatLon[0];</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

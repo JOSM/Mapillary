@@ -28,47 +28,49 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
    */
 <span class="fc" id="L29">  public static final BooleanProperty CUT_OFF_SEQUENCES_AT_BOUNDS =</span>
     new BooleanProperty(&quot;mapillary.cut-off-sequences-at-bounds&quot;, false);
+<span class="fc" id="L31">  public static final IntegerProperty MAPOBJECT_ICON_SIZE = new IntegerProperty(&quot;mapillary.mapobjects.iconsize&quot;, 32);</span>
+<span class="fc" id="L32">  public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty(&quot;mapillary.mapobjects.maximum-number&quot;, 500);</span>
 
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
    */
-<span class="fc" id="L35">  public static final ColorProperty BACKGROUND = new ColorProperty(&quot;background&quot;, Color.BLACK);</span>
+<span class="fc" id="L37">  public static final ColorProperty BACKGROUND = new ColorProperty(&quot;background&quot;, Color.BLACK);</span>
   /**
    * @see OsmDataLayer#PROPERTY_OUTSIDE_COLOR
    */
-<span class="fc" id="L39">  public static final ColorProperty OUTSIDE_DOWNLOADED_AREA = new ColorProperty(&quot;outside downloaded area&quot;, Color.YELLOW);</span>
+<span class="fc" id="L41">  public static final ColorProperty OUTSIDE_DOWNLOADED_AREA = new ColorProperty(&quot;outside downloaded area&quot;, Color.YELLOW);</span>
 
-<span class="fc" id="L41">  public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty(&quot;mapillary.max-download-area&quot;, 0.015);</span>
+<span class="fc" id="L43">  public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty(&quot;mapillary.max-download-area&quot;, 0.015);</span>
 
-<span class="fc" id="L43">  public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty(&quot;mapillary.picture-drag-button&quot;, 3);</span>
-<span class="fc" id="L44">  public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty(&quot;mapillary.picture-option-button&quot;, 2);</span>
-<span class="fc" id="L45">  public static final IntegerProperty PICTURE_ZOOM_BUTTON = new IntegerProperty(&quot;mapillary.picture-zoom-button&quot;, 1);</span>
-<span class="fc" id="L46">  public static final IntegerProperty SEQUENCE_MAX_JUMP_DISTANCE =</span>
+<span class="fc" id="L45">  public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty(&quot;mapillary.picture-drag-button&quot;, 3);</span>
+<span class="fc" id="L46">  public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty(&quot;mapillary.picture-option-button&quot;, 2);</span>
+<span class="fc" id="L47">  public static final IntegerProperty PICTURE_ZOOM_BUTTON = new IntegerProperty(&quot;mapillary.picture-zoom-button&quot;, 1);</span>
+<span class="fc" id="L48">  public static final IntegerProperty SEQUENCE_MAX_JUMP_DISTANCE =</span>
     new IntegerProperty(&quot;mapillary.sequence-max-jump-distance&quot;, 100);
 
-<span class="fc" id="L49">  public static final StringProperty ACCESS_TOKEN = new StringProperty(&quot;mapillary.access-token&quot;, null);</span>
-<span class="fc" id="L50">  public static final StringProperty DOWNLOAD_MODE =</span>
-<span class="fc" id="L51">    new StringProperty(&quot;mapillary.download-mode&quot;, MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());</span>
-<span class="fc" id="L52">  public static final StringProperty START_DIR =</span>
-<span class="fc" id="L53">    new StringProperty(&quot;mapillary.start-directory&quot;, System.getProperty(&quot;user.home&quot;));</span>
+<span class="fc" id="L51">  public static final StringProperty ACCESS_TOKEN = new StringProperty(&quot;mapillary.access-token&quot;, null);</span>
+<span class="fc" id="L52">  public static final StringProperty DOWNLOAD_MODE =</span>
+<span class="fc" id="L53">    new StringProperty(&quot;mapillary.download-mode&quot;, MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());</span>
+<span class="fc" id="L54">  public static final StringProperty START_DIR =</span>
+<span class="fc" id="L55">    new StringProperty(&quot;mapillary.start-directory&quot;, System.getProperty(&quot;user.home&quot;));</span>
 
   /**
    * The number of times the help popup for the {@link ImageInfoPanel} will be displayed.
    * But regardless of this number, the popup will only show up at most once between two (re)starts of JOSM.
    * Or opening the {@link ImageInfoPanel} immediately brings this number down to zero.
    */
-<span class="fc" id="L60">  public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =</span>
+<span class="fc" id="L62">  public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =</span>
     new IntegerProperty(&quot;mapillary.imageInfo.helpDisplayedCountdown&quot;, 4);
 
   static {
     // Convert old settings (e.g. mapillary-filter.svg) for ToggleDialogs with new ones without &quot;.svg&quot; at the end (e.g. mapillary-filter)
     // TODO: Remove this again after a few versions, when most users have updated their versions of the plugin
-<span class="fc bfc" id="L66" title="All 2 branches covered.">    for (Map.Entry&lt;String, Setting&lt;?&gt;&gt; e : Main.pref.getAllSettings().entrySet()) {</span>
-<span class="pc bpc" id="L67" title="2 of 4 branches missed.">      if (e.getKey() != null &amp;&amp; e.getKey().matches(&quot;.*mapillary\\-[a-z]+\\.svg.*&quot;)) {</span>
-<span class="nc" id="L68">        Main.pref.put(e.getKey().replaceAll(&quot;mapillary\\-([a-z]+)\\.svg&quot;, &quot;mapillary-$1&quot;), Main.pref.get(e.getKey()));</span>
-<span class="nc" id="L69">        Main.pref.removeFromCollection(e.getKey(), Main.pref.get(e.getKey()));</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    for (Map.Entry&lt;String, Setting&lt;?&gt;&gt; e : Main.pref.getAllSettings().entrySet()) {</span>
+<span class="pc bpc" id="L69" title="2 of 4 branches missed.">      if (e.getKey() != null &amp;&amp; e.getKey().matches(&quot;.*mapillary\\-[a-z]+\\.svg.*&quot;)) {</span>
+<span class="nc" id="L70">        Main.pref.put(e.getKey().replaceAll(&quot;mapillary\\-([a-z]+)\\.svg&quot;, &quot;mapillary-$1&quot;), Main.pref.get(e.getKey()));</span>
+<span class="nc" id="L71">        Main.pref.removeFromCollection(e.getKey(), Main.pref.get(e.getKey()));</span>
       }
-<span class="fc" id="L71">    }</span>
-<span class="fc" id="L72">  }</span>
+<span class="fc" id="L73">    }</span>
+<span class="fc" id="L74">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapObjectLayer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.layer</a> &gt; <span class="el_source">MapObjectLayer.java</span></div><h1>MapObjectLayer.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.layer;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.util.Collection;
+import java.util.HashSet;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.NavigatableComponent;
+import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
+import org.openstreetmap.josm.plugins.mapillary.objects.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+
+public final class MapObjectLayer extends Layer implements ZoomChangeListener {
+<span class="fc" id="L33">  public enum STATUS {</span>
+<span class="fc" id="L34">    DOWNLOADING(&quot;Downloading map objects…&quot;, Color.YELLOW),</span>
+<span class="fc" id="L35">    COMPLETE(&quot;All map objects loaded.&quot;, Color.GREEN),</span>
+<span class="fc" id="L36">    INCOMPLETE(&quot;Too many map objects, zoom in to see all.&quot;, Color.ORANGE),</span>
+<span class="fc" id="L37">    FAILED(&quot;Downloading map objects failed!&quot;, Color.RED);</span>
+
+    public final Color COLOR;
+    public final String MESSAGE;
+
+<span class="fc" id="L42">    private STATUS(final String message, final Color color) {</span>
+<span class="fc" id="L43">      this.COLOR = color;</span>
+<span class="fc" id="L44">      this.MESSAGE = message;</span>
+<span class="fc" id="L45">      I18n.marktr(message);</span>
+<span class="fc" id="L46">    }</span>
+  }
+
+  private static MapObjectLayer instance;
+
+  private STATUS status;
+  private MapObjectDownloadRunnable downloadRunnable;
+  private MapObjectDownloadRunnable nextDownloadRunnable;
+<span class="fc" id="L54">  private final Collection&lt;MapObject&gt; objects = new HashSet&lt;&gt;();</span>
+
+  private MapObjectLayer() {
+<span class="fc" id="L57">    super(I18n.tr(&quot;Mapillary objects&quot;));</span>
+<span class="fc" id="L58">    NavigatableComponent.addZoomChangeListener(this);</span>
+<span class="fc" id="L59">    zoomChanged();</span>
+<span class="fc" id="L60">  }</span>
+
+  public static MapObjectLayer getInstance() {
+<span class="fc" id="L63">    synchronized (MapObjectLayer.class) {</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">      if (instance == null) {</span>
+<span class="fc" id="L65">        instance = new MapObjectLayer();</span>
+      }
+<span class="fc" id="L67">      return instance;</span>
+<span class="nc" id="L68">    }</span>
+  }
+
+  public boolean isDownloadRunnableScheduled() {
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    return nextDownloadRunnable != null;</span>
+  }
+
+  public void finishDownload(boolean replaceMapObjects) {
+<span class="fc" id="L76">    synchronized (objects) {</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">      if (replaceMapObjects) {</span>
+<span class="fc" id="L78">        objects.clear();</span>
+      }
+<span class="fc" id="L80">      objects.addAll(downloadRunnable.getMapObjects());</span>
+<span class="pc" id="L81">    }</span>
+<span class="fc" id="L82">    synchronized (this) {</span>
+<span class="fc" id="L83">      downloadRunnable = null;</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">      if (nextDownloadRunnable != null) {</span>
+<span class="nc" id="L85">        downloadRunnable = nextDownloadRunnable;</span>
+<span class="nc" id="L86">        nextDownloadRunnable = null;</span>
+<span class="nc" id="L87">        new Thread(downloadRunnable).start();</span>
+      }
+<span class="pc" id="L89">    }</span>
+<span class="fc" id="L90">    new Thread(new Runnable() {</span>
+      @Override
+      public void run() {
+<span class="fc" id="L93">        synchronized (objects) {</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">          for (MapObject object : objects) {</span>
+<span class="fc" id="L95">            object.getIcon(true);</span>
+<span class="fc" id="L96">          }</span>
+<span class="pc" id="L97">        }</span>
+<span class="fc" id="L98">        invalidate();</span>
+<span class="fc" id="L99">      }</span>
+<span class="fc" id="L100">    }).start();</span>
+<span class="fc" id="L101">  }</span>
+
+  public int getObjectCount() {
+<span class="fc" id="L104">    return objects.size();</span>
+  }
+
+  public void setStatus(STATUS status) {
+<span class="fc" id="L108">    synchronized (this) {</span>
+<span class="fc" id="L109">      this.status = status;</span>
+<span class="pc" id="L110">    }</span>
+<span class="fc" id="L111">    invalidate();</span>
+<span class="fc" id="L112">  }</span>
+
+  @Override
+  public void paint(Graphics2D g, MapView mv, Bounds bbox) {
+<span class="nc" id="L116">    final Collection&lt;MapObject&gt; displayedObjects = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L117">    synchronized (this) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">      if (downloadRunnable != null) {</span>
+<span class="nc" id="L119">        displayedObjects.addAll(downloadRunnable.getMapObjects());</span>
+      }
+<span class="nc" id="L121">    }</span>
+<span class="nc" id="L122">    displayedObjects.addAll(objects);</span>
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">    for (MapObject object : displayedObjects) {</span>
+<span class="nc" id="L125">      final ImageIcon icon = object.getIcon(false);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (icon != null) {</span>
+<span class="nc" id="L127">        final Point p = mv.getPoint(object.getCoordinate());</span>
+<span class="nc" id="L128">        g.drawImage(</span>
+<span class="nc" id="L129">          ImageUtil.scaleImageIcon(icon, MapillaryProperties.MAPOBJECT_ICON_SIZE.get()).getImage(),</span>
+<span class="nc" id="L130">          p.x - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
+<span class="nc" id="L131">          p.y - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
+          null
+        );
+      }
+<span class="nc" id="L135">    }</span>
+
+<span class="nc" id="L137">    synchronized (this) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      if (status != null) {</span>
+<span class="nc" id="L139">        g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));</span>
+<span class="nc" id="L140">        g.setColor(status.COLOR);</span>
+<span class="nc" id="L141">        final FontMetrics fm = g.getFontMetrics();</span>
+<span class="nc" id="L142">        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.MESSAGE), fm.getAscent() + fm.getDescent());</span>
+<span class="nc" id="L143">        g.setColor(Color.BLACK);</span>
+<span class="nc" id="L144">        g.drawString(status.MESSAGE, 0, mv.getHeight() - fm.getDescent());</span>
+      }
+<span class="nc" id="L146">    }</span>
+<span class="nc" id="L147">  }</span>
+
+  @Override
+  public Icon getIcon() {
+<span class="fc" id="L151">    return MapillaryPlugin.LOGO.setSize(ImageSizes.LAYER).get();</span>
+  }
+
+  @Override
+  public String getToolTipText() {
+<span class="fc" id="L156">    return I18n.tr(&quot;Displays objects detected by Mapillary from their street view imagery&quot;);</span>
+  }
+
+  @Override
+  public void mergeFrom(Layer from) {
+    // Not mergeable
+<span class="fc" id="L162">  }</span>
+
+  @Override
+  public boolean isMergable(Layer other) {
+<span class="fc" id="L166">    return false;</span>
+  }
+
+  @Override
+  public void visitBoundingBox(BoundingXYVisitor v) {
+    // Unused method enforced by the Layer class
+<span class="fc" id="L172">  }</span>
+
+  @Override
+  public Object getInfoComponent() {
+<span class="fc" id="L176">    return null;</span>
+  }
+
+  @Override
+  public Action[] getMenuEntries() {
+<span class="fc" id="L181">    return new Action[0];</span>
+  }
+
+  public void scheduleDownload(final Bounds bounds) {
+<span class="fc" id="L185">    synchronized(this) {</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">      if (downloadRunnable == null) {</span>
+<span class="fc" id="L187">        downloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
+<span class="fc" id="L188">        new Thread(downloadRunnable).start();</span>
+      } else {
+<span class="nc" id="L190">        nextDownloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
+      }
+<span class="pc" id="L192">    }</span>
+<span class="fc" id="L193">  }</span>
+
+  @Override
+  public void zoomChanged() {
+<span class="fc" id="L197">    synchronized (Main.class) {</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">      if (Main.isDisplayingMapView()) {</span>
+<span class="nc" id="L199">        scheduleDownload(Main.map.mapView.getState().getViewArea().getLatLonBoundsBox());</span>
+      }
+<span class="pc" id="L201">    }</span>
+<span class="fc" id="L202">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

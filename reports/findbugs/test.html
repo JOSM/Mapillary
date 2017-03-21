@@ -80,9 +80,11 @@
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCacheTest.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/ImageDisplayTest.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapObjectLayerTest.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/TestUtil$1.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/TestUtil.class</li>
-<li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/ImageUtilsTest.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtilTest.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/ImageUtilTest.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURLTest$APIv3.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURLTest.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/test/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtilsTest.class</li>
@@ -101,9 +103,9 @@
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>1071 lines of code analyzed,
-	in 24 classes, 
-	in 9 packages.</p>
+<p>1157 lines of code analyzed,
+	in 26 classes, 
+	in 10 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
 <tr class="tableheader">
 <th align="left">Metric</th>
@@ -113,27 +115,27 @@
 <tr class="tablerow0">
 <td>High Priority Warnings</td>
 <td align="right">6</td>
-<td align="right">5.60</td>
+<td align="right">5.19</td>
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
 <td align="right">4</td>
-<td align="right">3.73</td>
+<td align="right">3.46</td>
 </tr>
 <tr class="tablerow1">
 <td>Low Priority Warnings</td>
-<td align="right">12</td>
-<td align="right">11.20</td>
+<td align="right">14</td>
+<td align="right">12.10</td>
 </tr>
 <tr class="$totalClass">
 <td>
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>22</b>
+<b>24</b>
 </td>
 <td align="right">
-<b>20.54</b>
+<b>20.74</b>
 </td>
 </tr>
 </table>
@@ -196,7 +198,7 @@
 <td>
 <a href="#Warnings_MALICIOUS_CODE">Malicious code vulnerability Warnings</a>
 </td>
-<td align="right">2</td>
+<td align="right">4</td>
 </tr>
 <tr class="tablerow0">
 <td>
@@ -215,7 +217,7 @@
 <b>Total</b>
 </td>
 <td align="right">
-<b>22</b>
+<b>24</b>
 </td>
 </tr>
 </table>
@@ -229,7 +231,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66107');">
+<tr class="tablerow1" onclick="toggleRow('N66191');">
 <td>
 <span class="priority-2">OS</span>
 </td>
@@ -238,12 +240,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66107" style="display: none;">
+<p id="N66191" style="display: none;">
 <a href="#OS_OPEN_STREAM">Bug type OS_OPEN_STREAM (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>Need to close java.io.Reader <br/>At OAuthPortListenerTest.java:[line 39]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66429');">
+<tr class="tablerow0" onclick="toggleRow('N66513');">
 <td>
 <span class="priority-2">RV</span>
 </td>
@@ -252,12 +254,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66429" style="display: none;">
+<p id="N66513" style="display: none;">
 <a href="#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">Bug type RV_RETURN_VALUE_IGNORED_BAD_PRACTICE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()<br/>Called method java.io.File.delete()<br/>At UploadTest.java:[line 70]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65652');">
+<tr class="tablerow1" onclick="toggleRow('N65660');">
 <td>
 <span class="priority-3">UI</span>
 </td>
@@ -266,12 +268,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N65652" style="display: none;">
+<p id="N65660" style="display: none;">
 <a href="#UI_INHERITANCE_UNSAFE_GETRESOURCE">Bug type UI_INHERITANCE_UNSAFE_GETRESOURCE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.ImportTest<br/>In method org.openstreetmap.josm.plugins.mapillary.ImportTest.importNoTagsTest()<br/>At ImportTest.java:[line 29]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66499');">
+<tr class="tablerow0" onclick="toggleRow('N66583');">
 <td>
 <span class="priority-3">UI</span>
 </td>
@@ -280,12 +282,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66499" style="display: none;">
+<p id="N66583" style="display: none;">
 <a href="#UI_INHERITANCE_UNSAFE_GETRESOURCE">Bug type UI_INHERITANCE_UNSAFE_GETRESOURCE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()<br/>At UploadTest.java:[line 39]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66755');">
+<tr class="tablerow1" onclick="toggleRow('N66915');">
 <td>
 <span class="priority-3">UI</span>
 </td>
@@ -294,12 +296,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66755" style="display: none;">
+<p id="N66915" style="display: none;">
 <a href="#UI_INHERITANCE_UNSAFE_GETRESOURCE">Bug type UI_INHERITANCE_UNSAFE_GETRESOURCE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest.testDecodeMapObjects()<br/>At JsonMapObjectDecoderTest.java:[line 23]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67092');">
+<tr class="tablerow0" onclick="toggleRow('N67186');">
 <td>
 <span class="priority-3">UI</span>
 </td>
@@ -308,7 +310,7 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67092" style="display: none;">
+<p id="N67186" style="display: none;">
 <a href="#UI_INHERITANCE_UNSAFE_GETRESOURCE">Bug type UI_INHERITANCE_UNSAFE_GETRESOURCE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeSequences()<br/>At JsonSequencesDecoderTest.java:[line 33]</p>
 </td>
@@ -322,7 +324,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66333');">
+<tr class="tablerow1" onclick="toggleRow('N66417');">
 <td>
 <span class="priority-2">NP</span>
 </td>
@@ -331,7 +333,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66333" style="display: none;">
+<p id="N66417" style="display: none;">
 <a href="#NP_NULL_ON_SOME_PATH_EXCEPTION">Bug type NP_NULL_ON_SOME_PATH_EXCEPTION (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadTest.updateFileTest()<br/>Value loaded from updatedFile<br/>Dereferenced at UploadTest.java:[line 70]<br/>Null value at UploadTest.java:[line 41]<br/>Known null at UploadTest.java:[line 43]</p>
 </td>
@@ -345,7 +347,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66038');">
+<tr class="tablerow1" onclick="toggleRow('N66122');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -354,12 +356,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66038" style="display: none;">
+<p id="N66122" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>Called method new java.io.InputStreamReader(InputStream)<br/>At OAuthPortListenerTest.java:[line 40]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66617');">
+<tr class="tablerow0" onclick="toggleRow('N66777');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -368,12 +370,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66617" style="display: none;">
+<p id="N66777" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest.assertMapObjectInvalid(String)<br/>Called method String.getBytes()<br/>At JsonMapObjectDecoderTest.java:[line 70]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest.assertMapObjectInvalid(String)<br/>Called method String.getBytes()<br/>At JsonMapObjectDecoderTest.java:[line 82]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66686');">
+<tr class="tablerow1" onclick="toggleRow('N66846');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -382,12 +384,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66686" style="display: none;">
+<p id="N66846" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoderTest.testDecodeMapObjectInvalid()<br/>Called method String.getBytes()<br/>At JsonMapObjectDecoderTest.java:[line 56]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66808');">
+<tr class="tablerow0" onclick="toggleRow('N66968');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
@@ -396,37 +398,37 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66808" style="display: none;">
+<p id="N66968" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.assertNumberOfDecodedSequences(int, String)<br/>Called method String.getBytes()<br/>At JsonSequencesDecoderTest.java:[line 84]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66877');">
+<tr class="tablerow1" onclick="toggleRow('N67037');">
+<td>
+<span class="priority-1">Dm</span>
+</td>
+<td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.assertSequenceDecodesToNull(String[]): String.getBytes()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N67037" style="display: none;">
+<a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.assertSequenceDecodesToNull(String[])<br/>Called method String.getBytes()<br/>At JsonSequencesDecoderTest.java:[line 146]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N67106');">
 <td>
 <span class="priority-1">Dm</span>
 </td>
 <td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeLatLons(): String.getBytes()</td>
 </tr>
-<tr class="detailrow1">
-<td/>
-<td>
-<p id="N66877" style="display: none;">
-<a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeLatLons()<br/>Called method String.getBytes()<br/>At JsonSequencesDecoderTest.java:[line 170]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 172]</p>
-</td>
-</tr>
-<tr class="tablerow0" onclick="toggleRow('N66957');">
-<td>
-<span class="priority-1">Dm</span>
-</td>
-<td>Found reliance on default encoding in org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeSequenceInvalid(): String.getBytes()</td>
-</tr>
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66957" style="display: none;">
+<p id="N67106" style="display: none;">
 <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeSequenceInvalid()<br/>Called method String.getBytes()<br/>At JsonSequencesDecoderTest.java:[line 115]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 119]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 123]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 127]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 131]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 135]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 139]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoderTest.testDecodeLatLons()<br/>Called method String.getBytes()<br/>At JsonSequencesDecoderTest.java:[line 175]<br/>Another occurrence at JsonSequencesDecoderTest.java:[line 179]</p>
 </td>
 </tr>
 </table>
@@ -438,21 +440,49 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65973');">
+<tr class="tablerow1" onclick="toggleRow('N65981');">
+<td>
+<span class="priority-3">DP</span>
+</td>
+<td>Invocation of reflect.Field.setAccessible(boolean), which should be invoked from within a doPrivileged block, in org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayerTest.setUp()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N65981" style="display: none;">
+<a href="#DP_DO_INSIDE_DO_PRIVILEGED">Bug type DP_DO_INSIDE_DO_PRIVILEGED (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayerTest.setUp()<br/>Called method reflect.Field.setAccessible(boolean)<br/>At MapObjectLayerTest.java:[line 32]<br/>Another occurrence at MapObjectLayerTest.java:[line 35]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66057');">
 <td>
 <span class="priority-3">DP</span>
 </td>
 <td>Invocation of reflect.Field.setAccessible(boolean), which should be invoked from within a doPrivileged block, in org.openstreetmap.josm.plugins.mapillary.io.download.SequenceDownloadRunnableTest.setUp()</td>
 </tr>
-<tr class="detailrow1">
+<tr class="detailrow0">
 <td/>
 <td>
-<p id="N65973" style="display: none;">
+<p id="N66057" style="display: none;">
 <a href="#DP_DO_INSIDE_DO_PRIVILEGED">Bug type DP_DO_INSIDE_DO_PRIVILEGED (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.io.download.SequenceDownloadRunnableTest<br/>In method org.openstreetmap.josm.plugins.mapillary.io.download.SequenceDownloadRunnableTest.setUp()<br/>Called method reflect.Field.setAccessible(boolean)<br/>At SequenceDownloadRunnableTest.java:[line 28]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66552');">
+<tr class="tablerow1" onclick="toggleRow('N66636');">
+<td>
+<span class="priority-3">DP</span>
+</td>
+<td>Invocation of reflect.Field.setAccessible(boolean), which should be invoked from within a doPrivileged block, in org.openstreetmap.josm.plugins.mapillary.objects.MapObjectTest.setUp()</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66636" style="display: none;">
+<a href="#DP_DO_INSIDE_DO_PRIVILEGED">Bug type DP_DO_INSIDE_DO_PRIVILEGED (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.objects.MapObjectTest<br/>In method org.openstreetmap.josm.plugins.mapillary.objects.MapObjectTest.setUp()<br/>Called method reflect.Field.setAccessible(boolean)<br/>At MapObjectTest.java:[line 38]<br/>Another occurrence at MapObjectTest.java:[line 44]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66712');">
 <td>
 <span class="priority-3">DP</span>
 </td>
@@ -461,7 +491,7 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66552" style="display: none;">
+<p id="N66712" style="display: none;">
 <a href="#DP_DO_INSIDE_DO_PRIVILEGED">Bug type DP_DO_INSIDE_DO_PRIVILEGED (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.TestUtil<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateField(Object, String)<br/>Called method reflect.Field.setAccessible(boolean)<br/>At TestUtil.java:[line 47]</p>
 </td>
@@ -475,7 +505,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66227');">
+<tr class="tablerow1" onclick="toggleRow('N66311');">
 <td>
 <span class="priority-3">UW</span>
 </td>
@@ -484,12 +514,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66227" style="display: none;">
+<p id="N66311" style="display: none;">
 <a href="#UW_UNCOND_WAIT">Bug type UW_UNCOND_WAIT (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 32]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66280');">
+<tr class="tablerow0" onclick="toggleRow('N66364');">
 <td>
 <span class="priority-3">Wa</span>
 </td>
@@ -498,7 +528,7 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66280" style="display: none;">
+<p id="N66364" style="display: none;">
 <a href="#WA_NOT_IN_LOOP">Bug type WA_NOT_IN_LOOP (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 32]</p>
 </td>
@@ -512,7 +542,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66173');">
+<tr class="tablerow1" onclick="toggleRow('N66257');">
 <td>
 <span class="priority-2">REC</span>
 </td>
@@ -521,12 +551,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66173" style="display: none;">
+<p id="N66257" style="display: none;">
 <a href="#REC_CATCH_EXCEPTION">Bug type REC_CATCH_EXCEPTION (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListenerTest.responseTest()<br/>At OAuthPortListenerTest.java:[line 43]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65705');">
+<tr class="tablerow0" onclick="toggleRow('N65713');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
@@ -535,12 +565,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N65705" style="display: none;">
+<p id="N65713" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img1<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 52]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65772');">
+<tr class="tablerow1" onclick="toggleRow('N65780');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
@@ -549,12 +579,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N65772" style="display: none;">
+<p id="N65780" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img2<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 55]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N65839');">
+<tr class="tablerow0" onclick="toggleRow('N65847');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
@@ -563,12 +593,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N65839" style="display: none;">
+<p id="N65847" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.img4<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 58]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N65906');">
+<tr class="tablerow1" onclick="toggleRow('N65914');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
@@ -577,7 +607,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N65906" style="display: none;">
+<p id="N65914" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.seq<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillarySequenceTest.nextAndPreviousTest()<br/>At MapillarySequenceTest.java:[line 53]</p>
 </td>

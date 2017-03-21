@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapObjectLayerAction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.actions</a> &gt; <span class="el_source">MapObjectLayerAction.java</span></div><h1>MapObjectLayerAction.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.actions;
+
+import java.awt.event.ActionEvent;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+
+public class MapObjectLayerAction extends JosmAction {
+  private static final long serialVersionUID = -8388752916891634738L;
+
+  public MapObjectLayerAction() {
+<span class="nc" id="L18">    super(</span>
+<span class="nc" id="L19">      I18n.tr(&quot;Mapillary object layer&quot;),</span>
+<span class="nc" id="L20">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L21">      I18n.tr(&quot;Displays the layer displaying the map objects detected by Mapillary&quot;),</span>
+      null,
+      false,
+      &quot;mapillaryObjectLayer&quot;,
+      false
+    );
+<span class="nc" id="L27">  }</span>
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L31">    synchronized (Main.getLayerManager()) {</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">      if (!Main.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {</span>
+<span class="nc" id="L33">        Main.getLayerManager().addLayer(MapObjectLayer.getInstance());</span>
+      }
+<span class="nc" id="L35">    }</span>
+<span class="nc" id="L36">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
