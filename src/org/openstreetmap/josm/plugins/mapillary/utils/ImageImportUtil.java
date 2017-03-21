@@ -26,10 +26,10 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.I18n;
 
-public final class ImageUtil {
+public final class ImageImportUtil {
   public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();
 
-  private ImageUtil() {
+  private ImageImportUtil() {
     // Private constructor to avoid instantiation
   }
 

@@ -19,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
-import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -83,7 +83,7 @@ public class MapillaryImportAction extends JosmAction {
     chooser.setDialogTitle(tr("Select pictures"));
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     chooser.setAcceptAllFileFilterUsed(false);
-    chooser.addChoosableFileFilter(ImageUtil.IMAGE_FILE_FILTER);
+    chooser.addChoosableFileFilter(ImageImportUtil.IMAGE_FILE_FILTER);
     chooser.setMultiSelectionEnabled(true);
 
     final List<MapillaryAbstractImage> images = new ArrayList<>();
@@ -91,7 +91,7 @@ public class MapillaryImportAction extends JosmAction {
     if (chooser.showOpenDialog(Main.parent) == JFileChooser.APPROVE_OPTION) {
       for (File file : chooser.getSelectedFiles()) {
         try {
-          images.addAll(ImageUtil.readImagesFrom(
+          images.addAll(ImageImportUtil.readImagesFrom(
               file,
               Main.map.mapView.getProjection().eastNorth2latlon(Main.map.mapView.getCenter())
           ));
