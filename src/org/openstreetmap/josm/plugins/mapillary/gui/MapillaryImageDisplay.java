@@ -20,7 +20,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -369,7 +371,8 @@ public class MapillaryImageDisplay extends JComponent {
     }
     if (image == null) {
       g.setColor(Color.black);
-      String noImageStr = MapillaryLayer.hasInstance() ? tr("No image selected") : tr("Press Shift+, to download images");
+      Shortcut sc = MapillaryPlugin.getDownloadActionShortcut();
+      String noImageStr = MapillaryLayer.hasInstance() ? tr("No image selected") : tr("Press \"{0}\" to download images", sc.getKeyText());
       Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(
           noImageStr, g);
       Dimension size = getSize();
