@@ -37,6 +37,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * This is the main class of the Mapillary plugin.
@@ -141,6 +142,13 @@ public class MapillaryPlugin extends Plugin {
    */
   public static JMenuItem getDownloadViewMenu() {
     return DOWNLOAD_VIEW_MENU;
+  }
+
+  /**
+   * @return the shortcut for {@link MapillaryDownloadAction}
+   */
+  public static Shortcut getDownloadActionShortcut() {
+    return DOWNLOAD_ACTION.getShortcut();
   }
 
   /**
