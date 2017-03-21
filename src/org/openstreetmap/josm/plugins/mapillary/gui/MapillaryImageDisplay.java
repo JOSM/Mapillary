@@ -63,7 +63,7 @@ public class MapillaryImageDisplay extends JComponent {
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = MapillaryImageDisplay.this.image;
+        image = getImage();
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       this.mouseIsDragging = false;
@@ -127,7 +127,7 @@ public class MapillaryImageDisplay extends JComponent {
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = MapillaryImageDisplay.this.image;
+        image = getImage();
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
@@ -170,7 +170,7 @@ public class MapillaryImageDisplay extends JComponent {
      */
     @Override
     public void mousePressed(MouseEvent e) {
-      if (MapillaryImageDisplay.this.image == null) {
+      if (getImage() == null) {
         this.mouseIsDragging = false;
         MapillaryImageDisplay.this.selectedRect = null;
         return;
@@ -206,7 +206,7 @@ public class MapillaryImageDisplay extends JComponent {
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = MapillaryImageDisplay.this.image;
+        image = getImage();
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image == null) {
@@ -245,7 +245,7 @@ public class MapillaryImageDisplay extends JComponent {
         return;
       Image image;
       synchronized (MapillaryImageDisplay.this) {
-        image = MapillaryImageDisplay.this.image;
+        image = getImage();
       }
       if (image == null) {
         this.mouseIsDragging = false;

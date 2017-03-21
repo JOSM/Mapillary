@@ -110,17 +110,6 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     createLayout(treesPanel, true, Arrays.asList(this.undoButton, this.redoButton));
   }
 
-  /**
-   * Returns the unique instance of the class.
-   *
-   * @return The unique instance of the class.
-   */
-  public static synchronized MapillaryHistoryDialog getInstance() {
-    if (instance == null)
-      instance = new MapillaryHistoryDialog();
-    return instance;
-  }
-
   private void buildTree() {
     this.redoButton.setEnabled(true);
     this.undoButton.setEnabled(true);
@@ -161,6 +150,44 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     this.redoTreeModel.setRoot(redoRoot);
   }
 
+  /**
+   * Destroys the unique instance of the class.
+   */
+  public static void destroyInstance() {
+    MapillaryHistoryDialog.instance = null;
+  }
+
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
+  public static synchronized MapillaryHistoryDialog getInstance() {
+    if (instance == null)
+      instance = new MapillaryHistoryDialog();
+    return instance;
+  }
+
+  MapillaryCommand getCommandFromMap(Object node) {
+    return map.get(node);
+  }
+
+  UndoRedoSelectionListener getRedoSelectionListener() {
+    return redoSelectionListener;
+  }
+
+  JTree getRedoTree() {
+    return redoTree;
+  }
+
+  UndoRedoSelectionListener getUndoSelectionListener() {
+    return undoSelectionListener;
+  }
+
+  JTree getUndoTree() {
+    return undoTree;
+  }
+
   @Override
   public void recordChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -175,7 +202,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     private static final long serialVersionUID = -6435832206342007269L;
 
     UndoAction() {
-      putValue(NAME, tr("Undo"));
+      super(tr("Undo"));
       new ImageProvider("undo").getResource().attachImageIcon(this, true);
     }
 
@@ -190,7 +217,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     private static final long serialVersionUID = -2761935780353053512L;
 
     RedoAction() {
-      putValue(NAME, tr("Redo"));
+      super(tr("Redo"));
       new ImageProvider("redo").getResource().attachImageIcon(this, true);
     }
 
@@ -198,13 +225,6 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     public void actionPerformed(ActionEvent arg0) {
       MapillaryRecord.getInstance().redo();
     }
-  }
-
-  /**
-   * Destroys the unique instance of the class.
-   */
-  public static void destroyInstance() {
-    MapillaryHistoryDialog.instance = null;
   }
 
   private class MouseEventHandler implements MouseListener {
@@ -227,10 +247,10 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     @Override
     public void mousePressed(MouseEvent e) {
       if (e.getClickCount() == 2) {
-        if (undoTree.getSelectionPath() == null) {
-          MapillaryUtils.showPictures(map.get(redoTree.getSelectionPath().getLastPathComponent()).images, true);
+        if (getUndoTree().getSelectionPath() == null) {
+          MapillaryUtils.showPictures(getCommandFromMap(getRedoTree().getSelectionPath().getLastPathComponent()).images, true);
         } else {
-          MapillaryCommand cmd = map.get(undoTree.getSelectionPath().getLastPathComponent());
+          MapillaryCommand cmd = getCommandFromMap(getUndoTree().getSelectionPath().getLastPathComponent());
           if (!(cmd instanceof CommandDelete)) {
             MapillaryUtils.showPictures(cmd.images, true);
           }
@@ -254,15 +274,15 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-      if (this.source == undoTree) {
-        redoTree.getSelectionModel().removeTreeSelectionListener(redoSelectionListener);
-        redoTree.clearSelection();
-        redoTree.getSelectionModel().addTreeSelectionListener(redoSelectionListener);
+      if (this.source == getUndoTree()) {
+        getRedoTree().getSelectionModel().removeTreeSelectionListener(getRedoSelectionListener());
+        getRedoTree().clearSelection();
+        getRedoTree().getSelectionModel().addTreeSelectionListener(getRedoSelectionListener());
       }
-      if (this.source == redoTree) {
-        undoTree.getSelectionModel().removeTreeSelectionListener(undoSelectionListener);
-        undoTree.clearSelection();
-        undoTree.getSelectionModel().addTreeSelectionListener(undoSelectionListener);
+      if (this.source == getRedoTree()) {
+        getUndoTree().getSelectionModel().removeTreeSelectionListener(getUndoSelectionListener());
+        getUndoTree().clearSelection();
+        getUndoTree().getSelectionModel().addTreeSelectionListener(getUndoSelectionListener());
       }
     }
   }
