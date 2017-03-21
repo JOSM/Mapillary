@@ -16,6 +16,7 @@ import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
@@ -98,7 +99,7 @@ public class MapillaryPlugin extends Plugin {
     } else {
       EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, EXPORT_ACTION, false, 14);
       EXPORT_MENU.setEnabled(false);
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imageryMenu, DOWNLOAD_ACTION, false);
+      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imagerySubMenu, DOWNLOAD_ACTION, false);
       DOWNLOAD_MENU.setEnabled(false);
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, IMPORT_ACTION, false, 14);
       IMPORT_MENU.setEnabled(false);
@@ -114,6 +115,9 @@ public class MapillaryPlugin extends Plugin {
       WALK_MENU.setEnabled(false);
       UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, UPLOAD_ACTION, false, 14);
       UPLOAD_MENU.setEnabled(false);
+
+      JMenuItem mapObjImageryLayerItem = MainMenu.add(Main.main.menu.imagerySubMenu, new MapObjectLayerAction(), false);
+      mapObjImageryLayerItem.setEnabled(true);
     }
   }
 
