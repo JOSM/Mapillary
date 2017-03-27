@@ -40,7 +40,7 @@ public final class MapillaryUser {
             .getWithHeader(MapillaryURL.userURL())
             .getString("username");
       } catch (IOException e) {
-        Main.info("Invalid Mapillary token, resetting field");
+        Main.warn(e, "Invalid Mapillary token, resetting field");
         reset();
       }
     }
@@ -66,7 +66,7 @@ public final class MapillaryUser {
             .getWithHeader(MapillaryURL.uploadSecretsURL())
             .getString("images_policy");
     } catch (IOException e) {
-      Main.info("Invalid Mapillary token, resetting field");
+      Main.warn(e, "Invalid Mapillary token, resetting field");
       reset();
     }
     hash.put("images_policy", imagesPolicy);

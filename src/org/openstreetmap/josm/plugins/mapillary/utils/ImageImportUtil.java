@@ -53,7 +53,7 @@ public final class ImageImportUtil {
         } catch (IOException e) {
           // Don't throw an exception here to allow other files that might be readable to be read.
           // Might not be the best solution, but the easiest workaround I could imagine.
-          Main.error(f.getAbsolutePath() + " not found or not readable!");
+          Main.error(e, f.getAbsolutePath() + " not found or not readable!");
         }
       }
     } else if (IMAGE_FILE_FILTER.accept(f)) {
@@ -154,7 +154,7 @@ public final class ImageImportUtil {
       } catch (FileNotFoundException e) {
         return false;
       } catch (IOException e) {
-        Main.warn("IO-exception while reading file "+f.getAbsolutePath());
+        Main.warn(e, "IO-exception while reading file "+f.getAbsolutePath());
         return false;
       }
     }
