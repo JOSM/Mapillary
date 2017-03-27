@@ -72,4 +72,8 @@ public final class MapillaryProperties {
       }
     }
   }
+
+  private MapillaryProperties() {
+    // Private constructor to avoid instantiation
+  }
 }
