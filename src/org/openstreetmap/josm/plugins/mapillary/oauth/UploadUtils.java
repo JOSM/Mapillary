@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -217,13 +218,14 @@ public final class UploadUtils {
       throw new IllegalStateException("Can't obtain secrents from user");
     }
 
-    String key = MapillaryUser.getUsername() +
-      '/' + sequenceUUID +
-      '/' + image.getMovingLatLon().lat() + // TODO: Make sure, that the double values are not appended as something like "10e-4", "Infinity" or "NaN" (all possible values of Double.toString(double))
-      '_' + image.getMovingLatLon().lon() +
-      '_' + image.getMovingCa() +
-      '_' + image.getCapturedAt() +
-      ".jpg";
+    String key = String.format(Locale.UK, "%s/%s/%f_%f_%f_%d.jpg",
+      MapillaryUser.getUsername(),
+      sequenceUUID.toString(),
+      image.getMovingLatLon().lat(),
+      image.getMovingLatLon().lon(),
+      image.getMovingCa(),
+      image.getCapturedAt()
+    );
 
     Map<String, String> hash = getUploadParts(secretMap);
     hash.put("key", key);
