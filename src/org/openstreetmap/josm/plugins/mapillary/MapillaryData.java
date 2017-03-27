@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -118,8 +119,8 @@ public class MapillaryData {
    *
    * @param lis Listener to be added.
    */
-  public final void addListener(MapillaryDataListener lis) {
-    this.listeners.add(lis);
+  public final void addListener(final MapillaryDataListener lis) {
+    listeners.add(lis);
   }
 
   /**
@@ -128,7 +129,7 @@ public class MapillaryData {
    *
    * @param image The {@link MapillaryImage} object to be added.
    */
-  public void addMultiSelectedImage(MapillaryAbstractImage image) {
+  public void addMultiSelectedImage(final MapillaryAbstractImage image) {
     if (!this.multiSelectedImages.contains(image)) {
       if (this.getSelectedImage() == null) {
         this.setSelectedImage(image);
@@ -253,9 +254,7 @@ public class MapillaryData {
   }
 
   private void fireImagesAdded() {
-    if (this.listeners.isEmpty())
-      return;
-    this.listeners.stream().filter(lis -> lis != null).forEach(MapillaryDataListener::imagesAdded);
+    listeners.stream().filter(Objects::nonNull).forEach(MapillaryDataListener::imagesAdded);
   }
 
   /**
@@ -376,9 +375,7 @@ public class MapillaryData {
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    if (this.listeners.isEmpty())
-      return;
-    this.listeners.stream().filter(lis -> lis != null).forEach(lis -> lis.selectedImageChanged(oldImage, newImage));
+    listeners.stream().filter(Objects::nonNull).forEach(lis -> lis.selectedImageChanged(oldImage, newImage));
   }
 
   /**

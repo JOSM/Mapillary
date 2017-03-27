@@ -482,15 +482,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
     return data.getSequences().parallelStream()
-      .filter((seq) -> target.getSequence() == null || (seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())))
-      .map((seq) -> { // Maps sequence to image from sequence that is nearest to target
+      .filter(seq -> target.getSequence() == null || (seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())))
+      .map(seq -> { // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
           .filter((img) -> img instanceof MapillaryImage && img.isVisible())
           .sorted(new NearestImgToTargetComparator(target))
           .findFirst();
         return resImg.isPresent() ? resImg.get() : null;
       })
-      .filter((img) -> // Filters out images too far away from target
+      .filter(img -> // Filters out images too far away from target
         img != null &&
         img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
           < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()

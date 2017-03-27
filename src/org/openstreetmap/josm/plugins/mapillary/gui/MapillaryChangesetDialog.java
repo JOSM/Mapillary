@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.Box;
@@ -118,7 +119,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
-    changeset.parallelStream().filter(command -> command != null).forEach(command -> {
+    changeset.parallelStream().filter(Objects::nonNull).forEach(command -> {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
       this.map.put(node, command);
       changesetRoot.add(node);

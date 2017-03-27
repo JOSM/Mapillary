@@ -7,6 +7,7 @@ package org.openstreetmap.josm.plugins.mapillary.history;
  * @author nokutu
  * @see MapillaryRecord
  */
+@FunctionalInterface
 public interface MapillaryRecordListener {
 
   /**

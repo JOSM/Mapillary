@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
@@ -123,7 +124,7 @@ public class MapillaryRecord {
   }
 
   private void fireRecordChanged() {
-    this.listeners.stream().filter(lis -> lis != null).forEach(MapillaryRecordListener::recordChanged);
+    this.listeners.stream().filter(Objects::nonNull).forEach(MapillaryRecordListener::recordChanged);
   }
 
   /**

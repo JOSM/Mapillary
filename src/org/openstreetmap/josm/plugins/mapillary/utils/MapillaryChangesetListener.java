@@ -6,6 +6,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 /**
  * Interface for listeners of the class {@link MapillaryData}.
  */
+@FunctionalInterface
 public interface MapillaryChangesetListener {
 
   /**

@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.SwingUtilities;
@@ -131,7 +132,7 @@ public class SelectMode extends AbstractMode {
       this.record.addCommand(new CommandMove(this.data.getMultiSelectedImages(), to
               .getX() - from.getX(), to.getY() - from.getY()));
     }
-    this.data.getMultiSelectedImages().parallelStream().filter(img -> img != null).forEach(MapillaryAbstractImage::stopMoving);
+    this.data.getMultiSelectedImages().parallelStream().filter(Objects::nonNull).forEach(MapillaryAbstractImage::stopMoving);
   }
 
   /**

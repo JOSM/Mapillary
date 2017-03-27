@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,12 +35,12 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     INCOMPLETE("Too many map objects, zoom in to see all.", Color.ORANGE),
     FAILED("Downloading map objects failed!", Color.RED);
 
-    public final Color COLOR;
-    public final String MESSAGE;
+    public final Color color;
+    public final String message;
 
     private STATUS(final String message, final Color color) {
-      this.COLOR = color;
-      this.MESSAGE = message;
+      this.color = color;
+      this.message = message;
       I18n.marktr(message);
     }
   }
@@ -87,16 +86,13 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
         new Thread(downloadRunnable).start();
       }
     }
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        synchronized (objects) {
-          for (MapObject object : objects) {
-            object.getIcon(true);
-          }
+    new Thread(() -> {
+      synchronized (objects) {
+        for (MapObject object : objects) {
+          object.getIcon(true);
         }
-        invalidate();
       }
+      invalidate();
     }).start();
   }
 
@@ -137,11 +133,11 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     synchronized (this) {
       if (status != null) {
         g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
-        g.setColor(status.COLOR);
+        g.setColor(status.color);
         final FontMetrics fm = g.getFontMetrics();
-        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.MESSAGE), fm.getAscent() + fm.getDescent());
+        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.message), fm.getAscent() + fm.getDescent());
         g.setColor(Color.BLACK);
-        g.drawString(status.MESSAGE, 0, mv.getHeight() - fm.getDescent());
+        g.drawString(status.message, 0, mv.getHeight() - fm.getDescent());
       }
     }
   }

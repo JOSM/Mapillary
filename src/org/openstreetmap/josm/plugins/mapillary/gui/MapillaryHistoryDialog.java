@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.AbstractAction;
@@ -132,12 +133,12 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     DefaultMutableTreeNode undoRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
-    undoCommands.stream().filter(command -> command != null).forEach(command -> {
+    undoCommands.stream().filter(Objects::nonNull).forEach(command -> {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
       this.map.put(node, command);
       undoRoot.add(node);
     });
-    redoCommands.stream().filter(command -> command != null).forEach(command -> {
+    redoCommands.stream().filter(Objects::nonNull).forEach(command -> {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
       this.map.put(node, command);
       redoRoot.add(node);
