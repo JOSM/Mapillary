@@ -53,7 +53,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="nc" id="L53">        } catch (IOException e) {</span>
           // Don't throw an exception here to allow other files that might be readable to be read.
           // Might not be the best solution, but the easiest workaround I could imagine.
-<span class="nc" id="L56">          Main.error(f.getAbsolutePath() + &quot; not found or not readable!&quot;);</span>
+<span class="nc" id="L56">          Main.error(e, f.getAbsolutePath() + &quot; not found or not readable!&quot;);</span>
 <span class="fc" id="L57">        }</span>
       }
 <span class="fc bfc" id="L59" title="All 2 branches covered.">    } else if (IMAGE_FILE_FILTER.accept(f)) {</span>
@@ -154,7 +154,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="pc bpc" id="L154" title="6 of 8 branches missed.">      } catch (FileNotFoundException e) {</span>
 <span class="nc" id="L155">        return false;</span>
 <span class="nc" id="L156">      } catch (IOException e) {</span>
-<span class="nc" id="L157">        Main.warn(&quot;IO-exception while reading file &quot;+f.getAbsolutePath());</span>
+<span class="nc" id="L157">        Main.warn(e, &quot;IO-exception while reading file &quot;+f.getAbsolutePath());</span>
 <span class="nc" id="L158">        return false;</span>
       }
     }

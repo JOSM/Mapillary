@@ -15,7 +15,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
-<span class="nc" id="L18">public final class MapillaryProperties {</span>
+public final class MapillaryProperties {
 <span class="fc" id="L19">  public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty(&quot;mapillary.delete-after-upload&quot;, true);</span>
 <span class="fc" id="L20">  public static final BooleanProperty DEVELOPER = new BooleanProperty(&quot;mapillary.developer&quot;, false);</span>
 <span class="fc" id="L21">  public static final BooleanProperty DISPLAY_HOUR = new BooleanProperty(&quot;mapillary.display-hour&quot;, true);</span>
@@ -72,5 +72,9 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
       }
 <span class="fc" id="L73">    }</span>
 <span class="fc" id="L74">  }</span>
+
+<span class="fc" id="L76">  private MapillaryProperties() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L78">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

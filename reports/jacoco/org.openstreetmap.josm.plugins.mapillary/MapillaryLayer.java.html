@@ -482,15 +482,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
 <span class="nc" id="L484">    return data.getSequences().parallelStream()</span>
-<span class="nc bnc" id="L485" title="All 6 branches missed.">      .filter((seq) -&gt; target.getSequence() == null || (seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey())))</span>
-<span class="nc" id="L486">      .map((seq) -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
+<span class="nc bnc" id="L485" title="All 6 branches missed.">      .filter(seq -&gt; target.getSequence() == null || (seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey())))</span>
+<span class="nc" id="L486">      .map(seq -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
 <span class="nc" id="L487">        Optional&lt;MapillaryAbstractImage&gt; resImg = seq.getImages().parallelStream()</span>
 <span class="nc bnc" id="L488" title="All 4 branches missed.">          .filter((img) -&gt; img instanceof MapillaryImage &amp;&amp; img.isVisible())</span>
 <span class="nc" id="L489">          .sorted(new NearestImgToTargetComparator(target))</span>
 <span class="nc" id="L490">          .findFirst();</span>
 <span class="nc bnc" id="L491" title="All 2 branches missed.">        return resImg.isPresent() ? resImg.get() : null;</span>
       })
-<span class="nc" id="L493">      .filter((img) -&gt; // Filters out images too far away from target</span>
+<span class="nc" id="L493">      .filter(img -&gt; // Filters out images too far away from target</span>
 <span class="nc bnc" id="L494" title="All 2 branches missed.">        img != null &amp;&amp;</span>
 <span class="nc" id="L495">        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
 <span class="nc bnc" id="L496" title="All 2 branches missed.">          &lt; MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()</span>
@@ -520,16 +520,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="fc" id="L520">  }</span>
 
   /**
-   * Threads that runs a delayed Mapillary download.
+   * {@link Runnable} that runs a delayed Mapillary download.
    *
    * @author nokutu
    */
-<span class="nc" id="L527">  private static class DelayedDownload extends Thread {</span>
+<span class="nc" id="L527">  private static class DelayedDownload implements Runnable {</span>
 
     @Override
     public void run() {
       try {
-<span class="nc" id="L532">        sleep(1500);</span>
+<span class="nc" id="L532">        Thread.sleep(1500);</span>
 <span class="nc" id="L533">      } catch (InterruptedException e) {</span>
 <span class="nc" id="L534">        Main.error(e);</span>
 <span class="nc" id="L535">      }</span>

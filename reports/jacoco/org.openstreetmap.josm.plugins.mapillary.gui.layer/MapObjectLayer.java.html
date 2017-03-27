@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,20 +29,20 @@ import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public final class MapObjectLayer extends Layer implements ZoomChangeListener {
-<span class="fc" id="L33">  public enum STATUS {</span>
-<span class="fc" id="L34">    DOWNLOADING(&quot;Downloading map objects…&quot;, Color.YELLOW),</span>
-<span class="fc" id="L35">    COMPLETE(&quot;All map objects loaded.&quot;, Color.GREEN),</span>
-<span class="fc" id="L36">    INCOMPLETE(&quot;Too many map objects, zoom in to see all.&quot;, Color.ORANGE),</span>
-<span class="fc" id="L37">    FAILED(&quot;Downloading map objects failed!&quot;, Color.RED);</span>
+<span class="fc" id="L32">  public enum STATUS {</span>
+<span class="fc" id="L33">    DOWNLOADING(&quot;Downloading map objects…&quot;, Color.YELLOW),</span>
+<span class="fc" id="L34">    COMPLETE(&quot;All map objects loaded.&quot;, Color.GREEN),</span>
+<span class="fc" id="L35">    INCOMPLETE(&quot;Too many map objects, zoom in to see all.&quot;, Color.ORANGE),</span>
+<span class="fc" id="L36">    FAILED(&quot;Downloading map objects failed!&quot;, Color.RED);</span>
 
-    public final Color COLOR;
-    public final String MESSAGE;
+    public final Color color;
+    public final String message;
 
-<span class="fc" id="L42">    private STATUS(final String message, final Color color) {</span>
-<span class="fc" id="L43">      this.COLOR = color;</span>
-<span class="fc" id="L44">      this.MESSAGE = message;</span>
-<span class="fc" id="L45">      I18n.marktr(message);</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L41">    private STATUS(final String message, final Color color) {</span>
+<span class="fc" id="L42">      this.color = color;</span>
+<span class="fc" id="L43">      this.message = message;</span>
+<span class="fc" id="L44">      I18n.marktr(message);</span>
+<span class="fc" id="L45">    }</span>
   }
 
   private static MapObjectLayer instance;
@@ -51,154 +50,151 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   private STATUS status;
   private MapObjectDownloadRunnable downloadRunnable;
   private MapObjectDownloadRunnable nextDownloadRunnable;
-<span class="fc" id="L54">  private final Collection&lt;MapObject&gt; objects = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L53">  private final Collection&lt;MapObject&gt; objects = new HashSet&lt;&gt;();</span>
 
   private MapObjectLayer() {
-<span class="fc" id="L57">    super(I18n.tr(&quot;Mapillary objects&quot;));</span>
-<span class="fc" id="L58">    NavigatableComponent.addZoomChangeListener(this);</span>
-<span class="fc" id="L59">    zoomChanged();</span>
-<span class="fc" id="L60">  }</span>
+<span class="fc" id="L56">    super(I18n.tr(&quot;Mapillary objects&quot;));</span>
+<span class="fc" id="L57">    NavigatableComponent.addZoomChangeListener(this);</span>
+<span class="fc" id="L58">    zoomChanged();</span>
+<span class="fc" id="L59">  }</span>
 
   public static MapObjectLayer getInstance() {
-<span class="fc" id="L63">    synchronized (MapObjectLayer.class) {</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">      if (instance == null) {</span>
-<span class="fc" id="L65">        instance = new MapObjectLayer();</span>
+<span class="fc" id="L62">    synchronized (MapObjectLayer.class) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (instance == null) {</span>
+<span class="fc" id="L64">        instance = new MapObjectLayer();</span>
       }
-<span class="fc" id="L67">      return instance;</span>
-<span class="nc" id="L68">    }</span>
+<span class="fc" id="L66">      return instance;</span>
+<span class="nc" id="L67">    }</span>
   }
 
   public boolean isDownloadRunnableScheduled() {
-<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    return nextDownloadRunnable != null;</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">    return nextDownloadRunnable != null;</span>
   }
 
   public void finishDownload(boolean replaceMapObjects) {
-<span class="fc" id="L76">    synchronized (objects) {</span>
-<span class="pc bpc" id="L77" title="1 of 2 branches missed.">      if (replaceMapObjects) {</span>
-<span class="fc" id="L78">        objects.clear();</span>
+<span class="fc" id="L75">    synchronized (objects) {</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">      if (replaceMapObjects) {</span>
+<span class="fc" id="L77">        objects.clear();</span>
       }
-<span class="fc" id="L80">      objects.addAll(downloadRunnable.getMapObjects());</span>
-<span class="pc" id="L81">    }</span>
-<span class="fc" id="L82">    synchronized (this) {</span>
-<span class="fc" id="L83">      downloadRunnable = null;</span>
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">      if (nextDownloadRunnable != null) {</span>
-<span class="nc" id="L85">        downloadRunnable = nextDownloadRunnable;</span>
-<span class="nc" id="L86">        nextDownloadRunnable = null;</span>
-<span class="nc" id="L87">        new Thread(downloadRunnable).start();</span>
+<span class="fc" id="L79">      objects.addAll(downloadRunnable.getMapObjects());</span>
+<span class="pc" id="L80">    }</span>
+<span class="fc" id="L81">    synchronized (this) {</span>
+<span class="fc" id="L82">      downloadRunnable = null;</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">      if (nextDownloadRunnable != null) {</span>
+<span class="nc" id="L84">        downloadRunnable = nextDownloadRunnable;</span>
+<span class="nc" id="L85">        nextDownloadRunnable = null;</span>
+<span class="nc" id="L86">        new Thread(downloadRunnable).start();</span>
       }
-<span class="pc" id="L89">    }</span>
-<span class="fc" id="L90">    new Thread(new Runnable() {</span>
-      @Override
-      public void run() {
-<span class="fc" id="L93">        synchronized (objects) {</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">          for (MapObject object : objects) {</span>
-<span class="fc" id="L95">            object.getIcon(true);</span>
-<span class="fc" id="L96">          }</span>
-<span class="pc" id="L97">        }</span>
-<span class="fc" id="L98">        invalidate();</span>
-<span class="fc" id="L99">      }</span>
-<span class="fc" id="L100">    }).start();</span>
-<span class="fc" id="L101">  }</span>
+<span class="pc" id="L88">    }</span>
+<span class="fc" id="L89">    new Thread(() -&gt; {</span>
+<span class="fc" id="L90">      synchronized (objects) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (MapObject object : objects) {</span>
+<span class="fc" id="L92">          object.getIcon(true);</span>
+<span class="fc" id="L93">        }</span>
+<span class="pc" id="L94">      }</span>
+<span class="fc" id="L95">      invalidate();</span>
+<span class="fc" id="L96">    }).start();</span>
+<span class="fc" id="L97">  }</span>
 
   public int getObjectCount() {
-<span class="fc" id="L104">    return objects.size();</span>
+<span class="fc" id="L100">    return objects.size();</span>
   }
 
   public void setStatus(STATUS status) {
-<span class="fc" id="L108">    synchronized (this) {</span>
-<span class="fc" id="L109">      this.status = status;</span>
-<span class="pc" id="L110">    }</span>
-<span class="fc" id="L111">    invalidate();</span>
-<span class="fc" id="L112">  }</span>
+<span class="fc" id="L104">    synchronized (this) {</span>
+<span class="fc" id="L105">      this.status = status;</span>
+<span class="pc" id="L106">    }</span>
+<span class="fc" id="L107">    invalidate();</span>
+<span class="fc" id="L108">  }</span>
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds bbox) {
-<span class="nc" id="L116">    final Collection&lt;MapObject&gt; displayedObjects = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L117">    synchronized (this) {</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">      if (downloadRunnable != null) {</span>
-<span class="nc" id="L119">        displayedObjects.addAll(downloadRunnable.getMapObjects());</span>
+<span class="nc" id="L112">    final Collection&lt;MapObject&gt; displayedObjects = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L113">    synchronized (this) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (downloadRunnable != null) {</span>
+<span class="nc" id="L115">        displayedObjects.addAll(downloadRunnable.getMapObjects());</span>
       }
-<span class="nc" id="L121">    }</span>
-<span class="nc" id="L122">    displayedObjects.addAll(objects);</span>
+<span class="nc" id="L117">    }</span>
+<span class="nc" id="L118">    displayedObjects.addAll(objects);</span>
 
-<span class="nc bnc" id="L124" title="All 2 branches missed.">    for (MapObject object : displayedObjects) {</span>
-<span class="nc" id="L125">      final ImageIcon icon = object.getIcon(false);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (icon != null) {</span>
-<span class="nc" id="L127">        final Point p = mv.getPoint(object.getCoordinate());</span>
-<span class="nc" id="L128">        g.drawImage(</span>
-<span class="nc" id="L129">          ImageUtil.scaleImageIcon(icon, MapillaryProperties.MAPOBJECT_ICON_SIZE.get()).getImage(),</span>
-<span class="nc" id="L130">          p.x - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
-<span class="nc" id="L131">          p.y - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    for (MapObject object : displayedObjects) {</span>
+<span class="nc" id="L121">      final ImageIcon icon = object.getIcon(false);</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">      if (icon != null) {</span>
+<span class="nc" id="L123">        final Point p = mv.getPoint(object.getCoordinate());</span>
+<span class="nc" id="L124">        g.drawImage(</span>
+<span class="nc" id="L125">          ImageUtil.scaleImageIcon(icon, MapillaryProperties.MAPOBJECT_ICON_SIZE.get()).getImage(),</span>
+<span class="nc" id="L126">          p.x - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
+<span class="nc" id="L127">          p.y - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,</span>
           null
         );
       }
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L131">    }</span>
 
-<span class="nc" id="L137">    synchronized (this) {</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">      if (status != null) {</span>
-<span class="nc" id="L139">        g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));</span>
-<span class="nc" id="L140">        g.setColor(status.COLOR);</span>
-<span class="nc" id="L141">        final FontMetrics fm = g.getFontMetrics();</span>
-<span class="nc" id="L142">        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.MESSAGE), fm.getAscent() + fm.getDescent());</span>
-<span class="nc" id="L143">        g.setColor(Color.BLACK);</span>
-<span class="nc" id="L144">        g.drawString(status.MESSAGE, 0, mv.getHeight() - fm.getDescent());</span>
+<span class="nc" id="L133">    synchronized (this) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">      if (status != null) {</span>
+<span class="nc" id="L135">        g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));</span>
+<span class="nc" id="L136">        g.setColor(status.color);</span>
+<span class="nc" id="L137">        final FontMetrics fm = g.getFontMetrics();</span>
+<span class="nc" id="L138">        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.message), fm.getAscent() + fm.getDescent());</span>
+<span class="nc" id="L139">        g.setColor(Color.BLACK);</span>
+<span class="nc" id="L140">        g.drawString(status.message, 0, mv.getHeight() - fm.getDescent());</span>
       }
-<span class="nc" id="L146">    }</span>
-<span class="nc" id="L147">  }</span>
+<span class="nc" id="L142">    }</span>
+<span class="nc" id="L143">  }</span>
 
   @Override
   public Icon getIcon() {
-<span class="fc" id="L151">    return MapillaryPlugin.LOGO.setSize(ImageSizes.LAYER).get();</span>
+<span class="fc" id="L147">    return MapillaryPlugin.LOGO.setSize(ImageSizes.LAYER).get();</span>
   }
 
   @Override
   public String getToolTipText() {
-<span class="fc" id="L156">    return I18n.tr(&quot;Displays objects detected by Mapillary from their street view imagery&quot;);</span>
+<span class="fc" id="L152">    return I18n.tr(&quot;Displays objects detected by Mapillary from their street view imagery&quot;);</span>
   }
 
   @Override
   public void mergeFrom(Layer from) {
     // Not mergeable
-<span class="fc" id="L162">  }</span>
+<span class="fc" id="L158">  }</span>
 
   @Override
   public boolean isMergable(Layer other) {
-<span class="fc" id="L166">    return false;</span>
+<span class="fc" id="L162">    return false;</span>
   }
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
     // Unused method enforced by the Layer class
-<span class="fc" id="L172">  }</span>
+<span class="fc" id="L168">  }</span>
 
   @Override
   public Object getInfoComponent() {
-<span class="fc" id="L176">    return null;</span>
+<span class="fc" id="L172">    return null;</span>
   }
 
   @Override
   public Action[] getMenuEntries() {
-<span class="fc" id="L181">    return new Action[0];</span>
+<span class="fc" id="L177">    return new Action[0];</span>
   }
 
   public void scheduleDownload(final Bounds bounds) {
-<span class="fc" id="L185">    synchronized(this) {</span>
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">      if (downloadRunnable == null) {</span>
-<span class="fc" id="L187">        downloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
-<span class="fc" id="L188">        new Thread(downloadRunnable).start();</span>
+<span class="fc" id="L181">    synchronized(this) {</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">      if (downloadRunnable == null) {</span>
+<span class="fc" id="L183">        downloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
+<span class="fc" id="L184">        new Thread(downloadRunnable).start();</span>
       } else {
-<span class="nc" id="L190">        nextDownloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
+<span class="nc" id="L186">        nextDownloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
       }
-<span class="pc" id="L192">    }</span>
-<span class="fc" id="L193">  }</span>
+<span class="pc" id="L188">    }</span>
+<span class="fc" id="L189">  }</span>
 
   @Override
   public void zoomChanged() {
-<span class="fc" id="L197">    synchronized (Main.class) {</span>
-<span class="pc bpc" id="L198" title="1 of 2 branches missed.">      if (Main.isDisplayingMapView()) {</span>
-<span class="nc" id="L199">        scheduleDownload(Main.map.mapView.getState().getViewArea().getLatLonBoundsBox());</span>
+<span class="fc" id="L193">    synchronized (Main.class) {</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">      if (Main.isDisplayingMapView()) {</span>
+<span class="nc" id="L195">        scheduleDownload(Main.map.mapView.getState().getViewArea().getLatLonBoundsBox());</span>
       }
-<span class="pc" id="L201">    }</span>
-<span class="fc" id="L202">  }</span>
+<span class="pc" id="L197">    }</span>
+<span class="fc" id="L198">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -6,33 +6,32 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-/**
- *
- */
 public class WebLinkAction extends AbstractAction {
   private static final long serialVersionUID = 2397830510179013823L;
 
   private URL url;
 
   public WebLinkAction(final String name, final URL url) {
-<span class="nc" id="L25">    super(name, ImageProvider.get(&quot;link&quot;, ImageSizes.SMALLICON));</span>
-<span class="nc" id="L26">    setURL(url);</span>
-<span class="nc" id="L27">  }</span>
+<span class="nc" id="L24">    super(name, ImageProvider.get(&quot;link&quot;, ImageSizes.SMALLICON));</span>
+<span class="nc" id="L25">    setURL(url);</span>
+<span class="nc" id="L26">  }</span>
 
   /**
    * @param url the url to set
    */
   public final void setURL(URL url) {
-<span class="nc" id="L33">    this.url = url;</span>
-<span class="nc bnc" id="L34" title="All 2 branches missed.">    setEnabled(url != null);</span>
-<span class="nc" id="L35">  }</span>
+<span class="nc" id="L32">    this.url = url;</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">    setEnabled(url != null);</span>
+<span class="nc" id="L34">  }</span>
 
   /* (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -40,11 +39,13 @@ public class WebLinkAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     try {
-<span class="nc" id="L43">      MapillaryUtils.browse(url);</span>
-<span class="nc" id="L44">    } catch (IOException e1) {</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">      new Notification(I18n.tr(&quot;Could not open the URL {0} in a browser&quot;, url == null ? &quot;‹null›&quot; : url)).show();</span>
-<span class="nc" id="L46">    }</span>
-<span class="nc" id="L47">  }</span>
+<span class="nc" id="L42">      MapillaryUtils.browse(url);</span>
+<span class="nc" id="L43">    } catch (IOException e1) {</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">      String msg = I18n.tr(&quot;Could not open the URL {0} in a browser&quot;, url == null ? &quot;‹null›&quot; : url);</span>
+<span class="nc" id="L45">      Main.warn(e1, msg);</span>
+<span class="nc" id="L46">      new Notification(msg).setIcon(JOptionPane.WARNING_MESSAGE).show();</span>
+<span class="nc" id="L47">    }</span>
+<span class="nc" id="L48">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

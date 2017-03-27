@@ -28,7 +28,7 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public final class SequenceDownloadRunnable implements Runnable {
   private final Bounds bounds;
   private final MapillaryData dataStorage;
-<span class="fc" id="L31">  private final Function&lt;Bounds, URL&gt; urlGen = APIv3::searchSequences;</span>
+<span class="fc" id="L31">  private static final Function&lt;Bounds, URL&gt; urlGen = APIv3::searchSequences;</span>
 
 <span class="fc" id="L33">  public SequenceDownloadRunnable(final MapillaryData data, final Bounds bounds) {</span>
 <span class="fc" id="L34">    this.bounds = bounds;</span>
