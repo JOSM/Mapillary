@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.function.Function;
 
@@ -19,6 +18,7 @@ import org.junit.Test;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public class MapObjectLayerTest {
@@ -27,13 +27,8 @@ public class MapObjectLayerTest {
   private static Object urlGenValue;
 
   @BeforeClass
-  public static void setUp() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    urlGen = MapObjectDownloadRunnable.class.getDeclaredField("urlGen");
-    urlGen.setAccessible(true);
-
-    Field modifiers = Field.class.getDeclaredField("modifiers");
-    modifiers.setAccessible(true);
-    modifiers.setInt(urlGen, urlGen.getModifiers() & ~Modifier.FINAL);
+  public static void setUp() throws IllegalAccessException {
+    urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "urlGen");
 
     urlGenValue = urlGen.get(null);
     urlGen.set(null, (Function<Bounds, URL>) str -> {

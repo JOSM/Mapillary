@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateField;
+import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateFieldValue;
 
 import java.awt.GraphicsEnvironment;
 
@@ -44,7 +44,7 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
   }
 
   @Test
-  public void testLoginLogout() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+  public void testLoginLogout() {
     if (GraphicsEnvironment.isHeadless()) {
       return;
     }
@@ -54,23 +54,23 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
     setting.addGui(tabs);
     setting.onLogout();
 
-    assertEquals(I18n.tr("Login"), ((JButton) getPrivateField(setting, "loginButton")).getText());
-    assertEquals(I18n.tr("You are currently not logged in."), ((JLabel) getPrivateField(setting, "loginLabel")).getText());
-    assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
-    assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
+    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, "loginButton")).getText());
+    assertEquals(I18n.tr("You are currently not logged in."), ((JLabel) getPrivateFieldValue(setting, "loginLabel")).getText());
+    assertFalse(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "logoutButton"))));
+    assertTrue(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "loginButton"))));
 
     String username = "TheMapillaryUsername";
     setting.onLogin(username);
 
-    assertEquals(I18n.tr("Login"), ((JButton) getPrivateField(setting, "loginButton")).getText());
-    assertEquals(I18n.tr("You are logged in as ''{0}''.", username), ((JLabel) getPrivateField(setting, "loginLabel")).getText());
-    assertTrue(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "logoutButton"))));
-    assertFalse(((JPanel) getPrivateField(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateField(setting, "loginButton"))));
+    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, "loginButton")).getText());
+    assertEquals(I18n.tr("You are logged in as ''{0}''.", username), ((JLabel) getPrivateFieldValue(setting, "loginLabel")).getText());
+    assertTrue(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "logoutButton"))));
+    assertFalse(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "loginButton"))));
   }
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testOk() throws SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
+  public void testOk() {
     MapillaryPreferenceSetting settings = new MapillaryPreferenceSetting();
 
     // Initialize the properties with some arbitrary value to make sure they are not unset
@@ -82,32 +82,32 @@ public class MapillaryPreferenceSettingTest extends AbstractTest {
 
     // Test checkboxes
     settings.ok();
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "displayHour"), "mapillary.display-hour");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "format24"), "mapillary.format-24");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "moveTo"), "mapillary.move-to-picture");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "hoverEnabled"), "mapillary.hover-enabled");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "displayHour"), "mapillary.display-hour");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"), "mapillary.format-24");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"), "mapillary.move-to-picture");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"), "mapillary.hover-enabled");
 
     // Toggle state of the checkboxes
-    toggleCheckbox((JCheckBox) getPrivateField(settings, "displayHour"));
-    toggleCheckbox((JCheckBox) getPrivateField(settings, "format24"));
-    toggleCheckbox((JCheckBox) getPrivateField(settings, "moveTo"));
-    toggleCheckbox((JCheckBox) getPrivateField(settings, "hoverEnabled"));
+    toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "displayHour"));
+    toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "format24"));
+    toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "moveTo"));
+    toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"));
 
     // Test the second state of the checkboxes
     settings.ok();
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "displayHour"), "mapillary.display-hour");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "format24"), "mapillary.format-24");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "moveTo"), "mapillary.move-to-picture");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateField(settings, "hoverEnabled"), "mapillary.hover-enabled");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "displayHour"), "mapillary.display-hour");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"), "mapillary.format-24");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"), "mapillary.move-to-picture");
+    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"), "mapillary.hover-enabled");
 
     // Test combobox
-    for (int i = 0; i < ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getItemCount(); i++) {
-      ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).setSelectedIndex(i);
+    for (int i = 0; i < ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getItemCount(); i++) {
+      ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).setSelectedIndex(i);
       settings.ok();
       assertEquals(
         new StringProperty("mapillary.download-mode", "default").get(),
         DOWNLOAD_MODE.fromLabel(
-          ((JComboBox<String>) getPrivateField(settings, "downloadModeComboBox")).getSelectedItem().toString()
+          ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getSelectedItem().toString()
         ).getPrefId()
       );
     }

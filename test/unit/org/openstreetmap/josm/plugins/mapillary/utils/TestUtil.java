@@ -35,17 +35,33 @@ public final class TestUtil {
     // Prevent instantiation
   }
 
+  public static Field getAccessibleField(Class<?> clazz, String fieldName) {
+    try {
+      Field result = clazz.getDeclaredField(fieldName);
+      result.setAccessible(true);
+      Field modifiers = Field.class.getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
+      modifiers.setInt(result, modifiers.getInt(result) & ~Modifier.FINAL);
+      return result;
+    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+      fail(e.getLocalizedMessage());
+    }
+    return null;
+  }
+
   /**
    * Helper method for obtaining the value of a private field
    * @param object the object of which you want the private field
    * @param name the name of the private field
    * @return the current value that field has
    */
-  public static Object getPrivateField(Object object, String name)
-      throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-    Field field = object.getClass().getDeclaredField(name);
-    field.setAccessible(true);
-    return field.get(object);
+  public static Object getPrivateFieldValue(Object object, String name) {
+    try {
+      return getAccessibleField(object.getClass(), name).get(object);
+    } catch (IllegalAccessException | SecurityException e) {
+      fail(e.getLocalizedMessage());
+    }
+    return null;
   }
 
   /**

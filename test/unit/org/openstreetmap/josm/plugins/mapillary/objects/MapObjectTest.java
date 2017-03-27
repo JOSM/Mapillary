@@ -8,17 +8,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Function;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class MapObjectTest {
 
@@ -32,21 +30,16 @@ public class MapObjectTest {
   private static Object iconUrlGenValue;
 
   @BeforeClass
-  public static void setUp() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+  public static void setUp() throws IllegalArgumentException, IllegalAccessException {
     // Sets the keys of the null-key-constants to null
-    Field keyField = MapObject.class.getDeclaredField("key");
-    keyField.setAccessible(true);
+    Field keyField = TestUtil.getAccessibleField(MapObject.class, "key");
     keyField.set(MO_NULL_KEY, null);
     keyField.set(MO_NULL_KEY2, null);
 
-    // Replace method for generating icon URL with one that searches the local resources for files
-    iconUrlGen = MapObject.class.getDeclaredField("iconUrlGen");
-    iconUrlGen.setAccessible(true);
+    // Replace function for generating icon URLs with one that searches the local resources for files
+    // If a resource can't be found, return an invalid URL
+    iconUrlGen = TestUtil.getAccessibleField(MapObject.class, "iconUrlGen");
     iconUrlGenValue = iconUrlGen.get(null);
-  }
-
-  @Before
-  public void beforeTest() throws IllegalArgumentException, IllegalAccessException {
     iconUrlGen.set(null, (Function<String, URL>) (str -> {
       URL result = MapObject.class.getResource(str);
       if (result != null) {
@@ -100,21 +93,13 @@ public class MapObjectTest {
   }
 
   @Test
-  public void testNullCache() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    Field mapObjectIconCache = MapObject.class.getDeclaredField("MAP_OBJECT_ICON_CACHE");
-
-    Field modifiers = Field.class.getDeclaredField("modifiers");
-    modifiers.setAccessible(true);
-    modifiers.setInt(mapObjectIconCache, mapObjectIconCache.getModifiers() & ~Modifier.FINAL);
-
-    mapObjectIconCache.setAccessible(true);
-    mapObjectIconCache.set(null, null);
-
+  public void testNullCache() throws IllegalArgumentException, IllegalAccessException {
+    TestUtil.getAccessibleField(MapObject.class, "MAP_OBJECT_ICON_CACHE").set(null, null);
     assertNotNull(new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0).getIcon(true));
   }
 
   @Test
-  public void testInvalidIconDownloadURL() throws IllegalArgumentException, IllegalAccessException {
+  public void testInvalidIconDownloadURL() {
     assertNull(new MapObject(new LatLon(0, 0), "", "", "/invalidPathToIcon", 0, 0, 0).getIcon(true));
   }
 
