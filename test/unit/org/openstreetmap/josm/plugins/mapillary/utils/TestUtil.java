@@ -106,7 +106,7 @@ public final class TestUtil {
   /**
    * This method tests utility classes for common coding standards (exactly one constructor that's private,
    * only static methods, …) and fails the current test if one of those standards is not met.
-   * This is inspired by https://stackoverflow.com/a/10872497 .
+   * This is inspired by <a href="https://stackoverflow.com/a/10872497">an answer on StackOverflow.com</a> .
    * @param c the class under test
    */
   public static void testUtilityClass(final Class<?> c) {

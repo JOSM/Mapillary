@@ -520,16 +520,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Threads that runs a delayed Mapillary download.
+   * {@link Runnable} that runs a delayed Mapillary download.
    *
    * @author nokutu
    */
-  private static class DelayedDownload extends Thread {
+  private static class DelayedDownload implements Runnable {
 
     @Override
     public void run() {
       try {
-        sleep(1500);
+        Thread.sleep(1500);
       } catch (InterruptedException e) {
         Main.error(e);
       }
