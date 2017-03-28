@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -22,9 +23,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-/**
- *
- */
 public class JsonSequencesDecoderTest {
 
   @Test
@@ -111,40 +109,41 @@ public class JsonSequencesDecoderTest {
     // null input
     assertNull(JsonSequencesDecoder.decodeSequence(null));
     // `properties` key is not set
-    assertSequenceDecodesToNull("{\"type\": \"Feature\"}");
+    assertDecodesToNull(JsonSequencesDecoder::decodeSequence, "{\"type\": \"Feature\"}");
     // value for the key `key` in the properties is missing
-    assertSequenceDecodesToNull(
+    assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"captured_at\": \"1970-01-01T00:00:00.000Z\"}}"
     );
     // value for the key `captured_at` in the properties is missing
-    assertSequenceDecodesToNull("{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\"}}");
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
+      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\"}}"
+    );
     // the date in `captured_at` has an unrecognized format
-    assertSequenceDecodesToNull(
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"unrecognizedDateFormat\"}}"
     );
     // `coordinateProperties` have unexpected value (in this case null)
-    assertSequenceDecodesToNull(
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
       "\"coordinateProperties\": null}}"
     );
     // the `image_key` array and the `cas` array contain unexpected values (in this case `null`)
-    assertSequenceDecodesToNull(
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
       "\"coordinateProperties\": {\"cas\": null, \"image_keys\": null}}}"
     );
     // the `image_key` array and the `cas` array contain unexpected values (in this case `null`)
-    assertSequenceDecodesToNull(
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
       "\"coordinateProperties\": {\"cas\": [null, null, null, null, 1.0, 1.0, 1.0],",
       "\"image_keys\": [null, null, \"key\", \"key\", null, null, \"key\"]}},",
       "\"geometry\": {\"type\": \"LineString\", \"coordinates\": [null, [1,1], null, [1,1], null, [1,1], null]}}"
     );
-  }
-
-  public void assertSequenceDecodesToNull(String... strings) {
-    assertNull(JsonSequencesDecoder.decodeSequence(
-      Json.createReader(new ByteArrayInputStream(String.join(" ", strings).getBytes())).readObject()
-    ));
   }
 
   /**
@@ -158,7 +157,7 @@ public class JsonSequencesDecoderTest {
     method.setAccessible(true);
     assertEquals(
       0,
-      ((String[]) method.invoke(null, null, (Function<JsonValue, String>) ((val) -> { return null; }), String.class)).length
+      ((String[]) method.invoke(null, null, (Function<JsonValue, String>) val -> null, String.class)).length
     );
   }
 

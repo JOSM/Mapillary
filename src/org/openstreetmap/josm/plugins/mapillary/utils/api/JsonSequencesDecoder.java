@@ -74,12 +74,12 @@ public final class JsonSequencesDecoder {
    * @param decodeValueFunction the function used for conversion from {@link JsonValue} to the desired type.
    * @param clazz the desired type that the elements of the resulting array should have
    * @return the supplied array converted from {@link JsonArray} to a java array of the supplied type, converted using
-   *         the supplied fuction. Never <code>null</code>, in case of array==null, an array of length 0 is returned.
+   *         the supplied function. Never <code>null</code>, in case of array==null, an array of length 0 is returned.
    */
   private static <T> T[] decodeJsonArray(final JsonArray array, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz) {
     @SuppressWarnings("unchecked")
     final T[] result = (T[]) Array.newInstance(clazz, array == null ? 0 : array.size());
-    for (int i = 0; i < result.length && array != null; i++) {
+    for (int i = 0; i < result.length; i++) {
       result[i] = decodeValueFunction.apply(array.get(i));
     }
     return result;

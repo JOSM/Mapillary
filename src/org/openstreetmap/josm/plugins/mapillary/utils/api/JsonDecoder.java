@@ -16,9 +16,6 @@ import javax.json.JsonValue.ValueType;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
-/**
- *
- */
 public final class JsonDecoder {
   private JsonDecoder() {
     // Private constructor to avoid instantiation
@@ -50,17 +47,48 @@ public final class JsonDecoder {
     return result;
   }
 
+  /**
+   * Decodes a {@link JsonArray} of exactly size 2 to a {@link LatLon} instance.
+   * The first value in the {@link JsonArray} is treated as longitude, the second one as latitude.
+   * @param json the {@link JsonArray} containing the two numbers
+   * @return the decoded {@link LatLon} instance, or <code>null</code> if the parameter is
+   *         not a {@link JsonArray} of exactly size 2 containing two {@link JsonNumber}s.
+   */
   static LatLon decodeLatLon(final JsonArray json) {
-    if (
-      json.size() == 2 &&
-      json.get(0) instanceof JsonNumber &&
-      json.get(1) instanceof JsonNumber
-    ) {
-      return new LatLon(json.getJsonNumber(1).doubleValue(), json.getJsonNumber(0).doubleValue());
+    final double[] result = decodeDoublePair(json);
+    if (result != null) {
+      return new LatLon(result[1], result[0]);
     }
     return null;
   }
 
+  /**
+   * Decodes a pair of double values, which are stored in a {@link JsonArray} of exactly size 2.
+   * @param json the {@link JsonArray} containing the two values
+   * @return a double array which contains the two values in the same order, or <code>null</code>
+   *         if the parameter was not a {@link JsonArray} of exactly size 2 containing two {@link JsonNumber}s
+   */
+  @SuppressWarnings("PMD.ReturnEmptyArrayRatherThanNull")
+  static double[] decodeDoublePair(final JsonArray json) {
+    if (
+      json != null &&
+      json.size() == 2 &&
+      json.get(0) instanceof JsonNumber &&
+      json.get(1) instanceof JsonNumber
+    ) {
+      return new double[]{json.getJsonNumber(0).doubleValue(), json.getJsonNumber(1).doubleValue()};
+    }
+    return null;
+  }
+
+  /**
+   * Decodes a timestamp formatted as a {@link String} to the equivalent UNIX epoch timestamp
+   * (number of milliseconds since 1970-01-01T00:00:00.000+0000).
+   * @param timestamp the timestamp formatted according to the format <code>yyyy-MM-dd'T'HH:mm:ss.SSSX</code>
+   * @return the point in time as a {@link Long} value representing the UNIX epoch time, or <code>null</code> if the
+   *   parameter does not match the required format (this also triggers a warning via
+   *   {@link Main#warn(Throwable, String)}), or the parameter is <code>null</code>.
+   */
   static Long decodeTimestamp(final String timestamp) {
     if (timestamp != null) {
       try {
