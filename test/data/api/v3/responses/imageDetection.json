@@ -1,0 +1,44 @@
+{
+  "type": "Feature",
+  "properties": {
+    "area": 0.0015604496002197266,
+    "image_key": "QhRcdlGS_Rn_a1_HTclefg",
+    "key": "gn0llgitnnuqonecevbmf52ino",
+    "score": 0.710661225175,
+    "shape": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            0.330078125,
+            0.466064453125
+          ],
+          [
+            0.3642578125,
+            0.466064453125
+          ],
+          [
+            0.3642578125,
+            0.51171875
+          ],
+          [
+            0.330078125,
+            0.51171875
+          ],
+          [
+            0.330078125,
+            0.466064453125
+          ]
+        ]
+      ]
+    },
+    "value": "regulatory--no-overtaking-by-heavy-goods-vehicles--g1"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      10.805287,
+      55.321409
+    ]
+  }
+}

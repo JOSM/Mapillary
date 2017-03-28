@@ -1,0 +1,93 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "area": 0.0009162808641975282,
+        "image_key": "LNuUpMXZax88-VuqNoiqEQ",
+        "key": "u0lvc577hes4a0k8pgkak6pr5g",
+        "score": 0.999222,
+        "shape": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0.74365234375,
+                0.530029296875
+              ],
+              [
+                0.7646484375,
+                0.530029296875
+              ],
+              [
+                0.7646484375,
+                0.573974609375
+              ],
+              [
+                0.74365234375,
+                0.573974609375
+              ],
+              [
+                0.74365234375,
+                0.530029296875
+              ]
+            ]
+          ]
+        },
+        "value": "regulatory--go-straight--g1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.20263300647002,
+          50.22795119437956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area": 0.0003740798811354602,
+        "image_key": "8Crlqn_Tq3Gbj_QrTSeJqQ",
+        "key": "as4sbsi48vbfk4555q18rq9jnj",
+        "score": 0.985142,
+        "shape": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0.828125,
+                0.490478515625
+              ],
+              [
+                0.846923828125,
+                0.490478515625
+              ],
+              [
+                0.846923828125,
+                0.510498046875
+              ],
+              [
+                0.828125,
+                0.510498046875
+              ],
+              [
+                0.828125,
+                0.490478515625
+              ]
+            ]
+          ]
+        },
+        "value": "regulatory--u-turn--g1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          32.28697069999998,
+          50.2510178
+        ]
+      }
+    }
+  ]
+}
