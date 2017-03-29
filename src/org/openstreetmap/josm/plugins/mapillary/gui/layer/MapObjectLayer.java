@@ -201,10 +201,9 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 
   @Override
   public void zoomChanged() {
-    synchronized (Main.class) {
-      if (Main.isDisplayingMapView()) {
-        scheduleDownload(Main.map.mapView.getState().getViewArea().getLatLonBoundsBox());
-      }
+    MapView mv = MapillaryPlugin.getMapView();
+    if (mv != null) {
+      scheduleDownload(mv.getState().getViewArea().getLatLonBoundsBox());
     }
   }
 }

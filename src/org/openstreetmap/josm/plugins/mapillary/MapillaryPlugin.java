@@ -13,6 +13,7 @@ import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
@@ -281,5 +282,16 @@ public class MapillaryPlugin extends Plugin {
       f.mkdirs();
     }
     return f;
+  }
+
+  /**
+   * @return the current {@link MapView} without throwing a {@link NullPointerException}
+   */
+  public static MapView getMapView() {
+    final MapFrame mf = Main.map;
+    if (mf != null) {
+      return mf.mapView;
+    }
+    return null;
   }
 }
