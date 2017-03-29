@@ -17,8 +17,6 @@ sudo: false
 dist: trusty
 
 language: java
-cache:
-  directories: $HOME/.gradle
 jdk:
   - oraclejdk9
   - oraclejdk8
