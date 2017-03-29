@@ -26,10 +26,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Set of traffic signs in the image.
    */
   private final List<MapillarySign> signs = new ArrayList<>();
-  /**
-   * Where the picture was taken.
-   */
-  private String location;
 
   /**
    * Main constructor of the class MapillaryImage
@@ -41,24 +37,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public MapillaryImage(final String key, final LatLon latLon, final double ca) {
     super(latLon, ca);
     this.key = key;
-  }
-
-  /**
-   * Returns the location where the image was taken.
-   *
-   * @return A {@code String} containing the location where the picture was taken.
-   */
-  public String getLocation() {
-    return this.location;
-  }
-
-  /**
-   * Sets the location of the image.
-   *
-   * @param location A {@code String} object containing the place where the image was taken.
-   */
-  public void setLocation(String location) {
-    this.location = location;
   }
 
   /**
@@ -111,8 +89,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
   @Override
   public String toString() {
     return String.format(
-            "Image[key=%s,lat=%f,lon=%f,ca=%f,location=%s,user=%s,capturedAt=%d]",
-            key, latLon.lat(), latLon.lon(), ca, location, user, capturedAt
+            "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
+            key, latLon.lat(), latLon.lon(), ca, user, capturedAt
     );
   }
 

@@ -61,9 +61,6 @@ public class MapillaryImageInfoDownloadThread extends Thread {
             && ((MapillaryImage) image).getUser() == null).forEach(image -> {
             ((MapillaryImage) image).setUser(data.getString("user"));
             image.setCapturedAt(data.getJsonNumber("captured_at").longValue());
-            if (!data.isNull("location")) {
-              ((MapillaryImage) image).setLocation(data.getString("location"));
-            }
           });
         }
       }
