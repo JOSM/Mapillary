@@ -29,7 +29,7 @@ public final class MapillaryProperties {
   public static final BooleanProperty CUT_OFF_SEQUENCES_AT_BOUNDS =
     new BooleanProperty("mapillary.cut-off-sequences-at-bounds", false);
   public static final IntegerProperty MAPOBJECT_ICON_SIZE = new IntegerProperty("mapillary.mapobjects.iconsize", 32);
-  public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty("mapillary.mapobjects.maximum-number", 500);
+  public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty("mapillary.mapobjects.maximum-number", 200);
 
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
@@ -29,7 +30,7 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapObjectDownloadRunnable implements Runnable {
   private final Bounds bounds;
   private final MapObjectLayer layer;
-  private static final Function<Bounds, URL> urlGen = APIv3::searchMapObjects;
+  private static final Function<Bounds, URL> URL_GEN = APIv3::searchMapObjects;
 
   private final Collection<MapObject> result = new HashSet<>();
 
@@ -45,10 +46,11 @@ public class MapObjectDownloadRunnable implements Runnable {
   @Override
   public void run() {
     layer.setStatus(MapObjectLayer.STATUS.DOWNLOADING);
-    URL nextURL = urlGen.apply(bounds);
+    URL nextURL = URL_GEN.apply(bounds);
     try {
       while (nextURL != null && result.size() < MapillaryProperties.MAX_MAPOBJECTS.get() && !layer.isDownloadRunnableScheduled()) {
-        Main.debug("Download map objects from " + nextURL);
+        final int prevResultSize = result.size();
+        final long startTime = System.currentTimeMillis();
         final URLConnection con = nextURL.openConnection();
         try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
           result.addAll(JsonDecoder.decodeFeatureCollection(
@@ -57,10 +59,17 @@ public class MapObjectDownloadRunnable implements Runnable {
           ));
         }
         layer.invalidate();
+        Main.info(String.format(
+          "GET %s → %s (%d map objects in %f seconds)",
+          nextURL,
+          con instanceof HttpURLConnection ? ((HttpURLConnection) con).getResponseCode() : "‹no response code›",
+          result.size() - prevResultSize,
+          (System.currentTimeMillis() - startTime) / 1000f)
+        );
         nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
       }
     } catch (IOException e) {
-      String message = I18n.tr("Could not read map objects from URL {0}!", nextURL.toString());
+      String message = I18n.tr("{0}\nCould not read map objects from URL\n{1}!", e.getLocalizedMessage(), nextURL.toString());
       Main.warn(e, message);
       new Notification(message)
         .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
@@ -75,7 +84,12 @@ public class MapObjectDownloadRunnable implements Runnable {
         ? (result.size() >= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING)
         : STATUS.COMPLETE
     );
-    layer.finishDownload(nextURL == null);
+    layer.finishDownload(nextURL == null || result.size() >= MapillaryProperties.MAX_MAPOBJECTS.get());
+    try {
+      Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around
+    } catch (InterruptedException e) {
+      Main.debug(e);
+    }
   }
 
 }
