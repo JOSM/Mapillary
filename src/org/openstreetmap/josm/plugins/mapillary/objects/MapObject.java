@@ -3,8 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.objects;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -16,8 +14,10 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 public class MapObject {
+  private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get("unknown-mapobject-type");
   private static final CacheAccess<String, ImageIcon> MAP_OBJECT_ICON_CACHE;
   private static Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
 
@@ -35,7 +35,6 @@ public class MapObject {
   }
 
   private final LatLon coordinate;
-  private ImageIcon icon;
   private final String key;
   private final String objPackage;
   private final String value;
@@ -64,27 +63,24 @@ public class MapObject {
   }
 
   /**
-   * @param allowDownload <code>true</code> if this method is allowed to download the icon.
-   *        Otherwise, it won't connect to a {@link URL} in order to download the icon,
-   *        it will only look in the icon field of this object and in the icon cache.
-   * @return the icon which should be displayed for this map object
+   * @param objectTypeID the {@link String} representing the type of map object. This ID can be retrieved via
+   *   {@link #getValue()} for any given {@link MapObject}.
+   * @return the icon, which represents the given objectTypeID
    */
-  public ImageIcon getIcon(boolean allowDownload) {
-    if (icon != null) {
-      return icon;
-    }
-    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(value) : null;
-    if (cachedIcon == null && allowDownload) {
+  public static ImageIcon getIcon(final String objectTypeID) {
+    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(objectTypeID) : null;
+    if ("not-in-set".equals(objectTypeID)) {
+      return ICON_UNKNOWN_TYPE;
+    } else if (cachedIcon == null) {
       try {
-        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(value)));
-        if (MAP_OBJECT_ICON_CACHE != null) {
-          MAP_OBJECT_ICON_CACHE.put(value, downloadedIcon);
+        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));
+        if (MAP_OBJECT_ICON_CACHE != null && downloadedIcon != null) {
+          MAP_OBJECT_ICON_CACHE.put(objectTypeID, downloadedIcon);
         }
-        icon = downloadedIcon;
-        return icon;
+        return downloadedIcon;
       } catch (IOException e) {
-        Main.warn(e, "Failed to download icon " + iconUrlGen.apply(value));
-        return null;
+        Main.warn(e, "Failed to download icon " + objectTypeID);
+        return ICON_UNKNOWN_TYPE;
       }
     }
     return cachedIcon;

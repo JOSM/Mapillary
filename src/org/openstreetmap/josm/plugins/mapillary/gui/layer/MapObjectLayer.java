@@ -7,7 +7,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -30,10 +32,10 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   public enum STATUS {
-    DOWNLOADING("Downloading map objects…", Color.YELLOW),
-    COMPLETE("All map objects loaded.", Color.GREEN),
-    INCOMPLETE("Too many map objects, zoom in to see all.", Color.ORANGE),
-    FAILED("Downloading map objects failed!", Color.RED);
+    DOWNLOADING(I18n.marktr("Downloading map objects…"), Color.YELLOW),
+    COMPLETE(I18n.marktr("All map objects loaded."), Color.GREEN),
+    INCOMPLETE(I18n.marktr("Too many map objects, zoom in to see all."), Color.ORANGE),
+    FAILED(I18n.marktr("Downloading map objects failed!"), Color.RED);
 
     public final Color color;
     public final String message;
@@ -41,20 +43,25 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     private STATUS(final String message, final Color color) {
       this.color = color;
       this.message = message;
-      I18n.marktr(message);
     }
   }
 
   private static MapObjectLayer instance;
 
-  private STATUS status;
+  private STATUS status = STATUS.COMPLETE;
   private MapObjectDownloadRunnable downloadRunnable;
   private MapObjectDownloadRunnable nextDownloadRunnable;
   private final Collection<MapObject> objects = new HashSet<>();
 
+  private final Map<String, ImageIcon> scaledIcons = new HashMap<>();
+
   private MapObjectLayer() {
     super(I18n.tr("Mapillary objects"));
     NavigatableComponent.addZoomChangeListener(this);
+    MapillaryProperties.MAPOBJECT_ICON_SIZE.addListener(val -> {
+      scaledIcons.clear();
+      finishDownload(false);
+    });
     zoomChanged();
   }
 
@@ -72,28 +79,36 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   }
 
   public void finishDownload(boolean replaceMapObjects) {
-    synchronized (objects) {
-      if (replaceMapObjects) {
-        objects.clear();
+    final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
+    if (currentRunnable != null) {
+      synchronized (objects) {
+        if (replaceMapObjects) {
+          objects.clear();
+        }
+        objects.addAll(currentRunnable.getMapObjects());
       }
-      objects.addAll(downloadRunnable.getMapObjects());
     }
     synchronized (this) {
       downloadRunnable = null;
       if (nextDownloadRunnable != null) {
         downloadRunnable = nextDownloadRunnable;
         nextDownloadRunnable = null;
-        new Thread(downloadRunnable).start();
+        new Thread(downloadRunnable, "downloadMapObjects").start();
       }
     }
     new Thread(() -> {
       synchronized (objects) {
         for (MapObject object : objects) {
-          object.getIcon(true);
+          if (!scaledIcons.containsKey(object.getValue())) {
+            scaledIcons.put(
+              object.getValue(),
+              ImageUtil.scaleImageIcon(MapObject.getIcon(object.getValue()), MapillaryProperties.MAPOBJECT_ICON_SIZE.get())
+            );
+          }
         }
       }
       invalidate();
-    }).start();
+    }, "downloadMapObjectIcons").start();
   }
 
   public int getObjectCount() {
@@ -101,45 +116,41 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   }
 
   public void setStatus(STATUS status) {
-    synchronized (this) {
-      this.status = status;
-    }
+    this.status = status;
     invalidate();
   }
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds bbox) {
+    final long startTime = System.currentTimeMillis();
     final Collection<MapObject> displayedObjects = new HashSet<>();
-    synchronized (this) {
-      if (downloadRunnable != null) {
-        displayedObjects.addAll(downloadRunnable.getMapObjects());
-      }
+    final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
+    if (currentRunnable != null) {
+      displayedObjects.addAll(currentRunnable.getMapObjects());
     }
     displayedObjects.addAll(objects);
 
     for (MapObject object : displayedObjects) {
-      final ImageIcon icon = object.getIcon(false);
+      final ImageIcon icon = scaledIcons.get(object.getValue());
       if (icon != null) {
         final Point p = mv.getPoint(object.getCoordinate());
         g.drawImage(
-          ImageUtil.scaleImageIcon(icon, MapillaryProperties.MAPOBJECT_ICON_SIZE.get()).getImage(),
-          p.x - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,
-          p.y - MapillaryProperties.MAPOBJECT_ICON_SIZE.get() / 2,
+          icon.getImage(),
+          p.x - icon.getIconWidth() / 2,
+          p.y - icon.getIconHeight() / 2,
           null
         );
       }
     }
 
-    synchronized (this) {
-      if (status != null) {
-        g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
-        g.setColor(status.color);
-        final FontMetrics fm = g.getFontMetrics();
-        g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(status.message), fm.getAscent() + fm.getDescent());
-        g.setColor(Color.BLACK);
-        g.drawString(status.message, 0, mv.getHeight() - fm.getDescent());
-      }
-    }
+    final STATUS currentStatus = status;
+    g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
+    g.setColor(currentStatus.color);
+    final FontMetrics fm = g.getFontMetrics();
+    g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(I18n.tr(currentStatus.message)), fm.getAscent() + fm.getDescent());
+    g.setColor(Color.BLACK);
+    g.drawString(I18n.tr(currentStatus.message), 0, mv.getHeight() - fm.getDescent());
+    Main.debug(MapObjectLayer.class.getName() + " painted in " + (System.currentTimeMillis() - startTime) + " milliseconds.");
   }
 
   @Override

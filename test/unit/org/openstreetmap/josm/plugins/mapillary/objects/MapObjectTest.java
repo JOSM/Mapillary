@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.objects;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -84,23 +83,19 @@ public class MapObjectTest {
 
   @Test
   public void testIcon() throws SecurityException, IllegalArgumentException {
-    MapObject mo = new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0);
-    assertNull(mo.getIcon(false));
-    assertNotNull(mo.getIcon(true));
-    assertNotNull(mo.getIcon(true));
-    assertNotNull(mo.getIcon(false));
-    assertNotNull(new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0).getIcon(true));
+    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
+    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
   }
 
   @Test
   public void testNullCache() throws IllegalArgumentException, IllegalAccessException {
     TestUtil.getAccessibleField(MapObject.class, "MAP_OBJECT_ICON_CACHE").set(null, null);
-    assertNotNull(new MapObject(new LatLon(0, 0), "", "", "/images/mapicon.png", 0, 0, 0).getIcon(true));
+    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
   }
 
   @Test
-  public void testInvalidIconDownloadURL() {
-    assertNull(new MapObject(new LatLon(0, 0), "", "", "/invalidPathToIcon", 0, 0, 0).getIcon(true));
+  public void testInvalidIconDownloadURL() throws IllegalArgumentException, IllegalAccessException {
+    assertEquals(TestUtil.getAccessibleField(MapObject.class, "ICON_UNKNOWN_TYPE").get(null), MapObject.getIcon("/invalidPathToIcon"));
   }
 
   @Test

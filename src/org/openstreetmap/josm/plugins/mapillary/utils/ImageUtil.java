@@ -5,6 +5,8 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import org.openstreetmap.josm.Main;
+
 public final class ImageUtil {
   private ImageUtil() {
     // Private constructor to avoid instantiation
@@ -18,12 +20,11 @@ public final class ImageUtil {
    *         only the contained {@link Image} is exchanged.
    */
   public static ImageIcon scaleImageIcon(final ImageIcon icon, int size) {
-    final Image i = icon.getImage();
-    icon.setImage(i.getScaledInstance(
+    Main.debug("Scale icon " + icon.getIconWidth() + " → " + size);
+    return new ImageIcon(icon.getImage().getScaledInstance(
       icon.getIconWidth() >= icon.getIconHeight() ? size : Math.max(1, Math.round(icon.getIconWidth() / (float) icon.getIconHeight() * size)),
       icon.getIconHeight() >= icon.getIconWidth() ? size : Math.max(1, Math.round(icon.getIconHeight() / (float) icon.getIconWidth() * size)),
       Image.SCALE_SMOOTH
     ));
-    return icon;
   }
 }
