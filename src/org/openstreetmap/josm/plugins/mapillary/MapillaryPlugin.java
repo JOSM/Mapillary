@@ -51,7 +51,7 @@ public class MapillaryPlugin extends Plugin {
   public static final ImageProvider LOGO = new ImageProvider("mapillary-logo");
 
   /** Cache that stores the pictures the downloaded pictures. */
-  private static CacheAccess<String, BufferedImageCacheEntry> cache;
+  private static final CacheAccess<String, BufferedImageCacheEntry> IMAGE_CACHE;
 
   private static final MapillaryDownloadAction DOWNLOAD_ACTION = new MapillaryDownloadAction();
   private static final MapillaryExportAction EXPORT_ACTION = new MapillaryExportAction();
@@ -87,6 +87,14 @@ public class MapillaryPlugin extends Plugin {
   private static final JMenuItem UPLOAD_MENU;
 
   static {
+    CacheAccess<String, BufferedImageCacheEntry> cache = null;
+    try {
+      cache = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
+    } catch (IOException e) {
+      Main.warn(e, "Could not initialize the Mapillary image cache.");
+    }
+    IMAGE_CACHE = cache;
+
     if (Main.main == null) {
       EXPORT_MENU = null;
       DOWNLOAD_MENU = null;
@@ -131,10 +139,6 @@ public class MapillaryPlugin extends Plugin {
    */
   public MapillaryPlugin(PluginInformation info) throws IOException {
     super(info);
-
-    if (cache == null) {
-      cache = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
-    }
 
     if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
       MapillaryUser.setTokenValid(false);
@@ -247,10 +251,8 @@ public class MapillaryPlugin extends Plugin {
   /**
    * Enables/disables a {@link JMenuItem}.
    *
-   * @param menu
-   *          The JMenuItem object that is going to be enabled or disabled.
-   * @param value
-   *          true to enable the JMenuItem; false to disable it.
+   * @param menu The JMenuItem object that is going to be enabled or disabled.
+   * @param value <code>true</code> to enable the JMenuItem; <code>false</code> to disable it.
    */
   public static void setMenuEnabled(final JMenuItem menu, final boolean value) {
     if (menu == null) { // In headless mode the menu items are initialized to null
@@ -269,8 +271,8 @@ public class MapillaryPlugin extends Plugin {
     return new MapillaryPreferenceSetting();
   }
 
-  public static CacheAccess<String, BufferedImageCacheEntry> getCache() {
-    return cache;
+  public static CacheAccess<String, BufferedImageCacheEntry> getImageCache() {
+    return IMAGE_CACHE;
   }
 
   public static File getCacheDirectory() {

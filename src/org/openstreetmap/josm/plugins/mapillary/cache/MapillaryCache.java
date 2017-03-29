@@ -44,7 +44,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-    this(MapillaryPlugin.getCache(), key, type);
+    this(MapillaryPlugin.getImageCache(), key, type);
   }
 
   protected MapillaryCache(CacheAccess<String, BufferedImageCacheEntry> cache, String key, Type type) {
