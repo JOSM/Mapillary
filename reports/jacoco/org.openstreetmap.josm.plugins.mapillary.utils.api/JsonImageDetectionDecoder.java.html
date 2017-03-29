@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonImageDetectionDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils.api</a> &gt; <span class="el_source">JsonImageDetectionDecoder.java</span></div><h1>JsonImageDetectionDecoder.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils.api;
+
+import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder.decodeDoublePair;
+
+import java.awt.Shape;
+import java.awt.geom.Path2D;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.mapillary.detection.ImageDetection;
+
+public final class JsonImageDetectionDecoder {
+<span class="fc" id="L18">  private JsonImageDetectionDecoder() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L20">  }</span>
+
+  public static ImageDetection decodeImageDetection(final JsonObject json) {
+<span class="fc bfc" id="L23" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L24">      return null;</span>
+    }
+
+<span class="fc" id="L27">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">    if (properties instanceof JsonObject) {</span>
+<span class="fc" id="L29">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
+<span class="fc" id="L30">      final String imageKey = ((JsonObject) properties).getString(&quot;image_key&quot;, null);</span>
+<span class="fc" id="L31">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
+<span class="fc" id="L32">      final JsonValue scoreVal = ((JsonObject) properties).get(&quot;score&quot;);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">      final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;</span>
+<span class="fc" id="L34">      final Shape shape = decodeShape(((JsonObject) properties).get(&quot;shape&quot;));</span>
+<span class="fc bfc" id="L35" title="All 10 branches covered.">      if (shape != null &amp;&amp; imageKey != null &amp;&amp; key != null &amp;&amp; score != null &amp;&amp; value != null) {</span>
+<span class="fc" id="L36">        return new ImageDetection(shape, imageKey, key, score, value);</span>
+      }
+    }
+<span class="fc" id="L39">    return null;</span>
+  }
+
+  private static Shape decodeShape(JsonValue json) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (json instanceof JsonObject) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">      if (!&quot;Polygon&quot;.equals(((JsonObject) json).getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L45">        Main.warn(</span>
+<span class="fc" id="L46">          String.format(&quot;Image detections using shapes with type=%s are currently not supported!&quot;,</span>
+<span class="fc" id="L47">          ((JsonObject) json).getString(&quot;type&quot;, &quot;‹no type set›&quot;))</span>
+        );
+      } else {
+<span class="fc" id="L50">        final JsonValue coordinates = ((JsonObject) json).get(&quot;coordinates&quot;);</span>
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        if (coordinates instanceof JsonArray &amp;&amp; !((JsonArray) coordinates).isEmpty()) {</span>
+<span class="fc" id="L52">          return decodePolygon((JsonArray) coordinates);</span>
+        }
+      }
+    }
+<span class="fc" id="L56">    return null;</span>
+  }
+
+  /**
+   * Decodes a polygon (may be a multipolygon) from JSON
+   * @param json the json array to decode, must not be &lt;code&gt;null&lt;/code&gt;
+   * @return the decoded polygon as {@link Path2D.Double}
+   */
+  private static Path2D decodePolygon(final JsonArray json) {
+<span class="fc" id="L65">    final Path2D shape = new Path2D.Double();</span>
+<span class="fc" id="L66">    json.stream().forEach(val -&gt; {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">      final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">      if (part != null) {</span>
+<span class="fc" id="L69">        shape.append(part, false);</span>
+      }
+<span class="fc" id="L71">    });</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
+<span class="fc" id="L73">      return shape;</span>
+    }
+<span class="fc" id="L75">    return null;</span>
+  }
+
+  /**
+   * Decodes a simple polygon (consisting of only one continuous path) from JSON
+   * @param json the json array to decode, must not be &lt;code&gt;null&lt;/code&gt;
+   * @return the decoded polygon as {@link Path2D.Double}
+   * @throws NullPointerException if parameter is &lt;code&gt;null&lt;/code&gt;
+   */
+  private static Path2D decodeSimplePolygon(final JsonArray json) {
+<span class="fc" id="L85">    final Path2D shape = new Path2D.Double();</span>
+<span class="fc" id="L86">    json.stream().forEach(val -&gt; {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">      double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);</span>
+<span class="fc bfc" id="L88" title="All 4 branches covered.">      if (shape.getCurrentPoint() == null &amp;&amp; coord != null) {</span>
+<span class="fc" id="L89">        shape.moveTo(coord[0], coord[1]);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">      } else if (coord != null) {</span>
+<span class="fc" id="L91">        shape.lineTo(coord[0], coord[1]);</span>
+      }
+<span class="fc" id="L93">    });</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
+<span class="fc" id="L95">      shape.closePath();</span>
+<span class="fc" id="L96">      return shape;</span>
+    }
+<span class="fc" id="L98">    return null;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

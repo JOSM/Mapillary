@@ -3,8 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.objects;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -16,8 +14,10 @@ import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 public class MapObject {
+<span class="fc" id="L20">  private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get(&quot;unknown-mapobject-type&quot;);</span>
   private static final CacheAccess&lt;String, ImageIcon&gt; MAP_OBJECT_ICON_CACHE;
 <span class="fc" id="L22">  private static Function&lt;String, URL&gt; iconUrlGen = MainWebsite::mapObjectIcon;</span>
 
@@ -35,7 +35,6 @@ public class MapObject {
 <span class="fc" id="L35">  }</span>
 
   private final LatLon coordinate;
-  private ImageIcon icon;
   private final String key;
   private final String objPackage;
   private final String value;
@@ -46,72 +45,69 @@ public class MapObject {
   public MapObject(
     final LatLon coordinate, final String key, final String objPackage, final String value,
     long firstSeenTime, long lastSeenTime, long updatedTime
-<span class="fc" id="L49">  ) {</span>
-<span class="fc bfc" id="L50" title="All 8 branches covered.">    if (key == null || objPackage == null || value == null || coordinate == null) {</span>
-<span class="fc" id="L51">      throw new IllegalArgumentException(&quot;The fields of a MapObject must not be null!&quot;);</span>
+<span class="fc" id="L48">  ) {</span>
+<span class="fc bfc" id="L49" title="All 8 branches covered.">    if (key == null || objPackage == null || value == null || coordinate == null) {</span>
+<span class="fc" id="L50">      throw new IllegalArgumentException(&quot;The fields of a MapObject must not be null!&quot;);</span>
     }
-<span class="fc" id="L53">    this.coordinate = coordinate;</span>
-<span class="fc" id="L54">    this.key = key;</span>
-<span class="fc" id="L55">    this.objPackage = objPackage;</span>
-<span class="fc" id="L56">    this.value = value;</span>
-<span class="fc" id="L57">    this.firstSeenTime = firstSeenTime;</span>
-<span class="fc" id="L58">    this.lastSeenTime = lastSeenTime;</span>
-<span class="fc" id="L59">    this.updatedTime = updatedTime;</span>
-<span class="fc" id="L60">  }</span>
+<span class="fc" id="L52">    this.coordinate = coordinate;</span>
+<span class="fc" id="L53">    this.key = key;</span>
+<span class="fc" id="L54">    this.objPackage = objPackage;</span>
+<span class="fc" id="L55">    this.value = value;</span>
+<span class="fc" id="L56">    this.firstSeenTime = firstSeenTime;</span>
+<span class="fc" id="L57">    this.lastSeenTime = lastSeenTime;</span>
+<span class="fc" id="L58">    this.updatedTime = updatedTime;</span>
+<span class="fc" id="L59">  }</span>
 
   public LatLon getCoordinate() {
-<span class="fc" id="L63">    return coordinate;</span>
+<span class="fc" id="L62">    return coordinate;</span>
   }
 
   /**
-   * @param allowDownload &lt;code&gt;true&lt;/code&gt; if this method is allowed to download the icon.
-   *        Otherwise, it won't connect to a {@link URL} in order to download the icon,
-   *        it will only look in the icon field of this object and in the icon cache.
-   * @return the icon which should be displayed for this map object
+   * @param objectTypeID the {@link String} representing the type of map object. This ID can be retrieved via
+   *   {@link #getValue()} for any given {@link MapObject}.
+   * @return the icon, which represents the given objectTypeID
    */
-  public ImageIcon getIcon(boolean allowDownload) {
-<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (icon != null) {</span>
-<span class="fc" id="L74">      return icon;</span>
-    }
-<span class="fc bfc" id="L76" title="All 2 branches covered.">    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(value) : null;</span>
-<span class="fc bfc" id="L77" title="All 4 branches covered.">    if (cachedIcon == null &amp;&amp; allowDownload) {</span>
+  public static ImageIcon getIcon(final String objectTypeID) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(objectTypeID) : null;</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    if (&quot;not-in-set&quot;.equals(objectTypeID)) {</span>
+<span class="nc" id="L73">      return ICON_UNKNOWN_TYPE;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    } else if (cachedIcon == null) {</span>
       try {
-<span class="fc" id="L79">        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(value)));</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (MAP_OBJECT_ICON_CACHE != null) {</span>
-<span class="fc" id="L81">          MAP_OBJECT_ICON_CACHE.put(value, downloadedIcon);</span>
+<span class="fc" id="L76">        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));</span>
+<span class="pc bpc" id="L77" title="1 of 4 branches missed.">        if (MAP_OBJECT_ICON_CACHE != null &amp;&amp; downloadedIcon != null) {</span>
+<span class="fc" id="L78">          MAP_OBJECT_ICON_CACHE.put(objectTypeID, downloadedIcon);</span>
         }
-<span class="fc" id="L83">        icon = downloadedIcon;</span>
-<span class="fc" id="L84">        return icon;</span>
-<span class="fc" id="L85">      } catch (IOException e) {</span>
-<span class="fc" id="L86">        Main.warn(e, &quot;Failed to download icon &quot; + iconUrlGen.apply(value));</span>
-<span class="fc" id="L87">        return null;</span>
+<span class="fc" id="L80">        return downloadedIcon;</span>
+<span class="fc" id="L81">      } catch (IOException e) {</span>
+<span class="fc" id="L82">        Main.warn(e, &quot;Failed to download icon &quot; + objectTypeID);</span>
+<span class="fc" id="L83">        return ICON_UNKNOWN_TYPE;</span>
       }
     }
-<span class="fc" id="L90">    return cachedIcon;</span>
+<span class="fc" id="L86">    return cachedIcon;</span>
   }
 
   public String getKey() {
-<span class="fc" id="L94">    return key;</span>
+<span class="fc" id="L90">    return key;</span>
   }
 
   public String getPackage() {
-<span class="fc" id="L98">    return objPackage;</span>
+<span class="fc" id="L94">    return objPackage;</span>
   }
 
   public long getFirstSeenTime() {
-<span class="fc" id="L102">    return firstSeenTime;</span>
+<span class="fc" id="L98">    return firstSeenTime;</span>
   }
 
   public long getLastSeenTime() {
-<span class="fc" id="L106">    return lastSeenTime;</span>
+<span class="fc" id="L102">    return lastSeenTime;</span>
   }
 
   public long getUpdatedTime() {
-<span class="fc" id="L110">    return updatedTime;</span>
+<span class="fc" id="L106">    return updatedTime;</span>
   }
 
   public String getValue() {
-<span class="fc" id="L114">    return value;</span>
+<span class="fc" id="L110">    return value;</span>
   }
 
   /* (non-Javadoc)
@@ -119,10 +115,10 @@ public class MapObject {
    */
   @Override
   public int hashCode() {
-<span class="fc" id="L122">    final int prime = 31;</span>
-<span class="fc" id="L123">    int result = 1;</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">    result = prime * result + ((key == null) ? 0 : key.hashCode());</span>
-<span class="fc" id="L125">    return result;</span>
+<span class="fc" id="L118">    final int prime = 31;</span>
+<span class="fc" id="L119">    int result = 1;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">    result = prime * result + ((key == null) ? 0 : key.hashCode());</span>
+<span class="fc" id="L121">    return result;</span>
   }
 
   /* (non-Javadoc)
@@ -130,24 +126,24 @@ public class MapObject {
    */
   @Override
   public boolean equals(Object obj) {
-<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (this == obj) {</span>
-<span class="fc" id="L134">      return true;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (this == obj) {</span>
+<span class="fc" id="L130">      return true;</span>
     }
-<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (obj == null) {</span>
-<span class="fc" id="L137">      return false;</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">    if (obj == null) {</span>
+<span class="fc" id="L133">      return false;</span>
     }
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (!(obj instanceof MapObject)) {</span>
-<span class="fc" id="L140">      return false;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (!(obj instanceof MapObject)) {</span>
+<span class="fc" id="L136">      return false;</span>
     }
-<span class="fc" id="L142">    MapObject other = (MapObject) obj;</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (key == null) {</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">      if (other.key != null) {</span>
-<span class="fc" id="L145">        return false;</span>
+<span class="fc" id="L138">    MapObject other = (MapObject) obj;</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (key == null) {</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">      if (other.key != null) {</span>
+<span class="fc" id="L141">        return false;</span>
       }
-<span class="fc bfc" id="L147" title="All 2 branches covered.">    } else if (!key.equals(other.key)) {</span>
-<span class="fc" id="L148">      return false;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    } else if (!key.equals(other.key)) {</span>
+<span class="fc" id="L144">      return false;</span>
     }
-<span class="fc" id="L150">    return true;</span>
+<span class="fc" id="L146">    return true;</span>
   }
 
 }

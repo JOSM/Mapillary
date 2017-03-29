@@ -5,10 +5,12 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import org.openstreetmap.josm.Main;
+
 public final class ImageUtil {
-<span class="fc" id="L9">  private ImageUtil() {</span>
+<span class="fc" id="L11">  private ImageUtil() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L11">  }</span>
+<span class="fc" id="L13">  }</span>
 
   /**
    * Scales an {@link ImageIcon} to the desired size
@@ -18,13 +20,12 @@ public final class ImageUtil {
    *         only the contained {@link Image} is exchanged.
    */
   public static ImageIcon scaleImageIcon(final ImageIcon icon, int size) {
-<span class="fc" id="L21">    final Image i = icon.getImage();</span>
-<span class="fc" id="L22">    icon.setImage(i.getScaledInstance(</span>
-<span class="fc bfc" id="L23" title="All 2 branches covered.">      icon.getIconWidth() &gt;= icon.getIconHeight() ? size : Math.max(1, Math.round(icon.getIconWidth() / (float) icon.getIconHeight() * size)),</span>
-<span class="fc bfc" id="L24" title="All 2 branches covered.">      icon.getIconHeight() &gt;= icon.getIconWidth() ? size : Math.max(1, Math.round(icon.getIconHeight() / (float) icon.getIconWidth() * size)),</span>
+<span class="fc" id="L23">    Main.debug(&quot;Scale icon &quot; + icon.getIconWidth() + &quot; → &quot; + size);</span>
+<span class="fc" id="L24">    return new ImageIcon(icon.getImage().getScaledInstance(</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">      icon.getIconWidth() &gt;= icon.getIconHeight() ? size : Math.max(1, Math.round(icon.getIconWidth() / (float) icon.getIconHeight() * size)),</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">      icon.getIconHeight() &gt;= icon.getIconWidth() ? size : Math.max(1, Math.round(icon.getIconHeight() / (float) icon.getIconWidth() * size)),</span>
       Image.SCALE_SMOOTH
     ));
-<span class="fc" id="L27">    return icon;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

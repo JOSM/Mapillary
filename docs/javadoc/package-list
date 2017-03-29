@@ -1,6 +1,7 @@
 org.openstreetmap.josm.plugins.mapillary
 org.openstreetmap.josm.plugins.mapillary.actions
 org.openstreetmap.josm.plugins.mapillary.cache
+org.openstreetmap.josm.plugins.mapillary.detection
 org.openstreetmap.josm.plugins.mapillary.gui
 org.openstreetmap.josm.plugins.mapillary.gui.boilerplate
 org.openstreetmap.josm.plugins.mapillary.gui.imageinfo

@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.791s</div>
+<div class="counter">0.730s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,6 +66,9 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
+<li>
+<a href="#tab2">Standard error</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -79,12 +82,12 @@
 </thead>
 <tr>
 <td class="success">testGetDate</td>
-<td>0.029s</td>
+<td>0.018s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testIsModified</td>
-<td>0.762s</td>
+<td>0.712s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -92,10 +95,43 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>2017-03-27 14:18:50.679 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=-1,height=16]
-2017-03-27 14:18:50.709 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=-1,height=24]
-2017-03-27 14:18:50.745 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapmode/mapillary-join.svg java.awt.Dimension[width=-1,height=16]
-2017-03-27 14:18:50.749 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapmode/mapillary-join.svg java.awt.Dimension[width=-1,height=24]
+<pre>2017-03-29 22:46:14.384 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=-1,height=16]
+2017-03-29 22:46:14.408 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=-1,height=24]
+2017-03-29 22:46:14.423 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapmode/mapillary-join.svg java.awt.Dimension[width=-1,height=16]
+2017-03-29 22:46:14.426 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapmode/mapillary-join.svg java.awt.Dimension[width=-1,height=24]
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>[INFO] CompositeCacheManager - Instance is null, returning unconfigured instance
+[WARN] ThreadPoolManager - No configuration settings found.  Using hardcoded default values for all pools.
+[INFO] CompositeCacheManager - Setting default auxiliaries to null
+[INFO] CompositeCacheManager - setting defaultCompositeCacheAttributes to [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 1000, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
+[INFO] CompositeCacheManager - setting defaultElementAttributes to [ IS_LATERAL = true, IS_SPOOL = true, IS_REMOTE = true, IS_ETERNAL = false, MaxLifeSeconds = -1, IdleTime = -1, CreateTime = 1490827574546, LastAccessTime = 1490827574546, getTimeToLiveSeconds() = -1, createTime = 1490827574546 ]
+[INFO] CompositeCacheConfigurator - Parsed regions []
+[INFO] CompositeCacheManager - Finished configuration in 16 ms.
+[INFO] CompositeCacheConfigurator - No special ElementAttribute class defined for key [jcs.region.mapillary.elementattributes], using default class.
+[INFO] AbstractDoubleLinkedListMemoryCache - initialized MemoryCache for mapillary
+[INFO] CompositeCache - Constructed cache with name [mapillary] and cache attributes [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 10, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
+[INFO] BlockDiskCache - Region [mapillary_BLOCK_v2] Constructing BlockDiskCache with attributes 
+BlockDiskAttributes 
+ DiskPath [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
+ MaxKeySize [10000]
+ MaxPurgatorySize [5000]
+ BlockSizeBytes [4096]
+ KeyPersistenceIntervalSeconds [300]
+ DiskLimitType [SIZE]
+[INFO] BlockDiskCache - Region [mapillary_BLOCK_v2] Cache file root directory: [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
+[INFO] BlockDisk - Constructing BlockDisk, blockSizeBytes [4096]
+[INFO] BlockDiskKeyStore - Region [mapillary_BLOCK_v2] Cache file root directory [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
+[INFO] BlockDiskKeyStore - Region [mapillary_BLOCK_v2] Key File [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache/mapillary_BLOCK_v2.key]
+[INFO] BlockDiskKeyStore - Region [mapillary_BLOCK_v2] Set maxKeySize to: '10000'
+[WARN] BlockDiskCache - Region [mapillary_BLOCK_v2] Resetting cache
+[INFO] BlockDiskKeyStore - Region [mapillary_BLOCK_v2] Saving keys to [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache/mapillary_BLOCK_v2.key], key count [0]
+[INFO] BlockDiskKeyStore - Region [mapillary_BLOCK_v2] Finished saving keys. It took 2ms. to store 0 keys.  Key file length [4]
+[INFO] BlockDiskCache - Region [mapillary_BLOCK_v2] Block Disk Cache is alive.
 </pre>
 </span>
 </div>
@@ -107,7 +143,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.4.1</a> at Mar 27, 2017 2:18:55 PM</p>
+<a href="http://www.gradle.org">Gradle 3.4.1</a> at Mar 29, 2017 10:46:17 PM</p>
 </div>
 </div>
 </body>

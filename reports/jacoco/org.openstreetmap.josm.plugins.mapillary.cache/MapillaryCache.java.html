@@ -44,7 +44,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob&lt;String, BufferedIm
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-<span class="nc" id="L47">    this(MapillaryPlugin.getCache(), key, type);</span>
+<span class="nc" id="L47">    this(MapillaryPlugin.getImageCache(), key, type);</span>
 <span class="nc" id="L48">  }</span>
 
   protected MapillaryCache(CacheAccess&lt;String, BufferedImageCacheEntry&gt; cache, String key, Type type) {

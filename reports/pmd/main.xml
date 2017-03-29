@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.4" timestamp="2017-03-27T14:18:37.605">
+<pmd version="5.5.4" timestamp="2017-03-29T22:46:06.335">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
 <violation beginline="2" endline="410" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=58, ATFD=16, TCC=0.004761904761904762)
@@ -31,11 +31,8 @@ Consider simply returning the value vs storing it in local variable 'remove'
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryPlugin.java">
-<violation beginline="2" endline="283" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="297" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
-</violation>
-<violation beginline="54" endline="54" begincolumn="63" endcolumn="67" rule="AssignmentToNonFinalStatic" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryPlugin" variable="cache" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/design.html#AssignmentToNonFinalStatic" priority="3">
-Possible unsafe assignment to a non-final static field in a constructor.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillarySign.java">
@@ -356,11 +353,6 @@ Document empty method body
 Document empty method body
 </violation>
 </file>
-<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/io/download/MapObjectDownloadRunnable.java">
-<violation beginline="32" endline="32" begincolumn="46" endcolumn="51" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.io.download" class="MapObjectDownloadRunnable" variable="urlGen" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
-Variables that are final and static should be all capitals, 'urlGen' is not all capitals.
-</violation>
-</file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/io/download/SequenceDownloadRunnable.java">
 <violation beginline="31" endline="31" begincolumn="46" endcolumn="51" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.io.download" class="SequenceDownloadRunnable" variable="urlGen" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
 Variables that are final and static should be all capitals, 'urlGen' is not all capitals.
@@ -401,14 +393,6 @@ Document empty method body
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java">
 <violation beginline="2" endline="304" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
-</violation>
-</file>
-<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/objects/MapObject.java">
-<violation beginline="6" endline="6" begincolumn="1" endcolumn="28" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.objects" class="MapObject" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'java.util.Collection'
-</violation>
-<violation beginline="7" endline="7" begincolumn="1" endcolumn="25" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.objects" class="MapObject" externalInfoUrl="https://pmd.github.io/pmd-5.5.4/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'java.util.HashSet'
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil.java">

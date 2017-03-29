@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
@@ -29,54 +30,67 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapObjectDownloadRunnable implements Runnable {
   private final Bounds bounds;
   private final MapObjectLayer layer;
-<span class="fc" id="L32">  private static final Function&lt;Bounds, URL&gt; urlGen = APIv3::searchMapObjects;</span>
+<span class="fc" id="L33">  private static final Function&lt;Bounds, URL&gt; URL_GEN = APIv3::searchMapObjects;</span>
 
-<span class="fc" id="L34">  private final Collection&lt;MapObject&gt; result = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L35">  private final Collection&lt;MapObject&gt; result = new HashSet&lt;&gt;();</span>
 
-<span class="fc" id="L36">  public MapObjectDownloadRunnable(final MapObjectLayer layer, final Bounds bounds) {</span>
-<span class="fc" id="L37">    this.bounds = bounds;</span>
-<span class="fc" id="L38">    this.layer = layer;</span>
-<span class="fc" id="L39">  }</span>
+<span class="fc" id="L37">  public MapObjectDownloadRunnable(final MapObjectLayer layer, final Bounds bounds) {</span>
+<span class="fc" id="L38">    this.bounds = bounds;</span>
+<span class="fc" id="L39">    this.layer = layer;</span>
+<span class="fc" id="L40">  }</span>
 
   public Collection&lt;MapObject&gt; getMapObjects() {
-<span class="fc" id="L42">    return result;</span>
+<span class="fc" id="L43">    return result;</span>
   }
 
   @Override
   public void run() {
-<span class="fc" id="L47">    layer.setStatus(MapObjectLayer.STATUS.DOWNLOADING);</span>
-<span class="fc" id="L48">    URL nextURL = urlGen.apply(bounds);</span>
+<span class="fc" id="L48">    layer.setStatus(MapObjectLayer.STATUS.DOWNLOADING);</span>
+<span class="fc" id="L49">    URL nextURL = URL_GEN.apply(bounds);</span>
     try {
-<span class="pc bpc" id="L50" title="2 of 6 branches missed.">      while (nextURL != null &amp;&amp; result.size() &lt; MapillaryProperties.MAX_MAPOBJECTS.get() &amp;&amp; !layer.isDownloadRunnableScheduled()) {</span>
-<span class="fc" id="L51">        Main.debug(&quot;Download map objects from &quot; + nextURL);</span>
-<span class="fc" id="L52">        final URLConnection con = nextURL.openConnection();</span>
-<span class="pc" id="L53">        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="fc" id="L54">          result.addAll(JsonDecoder.decodeFeatureCollection(</span>
-<span class="fc" id="L55">            reader.readObject(),</span>
+<span class="pc bpc" id="L51" title="2 of 6 branches missed.">      while (nextURL != null &amp;&amp; result.size() &lt; MapillaryProperties.MAX_MAPOBJECTS.get() &amp;&amp; !layer.isDownloadRunnableScheduled()) {</span>
+<span class="fc" id="L52">        final int prevResultSize = result.size();</span>
+<span class="fc" id="L53">        final long startTime = System.currentTimeMillis();</span>
+<span class="fc" id="L54">        final URLConnection con = nextURL.openConnection();</span>
+<span class="pc" id="L55">        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="fc" id="L56">          result.addAll(JsonDecoder.decodeFeatureCollection(</span>
+<span class="fc" id="L57">            reader.readObject(),</span>
             JsonMapObjectDecoder::decodeMapObject
           ));
-<span class="pc bpc" id="L58" title="6 of 8 branches missed.">        }</span>
-<span class="fc" id="L59">        layer.invalidate();</span>
-<span class="fc" id="L60">        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField(&quot;Link&quot;));</span>
-<span class="fc" id="L61">      }</span>
-<span class="nc" id="L62">    } catch (IOException e) {</span>
-<span class="nc" id="L63">      String message = I18n.tr(&quot;Could not read map objects from URL {0}!&quot;, nextURL.toString());</span>
-<span class="nc" id="L64">      Main.warn(e, message);</span>
-<span class="nc" id="L65">      new Notification(message)</span>
-<span class="nc" id="L66">        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
-<span class="nc" id="L67">        .setDuration(Notification.TIME_LONG)</span>
-<span class="nc" id="L68">        .show();</span>
-<span class="nc" id="L69">      layer.setStatus(STATUS.FAILED);</span>
-<span class="nc" id="L70">      layer.finishDownload(false);</span>
-<span class="nc" id="L71">      return;</span>
-<span class="fc" id="L72">    }</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    layer.setStatus(</span>
+<span class="pc bpc" id="L60" title="6 of 8 branches missed.">        }</span>
+<span class="fc" id="L61">        layer.invalidate();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        Main.info(String.format(</span>
+          &quot;GET %s → %s (%d map objects in %f seconds)&quot;,
+          nextURL,
+<span class="pc" id="L65">          con instanceof HttpURLConnection ? ((HttpURLConnection) con).getResponseCode() : &quot;‹no response code›&quot;,</span>
+<span class="fc" id="L66">          result.size() - prevResultSize,</span>
+<span class="fc" id="L67">          (System.currentTimeMillis() - startTime) / 1000f)</span>
+        );
+<span class="fc" id="L69">        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField(&quot;Link&quot;));</span>
+<span class="fc" id="L70">      }</span>
+<span class="nc" id="L71">    } catch (IOException e) {</span>
+<span class="nc" id="L72">      String message = I18n.tr(&quot;{0}\nCould not read map objects from URL\n{1}!&quot;, e.getLocalizedMessage(), nextURL.toString());</span>
+<span class="nc" id="L73">      Main.warn(e, message);</span>
+<span class="nc" id="L74">      new Notification(message)</span>
+<span class="nc" id="L75">        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
+<span class="nc" id="L76">        .setDuration(Notification.TIME_LONG)</span>
+<span class="nc" id="L77">        .show();</span>
+<span class="nc" id="L78">      layer.setStatus(STATUS.FAILED);</span>
+<span class="nc" id="L79">      layer.finishDownload(false);</span>
+<span class="nc" id="L80">      return;</span>
+<span class="fc" id="L81">    }</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    layer.setStatus(</span>
       nextURL != null
-<span class="pc bnc" id="L75" title="All 2 branches missed.">        ? (result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING)</span>
+<span class="pc bnc" id="L84" title="All 2 branches missed.">        ? (result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING)</span>
         : STATUS.COMPLETE
     );
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">    layer.finishDownload(nextURL == null);</span>
-<span class="fc" id="L79">  }</span>
+<span class="pc bpc" id="L87" title="3 of 4 branches missed.">    layer.finishDownload(nextURL == null || result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get());</span>
+    try {
+<span class="fc" id="L89">      Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around</span>
+<span class="nc" id="L90">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L91">      Main.debug(e);</span>
+<span class="fc" id="L92">    }</span>
+<span class="fc" id="L93">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

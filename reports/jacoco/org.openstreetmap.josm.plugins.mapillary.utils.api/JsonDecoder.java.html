@@ -16,13 +16,10 @@ import javax.json.JsonValue.ValueType;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
-/**
- *
- */
 public final class JsonDecoder {
-<span class="fc" id="L23">  private JsonDecoder() {</span>
+<span class="fc" id="L20">  private JsonDecoder() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L25">  }</span>
+<span class="fc" id="L22">  }</span>
 
   /**
    * Parses a given {@link JsonObject} as a GeoJSON FeatureCollection into a {@link Collection}
@@ -34,46 +31,77 @@ public final class JsonDecoder {
    *         prior notice. The return value will not be &lt;code&gt;null&lt;/code&gt;.
    */
   public static &lt;T&gt; Collection&lt;T&gt; decodeFeatureCollection(final JsonObject json, Function&lt;JsonObject, T&gt; featureDecoder) {
-<span class="fc" id="L37">    final Collection&lt;T&gt; result = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">    if (</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">      json != null &amp;&amp; &quot;FeatureCollection&quot;.equals(json.getString(&quot;type&quot;, null)) &amp;&amp;</span>
-<span class="fc bfc" id="L40" title="All 4 branches covered.">      json.containsKey(&quot;features&quot;) &amp;&amp; json.get(&quot;features&quot;).getValueType() == ValueType.ARRAY</span>
+<span class="fc" id="L34">    final Collection&lt;T&gt; result = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">    if (</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">      json != null &amp;&amp; &quot;FeatureCollection&quot;.equals(json.getString(&quot;type&quot;, null)) &amp;&amp;</span>
+<span class="fc bfc" id="L37" title="All 4 branches covered.">      json.containsKey(&quot;features&quot;) &amp;&amp; json.get(&quot;features&quot;).getValueType() == ValueType.ARRAY</span>
     ) {
-<span class="fc" id="L42">      final JsonArray features = json.getJsonArray(&quot;features&quot;);</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">      for (int i = 0; i &lt; features.size(); i++) {</span>
-<span class="fc" id="L44">        final T feature = featureDecoder.apply(features.getJsonObject(i));</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (feature != null) {</span>
-<span class="fc" id="L46">          result.add(feature);</span>
+<span class="fc" id="L39">      final JsonArray features = json.getJsonArray(&quot;features&quot;);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">      for (int i = 0; i &lt; features.size(); i++) {</span>
+<span class="fc" id="L41">        final T feature = featureDecoder.apply(features.getJsonObject(i));</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (feature != null) {</span>
+<span class="fc" id="L43">          result.add(feature);</span>
         }
       }
     }
-<span class="fc" id="L50">    return result;</span>
+<span class="fc" id="L47">    return result;</span>
   }
 
+  /**
+   * Decodes a {@link JsonArray} of exactly size 2 to a {@link LatLon} instance.
+   * The first value in the {@link JsonArray} is treated as longitude, the second one as latitude.
+   * @param json the {@link JsonArray} containing the two numbers
+   * @return the decoded {@link LatLon} instance, or &lt;code&gt;null&lt;/code&gt; if the parameter is
+   *         not a {@link JsonArray} of exactly size 2 containing two {@link JsonNumber}s.
+   */
   static LatLon decodeLatLon(final JsonArray json) {
-<span class="fc" id="L54">    if (</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">      json.size() == 2 &amp;&amp;</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">      json.get(0) instanceof JsonNumber &amp;&amp;</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">      json.get(1) instanceof JsonNumber</span>
-    ) {
-<span class="fc" id="L59">      return new LatLon(json.getJsonNumber(1).doubleValue(), json.getJsonNumber(0).doubleValue());</span>
+<span class="fc" id="L58">    final double[] result = decodeDoublePair(json);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (result != null) {</span>
+<span class="fc" id="L60">      return new LatLon(result[1], result[0]);</span>
     }
-<span class="fc" id="L61">    return null;</span>
+<span class="fc" id="L62">    return null;</span>
   }
 
+  /**
+   * Decodes a pair of double values, which are stored in a {@link JsonArray} of exactly size 2.
+   * @param json the {@link JsonArray} containing the two values
+   * @return a double array which contains the two values in the same order, or &lt;code&gt;null&lt;/code&gt;
+   *         if the parameter was not a {@link JsonArray} of exactly size 2 containing two {@link JsonNumber}s
+   */
+  @SuppressWarnings(&quot;PMD.ReturnEmptyArrayRatherThanNull&quot;)
+  static double[] decodeDoublePair(final JsonArray json) {
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (</span>
+      json != null &amp;&amp;
+<span class="fc bfc" id="L75" title="All 2 branches covered.">      json.size() == 2 &amp;&amp;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">      json.get(0) instanceof JsonNumber &amp;&amp;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">      json.get(1) instanceof JsonNumber</span>
+    ) {
+<span class="fc" id="L79">      return new double[]{json.getJsonNumber(0).doubleValue(), json.getJsonNumber(1).doubleValue()};</span>
+    }
+<span class="fc" id="L81">    return null;</span>
+  }
+
+  /**
+   * Decodes a timestamp formatted as a {@link String} to the equivalent UNIX epoch timestamp
+   * (number of milliseconds since 1970-01-01T00:00:00.000+0000).
+   * @param timestamp the timestamp formatted according to the format &lt;code&gt;yyyy-MM-dd'T'HH:mm:ss.SSSX&lt;/code&gt;
+   * @return the point in time as a {@link Long} value representing the UNIX epoch time, or &lt;code&gt;null&lt;/code&gt; if the
+   *   parameter does not match the required format (this also triggers a warning via
+   *   {@link Main#warn(Throwable, String)}), or the parameter is &lt;code&gt;null&lt;/code&gt;.
+   */
   static Long decodeTimestamp(final String timestamp) {
-<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (timestamp != null) {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (timestamp != null) {</span>
       try {
-<span class="fc" id="L67">        return new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ss.SSSX&quot;, Locale.UK).parse(timestamp).getTime();</span>
-<span class="fc" id="L68">      } catch (ParseException e) {</span>
-<span class="fc" id="L69">        StackTraceElement calledBy = e.getStackTrace()[Math.min(e.getStackTrace().length - 1, 2)];</span>
-<span class="fc" id="L70">        Main.warn(e, String.format(</span>
+<span class="fc" id="L95">        return new SimpleDateFormat(&quot;yyyy-MM-dd'T'HH:mm:ss.SSSX&quot;, Locale.UK).parse(timestamp).getTime();</span>
+<span class="fc" id="L96">      } catch (ParseException e) {</span>
+<span class="fc" id="L97">        StackTraceElement calledBy = e.getStackTrace()[Math.min(e.getStackTrace().length - 1, 2)];</span>
+<span class="fc" id="L98">        Main.warn(e, String.format(</span>
           &quot;Could not decode time from the timestamp `%s` (called by %s.%s:%d)&quot;,
-<span class="fc" id="L72">          timestamp, calledBy.getClassName(), calledBy.getMethodName(), calledBy.getLineNumber()</span>
+<span class="fc" id="L100">          timestamp, calledBy.getClassName(), calledBy.getMethodName(), calledBy.getLineNumber()</span>
         ));
       }
     }
-<span class="fc" id="L76">    return null;</span>
+<span class="fc" id="L104">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
