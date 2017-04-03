@@ -1,0 +1,6 @@
+// The temporary JOSM home directory that will be used for the JOSM instances
+ext.tmpJosmHome = "$buildDir/.josm"
+// The directory where the JOSM configuration files like preferences.xml are located. These files will be copied into the temporary JOSM home directory.
+ext.josmConfigDir = "$projectDir/config/josm"
+// The port which is used to debug JOSM with the `debugJosm` task
+ext.debugPort = 7051

@@ -16,11 +16,12 @@ configurations {
 }
 
 apply from: 'gradle/manifest.gradle'
-apply from: 'gradle/josm-tasks.gradle'
+apply from: 'gradle/run-josm-plugin-tasks.gradle'
 apply from: 'gradle/tool-config.gradle'
 apply from: 'gradle/markdown.gradle'
 
 sourceCompatibility = '1.8'
+version = getVersionName()
 
 repositories {
   // for JUnit

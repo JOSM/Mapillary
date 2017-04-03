@@ -4,12 +4,16 @@
 ext.getVersionName = { ->
   def resultStream = new ByteArrayOutputStream()
   def nullOut = new ByteArrayOutputStream()
-  exec {
-    commandLine 'git', 'describe', '--always', '--dirty'
-    standardOutput = resultStream
-    errorOutput = nullOut
+  try {
+    exec {
+      commandLine 'git', 'describe', '--always', '--dirty'
+      standardOutput = resultStream
+      errorOutput = nullOut
+    }
+    return resultStream.toString().trim()
+  } catch (Exception e) {
+    return '‹unknown›'
   }
-  return resultStream.toString().trim()
 }
 
 /**
