@@ -20,9 +20,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 
   private final Bounds bounds;
 
-  private ThreadPoolExecutor downloadExecutor;
   private ThreadPoolExecutor completeExecutor;
-  private ThreadPoolExecutor signsExecutor;
 
   /**
    * Main constructor.
@@ -36,17 +34,21 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 
   @Override
   public void run() {
-    downloadExecutor = newThreadPoolExecutor();
     completeExecutor = newThreadPoolExecutor();
-    signsExecutor = newThreadPoolExecutor();
 
     try {
       PluginState.startDownload();
       MapillaryUtils.updateHelpText();
-      downloadSequences();
+
+      // Download basic sequence data synchronously
+      new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds).run();
+
       completeImages();
       MapillaryMainDialog.getInstance().updateTitle();
-      downloadSigns();
+      Thread detectionsThread = new Thread(new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
+      detectionsThread.start();
+
+      detectionsThread.join();
     } catch (InterruptedException e) {
       Main.error(e, "Mapillary download interrupted (probably because of closing the layer).");
     } finally {
@@ -69,16 +71,6 @@ public class MapillarySquareDownloadRunnable implements Runnable {
   }
 
   /**
-   * Downloads the sequence positions, directions and keys.
-   *
-   * @throws InterruptedException if the thread is interrupted while running this method.
-   */
-  private void downloadSequences() throws InterruptedException {
-    downloadExecutor.execute(new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
-    MapillaryData.dataUpdated();
-  }
-
-  /**
    * Downloads the image's author's username and the image's location.
    *
    * @throws InterruptedException
@@ -86,16 +78,6 @@ public class MapillarySquareDownloadRunnable implements Runnable {
    */
   private void completeImages() throws InterruptedException {
     download(completeExecutor, MapillaryImageInfoDownloadThread.class);
-  }
-
-  /**
-   * Downloads the traffic signs in the images.
-   *
-   * @throws InterruptedException
-   *           if the thread is interrupted while running this method.
-   */
-  private void downloadSigns() throws InterruptedException {
-    download(signsExecutor, MapillaryTrafficSignDownloadThread.class);
   }
 
   /**

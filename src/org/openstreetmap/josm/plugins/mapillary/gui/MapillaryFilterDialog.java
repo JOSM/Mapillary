@@ -33,7 +33,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySign;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -188,7 +188,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
         (img instanceof MapillaryImportedImage && !imported) ||
           (img instanceof MapillaryImage &&
             (!downloaded ||
-              (onlySigns && (((MapillaryImage) img).getSigns().isEmpty() || !checkSigns((MapillaryImage) img))) ||
+              (onlySigns && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) ||
               (!"".equals(user.getText()) && !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||
           checkValidTime(img);
 
@@ -227,10 +227,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
     boolean contains = false;
-    for (MapillarySign sign : img.getSigns()) {
-      String[] parts = signTag.split("--");
-      if (Pattern.compile(parts[0]).matcher(sign.getCategory()).find() &&
-        Pattern.compile(parts[1]).matcher(sign.getType()).find()) {
+    for (ImageDetection detection : img.getDetections()) {
+      if(Pattern.compile(signTag).matcher(detection.getValue()).find()) {
         contains = true;
       }
     }

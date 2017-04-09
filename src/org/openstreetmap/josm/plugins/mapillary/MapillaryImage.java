@@ -2,9 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 
 /**
@@ -22,7 +24,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Set of traffic signs in the image.
    */
-  private final List<MapillarySign> signs = new ArrayList<>();
+  private final List<ImageDetection> detections = new ArrayList<>();
 
   /**
    * Main constructor of the class MapillaryImage
@@ -45,29 +47,19 @@ public class MapillaryImage extends MapillaryAbstractImage {
     return this.key;
   }
 
-  /**
-   * Adds a new sign to the set of signs.
-   *
-   * @param sign A {@code String} that identifies the type of sign.
-   */
-  public void addSign(MapillarySign sign) {
-    if (sign != null) {
-      this.signs.add(sign);
-    }
-  }
-
-  /**
-   * Returns a {@link List} containing the signs assigned to this image.
-   *
-   * @return A {@link List} object containing the signs assigned to this image.
-   */
-  public List<MapillarySign> getSigns() {
-    return this.signs;
+  public List<ImageDetection> getDetections() {
+    return detections;
   }
 
   public UserProfile getUser() {
     final MapillarySequence seq = getSequence();
     return seq == null ? null : seq.getUser();
+  }
+
+  public void setAllDetections(Collection<ImageDetection> detection) {
+    System.out.println("Add " + detection.size() + "detections to image " + this.getKey());
+    this.detections.clear();
+    this.detections.addAll(detection);
   }
 
   @Override

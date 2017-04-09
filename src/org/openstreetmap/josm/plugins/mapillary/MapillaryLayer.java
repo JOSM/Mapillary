@@ -381,7 +381,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
 
-    if (img instanceof MapillaryImage && !((MapillaryImage) img).getSigns().isEmpty()) {
+    if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
       Path2D trafficSign = new Path2D.Double();
       trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
       trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
