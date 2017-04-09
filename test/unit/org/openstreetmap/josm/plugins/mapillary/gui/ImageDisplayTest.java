@@ -30,7 +30,7 @@ public class ImageDisplayTest {
   @Test
   public void testImagePersistence() {
     MapillaryImageDisplay display = new MapillaryImageDisplay();
-    display.setImage(DUMMY_IMAGE);
+    display.setImage(DUMMY_IMAGE, null);
     assertEquals(DUMMY_IMAGE, display.getImage());
   }
 
@@ -47,7 +47,7 @@ public class ImageDisplayTest {
     final MouseWheelEvent dummyScroll = new MouseWheelEvent(display, 42, System.currentTimeMillis(), 0, 0, 0, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, 3);
     display.getMouseWheelListeners()[0].mouseWheelMoved(dummyScroll);
 
-    display.setImage(DUMMY_IMAGE);
+    display.setImage(DUMMY_IMAGE, null);
 
     display.getMouseWheelListeners()[0].mouseWheelMoved(dummyScroll);
 
@@ -74,7 +74,7 @@ public class ImageDisplayTest {
       final MouseEvent dummyClick = new MouseEvent(display, 42, System.currentTimeMillis(), 0, 0, 0, 1, false, button);
       display.getMouseListeners()[0].mouseClicked(dummyClick);
 
-      display.setImage(DUMMY_IMAGE);
+      display.setImage(DUMMY_IMAGE, null);
 
       display.getMouseListeners()[0].mouseClicked(dummyClick);
 

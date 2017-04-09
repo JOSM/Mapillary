@@ -41,6 +41,8 @@ public final class MapillaryColorScheme {
   public static final Color MAPILLARY_GREEN = new Color(0x35af6d);
   public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);
 
+  public static final Color TRAFFICSIGNS_ORANGE = new Color(0xffc01b);
+
   private MapillaryColorScheme() {
     // Private constructor to avoid instantiation
   }

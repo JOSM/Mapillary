@@ -3,24 +3,33 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JComponent;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -35,6 +44,8 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
+
+  private Collection<ImageDetection> detections = new ArrayList<>();
 
   /** The image currently displayed */
   private volatile BufferedImage image;
@@ -338,9 +349,13 @@ public class MapillaryImageDisplay extends JComponent {
    *
    * @param image The picture to be displayed.
    */
-  public void setImage(BufferedImage image) {
+  public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
     synchronized (this) {
       this.image = image;
+      this.detections.clear();
+      if (detections != null) {
+        this.detections.addAll(detections);
+      }
       this.selectedRect = null;
       if (image != null)
         this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
@@ -399,6 +414,27 @@ public class MapillaryImageDisplay extends JComponent {
         g.setColor(Color.black);
         g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,
             bottomRight.y - topLeft.y);
+      }
+
+      Point upperLeft = img2compCoord(visibleRect, 0, 0);
+      Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+
+      // Transformation, which can convert you a Shape relative to the unit square to a Shape relative to the Component
+      AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+      unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+
+      Graphics2D g2d = (Graphics2D) g;
+      g2d.setStroke(new BasicStroke(2));
+      g2d.setColor(MapillaryColorScheme.TRAFFICSIGNS_ORANGE);
+      for (ImageDetection d : detections) {
+        Shape shape = d.getShape().createTransformedShape(unit2compTransform);
+        g2d.drawImage(
+          MapObject.getIcon(d.getValue()).getImage(),
+          shape.getBounds().x, shape.getBounds().y,
+          shape.getBounds().width, shape.getBounds().height,
+          null
+        );
+        g2d.draw(shape);
       }
     }
   }
