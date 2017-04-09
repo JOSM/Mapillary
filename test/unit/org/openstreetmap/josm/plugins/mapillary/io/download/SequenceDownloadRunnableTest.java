@@ -28,7 +28,7 @@ public class SequenceDownloadRunnableTest extends AbstractTest {
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 
-    urlGenField = TestUtil.getAccessibleField(SequenceDownloadRunnable.class, "urlGen");
+    urlGenField = TestUtil.getAccessibleField(SequenceDownloadRunnable.class, "URL_GEN");
   }
 
   @Test
