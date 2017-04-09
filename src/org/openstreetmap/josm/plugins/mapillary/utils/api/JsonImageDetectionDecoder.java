@@ -12,7 +12,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.detection.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 
 public final class JsonImageDetectionDecoder {
   private JsonImageDetectionDecoder() {
@@ -32,8 +32,8 @@ public final class JsonImageDetectionDecoder {
       final JsonValue scoreVal = ((JsonObject) properties).get("score");
       final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;
       final Shape shape = decodeShape(((JsonObject) properties).get("shape"));
-      if (shape != null && imageKey != null && key != null && score != null && value != null) {
-        return new ImageDetection(shape, imageKey, key, score, value);
+      if (shape instanceof Path2D && imageKey != null && key != null && score != null && value != null) {
+        return new ImageDetection((Path2D) shape, imageKey, key, score, value);
       }
     }
     return null;

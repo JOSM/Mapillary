@@ -1,14 +1,14 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.detection;
+package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.awt.Shape;
+import java.awt.geom.Path2D;
 
 public class ImageDetection extends SpecialImageArea {
 
   private final double score;
   private final String value;
 
-  public ImageDetection(final Shape shape, final String image, final String key, final double score, final String value) {
+  public ImageDetection(final Path2D shape, final String image, final String key, final double score, final String value) {
     super(shape, image, key);
     this.score = score;
     this.value = value;

@@ -6,7 +6,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.objects.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 
 public final class JsonMapObjectDecoder {
   private JsonMapObjectDecoder() {

@@ -19,7 +19,7 @@ import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
-import org.openstreetmap.josm.plugins.mapillary.objects.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;

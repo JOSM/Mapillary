@@ -19,11 +19,10 @@ import java.util.Iterator;
 
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 import org.junit.Test;
-import org.openstreetmap.josm.plugins.mapillary.detection.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class JsonImageDetectionDecoderTest {

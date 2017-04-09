@@ -1,15 +1,15 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.detection;
+package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.awt.Shape;
+import java.awt.geom.Path2D;
 
 public class SpecialImageArea {
 
   private final String imageKey;
   private final String key;
-  private final Shape shape;
+  private final Path2D shape;
 
-  protected SpecialImageArea(final Shape shape, final String imageKey, final String key) {
+  protected SpecialImageArea(final Path2D shape, final String imageKey, final String key) {
     this.shape = shape;
     this.imageKey = imageKey;
     this.key = key;
@@ -23,7 +23,7 @@ public class SpecialImageArea {
     return key;
   }
 
-  public Shape getShape() {
+  public Path2D getShape() {
     return shape;
   }
 }
