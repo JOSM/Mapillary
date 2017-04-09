@@ -62,7 +62,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     addCheckBoxWithLabel(this, crossing, true, "signs/crossing.png", tr("Pedestrian crossing"));
     addCheckBoxWithLabel(this, noTurn, true, "signs/no_turn.png", tr("No turn"));
 
-    setPreferredSize(new Dimension(600, 150));
+    setPreferredSize(new Dimension(600, 250));
   }
 
   private static void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,

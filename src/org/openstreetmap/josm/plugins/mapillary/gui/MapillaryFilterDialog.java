@@ -76,12 +76,12 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   /**
    * The list of sign names
    */
-  private static final String[] SIGN_TAGS = {"prohibitory--maximum-speed-limit",
-    "regulatory|priority--stop", "regulatory|priority--give_way|yield", "warning|mandatory--roundabout",
-    "prohibitory|regulatory--no-entry|no-traffic-both-ways",
-    "crossroads|junction", "mandatory--turn|straight", "uneven|slippery",
-    "no-parking", "no_overtaking",
-    "danger_pedestrian_crossing", "no_*_turn"};
+  private static final String[] SIGN_TAGS = {
+    "(complementary)|(regulatory)--maximum-speed-limit", "(regulatory)|(warning)--stop",
+    "(regulatory)|(warning)--yield", "(warning)|(regulatory)--roundabout", "regulatory--no-entry",
+    "warning--(crossroads)|(junction)", "regulatory--(turn)|(go-straight)", "warning--(uneven)|(slippery)",
+    "regulatory--no-parking", "regulatory--no-overtaking", "information--pedestrians-crossing", "regulatory--no-.+-turn"
+  };
   /**
    * The {@link JCheckBox} where the respective tag should be searched
    */
