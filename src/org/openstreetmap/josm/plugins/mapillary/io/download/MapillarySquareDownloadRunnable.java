@@ -16,19 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 
-/**
- * This Class is needed to create an indeterminate amount of downloads, because
- * the Mapillary API has a parameter called page which is needed when the amount
- * of requested images is quite big.
- *
- * @author nokutu
- *
- * @see MapillaryDownloader
- * @see MapillarySequenceDownloadThread
- * @see MapillaryImageInfoDownloadThread
- * @see MapillaryTrafficSignDownloadThread
- */
-public class MapillarySquareDownloadManagerThread implements Runnable {
+public class MapillarySquareDownloadRunnable implements Runnable {
 
   private final Bounds bounds;
 
@@ -42,7 +30,7 @@ public class MapillarySquareDownloadManagerThread implements Runnable {
    * @param bounds the bounds of the area that should be downloaded
    *
    */
-  public MapillarySquareDownloadManagerThread(Bounds bounds) {
+  public MapillarySquareDownloadRunnable(Bounds bounds) {
     this.bounds = bounds;
   }
 

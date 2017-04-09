@@ -59,7 +59,6 @@ public class MapillaryImageInfoDownloadThread extends Thread {
           MapillaryLayer.getInstance().getData().getImages().stream().filter(image -> image instanceof MapillaryImage
             && ((MapillaryImage) image).getKey().equals(key)
             && ((MapillaryImage) image).getUser() == null).forEach(image -> {
-            ((MapillaryImage) image).setUser(data.getString("user"));
             image.setCapturedAt(data.getJsonNumber("captured_at").longValue());
           });
         }

@@ -36,6 +36,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -302,10 +303,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        if (mapillaryImage.getUser() != null)
-          title.append(" — ").append(mapillaryImage.getUser());
-        if (mapillaryImage.getCapturedAt() != 0)
+        UserProfile user = mapillaryImage.getUser();
+        if (user != null) {
+          title.append(" — ").append(user.getUsername());
+        }
+        if (mapillaryImage.getCapturedAt() != 0) {
           title.append(" — ").append(mapillaryImage.getDate());
+        }
         setTitle(title.toString());
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;

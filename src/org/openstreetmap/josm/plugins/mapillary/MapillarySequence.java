@@ -1,8 +1,18 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.json.Json;
+
+import org.apache.commons.jcs.access.CacheAccess;
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -11,6 +21,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @see MapillaryAbstractImage
  */
 public class MapillarySequence {
+  private static final CacheAccess<String, UserProfile> USER_CACHE;
+
+  static {
+    CacheAccess<String, UserProfile> cache = null;
+    try {
+       cache = JCSCacheManager.getCache("userProfile", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath());
+    } catch (IOException var2) {
+       Main.warn(var2, "Could not initialize user profile cache.");
+    }
+    USER_CACHE = cache;
+  }
+
   /**
    * The images in the sequence.
    */
@@ -19,6 +41,7 @@ public class MapillarySequence {
    * Unique identifier. Used only for {@link MapillaryImage} sequences.
    */
   private final String key;
+  private UserProfile user;
   /**
    * Epoch time when the sequence was created
    */
@@ -40,10 +63,11 @@ public class MapillarySequence {
    * @param key The unique identifier of the sequence.
    * @param capturedAt The date the sequence was created.
    */
-  public MapillarySequence(String key, long capturedAt) {
+  public MapillarySequence(final String key, final String userKey, final long capturedAt) {
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.capturedAt = capturedAt;
+    setUser(userKey);
   }
 
   /**
@@ -96,6 +120,10 @@ public class MapillarySequence {
    */
   public String getKey() {
     return this.key;
+  }
+
+  public UserProfile getUser() {
+    return user;
   }
 
   /**
@@ -152,4 +180,19 @@ public class MapillarySequence {
   public void remove(MapillaryAbstractImage image) {
     this.images.remove(image);
   }
+
+  private void setUser(String userKey) {
+    (new Thread(() -> {
+      UserProfile cachedProfile = USER_CACHE == null ? null : USER_CACHE.get(userKey);
+      if(cachedProfile == null) {
+        try {
+          USER_CACHE.put(userKey, JsonUserProfileDecoder.decodeUserProfile(Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()));
+        } catch (IOException var4) {
+          Main.warn(var4, "Error when downloading user profile for user key '" + userKey + "'!");
+        }
+      }
+
+      this.user = USER_CACHE == null ? null : USER_CACHE.get(userKey);
+    }, "userProfileDownload_" + userKey)).start();
+ }
 }

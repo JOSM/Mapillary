@@ -100,7 +100,7 @@ public final class MapillaryDownloader {
    * @param bounds A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
-    run(new MapillarySquareDownloadManagerThread(bounds));
+    run(new MapillarySquareDownloadRunnable(bounds));
   }
 
   /**

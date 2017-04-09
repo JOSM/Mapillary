@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
@@ -18,10 +19,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Unique identifier of the object.
    */
   private final String key;
-  /**
-   * The user that made the image.
-   */
-  private String user;
   /**
    * Set of traffic signs in the image.
    */
@@ -68,29 +65,16 @@ public class MapillaryImage extends MapillaryAbstractImage {
     return this.signs;
   }
 
-  /**
-   * Sets the username of the person who took the image.
-   *
-   * @param user A {@code String} containing the username of the person who took the image.
-   */
-  public void setUser(String user) {
-    this.user = user;
-  }
-
-  /**
-   * Returns the username of the person who took the picture.
-   *
-   * @return A {@code String} containing the username of the person who took the picture.
-   */
-  public String getUser() {
-    return this.user;
+  public UserProfile getUser() {
+    final MapillarySequence seq = getSequence();
+    return seq == null ? null : seq.getUser();
   }
 
   @Override
   public String toString() {
     return String.format(
             "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
-            key, latLon.lat(), latLon.lon(), ca, user, capturedAt
+            key, latLon.lat(), latLon.lon(), ca, getUser(), capturedAt
     );
   }
 
