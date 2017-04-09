@@ -30,11 +30,23 @@ public final class MapillaryURL {
       // Private constructor to avoid instantiation
     }
 
+    public static URL getUser(String key) {
+      return string2URL(BASE_URL, "users/", key, MapillaryURL.queryString(null));
+    }
+
     /**
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
       return string2URL(BASE_URL, "changeset", queryString(null));
+    }
+
+    public static URL searchDetections(Bounds bounds) {
+      return string2URL(BASE_URL, "detections", queryString(bounds));
+    }
+
+    public static URL searchImages(Bounds bounds) {
+      return string2URL(BASE_URL, "images", queryString(bounds));
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
