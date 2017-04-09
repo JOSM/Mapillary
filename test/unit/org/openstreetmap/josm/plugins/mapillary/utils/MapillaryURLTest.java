@@ -130,50 +130,6 @@ public class MapillaryURLTest {
   }
 
   @Test
-  public void testSearchImageURL() {
-    assertUrlEquals(
-        MapillaryURL.searchImageInfoURL(new Bounds(1.1, 2.22, 3.333, 4.4444), 42, null),
-        "https://a.mapillary.com/v2/search/im",
-        CLIENT_ID_QUERY_PART,
-        "min_lon=2.220000",
-        "max_lon=4.444400",
-        "min_lat=1.100000",
-        "max_lat=3.333000",
-        LIMIT_20_QUERY_PART,
-        "page=42"
-    );
-    assertUrlEquals(
-        MapillaryURL.searchImageInfoURL(null, -73, null),
-        "https://a.mapillary.com/v2/search/im",
-        CLIENT_ID_QUERY_PART,
-        LIMIT_20_QUERY_PART,
-        "page=-73"
-    );
-  }
-
-  @Test
-  public void testSearchTrafficSignURL() {
-    assertUrlEquals(
-        MapillaryURL.searchImageInfoURL(new Bounds(1.1, 2.22, 3.333, 4.4444), -42, IMAGE_SELECTOR.OBJ_REC_ONLY),
-        "https://a.mapillary.com/v2/search/im/or",
-        CLIENT_ID_QUERY_PART,
-        "min_lon=2.220000",
-        "max_lon=4.444400",
-        "min_lat=1.100000",
-        "max_lat=3.333000",
-        LIMIT_20_QUERY_PART,
-        "page=-42"
-    );
-    assertUrlEquals(
-        MapillaryURL.searchImageInfoURL(null, 73, IMAGE_SELECTOR.OBJ_REC_ONLY),
-        "https://a.mapillary.com/v2/search/im/or",
-        CLIENT_ID_QUERY_PART,
-        LIMIT_20_QUERY_PART,
-        "page=73"
-    );
-  }
-
-  @Test
   public void testUploadSecretsURL() throws MalformedURLException {
     assertEquals(
         new URL("https://a.mapillary.com/v2/me/uploads/secrets?"+CLIENT_ID_QUERY_PART),

@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -147,39 +146,6 @@ public final class MapillaryURL {
   }
 
   /**
-   * Gives you the API-URL where you get 20 images within the given bounds.
-   * For more than 20 images you have to use different URLs with different page numbers.
-   * @param bounds the bounds in which you want to search for images
-   * @param page number of the page to retrieve from the API
-   * @param selector if set, only a specific type of image is returned by the URL
-   * @return the API-URL which gives you the images in the given bounds as JSON
-   */
-  public static URL searchImageInfoURL(Bounds bounds, int page, IMAGE_SELECTOR selector) {
-    String selectorString = "";
-    if (selector != null) {
-      switch (selector) {
-      case BLURRED_ONLY:
-        selectorString = "/b";
-        break;
-      case COMMENTED_ONLY:
-        selectorString = "/cm";
-        break;
-      case OBJ_REC_ONLY:
-        selectorString = "/or";
-        break;
-      default:
-        selectorString = "";
-        break;
-      }
-    }
-    HashMap<String, String> parts = new HashMap<>();
-    putBoundsInQueryStringParts(parts, bounds);
-    parts.put("page", Integer.toString(page));
-    parts.put("limit", "20");
-    return string2URL(BASE_API_V2_URL, "search/im", selectorString, queryString(parts));
-  }
-
-  /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
@@ -191,20 +157,6 @@ public final class MapillaryURL {
    */
   public static URL userURL() {
     return string2URL(BASE_API_V2_URL, "me", queryString(null));
-  }
-
-  /**
-   * Adds the given {@link Bounds} to a {@link Map} that contains the parts of a query string.
-   * @param parts the parts of a query string
-   * @param bounds the bounds that will be added to the query string
-   */
-  private static void putBoundsInQueryStringParts(Map<String, String> parts, Bounds bounds) {
-    if (bounds != null) {
-      parts.put("min_lat", String.format(Locale.UK, "%f", bounds.getMin().lat()));
-      parts.put("max_lat", String.format(Locale.UK, "%f", bounds.getMax().lat()));
-      parts.put("min_lon", String.format(Locale.UK, "%f", bounds.getMin().lon()));
-      parts.put("max_lon", String.format(Locale.UK, "%f", bounds.getMax().lon()));
-    }
   }
 
   /**
