@@ -31,9 +31,10 @@ script: ./.travis/script
 # Release the plugin via GitHub releases when pushing a tag
 deploy:
   provider: releases
+  file_glob: true
   api_key: "${GH_TOKEN}"
   file:
-    - "build/libs/Mapillary.jar"
+    - "build/libs/*.jar"
     - "build/tmp/jar/MANIFEST.MF"
   skip_cleanup: true
   on:
