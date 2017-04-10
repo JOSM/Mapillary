@@ -34,7 +34,7 @@ deploy:
   file_glob: true
   api_key: "${GH_TOKEN}"
   file:
-    - "build/libs/*.jar"
+    - "build/libs/Mapillary.jar"
     - "build/tmp/jar/MANIFEST.MF"
   skip_cleanup: true
   on:

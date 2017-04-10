@@ -8,3 +8,5 @@ echo "branch $TRAVIS_BRANCH | JDK $TRAVIS_JDK_VERSION | PR #$TRAVIS_PULL_REQUEST
 if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] && [ "$TRAVIS_PULL_REQUEST" = false ] && [ "$SUBMIT_TO_SONARQUBE" = true ]; then
   ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
 fi
+
+cp -T `find build/libs/*.jar | head -1` "build/libs/Mapillary.jar"
