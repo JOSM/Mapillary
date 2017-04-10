@@ -12,7 +12,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.plugins.mapillary.detection.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 
 public final class JsonImageDetectionDecoder {
 <span class="fc" id="L18">  private JsonImageDetectionDecoder() {</span>
@@ -32,8 +32,8 @@ public final class JsonImageDetectionDecoder {
 <span class="fc" id="L32">      final JsonValue scoreVal = ((JsonObject) properties).get(&quot;score&quot;);</span>
 <span class="fc bfc" id="L33" title="All 2 branches covered.">      final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;</span>
 <span class="fc" id="L34">      final Shape shape = decodeShape(((JsonObject) properties).get(&quot;shape&quot;));</span>
-<span class="fc bfc" id="L35" title="All 10 branches covered.">      if (shape != null &amp;&amp; imageKey != null &amp;&amp; key != null &amp;&amp; score != null &amp;&amp; value != null) {</span>
-<span class="fc" id="L36">        return new ImageDetection(shape, imageKey, key, score, value);</span>
+<span class="fc bfc" id="L35" title="All 10 branches covered.">      if (shape instanceof Path2D &amp;&amp; imageKey != null &amp;&amp; key != null &amp;&amp; score != null &amp;&amp; value != null) {</span>
+<span class="fc" id="L36">        return new ImageDetection((Path2D) shape, imageKey, key, score, value);</span>
       }
     }
 <span class="fc" id="L39">    return null;</span>

@@ -36,32 +36,32 @@ public final class JsonSequencesDecoder {
 <span class="fc" id="L36">    MapillarySequence result = null;</span>
 <span class="fc" id="L37">    final JsonObject properties = json.getJsonObject(&quot;properties&quot;);</span>
 <span class="fc bfc" id="L38" title="All 2 branches covered.">    final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString(&quot;captured_at&quot;, null));</span>
-<span class="fc bfc" id="L39" title="All 6 branches covered.">    if (properties != null &amp;&amp; properties.getString(&quot;key&quot;, null) != null &amp;&amp; capturedAt != null) {</span>
-<span class="fc" id="L40">      result = new MapillarySequence(properties.getString(&quot;key&quot;, null), capturedAt);</span>
+<span class="pc bpc" id="L39" title="1 of 8 branches missed.">    if (properties != null &amp;&amp; properties.getString(&quot;key&quot;, null) != null &amp;&amp; properties.getString(&quot;user_key&quot;, null) != null &amp;&amp; capturedAt != null) {</span>
+<span class="fc" id="L40">      result = new MapillarySequence(properties.getString(&quot;key&quot;, null), properties.getString(&quot;user_key&quot;, null), capturedAt);</span>
 
 <span class="fc" id="L42">      final Double[] cas = decodeCoordinateProperty(</span>
         properties,
         &quot;cas&quot;,
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        val -&gt;  val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null,</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        val -&gt;  val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null,</span>
         Double.class
       );
 <span class="fc" id="L48">      final String[] imageKeys = decodeCoordinateProperty(</span>
         properties,
         &quot;image_keys&quot;,
-<span class="fc bfc" id="L51" title="All 2 branches covered.">        val -&gt; val instanceof JsonString ? ((JsonString) val).getString() : null,</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        val -&gt; val instanceof JsonString ? ((JsonString) val).getString() : null,</span>
         String.class
       );
 <span class="fc" id="L54">      final LatLon[] geometry = decodeLatLons(json.getJsonObject(&quot;geometry&quot;));</span>
 <span class="fc" id="L55">      final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);</span>
 <span class="fc bfc" id="L56" title="All 2 branches covered.">      for (int i = 0; i &lt; sequenceLength; i++) {</span>
-<span class="fc bfc" id="L57" title="All 6 branches covered.">        if (cas[i] != null &amp;&amp; imageKeys[i] != null &amp;&amp; geometry[i] != null) {</span>
+<span class="pc bpc" id="L57" title="3 of 6 branches missed.">        if (cas[i] != null &amp;&amp; imageKeys[i] != null &amp;&amp; geometry[i] != null) {</span>
 <span class="fc" id="L58">          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);</span>
 <span class="fc" id="L59">          result.add(img);</span>
 <span class="fc" id="L60">          img.setSequence(result);</span>
         }
       }
-<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (result.getImages().isEmpty()) {</span>
-<span class="fc" id="L64">        result = null;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">      if (result.getImages().isEmpty()) {</span>
+<span class="nc" id="L64">        result = null;</span>
       }
     }
 <span class="fc" id="L67">    return result;</span>
@@ -105,22 +105,22 @@ public final class JsonSequencesDecoder {
     final JsonObject json, final String key, final Function&lt;JsonValue, T&gt; decodeValueFunction, final Class&lt;T&gt; clazz
   ) {
 <span class="fc" id="L107">    final JsonValue coordinateProperties = json.get(&quot;coordinateProperties&quot;);</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (coordinateProperties instanceof JsonObject) {</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">    if (coordinateProperties instanceof JsonObject) {</span>
 <span class="fc" id="L109">      JsonValue valueArray = ((JsonObject) coordinateProperties).get(key);</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">      if (valueArray instanceof JsonArray) {</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">      if (valueArray instanceof JsonArray) {</span>
 <span class="fc" id="L111">        return decodeJsonArray((JsonArray) valueArray, decodeValueFunction, clazz);</span>
       }
     }
-<span class="fc" id="L114">    return (T[]) Array.newInstance(clazz, 0);</span>
+<span class="nc" id="L114">    return (T[]) Array.newInstance(clazz, 0);</span>
   }
 
   private static LatLon[] decodeLatLons(final JsonObject json) {
-<span class="fc bfc" id="L118" title="All 2 branches covered.">    final JsonValue coords = json == null ? null : json.get(&quot;coordinates&quot;);</span>
-<span class="fc bfc" id="L119" title="All 4 branches covered.">    if (coords instanceof JsonArray &amp;&amp; &quot;LineString&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    final JsonValue coords = json == null ? null : json.get(&quot;coordinates&quot;);</span>
+<span class="pc bpc" id="L119" title="1 of 4 branches missed.">    if (coords instanceof JsonArray &amp;&amp; &quot;LineString&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
 <span class="fc" id="L120">      final LatLon[] result = new LatLon[((JsonArray) coords).size()];</span>
 <span class="fc bfc" id="L121" title="All 2 branches covered.">      for (int i = 0; i &lt; ((JsonArray) coords).size(); i++) {</span>
 <span class="fc" id="L122">        final JsonValue coord = ((JsonArray) coords).get(i);</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (coord instanceof JsonArray) {</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (coord instanceof JsonArray) {</span>
 <span class="fc" id="L124">          result[i] = JsonDecoder.decodeLatLon((JsonArray) coord);</span>
         }
       }

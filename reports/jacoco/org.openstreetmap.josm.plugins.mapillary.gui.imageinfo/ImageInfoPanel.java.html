@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageInfoPanel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.imageinfo</a> &gt; <span class="el_source">ImageInfoPanel.java</span></div><h1>ImageInfoPanel.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -23,15 +28,20 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
 
 public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, SelectionChangedListener {
   private static final long serialVersionUID = 1320443250226377651L;
-<span class="nc" id="L32">  private static final Log L = LogFactory.getLog(ImageInfoPanel.class);</span>
+<span class="nc" id="L38">  private static final Log L = LogFactory.getLog(ImageInfoPanel.class);</span>
   private static ImageInfoPanel instance;
+<span class="nc" id="L40">  private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));</span>
 
+  private final JLabel numDetectionsLabel;
+  private final JCheckBox showDetectionsCheck;
+  private final JLabel usernameLabel;
   private final JTextPane imgKeyValue;
   private final WebLinkAction imgLinkAction;
   private final ClipboardAction copyImgKeyAction;
@@ -39,88 +49,116 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final JTextPane seqKeyValue;
 
   private ImageInfoPanel() {
-<span class="nc" id="L42">    super(</span>
-<span class="nc" id="L43">      I18n.tr(&quot;Image info&quot;),</span>
+<span class="nc" id="L52">    super(</span>
+<span class="nc" id="L53">      I18n.tr(&quot;Image info&quot;),</span>
       &quot;mapillary-info&quot;,
-<span class="nc" id="L45">      I18n.tr(&quot;Displays detail information on the currently selected Mapillary image&quot;),</span>
+<span class="nc" id="L55">      I18n.tr(&quot;Displays detail information on the currently selected Mapillary image&quot;),</span>
       null,
       150
     );
-<span class="nc" id="L49">    DataSet.addSelectionListener(this);</span>
+<span class="nc" id="L59">    DataSet.addSelectionListener(this);</span>
 
-<span class="nc" id="L51">    imgKeyValue = new SelectableLabel();</span>
+<span class="nc" id="L61">    numDetectionsLabel = new JLabel();</span>
+<span class="nc" id="L62">    numDetectionsLabel.setFont(numDetectionsLabel.getFont().deriveFont(Font.PLAIN));</span>
 
-<span class="nc" id="L53">    imgLinkAction = new WebLinkAction(I18n.tr(&quot;View in browser&quot;), null);</span>
+<span class="nc" id="L64">    showDetectionsCheck = new JCheckBox(I18n.tr(&quot;Show detections on top of image&quot;));</span>
+<span class="nc" id="L65">    showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get());</span>
+<span class="nc" id="L66">    showDetectionsCheck.addActionListener(</span>
+<span class="nc" id="L67">      action -&gt; MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected())</span>
+    );
+<span class="nc" id="L69">    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(</span>
+<span class="nc" id="L70">      valueChange -&gt; showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get())</span>
+    );
 
-<span class="nc" id="L55">    copyImgKeyAction = new ClipboardAction(I18n.tr(&quot;Copy key&quot;), null);</span>
-<span class="nc" id="L56">    MapillaryButton copyButton = new MapillaryButton(copyImgKeyAction, true);</span>
-<span class="nc" id="L57">    copyImgKeyAction.setPopupParent(copyButton);</span>
+<span class="nc" id="L73">    usernameLabel = new JLabel();</span>
+<span class="nc" id="L74">    usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));</span>
 
-<span class="nc" id="L59">    addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr(&quot;Add Mapillary tag&quot;));</span>
+<span class="nc" id="L76">    imgKeyValue = new SelectableLabel();</span>
 
-<span class="nc" id="L61">    JPanel imgKey = new JPanel();</span>
-<span class="nc" id="L62">    imgKey.add(imgKeyValue);</span>
-<span class="nc" id="L63">    imgKey.add(copyButton);</span>
-<span class="nc" id="L64">    JPanel imgButtons = new JPanel();</span>
-<span class="nc" id="L65">    imgButtons.add(new MapillaryButton(imgLinkAction, true));</span>
-<span class="nc" id="L66">    imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));</span>
-<span class="nc" id="L67">    seqKeyValue = new SelectableLabel();</span>
+<span class="nc" id="L78">    imgLinkAction = new WebLinkAction(I18n.tr(&quot;View in browser&quot;), null);</span>
 
-<span class="nc" id="L69">    JPanel root = new JPanel(new GridBagLayout());</span>
-<span class="nc" id="L70">    GridBagConstraints gbc = new GridBagConstraints();</span>
-<span class="nc" id="L71">    gbc.insets = new Insets(0, 5, 0, 5);</span>
+<span class="nc" id="L80">    copyImgKeyAction = new ClipboardAction(I18n.tr(&quot;Copy key&quot;), null);</span>
+<span class="nc" id="L81">    MapillaryButton copyButton = new MapillaryButton(copyImgKeyAction, true);</span>
+<span class="nc" id="L82">    copyImgKeyAction.setPopupParent(copyButton);</span>
+
+<span class="nc" id="L84">    addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr(&quot;Add Mapillary tag&quot;));</span>
+
+<span class="nc" id="L86">    JPanel imgKey = new JPanel();</span>
+<span class="nc" id="L87">    imgKey.add(imgKeyValue);</span>
+<span class="nc" id="L88">    imgKey.add(copyButton);</span>
+<span class="nc" id="L89">    JPanel imgButtons = new JPanel();</span>
+<span class="nc" id="L90">    imgButtons.add(new MapillaryButton(imgLinkAction, true));</span>
+<span class="nc" id="L91">    imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));</span>
+<span class="nc" id="L92">    seqKeyValue = new SelectableLabel();</span>
+
+<span class="nc" id="L94">    JPanel root = new JPanel(new GridBagLayout());</span>
+<span class="nc" id="L95">    GridBagConstraints gbc = new GridBagConstraints();</span>
+<span class="nc" id="L96">    gbc.insets = new Insets(0, 5, 0, 5);</span>
 
     // Left column
-<span class="nc" id="L74">    gbc.gridx = 0;</span>
-<span class="nc" id="L75">    gbc.gridy = 0;</span>
-<span class="nc" id="L76">    gbc.anchor = GridBagConstraints.LINE_END;</span>
-<span class="nc" id="L77">    root.add(new JLabel(I18n.tr(&quot;Image actions&quot;)), gbc);</span>
-<span class="nc" id="L78">    gbc.gridy++;</span>
-<span class="nc" id="L79">    root.add(new JLabel(I18n.tr(&quot;Image key&quot;)), gbc);</span>
-<span class="nc" id="L80">    gbc.gridy++;</span>
-<span class="nc" id="L81">    root.add(new JLabel(I18n.tr(&quot;Sequence key&quot;)), gbc);</span>
+<span class="nc" id="L99">    gbc.gridx = 0;</span>
+<span class="nc" id="L100">    gbc.gridy = 0;</span>
+<span class="nc" id="L101">    gbc.anchor = GridBagConstraints.LINE_END;</span>
+<span class="nc" id="L102">    gbc.gridwidth = 1;</span>
+<span class="nc" id="L103">    gbc.gridheight = 2;</span>
+<span class="nc" id="L104">    root.add(new JLabel(I18n.tr(&quot;Image detections&quot;)), gbc);</span>
+<span class="nc" id="L105">    gbc.gridy += 2;</span>
+<span class="nc" id="L106">    gbc.gridheight = 1;</span>
+<span class="nc" id="L107">    root.add(new JLabel(I18n.tr(&quot;User&quot;)), gbc);</span>
+<span class="nc" id="L108">    gbc.gridy++;</span>
+<span class="nc" id="L109">    root.add(new JLabel(I18n.tr(&quot;Image actions&quot;)), gbc);</span>
+<span class="nc" id="L110">    gbc.gridy++;</span>
+<span class="nc" id="L111">    root.add(new JLabel(I18n.tr(&quot;Image key&quot;)), gbc);</span>
+<span class="nc" id="L112">    gbc.gridy++;</span>
+<span class="nc" id="L113">    root.add(new JLabel(I18n.tr(&quot;Sequence key&quot;)), gbc);</span>
 
     // Right column
-<span class="nc" id="L84">    gbc.weightx = 1;</span>
-<span class="nc" id="L85">    gbc.gridx++;</span>
-<span class="nc" id="L86">    gbc.gridy = 0;</span>
-<span class="nc" id="L87">    gbc.anchor = GridBagConstraints.LINE_START;</span>
-<span class="nc" id="L88">    root.add(imgButtons, gbc);</span>
-<span class="nc" id="L89">    gbc.gridy++;</span>
-<span class="nc" id="L90">    root.add(imgKey, gbc);</span>
-<span class="nc" id="L91">    gbc.gridy++;</span>
-<span class="nc" id="L92">    root.add(seqKeyValue, gbc);</span>
+<span class="nc" id="L116">    gbc.weightx = 1;</span>
+<span class="nc" id="L117">    gbc.gridx++;</span>
+<span class="nc" id="L118">    gbc.gridy = 0;</span>
+<span class="nc" id="L119">    gbc.anchor = GridBagConstraints.LINE_START;</span>
+<span class="nc" id="L120">    root.add(numDetectionsLabel, gbc);</span>
+<span class="nc" id="L121">    gbc.gridy++;</span>
+<span class="nc" id="L122">    root.add(showDetectionsCheck, gbc);</span>
+<span class="nc" id="L123">    gbc.gridy++;</span>
+<span class="nc" id="L124">    root.add(usernameLabel, gbc);</span>
+<span class="nc" id="L125">    gbc.gridy++;</span>
+<span class="nc" id="L126">    root.add(imgButtons, gbc);</span>
+<span class="nc" id="L127">    gbc.gridy++;</span>
+<span class="nc" id="L128">    root.add(imgKey, gbc);</span>
+<span class="nc" id="L129">    gbc.gridy++;</span>
+<span class="nc" id="L130">    root.add(seqKeyValue, gbc);</span>
 
-<span class="nc" id="L94">    createLayout(root, true, null);</span>
-<span class="nc" id="L95">    selectedImageChanged(null, null);</span>
-<span class="nc" id="L96">  }</span>
+<span class="nc" id="L132">    createLayout(root, true, null);</span>
+<span class="nc" id="L133">    selectedImageChanged(null, null);</span>
+<span class="nc" id="L134">  }</span>
 
   public static ImageInfoPanel getInstance() {
-<span class="nc" id="L99">    synchronized (ImageInfoPanel.class) {</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">      if (instance == null) {</span>
-<span class="nc" id="L101">        instance = new ImageInfoPanel();</span>
+<span class="nc" id="L137">    synchronized (ImageInfoPanel.class) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      if (instance == null) {</span>
+<span class="nc" id="L139">        instance = new ImageInfoPanel();</span>
       }
-<span class="nc" id="L103">      return instance;</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L141">      return instance;</span>
+<span class="nc" id="L142">    }</span>
   }
 
   /**
    * Destroys the unique instance of the class.
    */
   public static synchronized void destroyInstance() {
-<span class="nc" id="L111">    instance = null;</span>
-<span class="nc" id="L112">  }</span>
+<span class="nc" id="L149">    instance = null;</span>
+<span class="nc" id="L150">  }</span>
 
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.gui.dialogs.ToggleDialog#stateChanged()
    */
   @Override
   protected void stateChanged() {
-<span class="nc" id="L119">    super.stateChanged();</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">    if (isDialogShowing()) { // If the user opens the dialog once, no longer show the help message</span>
-<span class="nc" id="L121">      MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(0);</span>
+<span class="nc" id="L157">    super.stateChanged();</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (isDialogShowing()) { // If the user opens the dialog once, no longer show the help message</span>
+<span class="nc" id="L159">      MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(0);</span>
     }
-<span class="nc" id="L123">  }</span>
+<span class="nc" id="L161">  }</span>
 
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
@@ -128,47 +166,59 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   @Override
   public void imagesAdded() {
     // Method is not needed, but enforcesd by the interface MapillaryDataListener
-<span class="nc" id="L131">  }</span>
+<span class="nc" id="L169">  }</span>
 
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
   public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L138" title="All 2 branches missed.">    L.debug(String.format(</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    L.debug(String.format(</span>
       &quot;Selected Mapillary image changed from %s to %s.&quot;,
-<span class="nc bnc" id="L140" title="All 2 branches missed.">      oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : &quot;‹none›&quot;,</span>
-<span class="nc" id="L141">      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : &quot;‹none›&quot;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">      oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : &quot;‹none›&quot;,</span>
+<span class="nc" id="L179">      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : &quot;‹none›&quot;</span>
     ));
-<span class="nc" id="L143">    imgKeyValue.setEnabled(newImage instanceof MapillaryImage);</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (newImageKey != null) {</span>
-<span class="nc" id="L146">      imgKeyValue.setText(newImageKey);</span>
-<span class="nc" id="L147">      imgLinkAction.setURL(MapillaryURL.MainWebsite.browseImage(newImageKey));</span>
-<span class="nc" id="L148">      copyImgKeyAction.setContents(new StringSelection(newImageKey));</span>
-<span class="nc" id="L149">      addMapillaryTagAction.setTag(new Tag(&quot;mapillary&quot;, newImageKey));</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">    numDetectionsLabel.setText(I18n.tr(&quot;{0} detections&quot;, newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));</span>
+<span class="nc" id="L183">    imgKeyValue.setEnabled(newImage instanceof MapillaryImage);</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (newImageKey != null) {</span>
+<span class="nc" id="L186">      imgKeyValue.setText(newImageKey);</span>
+<span class="nc" id="L187">      imgLinkAction.setURL(MapillaryURL.MainWebsite.browseImage(newImageKey));</span>
+<span class="nc" id="L188">      copyImgKeyAction.setContents(new StringSelection(newImageKey));</span>
+<span class="nc" id="L189">      addMapillaryTagAction.setTag(new Tag(&quot;mapillary&quot;, newImageKey));</span>
     } else {
-<span class="nc" id="L151">      imgKeyValue.setText('‹' + I18n.tr(&quot;image has no key&quot;) + '›');</span>
-<span class="nc" id="L152">      imgLinkAction.setURL(null);</span>
-<span class="nc" id="L153">      copyImgKeyAction.setContents(null);</span>
-<span class="nc" id="L154">      addMapillaryTagAction.setTag(null);</span>
+<span class="nc" id="L191">      imgKeyValue.setText('‹' + I18n.tr(&quot;image has no key&quot;) + '›');</span>
+<span class="nc" id="L192">      imgLinkAction.setURL(null);</span>
+<span class="nc" id="L193">      copyImgKeyAction.setContents(null);</span>
+<span class="nc" id="L194">      addMapillaryTagAction.setTag(null);</span>
     }
 
-<span class="nc bnc" id="L157" title="All 6 branches missed.">    final boolean partOfSequence = newImage != null &amp;&amp; newImage.getSequence() != null &amp;&amp; newImage.getSequence().getKey() != null;</span>
-<span class="nc" id="L158">    seqKeyValue.setEnabled(partOfSequence);</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">    if (partOfSequence) {</span>
-<span class="nc" id="L160">      seqKeyValue.setText(newImage.getSequence().getKey());</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    final UserProfile user = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getUser() : null;</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">    usernameLabel.setEnabled(user != null);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">    if (user != null) {</span>
+<span class="nc" id="L200">      usernameLabel.setText(user.getUsername());</span>
+<span class="nc" id="L201">      usernameLabel.setIcon(new ImageIcon(user.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));</span>
     } else {
-<span class="nc" id="L162">      seqKeyValue.setText('‹' + I18n.tr(&quot;sequence has no key&quot;) + '›');</span>
+<span class="nc" id="L203">      usernameLabel.setText(&quot;‹&quot; + I18n.tr(&quot;unknown user&quot;) + &quot;›&quot;);</span>
+<span class="nc" id="L204">      usernameLabel.setIcon(EMPTY_USER_AVATAR);</span>
     }
-<span class="nc" id="L164">  }</span>
+
+<span class="nc bnc" id="L207" title="All 6 branches missed.">    final boolean partOfSequence = newImage != null &amp;&amp; newImage.getSequence() != null &amp;&amp; newImage.getSequence().getKey() != null;</span>
+<span class="nc" id="L208">    seqKeyValue.setEnabled(partOfSequence);</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (partOfSequence) {</span>
+<span class="nc" id="L210">      seqKeyValue.setText(newImage.getSequence().getKey());</span>
+    } else {
+<span class="nc" id="L212">      seqKeyValue.setText('‹' + I18n.tr(&quot;sequence has no key&quot;) + '›');</span>
+    }
+<span class="nc" id="L214">  }</span>
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
   public synchronized void selectionChanged(final Collection&lt;? extends OsmPrimitive&gt; sel) {
-<span class="nc bnc" id="L170" title="All 2 branches missed.">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel == null ? 0 : sel.size()));</span>
-<span class="nc bnc" id="L171" title="All 4 branches missed.">    addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
-<span class="nc" id="L172">  }</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    L.debug(String.format(&quot;Selection changed. %d primitives are selected.&quot;, sel == null ? 0 : sel.size()));</span>
+<span class="nc bnc" id="L221" title="All 4 branches missed.">    addMapillaryTagAction.setTarget(sel != null &amp;&amp; sel.size() == 1 ? sel.iterator().next() : null);</span>
+<span class="nc" id="L222">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

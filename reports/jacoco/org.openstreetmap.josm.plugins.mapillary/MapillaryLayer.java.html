@@ -381,7 +381,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
 
-<span class="nc bnc" id="L384" title="All 4 branches missed.">    if (img instanceof MapillaryImage &amp;&amp; !((MapillaryImage) img).getSigns().isEmpty()) {</span>
+<span class="nc bnc" id="L384" title="All 4 branches missed.">    if (img instanceof MapillaryImage &amp;&amp; !((MapillaryImage) img).getDetections().isEmpty()) {</span>
 <span class="nc" id="L385">      Path2D trafficSign = new Path2D.Double();</span>
 <span class="nc" id="L386">      trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);</span>
 <span class="nc" id="L387">      trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);</span>

@@ -13,70 +13,57 @@ import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-public final class SequenceDownloadRunnable implements Runnable {
-  private final Bounds bounds;
-  private final MapillaryData dataStorage;
-<span class="fc" id="L31">  private static final Function&lt;Bounds, URL&gt; urlGen = APIv3::searchSequences;</span>
+public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
+  private final MapillaryData data;
+<span class="fc" id="L26">  private static final Function&lt;Bounds, URL&gt; URL_GEN = APIv3::searchSequences;</span>
 
-<span class="fc" id="L33">  public SequenceDownloadRunnable(final MapillaryData data, final Bounds bounds) {</span>
-<span class="fc" id="L34">    this.bounds = bounds;</span>
-<span class="fc" id="L35">    this.dataStorage = data;</span>
-<span class="fc" id="L36">  }</span>
+  public SequenceDownloadRunnable(final MapillaryData data, final Bounds bounds) {
+<span class="fc" id="L29">    super(bounds);</span>
+<span class="fc" id="L30">    this.data = data;</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
-  public void run() {
-<span class="fc" id="L40">    URL nextURL = urlGen.apply(bounds);</span>
-    try {
-<span class="fc bfc" id="L42" title="All 2 branches covered.">      while (nextURL != null) {</span>
-<span class="fc" id="L43">        Main.debug(&quot;Download sequences from &quot; + nextURL);</span>
-<span class="fc" id="L44">        final URLConnection con = nextURL.openConnection();</span>
-<span class="pc" id="L45">        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="fc" id="L46">          Collection&lt;MapillarySequence&gt; sequences = JsonDecoder.decodeFeatureCollection(</span>
-<span class="fc" id="L47">            reader.readObject(),</span>
-            JsonSequencesDecoder::decodeSequence
-          );
-<span class="fc bfc" id="L50" title="All 2 branches covered.">          for (MapillarySequence seq : sequences) {</span>
-<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">              for (MapillaryAbstractImage img : seq.getImages()) {</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">                if (bounds.contains(img.getLatLon())) {</span>
-<span class="fc" id="L54">                  dataStorage.add(img);</span>
-                } else {
-<span class="fc" id="L56">                  seq.remove(img);</span>
-                }
-<span class="fc" id="L58">              }</span>
+  public void run(final URLConnection con) throws IOException {
+<span class="fc" id="L35">    Main.info(&quot;Download sequences from &quot; + con.getURL());</span>
+<span class="pc" id="L36">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="fc" id="L37">      Collection&lt;MapillarySequence&gt; sequences = JsonDecoder.decodeFeatureCollection(</span>
+<span class="fc" id="L38">        reader.readObject(),</span>
+        JsonSequencesDecoder::decodeSequence
+      );
+<span class="fc bfc" id="L41" title="All 2 branches covered.">      for (MapillarySequence seq : sequences) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">          for (MapillaryAbstractImage img : seq.getImages()) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (bounds.contains(img.getLatLon())) {</span>
+<span class="fc" id="L45">              data.add(img);</span>
             } else {
-<span class="fc" id="L60">              boolean sequenceCrossesThroughBounds = false;</span>
-<span class="fc bfc" id="L61" title="All 4 branches covered.">              for (int i = 0; i &lt; seq.getImages().size() &amp;&amp; !sequenceCrossesThroughBounds; i++) {</span>
-<span class="fc" id="L62">                sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());</span>
-              }
-<span class="fc bfc" id="L64" title="All 2 branches covered.">              if (sequenceCrossesThroughBounds) {</span>
-<span class="fc" id="L65">                dataStorage.addAll(seq.getImages(), true);</span>
-              }
+<span class="fc" id="L47">              seq.remove(img);</span>
             }
-<span class="fc" id="L68">          }</span>
-<span class="pc bpc" id="L69" title="6 of 8 branches missed.">        }</span>
-<span class="fc" id="L70">        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField(&quot;Link&quot;));</span>
-<span class="fc" id="L71">      }</span>
-<span class="fc" id="L72">    } catch (IOException e) {</span>
-<span class="fc" id="L73">      String message = I18n.tr(&quot;Could not read sequences from URL {0}!&quot;, nextURL.toString());</span>
-<span class="fc" id="L74">      Main.warn(e, message);</span>
-<span class="fc" id="L75">      new Notification(message)</span>
-<span class="fc" id="L76">        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
-<span class="fc" id="L77">        .setDuration(Notification.TIME_LONG)</span>
-<span class="fc" id="L78">        .show();</span>
-<span class="fc" id="L79">    }</span>
-<span class="fc" id="L80">  }</span>
+<span class="fc" id="L49">          }</span>
+        } else {
+<span class="fc" id="L51">          boolean sequenceCrossesThroughBounds = false;</span>
+<span class="fc bfc" id="L52" title="All 4 branches covered.">          for (int i = 0; i &lt; seq.getImages().size() &amp;&amp; !sequenceCrossesThroughBounds; i++) {</span>
+<span class="fc" id="L53">            sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());</span>
+          }
+<span class="fc bfc" id="L55" title="All 2 branches covered.">          if (sequenceCrossesThroughBounds) {</span>
+<span class="fc" id="L56">            data.addAll(seq.getImages(), true);</span>
+          }
+        }
+<span class="fc" id="L59">      }</span>
+<span class="pc bpc" id="L60" title="6 of 8 branches missed.">    }</span>
+<span class="fc" id="L61">    Main.info(&quot;Finished sequence download&quot;);</span>
+<span class="fc" id="L62">  }</span>
+
+  @Override
+  protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
+<span class="fc" id="L66">    return URL_GEN;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

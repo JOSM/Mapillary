@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonImageDetailsDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils.api</a> &gt; <span class="el_source">JsonImageDetailsDecoder.java</span></div><h1>JsonImageDetailsDecoder.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils.api;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+
+public final class JsonImageDetailsDecoder {
+<span class="nc" id="L12">  private JsonImageDetailsDecoder() {</span>
+    // Private constructor to avoid instantiation
+<span class="nc" id="L14">  }</span>
+
+  public static void decodeImageInfos(final JsonObject json, final MapillaryData data) {
+<span class="nc bnc" id="L17" title="All 4 branches missed.">    if (json != null &amp;&amp; &quot;FeatureCollection&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="nc" id="L18">      JsonValue features = json.get(&quot;features&quot;);</span>
+<span class="nc bnc" id="L19" title="All 2 branches missed.">      if (features instanceof JsonArray) {</span>
+<span class="nc bnc" id="L20" title="All 2 branches missed.">        for (int i = 0; i &lt; ((JsonArray) features).size(); i++) {</span>
+<span class="nc" id="L21">          JsonValue feature = ((JsonArray) features).get(i);</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">          if (feature instanceof JsonObject) {</span>
+<span class="nc" id="L23">            decodeImageInfo((JsonObject) ((JsonArray) features).get(i), data);</span>
+          }
+        }
+      }
+    }
+<span class="nc" id="L28">  }</span>
+
+  private static void decodeImageInfo(final JsonObject json, final MapillaryData data) {
+<span class="nc bnc" id="L31" title="All 2 branches missed.">    if (json != null) {</span>
+<span class="nc" id="L32">      JsonValue properties = json.get(&quot;properties&quot;);</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">      if (properties instanceof JsonObject) {</span>
+<span class="nc" id="L34">        String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
+<span class="nc" id="L35">        Long capturedAt = JsonDecoder.decodeTimestamp(((JsonObject)properties).getString(&quot;captured_at&quot;, null));</span>
+<span class="nc bnc" id="L36" title="All 4 branches missed.">        if (key != null &amp;&amp; capturedAt != null) {</span>
+<span class="nc" id="L37">          data.getImages().stream().filter(</span>
+<span class="nc bnc" id="L38" title="All 4 branches missed.">            img -&gt; img instanceof MapillaryImage &amp;&amp; key.equals(((MapillaryImage) img).getKey())</span>
+<span class="nc" id="L39">          ).forEach(img -&gt; img.setCapturedAt(capturedAt));</span>
+        }
+      }
+    }
+<span class="nc" id="L43">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

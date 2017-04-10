@@ -41,9 +41,11 @@ public final class MapillaryColorScheme {
 <span class="fc" id="L41">  public static final Color MAPILLARY_GREEN = new Color(0x35af6d);</span>
 <span class="fc" id="L42">  public static final Color TOOLBAR_DARK_GREY = new Color(0x242528);</span>
 
-<span class="fc" id="L44">  private MapillaryColorScheme() {</span>
+<span class="fc" id="L44">  public static final Color TRAFFICSIGNS_ORANGE = new Color(0xffc01b);</span>
+
+<span class="fc" id="L46">  private MapillaryColorScheme() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L46">  }</span>
+<span class="fc" id="L48">  }</span>
 
   /**
    * Styles the given components as default panels (currently only the background is set to white)
@@ -51,11 +53,11 @@ public final class MapillaryColorScheme {
    *   not only JPanels are accepted)
    */
   public static void styleAsDefaultPanel(JComponent... components) {
-<span class="fc bfc" id="L54" title="All 4 branches covered.">    if (components != null &amp;&amp; components.length &gt;= 1) {</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">      for (JComponent component : components) {</span>
-<span class="fc" id="L56">        component.setBackground(Color.WHITE);</span>
+<span class="fc bfc" id="L56" title="All 4 branches covered.">    if (components != null &amp;&amp; components.length &gt;= 1) {</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">      for (JComponent component : components) {</span>
+<span class="fc" id="L58">        component.setBackground(Color.WHITE);</span>
       }
     }
-<span class="fc" id="L59">  }</span>
+<span class="fc" id="L61">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

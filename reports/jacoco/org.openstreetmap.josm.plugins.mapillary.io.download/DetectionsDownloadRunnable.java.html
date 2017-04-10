@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DetectionsDownloadRunnable.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.io.download</a> &gt; <span class="el_source">DetectionsDownloadRunnable.java</span></div><h1>DetectionsDownloadRunnable.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.io.download;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.json.Json;
+import javax.json.JsonReader;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
+
+public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
+
+<span class="nc" id="L28">  private static final Function&lt;Bounds, URL&gt; URL_GEN = APIv3::searchDetections;</span>
+
+  private final MapillaryData data;
+
+  public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds) {
+<span class="nc" id="L33">    super(bounds);</span>
+<span class="nc" id="L34">    this.data = data;</span>
+<span class="nc" id="L35">  }</span>
+
+  @Override
+  public void run(final URLConnection con) throws IOException {
+<span class="nc" id="L39">    Main.info(&quot;Download detections from &quot; + con.getURL());</span>
+<span class="nc" id="L40">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="nc" id="L41">      Map&lt;String, List&lt;ImageDetection&gt;&gt; detections = JsonDecoder.decodeFeatureCollection(</span>
+<span class="nc" id="L42">        reader.readObject(),</span>
+        JsonImageDetectionDecoder::decodeImageDetection
+<span class="nc" id="L44">      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));</span>
+
+<span class="nc bnc" id="L46" title="All 2 branches missed.">      for (Entry&lt;String, List&lt;ImageDetection&gt;&gt; entry : detections.entrySet()) {</span>
+<span class="nc" id="L47">        data.getImages().stream()</span>
+<span class="nc bnc" id="L48" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; ((MapillaryImage) img).getKey().equals(entry.getKey()))</span>
+<span class="nc" id="L49">          .forEach(img -&gt; ((MapillaryImage) img).setAllDetections(entry.getValue()));</span>
+<span class="nc" id="L50">      }</span>
+<span class="nc bnc" id="L51" title="All 8 branches missed.">    }</span>
+<span class="nc" id="L52">    MapillaryData.dataUpdated();</span>
+<span class="nc" id="L53">    Main.info(&quot;Finished downloading detections&quot;);</span>
+<span class="nc" id="L54">  }</span>
+
+  @Override
+  protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
+<span class="nc" id="L58">    return URL_GEN;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

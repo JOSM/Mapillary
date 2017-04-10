@@ -1,7 +1,6 @@
 org.openstreetmap.josm.plugins.mapillary
 org.openstreetmap.josm.plugins.mapillary.actions
 org.openstreetmap.josm.plugins.mapillary.cache
-org.openstreetmap.josm.plugins.mapillary.detection
 org.openstreetmap.josm.plugins.mapillary.gui
 org.openstreetmap.josm.plugins.mapillary.gui.boilerplate
 org.openstreetmap.josm.plugins.mapillary.gui.imageinfo
@@ -11,7 +10,7 @@ org.openstreetmap.josm.plugins.mapillary.history.commands
 org.openstreetmap.josm.plugins.mapillary.io.download
 org.openstreetmap.josm.plugins.mapillary.io.export
 org.openstreetmap.josm.plugins.mapillary.mode
+org.openstreetmap.josm.plugins.mapillary.model
 org.openstreetmap.josm.plugins.mapillary.oauth
-org.openstreetmap.josm.plugins.mapillary.objects
 org.openstreetmap.josm.plugins.mapillary.utils
 org.openstreetmap.josm.plugins.mapillary.utils.api
