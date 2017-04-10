@@ -342,6 +342,8 @@ public class MapillaryImageDisplay extends JComponent {
     addMouseListener(mouseListener);
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
+
+    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
   }
 
   /**
@@ -416,25 +418,27 @@ public class MapillaryImageDisplay extends JComponent {
             bottomRight.y - topLeft.y);
       }
 
-      Point upperLeft = img2compCoord(visibleRect, 0, 0);
-      Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+      if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
+        Point upperLeft = img2compCoord(visibleRect, 0, 0);
+        Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
 
-      // Transformation, which can convert you a Shape relative to the unit square to a Shape relative to the Component
-      AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
-      unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+        // Transformation, which can convert you a Shape relative to the unit square to a Shape relative to the Component
+        AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+        unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
-      Graphics2D g2d = (Graphics2D) g;
-      g2d.setStroke(new BasicStroke(2));
-      g2d.setColor(MapillaryColorScheme.TRAFFICSIGNS_ORANGE);
-      for (ImageDetection d : detections) {
-        Shape shape = d.getShape().createTransformedShape(unit2compTransform);
-        g2d.drawImage(
-          MapObject.getIcon(d.getValue()).getImage(),
-          shape.getBounds().x, shape.getBounds().y,
-          shape.getBounds().width, shape.getBounds().height,
-          null
-        );
-        g2d.draw(shape);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(MapillaryColorScheme.TRAFFICSIGNS_ORANGE);
+        for (ImageDetection d : detections) {
+          Shape shape = d.getShape().createTransformedShape(unit2compTransform);
+          g2d.drawImage(
+            MapObject.getIcon(d.getValue()).getImage(),
+            shape.getBounds().x, shape.getBounds().y,
+            shape.getBounds().width, shape.getBounds().height,
+            null
+          );
+          g2d.draw(shape);
+        }
       }
     }
   }

@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.Collection;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -38,6 +39,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private static ImageInfoPanel instance;
   private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
 
+  private final JLabel numDetectionsLabel;
+  private final JCheckBox showDetectionsCheck;
   private final JLabel usernameLabel;
   private final JTextPane imgKeyValue;
   private final WebLinkAction imgLinkAction;
@@ -54,6 +57,18 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       150
     );
     DataSet.addSelectionListener(this);
+
+    numDetectionsLabel = new JLabel();
+    numDetectionsLabel.setFont(numDetectionsLabel.getFont().deriveFont(Font.PLAIN));
+
+    showDetectionsCheck = new JCheckBox(I18n.tr("Show detections on top of image"));
+    showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get());
+    showDetectionsCheck.addActionListener(
+      action -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected())
+    );
+    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(
+      valueChange -> showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
+    );
 
     usernameLabel = new JLabel();
     usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
@@ -84,6 +99,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_END;
+    gbc.gridwidth = 1;
+    gbc.gridheight = 2;
+    root.add(new JLabel(I18n.tr("Image detections")), gbc);
+    gbc.gridy += 2;
+    gbc.gridheight = 1;
     root.add(new JLabel(I18n.tr("User")), gbc);
     gbc.gridy++;
     root.add(new JLabel(I18n.tr("Image actions")), gbc);
@@ -97,6 +117,10 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx++;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_START;
+    root.add(numDetectionsLabel, gbc);
+    gbc.gridy++;
+    root.add(showDetectionsCheck, gbc);
+    gbc.gridy++;
     root.add(usernameLabel, gbc);
     gbc.gridy++;
     root.add(imgButtons, gbc);
@@ -154,6 +178,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
       newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
     ));
+
+    numDetectionsLabel.setText(I18n.tr("{0} detections", newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
@@ -169,6 +195,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     }
 
     final UserProfile user = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getUser() : null;
+    usernameLabel.setEnabled(user != null);
     if (user != null) {
       usernameLabel.setText(user.getUsername());
       usernameLabel.setIcon(new ImageIcon(user.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
