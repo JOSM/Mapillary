@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
@@ -57,7 +58,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   public void setAllDetections(Collection<ImageDetection> detection) {
-    System.out.println("Add " + detection.size() + "detections to image " + this.getKey());
+    Main.debug("Add " + detection.size() + " detections to image " + this.getKey());
     this.detections.clear();
     this.detections.addAll(detection);
   }
