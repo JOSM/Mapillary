@@ -34,6 +34,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -48,7 +49,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static MapillaryFilterDialog instance;
 
-  private static final String[] TIME_LIST = {tr("All"), tr("Years"), tr("Months"), tr("Days")};
+  private static final String[] TIME_LIST = {tr("Years"), tr("Months"), tr("Days")};
 
   private final static long[] TIME_FACTOR = new long[]{
     31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
@@ -56,10 +57,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
   };
 
+  private final JCheckBox filterByDateCheckbox;
   /**
    * Spinner to choose the range of dates.
    */
-  private final SpinnerNumberModel spinner;
+  private final SpinnerNumberModel spinnerModel;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
   private final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
@@ -103,11 +105,20 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     JPanel fromPanel = new JPanel();
     fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    fromPanel.add(new JLabel(tr("Not older than: ")));
-    this.spinner = new SpinnerNumberModel(1, 0, 10000, 1);
-    fromPanel.add(new JSpinner(this.spinner));
-    this.time = new JComboBox<>(TIME_LIST);
+    filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
+    fromPanel.add(filterByDateCheckbox);
+    this.spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
+    JSpinner spinner = new JSpinner(spinnerModel);
+    spinner.setEnabled(false);
+    fromPanel.add(spinner);
+    time = new JComboBox<>(TIME_LIST);
+    time.setEnabled(false);
     fromPanel.add(this.time);
+
+    filterByDateCheckbox.addItemListener(itemE -> {
+      spinner.setEnabled(filterByDateCheckbox.isSelected());
+      time.setEnabled(filterByDateCheckbox.isSelected());
+    });
 
     JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -170,7 +181,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     this.onlySigns.setSelected(false);
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
-    this.spinner.setValue(1);
+    this.spinnerModel.setValue(1);
     refresh();
   }
 
@@ -180,17 +191,32 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   public synchronized void refresh() {
     boolean imported = this.imported.isSelected();
     boolean downloaded = this.downloaded.isSelected();
+    boolean timeFilter = filterByDateCheckbox.isSelected();
     boolean onlySigns = this.onlySigns.isSelected();
 
     // This predicate returns true is the image should be made invisible
     Predicate<MapillaryAbstractImage> p =
-      img ->
-        (img instanceof MapillaryImportedImage && !imported) ||
-          (img instanceof MapillaryImage &&
-            (!downloaded ||
-              (onlySigns && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) ||
-              (!"".equals(user.getText()) && !this.user.getText().equals(((MapillaryImage) img).getUser())))) ||
-          checkValidTime(img);
+      img -> {
+        if (timeFilter && checkValidTime(img)) {
+          return true;
+        }
+        if (!imported && img instanceof MapillaryImportedImage) {
+          return true;
+        }
+        if (img instanceof MapillaryImage) {
+          if (!downloaded) {
+            return true;
+          }
+          if (onlySigns && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+            return true;
+          }
+          UserProfile userProfile = ((MapillaryImage) img).getUser();
+          if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
+            return true;
+          }
+        }
+        return false;
+      };
 
     MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!p.test(img)));
 
@@ -199,9 +225,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private boolean checkValidTime(MapillaryAbstractImage img) {
     Long currentTime = currentTime();
-    for (int i = 1; i <= 3; i++) {
+    for (int i = 0; i < 3; i++) {
       if (TIME_LIST[i].equals(time.getSelectedItem()) &&
-        img.getCapturedAt() < currentTime - ((Integer) spinner.getValue()).longValue() * TIME_FACTOR[i - 1]) {
+        img.getCapturedAt() < currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {
         return true;
       }
     }
