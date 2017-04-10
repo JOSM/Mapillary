@@ -1,12 +1,16 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -23,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
@@ -31,7 +36,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private static final long serialVersionUID = 1320443250226377651L;
   private static final Log L = LogFactory.getLog(ImageInfoPanel.class);
   private static ImageInfoPanel instance;
+  private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
 
+  private final JLabel usernameLabel;
   private final JTextPane imgKeyValue;
   private final WebLinkAction imgLinkAction;
   private final ClipboardAction copyImgKeyAction;
@@ -47,6 +54,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       150
     );
     DataSet.addSelectionListener(this);
+
+    usernameLabel = new JLabel();
+    usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
 
     imgKeyValue = new SelectableLabel();
 
@@ -74,6 +84,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_END;
+    root.add(new JLabel(I18n.tr("User")), gbc);
+    gbc.gridy++;
     root.add(new JLabel(I18n.tr("Image actions")), gbc);
     gbc.gridy++;
     root.add(new JLabel(I18n.tr("Image key")), gbc);
@@ -85,6 +97,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.gridx++;
     gbc.gridy = 0;
     gbc.anchor = GridBagConstraints.LINE_START;
+    root.add(usernameLabel, gbc);
+    gbc.gridy++;
     root.add(imgButtons, gbc);
     gbc.gridy++;
     root.add(imgKey, gbc);
@@ -152,6 +166,15 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       imgLinkAction.setURL(null);
       copyImgKeyAction.setContents(null);
       addMapillaryTagAction.setTag(null);
+    }
+
+    final UserProfile user = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getUser() : null;
+    if (user != null) {
+      usernameLabel.setText(user.getUsername());
+      usernameLabel.setIcon(new ImageIcon(user.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+    } else {
+      usernameLabel.setText("‹" + I18n.tr("unknown user") + "›");
+      usernameLabel.setIcon(EMPTY_USER_AVATAR);
     }
 
     final boolean partOfSequence = newImage != null && newImage.getSequence() != null && newImage.getSequence().getKey() != null;
