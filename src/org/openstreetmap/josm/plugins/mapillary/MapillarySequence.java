@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.json.Json;
 
 import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs.engine.behavior.IElementAttributes;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
@@ -27,8 +28,11 @@ public class MapillarySequence {
     CacheAccess<String, UserProfile> cache = null;
     try {
        cache = JCSCacheManager.getCache("userProfile", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath());
-    } catch (IOException var2) {
-       Main.warn(var2, "Could not initialize user profile cache.");
+       IElementAttributes atts = cache.getDefaultElementAttributes();
+       atts.setMaxLife(1000*3600*24*7); // Sets lifetime to 7 days
+       cache.setDefaultElementAttributes(atts);
+    } catch (IOException e) {
+       Main.warn(e, "Could not initialize user profile cache.");
     }
     USER_CACHE = cache;
   }
