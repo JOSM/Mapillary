@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillarySequence
  */
 public class MapillaryData {
-  private final Set<MapillaryAbstractImage> images;
+  private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.<MapillaryAbstractImage>newKeySet();
   /**
    * The image currently selected, this is the one being shown.
    */
@@ -37,7 +37,7 @@ public class MapillaryData {
   /**
    * All the images selected, can be more than one.
    */
-  private final Set<MapillaryAbstractImage> multiSelectedImages;
+  private final Set<MapillaryAbstractImage> multiSelectedImages = ConcurrentHashMap.<MapillaryAbstractImage>newKeySet();
   /**
    * Listeners of the class.
    */
@@ -51,8 +51,6 @@ public class MapillaryData {
    * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
-    this.images = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
-    this.multiSelectedImages = Collections.newSetFromMap(new ConcurrentHashMap<MapillaryAbstractImage, Boolean>());
     this.selectedImage = null;
     this.bounds = new CopyOnWriteArrayList<>();
 
@@ -71,7 +69,7 @@ public class MapillaryData {
    *
    * @param image The image to be added.
    */
-  public synchronized void add(MapillaryAbstractImage image) {
+  public void add(MapillaryAbstractImage image) {
     add(image, true);
   }
 
@@ -83,8 +81,10 @@ public class MapillaryData {
    * @param update Whether the map must be updated or not.
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
-  public synchronized void add(MapillaryAbstractImage image, boolean update) {
-    this.images.add(image);
+  public void add(MapillaryAbstractImage image, boolean update) {
+    synchronized (images) {
+      this.images.add(image);
+    }
     if (update) {
       dataUpdated();
     }
@@ -96,7 +96,7 @@ public class MapillaryData {
    *
    * @param images The set of images to be added.
    */
-  public synchronized void addAll(Collection<MapillaryAbstractImage> images) {
+  public void addAll(Collection<MapillaryAbstractImage> images) {
     addAll(images, true);
   }
 
@@ -106,8 +106,10 @@ public class MapillaryData {
    * @param images The set of images to be added.
    * @param update Whether the map must be updated or not.
    */
-  public synchronized void addAll(Collection<MapillaryAbstractImage> images, boolean update) {
-    this.images.addAll(images);
+  public void addAll(Collection<MapillaryAbstractImage> images, boolean update) {
+    synchronized (images) {
+      this.images.addAll(images);
+    }
     if (update) {
       dataUpdated();
     }
@@ -168,18 +170,17 @@ public class MapillaryData {
    *
    * @param image The {@link MapillaryAbstractImage} that is going to be deleted.
    */
-  public synchronized void remove(MapillaryAbstractImage image) {
-    if (Main.main != null
-            && MapillaryMainDialog.getInstance().getImage() != null) {
-      MapillaryMainDialog.getInstance().setImage(null);
-      MapillaryMainDialog.getInstance().updateImage();
+  public void remove(MapillaryAbstractImage image) {
+    synchronized (images) {
+      this.images.remove(image);
     }
-    setSelectedImage(null);
-    this.images.remove(image);
-    if (image.getSequence() != null)
+    if (getMultiSelectedImages().contains(image)) {
+      setSelectedImage(null);
+    }
+    if (image.getSequence() != null) {
       image.getSequence().remove(image);
-    if (Main.main != null)
-      dataUpdated();
+    }
+    dataUpdated();
   }
 
   /**
@@ -188,7 +189,7 @@ public class MapillaryData {
    * @param images A {@link Collection} of {@link MapillaryAbstractImage} objects that are
    *               going to be removed.
    */
-  public synchronized void remove(Collection<MapillaryAbstractImage> images) {
+  public void remove(Collection<MapillaryAbstractImage> images) {
     images.forEach(this::remove);
   }
 
@@ -222,9 +223,11 @@ public class MapillaryData {
   /**
    * Repaints mapView object.
    */
-  public static synchronized void dataUpdated() {
-    if (Main.main != null)
-      Main.map.mapView.repaint();
+  public static void dataUpdated() {
+    final MapView mv = MapillaryPlugin.getMapView();
+    if (mv != null) {
+      mv.repaint();
+    }
   }
 
   /**
@@ -232,16 +235,20 @@ public class MapillaryData {
    *
    * @return A Set object containing all images.
    */
-  public synchronized Set<MapillaryAbstractImage> getImages() {
-    return this.images;
+  public Set<MapillaryAbstractImage> getImages() {
+    synchronized (images) {
+      return this.images;
+    }
   }
 
   /**
    * Returns a Set of all sequences, that the images are part of.
    * @return all sequences that are contained in the Mapillary data
    */
-  public synchronized Set<MapillarySequence> getSequences() {
-    return getImages().stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
+  public Set<MapillarySequence> getSequences() {
+    synchronized (images) {
+      return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
+    }
   }
 
   /**
@@ -394,9 +401,11 @@ public class MapillaryData {
    *
    * @param images the new image list (previously set images are completely replaced)
    */
-  public synchronized void setImages(Collection<MapillaryAbstractImage> images) {
-    this.images.clear();
-    this.images.addAll(images);
+  public void setImages(Collection<MapillaryAbstractImage> images) {
+    synchronized (this.images) {
+      this.images.clear();
+      this.images.addAll(images);
+    }
   }
 
   /**
@@ -405,6 +414,8 @@ public class MapillaryData {
    * @return The amount of images in stored.
    */
   public int size() {
-    return this.images.size();
+    synchronized (images) {
+      return this.images.size();
+    }
   }
 }
