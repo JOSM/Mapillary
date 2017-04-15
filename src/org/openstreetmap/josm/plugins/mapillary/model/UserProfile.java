@@ -1,14 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.io.Serializable;
-
 import javax.swing.ImageIcon;
 
-public class UserProfile extends KeyIndexedObject implements Serializable {
+public class UserProfile extends KeyIndexedObject {
   private static final long serialVersionUID = 4695718596660412790L;
-  private String username;
-  private ImageIcon avatar;
+  private final String username;
+  private final ImageIcon avatar;
 
   public UserProfile(String key, String username, ImageIcon avatar) {
     super(key);
