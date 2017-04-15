@@ -29,7 +29,7 @@ public class MapillarySequence {
     try {
        cache = JCSCacheManager.getCache("userProfile", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath());
        IElementAttributes atts = cache.getDefaultElementAttributes();
-       atts.setMaxLife(1000*3600*24*7); // Sets lifetime to 7 days
+       atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
        cache.setDefaultElementAttributes(atts);
     } catch (IOException e) {
        Main.warn(e, "Could not initialize user profile cache.");

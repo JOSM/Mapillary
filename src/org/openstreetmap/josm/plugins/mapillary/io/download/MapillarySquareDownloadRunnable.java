@@ -44,6 +44,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       detectionsThread.join();
     } catch (InterruptedException e) {
       Main.warn(e, "Mapillary download interrupted (probably because of closing the layer).");
+      Thread.currentThread().interrupt();
     } finally {
       PluginState.finishDownload();
     }

@@ -79,16 +79,17 @@ public class MapObjectDownloadRunnable implements Runnable {
       layer.finishDownload(false);
       return;
     }
-    layer.setStatus(
-      nextURL != null
-        ? (result.size() >= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING)
-        : STATUS.COMPLETE
-    );
+    if (nextURL == null) {
+      layer.setStatus(STATUS.COMPLETE);
+    } else {
+      layer.setStatus(result.size() >= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING);
+    }
     layer.finishDownload(nextURL == null || result.size() >= MapillaryProperties.MAX_MAPOBJECTS.get());
     try {
       Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around
     } catch (InterruptedException e) {
       Main.debug(e);
+      Thread.currentThread().interrupt();
     }
   }
 

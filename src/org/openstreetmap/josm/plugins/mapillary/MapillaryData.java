@@ -107,7 +107,7 @@ public class MapillaryData {
    * @param update Whether the map must be updated or not.
    */
   public void addAll(Collection<MapillaryAbstractImage> images, boolean update) {
-    synchronized (images) {
+    synchronized (this.images) {
       this.images.addAll(images);
     }
     if (update) {

@@ -74,7 +74,7 @@ public class MapObject {
     } else if (cachedIcon == null) {
       try {
         final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));
-        if (MAP_OBJECT_ICON_CACHE != null && downloadedIcon != null) {
+        if (MAP_OBJECT_ICON_CACHE != null) {
           MAP_OBJECT_ICON_CACHE.put(objectTypeID, downloadedIcon);
         }
         return downloadedIcon;

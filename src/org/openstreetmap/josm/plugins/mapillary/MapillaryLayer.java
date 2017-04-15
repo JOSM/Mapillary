@@ -318,7 +318,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
-      if (imageAbs.isVisible() && Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getMovingLatLon()))) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
         drawImageMarker(g, imageAbs);
       }
     }
@@ -368,7 +368,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     // Paint direction indicator
     g.setColor(directionC);
-    g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2), CA_INDICATOR_ANGLE);
+    g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);
     // Paint image marker
     g.setColor(markerC);
     g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);

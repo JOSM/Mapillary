@@ -45,7 +45,7 @@ public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
 
-  private Collection<ImageDetection> detections = new ArrayList<>();
+  private final Collection<ImageDetection> detections = new ArrayList<>();
 
   /** The image currently displayed */
   private volatile BufferedImage image;
