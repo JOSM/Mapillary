@@ -14,7 +14,7 @@ public final class JsonImageDetailsDecoder {
   }
 
   public static void decodeImageInfos(final JsonObject json, final MapillaryData data) {
-    if (json != null && "FeatureCollection".equals(json.getString("type", null))) {
+    if (json != null && data != null && "FeatureCollection".equals(json.getString("type", null))) {
       JsonValue features = json.get("features");
       if (features instanceof JsonArray) {
         for (int i = 0; i < ((JsonArray) features).size(); i++) {
@@ -28,7 +28,7 @@ public final class JsonImageDetailsDecoder {
   }
 
   private static void decodeImageInfo(final JsonObject json, final MapillaryData data) {
-    if (json != null) {
+    if (json != null && data != null) {
       JsonValue properties = json.get("properties");
       if (properties instanceof JsonObject) {
         String key = ((JsonObject) properties).getString("key", null);
