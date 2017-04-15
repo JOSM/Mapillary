@@ -12,29 +12,36 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public final class JsonUserProfileDecoder {
-<span class="nc" id="L15">  private JsonUserProfileDecoder() {</span>
-    // Private constructor to avoid instantiation
-<span class="nc" id="L17">  }</span>
-  public static UserProfile decodeUserProfile(JsonObject json) {
-<span class="pc bpc" id="L19" title="1 of 2 branches missed.">    if (json != null) {</span>
-<span class="fc" id="L20">      String avatar = json.getString(&quot;avatar&quot;, null);</span>
-<span class="fc" id="L21">      String username = json.getString(&quot;username&quot;, null);</span>
-<span class="fc" id="L22">      String key = json.getString(&quot;key&quot;, null);</span>
-<span class="pc bpc" id="L23" title="1 of 2 branches missed.">      if(avatar != null) {</span>
-        ImageIcon icon;
-        try {
-<span class="fc" id="L26">          icon = new ImageIcon(ImageIO.read(new URL(avatar)));</span>
-<span class="nc" id="L27">        } catch (IOException e) {</span>
-<span class="nc" id="L28">          Main.debug(e);</span>
-<span class="nc" id="L29">          icon = (new ImageProvider(&quot;fake-avatar&quot;)).get();</span>
-<span class="fc" id="L30">        }</span>
+<span class="fc" id="L15">  private static final ImageIcon FAKE_AVATAR = new ImageProvider(&quot;fake-avatar&quot;).get();</span>
 
-<span class="pc bpc" id="L32" title="2 of 4 branches missed.">        if(key != null &amp;&amp; username != null) {</span>
-<span class="fc" id="L33">          return new UserProfile(key, username, icon);</span>
-        }
+<span class="fc" id="L17">  private JsonUserProfileDecoder() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L19">  }</span>
+
+  public static UserProfile decodeUserProfile(JsonObject json) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">    if (json != null) {</span>
+<span class="fc" id="L23">      String avatar = json.getString(&quot;avatar&quot;, null);</span>
+<span class="fc" id="L24">      String username = json.getString(&quot;username&quot;, null);</span>
+<span class="fc" id="L25">      String key = json.getString(&quot;key&quot;, null);</span>
+
+<span class="fc bfc" id="L27" title="All 4 branches covered.">      if (key == null || username == null) {</span>
+<span class="fc" id="L28">        return null;</span>
       }
-     }
-<span class="nc" id="L37">     return null;</span>
-   }
+
+<span class="fc" id="L31">      ImageIcon icon = null;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">      if (avatar != null) {</span>
+        try {
+<span class="fc" id="L34">          icon = new ImageIcon(ImageIO.read(new URL(avatar)));</span>
+<span class="fc" id="L35">        } catch (IOException e) {</span>
+<span class="fc" id="L36">          Main.debug(e);</span>
+<span class="fc" id="L37">        }</span>
+      }
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      if (icon == null) {</span>
+<span class="fc" id="L40">        icon = FAKE_AVATAR;</span>
+      }
+<span class="fc" id="L42">      return new UserProfile(key, username, icon);</span>
+    }
+<span class="fc" id="L44">    return null;</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -81,20 +81,40 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public boolean equals(Object other) {
-<span class="pc bpc" id="L85" title="3 of 6 branches missed.">    return other != null &amp;&amp; other.getClass() == this.getClass() &amp;&amp; this.file.equals(((MapillaryImportedImage) other).file);</span>
-  }
-
-  @Override
   public int compareTo(MapillaryAbstractImage image) {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">    if (image instanceof MapillaryImportedImage)</span>
-<span class="nc" id="L91">      return this.file.compareTo(((MapillaryImportedImage) image).getFile());</span>
-<span class="nc" id="L92">    return hashCode() - image.hashCode();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (image instanceof MapillaryImportedImage)</span>
+<span class="nc" id="L86">      return this.file.compareTo(((MapillaryImportedImage) image).getFile());</span>
+<span class="nc" id="L87">    return hashCode() - image.hashCode();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L97">    return this.file.hashCode();</span>
+<span class="fc" id="L92">    final int prime = 31;</span>
+<span class="fc" id="L93">    int result = 1;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">    result = prime * result + ((file == null) ? 0 : file.hashCode());</span>
+<span class="fc" id="L95">    return result;</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L101">      return true;</span>
+    }
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (obj == null) {</span>
+<span class="nc" id="L104">      return false;</span>
+    }
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">    if (!(obj instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L107">      return false;</span>
+    }
+<span class="fc" id="L109">    MapillaryImportedImage other = (MapillaryImportedImage) obj;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">    if (file == null) {</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">      if (other.file != null) {</span>
+<span class="nc" id="L112">        return false;</span>
+      }
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    } else if (!file.equals(other.file)) {</span>
+<span class="nc" id="L115">      return false;</span>
+    }
+<span class="fc" id="L117">    return true;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

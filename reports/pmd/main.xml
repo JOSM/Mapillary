@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.5" timestamp="2017-04-15T14:21:30.578">
+<pmd version="5.5.5" timestamp="2017-04-15T16:42:54.267">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
-<violation beginline="2" endline="410" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/design.html#GodClass" priority="3">
-Possible God class (WMC=58, ATFD=16, TCC=0.004761904761904762)
+<violation beginline="2" endline="421" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/design.html#GodClass" priority="3">
+Possible God class (WMC=56, ATFD=14, TCC=0.07142857142857142)
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer.java">
@@ -371,14 +371,6 @@ Useless parentheses.
 Document empty method body
 </violation>
 </file>
-<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/model/UserProfile.java">
-<violation beginline="10" endline="10" begincolumn="18" endcolumn="25" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.model" class="UserProfile" variable="username" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/design.html#ImmutableField" priority="3">
-Private field 'username' could be made final; it is only initialized in the declaration or constructor.
-</violation>
-<violation beginline="11" endline="11" begincolumn="21" endcolumn="26" rule="ImmutableField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.model" class="UserProfile" variable="avatar" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/design.html#ImmutableField" priority="3">
-Private field 'avatar' could be made final; it is only initialized in the declaration or constructor.
-</violation>
-</file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java">
 <violation beginline="2" endline="304" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
@@ -406,14 +398,8 @@ Deeply nested if..then statements are hard to read
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/utils/api/JsonUserProfileDecoder.java">
-<violation beginline="29" endline="29" begincolumn="19" endcolumn="50" rule="UnnecessaryParentheses" ruleset="Controversial" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoder" method="decodeUserProfile" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/controversial.html#UnnecessaryParentheses" priority="3">
-This statement may have some unnecessary parentheses
-</violation>
-<violation beginline="29" endline="29" begincolumn="19" endcolumn="50" rule="UselessParentheses" ruleset="Unnecessary" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoder" method="decodeUserProfile" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="32" endline="34" begincolumn="9" endcolumn="9" rule="AvoidDeeplyNestedIfStmts" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoder" method="decodeUserProfile" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/design.html#AvoidDeeplyNestedIfStmts" priority="3">
-Deeply nested if..then statements are hard to read
+<violation beginline="23" endline="23" begincolumn="7" endcolumn="52" rule="PrematureDeclaration" ruleset="Optimization" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoder" method="decodeUserProfile" variable="avatar" externalInfoUrl="https://pmd.github.io/pmd-5.5.5/pmd-java/rules/java/optimizations.html#PrematureDeclaration" priority="3">
+Avoid declaring a variable if it is unreferenced before a possible exit point.
 </violation>
 </file>
 </pmd>
