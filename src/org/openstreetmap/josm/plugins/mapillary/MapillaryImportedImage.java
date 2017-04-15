@@ -81,11 +81,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public boolean equals(Object other) {
-    return other != null && other.getClass() == this.getClass() && this.file.equals(((MapillaryImportedImage) other).file);
-  }
-
-  @Override
   public int compareTo(MapillaryAbstractImage image) {
     if (image instanceof MapillaryImportedImage)
       return this.file.compareTo(((MapillaryImportedImage) image).getFile());
@@ -94,6 +89,31 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   @Override
   public int hashCode() {
-    return this.file.hashCode();
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((file == null) ? 0 : file.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof MapillaryImportedImage)) {
+      return false;
+    }
+    MapillaryImportedImage other = (MapillaryImportedImage) obj;
+    if (file == null) {
+      if (other.file != null) {
+        return false;
+      }
+    } else if (!file.equals(other.file)) {
+      return false;
+    }
+    return true;
   }
 }
