@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.IllegalComponentStateException;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -71,11 +73,15 @@ public class ImageInfoHelpPopup extends JPopupMenu {
    * @return <code>true</code> if the popup is displayed
    */
   public boolean showPopup() {
-    if (alreadyDisplayed) {
-      return false;
+    if (!alreadyDisplayed && invokerComp.isShowing()) {
+      try {
+        show(invokerComp, invokerComp.getWidth(), 0);
+        alreadyDisplayed = true;
+        return true;
+      } catch (IllegalComponentStateException e) {
+        Main.warn(e, "Could not show ImageInfoHelpPopup, because probably the invoker component has disappeared from screen.");
+      }
     }
-    show(invokerComp, invokerComp.getWidth(), 0);
-    alreadyDisplayed = true;
-    return true;
+    return false;
   }
 }
