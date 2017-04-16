@@ -2,14 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Color;
-import java.util.Map;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.ColorProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
-import org.openstreetmap.josm.data.preferences.Setting;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -62,17 +59,6 @@ public final class MapillaryProperties {
    */
   public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =
     new IntegerProperty("mapillary.imageInfo.helpDisplayedCountdown", 4);
-
-  static {
-    // Convert old settings (e.g. mapillary-filter.svg) for ToggleDialogs with new ones without ".svg" at the end (e.g. mapillary-filter)
-    // TODO: Remove this again after a few versions, when most users have updated their versions of the plugin
-    for (Map.Entry<String, Setting<?>> e : Main.pref.getAllSettings().entrySet()) {
-      if (e.getKey() != null && e.getKey().matches(".*mapillary\\-[a-z]+\\.svg.*")) {
-        Main.pref.put(e.getKey().replaceAll("mapillary\\-([a-z]+)\\.svg", "mapillary-$1"), Main.pref.get(e.getKey()));
-        Main.pref.removeFromCollection(e.getKey(), Main.pref.get(e.getKey()));
-      }
-    }
-  }
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
