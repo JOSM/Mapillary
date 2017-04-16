@@ -10,6 +10,7 @@ import java.awt.geom.Path2D;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
@@ -48,23 +49,21 @@ public final  class MapViewGeometryUtil {
 
   /**
    * Converts a {@link MapillarySequence} into a {@link Path2D} that can be drawn
-   * on the specified {@link MapView}'s {@link Graphics2D}-context.
-   * @param mv the {@link MapView} for which this conversion should be performed
+   * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
+   * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a {@link MapView}
    * @param seq the sequence to convert
    * @return the {@link Path2D} object to which the {@link MapillarySequence} has been converted
    */
-  public static Path2D getSequencePath(MapView mv, MapillarySequence seq) {
-    Path2D.Double path = new Path2D.Double();
-    for (MapillaryAbstractImage img : seq.getImages()) {
-      if (img.isVisible()) {
-        Point p = mv.getPoint(img.getMovingLatLon());
-        if (path.getCurrentPoint() == null) {
-          path.moveTo(p.getX(), p.getY());
-        } else {
-          path.lineTo(p.getX(), p.getY());
-        }
+  public static Path2D getSequencePath(NavigatableComponent nc, MapillarySequence seq) {
+    final Path2D.Double path = new Path2D.Double();
+    seq.getImages().stream().filter(MapillaryAbstractImage::isVisible).forEach(img -> {
+      Point p = nc.getPoint(img.getMovingLatLon());
+      if (path.getCurrentPoint() == null) {
+        path.moveTo(p.getX(), p.getY());
+      } else {
+        path.lineTo(p.getX(), p.getY());
       }
-    }
+    });
     return path;
   }
 }
