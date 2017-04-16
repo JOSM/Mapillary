@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
 
 import java.io.ByteArrayInputStream;
@@ -18,9 +19,11 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class JsonSequencesDecoderTest {
@@ -112,34 +115,28 @@ public class JsonSequencesDecoderTest {
     assertDecodesToNull(JsonSequencesDecoder::decodeSequence, "{\"type\": \"Feature\"}");
     // value for the key `key` in the properties is missing
     assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"captured_at\": \"1970-01-01T00:00:00.000Z\"}}"
+      "{\"type\": \"Feature\", \"properties\": {}}"
+    );
+    // value for the key `user_key` in the properties is missing
+    assertDecodesToNull(
+      JsonSequencesDecoder::decodeSequence,
+      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\"}}"
     );
     // value for the key `captured_at` in the properties is missing
     assertDecodesToNull(
       JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\"}}"
+      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"user_key\": \"arbitraryUserKey\"}}"
     );
     // the date in `captured_at` has an unrecognized format
     assertDecodesToNull(
       JsonSequencesDecoder::decodeSequence,
       "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"unrecognizedDateFormat\"}}"
     );
-    // `coordinateProperties` have unexpected value (in this case null)
-    assertDecodesToNull(
-      JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
-      "\"coordinateProperties\": null}}"
-    );
     // the `image_key` array and the `cas` array contain unexpected values (in this case `null`)
     assertDecodesToNull(
       JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
-      "\"coordinateProperties\": {\"cas\": null, \"image_keys\": null}}}"
-    );
-    // the `image_key` array and the `cas` array contain unexpected values (in this case `null`)
-    assertDecodesToNull(
-      JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"1970-01-01T00:00:00.000Z\",",
+      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"user_key\": \"arbitraryUserKey\",",
+      "\"captured_at\": \"1970-01-01T00:00:00.000Z\",",
       "\"coordinateProperties\": {\"cas\": [null, null, null, null, 1.0, 1.0, 1.0],",
       "\"image_keys\": [null, null, \"key\", \"key\", null, null, \"key\"]}},",
       "\"geometry\": {\"type\": \"LineString\", \"coordinates\": [null, [1,1], null, [1,1], null, [1,1], null]}}"
@@ -161,20 +158,48 @@ public class JsonSequencesDecoderTest {
     );
   }
 
-  /**
-   * Checks if
-   */
+  @Test
+  public void testDecodeCoordinateProperty() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    Method decodeCoordinateProperty = JsonSequencesDecoder.class.getDeclaredMethod(
+      "decodeCoordinateProperty",
+      JsonObject.class,
+      String.class,
+      Function.class,
+      Class.class
+    );
+    decodeCoordinateProperty.setAccessible(true);
+
+    assertEquals(
+      0,
+      ((String[]) decodeCoordinateProperty.invoke(
+        null, null, "key", (Function<JsonValue, String>) val -> "string", String.class
+      )).length
+    );
+
+    assertEquals(
+      0,
+      ((String[]) decodeCoordinateProperty.invoke(
+        null, JsonUtil.string2jsonObject("{\"coordinateProperties\":{\"key\":0}}"), "key", (Function<JsonValue, String>) val -> "string", String.class
+      )).length
+    );
+  }
+
   @Test
   public void testDecodeLatLons()
       throws NoSuchMethodException, SecurityException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException {
-    Method method = JsonSequencesDecoder.class.getDeclaredMethod("decodeLatLons", JsonObject.class);
-    method.setAccessible(true);
-    assertEquals(0, ((LatLon[]) method.invoke(null, Json.createReader(new ByteArrayInputStream(
+    Method decodeLatLons = JsonSequencesDecoder.class.getDeclaredMethod("decodeLatLons", JsonObject.class);
+    decodeLatLons.setAccessible(true);
+
+    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, (JsonObject) null)).length);
+    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":0}"))).length);
+    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":[]}"))).length);
+
+    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, Json.createReader(new ByteArrayInputStream(
       "{\"type\": \"Feature\", \"coordinates\": []}".getBytes()
     )).readObject())).length);
 
-    LatLon[] example = (LatLon[]) method.invoke(null, Json.createReader(new ByteArrayInputStream(
+    LatLon[] example = (LatLon[]) decodeLatLons.invoke(null, Json.createReader(new ByteArrayInputStream(
       "{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}".getBytes()
     )).readObject());
     assertEquals(3, example.length);

@@ -109,7 +109,7 @@ public final class JsonSequencesDecoder {
   private static <T> T[] decodeCoordinateProperty(
     final JsonObject json, final String key, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz
   ) {
-    final JsonValue coordinateProperties = json.get("coordinateProperties");
+    final JsonValue coordinateProperties = json == null ? null : json.get("coordinateProperties");
     if (coordinateProperties instanceof JsonObject) {
       JsonValue valueArray = ((JsonObject) coordinateProperties).get(key);
       if (valueArray instanceof JsonArray) {
