@@ -1,15 +1,14 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
 import org.apache.commons.jcs.access.CacheAccess;
-import org.openstreetmap.josm.Main;
+
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
 
 /**
  * Stores the downloaded pictures locally.
@@ -44,33 +43,18 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *          FULL_IMAGE).
    */
   public MapillaryCache(String key, Type type) {
-    this(MapillaryPlugin.getImageCache(), key, type);
+    this(Caches.ImageCache.getInstance().getCache(), key, type);
   }
 
   protected MapillaryCache(CacheAccess<String, BufferedImageCacheEntry> cache, String key, Type type) {
     super(cache, 50000, 50000, new HashMap<>());
-    String k = null;
-    URL u = null;
-    if (key != null && type != null) {
-      try {
-        switch (type) {
-          case FULL_IMAGE:
-            k = key + ".FULL_IMAGE";
-            u = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key + "/thumb-2048.jpg");
-            break;
-          case THUMBNAIL:
-          default:
-            k = key + ".THUMBNAIL";
-            u = new URL("https://d1cuyjsrcm0gby.cloudfront.net/" + key + "/thumb-320.jpg");
-            break;
-        }
-      } catch (MalformedURLException e) {
-        // TODO: Throw exception, so that a MapillaryCache with malformed URL can't be instantiated.
-        Main.error(e);
-      }
+    if (key == null || type == null) {
+      this.key = null;
+      this.url = null;
+    } else {
+      this.key = key + (type == Type.FULL_IMAGE ? ".FULL_IMAGE" : ".THUMBNAIL");
+      this.url = Cloudfront.thumbnail(key, type == Type.FULL_IMAGE);
     }
-    this.key = k;
-    this.url = u;
   }
 
   @Override
@@ -90,8 +74,9 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
   @Override
   protected boolean isObjectLoadable() {
-    if (this.cacheData == null)
+    if (this.cacheData == null) {
       return false;
+    }
     byte[] content = this.cacheData.getContent();
     return content != null && content.length > 0;
   }

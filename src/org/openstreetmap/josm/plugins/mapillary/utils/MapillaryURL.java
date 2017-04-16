@@ -100,6 +100,18 @@ public final class MapillaryURL {
     }
   }
 
+  public static final class Cloudfront {
+    private static final String BASE_URL = "https://d1cuyjsrcm0gby.cloudfront.net/";
+
+    private Cloudfront() {
+      // Private constructor to avoid instantiation
+    }
+
+    public static URL thumbnail(final String key, final boolean large) {
+      return string2URL(BASE_URL, key, "/thumb-", large ? "2048" : "320", ".png");
+    }
+  }
+
   public static final class MainWebsite {
     private static final String BASE_URL = "https://www.mapillary.com/";
 

@@ -7,10 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.Json;
 
-import org.apache.commons.jcs.access.CacheAccess;
-import org.apache.commons.jcs.engine.behavior.IElementAttributes;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
@@ -22,20 +20,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder
  * @see MapillaryAbstractImage
  */
 public class MapillarySequence {
-  private static final CacheAccess<String, UserProfile> USER_CACHE;
-
-  static {
-    CacheAccess<String, UserProfile> cache = null;
-    try {
-       cache = JCSCacheManager.getCache("userProfile", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath());
-       IElementAttributes atts = cache.getDefaultElementAttributes();
-       atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
-       cache.setDefaultElementAttributes(atts);
-    } catch (IOException e) {
-       Main.warn(e, "Could not initialize user profile cache.");
-    }
-    USER_CACHE = cache;
-  }
 
   /**
    * The images in the sequence.
@@ -187,16 +171,21 @@ public class MapillarySequence {
 
   private void setUser(String userKey) {
     (new Thread(() -> {
-      UserProfile cachedProfile = USER_CACHE == null ? null : USER_CACHE.get(userKey);
+      UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
       if(cachedProfile == null) {
         try {
-          USER_CACHE.put(userKey, JsonUserProfileDecoder.decodeUserProfile(Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()));
+          Caches.UserProfileCache.getInstance().put(
+            userKey,
+            JsonUserProfileDecoder.decodeUserProfile(
+              Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
+            )
+          );
         } catch (IOException var4) {
           Main.warn(var4, "Error when downloading user profile for user key '" + userKey + "'!");
         }
       }
 
-      this.user = USER_CACHE == null ? null : USER_CACHE.get(userKey);
+      this.user = Caches.UserProfileCache.getInstance().get(userKey);
     }, "userProfileDownload_" + userKey)).start();
  }
 }

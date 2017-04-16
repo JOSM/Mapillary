@@ -8,31 +8,15 @@ import java.util.function.Function;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches.MapObjectIconCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public class MapObject {
   private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get("unknown-mapobject-type");
-  private static final CacheAccess<String, ImageIcon> MAP_OBJECT_ICON_CACHE;
   private static Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
-
-  static {
-    CacheAccess<String, ImageIcon> o;
-    try {
-      o = JCSCacheManager.getCache(
-        "mapillaryObjectIcons", 100, 1000, MapillaryPlugin.getCacheDirectory().getPath()
-      );
-    } catch (IOException e) {
-      Main.warn(e, "Could not initialize cache for map objects");
-      o = null;
-    }
-    MAP_OBJECT_ICON_CACHE = o;
-  }
 
   private final LatLon coordinate;
   private final String key;
@@ -68,15 +52,13 @@ public class MapObject {
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {
-    final ImageIcon cachedIcon = MAP_OBJECT_ICON_CACHE != null ? MAP_OBJECT_ICON_CACHE.get(objectTypeID) : null;
+    final ImageIcon cachedIcon = MapObjectIconCache.getInstance().get(objectTypeID);
     if ("not-in-set".equals(objectTypeID)) {
       return ICON_UNKNOWN_TYPE;
     } else if (cachedIcon == null) {
       try {
         final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));
-        if (MAP_OBJECT_ICON_CACHE != null) {
-          MAP_OBJECT_ICON_CACHE.put(objectTypeID, downloadedIcon);
-        }
+        MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
         return downloadedIcon;
       } catch (IOException e) {
         Main.warn(e, "Failed to download icon " + objectTypeID);

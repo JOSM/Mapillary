@@ -51,9 +51,6 @@ public class MapillaryPlugin extends Plugin {
 
   public static final ImageProvider LOGO = new ImageProvider("mapillary-logo");
 
-  /** Cache that stores the pictures the downloaded pictures. */
-  private static final CacheAccess<String, BufferedImageCacheEntry> IMAGE_CACHE;
-
   private static final MapillaryDownloadAction DOWNLOAD_ACTION = new MapillaryDownloadAction();
   private static final MapillaryExportAction EXPORT_ACTION = new MapillaryExportAction();
   /** Import action */
@@ -88,14 +85,6 @@ public class MapillaryPlugin extends Plugin {
   private static final JMenuItem UPLOAD_MENU;
 
   static {
-    CacheAccess<String, BufferedImageCacheEntry> cache = null;
-    try {
-      cache = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
-    } catch (IOException e) {
-      Main.warn(e, "Could not initialize the Mapillary image cache.");
-    }
-    IMAGE_CACHE = cache;
-
     if (Main.main == null) {
       EXPORT_MENU = null;
       DOWNLOAD_MENU = null;
@@ -270,18 +259,6 @@ public class MapillaryPlugin extends Plugin {
   @Override
   public PreferenceSetting getPreferenceSetting() {
     return new MapillaryPreferenceSetting();
-  }
-
-  public static CacheAccess<String, BufferedImageCacheEntry> getImageCache() {
-    return IMAGE_CACHE;
-  }
-
-  public static File getCacheDirectory() {
-    final File f = new File(Main.pref.getPluginsDirectory().getPath() + "/Mapillary/cache");
-    if (!f.exists()) {
-      f.mkdirs();
-    }
-    return f;
   }
 
   /**

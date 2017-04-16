@@ -82,15 +82,13 @@ public class MapObjectTest {
   }
 
   @Test
-  public void testIcon() throws SecurityException, IllegalArgumentException {
+  public void testIcon() throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     assertNotNull(MapObject.getIcon("/images/mapicon.png"));
     assertNotNull(MapObject.getIcon("/images/mapicon.png"));
-  }
 
-  @Test
-  public void testNullCache() throws IllegalArgumentException, IllegalAccessException {
-    TestUtil.getAccessibleField(MapObject.class, "MAP_OBJECT_ICON_CACHE").set(null, null);
-    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
+    Field iconUnknownType = MapObject.class.getDeclaredField("ICON_UNKNOWN_TYPE");
+    iconUnknownType.setAccessible(true);
+    assertEquals(MapObject.getIcon("not-in-set"), iconUnknownType.get(null));
   }
 
   @Test
