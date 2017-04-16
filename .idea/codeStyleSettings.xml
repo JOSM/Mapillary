@@ -12,11 +12,15 @@
           <value>
             <package name="" withSubpackages="true" static="true" />
             <emptyLine />
+            <package name="org.openstreetmap" withSubpackages="true" static="true" />
+            <emptyLine />
             <package name="java" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="javax" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="" withSubpackages="true" static="false" />
+            <emptyLine />
+            <package name="org.openstreetmap" withSubpackages="true" static="false" />
           </value>
         </option>
         <option name="JD_ALIGN_PARAM_COMMENTS" value="false" />
