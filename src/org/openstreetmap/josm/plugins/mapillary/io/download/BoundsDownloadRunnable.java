@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -36,10 +37,12 @@ public abstract class BoundsDownloadRunnable implements Runnable {
     } catch (IOException e) {
       String message = I18n.tr("Could not read from URL {0}!", nextURL.toString());
       Main.warn(e, message);
-      new Notification(message)
-        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
-        .setDuration(Notification.TIME_LONG)
-        .show();
+      if (!GraphicsEnvironment.isHeadless()) {
+        new Notification(message)
+          .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
+          .setDuration(Notification.TIME_LONG)
+          .show();
+      }
     }
   }
 
