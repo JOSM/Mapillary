@@ -108,7 +108,7 @@ public final class MapillaryURL {
     }
 
     public static URL thumbnail(final String key, final boolean large) {
-      return string2URL(BASE_URL, key, "/thumb-", large ? "2048" : "320", ".png");
+      return string2URL(BASE_URL, key, "/thumb-", large ? "2048" : "320", ".jpg");
     }
   }
 
