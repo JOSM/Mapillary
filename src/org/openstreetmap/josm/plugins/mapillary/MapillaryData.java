@@ -357,27 +357,32 @@ public class MapillaryData {
     MapillaryAbstractImage oldImage = this.selectedImage;
     this.selectedImage = image;
     this.multiSelectedImages.clear();
+    final MapView mv = MapillaryPlugin.getMapView();
     if (image != null) {
       this.multiSelectedImages.add(image);
-    }
-    if (image != null && Main.main != null && image instanceof MapillaryImage) {
-      MapillaryImage mapillaryImage = (MapillaryImage) image;
-      // Downloading thumbnails of surrounding pictures.
-      if (mapillaryImage.next() != null) {
-        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
-        if (mapillaryImage.next().next() != null)
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());
+      if (mv != null && image instanceof MapillaryImage) {
+        MapillaryImage mapillaryImage = (MapillaryImage) image;
+        // Downloading thumbnails of surrounding pictures.
+        if (mapillaryImage.next() != null) {
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
+          if (mapillaryImage.next().next() != null) {
+            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());
+          }
+        }
+        if (mapillaryImage.previous() != null) {
+          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
+          if (mapillaryImage.previous().previous() != null) {
+            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());
+          }
+        }
       }
-      if (mapillaryImage.previous() != null) {
-        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
-        if (mapillaryImage.previous().previous() != null)
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());
-      }
     }
-    if (zoom && Main.main != null)
-      Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());
-    if (Main.main != null)
-      Main.map.mapView.repaint();
+    if (mv != null) {
+      if (zoom && selectedImage != null) {
+        mv.zoomTo(selectedImage.getMovingLatLon());
+      }
+      mv.repaint();
+    }
     fireSelectedImageChanged(oldImage, this.selectedImage);
   }
 
