@@ -10,6 +10,7 @@ import java.awt.geom.Path2D;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
@@ -18,9 +19,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
  * can then easily be drawn on a {@link MapView}s {@link Graphics2D}-context.
  */
 public final  class MapViewGeometryUtil {
-<span class="nc" id="L21">  private MapViewGeometryUtil() {</span>
+<span class="nc" id="L22">  private MapViewGeometryUtil() {</span>
     // Private constructor to avoid instantiation
-<span class="nc" id="L23">  }</span>
+<span class="nc" id="L24">  }</span>
 
   /**
    * Subtracts the download bounds from the rectangular bounds of the map view.
@@ -30,42 +31,40 @@ public final  class MapViewGeometryUtil {
    * @return the difference between the {@link MapView}s bounds and the downloaded area
    */
   public static Area getNonDownloadedArea(MapView mv, Iterable&lt;Bounds&gt; downloadBounds) {
-<span class="nc" id="L33">    Rectangle b = mv.getBounds();</span>
+<span class="nc" id="L34">    Rectangle b = mv.getBounds();</span>
     // on some platforms viewport bounds seem to be offset from the left,
     // over-grow it just to be sure
-<span class="nc" id="L36">    b.grow(100, 100);</span>
-<span class="nc" id="L37">    Area a = new Area(b);</span>
+<span class="nc" id="L37">    b.grow(100, 100);</span>
+<span class="nc" id="L38">    Area a = new Area(b);</span>
     // now successively subtract downloaded areas
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    for (Bounds bounds : downloadBounds) {</span>
-<span class="nc" id="L40">      Point p1 = mv.getPoint(bounds.getMin());</span>
-<span class="nc" id="L41">      Point p2 = mv.getPoint(bounds.getMax());</span>
-<span class="nc" id="L42">      Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
-<span class="nc" id="L43">          Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
-<span class="nc" id="L44">      a.subtract(new Area(r));</span>
-<span class="nc" id="L45">    }</span>
-<span class="nc" id="L46">    return a;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    for (Bounds bounds : downloadBounds) {</span>
+<span class="nc" id="L41">      Point p1 = mv.getPoint(bounds.getMin());</span>
+<span class="nc" id="L42">      Point p2 = mv.getPoint(bounds.getMax());</span>
+<span class="nc" id="L43">      Rectangle r = new Rectangle(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y),</span>
+<span class="nc" id="L44">          Math.abs(p2.x - p1.x), Math.abs(p2.y - p1.y));</span>
+<span class="nc" id="L45">      a.subtract(new Area(r));</span>
+<span class="nc" id="L46">    }</span>
+<span class="nc" id="L47">    return a;</span>
   }
 
   /**
    * Converts a {@link MapillarySequence} into a {@link Path2D} that can be drawn
-   * on the specified {@link MapView}'s {@link Graphics2D}-context.
-   * @param mv the {@link MapView} for which this conversion should be performed
+   * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
+   * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a {@link MapView}
    * @param seq the sequence to convert
    * @return the {@link Path2D} object to which the {@link MapillarySequence} has been converted
    */
-  public static Path2D getSequencePath(MapView mv, MapillarySequence seq) {
-<span class="nc" id="L57">    Path2D.Double path = new Path2D.Double();</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">    for (MapillaryAbstractImage img : seq.getImages()) {</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">      if (img.isVisible()) {</span>
-<span class="nc" id="L60">        Point p = mv.getPoint(img.getMovingLatLon());</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (path.getCurrentPoint() == null) {</span>
-<span class="nc" id="L62">          path.moveTo(p.getX(), p.getY());</span>
-        } else {
-<span class="nc" id="L64">          path.lineTo(p.getX(), p.getY());</span>
-        }
+  public static Path2D getSequencePath(NavigatableComponent nc, MapillarySequence seq) {
+<span class="nc" id="L58">    final Path2D.Double path = new Path2D.Double();</span>
+<span class="nc" id="L59">    seq.getImages().stream().filter(MapillaryAbstractImage::isVisible).forEach(img -&gt; {</span>
+<span class="nc" id="L60">      Point p = nc.getPoint(img.getMovingLatLon());</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">      if (path.getCurrentPoint() == null) {</span>
+<span class="nc" id="L62">        path.moveTo(p.getX(), p.getY());</span>
+      } else {
+<span class="nc" id="L64">        path.lineTo(p.getX(), p.getY());</span>
       }
-<span class="nc" id="L67">    }</span>
-<span class="nc" id="L68">    return path;</span>
+<span class="nc" id="L66">    });</span>
+<span class="nc" id="L67">    return path;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

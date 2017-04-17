@@ -107,7 +107,7 @@ public class MapillaryData {
    * @param update Whether the map must be updated or not.
    */
   public void addAll(Collection&lt;MapillaryAbstractImage&gt; images, boolean update) {
-<span class="fc" id="L110">    synchronized (images) {</span>
+<span class="fc" id="L110">    synchronized (this.images) {</span>
 <span class="fc" id="L111">      this.images.addAll(images);</span>
 <span class="pc" id="L112">    }</span>
 <span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (update) {</span>
@@ -357,33 +357,38 @@ public class MapillaryData {
 <span class="fc" id="L357">    MapillaryAbstractImage oldImage = this.selectedImage;</span>
 <span class="fc" id="L358">    this.selectedImage = image;</span>
 <span class="fc" id="L359">    this.multiSelectedImages.clear();</span>
-<span class="fc bfc" id="L360" title="All 2 branches covered.">    if (image != null) {</span>
-<span class="fc" id="L361">      this.multiSelectedImages.add(image);</span>
-    }
-<span class="pc bpc" id="L363" title="3 of 6 branches missed.">    if (image != null &amp;&amp; Main.main != null &amp;&amp; image instanceof MapillaryImage) {</span>
-<span class="nc" id="L364">      MapillaryImage mapillaryImage = (MapillaryImage) image;</span>
-      // Downloading thumbnails of surrounding pictures.
-<span class="nc bnc" id="L366" title="All 2 branches missed.">      if (mapillaryImage.next() != null) {</span>
-<span class="nc" id="L367">        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());</span>
-<span class="nc bnc" id="L368" title="All 2 branches missed.">        if (mapillaryImage.next().next() != null)</span>
-<span class="nc" id="L369">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());</span>
+<span class="fc" id="L360">    final MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">    if (image != null) {</span>
+<span class="fc" id="L362">      this.multiSelectedImages.add(image);</span>
+<span class="pc bpc" id="L363" title="3 of 4 branches missed.">      if (mv != null &amp;&amp; image instanceof MapillaryImage) {</span>
+<span class="nc" id="L364">        MapillaryImage mapillaryImage = (MapillaryImage) image;</span>
+        // Downloading thumbnails of surrounding pictures.
+<span class="nc bnc" id="L366" title="All 2 branches missed.">        if (mapillaryImage.next() != null) {</span>
+<span class="nc" id="L367">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">          if (mapillaryImage.next().next() != null) {</span>
+<span class="nc" id="L369">            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());</span>
+          }
+        }
+<span class="nc bnc" id="L372" title="All 2 branches missed.">        if (mapillaryImage.previous() != null) {</span>
+<span class="nc" id="L373">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());</span>
+<span class="nc bnc" id="L374" title="All 2 branches missed.">          if (mapillaryImage.previous().previous() != null) {</span>
+<span class="nc" id="L375">            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());</span>
+          }
+        }
       }
-<span class="nc bnc" id="L371" title="All 2 branches missed.">      if (mapillaryImage.previous() != null) {</span>
-<span class="nc" id="L372">        CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());</span>
-<span class="nc bnc" id="L373" title="All 2 branches missed.">        if (mapillaryImage.previous().previous() != null)</span>
-<span class="nc" id="L374">          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());</span>
-      }
     }
-<span class="pc bpc" id="L377" title="1 of 4 branches missed.">    if (zoom &amp;&amp; Main.main != null)</span>
-<span class="nc" id="L378">      Main.map.mapView.zoomTo(getSelectedImage().getMovingLatLon());</span>
-<span class="pc bpc" id="L379" title="1 of 2 branches missed.">    if (Main.main != null)</span>
-<span class="nc" id="L380">      Main.map.mapView.repaint();</span>
-<span class="fc" id="L381">    fireSelectedImageChanged(oldImage, this.selectedImage);</span>
-<span class="fc" id="L382">  }</span>
+<span class="pc bpc" id="L380" title="1 of 2 branches missed.">    if (mv != null) {</span>
+<span class="nc bnc" id="L381" title="All 4 branches missed.">      if (zoom &amp;&amp; selectedImage != null) {</span>
+<span class="nc" id="L382">        mv.zoomTo(selectedImage.getMovingLatLon());</span>
+      }
+<span class="nc" id="L384">      mv.repaint();</span>
+    }
+<span class="fc" id="L386">    fireSelectedImageChanged(oldImage, this.selectedImage);</span>
+<span class="fc" id="L387">  }</span>
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="fc" id="L385">    listeners.stream().filter(Objects::nonNull).forEach(lis -&gt; lis.selectedImageChanged(oldImage, newImage));</span>
-<span class="fc" id="L386">  }</span>
+<span class="fc" id="L390">    listeners.stream().filter(Objects::nonNull).forEach(lis -&gt; lis.selectedImageChanged(oldImage, newImage));</span>
+<span class="fc" id="L391">  }</span>
 
   /**
    * Returns a List containing all {@code MapillaryAbstractImage} objects
@@ -392,7 +397,7 @@ public class MapillaryData {
    * @return A List object containing all the images selected.
    */
   public Set&lt;MapillaryAbstractImage&gt; getMultiSelectedImages() {
-<span class="fc" id="L395">    return this.multiSelectedImages;</span>
+<span class="fc" id="L400">    return this.multiSelectedImages;</span>
   }
 
   /**
@@ -402,11 +407,11 @@ public class MapillaryData {
    * @param images the new image list (previously set images are completely replaced)
    */
   public void setImages(Collection&lt;MapillaryAbstractImage&gt; images) {
-<span class="nc" id="L405">    synchronized (this.images) {</span>
-<span class="nc" id="L406">      this.images.clear();</span>
-<span class="nc" id="L407">      this.images.addAll(images);</span>
-<span class="nc" id="L408">    }</span>
-<span class="nc" id="L409">  }</span>
+<span class="nc" id="L410">    synchronized (this.images) {</span>
+<span class="nc" id="L411">      this.images.clear();</span>
+<span class="nc" id="L412">      this.images.addAll(images);</span>
+<span class="nc" id="L413">    }</span>
+<span class="nc" id="L414">  }</span>
 
   /**
    * Returns the amount of images contained by this object.
@@ -414,9 +419,9 @@ public class MapillaryData {
    * @return The amount of images in stored.
    */
   public int size() {
-<span class="fc" id="L417">    synchronized (images) {</span>
-<span class="fc" id="L418">      return this.images.size();</span>
-<span class="nc" id="L419">    }</span>
+<span class="fc" id="L422">    synchronized (images) {</span>
+<span class="fc" id="L423">      return this.images.size();</span>
+<span class="nc" id="L424">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -318,7 +318,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L318">      g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));</span>
 <span class="nc" id="L319">    }</span>
 <span class="nc bnc" id="L320" title="All 2 branches missed.">    for (MapillaryAbstractImage imageAbs : this.data.getImages()) {</span>
-<span class="nc bnc" id="L321" title="All 4 branches missed.">      if (imageAbs.isVisible() &amp;&amp; Main.map.mapView.contains(Main.map.mapView.getPoint(imageAbs.getMovingLatLon()))) {</span>
+<span class="nc bnc" id="L321" title="All 6 branches missed.">      if (imageAbs.isVisible() &amp;&amp; mv != null &amp;&amp; mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {</span>
 <span class="nc" id="L322">        drawImageMarker(g, imageAbs);</span>
       }
 <span class="nc" id="L324">    }</span>
@@ -368,7 +368,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     // Paint direction indicator
 <span class="nc" id="L370">    g.setColor(directionC);</span>
-<span class="nc" id="L371">    g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2), CA_INDICATOR_ANGLE);</span>
+<span class="nc" id="L371">    g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);</span>
     // Paint image marker
 <span class="nc" id="L373">    g.setColor(markerC);</span>
 <span class="nc" id="L374">    g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);</span>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Caches.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.cache</a> &gt; <span class="el_source">Caches.java</span></div><h1>Caches.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.cache;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.ImageIcon;
+
+import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs.engine.behavior.IElementAttributes;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+
+public final class Caches {
+
+<span class="nc" id="L19">  private Caches() {</span>
+    // Private constructor to avoid instantiation
+<span class="nc" id="L21">  }</span>
+
+  public static File getCacheDirectory() {
+<span class="fc" id="L24">    final File f = new File(Main.pref.getPluginsDirectory().getPath() + &quot;/Mapillary/cache&quot;);</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">    if (!f.exists()) {</span>
+<span class="fc" id="L26">      f.mkdirs();</span>
+    }
+<span class="fc" id="L28">    return f;</span>
+  }
+
+  public abstract static class CacheProxy&lt;K, V&gt; {
+    private final CacheAccess&lt;K, V&gt; cache;
+
+<span class="fc" id="L34">    public CacheProxy() {</span>
+      CacheAccess&lt;K, V&gt; c;
+      try {
+<span class="fc" id="L37">        c = createNewCache();</span>
+<span class="nc" id="L38">      } catch (IOException e) {</span>
+<span class="nc" id="L39">        Main.warn(e, &quot;Could not initialize cache for &quot; + getClass().getName());</span>
+<span class="nc" id="L40">        c = null;</span>
+<span class="fc" id="L41">      }</span>
+<span class="fc" id="L42">      cache = c;</span>
+<span class="fc" id="L43">    }</span>
+
+    protected abstract CacheAccess&lt;K, V&gt; createNewCache() throws IOException;
+
+    public V get(final K key) {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">      return cache == null ? null : cache.get(key);</span>
+    }
+
+    public void put(final K key, final V value) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">      if (cache != null) {</span>
+<span class="fc" id="L53">        cache.put(key, value);</span>
+      }
+<span class="fc" id="L55">    }</span>
+  }
+
+  public static class ImageCache {
+    private static ImageCache instance;
+    private final CacheAccess&lt;String, BufferedImageCacheEntry&gt; cache;
+
+<span class="nc" id="L62">    public ImageCache() {</span>
+      CacheAccess&lt;String, BufferedImageCacheEntry&gt; c;
+      try {
+<span class="nc" id="L65">        c = JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000, getCacheDirectory().getPath());</span>
+<span class="nc" id="L66">      } catch (IOException e) {</span>
+<span class="nc" id="L67">        Main.warn(&quot;Could not initialize the Mapillary image cache.&quot;);</span>
+<span class="nc" id="L68">        c = null;</span>
+<span class="nc" id="L69">      }</span>
+<span class="nc" id="L70">      cache = c;</span>
+<span class="nc" id="L71">    }</span>
+
+    public CacheAccess&lt;String, BufferedImageCacheEntry&gt; getCache() {
+<span class="nc" id="L74">      return cache;</span>
+    }
+
+    public static ImageCache getInstance() {
+<span class="nc" id="L78">      synchronized (ImageCache.class) {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L80">          instance = new ImageCache();</span>
+        }
+<span class="nc" id="L82">        return instance;</span>
+<span class="nc" id="L83">      }</span>
+    }
+  }
+
+<span class="fc" id="L87">  public static class MapObjectIconCache extends CacheProxy&lt;String, ImageIcon&gt; {</span>
+    private static CacheProxy&lt;String, ImageIcon&gt; instance;
+
+    public static CacheProxy&lt;String, ImageIcon&gt; getInstance() {
+<span class="fc" id="L91">      synchronized (MapObjectIconCache.class) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L93">          instance = new MapObjectIconCache();</span>
+        }
+<span class="fc" id="L95">        return instance;</span>
+<span class="nc" id="L96">      }</span>
+    }
+
+    @Override
+    protected CacheAccess&lt;String, ImageIcon&gt; createNewCache() throws IOException {
+<span class="fc" id="L101">      return JCSCacheManager.getCache(&quot;mapillaryObjectIcons&quot;, 100, 1000, getCacheDirectory().getPath());</span>
+    }
+  }
+
+<span class="fc" id="L105">  public static class UserProfileCache extends CacheProxy&lt;String, UserProfile&gt; {</span>
+    private static CacheProxy&lt;String, UserProfile&gt; instance;
+
+    public static CacheProxy&lt;String, UserProfile&gt; getInstance() {
+<span class="fc" id="L109">      synchronized (UserProfileCache.class) {</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L111">          instance = new UserProfileCache();</span>
+        }
+<span class="fc" id="L113">        return instance;</span>
+<span class="nc" id="L114">      }</span>
+    }
+
+    @Override
+    protected CacheAccess&lt;String, UserProfile&gt; createNewCache() throws IOException {
+<span class="fc" id="L119">      CacheAccess&lt;String, UserProfile&gt; cache =</span>
+<span class="fc" id="L120">        JCSCacheManager.getCache(&quot;userProfile&quot;, 100, 1000, getCacheDirectory().getPath());</span>
+<span class="fc" id="L121">      IElementAttributes atts = cache.getDefaultElementAttributes();</span>
+<span class="fc" id="L122">      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)</span>
+<span class="fc" id="L123">      cache.setDefaultElementAttributes(atts);</span>
+<span class="fc" id="L124">      return cache;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

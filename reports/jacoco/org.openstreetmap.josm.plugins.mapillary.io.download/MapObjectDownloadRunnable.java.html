@@ -79,18 +79,19 @@ public class MapObjectDownloadRunnable implements Runnable {
 <span class="nc" id="L79">      layer.finishDownload(false);</span>
 <span class="nc" id="L80">      return;</span>
 <span class="fc" id="L81">    }</span>
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    layer.setStatus(</span>
-      nextURL != null
-<span class="pc bnc" id="L84" title="All 2 branches missed.">        ? (result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING)</span>
-        : STATUS.COMPLETE
-    );
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (nextURL == null) {</span>
+<span class="fc" id="L83">      layer.setStatus(STATUS.COMPLETE);</span>
+    } else {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">      layer.setStatus(result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get() ? STATUS.INCOMPLETE : STATUS.DOWNLOADING);</span>
+    }
 <span class="pc bpc" id="L87" title="3 of 4 branches missed.">    layer.finishDownload(nextURL == null || result.size() &gt;= MapillaryProperties.MAX_MAPOBJECTS.get());</span>
     try {
 <span class="fc" id="L89">      Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around</span>
 <span class="nc" id="L90">    } catch (InterruptedException e) {</span>
 <span class="nc" id="L91">      Main.debug(e);</span>
-<span class="fc" id="L92">    }</span>
-<span class="fc" id="L93">  }</span>
+<span class="nc" id="L92">      Thread.currentThread().interrupt();</span>
+<span class="fc" id="L93">    }</span>
+<span class="fc" id="L94">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

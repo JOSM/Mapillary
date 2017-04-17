@@ -107,6 +107,7 @@
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryChangesetListener.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL$IMAGE_SELECTOR.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL$APIv3.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL$Cloudfront.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL$MainWebsite.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURL.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil$ImageFileFilter.class</li>
@@ -192,8 +193,12 @@
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils$1.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache$Type.class</li>
-<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache$1.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/MapillaryCache.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Caches$CacheProxy.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Caches$ImageCache.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Caches$MapObjectIconCache.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Caches$UserProfileCache.class</li>
+<li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/cache/Caches.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordListener.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/MapillaryCommand.class</li>
 <li>/home/travis/build/JOSM/Mapillary/build/classes/main/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandDelete.class</li>
@@ -216,8 +221,8 @@
 <br/>
 </p>
 <h2>Metrics</h2>
-<p>5327 lines of code analyzed,
-	in 139 classes, 
+<p>5363 lines of code analyzed,
+	in 144 classes, 
 	in 16 packages.</p>
 <table width="500" cellpadding="5" cellspacing="2">
 <tr class="tableheader">
@@ -232,23 +237,23 @@
 </tr>
 <tr class="tablerow1">
 <td>Medium Priority Warnings</td>
-<td align="right">10</td>
-<td align="right">1.88</td>
+<td align="right">12</td>
+<td align="right">2.24</td>
 </tr>
 <tr class="tablerow1">
 <td>Low Priority Warnings</td>
-<td align="right">23</td>
-<td align="right">4.32</td>
+<td align="right">22</td>
+<td align="right">4.10</td>
 </tr>
 <tr class="$totalClass">
 <td>
 <b>Total Warnings</b>
 </td>
 <td align="right">
-<b>33</b>
+<b>34</b>
 </td>
 <td align="right">
-<b>6.19</b>
+<b>6.34</b>
 </td>
 </tr>
 </table>
@@ -290,20 +295,20 @@
 <td>
 <a href="#Warnings_MT_CORRECTNESS">Multithreaded correctness Warnings</a>
 </td>
-<td align="right">8</td>
+<td align="right">10</td>
 </tr>
 <tr class="tablerow0">
 <td>
 <a href="#Warnings_STYLE">Dodgy code Warnings</a>
 </td>
-<td align="right">8</td>
+<td align="right">7</td>
 </tr>
 <tr class="tablerow1">
 <td>
 <b>Total</b>
 </td>
 <td align="right">
-<b>33</b>
+<b>34</b>
 </td>
 </tr>
 </table>
@@ -317,7 +322,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N68139');">
+<tr class="tablerow1" onclick="toggleRow('N68256');">
 <td>
 <span class="priority-3">OS</span>
 </td>
@@ -326,12 +331,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N68139" style="display: none;">
+<p id="N68256" style="display: none;">
 <a href="#OS_OPEN_STREAM_EXCEPTION_PATH">Bug type OS_OPEN_STREAM_EXCEPTION_PATH (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils.updateFile(MapillaryImportedImage)<br/>Need to close java.io.OutputStream <br/>At UploadUtils.java:[line 170]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66627');">
+<tr class="tablerow0" onclick="toggleRow('N66752');">
 <td>
 <span class="priority-3">RV</span>
 </td>
@@ -340,26 +345,26 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66627" style="display: none;">
+<p id="N66752" style="display: none;">
 <a href="#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">Bug type RV_RETURN_VALUE_IGNORED_BAD_PRACTICE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction<br/>In method org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction.export(Set)<br/>Called method java.util.concurrent.ExecutorService.submit(Runnable)<br/>At MapillaryExportAction.java:[line 113]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66557');">
+<tr class="tablerow1" onclick="toggleRow('N66913');">
 <td>
 <span class="priority-2">RV</span>
 </td>
-<td>Exceptional return value of java.io.File.mkdirs() ignored in org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.getCacheDirectory()</td>
+<td>Exceptional return value of java.io.File.mkdirs() ignored in org.openstreetmap.josm.plugins.mapillary.cache.Caches.getCacheDirectory()</td>
 </tr>
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66557" style="display: none;">
+<p id="N66913" style="display: none;">
 <a href="#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">Bug type RV_RETURN_VALUE_IGNORED_BAD_PRACTICE (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin.getCacheDirectory()<br/>Called method java.io.File.mkdirs()<br/>At MapillaryPlugin.java:[line 282]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.cache.Caches<br/>In method org.openstreetmap.josm.plugins.mapillary.cache.Caches.getCacheDirectory()<br/>Called method java.io.File.mkdirs()<br/>At Caches.java:[line 26]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N68205');">
+<tr class="tablerow0" onclick="toggleRow('N68322');">
 <td>
 <span class="priority-3">RV</span>
 </td>
@@ -368,12 +373,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N68205" style="display: none;">
+<p id="N68322" style="display: none;">
 <a href="#RV_RETURN_VALUE_IGNORED_BAD_PRACTICE">Bug type RV_RETURN_VALUE_IGNORED_BAD_PRACTICE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils<br/>In method org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils.uploadSequence(MapillarySequence, boolean)<br/>Called method java.util.concurrent.ExecutorService.submit(Runnable)<br/>At UploadUtils.java:[line 302]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66693');">
+<tr class="tablerow1" onclick="toggleRow('N66818');">
 <td>
 <span class="priority-2">Se</span>
 </td>
@@ -382,12 +387,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66693" style="display: none;">
+<p id="N66818" style="display: none;">
 <a href="#SE_COMPARATOR_SHOULD_BE_SERIALIZABLE">Bug type SE_COMPARATOR_SHOULD_BE_SERIALIZABLE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportIntoSequenceAction$MapillaryEpochComparator<br/>At MapillaryImportIntoSequenceAction.java:[lines 57-62]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66728');">
+<tr class="tablerow0" onclick="toggleRow('N66853');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -396,12 +401,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66728" style="display: none;">
+<p id="N66853" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction<br/>Field org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction.thread<br/>Actual type org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In MapillaryWalkAction.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67509');">
+<tr class="tablerow1" onclick="toggleRow('N67704');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -410,12 +415,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N67509" style="display: none;">
+<p id="N67704" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ClipboardAction<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ClipboardAction.contents<br/>Actual type java.awt.datatransfer.Transferable<br/>In ClipboardAction.java</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66883');">
+<tr class="tablerow0" onclick="toggleRow('N67078');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -424,12 +429,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66883" style="display: none;">
+<p id="N67078" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog.map<br/>Actual type org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In MapillaryChangesetDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66943');">
+<tr class="tablerow1" onclick="toggleRow('N67138');">
 <td>
 <span class="priority-2">Se</span>
 </td>
@@ -438,12 +443,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66943" style="display: none;">
+<p id="N67138" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog.map<br/>Actual type org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand<br/>In MapillaryHistoryDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67089');">
+<tr class="tablerow0" onclick="toggleRow('N67284');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -452,12 +457,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67089" style="display: none;">
+<p id="N67284" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay.detections<br/>Actual type org.openstreetmap.josm.plugins.mapillary.model.ImageDetection<br/>In MapillaryImageDisplay.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67149');">
+<tr class="tablerow1" onclick="toggleRow('N67344');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -466,12 +471,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N67149" style="display: none;">
+<p id="N67344" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay.image<br/>Actual type java.awt.image.BufferedImage<br/>In MapillaryImageDisplay.java</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67209');">
+<tr class="tablerow0" onclick="toggleRow('N67404');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -480,12 +485,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67209" style="display: none;">
+<p id="N67404" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.image<br/>Actual type org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>In MapillaryMainDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67269');">
+<tr class="tablerow1" onclick="toggleRow('N67464');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -494,12 +499,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N67269" style="display: none;">
+<p id="N67464" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.imageCache<br/>Actual type org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache<br/>In MapillaryMainDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67329');">
+<tr class="tablerow0" onclick="toggleRow('N67524');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -508,12 +513,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67329" style="display: none;">
+<p id="N67524" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.thumbnailCache<br/>Actual type org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache<br/>In MapillaryMainDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67389');">
+<tr class="tablerow1" onclick="toggleRow('N67584');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -522,12 +527,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N67389" style="display: none;">
+<p id="N67584" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog$PauseAction<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog$PauseAction.thread<br/>Actual type org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In MapillaryMainDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67449');">
+<tr class="tablerow0" onclick="toggleRow('N67644');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -536,12 +541,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67449" style="display: none;">
+<p id="N67644" style="display: none;">
 <a href="#SE_BAD_FIELD">Bug type SE_BAD_FIELD (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog$StopAction<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog$StopAction.thread<br/>Actual type org.openstreetmap.josm.plugins.mapillary.actions.WalkThread<br/>In MapillaryMainDialog.java</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66522');">
+<tr class="tablerow1" onclick="toggleRow('N66717');">
 <td>
 <span class="priority-3">Se</span>
 </td>
@@ -550,7 +555,7 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66522" style="display: none;">
+<p id="N66717" style="display: none;">
 <a href="#SE_COMPARATOR_SHOULD_BE_SERIALIZABLE">Bug type SE_COMPARATOR_SHOULD_BE_SERIALIZABLE (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryLayer$NearestImgToTargetComparator<br/>At MapillaryLayer.java:[lines 557-569]</p>
 </td>
@@ -564,7 +569,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67567');">
+<tr class="tablerow1" onclick="toggleRow('N67762');">
 <td>
 <span class="priority-2">IS</span>
 </td>
@@ -573,12 +578,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N67567" style="display: none;">
+<p id="N67762" style="display: none;">
 <a href="#IS2_INCONSISTENT_SYNC">Bug type IS2_INCONSISTENT_SYNC (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.downloadRunnable<br/>Synchronized 75% of the time<br/>Unsynchronized access at MapObjectLayer.java:[line 127]<br/>Unsynchronized access at MapObjectLayer.java:[line 82]<br/>Synchronized access at MapObjectLayer.java:[line 92]<br/>Synchronized access at MapObjectLayer.java:[line 94]<br/>Synchronized access at MapObjectLayer.java:[line 96]<br/>Synchronized access at MapObjectLayer.java:[line 193]<br/>Synchronized access at MapObjectLayer.java:[line 194]<br/>Synchronized access at MapObjectLayer.java:[line 195]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67702');">
+<tr class="tablerow0" onclick="toggleRow('N67897');">
 <td>
 <span class="priority-3">IS</span>
 </td>
@@ -587,26 +592,54 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67702" style="display: none;">
+<p id="N67897" style="display: none;">
 <a href="#IS2_INCONSISTENT_SYNC">Bug type IS2_INCONSISTENT_SYNC (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer<br/>Field org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.nextDownloadRunnable<br/>Synchronized 66% of the time<br/>Unsynchronized access at MapObjectLayer.java:[line 78]<br/>Synchronized access at MapObjectLayer.java:[line 93]<br/>Synchronized access at MapObjectLayer.java:[line 94]<br/>Synchronized access at MapObjectLayer.java:[line 95]<br/>Synchronized access at MapObjectLayer.java:[line 197]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66036');">
+<tr class="tablerow1" onclick="toggleRow('N66048');">
+<td>
+<span class="priority-2">IS</span>
+</td>
+<td>Inconsistent synchronization of org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.sequence; locked 80% of time</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66048" style="display: none;">
+<a href="#IS2_INCONSISTENT_SYNC">Bug type IS2_INCONSISTENT_SYNC (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage<br/>Field org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage.sequence<br/>Synchronized 80% of the time<br/>Unsynchronized access at MapillaryAbstractImage.java:[line 262]<br/>Synchronized access at MapillaryAbstractImage.java:[line 159]<br/>Synchronized access at MapillaryAbstractImage.java:[line 163]<br/>Synchronized access at MapillaryAbstractImage.java:[line 160]<br/>Synchronized access at MapillaryAbstractImage.java:[line 161]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66150');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
 <td>Synchronization performed on java.util.concurrent.ConcurrentHashMap$KeySetView in org.openstreetmap.josm.plugins.mapillary.MapillaryData.add(MapillaryAbstractImage, boolean)</td>
 </tr>
-<tr class="detailrow1">
+<tr class="detailrow0">
 <td/>
 <td>
-<p id="N66036" style="display: none;">
+<p id="N66150" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.add(MapillaryAbstractImage, boolean)<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 85]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66117');">
+<tr class="tablerow1" onclick="toggleRow('N66231');">
+<td>
+<span class="priority-2">JLM</span>
+</td>
+<td>Synchronization performed on java.util.concurrent.ConcurrentHashMap$KeySetView in org.openstreetmap.josm.plugins.mapillary.MapillaryData.addAll(Collection, boolean)</td>
+</tr>
+<tr class="detailrow1">
+<td/>
+<td>
+<p id="N66231" style="display: none;">
+<a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.addAll(Collection, boolean)<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 110]</p>
+</td>
+</tr>
+<tr class="tablerow0" onclick="toggleRow('N66312');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
@@ -615,12 +648,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66117" style="display: none;">
+<p id="N66312" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.getImages()<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 239]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66198');">
+<tr class="tablerow1" onclick="toggleRow('N66393');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
@@ -629,12 +662,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66198" style="display: none;">
+<p id="N66393" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.getSequences()<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 249]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66279');">
+<tr class="tablerow0" onclick="toggleRow('N66474');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
@@ -643,12 +676,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66279" style="display: none;">
+<p id="N66474" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.remove(MapillaryAbstractImage)<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 174]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66360');">
+<tr class="tablerow1" onclick="toggleRow('N66555');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
@@ -657,12 +690,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66360" style="display: none;">
+<p id="N66555" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.setImages(Collection)<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 405]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.setImages(Collection)<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 410]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N66441');">
+<tr class="tablerow0" onclick="toggleRow('N66636');">
 <td>
 <span class="priority-2">JLM</span>
 </td>
@@ -671,9 +704,9 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N66441" style="display: none;">
+<p id="N66636" style="display: none;">
 <a href="#JLM_JSR166_UTILCONCURRENT_MONITORENTER">Bug type JLM_JSR166_UTILCONCURRENT_MONITORENTER (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.size()<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 417]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.MapillaryData<br/>In method org.openstreetmap.josm.plugins.mapillary.MapillaryData.size()<br/>Type java.util.concurrent.ConcurrentHashMap$KeySetView<br/>Value loaded from field org.openstreetmap.josm.plugins.mapillary.MapillaryData.images<br/>At MapillaryData.java:[line 422]</p>
 </td>
 </tr>
 </table>
@@ -685,7 +718,7 @@
 <th align="left">Code</th>
 <th align="left">Warning</th>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N66788');">
+<tr class="tablerow1" onclick="toggleRow('N66983');">
 <td>
 <span class="priority-3">BC</span>
 </td>
@@ -694,12 +727,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N66788" style="display: none;">
+<p id="N66983" style="display: none;">
 <a href="#BC_UNCONFIRMED_CAST">Bug type BC_UNCONFIRMED_CAST (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache<br/>In method org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.isObjectLoadable()<br/>Actual type org.openstreetmap.josm.data.cache.CacheEntry<br/>Expected org.openstreetmap.josm.data.cache.BufferedImageCacheEntry<br/>Value loaded from field org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob.cacheData<br/>At MapillaryCache.java:[line 95]</p>
+<br/>In class org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache<br/>In method org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.isObjectLoadable()<br/>Actual type org.openstreetmap.josm.data.cache.CacheEntry<br/>Expected org.openstreetmap.josm.data.cache.BufferedImageCacheEntry<br/>Value loaded from field org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob.cacheData<br/>At MapillaryCache.java:[line 80]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67003');">
+<tr class="tablerow0" onclick="toggleRow('N67198');">
 <td>
 <span class="priority-3">BC</span>
 </td>
@@ -708,12 +741,12 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N67003" style="display: none;">
+<p id="N67198" style="display: none;">
 <a href="#BC_UNCONFIRMED_CAST">Bug type BC_UNCONFIRMED_CAST (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay<br/>In method org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay.paintComponent(Graphics)<br/>Actual type java.awt.Graphics<br/>Expected java.awt.Graphics2D<br/>Value loaded from g<br/>At MapillaryImageDisplay.java:[line 429]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N68008');">
+<tr class="tablerow1" onclick="toggleRow('N68203');">
 <td>
 <span class="priority-3">FE</span>
 </td>
@@ -722,12 +755,12 @@
 <tr class="detailrow1">
 <td/>
 <td>
-<p id="N68008" style="display: none;">
+<p id="N68203" style="display: none;">
 <a href="#FE_FLOATING_POINT_EQUALITY">Bug type FE_FLOATING_POINT_EQUALITY (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.mode.SelectMode<br/>In method org.openstreetmap.josm.plugins.mapillary.mode.SelectMode.mouseReleased(MouseEvent)<br/>At SelectMode.java:[line 123]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N68271');">
+<tr class="tablerow0" onclick="toggleRow('N68388');">
 <td>
 <span class="priority-3">PZLA</span>
 </td>
@@ -736,63 +769,49 @@
 <tr class="detailrow0">
 <td/>
 <td>
-<p id="N68271" style="display: none;">
+<p id="N68388" style="display: none;">
 <a href="#PZLA_PREFER_ZERO_LENGTH_ARRAYS">Bug type PZLA_PREFER_ZERO_LENGTH_ARRAYS (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder<br/>In method org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder.decodeDoublePair(JsonArray)<br/>At JsonDecoder.java:[line 81]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N68061');">
-<td>
-<span class="priority-3">RCN</span>
-</td>
-<td>Redundant nullcheck of downloadedIcon, which is known to be non-null in org.openstreetmap.josm.plugins.mapillary.model.MapObject.getIcon(String)</td>
-</tr>
-<tr class="detailrow1">
-<td/>
-<td>
-<p id="N68061" style="display: none;">
-<a href="#RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">Bug type RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE (click for details)</a>
-<br/>In class org.openstreetmap.josm.plugins.mapillary.model.MapObject<br/>In method org.openstreetmap.josm.plugins.mapillary.model.MapObject.getIcon(String)<br/>Value loaded from downloadedIcon<br/>Return value of new javax.swing.ImageIcon(Image) of type void<br/>Redundant null check at MapObject.java:[line 77]</p>
-</td>
-</tr>
-<tr class="tablerow0" onclick="toggleRow('N67807');">
+<tr class="tablerow1" onclick="toggleRow('N68002');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
 <td>MapillaryExportManager.ex not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.cancel()</td>
 </tr>
-<tr class="detailrow0">
+<tr class="detailrow1">
 <td/>
 <td>
-<p id="N67807" style="display: none;">
+<p id="N68002" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager<br/>Field org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.ex<br/>In method org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.cancel()<br/>At MapillaryExportManager.java:[line 92]</p>
 </td>
 </tr>
-<tr class="tablerow1" onclick="toggleRow('N67874');">
+<tr class="tablerow0" onclick="toggleRow('N68069');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
 <td>MapillaryExportManager.writer not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.cancel()</td>
 </tr>
-<tr class="detailrow1">
+<tr class="detailrow0">
 <td/>
 <td>
-<p id="N67874" style="display: none;">
+<p id="N68069" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager<br/>Field org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.writer<br/>In method org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager.cancel()<br/>At MapillaryExportManager.java:[line 91]</p>
 </td>
 </tr>
-<tr class="tablerow0" onclick="toggleRow('N67941');">
+<tr class="tablerow1" onclick="toggleRow('N68136');">
 <td>
 <span class="priority-3">UwF</span>
 </td>
 <td>JoinMode.lastPos not initialized in constructor and dereferenced in org.openstreetmap.josm.plugins.mapillary.mode.JoinMode.paint(Graphics2D, MapView, Bounds)</td>
 </tr>
-<tr class="detailrow0">
+<tr class="detailrow1">
 <td/>
 <td>
-<p id="N67941" style="display: none;">
+<p id="N68136" style="display: none;">
 <a href="#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">Bug type UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR (click for details)</a>
 <br/>In class org.openstreetmap.josm.plugins.mapillary.mode.JoinMode<br/>Field org.openstreetmap.josm.plugins.mapillary.mode.JoinMode.lastPos<br/>In method org.openstreetmap.josm.plugins.mapillary.mode.JoinMode.paint(Graphics2D, MapView, Bounds)<br/>At JoinMode.java:[line 81]</p>
 </td>
@@ -901,14 +920,6 @@ This way, no explicit check for null is needed by clients of the method.</p>
 For example, <code>File.listFiles()</code> returns an empty list
 if given a directory containing no files, and returns null if the file
 is not a directory.</p>
-
-    
-<h2>
-<a name="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE">RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE: Redundant nullcheck of value known to be non-null</a>
-</h2>
-
-<p> This method contains a redundant check of a known non-null value against
-the constant null.</p>
 
     
 <h2>
