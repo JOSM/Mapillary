@@ -155,11 +155,13 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-    if (sequence == null) {
-      sequence = new MapillarySequence();
-      sequence.add(this);
+    synchronized (this) {
+      if (sequence == null) {
+        sequence = new MapillarySequence();
+        sequence.add(this);
+      }
+      return this.sequence;
     }
-    return this.sequence;
   }
 
   /**
@@ -215,10 +217,8 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @return The following MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage next() {
-    synchronized (MapillaryAbstractImage.class) {
-      if (this.getSequence() == null)
-        return null;
-      return this.getSequence().next(this);
+    synchronized (this) {
+      return getSequence() == null ? null : getSequence().next(this);
     }
   }
 
@@ -229,10 +229,8 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @return The previous MapillaryImage, or null if there is none.
    */
   public MapillaryAbstractImage previous() {
-    synchronized (MapillaryAbstractImage.class) {
-      if (this.getSequence() == null)
-        return null;
-      return this.getSequence().previous(this);
+    synchronized (this) {
+      return getSequence() == null ? null : getSequence().previous(this);
     }
   }
 
@@ -290,14 +288,4 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   public void turn(final double ca) {
     this.movingCa = this.tempCa + ca;
   }
-
-  /*@Override
-  public int compareTo(MapillaryAbstractImage mapillaryAbstractImage) {
-    return hashCode() - mapillaryAbstractImage.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return obj instanceof MapillaryAbstractImage && hashCode() == obj.hashCode();
-  }*/
 }
