@@ -18,42 +18,38 @@ public final class MapillaryURL {
   private static final String BASE_API_V2_URL = &quot;https://a.mapillary.com/v2/&quot;;
   private static final String CLIENT_ID = &quot;T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz&quot;;
 
-<span class="nc" id="L21">  public enum IMAGE_SELECTOR {</span>
-<span class="nc" id="L22">    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected</span>
-  }
-
   public static final class APIv3 {
     private static final String BASE_URL = &quot;https://a.mapillary.com/v3/&quot;;
 
-<span class="fc" id="L28">    private APIv3() {</span>
+<span class="fc" id="L24">    private APIv3() {</span>
       // Private constructor to avoid instantiation
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L26">    }</span>
 
     public static URL getUser(String key) {
-<span class="fc" id="L33">      return string2URL(BASE_URL, &quot;users/&quot;, key, MapillaryURL.queryString(null));</span>
+<span class="fc" id="L29">      return string2URL(BASE_URL, &quot;users/&quot;, key, MapillaryURL.queryString(null));</span>
     }
 
     /**
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-<span class="fc" id="L40">      return string2URL(BASE_URL, &quot;changeset&quot;, queryString(null));</span>
+<span class="fc" id="L36">      return string2URL(BASE_URL, &quot;changeset&quot;, queryString(null));</span>
     }
 
     public static URL searchDetections(Bounds bounds) {
-<span class="nc" id="L44">      return string2URL(BASE_URL, &quot;detections&quot;, queryString(bounds));</span>
+<span class="fc" id="L40">      return string2URL(BASE_URL, &quot;detections&quot;, queryString(bounds));</span>
     }
 
     public static URL searchImages(Bounds bounds) {
-<span class="nc" id="L48">      return string2URL(BASE_URL, &quot;images&quot;, queryString(bounds));</span>
+<span class="fc" id="L44">      return string2URL(BASE_URL, &quot;images&quot;, queryString(bounds));</span>
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-<span class="fc" id="L52">      return string2URL(BASE_URL, &quot;objects&quot;, queryString(bounds));</span>
+<span class="fc" id="L48">      return string2URL(BASE_URL, &quot;objects&quot;, queryString(bounds));</span>
     }
 
     public static URL searchSequences(final Bounds bounds) {
-<span class="fc" id="L56">      return string2URL(BASE_URL, &quot;sequences&quot;, queryString(bounds));</span>
+<span class="fc" id="L52">      return string2URL(BASE_URL, &quot;sequences&quot;, queryString(bounds));</span>
     }
 
     /**
@@ -64,60 +60,60 @@ public final class MapillaryURL {
      * @return the {@link URL} for the next result page, or &lt;code&gt;null&lt;/code&gt; if no such URL could be found
      */
     public static URL parseNextFromLinkHeaderValue(String value) {
-<span class="fc bfc" id="L67" title="All 2 branches covered.">      if (value != null) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      if (value != null) {</span>
         // Iterate over the different entries of the Link header
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (String link : value.split(&quot;,&quot;)) {</span>
-<span class="fc" id="L70">          boolean isNext = false;</span>
-<span class="fc" id="L71">          URL url = null;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (String link : value.split(&quot;,&quot;)) {</span>
+<span class="fc" id="L66">          boolean isNext = false;</span>
+<span class="fc" id="L67">          URL url = null;</span>
           // Iterate over the parts of each entry (typically it's one `rel=&quot;‹linkType›&quot;` and one like `&lt;https://URL&gt;`)
-<span class="fc bfc" id="L73" title="All 2 branches covered.">          for (String linkPart : link.split(&quot;;&quot;)) {</span>
-<span class="fc" id="L74">            linkPart = linkPart.trim();</span>
-<span class="fc" id="L75">            isNext |= linkPart.matches(&quot;rel\\s*=\\s*\&quot;next\&quot;&quot;);</span>
-<span class="fc bfc" id="L76" title="All 6 branches covered.">            if (linkPart.length() &gt;= 1 &amp;&amp; linkPart.charAt(0) == '&lt;' &amp;&amp; linkPart.endsWith(&quot;&gt;&quot;)) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">          for (String linkPart : link.split(&quot;;&quot;)) {</span>
+<span class="fc" id="L70">            linkPart = linkPart.trim();</span>
+<span class="fc" id="L71">            isNext |= linkPart.matches(&quot;rel\\s*=\\s*\&quot;next\&quot;&quot;);</span>
+<span class="fc bfc" id="L72" title="All 6 branches covered.">            if (linkPart.length() &gt;= 1 &amp;&amp; linkPart.charAt(0) == '&lt;' &amp;&amp; linkPart.endsWith(&quot;&gt;&quot;)) {</span>
               try {
-<span class="fc" id="L78">                url = new URL(linkPart.substring(1, linkPart.length() - 1));</span>
-<span class="fc" id="L79">              } catch (MalformedURLException e) {</span>
-<span class="fc" id="L80">                Main.warn(e, &quot;Mapillary API v3 returns a malformed URL in the Link header.&quot;);</span>
-<span class="fc" id="L81">              }</span>
+<span class="fc" id="L74">                url = new URL(linkPart.substring(1, linkPart.length() - 1));</span>
+<span class="fc" id="L75">              } catch (MalformedURLException e) {</span>
+<span class="fc" id="L76">                Main.warn(e, &quot;Mapillary API v3 returns a malformed URL in the Link header.&quot;);</span>
+<span class="fc" id="L77">              }</span>
             }
           }
           // If both a URL and the rel=next attribute are present, return the URL. Otherwise null is returned
-<span class="fc bfc" id="L85" title="All 4 branches covered.">          if (url != null &amp;&amp; isNext) {</span>
-<span class="fc" id="L86">            return url;</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">          if (url != null &amp;&amp; isNext) {</span>
+<span class="fc" id="L82">            return url;</span>
           }
         }
       }
-<span class="fc" id="L90">      return null;</span>
+<span class="fc" id="L86">      return null;</span>
     }
 
     public static String queryString(final Bounds bounds) {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">      if (bounds != null) {</span>
-<span class="fc" id="L95">        final Map&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L96">        parts.put(&quot;bbox&quot;, bounds.toBBox().toStringCSV(&quot;,&quot;));</span>
-<span class="fc" id="L97">        return MapillaryURL.queryString(parts);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">      if (bounds != null) {</span>
+<span class="fc" id="L91">        final Map&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L92">        parts.put(&quot;bbox&quot;, bounds.toBBox().toStringCSV(&quot;,&quot;));</span>
+<span class="fc" id="L93">        return MapillaryURL.queryString(parts);</span>
       }
-<span class="fc" id="L99">      return MapillaryURL.queryString(null);</span>
+<span class="fc" id="L95">      return MapillaryURL.queryString(null);</span>
     }
   }
 
   public static final class Cloudfront {
     private static final String BASE_URL = &quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot;;
 
-<span class="nc" id="L106">    private Cloudfront() {</span>
+<span class="fc" id="L102">    private Cloudfront() {</span>
       // Private constructor to avoid instantiation
-<span class="nc" id="L108">    }</span>
+<span class="fc" id="L104">    }</span>
 
     public static URL thumbnail(final String key, final boolean large) {
-<span class="fc bfc" id="L111" title="All 2 branches covered.">      return string2URL(BASE_URL, key, &quot;/thumb-&quot;, large ? &quot;2048&quot; : &quot;320&quot;, &quot;.png&quot;);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">      return string2URL(BASE_URL, key, &quot;/thumb-&quot;, large ? &quot;2048&quot; : &quot;320&quot;, &quot;.jpg&quot;);</span>
     }
   }
 
   public static final class MainWebsite {
     private static final String BASE_URL = &quot;https://www.mapillary.com/&quot;;
 
-<span class="fc" id="L118">    private MainWebsite() {</span>
+<span class="fc" id="L114">    private MainWebsite() {</span>
       // Private constructor to avoid instantiation
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L116">    }</span>
 
     /**
      * Gives you the URL for the online viewer of a specific mapillary image.
@@ -126,10 +122,10 @@ public final class MapillaryURL {
      * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt;
      */
     public static URL browseImage(String key) {
-<span class="fc bfc" id="L129" title="All 2 branches covered.">      if (key == null) {</span>
-<span class="fc" id="L130">        throw new IllegalArgumentException(&quot;The image key must not be null!&quot;);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">      if (key == null) {</span>
+<span class="fc" id="L126">        throw new IllegalArgumentException(&quot;The image key must not be null!&quot;);</span>
       }
-<span class="fc" id="L132">      return string2URL(BASE_URL, &quot;map/im/&quot;, key);</span>
+<span class="fc" id="L128">      return string2URL(BASE_URL, &quot;map/im/&quot;, key);</span>
     }
 
     /**
@@ -139,36 +135,36 @@ public final class MapillaryURL {
      * @return the URL that the user should visit to start the OAuth authentication
      */
     public static URL connect(String redirectURI) {
-<span class="fc" id="L142">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L143" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
-<span class="fc" id="L144">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
+<span class="fc" id="L138">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L139" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L140">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
       }
-<span class="fc" id="L146">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
-<span class="fc" id="L147">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="fc" id="L148">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
+<span class="fc" id="L142">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L143">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L144">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
     }
 
     public static URL mapObjectIcon(String key) {
-<span class="fc" id="L152">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
+<span class="fc" id="L148">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
     }
   }
 
-<span class="fc" id="L156">  private MapillaryURL() {</span>
+<span class="fc" id="L152">  private MapillaryURL() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L158">  }</span>
+<span class="fc" id="L154">  }</span>
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-<span class="fc" id="L164">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
+<span class="fc" id="L160">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
   }
 
   /**
    * @return the URL where you'll find information about the user account as JSON
    */
   public static URL userURL() {
-<span class="fc" id="L171">    return string2URL(BASE_API_V2_URL, &quot;me&quot;, queryString(null));</span>
+<span class="fc" id="L167">    return string2URL(BASE_API_V2_URL, &quot;me&quot;, queryString(null));</span>
   }
 
   /**
@@ -177,20 +173,20 @@ public final class MapillaryURL {
    * @return the constructed query string (including a leading ?)
    */
   static String queryString(Map&lt;String, String&gt; parts) {
-<span class="fc" id="L180">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
-<span class="fc bfc" id="L181" title="All 2 branches covered.">    if (parts != null) {</span>
-<span class="fc bfc" id="L182" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
+<span class="fc" id="L176">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (parts != null) {</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
         try {
-<span class="fc" id="L184">          ret.append('&amp;')</span>
-<span class="fc" id="L185">            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))</span>
-<span class="fc" id="L186">            .append('=')</span>
-<span class="fc" id="L187">            .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));</span>
-<span class="nc" id="L188">        } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L189">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
-<span class="fc" id="L190">        }</span>
-<span class="fc" id="L191">      }</span>
+<span class="fc" id="L180">          ret.append('&amp;')</span>
+<span class="fc" id="L181">            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))</span>
+<span class="fc" id="L182">            .append('=')</span>
+<span class="fc" id="L183">            .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));</span>
+<span class="nc" id="L184">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L185">          Main.error(e); // This should not happen, as the encoding is hard-coded</span>
+<span class="fc" id="L186">        }</span>
+<span class="fc" id="L187">      }</span>
     }
-<span class="fc" id="L193">    return ret.toString();</span>
+<span class="fc" id="L189">    return ret.toString();</span>
   }
 
   /**
@@ -201,19 +197,19 @@ public final class MapillaryURL {
    * @return the URL that is constructed from the given string
    */
   static URL string2URL(String... strings) {
-<span class="fc" id="L204">    StringBuilder builder = new StringBuilder();</span>
-<span class="pc bpc" id="L205" title="1 of 4 branches missed.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
-<span class="fc" id="L206">      builder.append(strings[i]);</span>
+<span class="fc" id="L200">    StringBuilder builder = new StringBuilder();</span>
+<span class="fc bfc" id="L201" title="All 4 branches covered.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
+<span class="fc" id="L202">      builder.append(strings[i]);</span>
     }
     try {
-<span class="fc" id="L209">      return new URL(builder.toString());</span>
-<span class="fc" id="L210">    } catch (MalformedURLException e) {</span>
-<span class="fc" id="L211">      Main.error(new Exception(String.format(</span>
+<span class="fc" id="L205">      return new URL(builder.toString());</span>
+<span class="fc" id="L206">    } catch (MalformedURLException e) {</span>
+<span class="fc" id="L207">      Main.error(new Exception(String.format(</span>
           &quot;The class '%s' produces malformed URLs like '%s'!&quot;,
-<span class="fc" id="L213">          MapillaryURL.class.getName(),</span>
+<span class="fc" id="L209">          MapillaryURL.class.getName(),</span>
           builder
       ), e));
-<span class="fc" id="L216">      return null;</span>
+<span class="fc" id="L212">      return null;</span>
     }
   }
 }
