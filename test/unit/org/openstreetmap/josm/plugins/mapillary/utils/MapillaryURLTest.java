@@ -14,15 +14,25 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.IMAGE_SELECTOR;
 
 public class MapillaryURLTest {
   private static final String CLIENT_ID_QUERY_PART = "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
-  private static final String LIMIT_20_QUERY_PART = "limit=20";
 
   public static class APIv3 {
+
+    @Test
+    public void testSearchDetections() {
+      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/detections", CLIENT_ID_QUERY_PART);
+    }
+
+    @Test
+    public void testSearchImages() {
+      assertUrlEquals(MapillaryURL.APIv3.searchImages(null), "https://a.mapillary.com/v3/images", CLIENT_ID_QUERY_PART);
+    }
+
     @Test
     public void testSearchSequences() throws UnsupportedEncodingException {
       assertUrlEquals(
@@ -85,6 +95,14 @@ public class MapillaryURLTest {
     @Test
     public void testParseNextFromHeaderValueMalformed() {
       assertEquals(null, MapillaryURL.APIv3.parseNextFromLinkHeaderValue("<###>; rel=\"next\", blub"));
+    }
+  }
+
+  public class Cloudfront {
+    @Test
+    public void testThumbnail() {
+      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key", true), "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key/thumb-2048.jpg");
+      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key2", true), "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key2/thumb-320.jpg");
     }
   }
 
@@ -151,12 +169,14 @@ public class MapillaryURLTest {
     Method method = MapillaryURL.class.getDeclaredMethod("string2URL", String[].class);
     method.setAccessible(true);
     assertNull(method.invoke(null, new Object[]{new String[]{"malformed URL"}})); // this simply invokes string2URL("malformed URL")
+    assertNull(method.invoke(null, new Object[]{null})); // invokes string2URL(null)
   }
 
   @Test
   public void testUtilityClass() {
     TestUtil.testUtilityClass(MapillaryURL.class);
     TestUtil.testUtilityClass(MapillaryURL.APIv3.class);
+    TestUtil.testUtilityClass(MapillaryURL.Cloudfront.class);
     TestUtil.testUtilityClass(MapillaryURL.MainWebsite.class);
   }
 

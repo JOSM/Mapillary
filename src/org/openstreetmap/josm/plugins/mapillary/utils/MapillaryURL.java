@@ -18,10 +18,6 @@ public final class MapillaryURL {
   private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
 
-  public enum IMAGE_SELECTOR {
-    BLURRED_ONLY, COMMENTED_ONLY, OBJ_REC_ONLY // null is used when all images should be selected
-  }
-
   public static final class APIv3 {
     private static final String BASE_URL = "https://a.mapillary.com/v3/";
 
