@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
@@ -32,12 +32,12 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final URLConnection con) throws IOException {
-    Main.info("Download sequences from " + con.getURL());
     try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
       Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
         reader.readObject(),
         JsonSequencesDecoder::decodeSequence
       );
+      logConnectionInfo(con, sequences.size() + " sequences");
       for (MapillarySequence seq : sequences) {
         if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
           for (MapillaryAbstractImage img : seq.getImages()) {
@@ -57,8 +57,9 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
           }
         }
       }
+    } catch (JsonException e) {
+      throw new IOException(e);
     }
-    Main.info("Finished sequence download");
   }
 
   @Override

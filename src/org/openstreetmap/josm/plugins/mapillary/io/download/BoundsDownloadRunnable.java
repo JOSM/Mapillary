@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.function.Function;
@@ -44,6 +45,29 @@ public abstract class BoundsDownloadRunnable implements Runnable {
           .show();
       }
     }
+  }
+
+  /**
+   * Logs information about the given connection via {@link Main#info(String)}.
+   * If it's a {@link HttpURLConnection}, the request method, the response code and the URL itself are logged.
+   * Otherwise only the URL is logged.
+   * @param con the {@link URLConnection} for which information is logged
+   * @param info an additional info text, which is appended to the output in braces
+   * @throws IOException if {@link HttpURLConnection#getResponseCode()} throws an {@link IOException}
+   */
+  public static void logConnectionInfo(final URLConnection con, final String info) throws IOException {
+    final StringBuilder message;
+    if (con instanceof HttpURLConnection) {
+      message = new StringBuilder(((HttpURLConnection) con).getRequestMethod())
+        .append(' ').append(con.getURL())
+        .append(" → ").append(((HttpURLConnection) con).getResponseCode());
+    } else {
+      message = new StringBuilder("Download from ").append(con.getURL());
+    }
+    if (info != null && info.length() >= 1) {
+      message.append(" (").append(info).append(')');
+    }
+    Main.info(message.toString());
   }
 
   public abstract void run(final URLConnection connection) throws IOException;

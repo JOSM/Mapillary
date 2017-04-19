@@ -8,9 +8,9 @@ import java.net.URLConnection;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -29,12 +29,13 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final URLConnection con) throws IOException {
-    Main.info("Download image details from " + con.getURL());
     try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
       JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);
+      logConnectionInfo(con, null);
       MapillaryMainDialog.getInstance().updateTitle();
+    } catch (JsonException e) {
+      throw new IOException(e);
     }
-    Main.info("Finished downloading image details");
   }
 
   @Override
