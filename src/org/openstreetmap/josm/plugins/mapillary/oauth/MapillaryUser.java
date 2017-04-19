@@ -59,7 +59,7 @@ public final class MapillaryUser {
       if (imagesHash == null)
         imagesHash = OAuthUtils
             .getWithHeader(MapillaryURL.uploadSecretsURL())
-            .getString("images_hash");
+            .getString("images_hash", null);
       hash.put("images_hash", imagesHash);
       if (imagesPolicy == null)
         imagesPolicy = OAuthUtils
