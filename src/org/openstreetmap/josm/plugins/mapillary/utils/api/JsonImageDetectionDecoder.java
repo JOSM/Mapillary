@@ -13,7 +13,12 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeImageDetection(JsonObject)} tries to convert it to a {@link ImageDetection}.
+ */
 public final class JsonImageDetectionDecoder {
   private JsonImageDetectionDecoder() {
     // Private constructor to avoid instantiation

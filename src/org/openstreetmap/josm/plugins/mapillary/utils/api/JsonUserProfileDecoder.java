@@ -9,8 +9,13 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.ImageProvider;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeUserProfile(JsonObject)} tries to convert it to a {@link UserProfile}.
+ */
 public final class JsonUserProfileDecoder {
   private static final ImageIcon FAKE_AVATAR = new ImageProvider("fake-avatar").get();
 

@@ -7,7 +7,12 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeMapObject(JsonObject)} tries to convert it to a {@link MapObject}.
+ */
 public final class JsonMapObjectDecoder {
   private JsonMapObjectDecoder() {
     // Private constructor to avoid instantiation

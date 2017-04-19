@@ -13,9 +13,11 @@ import javax.json.JsonValue;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
 /**
- * The JsonSequencesDecoder decodes the JSON returned by APIv3 into Java objects
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeSequence(JsonObject)} tries to convert it to a {@link MapillarySequence}.
  */
 public final class JsonSequencesDecoder {
   private JsonSequencesDecoder() {
