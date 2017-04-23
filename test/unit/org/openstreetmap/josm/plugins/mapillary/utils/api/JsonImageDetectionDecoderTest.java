@@ -46,32 +46,32 @@ public class JsonImageDetectionDecoderTest {
       detections.put(detection.getKey(), detection);
     }
 
-    final ImageDetection id1 = detections.get("u0lvc577hes4a0k8pgkak6pr5g");
-    assertEquals("LNuUpMXZax88-VuqNoiqEQ", id1.getImageKey());
-    assertEquals("u0lvc577hes4a0k8pgkak6pr5g", id1.getKey());
-    assertEquals(0.999222, id1.getScore(), 1e-9);
-    assertEquals("regulatory--go-straight--g1", id1.getValue());
+    final ImageDetection id1 = detections.get("bzqdn10wz1s1xd3lae3hawgja0");
+    assertEquals("33zgql54_tBVvmIij0zrcA", id1.getImageKey());
+    assertEquals("bzqdn10wz1s1xd3lae3hawgja0", id1.getKey());
+    assertEquals(0.000001, id1.getScore(), 1e-9);
+    assertEquals("information--pedestrians-crossing--g1", id1.getValue());
 
     final PathIterator pi1 = id1.getShape().getPathIterator(new AffineTransform());
-    testPathSegment(pi1, PathIterator.SEG_MOVETO, 0.74365234375, 0.530029296875);
-    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.7646484375, 0.530029296875);
-    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.7646484375, 0.573974609375);
-    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.74365234375, 0.573974609375);
-    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.74365234375, 0.530029296875);
+    testPathSegment(pi1, PathIterator.SEG_MOVETO, 0.42724609375, 0.69091796875);
+    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.436279296875, 0.69091796875);
+    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.436279296875, 0.70263671875);
+    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.42724609375, 0.70263671875);
+    testPathSegment(pi1, PathIterator.SEG_LINETO, 0.42724609375, 0.69091796875);
     testPathSegment(pi1, PathIterator.SEG_CLOSE, 0, 0);
 
-    final ImageDetection id2 = detections.get("as4sbsi48vbfk4555q18rq9jnj");
-    assertEquals("8Crlqn_Tq3Gbj_QrTSeJqQ", id2.getImageKey());
-    assertEquals("as4sbsi48vbfk4555q18rq9jnj", id2.getKey());
-    assertEquals(0.985142, id2.getScore(), 1e-9);
-    assertEquals("regulatory--u-turn--g1", id2.getValue());
+    final ImageDetection id2 = detections.get("uzve1xkyk5qbjwrzaq0do09u1x");
+    assertEquals("33zgql54_tBVvmIij0zrcA", id2.getImageKey());
+    assertEquals("uzve1xkyk5qbjwrzaq0do09u1x", id2.getKey());
+    assertEquals(0.000001, id2.getScore(), 1e-9);
+    assertEquals("information--pedestrians-crossing--g1", id2.getValue());
 
     final PathIterator pi2 = id2.getShape().getPathIterator(new AffineTransform());
-    testPathSegment(pi2, PathIterator.SEG_MOVETO, 0.828125, 0.490478515625);
-    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.846923828125, 0.490478515625);
-    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.846923828125, 0.510498046875);
-    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.828125, 0.510498046875);
-    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.828125, 0.490478515625);
+    testPathSegment(pi2, PathIterator.SEG_MOVETO, 0.42724609375, 0.69091796875);
+    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.436279296875, 0.69091796875);
+    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.436279296875, 0.70263671875);
+    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.42724609375, 0.70263671875);
+    testPathSegment(pi2, PathIterator.SEG_LINETO, 0.42724609375, 0.69091796875);
     testPathSegment(pi2, PathIterator.SEG_CLOSE, 0, 0);
   }
 

@@ -426,18 +426,20 @@ public class MapillaryImageDisplay extends JComponent {
         AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
         unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
-        Graphics2D g2d = (Graphics2D) g;
+        final Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
-        g2d.setColor(MapillaryColorScheme.TRAFFICSIGNS_ORANGE);
         for (ImageDetection d : detections) {
-          Shape shape = d.getShape().createTransformedShape(unit2compTransform);
-          g2d.drawImage(
-            MapObject.getIcon(d.getValue()).getImage(),
-            shape.getBounds().x, shape.getBounds().y,
-            shape.getBounds().width, shape.getBounds().height,
-            null
-          );
+          final Shape shape = d.getShape().createTransformedShape(unit2compTransform);
+          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
           g2d.draw(shape);
+          if (d.isTrafficSign()) {
+            g2d.drawImage(
+              MapObject.getIcon(d.getValue()).getImage(),
+              shape.getBounds().x, shape.getBounds().y,
+              shape.getBounds().width, shape.getBounds().height,
+              null
+            );
+          }
         }
       }
     }

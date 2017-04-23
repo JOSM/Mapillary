@@ -4,88 +4,90 @@
     {
       "type": "Feature",
       "properties": {
-        "area": 0.0009162808641975282,
-        "image_key": "LNuUpMXZax88-VuqNoiqEQ",
-        "key": "u0lvc577hes4a0k8pgkak6pr5g",
-        "score": 0.999222,
+        "area": 0.00010585784912109375,
+        "image_key": "33zgql54_tBVvmIij0zrcA",
+        "key": "bzqdn10wz1s1xd3lae3hawgja0",
+        "package": "trafficsign",
+        "score": 0.000001,
         "shape": {
           "type": "Polygon",
           "coordinates": [
             [
               [
-                0.74365234375,
-                0.530029296875
+                0.42724609375,
+                0.69091796875
               ],
               [
-                0.7646484375,
-                0.530029296875
+                0.436279296875,
+                0.69091796875
               ],
               [
-                0.7646484375,
-                0.573974609375
+                0.436279296875,
+                0.70263671875
               ],
               [
-                0.74365234375,
-                0.573974609375
+                0.42724609375,
+                0.70263671875
               ],
               [
-                0.74365234375,
-                0.530029296875
+                0.42724609375,
+                0.69091796875
               ]
             ]
           ]
         },
-        "value": "regulatory--go-straight--g1"
+        "value": "information--pedestrians-crossing--g1"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          32.20263300647002,
-          50.22795119437956
+          12.995127,
+          55.550739
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area": 0.0003740798811354602,
-        "image_key": "8Crlqn_Tq3Gbj_QrTSeJqQ",
-        "key": "as4sbsi48vbfk4555q18rq9jnj",
-        "score": 0.985142,
+        "area": 0.00010585784912109375,
+        "image_key": "33zgql54_tBVvmIij0zrcA",
+        "key": "uzve1xkyk5qbjwrzaq0do09u1x",
+        "package": "trafficsign",
+        "score": 0.000001,
         "shape": {
           "type": "Polygon",
           "coordinates": [
             [
               [
-                0.828125,
-                0.490478515625
+                0.42724609375,
+                0.69091796875
               ],
               [
-                0.846923828125,
-                0.490478515625
+                0.436279296875,
+                0.69091796875
               ],
               [
-                0.846923828125,
-                0.510498046875
+                0.436279296875,
+                0.70263671875
               ],
               [
-                0.828125,
-                0.510498046875
+                0.42724609375,
+                0.70263671875
               ],
               [
-                0.828125,
-                0.490478515625
+                0.42724609375,
+                0.69091796875
               ]
             ]
           ]
         },
-        "value": "regulatory--u-turn--g1"
+        "value": "information--pedestrians-crossing--g1"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          32.28697069999998,
-          50.2510178
+          12.995127,
+          55.550739
         ]
       }
     }
