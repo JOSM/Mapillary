@@ -65,8 +65,6 @@ public class MapillaryPlugin extends Plugin {
   /** Upload action */
   private static final MapillaryUploadAction UPLOAD_ACTION = new MapillaryUploadAction();
 
-  /** Menu button for the {@link MapillaryDownloadAction} action. */
-  private static final JMenuItem DOWNLOAD_MENU;
   /** Menu button for the {@link MapillaryExportAction} action. */
   private static final JMenuItem EXPORT_MENU;
   /** Menu button for the {@link MapillaryImportAction} action. */
@@ -87,7 +85,6 @@ public class MapillaryPlugin extends Plugin {
   static {
     if (Main.main == null) {
       EXPORT_MENU = null;
-      DOWNLOAD_MENU = null;
       IMPORT_MENU = null;
       ZOOM_MENU = null;
       DOWNLOAD_VIEW_MENU = null;
@@ -98,8 +95,7 @@ public class MapillaryPlugin extends Plugin {
     } else {
       EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, EXPORT_ACTION, false, 14);
       EXPORT_MENU.setEnabled(false);
-      DOWNLOAD_MENU = MainMenu.add(Main.main.menu.imagerySubMenu, DOWNLOAD_ACTION, false);
-      DOWNLOAD_MENU.setEnabled(false);
+      MainMenu.add(Main.main.menu.imagerySubMenu, DOWNLOAD_ACTION, false);
       IMPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, IMPORT_ACTION, false, 14);
       IMPORT_MENU.setEnabled(false);
       ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, ZOOM_ACTION, false, 15);
@@ -218,7 +214,6 @@ public class MapillaryPlugin extends Plugin {
       Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-      setMenuEnabled(DOWNLOAD_MENU, true);
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY) {
         setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
       }
@@ -231,7 +226,6 @@ public class MapillaryPlugin extends Plugin {
       MapillaryChangesetDialog.destroyInstance();
       MapillaryFilterDialog.destroyInstance();
       ImageInfoPanel.destroyInstance();
-      setMenuEnabled(DOWNLOAD_MENU, false);
       setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
       setMenuEnabled(IMPORT_MENU, false);
       setMenuEnabled(IMPORT_INTO_SEQUENCE_MENU, false);

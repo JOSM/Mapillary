@@ -38,7 +38,6 @@ public class MapillaryDownloadAction extends JosmAction {
         "mapillaryDownload",
         false
     );
-    this.setEnabled(false);
   }
 
   @Override
