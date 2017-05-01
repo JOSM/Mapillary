@@ -38,10 +38,6 @@ public class MapillaryDataTest extends AbstractTest {
     this.seq = new MapillarySequence();
 
     this.seq.add(Arrays.asList(new MapillaryAbstractImage[] {img1, img2, img3, img4}));
-    this.img1.setSequence(this.seq);
-    this.img2.setSequence(this.seq);
-    this.img3.setSequence(this.seq);
-    this.img4.setSequence(this.seq);
 
     this.data = new MapillaryData();
     this.data.addAll(new ConcurrentSkipListSet<>(this.seq.getImages()));

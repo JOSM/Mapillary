@@ -59,7 +59,6 @@ public final class JsonSequencesDecoder {
         if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
           final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
           result.add(img);
-          img.setSequence(result);
         }
       }
       if (result.getImages().isEmpty()) {

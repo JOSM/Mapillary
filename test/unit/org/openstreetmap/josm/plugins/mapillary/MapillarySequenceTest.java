@@ -37,10 +37,6 @@ public class MapillarySequenceTest {
     seq = new MapillarySequence();
 
     seq.add(Arrays.asList(new MapillaryAbstractImage[] { img1, img2, img3, img4 }));
-    img1.setSequence(seq);
-    img2.setSequence(seq);
-    img3.setSequence(seq);
-    img4.setSequence(seq);
   }
 
   /**

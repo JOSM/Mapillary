@@ -257,8 +257,13 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * Sets the MapillarySequence object which contains the MapillaryImage.
    *
    * @param sequence The MapillarySequence that contains the MapillaryImage.
+   * @throws IllegalArgumentException if the image is not already part of the {@link MapillarySequence}.
+   *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
+    if (!sequence.getImages().contains(this)) {
+      throw new IllegalArgumentException();
+    }
     this.sequence = sequence;
   }
 
