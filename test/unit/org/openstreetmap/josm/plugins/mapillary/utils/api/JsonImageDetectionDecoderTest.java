@@ -144,6 +144,11 @@ public class JsonImageDetectionDecoderTest {
       "{\"type\": \"Feature\", \"properties\":{\"image_key\":\"the_image_key\",\"key\": \"detection_key\",",
       "\"score\":314159e-5, \"shape\":{\"type\":\"Polygon\", \"coordinates\":[[[0,0], [0,1]]]}}}"
     );
+    assertDecodesToNull(
+      JsonImageDetectionDecoder::decodeImageDetection,
+      "{\"type\": \"Feature\", \"properties\":{\"image_key\":\"the_image_key\",\"key\": \"detection_key\",",
+      "\"score\":314159e-5, \"package\":\"arbitrary_package\", \"shape\":{\"type\":\"Polygon\", \"coordinates\":[[[0,0], [0,1]]]}}}"
+    );
   }
 
   @Test

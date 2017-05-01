@@ -11,6 +11,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.xml.sax.SAXException;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
@@ -18,7 +20,6 @@ import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.xml.sax.SAXException;
 
 /**
  * Export main thread. Exportation works by creating a

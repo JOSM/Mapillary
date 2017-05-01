@@ -60,7 +60,7 @@ public class JsonUserProfileDecoderTest {
     fakeAvatar.setAccessible(true);
     assertEquals(fakeAvatar.get(null), profile.getAvatar());
 
-    profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"null\"}"));
+    profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"https://127.0.0.1/nonExistingAvatarFile\"}"));
     assertEquals(fakeAvatar.get(null), profile.getAvatar());
   }
 }
