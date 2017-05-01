@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
@@ -32,7 +33,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param file  The file containing the picture.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file) {
-    this(latLon, ca, file, MapillaryUtils.currentDate());
+    this(latLon, ca, file, Calendar.getInstance().getTimeInMillis());
   }
 
   /**
@@ -44,17 +45,26 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param datetimeOriginal  The date the picture was taken.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final String datetimeOriginal) {
-    super(latLon, ca);
-    this.file = file;
+    this(latLon, ca, file, parseTimestampElseCurrentTime(datetimeOriginal));
+
+  }
+
+  private static long parseTimestampElseCurrentTime(final String timestamp) {
     try {
-      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy:MM:dd HH:mm:ss");
+      return MapillaryUtils.getEpoch(timestamp, "yyyy:MM:dd HH:mm:ss");
     } catch (ParseException e) {
       try {
-        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy/MM/dd HH:mm:ss");
+        return MapillaryUtils.getEpoch(timestamp, "yyyy/MM/dd HH:mm:ss");
       } catch (ParseException e1) {
-        this.capturedAt = MapillaryUtils.currentTime();
+        return MapillaryUtils.currentTime();
       }
     }
+  }
+
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final long capturedAt) {
+    super(latLon, ca);
+    this.file = file;
+    this.capturedAt = capturedAt;
   }
 
   /**
