@@ -43,7 +43,7 @@ class RunJosmTask extends JavaExec {
   String extraInformation = ''
   public RunJosmTask() {
     group 'JOSM'
-    main 'JOSM'
+    main 'org.openstreetmap.josm.gui.MainApplication'
     args (project.hasProperty('josmArgs') ? project.josmArgs.split('\\\\') : [])
   }
 }
