@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
+import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
@@ -62,7 +63,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     if (geoImage.getFile() == null) {
       throw new IllegalArgumentException("Can't create an imported image from an ImageEntry without associated file.");
     }
-    LatLon coord = geoImage.getExifCoor();
+    final CachedLatLon cachedCoord = geoImage.getPos();
+    LatLon coord = cachedCoord == null ? null : cachedCoord.getRoundedToOsmPrecision();
     if (coord == null) {
       final MapView mv = MapillaryPlugin.getMapView();
       coord =  mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
