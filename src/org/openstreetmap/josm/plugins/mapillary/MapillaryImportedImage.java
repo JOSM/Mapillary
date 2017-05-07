@@ -10,6 +10,9 @@ import java.util.Calendar;
 import javax.imageio.ImageIO;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -46,7 +49,29 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final String datetimeOriginal) {
     this(latLon, ca, file, parseTimestampElseCurrentTime(datetimeOriginal));
+  }
 
+  /**
+   * Constructs a new image from an image entry of a {@link GeoImageLayer}.
+   * @param geoImage the {@link ImageEntry}, from which the corresponding fields are taken
+   */
+  public static MapillaryImportedImage createInstance(final ImageEntry geoImage) {
+    if (geoImage == null) {
+      return null;
+    }
+    if (geoImage.getFile() == null) {
+      throw new IllegalArgumentException("Can't create an imported image from an ImageEntry without associated file.");
+    }
+    LatLon coord = geoImage.getExifCoor();
+    if (coord == null) {
+      final MapView mv = MapillaryPlugin.getMapView();
+      coord =  mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
+    }
+    final double ca = geoImage.getExifImgDir() == null ? 0 : geoImage.getExifImgDir();
+    final long time = geoImage.hasGpsTime()
+      ? geoImage.getGpsTime().getTime()
+      : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
+    return new MapillaryImportedImage(coord, ca, geoImage.getFile(), time);
   }
 
   private static long parseTimestampElseCurrentTime(final String timestamp) {

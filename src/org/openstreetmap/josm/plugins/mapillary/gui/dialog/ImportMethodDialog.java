@@ -93,10 +93,11 @@ public class ImportMethodDialog extends JDialog {
     filesBtn.addActionListener(e -> {
       if (JFileChooser.APPROVE_OPTION == IMAGE_FILE_CHOOSER.showOpenDialog(this)) {
         for (File f : IMAGE_FILE_CHOOSER.getSelectedFiles()) {
-          MapView mv = MapillaryPlugin.getMapView();
+          final MapView mv = MapillaryPlugin.getMapView();
+          final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
           try {
             final MapillarySequence seq = new MapillarySequence();
-            seq.add(ImageImportUtil.readImagesFrom(f, new LatLon(mv == null ? 0 : mv.getCenter().getX(), mv == null ? 0 : mv.getCenter().getY())));
+            seq.add(ImageImportUtil.readImagesFrom(f, center));
             MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
             MapillaryImportAction.recordChanges(seq.getImages());
           } catch (IOException e1) {

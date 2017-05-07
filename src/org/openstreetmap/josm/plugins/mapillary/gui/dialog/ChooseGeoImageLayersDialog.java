@@ -5,8 +5,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractListModel;
@@ -20,19 +22,19 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 
-/**
- *
- */
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
   private static final String QUESTION = I18n.marktr("Which image layers do you want to import into the Mapillary layer?");
@@ -61,10 +63,24 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     importButton.addActionListener(e -> {
       list.getSelectedValuesList().parallelStream().map(gil -> {
         MapillarySequence seq = new MapillarySequence();
-        seq.add(gil.getImages().parallelStream()
-          .map(img -> new MapillaryImportedImage(img.getExifCoor(), img.getExifImgDir(), img.getFile(), img.getExifTime().getTime()))
-          .sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt()))
-          .collect(Collectors.toList()));
+        seq.add(
+          gil.getImages().parallelStream()
+            .map(img -> {
+              try {
+                return MapillaryImportedImage.createInstance(img);
+              } catch (IllegalArgumentException iae) {
+                final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");
+                Main.warn(iae, message);
+                if (!GraphicsEnvironment.isHeadless()) {
+                  new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();
+                }
+                return null;
+              }
+            })
+            .filter(Objects::nonNull)
+            .sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt()))
+            .collect(Collectors.toList())
+        );
         return seq;
       }).forEach(seq -> {
         MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
