@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -133,8 +134,9 @@ public class ImportMethodDialog extends JDialog {
       } else {
         ChooseGeoImageLayersDialog dia = new ChooseGeoImageLayersDialog(this, layers);
         dia.setVisible(true);
-        dia.addWindowStateListener(we -> {
-          if (we.getNewState() == WindowEvent.WINDOW_CLOSING) {
+        dia.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowClosed(WindowEvent we) {
             dispose();
           }
         });
