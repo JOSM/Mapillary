@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.Notification;
@@ -25,6 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
@@ -74,7 +76,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         httpPost.addHeader("Authorization", "Bearer " + token);
         MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
         String json = buildLocationChangesetJson(locationChangeset).build().toString();
-        Main.debug("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
+        Main.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
           CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -97,6 +99,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
             n.setIcon(JOptionPane.ERROR_MESSAGE);
             n.setDuration(Notification.TIME_LONG);
             n.show();
+            Main.error("Failed response " + EntityUtils.toString(response.getEntity()));
           }
         } catch (IOException e) {
           Main.error(e, "Exception while trying to submit a changeset to mapillary.com");
@@ -119,17 +122,18 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
   private static JsonObjectBuilder buildImgChangeJson(MapillaryImage img) {
     return Json.createObjectBuilder()
       .add("image_key", img.getKey())
-      .add("values", Json.createObjectBuilder()
-        .add("from", Json.createObjectBuilder()
-          .add("ca", img.getCa())
-          .add("lat", img.getLatLon().getY())
-          .add("lon", img.getLatLon().getX())
+      .add("to", Json.createObjectBuilder()
+        .add("geometry", Json.createObjectBuilder()
+          .add("type", "Point")
+          .add("coordinates", Json.createArrayBuilder()
+            .add(img.getTempLatLon().getX())
+            .add(img.getTempLatLon().getY())
+          )
         )
-        .add("to", Json.createObjectBuilder()
+        .add("properties", Json.createObjectBuilder()
           .add("ca", img.getTempCa())
-          .add("lat", img.getTempLatLon().getY())
-          .add("lon", img.getTempLatLon().getX())
         )
+        .add("type", "Feature")
       );
   }
 
@@ -139,7 +143,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       imgChanges.add(buildImgChangeJson(img));
     }
     return Json.createObjectBuilder()
-      .add("change_type", "location")
+      .add("type", "location")
       .add("changes", imgChanges.build())
       .add("request_comment", "JOSM-created");
   }
