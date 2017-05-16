@@ -33,7 +33,7 @@ public final class MapillaryURL {
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-      return string2URL(BASE_URL, "changeset", queryString(null));
+      return string2URL(BASE_URL, "changesets", queryString(null));
     }
 
     public static URL searchDetections(Bounds bounds) {
@@ -164,7 +164,7 @@ public final class MapillaryURL {
    * @return the URL where you'll find information about the user account as JSON
    */
   public static URL userURL() {
-    return string2URL(BASE_API_V2_URL, "me", queryString(null));
+    return string2URL(APIv3.BASE_URL, "me", queryString(null));
   }
 
   /**
