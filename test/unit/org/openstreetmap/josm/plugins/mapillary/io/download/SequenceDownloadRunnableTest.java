@@ -10,6 +10,8 @@ import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -25,6 +27,7 @@ public class SequenceDownloadRunnableTest extends AbstractTest {
 
   @Before
   public void setUp() {
+    JOSMFixture.initContentPane();
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 

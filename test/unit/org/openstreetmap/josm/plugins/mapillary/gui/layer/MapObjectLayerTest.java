@@ -16,6 +16,8 @@ import javax.swing.Icon;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
@@ -29,6 +31,7 @@ public class MapObjectLayerTest {
 
   @BeforeClass
   public static void setUp() throws IllegalAccessException, IOException {
+    JOSMFixture.initContentPane();
     TestUtil.initPlugin();
     urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "URL_GEN");
 

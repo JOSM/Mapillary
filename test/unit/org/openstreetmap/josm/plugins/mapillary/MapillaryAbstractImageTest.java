@@ -7,7 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.TimeZone;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 
@@ -15,6 +18,13 @@ import org.openstreetmap.josm.data.coor.LatLon;
  *
  */
 public class MapillaryAbstractImageTest extends AbstractTest{
+  /**
+   * Setup test.
+   */
+  @Before
+  public void setUp() {
+    JOSMFixture.initContentPane();
+  }
 
   /**
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.

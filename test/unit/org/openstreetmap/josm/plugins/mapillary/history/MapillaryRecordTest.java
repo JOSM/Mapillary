@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -43,6 +45,7 @@ public class MapillaryRecordTest extends AbstractTest {
    */
   @Before
   public void setUp() {
+    JOSMFixture.initContentPane();
     record = new MapillaryRecord();
     img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 0.1);
     img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 0.2);
