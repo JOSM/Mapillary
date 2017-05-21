@@ -43,6 +43,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   /**
    * Main constructor.
+   * @param changesetDialog Mapillary changeset dialog
    */
   public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(

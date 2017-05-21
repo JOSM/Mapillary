@@ -350,6 +350,7 @@ public class MapillaryImageDisplay extends JComponent {
    * Sets a new picture to be displayed.
    *
    * @param image The picture to be displayed.
+   * @param detections image detections
    */
   public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
     synchronized (this) {

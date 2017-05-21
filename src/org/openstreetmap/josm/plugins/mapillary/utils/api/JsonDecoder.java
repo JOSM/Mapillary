@@ -26,7 +26,9 @@ public final class JsonDecoder {
    * Parses a given {@link JsonObject} as a GeoJSON FeatureCollection into a {@link Collection}
    * of the desired Java objects. The method, which converts the GeoJSON features into Java objects
    * is given as a parameter to this method.
+   * @param <T> feature type
    * @param json the {@link JsonObject} to be parsed
+   * @param featureDecoder feature decoder which transforms JSON objects to Java objects
    * @return a {@link Collection} which is parsed from the given {@link JsonObject}, which contains GeoJSON.
    *         Currently a {@link HashSet} is used, but please don't rely on it, this could change at any time without
    *         prior notice. The return value will not be <code>null</code>.

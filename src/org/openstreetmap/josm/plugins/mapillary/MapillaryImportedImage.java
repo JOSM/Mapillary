@@ -55,6 +55,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Constructs a new image from an image entry of a {@link GeoImageLayer}.
    * @param geoImage the {@link ImageEntry}, from which the corresponding fields are taken
+   * @return new image
    */
   public static MapillaryImportedImage createInstance(final ImageEntry geoImage) {
     if (geoImage == null) {

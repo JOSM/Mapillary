@@ -50,6 +50,7 @@ public class MapillarySequence {
    * Creates a sequence object with the given parameters.
    *
    * @param key The unique identifier of the sequence.
+   * @param userKey The user key
    * @param capturedAt The date the sequence was created.
    */
   public MapillarySequence(final String key, final String userKey, final long capturedAt) {
