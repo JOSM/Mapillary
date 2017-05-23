@@ -7,33 +7,38 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeMapObject(JsonObject)} tries to convert it to a {@link MapObject}.
+ */
 public final class JsonMapObjectDecoder {
-<span class="fc" id="L12">  private JsonMapObjectDecoder() {</span>
+<span class="fc" id="L17">  private JsonMapObjectDecoder() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L14">  }</span>
+<span class="fc" id="L19">  }</span>
 
   public static MapObject decodeMapObject(final JsonObject json) {
-<span class="fc bfc" id="L17" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
-<span class="fc" id="L18">      return null;</span>
+<span class="fc bfc" id="L22" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L23">      return null;</span>
     }
 
-<span class="fc" id="L21">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
-<span class="fc" id="L22">    final JsonValue geometry = json.get(&quot;geometry&quot;);</span>
-<span class="fc bfc" id="L23" title="All 4 branches covered.">    if (properties instanceof JsonObject &amp;&amp; geometry instanceof JsonObject) {</span>
-<span class="fc" id="L24">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
-<span class="fc" id="L25">      final String packg = ((JsonObject) properties).getString(&quot;package&quot;, null);</span>
-<span class="fc" id="L26">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
-<span class="fc" id="L27">      final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;first_seen_at&quot;, null));</span>
-<span class="fc" id="L28">      final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;last_seen_at&quot;, null));</span>
-<span class="fc" id="L29">      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;updated_at&quot;, null));</span>
+<span class="fc" id="L26">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
+<span class="fc" id="L27">    final JsonValue geometry = json.get(&quot;geometry&quot;);</span>
+<span class="fc bfc" id="L28" title="All 4 branches covered.">    if (properties instanceof JsonObject &amp;&amp; geometry instanceof JsonObject) {</span>
+<span class="fc" id="L29">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
+<span class="fc" id="L30">      final String packg = ((JsonObject) properties).getString(&quot;package&quot;, null);</span>
+<span class="fc" id="L31">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
+<span class="fc" id="L32">      final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;first_seen_at&quot;, null));</span>
+<span class="fc" id="L33">      final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;last_seen_at&quot;, null));</span>
+<span class="fc" id="L34">      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString(&quot;updated_at&quot;, null));</span>
 
-<span class="fc bfc" id="L31" title="All 2 branches covered.">      final JsonValue coordVal = &quot;Point&quot;.equals(((JsonObject) geometry).getString(&quot;type&quot;, null))</span>
-<span class="fc" id="L32">        ? ((JsonObject) geometry).get(&quot;coordinates&quot;)</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">      final JsonValue coordVal = &quot;Point&quot;.equals(((JsonObject) geometry).getString(&quot;type&quot;, null))</span>
+<span class="fc" id="L37">        ? ((JsonObject) geometry).get(&quot;coordinates&quot;)</span>
         : null;
-<span class="fc bfc" id="L34" title="All 2 branches covered.">      final LatLon coordinate = coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      final LatLon coordinate = coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;</span>
 
-<span class="fc bfc" id="L36" title="All 14 branches covered.">      if (</span>
+<span class="fc bfc" id="L41" title="All 14 branches covered.">      if (</span>
         key != null &amp;&amp;
         packg != null &amp;&amp;
         value != null &amp;&amp;
@@ -42,16 +47,16 @@ public final class JsonMapObjectDecoder {
         updatedTime != null &amp;&amp;
         coordinate != null
       ) {
-<span class="fc" id="L45">        return new MapObject(</span>
+<span class="fc" id="L50">        return new MapObject(</span>
           coordinate,
           key,
           packg,
           value,
-<span class="fc" id="L50">          firstSeenTime, lastSeenTime, updatedTime</span>
+<span class="fc" id="L55">          firstSeenTime, lastSeenTime, updatedTime</span>
         );
       }
     }
-<span class="fc" id="L54">    return null;</span>
+<span class="fc" id="L59">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

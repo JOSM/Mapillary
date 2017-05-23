@@ -3,6 +3,7 @@ org.openstreetmap.josm.plugins.mapillary.actions
 org.openstreetmap.josm.plugins.mapillary.cache
 org.openstreetmap.josm.plugins.mapillary.gui
 org.openstreetmap.josm.plugins.mapillary.gui.boilerplate
+org.openstreetmap.josm.plugins.mapillary.gui.dialog
 org.openstreetmap.josm.plugins.mapillary.gui.imageinfo
 org.openstreetmap.josm.plugins.mapillary.gui.layer
 org.openstreetmap.josm.plugins.mapillary.history

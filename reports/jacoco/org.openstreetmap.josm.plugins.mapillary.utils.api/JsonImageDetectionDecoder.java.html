@@ -13,47 +13,53 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeImageDetection(JsonObject)} tries to convert it to a {@link ImageDetection}.
+ */
 public final class JsonImageDetectionDecoder {
-<span class="fc" id="L18">  private JsonImageDetectionDecoder() {</span>
+<span class="fc" id="L23">  private JsonImageDetectionDecoder() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L20">  }</span>
+<span class="fc" id="L25">  }</span>
 
   public static ImageDetection decodeImageDetection(final JsonObject json) {
-<span class="fc bfc" id="L23" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
-<span class="fc" id="L24">      return null;</span>
+<span class="fc bfc" id="L28" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L29">      return null;</span>
     }
 
-<span class="fc" id="L27">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
-<span class="fc bfc" id="L28" title="All 2 branches covered.">    if (properties instanceof JsonObject) {</span>
-<span class="fc" id="L29">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
-<span class="fc" id="L30">      final String imageKey = ((JsonObject) properties).getString(&quot;image_key&quot;, null);</span>
-<span class="fc" id="L31">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
-<span class="fc" id="L32">      final JsonValue scoreVal = ((JsonObject) properties).get(&quot;score&quot;);</span>
-<span class="fc bfc" id="L33" title="All 2 branches covered.">      final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;</span>
-<span class="fc" id="L34">      final Shape shape = decodeShape(((JsonObject) properties).get(&quot;shape&quot;));</span>
-<span class="fc bfc" id="L35" title="All 10 branches covered.">      if (shape instanceof Path2D &amp;&amp; imageKey != null &amp;&amp; key != null &amp;&amp; score != null &amp;&amp; value != null) {</span>
-<span class="fc" id="L36">        return new ImageDetection((Path2D) shape, imageKey, key, score, value);</span>
+<span class="fc" id="L32">    final JsonValue properties = json.get(&quot;properties&quot;);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">    if (properties instanceof JsonObject) {</span>
+<span class="fc" id="L34">      final String key = ((JsonObject) properties).getString(&quot;key&quot;, null);</span>
+<span class="fc" id="L35">      final String packag = ((JsonObject) properties).getString(&quot;package&quot;, null);</span>
+<span class="fc" id="L36">      final String imageKey = ((JsonObject) properties).getString(&quot;image_key&quot;, null);</span>
+<span class="fc" id="L37">      final String value = ((JsonObject) properties).getString(&quot;value&quot;, null);</span>
+<span class="fc" id="L38">      final JsonValue scoreVal = ((JsonObject) properties).get(&quot;score&quot;);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">      final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;</span>
+<span class="fc" id="L40">      final Shape shape = decodeShape(((JsonObject) properties).get(&quot;shape&quot;));</span>
+<span class="fc bfc" id="L41" title="All 12 branches covered.">      if (shape instanceof Path2D &amp;&amp; imageKey != null &amp;&amp; key != null &amp;&amp; score != null &amp;&amp; packag != null &amp;&amp; value != null) {</span>
+<span class="fc" id="L42">        return new ImageDetection((Path2D) shape, imageKey, key, score, packag, value);</span>
       }
     }
-<span class="fc" id="L39">    return null;</span>
+<span class="fc" id="L45">    return null;</span>
   }
 
   private static Shape decodeShape(JsonValue json) {
-<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (json instanceof JsonObject) {</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">      if (!&quot;Polygon&quot;.equals(((JsonObject) json).getString(&quot;type&quot;, null))) {</span>
-<span class="fc" id="L45">        Main.warn(</span>
-<span class="fc" id="L46">          String.format(&quot;Image detections using shapes with type=%s are currently not supported!&quot;,</span>
-<span class="fc" id="L47">          ((JsonObject) json).getString(&quot;type&quot;, &quot;‹no type set›&quot;))</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (json instanceof JsonObject) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">      if (!&quot;Polygon&quot;.equals(((JsonObject) json).getString(&quot;type&quot;, null))) {</span>
+<span class="fc" id="L51">        Main.warn(</span>
+<span class="fc" id="L52">          String.format(&quot;Image detections using shapes with type=%s are currently not supported!&quot;,</span>
+<span class="fc" id="L53">          ((JsonObject) json).getString(&quot;type&quot;, &quot;‹no type set›&quot;))</span>
         );
       } else {
-<span class="fc" id="L50">        final JsonValue coordinates = ((JsonObject) json).get(&quot;coordinates&quot;);</span>
-<span class="fc bfc" id="L51" title="All 4 branches covered.">        if (coordinates instanceof JsonArray &amp;&amp; !((JsonArray) coordinates).isEmpty()) {</span>
-<span class="fc" id="L52">          return decodePolygon((JsonArray) coordinates);</span>
+<span class="fc" id="L56">        final JsonValue coordinates = ((JsonObject) json).get(&quot;coordinates&quot;);</span>
+<span class="fc bfc" id="L57" title="All 4 branches covered.">        if (coordinates instanceof JsonArray &amp;&amp; !((JsonArray) coordinates).isEmpty()) {</span>
+<span class="fc" id="L58">          return decodePolygon((JsonArray) coordinates);</span>
         }
       }
     }
-<span class="fc" id="L56">    return null;</span>
+<span class="fc" id="L62">    return null;</span>
   }
 
   /**
@@ -62,17 +68,17 @@ public final class JsonImageDetectionDecoder {
    * @return the decoded polygon as {@link Path2D.Double}
    */
   private static Path2D decodePolygon(final JsonArray json) {
-<span class="fc" id="L65">    final Path2D shape = new Path2D.Double();</span>
-<span class="fc" id="L66">    json.stream().forEach(val -&gt; {</span>
-<span class="fc bfc" id="L67" title="All 2 branches covered.">      final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">      if (part != null) {</span>
-<span class="fc" id="L69">        shape.append(part, false);</span>
+<span class="fc" id="L71">    final Path2D shape = new Path2D.Double();</span>
+<span class="fc" id="L72">    json.stream().forEach(val -&gt; {</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">      final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (part != null) {</span>
+<span class="fc" id="L75">        shape.append(part, false);</span>
       }
-<span class="fc" id="L71">    });</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
-<span class="fc" id="L73">      return shape;</span>
+<span class="fc" id="L77">    });</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
+<span class="fc" id="L79">      return shape;</span>
     }
-<span class="fc" id="L75">    return null;</span>
+<span class="fc" id="L81">    return null;</span>
   }
 
   /**
@@ -82,20 +88,20 @@ public final class JsonImageDetectionDecoder {
    * @throws NullPointerException if parameter is &lt;code&gt;null&lt;/code&gt;
    */
   private static Path2D decodeSimplePolygon(final JsonArray json) {
-<span class="fc" id="L85">    final Path2D shape = new Path2D.Double();</span>
-<span class="fc" id="L86">    json.stream().forEach(val -&gt; {</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">      double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);</span>
-<span class="fc bfc" id="L88" title="All 4 branches covered.">      if (shape.getCurrentPoint() == null &amp;&amp; coord != null) {</span>
-<span class="fc" id="L89">        shape.moveTo(coord[0], coord[1]);</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">      } else if (coord != null) {</span>
-<span class="fc" id="L91">        shape.lineTo(coord[0], coord[1]);</span>
+<span class="fc" id="L91">    final Path2D shape = new Path2D.Double();</span>
+<span class="fc" id="L92">    json.stream().forEach(val -&gt; {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">      double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);</span>
+<span class="fc bfc" id="L94" title="All 4 branches covered.">      if (shape.getCurrentPoint() == null &amp;&amp; coord != null) {</span>
+<span class="fc" id="L95">        shape.moveTo(coord[0], coord[1]);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">      } else if (coord != null) {</span>
+<span class="fc" id="L97">        shape.lineTo(coord[0], coord[1]);</span>
       }
-<span class="fc" id="L93">    });</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
-<span class="fc" id="L95">      shape.closePath();</span>
-<span class="fc" id="L96">      return shape;</span>
+<span class="fc" id="L99">    });</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (shape.getCurrentPoint() != null) {</span>
+<span class="fc" id="L101">      shape.closePath();</span>
+<span class="fc" id="L102">      return shape;</span>
     }
-<span class="fc" id="L98">    return null;</span>
+<span class="fc" id="L104">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

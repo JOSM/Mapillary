@@ -22,18 +22,18 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
  * @author nokutu
  * @see MapillaryLayer
  */
-<span class="nc" id="L25">public abstract class AbstractMode extends MouseAdapter implements</span>
+<span class="fc" id="L25">public abstract class AbstractMode extends MouseAdapter implements</span>
   ZoomChangeListener {
 
   private static final int DOWNLOAD_COOLDOWN = 2000;
 
-<span class="nc" id="L30">  protected MapillaryData data = MapillaryLayer.getInstance().getData();</span>
-<span class="nc" id="L31">  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();</span>
+<span class="fc" id="L30">  protected MapillaryData data = MapillaryLayer.getInstance().getData();</span>
+<span class="fc" id="L31">  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();</span>
 
   /**
    * Cursor that should become active when this mode is activated.
    */
-<span class="nc" id="L36">  public int cursor = Cursor.DEFAULT_CURSOR;</span>
+<span class="fc" id="L36">  public int cursor = Cursor.DEFAULT_CURSOR;</span>
 
   protected MapillaryAbstractImage getClosest(Point clickPoint) {
 <span class="nc" id="L39">    double snapDistance = 10;</span>
@@ -78,7 +78,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 <span class="nc" id="L78">    semiautomaticThread = new SemiautomaticThread();</span>
 <span class="nc" id="L79">  }</span>
 
-<span class="nc" id="L81">  private static class SemiautomaticThread extends Thread {</span>
+<span class="fc" id="L81">  private static class SemiautomaticThread extends Thread {</span>
 
     /** If in semiautomatic mode, the last Epoch time when there was a download */
     private long lastDownload;

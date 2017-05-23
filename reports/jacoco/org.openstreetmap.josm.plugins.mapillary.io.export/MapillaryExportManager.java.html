@@ -11,6 +11,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.xml.sax.SAXException;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
@@ -18,7 +20,6 @@ import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.xml.sax.SAXException;
 
 /**
  * Export main thread. Exportation works by creating a
@@ -53,15 +54,15 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    *          Export path.
    */
   public MapillaryExportManager(Set&lt;MapillaryAbstractImage&gt; images, String path) {
-<span class="nc" id="L56">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
+<span class="nc" id="L57">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
         &quot;Exporting Mapillary Images&quot;), true);
-<span class="nc" id="L58">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
-<span class="nc" id="L59">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc" id="L59">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc" id="L60">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
 
-<span class="nc" id="L61">    this.images = images;</span>
-<span class="nc" id="L62">    this.amount = images.size();</span>
-<span class="nc" id="L63">    this.path = path;</span>
-<span class="nc" id="L64">  }</span>
+<span class="nc" id="L62">    this.images = images;</span>
+<span class="nc" id="L63">    this.amount = images.size();</span>
+<span class="nc" id="L64">    this.path = path;</span>
+<span class="nc" id="L65">  }</span>
 
   /**
    * Constructor used to rewrite imported images.
@@ -75,75 +76,75 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    */
   public MapillaryExportManager(List&lt;MapillaryImportedImage&gt; images)
       throws IOException {
-<span class="nc" id="L78">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
+<span class="nc" id="L79">    super(tr(&quot;Downloading&quot;) + &quot;...&quot;, new PleaseWaitProgressMonitor(</span>
         &quot;Exporting Mapillary Images&quot;), true);
-<span class="nc" id="L80">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
-<span class="nc" id="L81">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    for (MapillaryImportedImage image : images) {</span>
-<span class="nc" id="L83">      this.queue.add(image.getImage());</span>
-<span class="nc" id="L84">      this.queueImages.add(image);</span>
-<span class="nc" id="L85">    }</span>
-<span class="nc" id="L86">    this.amount = images.size();</span>
-<span class="nc" id="L87">  }</span>
+<span class="nc" id="L81">    this.queue = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc" id="L82">    this.queueImages = new ArrayBlockingQueue&lt;&gt;(10);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">    for (MapillaryImportedImage image : images) {</span>
+<span class="nc" id="L84">      this.queue.add(image.getImage());</span>
+<span class="nc" id="L85">      this.queueImages.add(image);</span>
+<span class="nc" id="L86">    }</span>
+<span class="nc" id="L87">    this.amount = images.size();</span>
+<span class="nc" id="L88">  }</span>
 
   @Override
   protected void cancel() {
-<span class="nc" id="L91">    this.writer.interrupt();</span>
-<span class="nc" id="L92">    this.ex.shutdown();</span>
-<span class="nc" id="L93">  }</span>
+<span class="nc" id="L92">    this.writer.interrupt();</span>
+<span class="nc" id="L93">    this.ex.shutdown();</span>
+<span class="nc" id="L94">  }</span>
 
   @Override
   protected void realRun() throws SAXException, IOException,
       OsmTransferException {
     // Starts a writer thread in order to write the pictures on the disk.
-<span class="nc" id="L99">    this.writer = new MapillaryExportWriterThread(this.path, this.queue,</span>
-<span class="nc" id="L100">        this.queueImages, this.amount, this.getProgressMonitor());</span>
-<span class="nc" id="L101">    this.writer.start();</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (this.path == null) {</span>
+<span class="nc" id="L100">    this.writer = new MapillaryExportWriterThread(this.path, this.queue,</span>
+<span class="nc" id="L101">        this.queueImages, this.amount, this.getProgressMonitor());</span>
+<span class="nc" id="L102">    this.writer.start();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    if (this.path == null) {</span>
       try {
-<span class="nc" id="L104">        this.writer.join();</span>
-<span class="nc" id="L105">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L106">        Main.error(e);</span>
-<span class="nc" id="L107">      }</span>
-<span class="nc" id="L108">      return;</span>
+<span class="nc" id="L105">        this.writer.join();</span>
+<span class="nc" id="L106">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L107">        Main.error(e);</span>
+<span class="nc" id="L108">      }</span>
+<span class="nc" id="L109">      return;</span>
     }
-<span class="nc" id="L110">    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,</span>
+<span class="nc" id="L111">    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,</span>
       new ArrayBlockingQueue&lt;&gt;(10));
-<span class="nc bnc" id="L112" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.images) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (image instanceof MapillaryImage) {</span>
         try {
-<span class="nc" id="L115">          this.ex.execute(new MapillaryExportDownloadThread(</span>
+<span class="nc" id="L116">          this.ex.execute(new MapillaryExportDownloadThread(</span>
               (MapillaryImage) image, this.queue, this.queueImages));
-<span class="nc" id="L117">        } catch (Exception e) {</span>
-<span class="nc" id="L118">          Main.error(e);</span>
-<span class="nc" id="L119">        }</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">      } else if (image instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L118">        } catch (Exception e) {</span>
+<span class="nc" id="L119">          Main.error(e);</span>
+<span class="nc" id="L120">        }</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      } else if (image instanceof MapillaryImportedImage) {</span>
         try {
-<span class="nc" id="L122">          this.queue.put(((MapillaryImportedImage) image).getImage());</span>
-<span class="nc" id="L123">          this.queueImages.put(image);</span>
-<span class="nc" id="L124">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L125">          Main.error(e);</span>
-<span class="nc" id="L126">        }</span>
+<span class="nc" id="L123">          this.queue.put(((MapillaryImportedImage) image).getImage());</span>
+<span class="nc" id="L124">          this.queueImages.put(image);</span>
+<span class="nc" id="L125">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L126">          Main.error(e);</span>
+<span class="nc" id="L127">        }</span>
       }
       try {
         // If the queue is full, waits for it to have more space
         // available before executing anything else.
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0) {</span>
-<span class="nc" id="L132">          Thread.sleep(100);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0) {</span>
+<span class="nc" id="L133">          Thread.sleep(100);</span>
         }
-<span class="nc" id="L134">      } catch (Exception e) {</span>
-<span class="nc" id="L135">        Main.error(e);</span>
-<span class="nc" id="L136">      }</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L135">      } catch (Exception e) {</span>
+<span class="nc" id="L136">        Main.error(e);</span>
+<span class="nc" id="L137">      }</span>
+<span class="nc" id="L138">    }</span>
     try {
-<span class="nc" id="L139">      this.writer.join();</span>
-<span class="nc" id="L140">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L141">      Main.error(e);</span>
-<span class="nc" id="L142">    }</span>
-<span class="nc" id="L143">  }</span>
+<span class="nc" id="L140">      this.writer.join();</span>
+<span class="nc" id="L141">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L142">      Main.error(e);</span>
+<span class="nc" id="L143">    }</span>
+<span class="nc" id="L144">  }</span>
 
   @Override
   protected void finish() {
-<span class="nc" id="L147">  }</span>
+<span class="nc" id="L148">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
@@ -32,12 +32,12 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final URLConnection con) throws IOException {
-<span class="fc" id="L35">    Main.info(&quot;Download sequences from &quot; + con.getURL());</span>
-<span class="pc" id="L36">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="fc" id="L37">      Collection&lt;MapillarySequence&gt; sequences = JsonDecoder.decodeFeatureCollection(</span>
-<span class="fc" id="L38">        reader.readObject(),</span>
+<span class="pc" id="L35">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="fc" id="L36">      Collection&lt;MapillarySequence&gt; sequences = JsonDecoder.decodeFeatureCollection(</span>
+<span class="fc" id="L37">        reader.readObject(),</span>
         JsonSequencesDecoder::decodeSequence
       );
+<span class="fc" id="L40">      logConnectionInfo(con, sequences.size() + &quot; sequences&quot;);</span>
 <span class="fc bfc" id="L41" title="All 2 branches covered.">      for (MapillarySequence seq : sequences) {</span>
 <span class="fc bfc" id="L42" title="All 2 branches covered.">        if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {</span>
 <span class="fc bfc" id="L43" title="All 2 branches covered.">          for (MapillaryAbstractImage img : seq.getImages()) {</span>
@@ -57,13 +57,14 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
           }
         }
 <span class="fc" id="L59">      }</span>
-<span class="pc bpc" id="L60" title="6 of 8 branches missed.">    }</span>
-<span class="fc" id="L61">    Main.info(&quot;Finished sequence download&quot;);</span>
-<span class="fc" id="L62">  }</span>
+<span class="pc bpc" id="L60" title="6 of 8 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L61">      throw new IOException(e);</span>
+<span class="fc" id="L62">    }</span>
+<span class="fc" id="L63">  }</span>
 
   @Override
   protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
-<span class="fc" id="L66">    return URL_GEN;</span>
+<span class="fc" id="L67">    return URL_GEN;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

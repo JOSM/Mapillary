@@ -96,7 +96,7 @@ public class MapillaryData {
    *
    * @param images The set of images to be added.
    */
-  public void addAll(Collection&lt;MapillaryAbstractImage&gt; images) {
+  public void addAll(Collection&lt;? extends MapillaryAbstractImage&gt; images) {
 <span class="fc" id="L100">    addAll(images, true);</span>
 <span class="fc" id="L101">  }</span>
 
@@ -106,7 +106,7 @@ public class MapillaryData {
    * @param images The set of images to be added.
    * @param update Whether the map must be updated or not.
    */
-  public void addAll(Collection&lt;MapillaryAbstractImage&gt; images, boolean update) {
+  public void addAll(Collection&lt;? extends MapillaryAbstractImage&gt; images, boolean update) {
 <span class="fc" id="L110">    synchronized (this.images) {</span>
 <span class="fc" id="L111">      this.images.addAll(images);</span>
 <span class="pc" id="L112">    }</span>

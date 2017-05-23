@@ -8,9 +8,9 @@ import java.net.URLConnection;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -29,17 +29,18 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final URLConnection con) throws IOException {
-<span class="nc" id="L32">    Main.info(&quot;Download image details from &quot; + con.getURL());</span>
-<span class="nc" id="L33">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="nc" id="L34">      JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);</span>
+<span class="nc" id="L32">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="nc" id="L33">      JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);</span>
+<span class="nc" id="L34">      logConnectionInfo(con, null);</span>
 <span class="nc" id="L35">      MapillaryMainDialog.getInstance().updateTitle();</span>
-<span class="nc bnc" id="L36" title="All 8 branches missed.">    }</span>
-<span class="nc" id="L37">    Main.info(&quot;Finished downloading image details&quot;);</span>
-<span class="nc" id="L38">  }</span>
+<span class="nc bnc" id="L36" title="All 8 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L37">      throw new IOException(e);</span>
+<span class="nc" id="L38">    }</span>
+<span class="nc" id="L39">  }</span>
 
   @Override
   protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
-<span class="nc" id="L42">    return URL_GEN;</span>
+<span class="nc" id="L43">    return URL_GEN;</span>
   }
 
 }

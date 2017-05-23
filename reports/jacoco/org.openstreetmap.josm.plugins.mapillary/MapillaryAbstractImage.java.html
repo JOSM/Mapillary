@@ -257,10 +257,15 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    * Sets the MapillarySequence object which contains the MapillaryImage.
    *
    * @param sequence The MapillarySequence that contains the MapillaryImage.
+   * @throws IllegalArgumentException if the image is not already part of the {@link MapillarySequence}.
+   *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
-<span class="fc" id="L262">    this.sequence = sequence;</span>
-<span class="fc" id="L263">  }</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">    if (!sequence.getImages().contains(this)) {</span>
+<span class="nc" id="L265">      throw new IllegalArgumentException();</span>
+    }
+<span class="fc" id="L267">    this.sequence = sequence;</span>
+<span class="fc" id="L268">  }</span>
 
   /**
    * Set's whether the image should be visible on the map or not.
@@ -268,17 +273,17 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    * @param visible true if the image is set to be visible; false otherwise.
    */
   public void setVisible(final boolean visible) {
-<span class="fc" id="L271">    this.visible = visible;</span>
-<span class="fc" id="L272">  }</span>
+<span class="fc" id="L276">    this.visible = visible;</span>
+<span class="fc" id="L277">  }</span>
 
   /**
    * Called when the mouse button is released, meaning that the picture has
    * stopped being dragged, so the temporal values are saved.
    */
   public void stopMoving() {
-<span class="fc" id="L279">    this.tempLatLon = this.movingLatLon;</span>
-<span class="fc" id="L280">    this.tempCa = this.movingCa;</span>
-<span class="fc" id="L281">  }</span>
+<span class="fc" id="L284">    this.tempLatLon = this.movingLatLon;</span>
+<span class="fc" id="L285">    this.tempCa = this.movingCa;</span>
+<span class="fc" id="L286">  }</span>
 
   /**
    * Turns the image direction.
@@ -286,7 +291,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    * @param ca The angle the image is moving.
    */
   public void turn(final double ca) {
-<span class="fc" id="L289">    this.movingCa = this.tempCa + ca;</span>
-<span class="fc" id="L290">  }</span>
+<span class="fc" id="L294">    this.movingCa = this.tempCa + ca;</span>
+<span class="fc" id="L295">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

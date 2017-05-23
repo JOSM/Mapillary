@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImportMethodDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.dialog</a> &gt; <span class="el_source">ImportMethodDialog.java</span></div><h1>ImportMethodDialog.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+
+public class ImportMethodDialog extends JDialog {
+  private static final long serialVersionUID = -1654848887884375567L;
+<span class="nc" id="L40">  private static final String QUESTION = I18n.marktr(&quot;From which source do you want to import images to the Mapillary layer?&quot;);</span>
+<span class="nc" id="L41">  private static final String NO_LAYERS_MESSAGE = I18n.marktr(&quot;There are currently no layers with geotagged images!&quot;);</span>
+<span class="nc" id="L42">  private static final String IMPORT_METHOD_FILE = I18n.marktr(&quot;Images from my file system&quot;);</span>
+<span class="nc" id="L43">  private static final String FILE_IMPORT_TITLE = I18n.marktr(&quot;Select the images you want to import&quot;);</span>
+<span class="nc" id="L44">  private static final String IMPORT_METHOD_DIRECTORY = I18n.marktr(&quot;All images in a directory&quot;);</span>
+<span class="nc" id="L45">  private static final String DIRECTORY_IMPORT_TITLE = I18n.marktr(&quot;Select directory to import images from&quot;);</span>
+<span class="nc" id="L46">  private static final String IMPORT_METHOD_LAYER = I18n.marktr(&quot;From existing image layer&quot;);</span>
+<span class="nc" id="L47">  private static final String CANCEL = I18n.marktr(&quot;Cancel&quot;);</span>
+
+<span class="nc" id="L49">  private static final JFileChooser DIRECTORY_CHOOSER = new JFileChooser();</span>
+<span class="nc" id="L50">  private static final JFileChooser IMAGE_FILE_CHOOSER = new JFileChooser();</span>
+
+  static {
+<span class="nc" id="L53">    DIRECTORY_CHOOSER.setCurrentDirectory(new File(MapillaryProperties.START_DIR.get()));</span>
+<span class="nc" id="L54">    DIRECTORY_CHOOSER.setDialogTitle(I18n.tr(DIRECTORY_IMPORT_TITLE));</span>
+<span class="nc" id="L55">    DIRECTORY_CHOOSER.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+<span class="nc" id="L56">    DIRECTORY_CHOOSER.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L57">    DIRECTORY_CHOOSER.addChoosableFileFilter(ImageImportUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L58">    DIRECTORY_CHOOSER.setMultiSelectionEnabled(false);</span>
+
+<span class="nc" id="L60">    IMAGE_FILE_CHOOSER.setCurrentDirectory(new File(MapillaryProperties.START_DIR.get()));</span>
+<span class="nc" id="L61">    IMAGE_FILE_CHOOSER.setDialogTitle(I18n.tr(FILE_IMPORT_TITLE));</span>
+<span class="nc" id="L62">    IMAGE_FILE_CHOOSER.setFileSelectionMode(JFileChooser.FILES_ONLY);</span>
+<span class="nc" id="L63">    IMAGE_FILE_CHOOSER.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L64">    IMAGE_FILE_CHOOSER.addChoosableFileFilter(ImageImportUtil.IMAGE_FILE_FILTER);</span>
+<span class="nc" id="L65">    IMAGE_FILE_CHOOSER.setMultiSelectionEnabled(true);</span>
+<span class="nc" id="L66">  }</span>
+
+  public ImportMethodDialog(final Component parent) {
+<span class="nc" id="L69">    super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));</span>
+
+<span class="nc" id="L71">    final Container c = getContentPane();</span>
+<span class="nc" id="L72">    c.setLayout(new BorderLayout());</span>
+
+<span class="nc" id="L74">    final JPanel questionPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 10));</span>
+<span class="nc" id="L75">    questionPanel.add(new JLabel(I18n.tr(QUESTION)));</span>
+<span class="nc" id="L76">    c.add(questionPanel, BorderLayout.NORTH);</span>
+
+<span class="nc" id="L78">    c.add(getAnswerPanel(), BorderLayout.CENTER);</span>
+
+<span class="nc" id="L80">    final JPanel cancelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));</span>
+<span class="nc" id="L81">    final JButton cancelButton = new JButton(I18n.tr(CANCEL), new ImageProvider(&quot;cancel&quot;).get());</span>
+<span class="nc" id="L82">    cancelButton.addActionListener(e -&gt; dispose());</span>
+<span class="nc" id="L83">    cancelButton.requestFocus();</span>
+<span class="nc" id="L84">    cancelPanel.add(cancelButton);</span>
+<span class="nc" id="L85">    c.add(cancelPanel, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L87">    setModal(true);</span>
+<span class="nc" id="L88">    pack();</span>
+<span class="nc" id="L89">    setLocationRelativeTo(parent);</span>
+<span class="nc" id="L90">  }</span>
+
+  private JPanel getAnswerPanel() {
+<span class="nc" id="L93">    final JButton filesBtn = new JButton(I18n.tr(IMPORT_METHOD_FILE));</span>
+<span class="nc" id="L94">    filesBtn.addActionListener(e -&gt; {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">      if (JFileChooser.APPROVE_OPTION == IMAGE_FILE_CHOOSER.showOpenDialog(this)) {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        for (File f : IMAGE_FILE_CHOOSER.getSelectedFiles()) {</span>
+<span class="nc" id="L97">          final MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">          final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
+          try {
+<span class="nc" id="L100">            final MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L101">            seq.add(ImageImportUtil.readImagesFrom(f, center));</span>
+<span class="nc" id="L102">            MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
+<span class="nc" id="L103">            MapillaryImportAction.recordChanges(seq.getImages());</span>
+<span class="nc" id="L104">          } catch (IOException e1) {</span>
+<span class="nc" id="L105">            JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the image ''{0}''!&quot;, f.getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
+<span class="nc" id="L106">          }</span>
+        }
+<span class="nc" id="L108">        MapillaryData.dataUpdated();</span>
+<span class="nc" id="L109">        dispose();</span>
+      }
+<span class="nc" id="L111">    });</span>
+<span class="nc" id="L112">    final JButton directoryBtn = new JButton(I18n.tr(IMPORT_METHOD_DIRECTORY));</span>
+<span class="nc" id="L113">    directoryBtn.addActionListener(e -&gt; {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      if (JFileChooser.APPROVE_OPTION == DIRECTORY_CHOOSER.showOpenDialog(this)) {</span>
+<span class="nc" id="L115">        final MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
+        try {
+<span class="nc" id="L118">          final MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L119">          seq.add(ImageImportUtil.readImagesFrom(DIRECTORY_CHOOSER.getSelectedFile(), center));</span>
+<span class="nc" id="L120">          MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
+<span class="nc" id="L121">          MapillaryImportAction.recordChanges(seq.getImages());</span>
+<span class="nc" id="L122">        } catch (IOException e1) {</span>
+<span class="nc" id="L123">          JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the directory ''{0}''!&quot;, DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
+<span class="nc" id="L124">        }</span>
+      }
+<span class="nc" id="L126">      MapillaryData.dataUpdated();</span>
+<span class="nc" id="L127">      dispose();</span>
+<span class="nc" id="L128">    });</span>
+<span class="nc" id="L129">    final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));</span>
+<span class="nc" id="L130">    imgLayerBtn.addActionListener(ae -&gt; {</span>
+<span class="nc" id="L131">      List&lt;GeoImageLayer&gt; layers = Main.getLayerManager().getLayersOfType(GeoImageLayer.class);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">      if (layers.isEmpty()) {</span>
+<span class="nc" id="L133">        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);</span>
+      } else {
+<span class="nc" id="L135">        ChooseGeoImageLayersDialog dia = new ChooseGeoImageLayersDialog(this, layers);</span>
+<span class="nc" id="L136">        dia.setVisible(true);</span>
+<span class="nc" id="L137">        dia.addWindowListener(new WindowAdapter() {</span>
+          @Override
+          public void windowClosed(WindowEvent we) {
+<span class="nc" id="L140">            dispose();</span>
+<span class="nc" id="L141">          }</span>
+        });
+      }
+<span class="nc" id="L144">    });</span>
+
+
+<span class="nc" id="L147">    final JPanel answerPanel = new JPanel(new GridLayout(1, 3, 10, 10));</span>
+<span class="nc" id="L148">    answerPanel.add(filesBtn);</span>
+<span class="nc" id="L149">    answerPanel.add(directoryBtn);</span>
+<span class="nc" id="L150">    answerPanel.add(imgLayerBtn);</span>
+<span class="nc" id="L151">    answerPanel.setPreferredSize(new Dimension(answerPanel.getPreferredSize().width, answerPanel.getPreferredSize().height*3));</span>
+<span class="nc" id="L152">    return answerPanel;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonUserProfileDecoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils.api</a> &gt; <span class="el_source">JsonUserProfileDecoder.java</span></div><h1>JsonUserProfileDecoder.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
@@ -9,39 +10,46 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.ImageProvider;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeUserProfile(JsonObject)} tries to convert it to a {@link UserProfile}.
+ */
 public final class JsonUserProfileDecoder {
-<span class="fc" id="L15">  private static final ImageIcon FAKE_AVATAR = new ImageProvider(&quot;fake-avatar&quot;).get();</span>
+<span class="fc" id="L21">  private static final ImageIcon FAKE_AVATAR = new ImageProvider(&quot;fake-avatar&quot;).get();</span>
 
-<span class="fc" id="L17">  private JsonUserProfileDecoder() {</span>
+<span class="fc" id="L23">  private JsonUserProfileDecoder() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L19">  }</span>
+<span class="fc" id="L25">  }</span>
 
   public static UserProfile decodeUserProfile(JsonObject json) {
-<span class="fc bfc" id="L22" title="All 2 branches covered.">    if (json != null) {</span>
-<span class="fc" id="L23">      String avatar = json.getString(&quot;avatar&quot;, null);</span>
-<span class="fc" id="L24">      String username = json.getString(&quot;username&quot;, null);</span>
-<span class="fc" id="L25">      String key = json.getString(&quot;key&quot;, null);</span>
-
-<span class="fc bfc" id="L27" title="All 4 branches covered.">      if (key == null || username == null) {</span>
-<span class="fc" id="L28">        return null;</span>
-      }
-
-<span class="fc" id="L31">      ImageIcon icon = null;</span>
-<span class="fc bfc" id="L32" title="All 2 branches covered.">      if (avatar != null) {</span>
-        try {
-<span class="fc" id="L34">          icon = new ImageIcon(ImageIO.read(new URL(avatar)));</span>
-<span class="fc" id="L35">        } catch (IOException e) {</span>
-<span class="fc" id="L36">          Main.debug(e);</span>
-<span class="fc" id="L37">        }</span>
-      }
-<span class="fc bfc" id="L39" title="All 2 branches covered.">      if (icon == null) {</span>
-<span class="fc" id="L40">        icon = FAKE_AVATAR;</span>
-      }
-<span class="fc" id="L42">      return new UserProfile(key, username, icon);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">    if (json == null) {</span>
+<span class="fc" id="L29">      return null;</span>
     }
-<span class="fc" id="L44">    return null;</span>
+<span class="fc" id="L31">    String username = json.getString(&quot;username&quot;, null);</span>
+<span class="fc" id="L32">    String key = json.getString(&quot;key&quot;, null);</span>
+<span class="fc bfc" id="L33" title="All 4 branches covered.">    if (key == null || username == null) {</span>
+<span class="fc" id="L34">      return null;</span>
+    }
+
+<span class="fc" id="L37">    String avatar = json.getString(&quot;avatar&quot;, null);</span>
+<span class="fc" id="L38">    ImageIcon icon = null;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">    if (avatar != null) {</span>
+      try {
+<span class="fc" id="L41">        BufferedImage img = ImageIO.read(new URL(avatar));</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (img != null) {</span>
+<span class="fc" id="L43">          icon = new ImageIcon(img);</span>
+        }
+<span class="fc" id="L45">      } catch (IOException e) {</span>
+<span class="fc" id="L46">        Main.debug(e);</span>
+<span class="fc" id="L47">      }</span>
+    }
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    if (icon == null) {</span>
+<span class="fc" id="L50">      icon = FAKE_AVATAR;</span>
+    }
+<span class="fc" id="L52">    return new UserProfile(key, username, icon);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

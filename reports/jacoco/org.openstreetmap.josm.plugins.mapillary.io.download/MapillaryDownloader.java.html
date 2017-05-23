@@ -70,10 +70,10 @@ public final class MapillaryDownloader {
   }
 
   /** Max area to be downloaded */
-<span class="nc" id="L73">  private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();</span>
+<span class="fc" id="L73">  private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();</span>
 
   /** Executor that will run the petitions. */
-<span class="nc" id="L76">  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(</span>
+<span class="fc" id="L76">  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(</span>
     3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(100), new ThreadPoolExecutor.DiscardPolicy());
 
 <span class="nc" id="L79">  private MapillaryDownloader() {</span>
@@ -109,9 +109,9 @@ public final class MapillaryDownloader {
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
   public static DOWNLOAD_MODE getMode() {
-<span class="nc bnc" id="L112" title="All 4 branches missed.">    return MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic</span>
+<span class="pc bpc" id="L112" title="2 of 4 branches missed.">    return MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic</span>
       ? DOWNLOAD_MODE.VISIBLE_AREA
-<span class="nc" id="L114">      : DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());</span>
+<span class="fc" id="L114">      : DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());</span>
   }
 
   private static void run(Runnable t) {
@@ -174,8 +174,8 @@ public final class MapillaryDownloader {
    * Downloads all images of the area covered by the OSM data.
    */
   public static void downloadOSMArea() {
-<span class="nc bnc" id="L177" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() == null) {</span>
-<span class="nc" id="L178">      return;</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">    if (Main.getLayerManager().getEditLayer() == null) {</span>
+<span class="fc" id="L178">      return;</span>
     }
 <span class="nc bnc" id="L180" title="All 2 branches missed.">    if (isOSMAreaTooBig()) {</span>
 <span class="nc" id="L181">      showOSMAreaTooBigErrorDialog();</span>
