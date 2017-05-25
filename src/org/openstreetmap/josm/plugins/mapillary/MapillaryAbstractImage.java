@@ -115,7 +115,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    */
   public String getDate(String format) {
     final Date date = new Date(getCapturedAt());
-    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.UK);
+    final SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.US);
     formatter.setTimeZone(Calendar.getInstance().getTimeZone());
     return formatter.format(date);
   }
