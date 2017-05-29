@@ -60,7 +60,7 @@ public class MapillaryURLTest {
     @Test
     public void testSubmitChangeset() throws MalformedURLException {
       assertEquals(
-        new URL("https://a.mapillary.com/v3/changeset?" + CLIENT_ID_QUERY_PART),
+        new URL("https://a.mapillary.com/v3/changesets?" + CLIENT_ID_QUERY_PART),
         MapillaryURL.APIv3.submitChangeset()
       );
     }
@@ -158,8 +158,8 @@ public class MapillaryURLTest {
   @Test
   public void testUserURL() throws MalformedURLException {
     assertEquals(
-        new URL("https://a.mapillary.com/v2/me?"+CLIENT_ID_QUERY_PART),
-        MapillaryURL.userURL()
+        new URL("https://a.mapillary.com/v3/me?"+CLIENT_ID_QUERY_PART),
+        MapillaryURL.APIv3.userURL()
     );
   }
 
