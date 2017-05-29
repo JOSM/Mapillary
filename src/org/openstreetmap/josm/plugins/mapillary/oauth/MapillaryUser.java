@@ -37,7 +37,7 @@ public final class MapillaryUser {
     if (username == null) {
       try {
         username = OAuthUtils
-            .getWithHeader(MapillaryURL.userURL())
+            .getWithHeader(MapillaryURL.APIv3.userURL())
             .getString("username");
       } catch (IOException e) {
         Main.warn(e, "Invalid Mapillary token, resetting field");

@@ -94,6 +94,13 @@ public final class MapillaryURL {
       }
       return MapillaryURL.queryString(null);
     }
+
+    /**
+     * @return the URL where you'll find information about the user account as JSON
+     */
+    public static URL userURL() {
+      return string2URL(BASE_URL, "me", MapillaryURL.queryString(null));
+    }
   }
 
   public static final class Cloudfront {
@@ -161,13 +168,6 @@ public final class MapillaryURL {
   }
 
   /**
-   * @return the URL where you'll find information about the user account as JSON
-   */
-  public static URL userURL() {
-    return string2URL(APIv3.BASE_URL, "me", queryString(null));
-  }
-
-  /**
    * Builds a query string from it's parts that are supplied as a {@link Map}
    * @param parts the parts of the query string
    * @return the constructed query string (including a leading ?)
@@ -193,7 +193,7 @@ public final class MapillaryURL {
    * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
    * Instead such an exception will lead to an {@link Main#error(Throwable)}.
    * So you should be very confident that your URL is well-formed when calling this method.
-   * @param string the String describing the URL
+   * @param strings the Strings describing the URL
    * @return the URL that is constructed from the given string
    */
   static URL string2URL(String... strings) {
