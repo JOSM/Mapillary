@@ -5,10 +5,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
+import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
@@ -32,7 +37,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param file  The file containing the picture.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file) {
-    this(latLon, ca, file, MapillaryUtils.currentDate());
+    this(latLon, ca, file, Calendar.getInstance().getTimeInMillis());
   }
 
   /**
@@ -44,17 +49,49 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param datetimeOriginal  The date the picture was taken.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final String datetimeOriginal) {
-    super(latLon, ca);
-    this.file = file;
+    this(latLon, ca, file, parseTimestampElseCurrentTime(datetimeOriginal));
+  }
+
+  /**
+   * Constructs a new image from an image entry of a {@link GeoImageLayer}.
+   * @param geoImage the {@link ImageEntry}, from which the corresponding fields are taken
+   */
+  public static MapillaryImportedImage createInstance(final ImageEntry geoImage) {
+    if (geoImage == null) {
+      return null;
+    }
+    if (geoImage.getFile() == null) {
+      throw new IllegalArgumentException("Can't create an imported image from an ImageEntry without associated file.");
+    }
+    final CachedLatLon cachedCoord = geoImage.getPos();
+    LatLon coord = cachedCoord == null ? null : cachedCoord.getRoundedToOsmPrecision();
+    if (coord == null) {
+      final MapView mv = MapillaryPlugin.getMapView();
+      coord =  mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
+    }
+    final double ca = geoImage.getExifImgDir() == null ? 0 : geoImage.getExifImgDir();
+    final long time = geoImage.hasGpsTime()
+      ? geoImage.getGpsTime().getTime()
+      : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
+    return new MapillaryImportedImage(coord, ca, geoImage.getFile(), time);
+  }
+
+  private static long parseTimestampElseCurrentTime(final String timestamp) {
     try {
-      this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy:MM:dd HH:mm:ss");
+      return MapillaryUtils.getEpoch(timestamp, "yyyy:MM:dd HH:mm:ss");
     } catch (ParseException e) {
       try {
-        this.capturedAt = MapillaryUtils.getEpoch(datetimeOriginal, "yyyy/MM/dd HH:mm:ss");
+        return MapillaryUtils.getEpoch(timestamp, "yyyy/MM/dd HH:mm:ss");
       } catch (ParseException e1) {
-        this.capturedAt = MapillaryUtils.currentTime();
+        return MapillaryUtils.currentTime();
       }
     }
+  }
+
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final long capturedAt) {
+    super(latLon, ca);
+    this.file = file;
+    this.capturedAt = capturedAt;
   }
 
   /**

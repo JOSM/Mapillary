@@ -13,7 +13,12 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
+/**
+ * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Takes a {@link JsonObject} and {@link #decodeImageDetection(JsonObject)} tries to convert it to a {@link ImageDetection}.
+ */
 public final class JsonImageDetectionDecoder {
   private JsonImageDetectionDecoder() {
     // Private constructor to avoid instantiation
@@ -27,13 +32,14 @@ public final class JsonImageDetectionDecoder {
     final JsonValue properties = json.get("properties");
     if (properties instanceof JsonObject) {
       final String key = ((JsonObject) properties).getString("key", null);
+      final String packag = ((JsonObject) properties).getString("package", null);
       final String imageKey = ((JsonObject) properties).getString("image_key", null);
       final String value = ((JsonObject) properties).getString("value", null);
       final JsonValue scoreVal = ((JsonObject) properties).get("score");
       final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;
       final Shape shape = decodeShape(((JsonObject) properties).get("shape"));
-      if (shape instanceof Path2D && imageKey != null && key != null && score != null && value != null) {
-        return new ImageDetection((Path2D) shape, imageKey, key, score, value);
+      if (shape instanceof Path2D && imageKey != null && key != null && score != null && packag != null && value != null) {
+        return new ImageDetection((Path2D) shape, imageKey, key, score, packag, value);
       }
     }
     return null;

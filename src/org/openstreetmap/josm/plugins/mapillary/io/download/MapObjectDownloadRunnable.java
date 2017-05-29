@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
@@ -11,6 +10,7 @@ import java.util.HashSet;
 import java.util.function.Function;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.Main;
@@ -59,16 +59,14 @@ public class MapObjectDownloadRunnable implements Runnable {
           ));
         }
         layer.invalidate();
-        Main.info(String.format(
-          "GET %s → %s (%d map objects in %f seconds)",
-          nextURL,
-          con instanceof HttpURLConnection ? ((HttpURLConnection) con).getResponseCode() : "‹no response code›",
+        BoundsDownloadRunnable.logConnectionInfo(con, String.format(
+          "%d map objects in %f seconds",
           result.size() - prevResultSize,
-          (System.currentTimeMillis() - startTime) / 1000f)
-        );
+          (System.currentTimeMillis() - startTime) / 1000f
+        ));
         nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
       }
-    } catch (IOException e) {
+    } catch (IOException | JsonException e) {
       String message = I18n.tr("{0}\nCould not read map objects from URL\n{1}!", e.getLocalizedMessage(), nextURL.toString());
       Main.warn(e, message);
       new Notification(message)

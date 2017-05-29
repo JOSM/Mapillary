@@ -11,6 +11,7 @@ import java.util.function.Function;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 import org.openstreetmap.josm.Main;
@@ -36,11 +37,14 @@ public final class JsonDecoder {
       json != null && "FeatureCollection".equals(json.getString("type", null)) &&
       json.containsKey("features") && json.get("features").getValueType() == ValueType.ARRAY
     ) {
-      final JsonArray features = json.getJsonArray("features");
-      for (int i = 0; i < features.size(); i++) {
-        final T feature = featureDecoder.apply(features.getJsonObject(i));
-        if (feature != null) {
-          result.add(feature);
+      final JsonValue features = json.get("features");
+      for (int i = 0; features instanceof JsonArray && i < ((JsonArray) features).size(); i++) {
+        final JsonValue val = ((JsonArray) features).get(i);
+        if (val instanceof JsonObject) {
+          final T feature = featureDecoder.apply((JsonObject) val);
+          if (feature != null) {
+            result.add(feature);
+          }
         }
       }
     }

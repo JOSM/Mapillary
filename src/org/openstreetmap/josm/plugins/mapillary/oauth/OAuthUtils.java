@@ -8,7 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
@@ -40,9 +42,11 @@ public final class OAuthUtils {
     con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
 
     try (
-      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"))
+      JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8")))
     ) {
-      return Json.createReader(in).readObject();
+      return reader.readObject();
+    } catch (JsonException e) {
+      throw new IOException(e);
     }
   }
 }

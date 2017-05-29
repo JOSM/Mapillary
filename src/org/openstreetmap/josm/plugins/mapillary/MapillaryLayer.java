@@ -8,6 +8,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -115,10 +116,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    if (Main.main != null && Main.isDisplayingMapView()) {
-      setMode(new SelectMode());
+    if (!GraphicsEnvironment.isHeadless()) {
       Main.getLayerManager().addLayer(this);
       Main.getLayerManager().addActiveLayerChangeListener(this);
+      setMode(new SelectMode());
       if (Main.getLayerManager().getEditLayer() != null) {
         Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
       }
@@ -133,11 +134,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (MapillaryPlugin.getExportMenu() != null) {
       MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), true);
       if (!MapillaryMainDialog.getInstance().isShowing()) {
-        MapillaryMainDialog.getInstance().getButton().doClick();
+        MapillaryMainDialog.getInstance().showDialog();
       }
     }
-    createHatchTexture();
-    if (Main.main != null) {
+    if (MapillaryPlugin.getMapView() != null) {
       MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
       MapillaryMainDialog.getInstance()
         .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -145,9 +145,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       MapillaryMainDialog.getInstance().getActionMap()
         .put("MapillaryDel", new DeleteImageAction());
 
-      MapillaryData.dataUpdated();
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
     }
+    createHatchTexture();
+    MapillaryData.dataUpdated();
   }
 
   /**
@@ -156,16 +157,17 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @param mode The mode that is going to be activated.
    */
   public void setMode(AbstractMode mode) {
-    if (this.mode != null) {
-      Main.map.mapView.removeMouseListener(this.mode);
-      Main.map.mapView.removeMouseMotionListener(this.mode);
+    final MapView mv = MapillaryPlugin.getMapView();
+    if (this.mode != null && mv != null) {
+      mv.removeMouseListener(this.mode);
+      mv.removeMouseMotionListener(this.mode);
       NavigatableComponent.removeZoomChangeListener(this.mode);
     }
     this.mode = mode;
-    if (mode != null) {
-      Main.map.mapView.setNewCursor(mode.cursor, this);
-      Main.map.mapView.addMouseListener(mode);
-      Main.map.mapView.addMouseMotionListener(mode);
+    if (mode != null && mv != null) {
+      mv.setNewCursor(mode.cursor, this);
+      mv.addMouseListener(mode);
+      mv.addMouseMotionListener(mode);
       NavigatableComponent.addZoomChangeListener(mode);
       MapillaryUtils.updateHelpText();
     }

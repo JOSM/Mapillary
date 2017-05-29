@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -65,6 +66,7 @@ public class MapillarySequence {
    */
   public synchronized void add(MapillaryAbstractImage image) {
     this.images.add(image);
+    image.setSequence(this);
   }
 
   /**
@@ -72,8 +74,9 @@ public class MapillarySequence {
    *
    * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
-  public synchronized void add(List<MapillaryAbstractImage> images) {
-    images.forEach(this::add);
+  public synchronized void add(Collection<? extends MapillaryAbstractImage> images) {
+    this.images.addAll(images);
+    images.forEach(img -> img.setSequence(this));
   }
 
   /**

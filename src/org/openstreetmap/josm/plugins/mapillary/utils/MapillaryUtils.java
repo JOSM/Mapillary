@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -171,7 +172,6 @@ public final class MapillaryUtils {
     } else {
       for (MapillaryAbstractImage img : imgB.getSequence().getImages()) {
         imgA.getSequence().add(img);
-        img.setSequence(imgA.getSequence());
       }
       if (Main.main != null) {
         MapillaryData.dataUpdated();
@@ -249,10 +249,8 @@ public final class MapillaryUtils {
       boolean insideFirstHalf = true;
       for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {
         if (insideFirstHalf) {
-          img.setSequence(seqA);
           seqA.add(img);
         } else {
-          img.setSequence(seqB);
           seqB.add(img);
         }
         if (img.equals(imgA)) {

@@ -12,9 +12,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -36,21 +36,22 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final URLConnection con) throws IOException {
-    Main.info("Download detections from " + con.getURL());
     try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
       Map<String, List<ImageDetection>> detections = JsonDecoder.decodeFeatureCollection(
         reader.readObject(),
         JsonImageDetectionDecoder::decodeImageDetection
       ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));
+      logConnectionInfo(con, detections.size() + " detections");
 
       for (Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
         data.getImages().stream()
           .filter(img -> img instanceof MapillaryImage && ((MapillaryImage) img).getKey().equals(entry.getKey()))
           .forEach(img -> ((MapillaryImage) img).setAllDetections(entry.getValue()));
       }
+    } catch (JsonException e) {
+      throw new IOException(e);
     }
     MapillaryData.dataUpdated();
-    Main.info("Finished downloading detections");
   }
 
   @Override
