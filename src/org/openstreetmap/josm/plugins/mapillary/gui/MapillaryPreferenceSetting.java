@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
@@ -63,6 +64,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
   private final JCheckBox cutOffSeq =
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
+  private final JCheckBox developer =
+    new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
 
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(new LogoutAction());
@@ -116,8 +119,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
+    if (ExpertToggleAction.isExpert() || developer.isSelected()) {
+      mainPanel.add(developer, GBC.eol());
+    }
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -168,6 +174,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
+    MapillaryProperties.DEVELOPER.put(developer.isSelected());
 
     //Restart is never required
     return false;
