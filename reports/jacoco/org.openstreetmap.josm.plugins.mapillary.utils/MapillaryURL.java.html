@@ -33,7 +33,7 @@ public final class MapillaryURL {
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-<span class="fc" id="L36">      return string2URL(BASE_URL, &quot;changeset&quot;, queryString(null));</span>
+<span class="fc" id="L36">      return string2URL(BASE_URL, &quot;changesets&quot;, queryString(null));</span>
     }
 
     public static URL searchDetections(Bounds bounds) {
@@ -94,26 +94,33 @@ public final class MapillaryURL {
       }
 <span class="fc" id="L95">      return MapillaryURL.queryString(null);</span>
     }
+
+    /**
+     * @return the URL where you'll find information about the user account as JSON
+     */
+    public static URL userURL() {
+<span class="fc" id="L102">      return string2URL(BASE_URL, &quot;me&quot;, MapillaryURL.queryString(null));</span>
+    }
   }
 
   public static final class Cloudfront {
     private static final String BASE_URL = &quot;https://d1cuyjsrcm0gby.cloudfront.net/&quot;;
 
-<span class="fc" id="L102">    private Cloudfront() {</span>
+<span class="fc" id="L109">    private Cloudfront() {</span>
       // Private constructor to avoid instantiation
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L111">    }</span>
 
     public static URL thumbnail(final String key, final boolean large) {
-<span class="fc bfc" id="L107" title="All 2 branches covered.">      return string2URL(BASE_URL, key, &quot;/thumb-&quot;, large ? &quot;2048&quot; : &quot;320&quot;, &quot;.jpg&quot;);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">      return string2URL(BASE_URL, key, &quot;/thumb-&quot;, large ? &quot;2048&quot; : &quot;320&quot;, &quot;.jpg&quot;);</span>
     }
   }
 
   public static final class MainWebsite {
     private static final String BASE_URL = &quot;https://www.mapillary.com/&quot;;
 
-<span class="fc" id="L114">    private MainWebsite() {</span>
+<span class="fc" id="L121">    private MainWebsite() {</span>
       // Private constructor to avoid instantiation
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L123">    }</span>
 
     /**
      * Gives you the URL for the online viewer of a specific mapillary image.
@@ -122,10 +129,10 @@ public final class MapillaryURL {
      * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt;
      */
     public static URL browseImage(String key) {
-<span class="fc bfc" id="L125" title="All 2 branches covered.">      if (key == null) {</span>
-<span class="fc" id="L126">        throw new IllegalArgumentException(&quot;The image key must not be null!&quot;);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (key == null) {</span>
+<span class="fc" id="L133">        throw new IllegalArgumentException(&quot;The image key must not be null!&quot;);</span>
       }
-<span class="fc" id="L128">      return string2URL(BASE_URL, &quot;map/im/&quot;, key);</span>
+<span class="fc" id="L135">      return string2URL(BASE_URL, &quot;map/im/&quot;, key);</span>
     }
 
     /**
@@ -135,36 +142,29 @@ public final class MapillaryURL {
      * @return the URL that the user should visit to start the OAuth authentication
      */
     public static URL connect(String redirectURI) {
-<span class="fc" id="L138">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L139" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
-<span class="fc" id="L140">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
+<span class="fc" id="L145">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L146" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L147">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
       }
-<span class="fc" id="L142">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
-<span class="fc" id="L143">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="fc" id="L144">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
+<span class="fc" id="L149">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L150">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L151">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
     }
 
     public static URL mapObjectIcon(String key) {
-<span class="fc" id="L148">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
+<span class="fc" id="L155">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
     }
   }
 
-<span class="fc" id="L152">  private MapillaryURL() {</span>
+<span class="fc" id="L159">  private MapillaryURL() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L154">  }</span>
+<span class="fc" id="L161">  }</span>
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-<span class="fc" id="L160">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
-  }
-
-  /**
-   * @return the URL where you'll find information about the user account as JSON
-   */
-  public static URL userURL() {
-<span class="fc" id="L167">    return string2URL(BASE_API_V2_URL, &quot;me&quot;, queryString(null));</span>
+<span class="fc" id="L167">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
   }
 
   /**
@@ -193,7 +193,7 @@ public final class MapillaryURL {
    * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
    * Instead such an exception will lead to an {@link Main#error(Throwable)}.
    * So you should be very confident that your URL is well-formed when calling this method.
-   * @param string the String describing the URL
+   * @param strings the Strings describing the URL
    * @return the URL that is constructed from the given string
    */
   static URL string2URL(String... strings) {

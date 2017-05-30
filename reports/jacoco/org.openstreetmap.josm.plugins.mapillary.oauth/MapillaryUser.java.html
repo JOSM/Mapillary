@@ -37,7 +37,7 @@ public final class MapillaryUser {
 <span class="pc bpc" id="L37" title="1 of 2 branches missed.">    if (username == null) {</span>
       try {
         username = OAuthUtils
-<span class="nc" id="L40">            .getWithHeader(MapillaryURL.userURL())</span>
+<span class="nc" id="L40">            .getWithHeader(MapillaryURL.APIv3.userURL())</span>
 <span class="nc" id="L41">            .getString(&quot;username&quot;);</span>
 <span class="fc" id="L42">      } catch (IOException e) {</span>
 <span class="fc" id="L43">        Main.warn(e, &quot;Invalid Mapillary token, resetting field&quot;);</span>

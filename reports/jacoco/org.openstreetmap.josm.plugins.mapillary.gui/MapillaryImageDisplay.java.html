@@ -350,21 +350,22 @@ public class MapillaryImageDisplay extends JComponent {
    * Sets a new picture to be displayed.
    *
    * @param image The picture to be displayed.
+   * @param detections image detections
    */
   public void setImage(BufferedImage image, Collection&lt;ImageDetection&gt; detections) {
-<span class="fc" id="L355">    synchronized (this) {</span>
-<span class="fc" id="L356">      this.image = image;</span>
-<span class="fc" id="L357">      this.detections.clear();</span>
-<span class="pc bpc" id="L358" title="1 of 2 branches missed.">      if (detections != null) {</span>
-<span class="nc" id="L359">        this.detections.addAll(detections);</span>
+<span class="fc" id="L356">    synchronized (this) {</span>
+<span class="fc" id="L357">      this.image = image;</span>
+<span class="fc" id="L358">      this.detections.clear();</span>
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">      if (detections != null) {</span>
+<span class="nc" id="L360">        this.detections.addAll(detections);</span>
       }
-<span class="fc" id="L361">      this.selectedRect = null;</span>
-<span class="pc bpc" id="L362" title="1 of 2 branches missed.">      if (image != null)</span>
-<span class="fc" id="L363">        this.visibleRect = new Rectangle(0, 0, image.getWidth(null),</span>
-<span class="fc" id="L364">            image.getHeight(null));</span>
-<span class="pc" id="L365">    }</span>
-<span class="fc" id="L366">    repaint();</span>
-<span class="fc" id="L367">  }</span>
+<span class="fc" id="L362">      this.selectedRect = null;</span>
+<span class="pc bpc" id="L363" title="1 of 2 branches missed.">      if (image != null)</span>
+<span class="fc" id="L364">        this.visibleRect = new Rectangle(0, 0, image.getWidth(null),</span>
+<span class="fc" id="L365">            image.getHeight(null));</span>
+<span class="pc" id="L366">    }</span>
+<span class="fc" id="L367">    repaint();</span>
+<span class="fc" id="L368">  }</span>
 
   /**
    * Returns the picture that is being displayed
@@ -372,7 +373,7 @@ public class MapillaryImageDisplay extends JComponent {
    * @return The picture that is being displayed.
    */
   public BufferedImage getImage() {
-<span class="fc" id="L375">    return this.image;</span>
+<span class="fc" id="L376">    return this.image;</span>
   }
 
   /**
@@ -382,90 +383,90 @@ public class MapillaryImageDisplay extends JComponent {
   public void paintComponent(Graphics g) {
     Image image;
     Rectangle visibleRect;
-<span class="nc" id="L385">    synchronized (this) {</span>
-<span class="nc" id="L386">      image = this.image;</span>
-<span class="nc" id="L387">      visibleRect = this.visibleRect;</span>
-<span class="nc" id="L388">    }</span>
-<span class="nc bnc" id="L389" title="All 2 branches missed.">    if (image == null) {</span>
-<span class="nc" id="L390">      g.setColor(Color.black);</span>
-<span class="nc" id="L391">      Shortcut sc = MapillaryPlugin.getDownloadActionShortcut();</span>
-<span class="nc bnc" id="L392" title="All 2 branches missed.">      String noImageStr = MapillaryLayer.hasInstance() ? tr(&quot;No image selected&quot;) : tr(&quot;Press \&quot;{0}\&quot; to download images&quot;, sc.getKeyText());</span>
-<span class="nc" id="L393">      Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(</span>
+<span class="nc" id="L386">    synchronized (this) {</span>
+<span class="nc" id="L387">      image = this.image;</span>
+<span class="nc" id="L388">      visibleRect = this.visibleRect;</span>
+<span class="nc" id="L389">    }</span>
+<span class="nc bnc" id="L390" title="All 2 branches missed.">    if (image == null) {</span>
+<span class="nc" id="L391">      g.setColor(Color.black);</span>
+<span class="nc" id="L392">      Shortcut sc = MapillaryPlugin.getDownloadActionShortcut();</span>
+<span class="nc bnc" id="L393" title="All 2 branches missed.">      String noImageStr = MapillaryLayer.hasInstance() ? tr(&quot;No image selected&quot;) : tr(&quot;Press \&quot;{0}\&quot; to download images&quot;, sc.getKeyText());</span>
+<span class="nc" id="L394">      Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(</span>
           noImageStr, g);
-<span class="nc" id="L395">      Dimension size = getSize();</span>
-<span class="nc" id="L396">      g.drawString(noImageStr,</span>
-<span class="nc" id="L397">          (int) ((size.width - noImageSize.getWidth()) / 2),</span>
-<span class="nc" id="L398">          (int) ((size.height - noImageSize.getHeight()) / 2));</span>
-<span class="nc" id="L399">    } else {</span>
-<span class="nc" id="L400">      Rectangle target = calculateDrawImageRectangle(visibleRect);</span>
-<span class="nc" id="L401">      g.drawImage(image, target.x, target.y, target.x + target.width, target.y</span>
+<span class="nc" id="L396">      Dimension size = getSize();</span>
+<span class="nc" id="L397">      g.drawString(noImageStr,</span>
+<span class="nc" id="L398">          (int) ((size.width - noImageSize.getWidth()) / 2),</span>
+<span class="nc" id="L399">          (int) ((size.height - noImageSize.getHeight()) / 2));</span>
+<span class="nc" id="L400">    } else {</span>
+<span class="nc" id="L401">      Rectangle target = calculateDrawImageRectangle(visibleRect);</span>
+<span class="nc" id="L402">      g.drawImage(image, target.x, target.y, target.x + target.width, target.y</span>
           + target.height, visibleRect.x, visibleRect.y, visibleRect.x
           + visibleRect.width, visibleRect.y + visibleRect.height, null);
-<span class="nc bnc" id="L404" title="All 2 branches missed.">      if (this.selectedRect != null) {</span>
-<span class="nc" id="L405">        Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">      if (this.selectedRect != null) {</span>
+<span class="nc" id="L406">        Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,</span>
             this.selectedRect.y);
-<span class="nc" id="L407">        Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x</span>
+<span class="nc" id="L408">        Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x</span>
             + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
-<span class="nc" id="L409">        g.setColor(new Color(128, 128, 128, 180));</span>
-<span class="nc" id="L410">        g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);</span>
-<span class="nc" id="L411">        g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);</span>
-<span class="nc" id="L412">        g.fillRect(bottomRight.x, target.y, target.x + target.width</span>
+<span class="nc" id="L410">        g.setColor(new Color(128, 128, 128, 180));</span>
+<span class="nc" id="L411">        g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);</span>
+<span class="nc" id="L412">        g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);</span>
+<span class="nc" id="L413">        g.fillRect(bottomRight.x, target.y, target.x + target.width</span>
             - bottomRight.x, target.height);
-<span class="nc" id="L414">        g.fillRect(target.x, bottomRight.y, target.width, target.y</span>
+<span class="nc" id="L415">        g.fillRect(target.x, bottomRight.y, target.width, target.y</span>
             + target.height - bottomRight.y);
-<span class="nc" id="L416">        g.setColor(Color.black);</span>
-<span class="nc" id="L417">        g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,</span>
+<span class="nc" id="L417">        g.setColor(Color.black);</span>
+<span class="nc" id="L418">        g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,</span>
             bottomRight.y - topLeft.y);
       }
 
-<span class="nc bnc" id="L421" title="All 2 branches missed.">      if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {</span>
-<span class="nc" id="L422">        Point upperLeft = img2compCoord(visibleRect, 0, 0);</span>
-<span class="nc" id="L423">        Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());</span>
+<span class="nc bnc" id="L422" title="All 2 branches missed.">      if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {</span>
+<span class="nc" id="L423">        Point upperLeft = img2compCoord(visibleRect, 0, 0);</span>
+<span class="nc" id="L424">        Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());</span>
 
         // Transformation, which can convert you a Shape relative to the unit square to a Shape relative to the Component
-<span class="nc" id="L426">        AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());</span>
-<span class="nc" id="L427">        unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));</span>
+<span class="nc" id="L427">        AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());</span>
+<span class="nc" id="L428">        unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));</span>
 
-<span class="nc" id="L429">        final Graphics2D g2d = (Graphics2D) g;</span>
-<span class="nc" id="L430">        g2d.setStroke(new BasicStroke(2));</span>
-<span class="nc bnc" id="L431" title="All 2 branches missed.">        for (ImageDetection d : detections) {</span>
-<span class="nc" id="L432">          final Shape shape = d.getShape().createTransformedShape(unit2compTransform);</span>
-<span class="nc bnc" id="L433" title="All 2 branches missed.">          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);</span>
-<span class="nc" id="L434">          g2d.draw(shape);</span>
-<span class="nc bnc" id="L435" title="All 2 branches missed.">          if (d.isTrafficSign()) {</span>
-<span class="nc" id="L436">            g2d.drawImage(</span>
-<span class="nc" id="L437">              MapObject.getIcon(d.getValue()).getImage(),</span>
-<span class="nc" id="L438">              shape.getBounds().x, shape.getBounds().y,</span>
-<span class="nc" id="L439">              shape.getBounds().width, shape.getBounds().height,</span>
+<span class="nc" id="L430">        final Graphics2D g2d = (Graphics2D) g;</span>
+<span class="nc" id="L431">        g2d.setStroke(new BasicStroke(2));</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">        for (ImageDetection d : detections) {</span>
+<span class="nc" id="L433">          final Shape shape = d.getShape().createTransformedShape(unit2compTransform);</span>
+<span class="nc bnc" id="L434" title="All 2 branches missed.">          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);</span>
+<span class="nc" id="L435">          g2d.draw(shape);</span>
+<span class="nc bnc" id="L436" title="All 2 branches missed.">          if (d.isTrafficSign()) {</span>
+<span class="nc" id="L437">            g2d.drawImage(</span>
+<span class="nc" id="L438">              MapObject.getIcon(d.getValue()).getImage(),</span>
+<span class="nc" id="L439">              shape.getBounds().x, shape.getBounds().y,</span>
+<span class="nc" id="L440">              shape.getBounds().width, shape.getBounds().height,</span>
               null
             );
           }
-<span class="nc" id="L443">        }</span>
+<span class="nc" id="L444">        }</span>
       }
     }
-<span class="nc" id="L446">  }</span>
+<span class="nc" id="L447">  }</span>
 
   private Point img2compCoord(Rectangle visibleRect, int xImg, int yImg) {
-<span class="nc" id="L449">    Rectangle drawRect = calculateDrawImageRectangle(visibleRect);</span>
-<span class="nc" id="L450">    return new Point(drawRect.x + ((xImg - visibleRect.x) * drawRect.width)</span>
+<span class="nc" id="L450">    Rectangle drawRect = calculateDrawImageRectangle(visibleRect);</span>
+<span class="nc" id="L451">    return new Point(drawRect.x + ((xImg - visibleRect.x) * drawRect.width)</span>
         / visibleRect.width, drawRect.y
         + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
   }
 
   private Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
-<span class="fc" id="L456">    Rectangle drawRect = calculateDrawImageRectangle(visibleRect);</span>
-<span class="fc" id="L457">    return new Point(</span>
+<span class="fc" id="L457">    Rectangle drawRect = calculateDrawImageRectangle(visibleRect);</span>
+<span class="fc" id="L458">    return new Point(</span>
         visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
         visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height
     );
   }
 
   private static Point getCenterImgCoord(Rectangle visibleRect) {
-<span class="fc" id="L464">    return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);</span>
+<span class="fc" id="L465">    return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);</span>
   }
 
   private Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
-<span class="fc" id="L468">    return calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0, getSize().width, getSize().height));</span>
+<span class="fc" id="L469">    return calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0, getSize().width, getSize().height));</span>
   }
 
   /**
@@ -479,22 +480,22 @@ public class MapillaryImageDisplay extends JComponent {
    * @return the part of compRect with the same width/height ratio as the image
    */
   private static Rectangle calculateDrawImageRectangle(Rectangle imgRect, Rectangle compRect) {
-<span class="fc" id="L482">    int x = 0;</span>
-<span class="fc" id="L483">    int y = 0;</span>
-<span class="fc" id="L484">    int w = compRect.width;</span>
-<span class="fc" id="L485">    int h = compRect.height;</span>
-<span class="fc" id="L486">    int wFact = w * imgRect.height;</span>
-<span class="fc" id="L487">    int hFact = h * imgRect.width;</span>
-<span class="pc bpc" id="L488" title="1 of 2 branches missed.">    if (wFact != hFact) {</span>
-<span class="nc bnc" id="L489" title="All 2 branches missed.">      if (wFact &gt; hFact) {</span>
-<span class="nc" id="L490">        w = hFact / imgRect.height;</span>
-<span class="nc" id="L491">        x = (compRect.width - w) / 2;</span>
+<span class="fc" id="L483">    int x = 0;</span>
+<span class="fc" id="L484">    int y = 0;</span>
+<span class="fc" id="L485">    int w = compRect.width;</span>
+<span class="fc" id="L486">    int h = compRect.height;</span>
+<span class="fc" id="L487">    int wFact = w * imgRect.height;</span>
+<span class="fc" id="L488">    int hFact = h * imgRect.width;</span>
+<span class="pc bpc" id="L489" title="1 of 2 branches missed.">    if (wFact != hFact) {</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">      if (wFact &gt; hFact) {</span>
+<span class="nc" id="L491">        w = hFact / imgRect.height;</span>
+<span class="nc" id="L492">        x = (compRect.width - w) / 2;</span>
       } else {
-<span class="nc" id="L493">        h = wFact / imgRect.width;</span>
-<span class="nc" id="L494">        y = (compRect.height - h) / 2;</span>
+<span class="nc" id="L494">        h = wFact / imgRect.width;</span>
+<span class="nc" id="L495">        y = (compRect.height - h) / 2;</span>
       }
     }
-<span class="fc" id="L497">    return new Rectangle(x + compRect.x, y + compRect.y, w, h);</span>
+<span class="fc" id="L498">    return new Rectangle(x + compRect.x, y + compRect.y, w, h);</span>
   }
 
   /**
@@ -503,52 +504,52 @@ public class MapillaryImageDisplay extends JComponent {
   public void zoomBestFitOrOne() {
     Image image;
     Rectangle visibleRect;
-<span class="nc" id="L506">    synchronized (this) {</span>
-<span class="nc" id="L507">      image = this.image;</span>
-<span class="nc" id="L508">      visibleRect = this.visibleRect;</span>
-<span class="nc" id="L509">    }</span>
-<span class="nc bnc" id="L510" title="All 2 branches missed.">    if (image == null)</span>
-<span class="nc" id="L511">      return;</span>
-<span class="nc bnc" id="L512" title="All 2 branches missed.">    if (visibleRect.width != image.getWidth(null)</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">        || visibleRect.height != image.getHeight(null)) {</span>
+<span class="nc" id="L507">    synchronized (this) {</span>
+<span class="nc" id="L508">      image = this.image;</span>
+<span class="nc" id="L509">      visibleRect = this.visibleRect;</span>
+<span class="nc" id="L510">    }</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">    if (image == null)</span>
+<span class="nc" id="L512">      return;</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">    if (visibleRect.width != image.getWidth(null)</span>
+<span class="nc bnc" id="L514" title="All 2 branches missed.">        || visibleRect.height != image.getHeight(null)) {</span>
       // The display is not at best fit. =&gt; Zoom to best fit
-<span class="nc" id="L515">      visibleRect = new Rectangle(0, 0, image.getWidth(null),</span>
-<span class="nc" id="L516">          image.getHeight(null));</span>
+<span class="nc" id="L516">      visibleRect = new Rectangle(0, 0, image.getWidth(null),</span>
+<span class="nc" id="L517">          image.getHeight(null));</span>
     } else {
       // The display is at best fit =&gt; zoom to 1:1
-<span class="nc" id="L519">      Point center = getCenterImgCoord(visibleRect);</span>
-<span class="nc" id="L520">      visibleRect = new Rectangle(center.x - getWidth() / 2, center.y</span>
-<span class="nc" id="L521">          - getHeight() / 2, getWidth(), getHeight());</span>
-<span class="nc" id="L522">      checkVisibleRectPos(image, visibleRect);</span>
+<span class="nc" id="L520">      Point center = getCenterImgCoord(visibleRect);</span>
+<span class="nc" id="L521">      visibleRect = new Rectangle(center.x - getWidth() / 2, center.y</span>
+<span class="nc" id="L522">          - getHeight() / 2, getWidth(), getHeight());</span>
+<span class="nc" id="L523">      checkVisibleRectPos(image, visibleRect);</span>
     }
-<span class="nc" id="L524">    synchronized (this) {</span>
-<span class="nc" id="L525">      this.visibleRect = visibleRect;</span>
-<span class="nc" id="L526">    }</span>
-<span class="nc" id="L527">    repaint();</span>
-<span class="nc" id="L528">  }</span>
+<span class="nc" id="L525">    synchronized (this) {</span>
+<span class="nc" id="L526">      this.visibleRect = visibleRect;</span>
+<span class="nc" id="L527">    }</span>
+<span class="nc" id="L528">    repaint();</span>
+<span class="nc" id="L529">  }</span>
 
   private static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
-<span class="pc bpc" id="L531" title="1 of 2 branches missed.">    if (visibleRect.x &lt; 0) {</span>
-<span class="nc" id="L532">      visibleRect.x = 0;</span>
+<span class="pc bpc" id="L532" title="1 of 2 branches missed.">    if (visibleRect.x &lt; 0) {</span>
+<span class="nc" id="L533">      visibleRect.x = 0;</span>
     }
-<span class="pc bpc" id="L534" title="1 of 2 branches missed.">    if (visibleRect.y &lt; 0) {</span>
-<span class="nc" id="L535">      visibleRect.y = 0;</span>
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">    if (visibleRect.y &lt; 0) {</span>
+<span class="nc" id="L536">      visibleRect.y = 0;</span>
     }
-<span class="pc bpc" id="L537" title="1 of 2 branches missed.">    if (visibleRect.x + visibleRect.width &gt; image.getWidth(null)) {</span>
-<span class="nc" id="L538">      visibleRect.x = image.getWidth(null) - visibleRect.width;</span>
+<span class="pc bpc" id="L538" title="1 of 2 branches missed.">    if (visibleRect.x + visibleRect.width &gt; image.getWidth(null)) {</span>
+<span class="nc" id="L539">      visibleRect.x = image.getWidth(null) - visibleRect.width;</span>
     }
-<span class="pc bpc" id="L540" title="1 of 2 branches missed.">    if (visibleRect.y + visibleRect.height &gt; image.getHeight(null)) {</span>
-<span class="nc" id="L541">      visibleRect.y = image.getHeight(null) - visibleRect.height;</span>
+<span class="pc bpc" id="L541" title="1 of 2 branches missed.">    if (visibleRect.y + visibleRect.height &gt; image.getHeight(null)) {</span>
+<span class="nc" id="L542">      visibleRect.y = image.getHeight(null) - visibleRect.height;</span>
     }
-<span class="fc" id="L543">  }</span>
+<span class="fc" id="L544">  }</span>
 
   private static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
-<span class="pc bpc" id="L546" title="1 of 2 branches missed.">    if (visibleRect.width &gt; image.getWidth(null)) {</span>
-<span class="nc" id="L547">      visibleRect.width = image.getWidth(null);</span>
+<span class="pc bpc" id="L547" title="1 of 2 branches missed.">    if (visibleRect.width &gt; image.getWidth(null)) {</span>
+<span class="nc" id="L548">      visibleRect.width = image.getWidth(null);</span>
     }
-<span class="pc bpc" id="L549" title="1 of 2 branches missed.">    if (visibleRect.height &gt; image.getHeight(null)) {</span>
-<span class="nc" id="L550">      visibleRect.height = image.getHeight(null);</span>
+<span class="pc bpc" id="L550" title="1 of 2 branches missed.">    if (visibleRect.height &gt; image.getHeight(null)) {</span>
+<span class="nc" id="L551">      visibleRect.height = image.getHeight(null);</span>
     }
-<span class="fc" id="L552">  }</span>
+<span class="fc" id="L553">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
@@ -43,106 +44,109 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   /**
    * Main constructor.
+   * @param changesetDialog Mapillary changeset dialog
    */
   public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
-<span class="nc" id="L48">    super(</span>
-<span class="nc" id="L49">      tr(&quot;Submit changeset&quot;),</span>
-<span class="nc" id="L50">      new ImageProvider(&quot;dialogs&quot;, &quot;mapillary-upload&quot;).setSize(ImageSizes.DEFAULT),</span>
-<span class="nc" id="L51">      tr(&quot;Submit the current changeset&quot;),</span>
-<span class="nc" id="L52">      Shortcut.registerShortcut(</span>
-<span class="nc" id="L53">        &quot;Submit changeset to Mapillary&quot;, tr(&quot;Submit the current changeset to Mapillary&quot;),</span>
+<span class="nc" id="L50">    super(</span>
+<span class="nc" id="L51">      tr(&quot;Submit changeset&quot;),</span>
+<span class="nc" id="L52">      new ImageProvider(&quot;dialogs&quot;, &quot;mapillary-upload&quot;).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L53">      tr(&quot;Submit the current changeset&quot;),</span>
+<span class="nc" id="L54">      Shortcut.registerShortcut(</span>
+<span class="nc" id="L55">        &quot;Submit changeset to Mapillary&quot;, tr(&quot;Submit the current changeset to Mapillary&quot;),</span>
         KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
       ),
       false,
       &quot;mapillarySubmitChangeset&quot;,
       false
     );
-<span class="nc" id="L60">    this.changesetDialog = changesetDialog;</span>
-<span class="nc" id="L61">    setEnabled(false);</span>
-<span class="nc" id="L62">  }</span>
+<span class="nc" id="L62">    this.changesetDialog = changesetDialog;</span>
+<span class="nc" id="L63">    setEnabled(false);</span>
+<span class="nc" id="L64">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent event) {
-<span class="nc" id="L66">    new Thread(() -&gt; {</span>
-<span class="nc" id="L67">      changesetDialog.setUploadPending(true);</span>
-<span class="nc" id="L68">      String token = MapillaryProperties.ACCESS_TOKEN.get();</span>
-<span class="nc bnc" id="L69" title="All 4 branches missed.">      if (token != null &amp;&amp; !token.trim().isEmpty()) {</span>
-<span class="nc" id="L70">        PluginState.setSubmittingChangeset(true);</span>
-<span class="nc" id="L71">        MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L72">        HttpClientBuilder builder = HttpClientBuilder.create();</span>
-<span class="nc" id="L73">        HttpPost httpPost = new HttpPost(APIv3.submitChangeset().toString());</span>
-<span class="nc" id="L74">        httpPost.addHeader(&quot;content-type&quot;, &quot;application/json&quot;);</span>
-<span class="nc" id="L75">        httpPost.addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token);</span>
-<span class="nc" id="L76">        MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
-<span class="nc" id="L77">        String json = buildLocationChangesetJson(locationChangeset).build().toString();</span>
-<span class="nc" id="L78">        Main.debug(&quot;Sending JSON to &quot; + APIv3.submitChangeset() + &quot;\n  &quot; + json);</span>
-<span class="nc" id="L79">        try (CloseableHttpClient httpClient = builder.build()) {</span>
-<span class="nc" id="L80">          httpPost.setEntity(new StringEntity(json));</span>
-<span class="nc" id="L81">          CloseableHttpResponse response = httpClient.execute(httpPost);</span>
-<span class="nc" id="L82">          Main.debug(&quot;HTTP request finished with response code &quot; + response.getStatusLine().getStatusCode());</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">          if (response.getStatusLine().getStatusCode() == 200) {</span>
-<span class="nc" id="L84">            String key = Json.createReader(response.getEntity().getContent()).readObject().getString(&quot;key&quot;);</span>
-<span class="nc" id="L85">            Main.debug(&quot;Received key &quot; + key);</span>
-<span class="nc" id="L86">            synchronized (MapillaryUtils.class) {</span>
-<span class="nc" id="L87">              Main.map.statusLine.setHelpText(String.format(&quot;%s images submitted, Changeset key: %s&quot;, locationChangeset.size(), key));</span>
-<span class="nc" id="L88">            }</span>
-<span class="nc" id="L89">            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.</span>
-<span class="nc" id="L90">          } else {</span>
-<span class="nc" id="L91">            Notification n = new Notification(</span>
-<span class="nc" id="L92">              tr(&quot;Changeset upload failed with {0} error ''{1} {2}''!&quot;,</span>
-<span class="nc" id="L93">                response.getStatusLine().getProtocolVersion(),</span>
-<span class="nc" id="L94">                response.getStatusLine().getStatusCode(),</span>
-<span class="nc" id="L95">                response.getStatusLine().getReasonPhrase()</span>
+<span class="nc" id="L68">    new Thread(() -&gt; {</span>
+<span class="nc" id="L69">      changesetDialog.setUploadPending(true);</span>
+<span class="nc" id="L70">      String token = MapillaryProperties.ACCESS_TOKEN.get();</span>
+<span class="nc bnc" id="L71" title="All 4 branches missed.">      if (token != null &amp;&amp; !token.trim().isEmpty()) {</span>
+<span class="nc" id="L72">        PluginState.setSubmittingChangeset(true);</span>
+<span class="nc" id="L73">        MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L74">        HttpClientBuilder builder = HttpClientBuilder.create();</span>
+<span class="nc" id="L75">        HttpPost httpPost = new HttpPost(APIv3.submitChangeset().toString());</span>
+<span class="nc" id="L76">        httpPost.addHeader(&quot;content-type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L77">        httpPost.addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token);</span>
+<span class="nc" id="L78">        MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
+<span class="nc" id="L79">        String json = buildLocationChangesetJson(locationChangeset).build().toString();</span>
+<span class="nc" id="L80">        Main.info(&quot;Sending JSON to &quot; + APIv3.submitChangeset() + &quot;\n  &quot; + json);</span>
+<span class="nc" id="L81">        try (CloseableHttpClient httpClient = builder.build()) {</span>
+<span class="nc" id="L82">          httpPost.setEntity(new StringEntity(json));</span>
+<span class="nc" id="L83">          CloseableHttpResponse response = httpClient.execute(httpPost);</span>
+<span class="nc" id="L84">          Main.debug(&quot;HTTP request finished with response code &quot; + response.getStatusLine().getStatusCode());</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">          if (response.getStatusLine().getStatusCode() == 200) {</span>
+<span class="nc" id="L86">            String key = Json.createReader(response.getEntity().getContent()).readObject().getString(&quot;key&quot;);</span>
+<span class="nc" id="L87">            Main.debug(&quot;Received key &quot; + key);</span>
+<span class="nc" id="L88">            synchronized (MapillaryUtils.class) {</span>
+<span class="nc" id="L89">              Main.map.statusLine.setHelpText(String.format(&quot;%s images submitted, Changeset key: %s&quot;, locationChangeset.size(), key));</span>
+<span class="nc" id="L90">            }</span>
+<span class="nc" id="L91">            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.</span>
+<span class="nc" id="L92">          } else {</span>
+<span class="nc" id="L93">            Notification n = new Notification(</span>
+<span class="nc" id="L94">              tr(&quot;Changeset upload failed with {0} error ''{1} {2}''!&quot;,</span>
+<span class="nc" id="L95">                response.getStatusLine().getProtocolVersion(),</span>
+<span class="nc" id="L96">                response.getStatusLine().getStatusCode(),</span>
+<span class="nc" id="L97">                response.getStatusLine().getReasonPhrase()</span>
               )
             );
-<span class="nc" id="L98">            n.setIcon(JOptionPane.ERROR_MESSAGE);</span>
-<span class="nc" id="L99">            n.setDuration(Notification.TIME_LONG);</span>
-<span class="nc" id="L100">            n.show();</span>
+<span class="nc" id="L100">            n.setIcon(JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L101">            n.setDuration(Notification.TIME_LONG);</span>
+<span class="nc" id="L102">            n.show();</span>
+<span class="nc" id="L103">            Main.error(&quot;Failed response &quot; + EntityUtils.toString(response.getEntity()));</span>
           }
-<span class="nc bnc" id="L102" title="All 8 branches missed.">        } catch (IOException e) {</span>
-<span class="nc" id="L103">          Main.error(e, &quot;Exception while trying to submit a changeset to mapillary.com&quot;);</span>
-<span class="nc" id="L104">          Notification n = new Notification(</span>
-<span class="nc" id="L105">            tr(&quot;An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.&quot;)</span>
+<span class="nc bnc" id="L105" title="All 8 branches missed.">        } catch (IOException e) {</span>
+<span class="nc" id="L106">          Main.error(e, &quot;Exception while trying to submit a changeset to mapillary.com&quot;);</span>
+<span class="nc" id="L107">          Notification n = new Notification(</span>
+<span class="nc" id="L108">            tr(&quot;An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.&quot;)</span>
           );
-<span class="nc" id="L107">          n.setDuration(Notification.TIME_LONG);</span>
-<span class="nc" id="L108">          n.setIcon(JOptionPane.ERROR_MESSAGE);</span>
-<span class="nc" id="L109">          n.show();</span>
+<span class="nc" id="L110">          n.setDuration(Notification.TIME_LONG);</span>
+<span class="nc" id="L111">          n.setIcon(JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L112">          n.show();</span>
         } finally {
-<span class="nc" id="L111">          PluginState.setSubmittingChangeset(false);</span>
-<span class="nc" id="L112">        }</span>
-<span class="nc" id="L113">      } else {</span>
-<span class="nc" id="L114">        PluginState.notLoggedInToMapillaryDialog();</span>
+<span class="nc" id="L114">          PluginState.setSubmittingChangeset(false);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">      } else {</span>
+<span class="nc" id="L117">        PluginState.notLoggedInToMapillaryDialog();</span>
       }
-<span class="nc" id="L116">      changesetDialog.setUploadPending(false);</span>
-<span class="nc" id="L117">    }, &quot;Mapillary changeset upload&quot;).start();</span>
-<span class="nc" id="L118">  }</span>
+<span class="nc" id="L119">      changesetDialog.setUploadPending(false);</span>
+<span class="nc" id="L120">    }, &quot;Mapillary changeset upload&quot;).start();</span>
+<span class="nc" id="L121">  }</span>
 
   private static JsonObjectBuilder buildImgChangeJson(MapillaryImage img) {
-<span class="nc" id="L121">    return Json.createObjectBuilder()</span>
-<span class="nc" id="L122">      .add(&quot;image_key&quot;, img.getKey())</span>
-<span class="nc" id="L123">      .add(&quot;values&quot;, Json.createObjectBuilder()</span>
-<span class="nc" id="L124">        .add(&quot;from&quot;, Json.createObjectBuilder()</span>
-<span class="nc" id="L125">          .add(&quot;ca&quot;, img.getCa())</span>
-<span class="nc" id="L126">          .add(&quot;lat&quot;, img.getLatLon().getY())</span>
-<span class="nc" id="L127">          .add(&quot;lon&quot;, img.getLatLon().getX())</span>
+<span class="nc" id="L124">    return Json.createObjectBuilder()</span>
+<span class="nc" id="L125">      .add(&quot;image_key&quot;, img.getKey())</span>
+<span class="nc" id="L126">      .add(&quot;to&quot;, Json.createObjectBuilder()</span>
+<span class="nc" id="L127">        .add(&quot;geometry&quot;, Json.createObjectBuilder()</span>
+<span class="nc" id="L128">          .add(&quot;type&quot;, &quot;Point&quot;)</span>
+<span class="nc" id="L129">          .add(&quot;coordinates&quot;, Json.createArrayBuilder()</span>
+<span class="nc" id="L130">            .add(img.getTempLatLon().getX())</span>
+<span class="nc" id="L131">            .add(img.getTempLatLon().getY())</span>
+          )
         )
-<span class="nc" id="L129">        .add(&quot;to&quot;, Json.createObjectBuilder()</span>
-<span class="nc" id="L130">          .add(&quot;ca&quot;, img.getTempCa())</span>
-<span class="nc" id="L131">          .add(&quot;lat&quot;, img.getTempLatLon().getY())</span>
-<span class="nc" id="L132">          .add(&quot;lon&quot;, img.getTempLatLon().getX())</span>
+<span class="nc" id="L134">        .add(&quot;properties&quot;, Json.createObjectBuilder()</span>
+<span class="nc" id="L135">          .add(&quot;ca&quot;, img.getTempCa())</span>
         )
+<span class="nc" id="L137">        .add(&quot;type&quot;, &quot;Feature&quot;)</span>
       );
   }
 
   private static JsonObjectBuilder buildLocationChangesetJson(MapillaryLocationChangeset changeset) {
-<span class="nc" id="L138">    JsonArrayBuilder imgChanges = Json.createArrayBuilder();</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">    for (MapillaryImage img : changeset) {</span>
-<span class="nc" id="L140">      imgChanges.add(buildImgChangeJson(img));</span>
-<span class="nc" id="L141">    }</span>
-<span class="nc" id="L142">    return Json.createObjectBuilder()</span>
-<span class="nc" id="L143">      .add(&quot;change_type&quot;, &quot;location&quot;)</span>
-<span class="nc" id="L144">      .add(&quot;changes&quot;, imgChanges.build())</span>
-<span class="nc" id="L145">      .add(&quot;request_comment&quot;, &quot;JOSM-created&quot;);</span>
+<span class="nc" id="L142">    JsonArrayBuilder imgChanges = Json.createArrayBuilder();</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">    for (MapillaryImage img : changeset) {</span>
+<span class="nc" id="L144">      imgChanges.add(buildImgChangeJson(img));</span>
+<span class="nc" id="L145">    }</span>
+<span class="nc" id="L146">    return Json.createObjectBuilder()</span>
+<span class="nc" id="L147">      .add(&quot;type&quot;, &quot;location&quot;)</span>
+<span class="nc" id="L148">      .add(&quot;changes&quot;, imgChanges.build())</span>
+<span class="nc" id="L149">      .add(&quot;request_comment&quot;, &quot;JOSM-created&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
