@@ -1,0 +1,19 @@
+{
+  "description": "Traffic sign sources and sprites for mapillary.com",
+  "maintainers": [
+    "knikel",
+    "ybkuang"
+  ],
+  "providers": [
+    {
+      "dependencies": [],
+      "description": "???",
+      "extDependencies": [],
+      "marathon_name": "???",
+      "name": "???",
+      "services": [],
+      "type": "???"
+    }
+  ],
+  "repo": "mapillary_sprite_source"
+}
