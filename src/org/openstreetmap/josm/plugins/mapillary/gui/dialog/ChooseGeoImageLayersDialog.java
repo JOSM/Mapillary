@@ -78,7 +78,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
               }
             })
             .filter(Objects::nonNull)
-            .sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt()))
+            .sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order by capturedAt timestamp (ascending)
             .collect(Collectors.toList())
         );
         return seq;
@@ -102,9 +102,13 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     public Component getListCellRendererComponent(
       JList<? extends GeoImageLayer> list, GeoImageLayer value, int index, boolean isSelected, boolean cellHasFocus
     ) {
-      final JLabel result = value == null ? null : new JLabel(value.getName() + " (" + value.getImages().size() + " images)", value.getIcon(), SwingConstants.LEADING);
-      result.setOpaque(true);
-      result.setBackground(isSelected ? UIManager.getColor("List.selectionBackground") : UIManager.getColor("List.background"));
+      final JLabel result = value == null
+          ? null
+          : new JLabel(I18n.tr("{0} ({1} images)", value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);
+      if (result != null) {
+        result.setOpaque(true);
+        result.setBackground(isSelected ? UIManager.getColor("List.selectionBackground") : UIManager.getColor("List.background"));
+      }
       return result;
     }
   }
