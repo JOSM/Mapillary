@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,6 +16,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
@@ -54,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
@@ -107,7 +107,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
 
   private MapillaryLayer() {
-    super(tr("Mapillary Images"));
+    super(I18n.tr("Mapillary Images"));
     this.data = new MapillaryData();
     data.addListener(this);
   }
@@ -424,17 +424,36 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Object getInfoComponent() {
-    return tr("Mapillary layer") +
-      '\n' +
-      tr("Total images:") +
-      ' ' +
-      this.data.size() +
-      '\n';
+    IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size()).summaryStatistics();
+    return new StringBuilder(I18n.tr("Mapillary layer"))
+      .append("\n")
+      .append(I18n.tr(
+        "{0} sequences, each containing between {1} and {2} images (ø {3})",
+        getData().getSequences().size(),
+        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
+        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(),
+        seqSizeStats.getAverage()
+      ))
+      .append("\n\n")
+      .append(I18n.tr(
+        "{0} imported images",
+        getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count()
+      ))
+      .append("\n+ ")
+      .append(I18n.tr(
+        "{0} downloaded images",
+        getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count()
+      ))
+      .append("\n= ")
+      .append(I18n.tr(
+        "{0} images in total",
+        getData().getImages().size()
+      )).toString();
   }
 
   @Override
   public String getToolTipText() {
-    return this.data.size() + (' ' + tr("images"));
+    return I18n.tr("{0} images in {1} sequences", getData().getImages().size(), getData().getSequences().size());
   }
 
   @Override
