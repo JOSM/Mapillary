@@ -25,7 +25,6 @@ public class MapillaryDataTest extends AbstractTest {
   private MapillaryImage img2;
   private MapillaryImage img3;
   private MapillaryImage img4;
-  private MapillarySequence seq;
 
   /**
    * Creates a sample {@link MapillaryData} objects, 4 {@link MapillaryImage}
@@ -38,12 +37,12 @@ public class MapillaryDataTest extends AbstractTest {
     this.img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90);
     this.img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90);
     this.img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90);
-    this.seq = new MapillarySequence();
+    final MapillarySequence seq = new MapillarySequence();
 
-    this.seq.add(Arrays.asList(new MapillaryAbstractImage[] {img1, img2, img3, img4}));
+    seq.add(Arrays.asList(new MapillaryAbstractImage[] {img1, img2, img3, img4}));
 
     this.data = new MapillaryData();
-    this.data.addAll(new ConcurrentSkipListSet<>(this.seq.getImages()));
+    this.data.addAll(new ConcurrentSkipListSet<>(seq.getImages()));
   }
 
   /**
@@ -69,9 +68,9 @@ public class MapillaryDataTest extends AbstractTest {
    */
   @Test
   public void sizeTest() {
-    assertEquals(4, this.data.size());
+    assertEquals(4, this.data.getImages().size());
     this.data.add(new MapillaryImage("key5__________________", new LatLon(0.1, 0.1), 90));
-    assertEquals(5, this.data.size());
+    assertEquals(5, this.data.getImages().size());
   }
 
   /**

@@ -412,15 +412,4 @@ public class MapillaryData {
       this.images.addAll(images);
     }
   }
-
-  /**
-   * Returns the amount of images contained by this object.
-   *
-   * @return The amount of images in stored.
-   */
-  public int size() {
-    synchronized (images) {
-      return this.images.size();
-    }
-  }
 }

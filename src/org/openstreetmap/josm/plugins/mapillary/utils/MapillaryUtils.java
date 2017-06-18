@@ -25,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.tools.I18n;
 
 /**
  * Set of utilities.
@@ -270,8 +271,8 @@ public final class MapillaryUtils {
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
       ret.append(tr("Downloading Mapillary images"));
-    } else if (MapillaryLayer.getInstance().getData().size() > 0) {
-      ret.append(tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getData().size()));
+    } else if (MapillaryLayer.getInstance().getData().getImages().size() > 0) {
+      ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
     } else if (PluginState.isSubmittingChangeset()) {
         ret.append(tr("Submitting Mapillary Changeset"));
     } else {

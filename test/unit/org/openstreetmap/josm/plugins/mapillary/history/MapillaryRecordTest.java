@@ -192,12 +192,12 @@ public class MapillaryRecordTest extends AbstractTest {
     assertEquals(3, img1.getSequence().getImages().size());
     assertEquals(img3, img1.next().next());
   }
-  
+
   @Test(expected=NullPointerException.class)
   public void commandJoinNull1() {
     new CommandJoin(img1, null);
   }
-  
+
   @Test(expected=NullPointerException.class)
   public void commandJoinNull2() {
     new CommandJoin(null, img1);
@@ -264,7 +264,7 @@ public class MapillaryRecordTest extends AbstractTest {
     assertTrue(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));
     this.record.redo();
     this.record.addCommand(cmd2);
-    assertEquals(0, MapillaryLayer.getInstance().getData().size());
+    assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
   }
 
   /**
@@ -281,11 +281,11 @@ public class MapillaryRecordTest extends AbstractTest {
             new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{this.img2, this.img3})));
 
     this.record.addCommand(cmd1);
-    assertEquals(1, data.size());
+    assertEquals(1, data.getImages().size());
     this.record.undo();
-    assertEquals(0, data.size());
+    assertEquals(0, data.getImages().size());
     this.record.redo();
     this.record.addCommand(cmd2);
-    assertEquals(3, data.size());
+    assertEquals(3, data.getImages().size());
   }
 }
