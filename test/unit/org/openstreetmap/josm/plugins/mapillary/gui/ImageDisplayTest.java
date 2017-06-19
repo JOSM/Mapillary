@@ -7,25 +7,19 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+
+import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 
 /**
  * Tests {@link MapillaryImageDisplay}
  */
-public class ImageDisplayTest {
+public class ImageDisplayTest extends AbstractTest {
 
   private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-
-  @BeforeClass
-  public static void setUp() throws IOException {
-    TestUtil.initPlugin();
-  }
 
   @Test
   public void testImagePersistence() {

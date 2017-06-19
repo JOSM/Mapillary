@@ -11,6 +11,7 @@ import java.util.Collection;
 import javax.json.Json;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;

@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.IIOException;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 

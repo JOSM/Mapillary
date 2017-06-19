@@ -10,11 +10,10 @@ import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -22,14 +21,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-public class JsonImageDetailsDecoderTest {
-  /**
-   * Setup test.
-   */
-  @Before
-  public void setUp() {
-    JOSMFixture.initContentPane();
-  }
+public class JsonImageDetailsDecoderTest extends AbstractTest {
 
   @Test
   public void testUtilityClass() {

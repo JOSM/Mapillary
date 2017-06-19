@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 

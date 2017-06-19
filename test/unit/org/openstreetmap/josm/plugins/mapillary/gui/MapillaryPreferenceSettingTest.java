@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateFieldValue;
 
 import java.awt.GraphicsEnvironment;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;

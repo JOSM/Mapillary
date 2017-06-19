@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 
 /**

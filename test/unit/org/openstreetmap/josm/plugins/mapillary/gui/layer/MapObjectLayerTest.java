@@ -17,22 +17,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-public class MapObjectLayerTest {
+public class MapObjectLayerTest extends AbstractTest {
 
   private static Field urlGen;
   private static Object urlGenValue;
 
   @BeforeClass
   public static void setUp() throws IllegalAccessException, IOException {
-    JOSMFixture.initContentPane();
-    TestUtil.initPlugin();
     urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "URL_GEN");
 
     urlGenValue = urlGen.get(null);

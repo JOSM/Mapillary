@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
 
 import java.awt.geom.AffineTransform;
@@ -22,6 +23,7 @@ import javax.json.JsonArray;
 import javax.json.JsonValue;
 
 import org.junit.Test;
+
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 

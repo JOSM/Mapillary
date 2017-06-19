@@ -11,7 +11,6 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -27,7 +26,6 @@ public class SequenceDownloadRunnableTest extends AbstractTest {
 
   @Before
   public void setUp() {
-    JOSMFixture.initContentPane();
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 
@@ -47,7 +45,7 @@ public class SequenceDownloadRunnableTest extends AbstractTest {
   @Test
   public void testRun3() throws IllegalArgumentException, IllegalAccessException {
     testNumberOfDecodedImages(0, b -> {
-      try { return new URL("https://mapillary/nonexistentURL"); } catch (MalformedURLException e) {} return null;
+      try { return new URL("https://mapillary/nonexistentURL"); } catch (MalformedURLException e) { return null; }
     }, new Bounds(0, 0, 0, 0));
   }
 

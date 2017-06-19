@@ -8,10 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.gui.layer.ImageryLayer;
@@ -19,14 +17,6 @@ import org.openstreetmap.josm.gui.layer.Layer;
 
 public class MapillaryLayerTest extends AbstractTest {
   private Layer dummyLayer = ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
-
-  /**
-   * Setup test.
-   */
-  @Before
-  public void setUp() {
-    JOSMFixture.initContentPane();
-  }
 
   @Test
   public void testGetIcon() {

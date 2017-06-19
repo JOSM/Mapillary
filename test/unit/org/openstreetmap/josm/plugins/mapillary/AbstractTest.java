@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 /**
