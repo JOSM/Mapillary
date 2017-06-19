@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapillaryLayer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary</a> &gt; <span class="el_source">MapillaryLayer.java</span></div><h1>MapillaryLayer.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,6 +16,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
@@ -54,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 /**
@@ -107,7 +107,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="fc" id="L107">  private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();</span>
 
   private MapillaryLayer() {
-<span class="fc" id="L110">    super(tr(&quot;Mapillary Images&quot;));</span>
+<span class="fc" id="L110">    super(I18n.tr(&quot;Mapillary Images&quot;));</span>
 <span class="fc" id="L111">    this.data = new MapillaryData();</span>
 <span class="fc" id="L112">    data.addListener(this);</span>
 <span class="fc" id="L113">  }</span>
@@ -424,55 +424,74 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Object getInfoComponent() {
-<span class="fc" id="L427">    return tr(&quot;Mapillary layer&quot;) +</span>
-      '\n' +
-<span class="fc" id="L429">      tr(&quot;Total images:&quot;) +</span>
-      ' ' +
-<span class="fc" id="L431">      this.data.size() +</span>
-      '\n';
+<span class="fc" id="L427">    IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -&gt; seq.getImages().size()).summaryStatistics();</span>
+<span class="fc" id="L428">    return new StringBuilder(I18n.tr(&quot;Mapillary layer&quot;))</span>
+<span class="fc" id="L429">      .append(&quot;\n&quot;)</span>
+<span class="fc" id="L430">      .append(I18n.tr(</span>
+        &quot;{0} sequences, each containing between {1} and {2} images (ø {3})&quot;,
+<span class="fc" id="L432">        getData().getSequences().size(),</span>
+<span class="pc bpc" id="L433" title="1 of 2 branches missed.">        seqSizeStats.getCount() &lt;= 0 ? 0 : seqSizeStats.getMin(),</span>
+<span class="pc bpc" id="L434" title="1 of 2 branches missed.">        seqSizeStats.getCount() &lt;= 0 ? 0 : seqSizeStats.getMax(),</span>
+<span class="fc" id="L435">        seqSizeStats.getAverage()</span>
+      ))
+<span class="fc" id="L437">      .append(&quot;\n\n&quot;)</span>
+<span class="fc" id="L438">      .append(I18n.tr(</span>
+        &quot;{0} imported images&quot;,
+<span class="fc" id="L440">        getData().getImages().stream().filter(i -&gt; i instanceof MapillaryImportedImage).count()</span>
+      ))
+<span class="fc" id="L442">      .append(&quot;\n+ &quot;)</span>
+<span class="fc" id="L443">      .append(I18n.tr(</span>
+        &quot;{0} downloaded images&quot;,
+<span class="fc" id="L445">        getData().getImages().stream().filter(i -&gt; i instanceof MapillaryImage).count()</span>
+      ))
+<span class="fc" id="L447">      .append(&quot;\n= &quot;)</span>
+<span class="fc" id="L448">      .append(I18n.tr(</span>
+        &quot;{0} images in total&quot;,
+<span class="fc" id="L450">        getData().getImages().size()</span>
+<span class="fc" id="L451">      )).toString();</span>
   }
 
   @Override
   public String getToolTipText() {
-<span class="nc" id="L437">    return this.data.size() + (' ' + tr(&quot;images&quot;));</span>
+<span class="nc" id="L456">    return I18n.tr(&quot;{0} images in {1} sequences&quot;, getData().getImages().size(), getData().getSequences().size());</span>
   }
 
   @Override
   public void activeOrEditLayerChanged(ActiveLayerChangeEvent e) {
-<span class="nc bnc" id="L442" title="All 2 branches missed.">    if (Main.getLayerManager().getActiveLayer() == this) {</span>
-<span class="nc" id="L443">      MapillaryUtils.updateHelpText();</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">    if (Main.getLayerManager().getActiveLayer() == this) {</span>
+<span class="nc" id="L462">      MapillaryUtils.updateHelpText();</span>
     }
-<span class="nc bnc" id="L445" title="All 2 branches missed.">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), Main.getLayerManager().getActiveLayer() == this);</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), Main.getLayerManager().getActiveLayer() == this);</span>
 
-<span class="nc bnc" id="L447" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {</span>
-<span class="nc bnc" id="L448" title="All 2 branches missed.">      if (Main.getLayerManager().getEditLayer() != null) {</span>
-<span class="nc" id="L449">        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">    if (Main.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">      if (Main.getLayerManager().getEditLayer() != null) {</span>
+<span class="nc" id="L468">        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);</span>
       }
-<span class="nc bnc" id="L451" title="All 2 branches missed.">      if (e.getPreviousEditLayer() != null) {</span>
-<span class="nc" id="L452">        e.getPreviousEditLayer().data.removeDataSetListener(DATASET_LISTENER);</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">      if (e.getPreviousEditLayer() != null) {</span>
+<span class="nc" id="L471">        e.getPreviousEditLayer().data.removeDataSetListener(DATASET_LISTENER);</span>
       }
     }
-<span class="nc" id="L455">  }</span>
+<span class="nc" id="L474">  }</span>
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
-<span class="nc" id="L459">  }</span>
+<span class="nc" id="L478">  }</span>
 
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
    */
   @Override
   public void imagesAdded() {
-<span class="fc" id="L466">    updateNearestImages();</span>
-<span class="fc" id="L467">  }</span>
+<span class="fc" id="L485">    updateNearestImages();</span>
+<span class="fc" id="L486">  }</span>
 
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-<span class="nc" id="L474">    updateNearestImages();</span>
-<span class="nc" id="L475">  }</span>
+<span class="nc" id="L493">    updateNearestImages();</span>
+<span class="nc" id="L494">  }</span>
 
   /**
    * Returns the closest images belonging to a different sequence and
@@ -483,60 +502,60 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
-<span class="nc" id="L486">    return data.getSequences().parallelStream()</span>
-<span class="nc bnc" id="L487" title="All 6 branches missed.">      .filter(seq -&gt; target.getSequence() == null || (seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey())))</span>
-<span class="nc" id="L488">      .map(seq -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
-<span class="nc" id="L489">        Optional&lt;MapillaryAbstractImage&gt; resImg = seq.getImages().parallelStream()</span>
-<span class="nc bnc" id="L490" title="All 4 branches missed.">          .filter((img) -&gt; img instanceof MapillaryImage &amp;&amp; img.isVisible())</span>
-<span class="nc" id="L491">          .sorted(new NearestImgToTargetComparator(target))</span>
-<span class="nc" id="L492">          .findFirst();</span>
-<span class="nc bnc" id="L493" title="All 2 branches missed.">        return resImg.isPresent() ? resImg.get() : null;</span>
+<span class="nc" id="L505">    return data.getSequences().parallelStream()</span>
+<span class="nc bnc" id="L506" title="All 6 branches missed.">      .filter(seq -&gt; target.getSequence() == null || (seq.getKey() != null &amp;&amp; !seq.getKey().equals(target.getSequence().getKey())))</span>
+<span class="nc" id="L507">      .map(seq -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
+<span class="nc" id="L508">        Optional&lt;MapillaryAbstractImage&gt; resImg = seq.getImages().parallelStream()</span>
+<span class="nc bnc" id="L509" title="All 4 branches missed.">          .filter((img) -&gt; img instanceof MapillaryImage &amp;&amp; img.isVisible())</span>
+<span class="nc" id="L510">          .sorted(new NearestImgToTargetComparator(target))</span>
+<span class="nc" id="L511">          .findFirst();</span>
+<span class="nc bnc" id="L512" title="All 2 branches missed.">        return resImg.isPresent() ? resImg.get() : null;</span>
       })
-<span class="nc" id="L495">      .filter(img -&gt; // Filters out images too far away from target</span>
-<span class="nc bnc" id="L496" title="All 2 branches missed.">        img != null &amp;&amp;</span>
-<span class="nc" id="L497">        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
-<span class="nc bnc" id="L498" title="All 2 branches missed.">          &lt; MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()</span>
+<span class="nc" id="L514">      .filter(img -&gt; // Filters out images too far away from target</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">        img != null &amp;&amp;</span>
+<span class="nc" id="L516">        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">          &lt; MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()</span>
        )
-<span class="nc" id="L500">      .sorted(new NearestImgToTargetComparator(target))</span>
-<span class="nc" id="L501">      .limit(limit)</span>
-<span class="nc" id="L502">      .toArray(MapillaryImage[]::new);</span>
+<span class="nc" id="L519">      .sorted(new NearestImgToTargetComparator(target))</span>
+<span class="nc" id="L520">      .limit(limit)</span>
+<span class="nc" id="L521">      .toArray(MapillaryImage[]::new);</span>
   }
 
   private void updateNearestImages() {
-<span class="fc" id="L506">    final MapillaryAbstractImage selected = data.getSelectedImage();</span>
-<span class="pc bpc" id="L507" title="1 of 2 branches missed.">    if (selected != null) {</span>
-<span class="nc" id="L508">      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);</span>
+<span class="fc" id="L525">    final MapillaryAbstractImage selected = data.getSelectedImage();</span>
+<span class="pc bpc" id="L526" title="1 of 2 branches missed.">    if (selected != null) {</span>
+<span class="nc" id="L527">      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);</span>
     } else {
-<span class="fc" id="L510">      nearestImages = new MapillaryImage[0];</span>
+<span class="fc" id="L529">      nearestImages = new MapillaryImage[0];</span>
     }
-<span class="pc bpc" id="L512" title="1 of 2 branches missed.">    if (Main.main != null) {</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length &gt;= 1);</span>
-<span class="nc bnc" id="L514" title="All 2 branches missed.">      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length &gt;= 2);</span>
+<span class="pc bpc" id="L531" title="1 of 2 branches missed.">    if (Main.main != null) {</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length &gt;= 1);</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length &gt;= 2);</span>
     }
-<span class="pc bpc" id="L516" title="1 of 2 branches missed.">    if (nearestImages.length &gt;= 1) {</span>
-<span class="nc" id="L517">      CacheUtils.downloadPicture(nearestImages[0]);</span>
-<span class="nc bnc" id="L518" title="All 2 branches missed.">      if (nearestImages.length &gt;= 2) {</span>
-<span class="nc" id="L519">        CacheUtils.downloadPicture(nearestImages[1]);</span>
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">    if (nearestImages.length &gt;= 1) {</span>
+<span class="nc" id="L536">      CacheUtils.downloadPicture(nearestImages[0]);</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">      if (nearestImages.length &gt;= 2) {</span>
+<span class="nc" id="L538">        CacheUtils.downloadPicture(nearestImages[1]);</span>
       }
     }
-<span class="fc" id="L522">  }</span>
+<span class="fc" id="L541">  }</span>
 
   /**
    * {@link Runnable} that runs a delayed Mapillary download.
    *
    * @author nokutu
    */
-<span class="nc" id="L529">  private static class DelayedDownload implements Runnable {</span>
+<span class="nc" id="L548">  private static class DelayedDownload implements Runnable {</span>
 
     @Override
     public void run() {
       try {
-<span class="nc" id="L534">        Thread.sleep(1500);</span>
-<span class="nc" id="L535">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L536">        Main.error(e);</span>
-<span class="nc" id="L537">      }</span>
-<span class="nc" id="L538">      MapillaryDownloader.downloadOSMArea();</span>
-<span class="nc" id="L539">    }</span>
+<span class="nc" id="L553">        Thread.sleep(1500);</span>
+<span class="nc" id="L554">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L555">        Main.error(e);</span>
+<span class="nc" id="L556">      }</span>
+<span class="nc" id="L557">      MapillaryDownloader.downloadOSMArea();</span>
+<span class="nc" id="L558">    }</span>
   }
 
   /**
@@ -544,31 +563,31 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @author nokutu
    */
-<span class="nc" id="L547">  private class DeleteImageAction extends AbstractAction {</span>
+<span class="nc" id="L566">  private class DeleteImageAction extends AbstractAction {</span>
 
     private static final long serialVersionUID = -982809854631863962L;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<span class="nc bnc" id="L553" title="All 2 branches missed.">      if (instance != null)</span>
-<span class="nc" id="L554">        MapillaryRecord.getInstance().addCommand(</span>
-<span class="nc" id="L555">          new CommandDelete(getData().getMultiSelectedImages()));</span>
-<span class="nc" id="L556">    }</span>
+<span class="nc bnc" id="L572" title="All 2 branches missed.">      if (instance != null)</span>
+<span class="nc" id="L573">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L574">          new CommandDelete(getData().getMultiSelectedImages()));</span>
+<span class="nc" id="L575">    }</span>
   }
 
   private static class NearestImgToTargetComparator implements Comparator&lt;MapillaryAbstractImage&gt; {
     private final MapillaryAbstractImage target;
-<span class="nc" id="L561">    public NearestImgToTargetComparator(MapillaryAbstractImage target) {</span>
-<span class="nc" id="L562">      this.target = target;</span>
-<span class="nc" id="L563">    }</span>
+<span class="nc" id="L580">    public NearestImgToTargetComparator(MapillaryAbstractImage target) {</span>
+<span class="nc" id="L581">      this.target = target;</span>
+<span class="nc" id="L582">    }</span>
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
     public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
-<span class="nc" id="L569">      return (int) Math.signum(</span>
-<span class="nc" id="L570">        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -</span>
-<span class="nc" id="L571">        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
+<span class="nc" id="L588">      return (int) Math.signum(</span>
+<span class="nc" id="L589">        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -</span>
+<span class="nc" id="L590">        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
       );
     }
   }

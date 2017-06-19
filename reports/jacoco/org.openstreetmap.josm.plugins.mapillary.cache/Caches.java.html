@@ -22,7 +22,7 @@ public final class Caches {
 
   public static File getCacheDirectory() {
 <span class="fc" id="L24">    final File f = new File(Main.pref.getPluginsDirectory().getPath() + &quot;/Mapillary/cache&quot;);</span>
-<span class="fc bfc" id="L25" title="All 2 branches covered.">    if (!f.exists()) {</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">    if (!f.exists()) {</span>
 <span class="fc" id="L26">      f.mkdirs();</span>
     }
 <span class="fc" id="L28">    return f;</span>

@@ -78,7 +78,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
               }
             })
 <span class="nc" id="L80">            .filter(Objects::nonNull)</span>
-<span class="nc" id="L81">            .sorted((o1, o2) -&gt; (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt()))</span>
+<span class="nc" id="L81">            .sorted((o1, o2) -&gt; (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order by capturedAt timestamp (ascending)</span>
 <span class="nc" id="L82">            .collect(Collectors.toList())</span>
         );
 <span class="nc" id="L84">        return seq;</span>
@@ -102,10 +102,14 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     public Component getListCellRendererComponent(
       JList&lt;? extends GeoImageLayer&gt; list, GeoImageLayer value, int index, boolean isSelected, boolean cellHasFocus
     ) {
-<span class="nc bnc" id="L105" title="All 2 branches missed.">      final JLabel result = value == null ? null : new JLabel(value.getName() + &quot; (&quot; + value.getImages().size() + &quot; images)&quot;, value.getIcon(), SwingConstants.LEADING);</span>
-<span class="nc" id="L106">      result.setOpaque(true);</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">      result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
-<span class="nc" id="L108">      return result;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">      final JLabel result = value == null</span>
+          ? null
+<span class="nc" id="L107">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">      if (result != null) {</span>
+<span class="nc" id="L109">        result.setOpaque(true);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
+      }
+<span class="nc" id="L112">      return result;</span>
     }
   }
 
@@ -113,18 +117,18 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     private static final long serialVersionUID = 3107247955341855290L;
     private final List&lt;T&gt; list;
 
-<span class="nc" id="L116">    public BasicListModel(List&lt;T&gt; list) {</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L120">    public BasicListModel(List&lt;T&gt; list) {</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
+<span class="nc" id="L122">    }</span>
 
     @Override
     public int getSize() {
-<span class="nc" id="L122">      return list.size();</span>
+<span class="nc" id="L126">      return list.size();</span>
     }
 
     @Override
     public T getElementAt(int index) {
-<span class="nc" id="L127">      return list.get(index);</span>
+<span class="nc" id="L131">      return list.get(index);</span>
     }
   }
 }

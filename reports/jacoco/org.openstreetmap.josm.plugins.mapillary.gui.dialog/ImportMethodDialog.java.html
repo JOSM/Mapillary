@@ -122,9 +122,9 @@ public class ImportMethodDialog extends JDialog {
 <span class="nc" id="L122">        } catch (IOException e1) {</span>
 <span class="nc" id="L123">          JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the directory ''{0}''!&quot;, DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
 <span class="nc" id="L124">        }</span>
+<span class="nc" id="L125">        MapillaryData.dataUpdated();</span>
+<span class="nc" id="L126">        dispose();</span>
       }
-<span class="nc" id="L126">      MapillaryData.dataUpdated();</span>
-<span class="nc" id="L127">      dispose();</span>
 <span class="nc" id="L128">    });</span>
 <span class="nc" id="L129">    final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));</span>
 <span class="nc" id="L130">    imgLayerBtn.addActionListener(ae -&gt; {</span>

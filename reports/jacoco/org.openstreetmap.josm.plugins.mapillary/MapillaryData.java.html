@@ -246,8 +246,8 @@ public class MapillaryData {
    * @return all sequences that are contained in the Mapillary data
    */
   public Set&lt;MapillarySequence&gt; getSequences() {
-<span class="nc" id="L249">    synchronized (images) {</span>
-<span class="nc" id="L250">      return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());</span>
+<span class="fc" id="L249">    synchronized (images) {</span>
+<span class="fc" id="L250">      return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());</span>
 <span class="nc" id="L251">    }</span>
   }
 
@@ -412,16 +412,5 @@ public class MapillaryData {
 <span class="nc" id="L412">      this.images.addAll(images);</span>
 <span class="nc" id="L413">    }</span>
 <span class="nc" id="L414">  }</span>
-
-  /**
-   * Returns the amount of images contained by this object.
-   *
-   * @return The amount of images in stored.
-   */
-  public int size() {
-<span class="fc" id="L422">    synchronized (images) {</span>
-<span class="fc" id="L423">      return this.images.size();</span>
-<span class="nc" id="L424">    }</span>
-  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -178,15 +178,15 @@ public class MapillarySequence {
 <span class="fc" id="L178">      UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);</span>
 <span class="pc bpc" id="L179" title="1 of 2 branches missed.">      if(cachedProfile == null) {</span>
         try {
-<span class="fc" id="L181">          Caches.UserProfileCache.getInstance().put(</span>
+<span class="pc" id="L181">          Caches.UserProfileCache.getInstance().put(</span>
             userKey,
-<span class="fc" id="L183">            JsonUserProfileDecoder.decodeUserProfile(</span>
-<span class="fc" id="L184">              Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()</span>
+<span class="nc" id="L183">            JsonUserProfileDecoder.decodeUserProfile(</span>
+<span class="nc" id="L184">              Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()</span>
             )
           );
 <span class="fc" id="L187">        } catch (IOException var4) {</span>
 <span class="fc" id="L188">          Main.warn(var4, &quot;Error when downloading user profile for user key '&quot; + userKey + &quot;'!&quot;);</span>
-<span class="fc" id="L189">        }</span>
+<span class="nc" id="L189">        }</span>
       }
 
 <span class="fc" id="L192">      this.user = Caches.UserProfileCache.getInstance().get(userKey);</span>
