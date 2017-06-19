@@ -18,7 +18,7 @@ jacoco {
 jacocoTestReport {
   reports {
     xml.enabled true
-    html.destination "$buildDir/reports/jacoco"
+    html.destination file("$buildDir/reports/jacoco")
   }
 }
 build.dependsOn jacocoTestReport

@@ -1,7 +1,7 @@
 plugins {
-  id "org.sonarqube" version "2.4"
+  id "org.sonarqube" version "2.5"
   id "org.kordamp.markdown.convert" version "1.1.0"
-  id "com.github.ben-manes.versions" version "0.14.0"
+  id "com.github.ben-manes.versions" version "0.15.0"
 }
 
 apply plugin: 'eclipse'
@@ -47,14 +47,7 @@ repositories {
 }
 
 dependencies {
-  /**
-   * The JOSM-version can be specified as "latest", "tested" or the numeric version number.
-   * When using a numeric version number you can leave out {changing=true}.
-   *
-   * Please check for numeric versions, if that specific version is available for download from https://josm.openstreetmap.de/download/ .
-   * If not, choose the next higher number that is available, or the gradle build will break.
-   */
-  implementation(':josm:12275')
+  implementation(':josm:' + project.property('plugin.compile.version'))
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   requiredPlugin (name: 'apache-commons'){changing=true}
   requiredPlugin (name: 'apache-http'){changing=true}
