@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -20,39 +19,39 @@ public class MapillarySquareDownloadRunnable implements Runnable {
    * @param bounds the bounds of the area that should be downloaded
    *
    */
-<span class="nc" id="L23">  public MapillarySquareDownloadRunnable(Bounds bounds) {</span>
-<span class="nc" id="L24">    this.bounds = bounds;</span>
-<span class="nc" id="L25">  }</span>
+<span class="nc" id="L22">  public MapillarySquareDownloadRunnable(Bounds bounds) {</span>
+<span class="nc" id="L23">    this.bounds = bounds;</span>
+<span class="nc" id="L24">  }</span>
 
   @Override
   public void run() {
-<span class="nc" id="L29">    PluginState.startDownload();</span>
-<span class="nc" id="L30">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L28">    PluginState.startDownload();</span>
+<span class="nc" id="L29">    MapillaryUtils.updateHelpText();</span>
 
     // Download basic sequence data synchronously
-<span class="nc" id="L33">    new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds).run();</span>
+<span class="nc" id="L32">    new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds).run();</span>
 
     // Asynchronously load the rest of the image details
-<span class="nc" id="L36">    Thread imgDetailsThread = new Thread(new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
-<span class="nc" id="L37">    imgDetailsThread.start();</span>
+<span class="nc" id="L35">    Thread imgDetailsThread = new Thread(new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
+<span class="nc" id="L36">    imgDetailsThread.start();</span>
 
-<span class="nc" id="L39">    Thread detectionsThread = new Thread(new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
-<span class="nc" id="L40">    detectionsThread.start();</span>
+<span class="nc" id="L38">    Thread detectionsThread = new Thread(new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
+<span class="nc" id="L39">    detectionsThread.start();</span>
 
     try {
-<span class="nc" id="L43">      imgDetailsThread.join();</span>
-<span class="nc" id="L44">      detectionsThread.join();</span>
-<span class="nc" id="L45">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L46">      Main.warn(e, &quot;Mapillary download interrupted (probably because of closing the layer).&quot;);</span>
-<span class="nc" id="L47">      Thread.currentThread().interrupt();</span>
+<span class="nc" id="L42">      imgDetailsThread.join();</span>
+<span class="nc" id="L43">      detectionsThread.join();</span>
+<span class="nc" id="L44">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L45">      Main.warn(e, &quot;Mapillary download interrupted (probably because of closing the layer).&quot;);</span>
+<span class="nc" id="L46">      Thread.currentThread().interrupt();</span>
     } finally {
-<span class="nc" id="L49">      PluginState.finishDownload();</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L48">      PluginState.finishDownload();</span>
+<span class="nc" id="L49">    }</span>
 
-<span class="nc" id="L52">    MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L53">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L54">    MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L55">    MapillaryMainDialog.getInstance().updateImage();</span>
-<span class="nc" id="L56">  }</span>
+<span class="nc" id="L51">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L52">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L53">    MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L54">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L55">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

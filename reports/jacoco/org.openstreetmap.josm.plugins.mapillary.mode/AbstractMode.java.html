@@ -93,7 +93,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 <span class="nc" id="L93">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
 <span class="nc" id="L94">          MapillaryDownloader.downloadVisibleArea();</span>
 <span class="nc" id="L95">          this.moved = false;</span>
-<span class="nc" id="L96">          MapillaryData.dataUpdated();</span>
+<span class="nc" id="L96">          MapillaryLayer.getInstance().invalidate();</span>
         }
         try {
 <span class="nc" id="L99">          Thread.sleep(100);</span>

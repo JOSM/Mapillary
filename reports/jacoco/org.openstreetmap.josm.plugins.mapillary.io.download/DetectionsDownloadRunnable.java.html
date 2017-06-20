@@ -18,6 +18,7 @@ import javax.json.JsonReader;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -25,38 +26,38 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDeco
 
 public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
-<span class="nc" id="L28">  private static final Function&lt;Bounds, URL&gt; URL_GEN = APIv3::searchDetections;</span>
+<span class="nc" id="L29">  private static final Function&lt;Bounds, URL&gt; URL_GEN = APIv3::searchDetections;</span>
 
   private final MapillaryData data;
 
   public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds) {
-<span class="nc" id="L33">    super(bounds);</span>
-<span class="nc" id="L34">    this.data = data;</span>
-<span class="nc" id="L35">  }</span>
+<span class="nc" id="L34">    super(bounds);</span>
+<span class="nc" id="L35">    this.data = data;</span>
+<span class="nc" id="L36">  }</span>
 
   @Override
   public void run(final URLConnection con) throws IOException {
-<span class="nc" id="L39">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="nc" id="L40">      Map&lt;String, List&lt;ImageDetection&gt;&gt; detections = JsonDecoder.decodeFeatureCollection(</span>
-<span class="nc" id="L41">        reader.readObject(),</span>
+<span class="nc" id="L40">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="nc" id="L41">      Map&lt;String, List&lt;ImageDetection&gt;&gt; detections = JsonDecoder.decodeFeatureCollection(</span>
+<span class="nc" id="L42">        reader.readObject(),</span>
         JsonImageDetectionDecoder::decodeImageDetection
-<span class="nc" id="L43">      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));</span>
-<span class="nc" id="L44">      logConnectionInfo(con, detections.size() + &quot; detections&quot;);</span>
+<span class="nc" id="L44">      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));</span>
+<span class="nc" id="L45">      logConnectionInfo(con, detections.size() + &quot; detections&quot;);</span>
 
-<span class="nc bnc" id="L46" title="All 2 branches missed.">      for (Entry&lt;String, List&lt;ImageDetection&gt;&gt; entry : detections.entrySet()) {</span>
-<span class="nc" id="L47">        data.getImages().stream()</span>
-<span class="nc bnc" id="L48" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; ((MapillaryImage) img).getKey().equals(entry.getKey()))</span>
-<span class="nc" id="L49">          .forEach(img -&gt; ((MapillaryImage) img).setAllDetections(entry.getValue()));</span>
-<span class="nc" id="L50">      }</span>
-<span class="nc bnc" id="L51" title="All 8 branches missed.">    } catch (JsonException e) {</span>
-<span class="nc" id="L52">      throw new IOException(e);</span>
-<span class="nc" id="L53">    }</span>
-<span class="nc" id="L54">    MapillaryData.dataUpdated();</span>
-<span class="nc" id="L55">  }</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">      for (Entry&lt;String, List&lt;ImageDetection&gt;&gt; entry : detections.entrySet()) {</span>
+<span class="nc" id="L48">        data.getImages().stream()</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; ((MapillaryImage) img).getKey().equals(entry.getKey()))</span>
+<span class="nc" id="L50">          .forEach(img -&gt; ((MapillaryImage) img).setAllDetections(entry.getValue()));</span>
+<span class="nc" id="L51">      }</span>
+<span class="nc bnc" id="L52" title="All 8 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L53">      throw new IOException(e);</span>
+<span class="nc" id="L54">    }</span>
+<span class="nc" id="L55">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L56">  }</span>
 
   @Override
   protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
-<span class="nc" id="L59">    return URL_GEN;</span>
+<span class="nc" id="L60">    return URL_GEN;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
