@@ -12,7 +12,6 @@ import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -36,8 +35,7 @@ public final class JsonDecoder {
   public static <T> Collection<T> decodeFeatureCollection(final JsonObject json, Function<JsonObject, T> featureDecoder) {
     final Collection<T> result = new HashSet<>();
     if (
-      json != null && "FeatureCollection".equals(json.getString("type", null)) &&
-      json.containsKey("features") && json.get("features").getValueType() == ValueType.ARRAY
+      json != null && "FeatureCollection".equals(json.getString("type", null)) && json.containsKey("features")
     ) {
       final JsonValue features = json.get("features");
       for (int i = 0; features instanceof JsonArray && i < ((JsonArray) features).size(); i++) {
