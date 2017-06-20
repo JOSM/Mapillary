@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -50,7 +49,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     }
 
     MapillaryUtils.updateHelpText();
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
     MapillaryFilterDialog.getInstance().refresh();
     MapillaryMainDialog.getInstance().updateImage();
   }

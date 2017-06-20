@@ -26,7 +26,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -86,7 +85,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
         MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
         MapillaryImportAction.recordChanges(seq.getImages());
       });
-      MapillaryData.dataUpdated();
+      MapillaryLayer.getInstance().invalidate();
       dispose();
     });
     buttonPanel.add(importButton);

@@ -5,9 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.Set;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
@@ -39,9 +37,7 @@ public class CommandImport extends MapillaryExecutableCommand {
     for (MapillaryAbstractImage img : this.images) {
       MapillaryLayer.getInstance().getData().getImages().remove(img);
     }
-    if (Main.main != null) {
-      MapillaryData.dataUpdated();
-    }
+    MapillaryLayer.getInstance().invalidate();
   }
 
   @Override

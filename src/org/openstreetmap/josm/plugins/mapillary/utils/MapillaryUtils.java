@@ -22,7 +22,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.tools.I18n;
@@ -174,9 +173,7 @@ public final class MapillaryUtils {
       for (MapillaryAbstractImage img : imgB.getSequence().getImages()) {
         imgA.getSequence().add(img);
       }
-      if (Main.main != null) {
-        MapillaryData.dataUpdated();
-      }
+      MapillaryLayer.getInstance().invalidate();
     }
   }
 
@@ -215,10 +212,10 @@ public final class MapillaryUtils {
 
       Main.map.mapView.zoomTo(zoomBounds);
       MapillaryLayer.getInstance().getData().setSelectedImage(null);
-      if (select)
+      if (select) {
         MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);
-      if (Main.main != null)
-        MapillaryData.dataUpdated();
+      }
+      MapillaryLayer.getInstance().invalidate();
     }
 
   }
@@ -259,7 +256,7 @@ public final class MapillaryUtils {
         }
       }
       if (Main.main != null) {
-        MapillaryData.dataUpdated();
+        MapillaryLayer.getInstance().invalidate();
       }
     }
   }

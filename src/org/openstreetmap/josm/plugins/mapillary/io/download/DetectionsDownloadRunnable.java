@@ -18,6 +18,7 @@ import javax.json.JsonReader;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -51,7 +52,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
     } catch (JsonException e) {
       throw new IOException(e);
     }
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   @Override

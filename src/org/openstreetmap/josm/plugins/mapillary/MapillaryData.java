@@ -86,7 +86,7 @@ public class MapillaryData {
       this.images.add(image);
     }
     if (update) {
-      dataUpdated();
+      MapillaryLayer.getInstance().invalidate();
     }
     fireImagesAdded();
   }
@@ -111,7 +111,7 @@ public class MapillaryData {
       this.images.addAll(images);
     }
     if (update) {
-      dataUpdated();
+      MapillaryLayer.getInstance().invalidate();
     }
     fireImagesAdded();
   }
@@ -180,7 +180,7 @@ public class MapillaryData {
     if (image.getSequence() != null) {
       image.getSequence().remove(image);
     }
-    dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   /**
@@ -218,16 +218,6 @@ public class MapillaryData {
    */
   public MapillaryAbstractImage getHighlightedImage() {
     return this.highlightedImage;
-  }
-
-  /**
-   * Repaints mapView object.
-   */
-  public static void dataUpdated() {
-    final MapView mv = MapillaryPlugin.getMapView();
-    if (mv != null) {
-      mv.repaint();
-    }
   }
 
   /**

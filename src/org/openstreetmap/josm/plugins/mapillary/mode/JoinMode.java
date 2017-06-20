@@ -14,7 +14,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -60,7 +59,7 @@ public class JoinMode extends AbstractMode {
       }
       this.lastClick = null;
     }
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   @Override
@@ -70,7 +69,7 @@ public class JoinMode extends AbstractMode {
       return;
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
     this.data.setHighlightedImage(closestTemp);
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   @Override

@@ -19,7 +19,6 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -112,7 +111,7 @@ public class SelectMode extends AbstractMode {
         this.data.getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
-      Main.map.repaint();
+      MapillaryLayer.getInstance().invalidate();
     }
   }
 
@@ -133,6 +132,7 @@ public class SelectMode extends AbstractMode {
               .getX() - from.getX(), to.getY() - from.getY()));
     }
     this.data.getMultiSelectedImages().parallelStream().filter(Objects::nonNull).forEach(MapillaryAbstractImage::stopMoving);
+    MapillaryLayer.getInstance().invalidate();
   }
 
   /**
@@ -180,7 +180,7 @@ public class SelectMode extends AbstractMode {
       MapillaryMainDialog.getInstance().setImage(this.data.getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();
     }
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   @Override

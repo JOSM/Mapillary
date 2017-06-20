@@ -148,7 +148,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
     }
     createHatchTexture();
-    MapillaryData.dataUpdated();
+    MapillaryLayer.getInstance().invalidate();
   }
 
   /**

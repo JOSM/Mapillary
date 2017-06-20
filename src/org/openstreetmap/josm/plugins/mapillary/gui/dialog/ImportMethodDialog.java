@@ -25,7 +25,6 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -105,7 +104,7 @@ public class ImportMethodDialog extends JDialog {
             JOptionPane.showMessageDialog(this, I18n.tr("Could not import the image ''{0}''!", f.getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
           }
         }
-        MapillaryData.dataUpdated();
+        MapillaryLayer.getInstance().invalidate();
         dispose();
       }
     });
@@ -122,7 +121,7 @@ public class ImportMethodDialog extends JDialog {
         } catch (IOException e1) {
           JOptionPane.showMessageDialog(this, I18n.tr("Could not import the directory ''{0}''!", DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
         }
-        MapillaryData.dataUpdated();
+        MapillaryLayer.getInstance().invalidate();
         dispose();
       }
     });
