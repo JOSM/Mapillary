@@ -1,0 +1,40 @@
+{
+  "type": "location",
+  "changes": [
+    {
+      "image_key": "wMAqAFr3xE9072G8Al6WLQ",
+      "to": {
+        "geometry": {
+          "coordinates": [13.3323, 50.44612],
+          "type": "Point"
+        },
+        "properties": {"ca": 273.3},
+        "type": "Feature"
+      }
+    },
+    {
+      "image_key": "7erPn382xDMtmfdh0xtvUw",
+      "to": {
+        "geometry": {
+          "coordinates": [13.3328, 50.44619],
+          "type": "Point"
+        },
+        "properties": {},
+        "type": "Feature"
+      }
+    },
+    {
+      "image_key": "31KDbCOzla0fJBtIeoBr1A",
+      "to": {
+        "properties": {"ca": 13.4}
+      }
+    },
+    {
+      "image_key": "invalid image key will be ignored",
+      "to": {
+        "properties": {"ca": 13.4}
+      }
+    }
+  ],
+  "request_comment": "JOSM-created"
+}

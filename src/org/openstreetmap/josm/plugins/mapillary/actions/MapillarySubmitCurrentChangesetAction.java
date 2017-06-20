@@ -8,8 +8,6 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import javax.swing.JOptionPane;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,7 +20,6 @@ import org.apache.http.util.EntityUtils;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.Notification;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
@@ -30,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonLocationChangesetEncoder;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -76,7 +74,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("Authorization", "Bearer " + token);
         MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
-        String json = buildLocationChangesetJson(locationChangeset).build().toString();
+        String json = JsonLocationChangesetEncoder.encodeLocationChangeset(locationChangeset).build().toString();
         Main.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
@@ -118,34 +116,5 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       }
       changesetDialog.setUploadPending(false);
     }, "Mapillary changeset upload").start();
-  }
-
-  private static JsonObjectBuilder buildImgChangeJson(MapillaryImage img) {
-    return Json.createObjectBuilder()
-      .add("image_key", img.getKey())
-      .add("to", Json.createObjectBuilder()
-        .add("geometry", Json.createObjectBuilder()
-          .add("type", "Point")
-          .add("coordinates", Json.createArrayBuilder()
-            .add(img.getTempLatLon().getX())
-            .add(img.getTempLatLon().getY())
-          )
-        )
-        .add("properties", Json.createObjectBuilder()
-          .add("ca", img.getTempCa())
-        )
-        .add("type", "Feature")
-      );
-  }
-
-  private static JsonObjectBuilder buildLocationChangesetJson(MapillaryLocationChangeset changeset) {
-    JsonArrayBuilder imgChanges = Json.createArrayBuilder();
-    for (MapillaryImage img : changeset) {
-      imgChanges.add(buildImgChangeJson(img));
-    }
-    return Json.createObjectBuilder()
-      .add("type", "location")
-      .add("changes", imgChanges.build())
-      .add("request_comment", "JOSM-created");
   }
 }
