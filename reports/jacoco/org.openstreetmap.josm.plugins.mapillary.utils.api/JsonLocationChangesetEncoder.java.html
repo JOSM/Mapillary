@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonLocationChangesetEncoder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.utils.api</a> &gt; <span class="el_source">JsonLocationChangesetEncoder.java</span></div><h1>JsonLocationChangesetEncoder.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.utils.api;
+
+import java.util.Objects;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
+
+public final class JsonLocationChangesetEncoder {
+<span class="fc" id="L14">  private JsonLocationChangesetEncoder() {</span>
+    // Private constructor to avoid instantiation
+<span class="fc" id="L16">  }</span>
+
+  public static JsonObjectBuilder encodeLocationChangeset(MapillaryLocationChangeset changeset) {
+<span class="fc" id="L19">    Objects.requireNonNull(changeset);</span>
+<span class="fc" id="L20">    final JsonArrayBuilder imgChanges = Json.createArrayBuilder();</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">    for (MapillaryImage img : changeset) {</span>
+<span class="fc" id="L22">      imgChanges.add(encodeImageChanges(img));</span>
+<span class="fc" id="L23">    }</span>
+<span class="fc" id="L24">    return Json.createObjectBuilder()</span>
+<span class="fc" id="L25">      .add(&quot;type&quot;, &quot;location&quot;)</span>
+<span class="fc" id="L26">      .add(&quot;changes&quot;, imgChanges)</span>
+<span class="fc" id="L27">      .add(&quot;request_comment&quot;, &quot;JOSM-created&quot;);</span>
+  }
+
+  private static JsonObjectBuilder encodeImageChanges(MapillaryImage img) {
+<span class="fc" id="L31">    Objects.requireNonNull(img);</span>
+
+<span class="fc" id="L33">    final JsonObjectBuilder to = Json.createObjectBuilder();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">    if (!img.getTempLatLon().equalsEpsilon(img.getLatLon())) {</span>
+<span class="fc" id="L35">      to.add(&quot;geometry&quot;, Json.createObjectBuilder()</span>
+<span class="fc" id="L36">        .add(&quot;coordinates&quot;, Json.createArrayBuilder()</span>
+<span class="fc" id="L37">          .add(img.getTempLatLon().getX())</span>
+<span class="fc" id="L38">          .add(img.getTempLatLon().getY())</span>
+<span class="fc" id="L39">        ).add(&quot;type&quot;, &quot;Point&quot;)</span>
+      );
+    }
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (Math.abs(img.getCa() - img.getTempCa()) &gt; 1e-9) {</span>
+<span class="fc" id="L43">      to.add(&quot;properties&quot;, Json.createObjectBuilder().add(&quot;ca&quot;, img.getTempCa()));</span>
+    } else {
+<span class="fc" id="L45">      to.add(&quot;properties&quot;, Json.createObjectBuilder());</span>
+    }
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    if (!img.getTempLatLon().equalsEpsilon(img.getLatLon())) {</span>
+<span class="fc" id="L48">      to.add(&quot;type&quot;, &quot;Feature&quot;);</span>
+    }
+
+<span class="fc" id="L51">    return Json.createObjectBuilder()</span>
+<span class="fc" id="L52">      .add(&quot;image_key&quot;, img.getKey())</span>
+<span class="fc" id="L53">      .add(&quot;to&quot;, to);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

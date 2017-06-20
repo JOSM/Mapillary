@@ -9,25 +9,25 @@ import javax.swing.UIManager;
 
 public class SelectableLabel extends JTextPane {
   private static final long serialVersionUID = 6385815019929685047L;
-<span class="nc" id="L12">  public static final Font DEFAULT_FONT = UIManager.getFont(&quot;Label.font&quot;).deriveFont(Font.PLAIN);</span>
-<span class="nc" id="L13">  public static final Color DEFAULT_BACKGROUND = UIManager.getColor(&quot;Panel.background&quot;);</span>
+<span class="fc" id="L12">  public static final Font DEFAULT_FONT = UIManager.getFont(&quot;Label.font&quot;).deriveFont(Font.PLAIN);</span>
+<span class="fc" id="L13">  public static final Color DEFAULT_BACKGROUND = UIManager.getColor(&quot;Panel.background&quot;);</span>
 
   public SelectableLabel() {
-<span class="nc" id="L16">    super();</span>
-<span class="nc" id="L17">    init();</span>
-<span class="nc" id="L18">  }</span>
+<span class="fc" id="L16">    super();</span>
+<span class="fc" id="L17">    init();</span>
+<span class="fc" id="L18">  }</span>
 
   public SelectableLabel(String text) {
-<span class="nc" id="L21">    this();</span>
-<span class="nc" id="L22">    setText(text);</span>
-<span class="nc" id="L23">  }</span>
+<span class="fc" id="L21">    this();</span>
+<span class="fc" id="L22">    setText(text);</span>
+<span class="fc" id="L23">  }</span>
 
   private void init() {
-<span class="nc" id="L26">    setEditable(false);</span>
-<span class="nc" id="L27">    setFont(DEFAULT_FONT);</span>
-<span class="nc" id="L28">    setContentType(&quot;text/html&quot;);</span>
-<span class="nc" id="L29">    setBackground(DEFAULT_BACKGROUND);</span>
-<span class="nc" id="L30">    setBorder(null);</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L26">    setEditable(false);</span>
+<span class="fc" id="L27">    setFont(DEFAULT_FONT);</span>
+<span class="fc" id="L28">    setContentType(&quot;text/html&quot;);</span>
+<span class="fc" id="L29">    setBackground(DEFAULT_BACKGROUND);</span>
+<span class="fc" id="L30">    setBorder(null);</span>
+<span class="fc" id="L31">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

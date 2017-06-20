@@ -96,19 +96,17 @@ public class MapillaryImage extends MapillaryAbstractImage {
 <span class="fc" id="L96">  }</span>
 
   private void checkModified() {
-<span class="fc" id="L99">    MapillaryLayer mapillaryLayer = MapillaryLayer.getInstance();</span>
-<span class="fc" id="L100">    MapillaryLocationChangeset locationChangeset = mapillaryLayer.getLocationChangeset();</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (this.isModified()) {</span>
-<span class="fc" id="L102">      locationChangeset.add(this);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (isModified()) {</span>
+<span class="fc" id="L100">      MapillaryLayer.getInstance().getLocationChangeset().add(this);</span>
     } else {
-<span class="fc" id="L104">      locationChangeset.remove(this);</span>
+<span class="fc" id="L102">      MapillaryLayer.getInstance().getLocationChangeset().remove(this);</span>
     }
-<span class="fc" id="L106">  }</span>
+<span class="fc" id="L104">  }</span>
 
   @Override
   public void turn(double ca) {
-<span class="fc" id="L110">    super.turn(ca);</span>
-<span class="fc" id="L111">    checkModified();</span>
-<span class="fc" id="L112">  }</span>
+<span class="fc" id="L108">    super.turn(ca);</span>
+<span class="fc" id="L109">    checkModified();</span>
+<span class="fc" id="L110">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
