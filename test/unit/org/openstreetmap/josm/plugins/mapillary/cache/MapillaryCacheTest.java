@@ -1,39 +1,39 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
-import org.apache.commons.jcs.access.CacheAccess;
 import org.junit.Test;
 
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
-import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class MapillaryCacheTest extends AbstractTest {
 
   @Test
   public void test() throws IOException {
-    CacheAccess<String, BufferedImageCacheEntry> cacheAccess = JCSCacheManager.getCache("mapillary", 10, 10000,
-      Caches.getCacheDirectory().getPath());
-
-    MapillaryCache cache = new MapillaryCache(cacheAccess, "00000", Type.FULL_IMAGE);
-    assertNotEquals(null, cache.getUrl());
-    assertNotEquals(null, cache.getCacheKey());
+    MapillaryCache cache = new MapillaryCache("00000", Type.FULL_IMAGE);
+    assertNotNull(cache.getUrl());
+    assertNotNull(cache.getCacheKey());
 
     assertFalse(cache.isObjectLoadable());
 
-    cache = new MapillaryCache(cacheAccess, "00000", Type.THUMBNAIL);
-    assertNotEquals(null, cache.getCacheKey());
-    assertNotEquals(null, cache.getUrl());
+    cache = new MapillaryCache("00000", Type.THUMBNAIL);
+    assertNotNull(cache.getCacheKey());
+    assertNotNull(cache.getUrl());
 
-    cache = new MapillaryCache(cacheAccess, null, null);
-    assertEquals(null, cache.getCacheKey());
-    assertEquals(null, cache.getUrl());
+    cache = new MapillaryCache(null, null);
+    assertNull(cache.getCacheKey());
+    assertNull(cache.getUrl());
+  }
+
+  @Test
+  public void testUtilityClass() {
+    TestUtil.testUtilityClass(Caches.class);
   }
 }

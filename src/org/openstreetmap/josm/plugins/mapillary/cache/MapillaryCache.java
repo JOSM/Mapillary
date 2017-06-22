@@ -4,8 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.apache.commons.jcs.access.CacheAccess;
-
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
@@ -42,12 +40,8 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *          The type of image that must be downloaded (THUMBNAIL or
    *          FULL_IMAGE).
    */
-  public MapillaryCache(String key, Type type) {
-    this(Caches.ImageCache.getInstance().getCache(), key, type);
-  }
-
-  protected MapillaryCache(CacheAccess<String, BufferedImageCacheEntry> cache, String key, Type type) {
-    super(cache, 50000, 50000, new HashMap<>());
+  public MapillaryCache(final String key, final Type type) {
+    super(Caches.ImageCache.getInstance().getCache(), 50000, 50000, new HashMap<>());
     if (key == null || type == null) {
       this.key = null;
       this.url = null;
