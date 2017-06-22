@@ -218,7 +218,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    */
   public MapillaryAbstractImage next() {
     synchronized (this) {
-      return getSequence() == null ? null : getSequence().next(this);
+      return getSequence().next(this);
     }
   }
 
@@ -230,7 +230,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    */
   public MapillaryAbstractImage previous() {
     synchronized (this) {
-      return getSequence() == null ? null : getSequence().previous(this);
+      return getSequence().previous(this);
     }
   }
 
@@ -261,7 +261,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
-    if (!sequence.getImages().contains(this)) {
+    if (sequence != null && !sequence.getImages().contains(this)) {
       throw new IllegalArgumentException();
     }
     this.sequence = sequence;
