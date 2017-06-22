@@ -80,7 +80,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
           httpPost.setEntity(new StringEntity(json));
           CloseableHttpResponse response = httpClient.execute(httpPost);
           Main.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
-          if (response.getStatusLine().getStatusCode() == 200) {
+          if (response.getStatusLine().getStatusCode() == 201) {
             String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
             Main.debug("Received key " + key);
             synchronized (MapillaryUtils.class) {
