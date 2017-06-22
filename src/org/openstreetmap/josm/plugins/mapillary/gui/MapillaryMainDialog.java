@@ -51,6 +51,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private static final long serialVersionUID = 6856496736429480600L;
 
   private static final String BASE_TITLE = marktr("Mapillary picture");
+  private static final String MESSAGE_SEPARATOR = " — ";
 
   private static MapillaryMainDialog instance;
 
@@ -305,16 +306,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         UserProfile user = mapillaryImage.getUser();
         if (user != null) {
-          title.append(" — ").append(user.getUsername());
+          title.append(MESSAGE_SEPARATOR).append(user.getUsername());
         }
         if (mapillaryImage.getCapturedAt() != 0) {
-          title.append(" — ").append(mapillaryImage.getDate());
+          title.append(MESSAGE_SEPARATOR).append(mapillaryImage.getDate());
         }
         setTitle(title.toString());
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
-        title.append(" — ").append(mapillaryImportedImage.getFile().getName());
-        title.append(" — ").append(mapillaryImportedImage.getDate());
+        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.getFile().getName());
+        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.getDate());
         setTitle(title.toString());
       }
     }

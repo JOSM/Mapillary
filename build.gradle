@@ -26,7 +26,7 @@ version = getVersionName()
 
 repositories {
   // for JUnit
-  mavenCentral()
+  jcenter()
   //for josm-(latest|tested).jar
   ivy {
     url 'https://josm.openstreetmap.de/download'

@@ -6,7 +6,11 @@ import java.io.ByteArrayInputStream;
 import javax.json.Json;
 import javax.json.JsonObject;
 
-public class JsonUtil {
+public final class JsonUtil {
+  private JsonUtil() {
+    // Private constructor to avoid instantiation
+  }
+
   public static JsonObject string2jsonObject(String s) {
     return Json.createReader(new ByteArrayInputStream(s.getBytes())).readObject();
   }

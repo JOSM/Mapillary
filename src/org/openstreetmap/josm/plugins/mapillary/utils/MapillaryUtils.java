@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -267,16 +265,16 @@ public final class MapillaryUtils {
   public static void updateHelpText() {
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
-      ret.append(tr("Downloading Mapillary images"));
+      ret.append(I18n.tr("Downloading Mapillary images"));
     } else if (MapillaryLayer.getInstance().getData().getImages().size() > 0) {
       ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
     } else if (PluginState.isSubmittingChangeset()) {
-        ret.append(tr("Submitting Mapillary Changeset"));
+        ret.append(I18n.tr("Submitting Mapillary Changeset"));
     } else {
-      ret.append(tr("No images found"));
+      ret.append(I18n.tr("No images found"));
     }
     if (MapillaryLayer.getInstance().mode != null) {
-      ret.append(" — ").append(tr(MapillaryLayer.getInstance().mode.toString()));
+      ret.append(" — ").append(I18n.tr(MapillaryLayer.getInstance().mode.toString()));
     }
     if (PluginState.isUploading()) {
       ret.append(" — ").append(PluginState.getUploadString());
