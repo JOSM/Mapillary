@@ -199,6 +199,15 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.gui.layer.Layer#destroy()
+   */
+  @Override
+  public synchronized void destroy() {
+    instance = null;
+    super.destroy();
+  }
+
   @Override
   public void zoomChanged() {
     MapView mv = MapillaryPlugin.getMapView();

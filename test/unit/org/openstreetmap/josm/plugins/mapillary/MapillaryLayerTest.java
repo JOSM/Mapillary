@@ -64,7 +64,7 @@ public class MapillaryLayerTest extends AbstractTest {
   public void testClearInstance() {
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());
-    MapillaryLayer.clearInstance();
+    MapillaryLayer.getInstance().destroy();
     assertFalse(MapillaryLayer.hasInstance());
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());

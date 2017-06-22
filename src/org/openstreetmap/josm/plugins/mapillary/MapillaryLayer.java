@@ -174,13 +174,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Clears the unique instance of this class.
-   */
-  public static void clearInstance() {
-    instance = null;
-  }
-
-  /**
    * Returns the unique instance of this class.
    *
    * @return The unique instance of this class.
@@ -241,12 +234,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryMainDialog.getInstance().updateImage();
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
     MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
-    Main.map.mapView.removeMouseListener(this.mode);
-    Main.map.mapView.removeMouseMotionListener(this.mode);
+    final MapView mv = MapillaryPlugin.getMapView();
+    if (mv != null) {
+      mv.removeMouseListener(this.mode);
+      mv.removeMouseMotionListener(this.mode);
+    }
     Main.getLayerManager().removeActiveLayerChangeListener(this);
-    if (Main.getLayerManager().getEditLayer() != null)
+    if (Main.getLayerManager().getEditLayer() != null) {
       Main.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
-    clearInstance();
+    }
+    instance = null;
     super.destroy();
   }
 
