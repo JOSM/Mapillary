@@ -14,12 +14,11 @@ import org.openstreetmap.josm.plugins.mapillary.cache.Caches.MapObjectIconCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 import org.openstreetmap.josm.tools.ImageProvider;
 
-public class MapObject {
+public class MapObject extends KeyIndexedObject {
   private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get("unknown-mapobject-type");
   private static Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
 
   private final LatLon coordinate;
-  private final String key;
   private final String objPackage;
   private final String value;
   private final long firstSeenTime;
@@ -30,11 +29,11 @@ public class MapObject {
     final LatLon coordinate, final String key, final String objPackage, final String value,
     long firstSeenTime, long lastSeenTime, long updatedTime
   ) {
-    if (key == null || objPackage == null || value == null || coordinate == null) {
+    super(key);
+    if (objPackage == null || value == null || coordinate == null) {
       throw new IllegalArgumentException("The fields of a MapObject must not be null!");
     }
     this.coordinate = coordinate;
-    this.key = key;
     this.objPackage = objPackage;
     this.value = value;
     this.firstSeenTime = firstSeenTime;
@@ -68,10 +67,6 @@ public class MapObject {
     return cachedIcon;
   }
 
-  public String getKey() {
-    return key;
-  }
-
   public String getPackage() {
     return objPackage;
   }
@@ -91,41 +86,4 @@ public class MapObject {
   public String getValue() {
     return value;
   }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((key == null) ? 0 : key.hashCode());
-    return result;
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (!(obj instanceof MapObject)) {
-      return false;
-    }
-    MapObject other = (MapObject) obj;
-    if (key == null) {
-      if (other.key != null) {
-        return false;
-      }
-    } else if (!key.equals(other.key)) {
-      return false;
-    }
-    return true;
-  }
-
 }

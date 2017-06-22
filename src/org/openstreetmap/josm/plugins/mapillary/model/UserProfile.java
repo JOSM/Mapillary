@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 import javax.swing.ImageIcon;
 
 public class UserProfile extends KeyIndexedObject {
-  private static final long serialVersionUID = 4695718596660412790L;
   private final String username;
   private final ImageIcon avatar;
 

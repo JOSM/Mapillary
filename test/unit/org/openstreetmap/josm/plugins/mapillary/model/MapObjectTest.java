@@ -32,7 +32,7 @@ public class MapObjectTest {
   @BeforeClass
   public static void setUp() throws IllegalArgumentException, IllegalAccessException {
     // Sets the keys of the null-key-constants to null
-    Field keyField = TestUtil.getAccessibleField(MapObject.class, "key");
+    Field keyField = TestUtil.getAccessibleField(KeyIndexedObject.class, "key");
     keyField.set(MO_NULL_KEY, null);
     keyField.set(MO_NULL_KEY2, null);
 
@@ -100,7 +100,7 @@ public class MapObjectTest {
   @Test
   @SuppressWarnings({ "PMD.EqualsNull", "PMD.PositionLiteralsFirstInComparisons" })
   public void testEquals() throws SecurityException, IllegalArgumentException {
-    assertEquals(31, MO_NULL_KEY.hashCode());
+    assertEquals(MO_NULL_KEY2.hashCode(), MO_NULL_KEY.hashCode());
     assertTrue(MO_1.equals(MO_1));
     assertFalse(MO_1.equals(null));
     assertFalse(MO_1.equals(""));
@@ -108,6 +108,7 @@ public class MapObjectTest {
     assertTrue(MO_NULL_KEY.equals(MO_NULL_KEY2));
     assertFalse(MO_1.equals(MO_2));
     assertTrue(MO_1.equals(MO_3));
+    assertEquals(MO_1.hashCode(), MO_3.hashCode());
   }
 
 }

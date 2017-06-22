@@ -1,20 +1,58 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.io.Serializable;
-
 /**
  * An object that is identified amongst objects of the same class by a {@link String} key.
  */
-public class KeyIndexedObject implements Serializable {
-  private static final long serialVersionUID = 7762862623109416405L;
+public class KeyIndexedObject {
   private final String key;
 
   protected KeyIndexedObject(final String key) {
+    if (key == null) {
+      throw new IllegalArgumentException();
+    }
     this.key = key;
   }
 
+  /**
+   * @return the unique key that identifies this object among other instances of the same class
+   */
   public String getKey() {
     return key;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    return prime * (prime + getClass().getName().hashCode()) + ((key == null) ? 0 : key.hashCode());
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    KeyIndexedObject other = (KeyIndexedObject) obj;
+    if (key == null) {
+      if (other.key != null) {
+        return false;
+      }
+    } else if (!key.equals(other.key)) {
+      return false;
+    }
+    return true;
+  }
+
 }
