@@ -86,6 +86,8 @@ public class JsonImageDetectionDecoderTest {
     assertNotNull(decodeResult);
     assertEquals("QhRcdlGS_Rn_a1_HTclefg", decodeResult.getImageKey());
     assertEquals("gn0llgitnnuqonecevbmf52ino", decodeResult.getKey());
+    assertEquals("trafficsign", decodeResult.getPackage());
+    assertTrue(decodeResult.isTrafficSign());
     assertEquals(0.710661225175, decodeResult.getScore(), 1e-9);
     assertEquals("regulatory--no-overtaking-by-heavy-goods-vehicles--g1", decodeResult.getValue());
 

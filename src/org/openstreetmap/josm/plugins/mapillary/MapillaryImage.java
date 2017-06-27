@@ -53,8 +53,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   public UserProfile getUser() {
-    final MapillarySequence seq = getSequence();
-    return seq == null ? null : seq.getUser();
+    return getSequence().getUser();
   }
 
   public void setAllDetections(Collection<ImageDetection> detection) {
@@ -67,7 +66,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public String toString() {
     return String.format(
             "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
-            key, latLon.lat(), latLon.lon(), ca, getUser(), capturedAt
+            key, latLon.lat(), latLon.lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt
     );
   }
 

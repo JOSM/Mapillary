@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -28,6 +26,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonLocationChangesetEncoder;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -46,11 +45,11 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
    */
   public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(
-      tr("Submit changeset"),
+      I18n.tr("Submit changeset"),
       new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
-      tr("Submit the current changeset"),
+      I18n.tr("Submit the current changeset"),
       Shortcut.registerShortcut(
-        "Submit changeset to Mapillary", tr("Submit the current changeset to Mapillary"),
+        "Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"),
         KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
       ),
       false,
@@ -81,33 +80,37 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
           CloseableHttpResponse response = httpClient.execute(httpPost);
           Main.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
           if (response.getStatusLine().getStatusCode() == 201) {
-            String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
-            Main.debug("Received key " + key);
-            synchronized (MapillaryUtils.class) {
-              Main.map.statusLine.setHelpText(String.format("%s images submitted, Changeset key: %s", locationChangeset.size(), key));
-            }
+            final String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
+            final String state = Json.createReader(response.getEntity().getContent()).readObject().getString("state");
+            I18n.marktr("rejected");
+            I18n.marktr("pending");
+            I18n.marktr("approved");
+            final String message = I18n.tr("{0} images submitted, Changeset key: {1}, State: {2}", locationChangeset.size(), key, state);
+            Main.debug(message);
+            new Notification(message)
+              .setDuration(Notification.TIME_LONG)
+              .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
+              .show();
             locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
           } else {
-            Notification n = new Notification(
-              tr("Changeset upload failed with {0} error ''{1} {2}''!",
+            new Notification(
+              I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
                 response.getStatusLine().getProtocolVersion(),
                 response.getStatusLine().getStatusCode(),
                 response.getStatusLine().getReasonPhrase()
               )
-            );
-            n.setIcon(JOptionPane.ERROR_MESSAGE);
-            n.setDuration(Notification.TIME_LONG);
-            n.show();
+            ).setIcon(JOptionPane.ERROR_MESSAGE)
+              .setDuration(Notification.TIME_LONG)
+              .show();
             Main.error("Failed response " + EntityUtils.toString(response.getEntity()));
           }
         } catch (IOException e) {
           Main.error(e, "Exception while trying to submit a changeset to mapillary.com");
-          Notification n = new Notification(
-            tr("An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.")
-          );
-          n.setDuration(Notification.TIME_LONG);
-          n.setIcon(JOptionPane.ERROR_MESSAGE);
-          n.show();
+          new Notification(
+            I18n.tr("An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.")
+          ).setDuration(Notification.TIME_LONG)
+            .setIcon(JOptionPane.ERROR_MESSAGE)
+            .show();
         } finally {
           PluginState.setSubmittingChangeset(false);
         }

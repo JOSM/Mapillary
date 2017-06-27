@@ -35,6 +35,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -119,9 +120,9 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
-    changeset.parallelStream().filter(Objects::nonNull).forEach(command -> {
-      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());
-      this.map.put(node, command);
+    changeset.parallelStream().filter(Objects::nonNull).forEach(img -> {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());
+      this.map.put(node, img);
       changesetRoot.add(node);
     });
 
