@@ -31,9 +31,4 @@ public class MapillaryCacheTest extends AbstractTest {
     assertNull(cache.getCacheKey());
     assertNull(cache.getUrl());
   }
-
-  @Test
-  public void testUtilityClass() {
-    TestUtil.testUtilityClass(Caches.class);
-  }
 }
