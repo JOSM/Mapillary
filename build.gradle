@@ -1,9 +1,20 @@
+buildscript {
+  repositories {
+      maven {
+          url "https://floscher.github.io/gradle-josm-plugin/maven"
+      }
+  }
+  dependencies {
+    classpath 'org.openstreetmap.josm:gradle-plugin:0.1.0'
+  }
+}
 plugins {
   id "org.sonarqube" version "2.5"
   id "org.kordamp.markdown.convert" version "1.1.0"
   id "com.github.ben-manes.versions" version "0.15.0"
 }
 
+apply plugin: 'org.openstreetmap.josm.gradle.plugin'
 apply plugin: 'eclipse'
 apply plugin: 'findbugs'
 apply plugin: 'idea'
@@ -12,12 +23,10 @@ apply plugin: 'java'
 apply plugin: 'pmd'
 
 configurations {
-  compile.extendsFrom(requiredPlugin)
   minJosmVersionCompile.extendsFrom(requiredPlugin)
 }
 
 apply from: 'gradle/manifest.gradle'
-apply from: 'gradle/run-josm-plugin-tasks.gradle'
 apply from: 'gradle/tool-config.gradle'
 apply from: 'gradle/markdown.gradle'
 
@@ -25,29 +34,11 @@ sourceCompatibility = '1.8'
 version = getVersionName()
 
 repositories {
-  // for JUnit
   jcenter()
-  //for josm-(latest|tested).jar
-  ivy {
-    url 'https://josm.openstreetmap.de/download'
-    layout 'pattern', {
-      artifact "[artifact].jar"
-      artifact "[artifact]-[revision].jar"
-      artifact "[artifact]-snapshot-[revision].jar"
-      artifact "Archiv/[artifact]-snapshot-[revision].jar"
-    }
-  }
-  //for josm-plugins
-  ivy {
-    url "https://svn.openstreetmap.org/applications/editors/josm/dist/"
-    layout "pattern", {
-      artifact "[artifact].jar"
-    }
-  }
 }
 
 dependencies {
-  implementation(':josm:' + project.property('plugin.compile.version'))
+  implementation(name: 'josm', version: project.property('plugin.compile.version'))
   // For plugins it's irrelevant, which version is specified, always the latest version is used.
   requiredPlugin (name: 'apache-commons'){changing=true}
   requiredPlugin (name: 'apache-http'){changing=true}
@@ -99,6 +90,11 @@ task addMinJosmVersionDependency {
   }
 }
 compileMinJosmVersionJava.dependsOn addMinJosmVersionDependency
+
+josm {
+  debugPort = 7051
+  jarName = 'Mapillary.jar'
+}
 
 eclipse {
   project {
