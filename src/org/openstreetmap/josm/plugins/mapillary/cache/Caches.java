@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
@@ -28,7 +29,7 @@ public final class Caches {
     return f;
   }
 
-  public abstract static class CacheProxy<K, V> {
+  public abstract static class CacheProxy<K, V extends Serializable> {
     private final CacheAccess<K, V> cache;
 
     public CacheProxy() {
