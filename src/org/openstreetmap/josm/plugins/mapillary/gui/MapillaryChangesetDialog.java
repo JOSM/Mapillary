@@ -35,7 +35,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**

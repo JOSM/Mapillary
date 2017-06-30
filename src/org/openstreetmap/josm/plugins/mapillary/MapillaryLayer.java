@@ -118,11 +118,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private void init() {
     Main.getLayerManager().addLayer(this);
     Main.getLayerManager().addActiveLayerChangeListener(this);
+    if (Main.getLayerManager().getEditLayer() != null) {
+      Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
+    }
     if (!GraphicsEnvironment.isHeadless()) {
       setMode(new SelectMode());
-      if (Main.getLayerManager().getEditLayer() != null) {
-        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
-      }
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
         MapillaryDownloader.downloadOSMArea();
       }
@@ -148,7 +148,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
     }
     createHatchTexture();
-    MapillaryLayer.getInstance().invalidate();
+    invalidate();
   }
 
   /**
@@ -178,12 +178,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The unique instance of this class.
    */
-  public static synchronized MapillaryLayer getInstance() {
-    if (instance == null) {
-      instance = new MapillaryLayer();
-      instance.init();
+  public static MapillaryLayer getInstance() {
+    synchronized (MapillaryLayer.class) {
+      if (instance == null) {
+        instance = new MapillaryLayer();
+        instance.init();
+      }
+      return instance;
     }
-    return instance;
   }
 
   /**
@@ -226,25 +228,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void destroy() {
-    setMode(null);
-    MapillaryRecord.getInstance().reset();
-    AbstractMode.resetThread();
-    MapillaryDownloader.stopAll();
-    MapillaryMainDialog.getInstance().setImage(null);
-    MapillaryMainDialog.getInstance().updateImage();
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
-    final MapView mv = MapillaryPlugin.getMapView();
-    if (mv != null) {
-      mv.removeMouseListener(this.mode);
-      mv.removeMouseMotionListener(this.mode);
+    synchronized (MapillaryLayer.class) {
+      setMode(null);
+      MapillaryRecord.getInstance().reset();
+      AbstractMode.resetThread();
+      MapillaryDownloader.stopAll();
+      MapillaryMainDialog.getInstance().setImage(null);
+      MapillaryMainDialog.getInstance().updateImage();
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
+      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
+      final MapView mv = MapillaryPlugin.getMapView();
+      if (mv != null) {
+        mv.removeMouseListener(this.mode);
+        mv.removeMouseMotionListener(this.mode);
+      }
+      Main.getLayerManager().removeActiveLayerChangeListener(this);
+      if (Main.getLayerManager().getEditLayer() != null) {
+        Main.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
+      }
+      instance = null;
+      super.destroy();
     }
-    Main.getLayerManager().removeActiveLayerChangeListener(this);
-    if (Main.getLayerManager().getEditLayer() != null) {
-      Main.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
-    }
-    instance = null;
-    super.destroy();
   }
 
   @Override
