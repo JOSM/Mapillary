@@ -40,22 +40,24 @@ public class JoinMode extends AbstractMode {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (this.data.getHighlightedImage() == null)
+    final MapillaryAbstractImage highlighted = MapillaryLayer.getInstance().getData().getHighlightedImage();
+    if (highlighted == null) {
       return;
-    if (this.lastClick == null && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
-      this.lastClick = (MapillaryImportedImage) this.data.getHighlightedImage();
+    }
+    if (this.lastClick == null && highlighted instanceof MapillaryImportedImage) {
+      this.lastClick = (MapillaryImportedImage) highlighted;
     } else if (this.lastClick != null
-        && this.data.getHighlightedImage() instanceof MapillaryImportedImage) {
+        && highlighted instanceof MapillaryImportedImage) {
       if (
-        ((this.data.getHighlightedImage().previous() == null && this.lastClick.next() == null)
-          || (this.data.getHighlightedImage().next() == null && this.lastClick.previous() == null))
-        && this.data.getHighlightedImage().getSequence() != this.lastClick.getSequence()
+        (highlighted.previous() == null && this.lastClick.next() == null
+          || highlighted.next() == null && this.lastClick.previous() == null)
+        && highlighted.getSequence() != this.lastClick.getSequence()
       ) {
-        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, this.data.getHighlightedImage()));
-      } else if (this.lastClick.next() == this.data.getHighlightedImage()
-          || this.lastClick.previous() == this.data.getHighlightedImage()) {
+        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));
+      } else if (this.lastClick.next() == highlighted
+          || this.lastClick.previous() == highlighted) {
         MapillaryRecord.getInstance().addCommand(
-            new CommandUnjoin(Arrays.asList(this.lastClick, this.data.getHighlightedImage())));
+            new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));
       }
       this.lastClick = null;
     }
@@ -68,7 +70,7 @@ public class JoinMode extends AbstractMode {
     if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer))
       return;
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
-    this.data.setHighlightedImage(closestTemp);
+    MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);
     MapillaryLayer.getInstance().invalidate();
   }
 

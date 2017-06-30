@@ -12,7 +12,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
@@ -26,8 +25,6 @@ public abstract class AbstractMode extends MouseAdapter implements
   ZoomChangeListener {
 
   private static final int DOWNLOAD_COOLDOWN = 2000;
-
-  protected MapillaryData data = MapillaryLayer.getInstance().getData();
   private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
 
   /**
@@ -39,7 +36,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     double snapDistance = 10;
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
-    for (MapillaryAbstractImage image : this.data.getImages()) {
+    for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
       Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
