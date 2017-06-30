@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class MapillaryCacheTest extends AbstractTest {
 
