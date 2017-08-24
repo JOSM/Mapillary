@@ -16,9 +16,9 @@ markdownToHtml {
   autoLinks true
 
   doLast {
-    new File("$outputDir").eachFileRecurse(FileType.FILES) { file ->
+    new File("$outputDir").eachFileRecurse(FileType.FILES, { file ->
       file.text = '<!DOCTYPE html><meta charset="utf-8">' + file.text
-    }
+    })
   }
 }
 jar.dependsOn markdownToHtml
