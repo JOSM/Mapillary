@@ -263,6 +263,9 @@ public final class MapillaryUtils {
    * Updates the help text at the bottom of the window.
    */
   public static void updateHelpText() {
+    if (Main.map == null || Main.map.statusLine == null) {
+      return;
+    }
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
       ret.append(I18n.tr("Downloading Mapillary images"));
@@ -279,8 +282,6 @@ public final class MapillaryUtils {
     if (PluginState.isUploading()) {
       ret.append(" — ").append(PluginState.getUploadString());
     }
-    synchronized (MapillaryUtils.class) {
-      Main.map.statusLine.setHelpText(ret.toString());
-    }
+    Main.map.statusLine.setHelpText(ret.toString());
   }
 }
