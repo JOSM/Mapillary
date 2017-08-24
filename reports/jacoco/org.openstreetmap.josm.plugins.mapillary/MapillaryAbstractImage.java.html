@@ -218,7 +218,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    */
   public MapillaryAbstractImage next() {
 <span class="fc" id="L220">    synchronized (this) {</span>
-<span class="pc bpc" id="L221" title="1 of 2 branches missed.">      return getSequence() == null ? null : getSequence().next(this);</span>
+<span class="fc" id="L221">      return getSequence().next(this);</span>
 <span class="nc" id="L222">    }</span>
   }
 
@@ -230,7 +230,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    */
   public MapillaryAbstractImage previous() {
 <span class="fc" id="L232">    synchronized (this) {</span>
-<span class="pc bpc" id="L233" title="1 of 2 branches missed.">      return getSequence() == null ? null : getSequence().previous(this);</span>
+<span class="fc" id="L233">      return getSequence().previous(this);</span>
 <span class="nc" id="L234">    }</span>
   }
 
@@ -261,7 +261,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
    *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
-<span class="pc bpc" id="L264" title="1 of 2 branches missed.">    if (!sequence.getImages().contains(this)) {</span>
+<span class="pc bpc" id="L264" title="2 of 4 branches missed.">    if (sequence != null &amp;&amp; !sequence.getImages().contains(this)) {</span>
 <span class="nc" id="L265">      throw new IllegalArgumentException();</span>
     }
 <span class="fc" id="L267">    this.sequence = sequence;</span>

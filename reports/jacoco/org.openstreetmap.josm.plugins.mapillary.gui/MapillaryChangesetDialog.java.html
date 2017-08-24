@@ -119,9 +119,9 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 <span class="nc" id="L119">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
 
 <span class="nc" id="L121">    this.map.clear();</span>
-<span class="nc" id="L122">    changeset.parallelStream().filter(Objects::nonNull).forEach(command -&gt; {</span>
-<span class="nc" id="L123">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(command.toString());</span>
-<span class="nc" id="L124">      this.map.put(node, command);</span>
+<span class="nc" id="L122">    changeset.parallelStream().filter(Objects::nonNull).forEach(img -&gt; {</span>
+<span class="nc" id="L123">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());</span>
+<span class="nc" id="L124">      this.map.put(node, img);</span>
 <span class="nc" id="L125">      changesetRoot.add(node);</span>
 <span class="nc" id="L126">    });</span>
 

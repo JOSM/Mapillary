@@ -4,35 +4,33 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 import java.awt.geom.Path2D;
 
 public class ImageDetection extends SpecialImageArea {
-
   private static final String PACKAGE_TRAFFIC_SIGNS = &quot;trafficsign&quot;;
 
   private final String packag;
   private final double score;
   private final String value;
 
-  public ImageDetection(final Path2D shape, final String image, final String key, final double score, final String packag, final String value) {
-<span class="fc" id="L15">    super(shape, image, key);</span>
-<span class="fc" id="L16">    this.packag = packag;</span>
-<span class="fc" id="L17">    this.score = score;</span>
-<span class="fc" id="L18">    this.value = value;</span>
-<span class="fc" id="L19">  }</span>
+  public ImageDetection(final Path2D shape, final String imageKey, final String key, final double score, final String packag, final String value) {
+<span class="fc" id="L14">    super(shape, imageKey, key);</span>
+<span class="fc" id="L15">    this.packag = packag;</span>
+<span class="fc" id="L16">    this.score = score;</span>
+<span class="fc" id="L17">    this.value = value;</span>
+<span class="fc" id="L18">  }</span>
 
   public String getPackage() {
-<span class="nc" id="L22">    return packag;</span>
+<span class="fc" id="L21">    return packag;</span>
   }
 
   public double getScore() {
-<span class="fc" id="L26">    return score;</span>
+<span class="fc" id="L25">    return score;</span>
   }
 
   public String getValue() {
-<span class="fc" id="L30">    return value;</span>
+<span class="fc" id="L29">    return value;</span>
   }
 
   public boolean isTrafficSign() {
-<span class="nc" id="L34">    return PACKAGE_TRAFFIC_SIGNS.equals(packag);</span>
+<span class="fc" id="L33">    return PACKAGE_TRAFFIC_SIGNS.equals(packag);</span>
   }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

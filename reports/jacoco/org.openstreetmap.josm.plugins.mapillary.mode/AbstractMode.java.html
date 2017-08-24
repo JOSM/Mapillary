@@ -12,7 +12,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
@@ -22,34 +21,32 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
  * @author nokutu
  * @see MapillaryLayer
  */
-<span class="fc" id="L25">public abstract class AbstractMode extends MouseAdapter implements</span>
+<span class="fc" id="L24">public abstract class AbstractMode extends MouseAdapter implements</span>
   ZoomChangeListener {
 
   private static final int DOWNLOAD_COOLDOWN = 2000;
-
-<span class="fc" id="L30">  protected MapillaryData data = MapillaryLayer.getInstance().getData();</span>
-<span class="fc" id="L31">  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();</span>
+<span class="fc" id="L28">  private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();</span>
 
   /**
    * Cursor that should become active when this mode is activated.
    */
-<span class="fc" id="L36">  public int cursor = Cursor.DEFAULT_CURSOR;</span>
+<span class="fc" id="L33">  public int cursor = Cursor.DEFAULT_CURSOR;</span>
 
   protected MapillaryAbstractImage getClosest(Point clickPoint) {
-<span class="nc" id="L39">    double snapDistance = 10;</span>
-<span class="nc" id="L40">    double minDistance = Double.MAX_VALUE;</span>
-<span class="nc" id="L41">    MapillaryAbstractImage closest = null;</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    for (MapillaryAbstractImage image : this.data.getImages()) {</span>
-<span class="nc" id="L43">      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());</span>
-<span class="nc" id="L44">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
-<span class="nc" id="L45">      double dist = clickPoint.distanceSq(imagePoint);</span>
-<span class="nc bnc" id="L46" title="All 4 branches missed.">      if (minDistance &gt; dist &amp;&amp; clickPoint.distance(imagePoint) &lt; snapDistance</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        &amp;&amp; image.isVisible()) {</span>
-<span class="nc" id="L48">        minDistance = dist;</span>
-<span class="nc" id="L49">        closest = image;</span>
+<span class="nc" id="L36">    double snapDistance = 10;</span>
+<span class="nc" id="L37">    double minDistance = Double.MAX_VALUE;</span>
+<span class="nc" id="L38">    MapillaryAbstractImage closest = null;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {</span>
+<span class="nc" id="L40">      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());</span>
+<span class="nc" id="L41">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
+<span class="nc" id="L42">      double dist = clickPoint.distanceSq(imagePoint);</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">      if (minDistance &gt; dist &amp;&amp; clickPoint.distance(imagePoint) &lt; snapDistance</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        &amp;&amp; image.isVisible()) {</span>
+<span class="nc" id="L45">        minDistance = dist;</span>
+<span class="nc" id="L46">        closest = image;</span>
       }
-<span class="nc" id="L51">    }</span>
-<span class="nc" id="L52">    return closest;</span>
+<span class="nc" id="L48">    }</span>
+<span class="nc" id="L49">    return closest;</span>
   }
 
   /**
@@ -63,22 +60,22 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
   @Override
   public void zoomChanged() {
-<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.VISIBLE_AREA) {</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
-<span class="nc" id="L68">        semiautomaticThread.start();</span>
-<span class="nc" id="L69">      semiautomaticThread.moved();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.VISIBLE_AREA) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      if (!semiautomaticThread.isAlive())</span>
+<span class="nc" id="L65">        semiautomaticThread.start();</span>
+<span class="nc" id="L66">      semiautomaticThread.moved();</span>
     }
-<span class="nc" id="L71">  }</span>
+<span class="nc" id="L68">  }</span>
 
   /**
    * Resets the semiautomatic mode thread.
    */
   public static void resetThread() {
-<span class="nc" id="L77">    semiautomaticThread.interrupt();</span>
-<span class="nc" id="L78">    semiautomaticThread = new SemiautomaticThread();</span>
-<span class="nc" id="L79">  }</span>
+<span class="fc" id="L74">    semiautomaticThread.interrupt();</span>
+<span class="fc" id="L75">    semiautomaticThread = new SemiautomaticThread();</span>
+<span class="fc" id="L76">  }</span>
 
-<span class="fc" id="L81">  private static class SemiautomaticThread extends Thread {</span>
+<span class="fc" id="L78">  private static class SemiautomaticThread extends Thread {</span>
 
     /** If in semiautomatic mode, the last Epoch time when there was a download */
     private long lastDownload;
@@ -88,24 +85,24 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
     @Override
     public void run() {
       while (true) {
-<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (this.moved</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">          &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
-<span class="nc" id="L93">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
-<span class="nc" id="L94">          MapillaryDownloader.downloadVisibleArea();</span>
-<span class="nc" id="L95">          this.moved = false;</span>
-<span class="nc" id="L96">          MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (this.moved</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">          &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
+<span class="nc" id="L90">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
+<span class="nc" id="L91">          MapillaryDownloader.downloadVisibleArea();</span>
+<span class="nc" id="L92">          this.moved = false;</span>
+<span class="nc" id="L93">          MapillaryLayer.getInstance().invalidate();</span>
         }
         try {
-<span class="nc" id="L99">          Thread.sleep(100);</span>
-<span class="nc" id="L100">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L101">          return;</span>
-<span class="nc" id="L102">        }</span>
+<span class="nc" id="L96">          Thread.sleep(100);</span>
+<span class="nc" id="L97">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L98">          return;</span>
+<span class="nc" id="L99">        }</span>
       }
     }
 
     public void moved() {
-<span class="nc" id="L107">      this.moved = true;</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L104">      this.moved = true;</span>
+<span class="nc" id="L105">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

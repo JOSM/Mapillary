@@ -5,34 +5,39 @@ import java.awt.event.ActionEvent;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
 import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 public class MapObjectLayerAction extends JosmAction {
   private static final long serialVersionUID = -8388752916891634738L;
 
   public MapObjectLayerAction() {
-<span class="nc" id="L18">    super(</span>
-<span class="nc" id="L19">      I18n.tr(&quot;Mapillary object layer&quot;),</span>
-<span class="nc" id="L20">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="nc" id="L21">      I18n.tr(&quot;Displays the layer displaying the map objects detected by Mapillary&quot;),</span>
+<span class="fc" id="L18">    super(</span>
+<span class="fc" id="L19">      I18n.tr(&quot;Mapillary object layer&quot;),</span>
+<span class="fc" id="L20">      MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT),</span>
+<span class="fc" id="L21">      I18n.tr(&quot;Displays the layer displaying the map objects detected by Mapillary&quot;),</span>
       null,
       false,
       &quot;mapillaryObjectLayer&quot;,
       false
     );
-<span class="nc" id="L27">  }</span>
+<span class="fc" id="L27">  }</span>
+
 
   @Override
   public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L31">    synchronized (Main.getLayerManager()) {</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">      if (!Main.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {</span>
-<span class="nc" id="L33">        Main.getLayerManager().addLayer(MapObjectLayer.getInstance());</span>
-      }
-<span class="nc" id="L35">    }</span>
-<span class="nc" id="L36">  }</span>
+<span class="fc" id="L32">    GuiHelper.runInEDTAndWait(() -&gt; {</span>
+      // Synchronization lock must be held by EDT thread
+      // See {@link LayerManager#addLayer(org.openstreetmap.josm.gui.layer.Layer, boolean)}.
+<span class="fc" id="L35">      synchronized (Main.getLayerManager()) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (!Main.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {</span>
+<span class="fc" id="L37">          Main.getLayerManager().addLayer(MapObjectLayer.getInstance());</span>
+        }
+<span class="pc" id="L39">      }</span>
+<span class="fc" id="L40">    });</span>
+<span class="fc" id="L41">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -218,14 +218,14 @@ public final class MapillaryDownloader {
    * Stops all running threads.
    */
   public static void stopAll() {
-<span class="nc" id="L221">    executor.shutdownNow();</span>
+<span class="fc" id="L221">    executor.shutdownNow();</span>
     try {
-<span class="nc" id="L223">      executor.awaitTermination(30, TimeUnit.SECONDS);</span>
+<span class="fc" id="L223">      executor.awaitTermination(30, TimeUnit.SECONDS);</span>
 <span class="nc" id="L224">    } catch (InterruptedException e) {</span>
 <span class="nc" id="L225">      Main.error(e);</span>
-<span class="nc" id="L226">    }</span>
-<span class="nc" id="L227">    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,</span>
+<span class="fc" id="L226">    }</span>
+<span class="fc" id="L227">    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,</span>
       new ArrayBlockingQueue&lt;&gt;(100));
-<span class="nc" id="L229">  }</span>
+<span class="fc" id="L229">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

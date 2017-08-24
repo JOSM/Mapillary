@@ -199,12 +199,21 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 <span class="pc" id="L199">    }</span>
 <span class="fc" id="L200">  }</span>
 
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.gui.layer.Layer#destroy()
+   */
+  @Override
+  public synchronized void destroy() {
+<span class="nc" id="L207">    instance = null;</span>
+<span class="nc" id="L208">    super.destroy();</span>
+<span class="nc" id="L209">  }</span>
+
   @Override
   public void zoomChanged() {
-<span class="fc" id="L204">    MapView mv = MapillaryPlugin.getMapView();</span>
-<span class="pc bpc" id="L205" title="1 of 2 branches missed.">    if (mv != null) {</span>
-<span class="nc" id="L206">      scheduleDownload(mv.getState().getViewArea().getLatLonBoundsBox());</span>
+<span class="fc" id="L213">    MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">    if (mv != null) {</span>
+<span class="nc" id="L215">      scheduleDownload(mv.getState().getViewArea().getLatLonBoundsBox());</span>
     }
-<span class="fc" id="L208">  }</span>
+<span class="fc" id="L217">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

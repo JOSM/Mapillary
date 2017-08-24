@@ -3,28 +3,22 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.awt.geom.Path2D;
 
-public class SpecialImageArea {
-
+public class SpecialImageArea extends KeyIndexedObject {
   private final String imageKey;
-  private final String key;
   private final Path2D shape;
 
-<span class="fc" id="L12">  protected SpecialImageArea(final Path2D shape, final String imageKey, final String key) {</span>
-<span class="fc" id="L13">    this.shape = shape;</span>
-<span class="fc" id="L14">    this.imageKey = imageKey;</span>
-<span class="fc" id="L15">    this.key = key;</span>
-<span class="fc" id="L16">  }</span>
+  protected SpecialImageArea(final Path2D shape, final String imageKey, final String key) {
+<span class="fc" id="L11">    super(key);</span>
+<span class="fc" id="L12">    this.shape = shape;</span>
+<span class="fc" id="L13">    this.imageKey = imageKey;</span>
+<span class="fc" id="L14">  }</span>
 
   public String getImageKey() {
-<span class="fc" id="L19">    return imageKey;</span>
-  }
-
-  public String getKey() {
-<span class="fc" id="L23">    return key;</span>
+<span class="fc" id="L17">    return imageKey;</span>
   }
 
   public Path2D getShape() {
-<span class="fc" id="L27">    return shape;</span>
+<span class="fc" id="L21">    return shape;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

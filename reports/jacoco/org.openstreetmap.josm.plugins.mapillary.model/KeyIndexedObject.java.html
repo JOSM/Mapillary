@@ -1,21 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KeyIndexedObject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.model</a> &gt; <span class="el_source">KeyIndexedObject.java</span></div><h1>KeyIndexedObject.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
-import java.io.Serializable;
-
 /**
  * An object that is identified amongst objects of the same class by a {@link String} key.
  */
-public class KeyIndexedObject implements Serializable {
-  private static final long serialVersionUID = 7762862623109416405L;
+public class KeyIndexedObject {
   private final String key;
 
-<span class="fc" id="L13">  protected KeyIndexedObject(final String key) {</span>
+<span class="fc" id="L10">  protected KeyIndexedObject(final String key) {</span>
+<span class="fc bfc" id="L11" title="All 2 branches covered.">    if (key == null) {</span>
+<span class="fc" id="L12">      throw new IllegalArgumentException();</span>
+    }
 <span class="fc" id="L14">    this.key = key;</span>
 <span class="fc" id="L15">  }</span>
 
+  /**
+   * @return the unique key that identifies this object among other instances of the same class
+   */
   public String getKey() {
-<span class="fc" id="L18">    return key;</span>
+<span class="fc" id="L21">    return key;</span>
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+<span class="fc" id="L29">    final int prime = 31;</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">    return prime * (prime + getClass().getName().hashCode()) + ((key == null) ? 0 : key.hashCode());</span>
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    if (this == obj) {</span>
+<span class="fc" id="L39">      return true;</span>
+    }
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (obj == null) {</span>
+<span class="fc" id="L42">      return false;</span>
+    }
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    if (getClass() != obj.getClass()) {</span>
+<span class="fc" id="L45">      return false;</span>
+    }
+<span class="fc" id="L47">    KeyIndexedObject other = (KeyIndexedObject) obj;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    if (key == null) {</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">      if (other.key != null) {</span>
+<span class="fc" id="L50">        return false;</span>
+      }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    } else if (!key.equals(other.key)) {</span>
+<span class="fc" id="L53">      return false;</span>
+    }
+<span class="fc" id="L55">    return true;</span>
+  }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
