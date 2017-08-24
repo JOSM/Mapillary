@@ -21,7 +21,6 @@ jdk:
   - oraclejdk9
   - oraclejdk8
   - openjdk8
-before_install: pip install --user codecov
 before_script: # init GUI for tests that can't run headless (https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI)
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -45,7 +44,9 @@ deploy:
 # Deploy to GitHub pages
 after_script: ./.travis/after_script
 
-after_success: codecov
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -c -F model_and_api
 
 matrix:
   fast_finish: true

@@ -1,15 +1,12 @@
 coverage:
   status:
     project:
-      modelAndAPI:
+      default: on
+      model_and_api:
         target: 95%
-        flags:
-          - api
-          - model
+        flags: model_and_api
 flags:
-  api:
+  model_and_api:
     paths:
       - src/org/openstreetmap/josm/plugins/mapillary/utils/api/
-  model:
-    paths:
       - src/org/openstreetmap/josm/plugins/mapillary/model/
