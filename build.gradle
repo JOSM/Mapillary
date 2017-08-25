@@ -1,11 +1,11 @@
 buildscript {
   repositories {
-      maven {
-          url "https://floscher.github.io/gradle-josm-plugin/maven"
-      }
+    maven {
+      url "https://floscher.github.io/gradle-josm-plugin/maven"
+    }
   }
   dependencies {
-    classpath 'org.openstreetmap.josm:gradle-plugin:0.1.0'
+    classpath 'org.openstreetmap.josm:gradle-plugin:0.1.1'
   }
 }
 plugins {
@@ -22,11 +22,7 @@ apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'pmd'
 
-configurations {
-  minJosmVersionCompile.extendsFrom(requiredPlugin)
-}
-
-apply from: 'gradle/manifest.gradle'
+apply from: 'gradle/version-functions.gradle'
 apply from: 'gradle/tool-config.gradle'
 apply from: 'gradle/markdown.gradle'
 
@@ -38,11 +34,6 @@ repositories {
 }
 
 dependencies {
-  implementation(name: 'josm', version: project.property('plugin.compile.version'))
-  // For plugins it's irrelevant, which version is specified, always the latest version is used.
-  requiredPlugin (name: 'apache-commons'){changing=true}
-  requiredPlugin (name: 'apache-http'){changing=true}
-
   testImplementation (name: 'josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
 }
@@ -60,15 +51,6 @@ sourceSets {
       include 'LICENSE_*'
     }
   }
-  minJosmVersion {
-    java {
-      srcDirs = sourceSets.main.java.srcDirs
-    }
-    resources {
-      srcDirs = sourceSets.main.resources.srcDirs
-      includes = sourceSets.main.resources.includes
-    }
-  }
   test {
     java {
       srcDirs = ['test/unit']
@@ -78,18 +60,6 @@ sourceSets {
     }
   }
 }
-
-task addMinJosmVersionDependency {
-  doLast {
-    def minJosmVersion = getNextJosmVersion(project.property('plugin.main.version'))
-    if (minJosmVersion == null) {
-      throw new GradleException("Could not determine the minimum required JOSM version from the given version number '" + project.property('plugin.main.version') + "'")
-    }
-    println 'Use JOSM version ' + minJosmVersion + ' for compiling against the minimum required version'
-    configurations.minJosmVersionCompile.dependencies.add(project.getDependencies().create(':josm:'+ minJosmVersion))
-  }
-}
-compileMinJosmVersionJava.dependsOn addMinJosmVersionDependency
 
 josm {
   debugPort = 7051

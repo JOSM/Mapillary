@@ -15,23 +15,3 @@ ext.getVersionName = { ->
     return '‹unknown›'
   }
 }
-
-/**
- * Returns the next JOSM version available for download for a version number given as string
- */
-ext.getNextJosmVersion = { startVersionString ->
-  def startVersion = Integer.parseInt(startVersionString)
-  for (def i = startVersion; i < startVersion + 50; i++) {
-    printf "Checking if JOSM version % 6d is available for download…\n", i
-    URL u1 = new URL('https://josm.openstreetmap.de/download/josm-snapshot-' + i + '.jar')
-    URL u2 = new URL('https://josm.openstreetmap.de/download/Archiv/josm-snapshot-' + i + '.jar')
-    HttpURLConnection con1 = (HttpURLConnection) u1.openConnection()
-    con1.setRequestMethod('HEAD')
-    HttpURLConnection con2 = (HttpURLConnection) u2.openConnection()
-    con2.setRequestMethod('HEAD')
-    if (con1.getResponseCode() == 200 || con2.getResponseCode() == 200) {
-      return i
-    }
-  }
-  return null
-}
