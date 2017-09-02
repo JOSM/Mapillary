@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
   /** Base URL of the Mapillary API. */
@@ -73,7 +74,7 @@ public final class MapillaryURL {
               try {
                 url = new URL(linkPart.substring(1, linkPart.length() - 1));
               } catch (MalformedURLException e) {
-                Main.warn(e, "Mapillary API v3 returns a malformed URL in the Link header.");
+                Logging.log(Logging.LEVEL_WARN, "Mapillary API v3 returns a malformed URL in the Link header.", e);
               }
             }
           }
@@ -182,7 +183,7 @@ public final class MapillaryURL {
             .append('=')
             .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
-          Main.error(e); // This should not happen, as the encoding is hard-coded
+          Logging.error(e); // This should not happen, as the encoding is hard-coded
         }
       }
     }
@@ -204,11 +205,11 @@ public final class MapillaryURL {
     try {
       return new URL(builder.toString());
     } catch (MalformedURLException e) {
-      Main.error(new Exception(String.format(
+      Logging.log(Logging.LEVEL_ERROR, String.format(
           "The class '%s' produces malformed URLs like '%s'!",
           MapillaryURL.class.getName(),
           builder
-      ), e));
+      ), e);
       return null;
     }
   }

@@ -7,6 +7,7 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.MapView;
@@ -79,22 +80,22 @@ public class MapillaryPlugin extends Plugin {
       WALK_MENU = null;
       UPLOAD_MENU = null;
     } else {
-      EXPORT_MENU = MainMenu.add(Main.main.menu.fileMenu, EXPORT_ACTION, false, 14);
+      EXPORT_MENU = MainMenu.add(MainApplication.getMenu().fileMenu, EXPORT_ACTION, false, 14);
       EXPORT_MENU.setEnabled(false);
-      MainMenu.add(Main.main.menu.imagerySubMenu, DOWNLOAD_ACTION, false);
-      MainMenu.add(Main.main.menu.fileMenu, new MapillaryImportAction(), false, 14);
-      ZOOM_MENU = MainMenu.add(Main.main.menu.viewMenu, ZOOM_ACTION, false, 15);
+      MainMenu.add(MainApplication.getMenu().imagerySubMenu, DOWNLOAD_ACTION, false);
+      MainMenu.add(MainApplication.getMenu().fileMenu, new MapillaryImportAction(), false, 14);
+      ZOOM_MENU = MainMenu.add(MainApplication.getMenu().viewMenu, ZOOM_ACTION, false, 15);
       ZOOM_MENU.setEnabled(false);
-      DOWNLOAD_VIEW_MENU = MainMenu.add(Main.main.menu.fileMenu, DOWNLOAD_VIEW_ACTION, false, 14);
+      DOWNLOAD_VIEW_MENU = MainMenu.add(MainApplication.getMenu().fileMenu, DOWNLOAD_VIEW_ACTION, false, 14);
       DOWNLOAD_VIEW_MENU.setEnabled(false);
-      JOIN_MENU = MainMenu.add(Main.main.menu.dataMenu, JOIN_ACTION, false);
+      JOIN_MENU = MainMenu.add(MainApplication.getMenu().dataMenu, JOIN_ACTION, false);
       JOIN_MENU.setEnabled(false);
-      WALK_MENU = MainMenu.add(Main.main.menu.moreToolsMenu, WALK_ACTION, false);
+      WALK_MENU = MainMenu.add(MainApplication.getMenu().moreToolsMenu, WALK_ACTION, false);
       WALK_MENU.setEnabled(false);
-      UPLOAD_MENU = MainMenu.add(Main.main.menu.fileMenu, UPLOAD_ACTION, false, 14);
+      UPLOAD_MENU = MainMenu.add(MainApplication.getMenu().fileMenu, UPLOAD_ACTION, false, 14);
       UPLOAD_MENU.setEnabled(false);
 
-      JMenuItem mapObjImageryLayerItem = MainMenu.add(Main.main.menu.imagerySubMenu, new MapObjectLayerAction(), false);
+      JMenuItem mapObjImageryLayerItem = MainMenu.add(MainApplication.getMenu().imagerySubMenu, new MapObjectLayerAction(), false);
       mapObjImageryLayerItem.setEnabled(true);
     }
   }
@@ -190,13 +191,13 @@ public class MapillaryPlugin extends Plugin {
   @Override
   public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
     if (oldFrame == null && newFrame != null) { // map frame added
-      Main.map.addToggleDialog(MapillaryMainDialog.getInstance(), false);
+      MainApplication.getMap().addToggleDialog(MapillaryMainDialog.getInstance(), false);
       MapillaryMainDialog.getInstance().setImageInfoHelp(new ImageInfoHelpPopup(
-        Main.map.addToggleDialog(ImageInfoPanel.getInstance(), false)
+        MainApplication.getMap().addToggleDialog(ImageInfoPanel.getInstance(), false)
       ));
-      Main.map.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
-      Main.map.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
-      Main.map.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
+      MainApplication.getMap().addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
+      MainApplication.getMap().addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
+      MainApplication.getMap().addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY) {
         setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
       }
@@ -238,7 +239,7 @@ public class MapillaryPlugin extends Plugin {
    * @return the current {@link MapView} without throwing a {@link NullPointerException}
    */
   public static MapView getMapView() {
-    final MapFrame mf = Main.map;
+    final MapFrame mf = MainApplication.getMap();
     if (mf != null) {
       return mf.mapView;
     }

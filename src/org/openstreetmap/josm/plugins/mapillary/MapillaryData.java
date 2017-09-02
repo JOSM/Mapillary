@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -140,7 +141,7 @@ public class MapillaryData {
       }
     }
     if (Main.main != null)
-      Main.map.mapView.repaint();
+      MainApplication.getMap().mapView.repaint();
   }
 
   /**
@@ -157,7 +158,7 @@ public class MapillaryData {
         this.multiSelectedImages.add(image);
       }
     });
-    Main.map.mapView.repaint();
+    MainApplication.getMap().mapView.repaint();
   }
 
   public List<Bounds> getBounds() {

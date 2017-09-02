@@ -19,6 +19,7 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -208,7 +209,7 @@ public final class MapillaryUtils {
       double lonExtent = Math.max(zoomBounds.getMaxLon() - zoomBounds.getMinLon(), MIN_ZOOM_SQUARE_SIDE);
       zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
 
-      Main.map.mapView.zoomTo(zoomBounds);
+      MainApplication.getMap().mapView.zoomTo(zoomBounds);
       MapillaryLayer.getInstance().getData().setSelectedImage(null);
       if (select) {
         MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);
@@ -263,7 +264,7 @@ public final class MapillaryUtils {
    * Updates the help text at the bottom of the window.
    */
   public static void updateHelpText() {
-    if (Main.map == null || Main.map.statusLine == null) {
+    if (MainApplication.getMap() == null || MainApplication.getMap().statusLine == null) {
       return;
     }
     StringBuilder ret = new StringBuilder();
@@ -282,6 +283,6 @@ public final class MapillaryUtils {
     if (PluginState.isUploading()) {
       ret.append(" — ").append(PluginState.getUploadString());
     }
-    Main.map.statusLine.setHelpText(ret.toString());
+    MainApplication.getMap().statusLine.setHelpText(ret.toString());
   }
 }

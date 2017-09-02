@@ -11,10 +11,12 @@ import javax.swing.SwingUtilities;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Class that concentrates all the ways of downloading of the plugin. All the
@@ -125,7 +127,7 @@ public final class MapillaryDownloader {
     if (getMode() != DOWNLOAD_MODE.VISIBLE_AREA && getMode() != DOWNLOAD_MODE.MANUAL_ONLY) {
       throw new IllegalStateException("Download mode must be 'visible area' or 'manual only'");
     }
-    Bounds view = Main.map.mapView.getRealBounds();
+    Bounds view = MainApplication.getMap().mapView.getRealBounds();
     if (view.getArea() > MAX_AREA) {
       return;
     }
@@ -174,7 +176,7 @@ public final class MapillaryDownloader {
    * Downloads all images of the area covered by the OSM data.
    */
   public static void downloadOSMArea() {
-    if (Main.getLayerManager().getEditLayer() == null) {
+    if (MainApplication.getLayerManager().getEditLayer() == null) {
       return;
     }
     if (isOSMAreaTooBig()) {
@@ -184,7 +186,7 @@ public final class MapillaryDownloader {
     if (getMode() != DOWNLOAD_MODE.OSM_AREA) {
       throw new IllegalStateException("Must be in automatic mode.");
     }
-    Main.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
+    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
       MapillaryLayer.getInstance().getData().getBounds().add(bounds);
       MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
     });
@@ -197,7 +199,7 @@ public final class MapillaryDownloader {
    * and you will have to download areas manually.
    */
   private static boolean isOSMAreaTooBig() {
-    double area = Main.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);
+    double area = MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);
     return area > MAX_AREA;
   }
 
@@ -222,7 +224,7 @@ public final class MapillaryDownloader {
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
-      Main.error(e);
+      Logging.error(e);
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
       new ArrayBlockingQueue<>(100));

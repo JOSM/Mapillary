@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -40,7 +40,7 @@ public final class MapillaryUser {
             .getWithHeader(MapillaryURL.APIv3.userURL())
             .getString("username");
       } catch (IOException e) {
-        Main.warn(e, "Invalid Mapillary token, resetting field");
+        Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
         reset();
       }
     }
@@ -66,7 +66,7 @@ public final class MapillaryUser {
             .getWithHeader(MapillaryURL.uploadSecretsURL())
             .getString("images_policy");
     } catch (IOException e) {
-      Main.warn(e, "Invalid Mapillary token, resetting field");
+      Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
       reset();
     }
     hash.put("images_policy", imagesPolicy);

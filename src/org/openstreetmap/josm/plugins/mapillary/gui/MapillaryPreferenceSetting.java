@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
@@ -40,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -89,10 +89,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       if (is != null) {
         brandImage.setIcon(new ImageIcon(ImageIO.read(is)));
       } else {
-        Main.warn("Could not load Mapillary brand image!");
+        Logging.warn("Could not load Mapillary brand image!");
       }
     } catch (IOException e) {
-      Main.warn("While reading Mapillary brand image, an IO-exception occured!");
+      Logging.warn("While reading Mapillary brand image, an IO-exception occured!");
     }
     loginPanel.add(brandImage, 0);
     loginPanel.add(Box.createHorizontalGlue(), 1);
@@ -207,7 +207,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       try {
         MapillaryUtils.browse(MapillaryURL.MainWebsite.connect("http://localhost:"+OAuthPortListener.PORT+'/'));
       } catch (IOException e) {
-        Main.error(e);
+        Logging.error(e);
       }
     }
   }

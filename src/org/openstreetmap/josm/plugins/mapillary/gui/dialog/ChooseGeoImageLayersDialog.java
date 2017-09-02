@@ -22,7 +22,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -33,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
@@ -69,7 +69,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
                 return MapillaryImportedImage.createInstance(img);
               } catch (IllegalArgumentException iae) {
                 final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");
-                Main.warn(iae, message);
+                Logging.log(Logging.LEVEL_WARN, message, iae);
                 if (!GraphicsEnvironment.isHeadless()) {
                   new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();
                 }

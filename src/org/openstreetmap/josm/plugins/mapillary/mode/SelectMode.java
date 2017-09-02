@@ -12,10 +12,10 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -53,12 +53,12 @@ public class SelectMode extends AbstractMode {
       return;
     }
     MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer)
-            && closest != null && Main.map.mapMode == Main.map.mapModeSelect) {
+    if (!(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer)
+            && closest != null && MainApplication.getMap().mapMode == MainApplication.getMap().mapModeSelect) {
       this.lastClicked = this.closest;
       MapillaryLayer.getInstance().getData().setSelectedImage(closest);
       return;
-    } else if (Main.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
+    } else if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
       return;
     }
     // Double click
@@ -98,17 +98,17 @@ public class SelectMode extends AbstractMode {
   public void mouseDragged(MouseEvent e) {
     MapillaryAbstractImage highlightImg = MapillaryLayer.getInstance().getData().getHighlightedImage();
     if (
-            Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
-                    && SwingUtilities.isLeftMouseButton(e)
-                    && highlightImg != null && highlightImg.getLatLon() != null
+            MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+                && SwingUtilities.isLeftMouseButton(e)
+                && highlightImg != null && highlightImg.getLatLon() != null
             ) {
-      Point highlightImgPoint = Main.map.mapView.getPoint(highlightImg.getTempLatLon());
+      Point highlightImgPoint = MainApplication.getMap().mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
         MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY())) - highlightImg.getTempCa()));
       } else { // move
-        LatLon eventLatLon = Main.map.mapView.getLatLon(e.getX(), e.getY());
-        LatLon imgLatLon = Main.map.mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
+        LatLon eventLatLon = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
+        LatLon imgLatLon = MainApplication.getMap().mapView.getLatLon(highlightImgPoint.getX(), highlightImgPoint.getY());
         MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
@@ -140,8 +140,8 @@ public class SelectMode extends AbstractMode {
    */
   @Override
   public void mouseMoved(MouseEvent e) {
-    if (Main.getLayerManager().getActiveLayer() instanceof OsmDataLayer
-            && Main.map.mapMode != Main.map.mapModeSelect) {
+    if (MainApplication.getLayerManager().getActiveLayer() instanceof OsmDataLayer
+            && MainApplication.getMap().mapMode != MainApplication.getMap().mapModeSelect) {
       return;
     }
     if (!MapillaryProperties.HOVER_ENABLED.get()) {
@@ -150,20 +150,20 @@ public class SelectMode extends AbstractMode {
 
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
 
-    final OsmDataLayer editLayer = Main.getLayerManager().getEditLayer();
+    final OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
     if (editLayer != null) {
       if (closestTemp != null && !this.imageHighlighted) {
-        if (Main.map.mapMode != null) {
-          Main.map.mapMode.putValue("active", Boolean.FALSE);
+        if (MainApplication.getMap().mapMode != null) {
+          MainApplication.getMap().mapMode.putValue("active", Boolean.FALSE);
         }
         imageHighlighted = true;
       } else if (closestTemp == null && imageHighlighted && nothingHighlighted) {
-        if (Main.map.mapMode != null) {
-          Main.map.mapMode.putValue("active", Boolean.TRUE);
+        if (MainApplication.getMap().mapMode != null) {
+          MainApplication.getMap().mapMode.putValue("active", Boolean.TRUE);
         }
         nothingHighlighted = false;
       } else if (imageHighlighted && !nothingHighlighted && editLayer.data != null) {
-        for (OsmPrimitive primivitive : Main.getLayerManager().getEditLayer().data.allPrimitives()) {
+        for (OsmPrimitive primivitive : MainApplication.getLayerManager().getEditLayer().data.allPrimitives()) {
           primivitive.setHighlighted(false);
         }
         imageHighlighted = false;

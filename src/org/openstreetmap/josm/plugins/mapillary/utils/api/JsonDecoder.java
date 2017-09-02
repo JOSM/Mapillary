@@ -15,6 +15,7 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class JsonDecoder {
   private JsonDecoder() {
@@ -99,10 +100,10 @@ public final class JsonDecoder {
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.UK).parse(timestamp).getTime();
       } catch (ParseException e) {
         StackTraceElement calledBy = e.getStackTrace()[Math.min(e.getStackTrace().length - 1, 2)];
-        Main.warn(e, String.format(
+        Logging.log(Logging.LEVEL_WARN,String.format(
           "Could not decode time from the timestamp `%s` (called by %s.%s:%d)",
           timestamp, calledBy.getClassName(), calledBy.getMethodName(), calledBy.getLineNumber()
-        ));
+        ), e);
       }
     }
     return null;

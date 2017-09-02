@@ -15,7 +15,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -29,6 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonLocationChangesetE
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -74,11 +74,11 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         httpPost.addHeader("Authorization", "Bearer " + token);
         MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
         String json = JsonLocationChangesetEncoder.encodeLocationChangeset(locationChangeset).build().toString();
-        Main.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
+        Logging.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
           CloseableHttpResponse response = httpClient.execute(httpPost);
-          Main.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
+          Logging.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
           if (response.getStatusLine().getStatusCode() == 201) {
             final String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
             final String state = Json.createReader(response.getEntity().getContent()).readObject().getString("state");
@@ -86,7 +86,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
             I18n.marktr("pending");
             I18n.marktr("approved");
             final String message = I18n.tr("{0} images submitted, Changeset key: {1}, State: {2}", locationChangeset.size(), key, state);
-            Main.debug(message);
+            Logging.debug(message);
             new Notification(message)
               .setDuration(Notification.TIME_LONG)
               .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
@@ -102,10 +102,10 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
             ).setIcon(JOptionPane.ERROR_MESSAGE)
               .setDuration(Notification.TIME_LONG)
               .show();
-            Main.error("Failed response " + EntityUtils.toString(response.getEntity()));
+            Logging.error("Failed response " + EntityUtils.toString(response.getEntity()));
           }
         } catch (IOException e) {
-          Main.error(e, "Exception while trying to submit a changeset to mapillary.com");
+          Logging.log(Logging.LEVEL_ERROR, "Exception while trying to submit a changeset to mapillary.com", e);
           new Notification(
             I18n.tr("An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.")
           ).setDuration(Notification.TIME_LONG)

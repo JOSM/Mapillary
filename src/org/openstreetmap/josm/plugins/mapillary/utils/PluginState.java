@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * @author nokutu
@@ -37,7 +38,7 @@ public final class PluginState {
    */
   public static void finishDownload() {
     if (runningDownloads == 0) {
-      Main.warn("The amount of running downloads is equal to 0");
+      Logging.warn("The amount of running downloads is equal to 0");
       return;
     }
     runningDownloads--;

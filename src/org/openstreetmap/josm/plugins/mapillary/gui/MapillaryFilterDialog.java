@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
@@ -220,7 +221,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!p.test(img)));
 
-    Main.map.repaint();
+    MainApplication.getMap().repaint();
   }
 
   private boolean checkValidTime(MapillaryAbstractImage img) {

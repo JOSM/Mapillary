@@ -8,11 +8,11 @@ import java.util.function.Function;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches.MapObjectIconCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 public class MapObject extends KeyIndexedObject {
   private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get("unknown-mapobject-type");
@@ -60,7 +60,7 @@ public class MapObject extends KeyIndexedObject {
         MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
         return downloadedIcon;
       } catch (IOException e) {
-        Main.warn(e, "Failed to download icon " + objectTypeID);
+        Logging.log(Logging.LEVEL_WARN, "Failed to download icon " + objectTypeID, e);
         return ICON_UNKNOWN_TYPE;
       }
     }

@@ -3,8 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import java.awt.event.ActionEvent;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
@@ -32,9 +32,9 @@ public class MapObjectLayerAction extends JosmAction {
     GuiHelper.runInEDTAndWait(() -> {
       // Synchronization lock must be held by EDT thread
       // See {@link LayerManager#addLayer(org.openstreetmap.josm.gui.layer.Layer, boolean)}.
-      synchronized (Main.getLayerManager()) {
-        if (!Main.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {
-          Main.getLayerManager().addLayer(MapObjectLayer.getInstance());
+      synchronized (MainApplication.getLayerManager()) {
+        if (!MainApplication.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {
+          MainApplication.getLayerManager().addLayer(MapObjectLayer.getInstance());
         }
       }
     });

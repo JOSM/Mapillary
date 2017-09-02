@@ -13,7 +13,6 @@ import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -26,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoder;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public class MapObjectDownloadRunnable implements Runnable {
   private final Bounds bounds;
@@ -68,7 +68,7 @@ public class MapObjectDownloadRunnable implements Runnable {
       }
     } catch (IOException | JsonException e) {
       String message = I18n.tr("{0}\nCould not read map objects from URL\n{1}!", e.getLocalizedMessage(), nextURL.toString());
-      Main.warn(e, message);
+      Logging.log(Logging.LEVEL_WARN, message, e);
       new Notification(message)
         .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
         .setDuration(Notification.TIME_LONG)
@@ -86,7 +86,7 @@ public class MapObjectDownloadRunnable implements Runnable {
     try {
       Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around
     } catch (InterruptedException e) {
-      Main.debug(e);
+      Logging.debug(e);
       Thread.currentThread().interrupt();
     }
   }

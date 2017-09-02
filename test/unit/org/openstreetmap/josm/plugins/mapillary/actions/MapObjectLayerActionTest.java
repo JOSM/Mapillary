@@ -6,21 +6,21 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 
 public class MapObjectLayerActionTest {
 
   @Before
   public void resetLayers() {
-    Main.getLayerManager().getLayers().parallelStream().forEach(l -> Main.getLayerManager().removeLayer(l));
+    MainApplication.getLayerManager().getLayers().parallelStream().forEach(l -> MainApplication.getLayerManager().removeLayer(l));
   }
 
   @Test
   public void testAction() {
-    assertEquals(0, Main.getLayerManager().getLayers().size());
+    assertEquals(0, MainApplication.getLayerManager().getLayers().size());
     new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(1, Main.getLayerManager().getLayers().size());
+    assertEquals(1, MainApplication.getLayerManager().getLayers().size());
     new MapObjectLayerAction().actionPerformed(null);
-    assertEquals(1, Main.getLayerManager().getLayers().size());
+    assertEquals(1, MainApplication.getLayerManager().getLayers().size());
   }
 }

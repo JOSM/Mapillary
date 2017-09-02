@@ -13,13 +13,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  *
@@ -79,7 +79,7 @@ public class ImageInfoHelpPopup extends JPopupMenu {
         alreadyDisplayed = true;
         return true;
       } catch (IllegalComponentStateException e) {
-        Main.warn(e, "Could not show ImageInfoHelpPopup, because probably the invoker component has disappeared from screen.");
+        Logging.log(Logging.LEVEL_WARN, "Could not show ImageInfoHelpPopup, because probably the invoker component has disappeared from screen.", e);
       }
     }
     return false;

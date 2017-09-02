@@ -1,13 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.Logging;
 
 public class MapillarySquareDownloadRunnable implements Runnable {
 
@@ -42,7 +42,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       imgDetailsThread.join();
       detectionsThread.join();
     } catch (InterruptedException e) {
-      Main.warn(e, "Mapillary download interrupted (probably because of closing the layer).");
+      Logging.log(Logging.LEVEL_WARN, "Mapillary download interrupted (probably because of closing the layer).", e);
       Thread.currentThread().interrupt();
     } finally {
       PluginState.finishDownload();

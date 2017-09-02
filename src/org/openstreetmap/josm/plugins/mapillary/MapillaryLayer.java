@@ -30,6 +30,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -55,6 +56,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -86,7 +88,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (e instanceof DataChangedEvent) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
-        Main.worker.submit(new DelayedDownload());
+        MainApplication.worker.submit(new DelayedDownload());
       }
     });
 
@@ -116,10 +118,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
-    Main.getLayerManager().addLayer(this);
-    Main.getLayerManager().addActiveLayerChangeListener(this);
-    if (Main.getLayerManager().getEditLayer() != null) {
-      Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
+    MainApplication.getLayerManager().addLayer(this);
+    MainApplication.getLayerManager().addActiveLayerChangeListener(this);
+    if (MainApplication.getLayerManager().getEditLayer() != null) {
+      MainApplication.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
     }
     if (!GraphicsEnvironment.isHeadless()) {
       setMode(new SelectMode());
@@ -242,9 +244,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         mv.removeMouseListener(this.mode);
         mv.removeMouseMotionListener(this.mode);
       }
-      Main.getLayerManager().removeActiveLayerChangeListener(this);
-      if (Main.getLayerManager().getEditLayer() != null) {
-        Main.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
+      MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
+      if (MainApplication.getLayerManager().getEditLayer() != null) {
+        MainApplication.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
       }
       instance = null;
       super.destroy();
@@ -260,7 +262,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public void setVisible(boolean visible) {
     super.setVisible(visible);
     this.data.getImages().parallelStream().forEach(img -> img.setVisible(visible));
-    if (Main.map != null) {
+    if (MainApplication.getMap() != null) {
       MapillaryFilterDialog.getInstance().refresh();
     }
   }
@@ -284,7 +286,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    if (Main.getLayerManager().getActiveLayer() == this) {
+    if (MainApplication.getLayerManager().getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
       g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
@@ -337,11 +339,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private void drawImageMarker(final Graphics2D g, final MapillaryAbstractImage img) {
     if (img == null || img.getLatLon() == null) {
-      Main.warn("An image is not painted, because it is null or has no LatLon!");
+      Logging.warn("An image is not painted, because it is null or has no LatLon!");
       return;
     }
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
-    final Point p = Main.map.mapView.getPoint(img.getMovingLatLon());
+    final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
 
     // Determine colors
     final Color markerC;
@@ -459,14 +461,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void activeOrEditLayerChanged(ActiveLayerChangeEvent e) {
-    if (Main.getLayerManager().getActiveLayer() == this) {
+    if (MainApplication.getLayerManager().getActiveLayer() == this) {
       MapillaryUtils.updateHelpText();
     }
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), Main.getLayerManager().getActiveLayer() == this);
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), MainApplication.getLayerManager().getActiveLayer() == this);
 
-    if (Main.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
-      if (Main.getLayerManager().getEditLayer() != null) {
-        Main.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
+    if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
+      if (MainApplication.getLayerManager().getEditLayer() != null) {
+        MainApplication.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
       }
       if (e.getPreviousEditLayer() != null) {
         e.getPreviousEditLayer().data.removeDataSetListener(DATASET_LISTENER);
@@ -553,7 +555,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       try {
         Thread.sleep(1500);
       } catch (InterruptedException e) {
-        Main.error(e);
+        Logging.error(e);
       }
       MapillaryDownloader.downloadOSMArea();
     }

@@ -8,11 +8,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.Json;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -185,7 +185,7 @@ public class MapillarySequence {
             )
           );
         } catch (IOException var4) {
-          Main.warn(var4, "Error when downloading user profile for user key '" + userKey + "'!");
+          Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!", var4);
         }
       }
 

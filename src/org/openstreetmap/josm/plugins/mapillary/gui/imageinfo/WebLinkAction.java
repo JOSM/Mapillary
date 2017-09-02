@@ -8,12 +8,12 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public class WebLinkAction extends AbstractAction {
   private static final long serialVersionUID = 2397830510179013823L;
@@ -42,7 +42,7 @@ public class WebLinkAction extends AbstractAction {
       MapillaryUtils.browse(url);
     } catch (IOException e1) {
       String msg = I18n.tr("Could not open the URL {0} in a browser", url == null ? "‹null›" : url);
-      Main.warn(e1, msg);
+      Logging.log(Logging.LEVEL_WARN, msg, e1);
       new Notification(msg).setIcon(JOptionPane.WARNING_MESSAGE).show();
     }
   }

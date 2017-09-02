@@ -20,8 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -127,7 +127,7 @@ public class ImportMethodDialog extends JDialog {
     });
     final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));
     imgLayerBtn.addActionListener(ae -> {
-      List<GeoImageLayer> layers = Main.getLayerManager().getLayersOfType(GeoImageLayer.class);
+      List<GeoImageLayer> layers = MainApplication.getLayerManager().getLayersOfType(GeoImageLayer.class);
       if (layers.isEmpty()) {
         JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);
       } else {

@@ -15,7 +15,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MapView;
@@ -29,6 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.ImageUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   public enum STATUS {
@@ -150,7 +150,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(I18n.tr(currentStatus.message)), fm.getAscent() + fm.getDescent());
     g.setColor(Color.BLACK);
     g.drawString(I18n.tr(currentStatus.message), 0, mv.getHeight() - fm.getDescent());
-    Main.debug(MapObjectLayer.class.getName() + " painted in " + (System.currentTimeMillis() - startTime) + " milliseconds.");
+    Logging.debug("{0} painted in {1} milliseconds.", MapObjectLayer.class.getName(), System.currentTimeMillis() - startTime);
   }
 
   @Override

@@ -15,6 +15,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public abstract class BoundsDownloadRunnable implements Runnable {
 
@@ -37,7 +38,7 @@ public abstract class BoundsDownloadRunnable implements Runnable {
       }
     } catch (IOException e) {
       String message = I18n.tr("Could not read from URL {0}!", nextURL.toString());
-      Main.warn(e, message);
+      Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
         new Notification(message)
           .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
@@ -67,7 +68,7 @@ public abstract class BoundsDownloadRunnable implements Runnable {
     if (info != null && info.length() >= 1) {
       message.append(" (").append(info).append(')');
     }
-    Main.info(message.toString());
+    Logging.info(message.toString());
   }
 
   public abstract void run(final URLConnection connection) throws IOException;

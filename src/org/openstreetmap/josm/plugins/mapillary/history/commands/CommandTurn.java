@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 import java.util.Set;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
 /**
@@ -37,7 +38,7 @@ public class CommandTurn extends MapillaryCommand {
       image.stopMoving();
     }
     if (Main.main != null)
-      Main.map.repaint();
+      MainApplication.getMap().repaint();
   }
 
   @Override
@@ -47,7 +48,7 @@ public class CommandTurn extends MapillaryCommand {
       image.stopMoving();
     }
     if (Main.main != null)
-      Main.map.repaint();
+      MainApplication.getMap().repaint();
   }
 
   @Override

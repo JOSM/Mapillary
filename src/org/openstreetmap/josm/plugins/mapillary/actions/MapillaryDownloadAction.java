@@ -6,8 +6,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -48,9 +48,9 @@ public class MapillaryDownloadAction extends JosmAction {
       return;
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-    Main.getLayerManager().setActiveLayer(
-        Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
-          ? Main.getLayerManager().getEditLayer()
+    MainApplication.getLayerManager().setActiveLayer(
+        MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+          ? MainApplication.getLayerManager().getEditLayer()
           : MapillaryLayer.getInstance()
     );
   }

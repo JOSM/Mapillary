@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -27,6 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -95,9 +97,9 @@ public class MapillaryExportAction extends JosmAction {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
       MapillaryLayer.getInstance().getData().getImages().stream().filter(img -> img instanceof MapillaryImportedImage).forEach(img -> images.add((MapillaryImportedImage) img));
       try {
-        Main.worker.submit(new MapillaryExportManager(images));
+        MainApplication.worker.submit(new MapillaryExportManager(images));
       } catch (IOException e1) {
-        Main.error(e1);
+        Logging.error(e1);
       }
     }
     dlg.dispose();
@@ -110,7 +112,7 @@ public class MapillaryExportAction extends JosmAction {
    *          The set of images to be exported.
    */
   public void export(Set<MapillaryAbstractImage> images) {
-    Main.worker.submit(new MapillaryExportManager(images,
+    MainApplication.worker.submit(new MapillaryExportManager(images,
         this.dialog.chooser.getSelectedFile().toString()));
   }
 

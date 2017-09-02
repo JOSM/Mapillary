@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Calendar;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -37,7 +37,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
     for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {
-      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());
+      Point imagePoint = MainApplication.getMap().mapView.getPoint(image.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
       if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance

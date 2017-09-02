@@ -5,8 +5,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -43,9 +43,10 @@ public class MapillaryZoomAction extends JosmAction implements
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null)
+    if (MapillaryLayer.getInstance().getData().getSelectedImage() == null) {
       throw new IllegalStateException();
-    Main.map.mapView.zoomTo(MapillaryLayer.getInstance().getData()
+    }
+    MainApplication.getMap().mapView.zoomTo(MapillaryLayer.getInstance().getData()
         .getSelectedImage().getMovingLatLon());
   }
 

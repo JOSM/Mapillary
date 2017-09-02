@@ -10,8 +10,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -67,7 +67,7 @@ public class JoinMode extends AbstractMode {
   @Override
   public void mouseMoved(MouseEvent e) {
     this.lastPos = e;
-    if (!(Main.getLayerManager().getActiveLayer() instanceof MapillaryLayer))
+    if (!(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer))
       return;
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
     MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);

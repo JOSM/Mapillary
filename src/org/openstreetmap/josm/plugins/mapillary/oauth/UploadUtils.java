@@ -42,7 +42,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -50,6 +50,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Upload utilities.
@@ -102,7 +103,7 @@ public final class UploadUtils {
           try {
             Thread.sleep(100);
           } catch (InterruptedException e) {
-            Main.error(e);
+            Logging.error(e);
           }
         }
         uploadDoneFile(this.uuid);
@@ -111,7 +112,7 @@ public final class UploadUtils {
       try {
         this.ex.awaitTermination(15, TimeUnit.SECONDS);
       } catch (InterruptedException e) {
-        Main.error(e);
+        Logging.error(e);
       }
       if (this.delete) {
         MapillaryRecord.getInstance().addCommand(new CommandDelete(images));
@@ -206,7 +207,7 @@ public final class UploadUtils {
     try {
       uploadFile(File.createTempFile("DONE", "donefile"), hash);
     } catch (IOException e) {
-      Main.error(e);
+      Logging.error(e);
     }
   }
   /**
@@ -233,7 +234,7 @@ public final class UploadUtils {
     try {
       uploadFile(updateFile(image), hash);
     } catch (ImageReadException | ImageWriteException | IOException e) {
-      Main.error(e);
+      Logging.error(e);
     }
   }
 
@@ -280,14 +281,14 @@ public final class UploadUtils {
       try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
         if (response.getStatusLine().toString().contains("204")) {
           PluginState.imageUploaded();
-          Main.info(PluginState.getUploadString() + " (Mapillary)");
+          Logging.info("{0} (Mapillary)", PluginState.getUploadString());
         } else {
-          Main.info("Upload error");
+          Logging.info("Upload error");
         }
       }
     }
     if (!file.delete()) {
-      Main.error("MapillaryPlugin: File could not be deleted during upload");
+      Logging.error("MapillaryPlugin: File could not be deleted during upload");
     }
     MapillaryUtils.updateHelpText();
   }
@@ -300,6 +301,6 @@ public final class UploadUtils {
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    Main.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
+    MainApplication.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
   }
 }

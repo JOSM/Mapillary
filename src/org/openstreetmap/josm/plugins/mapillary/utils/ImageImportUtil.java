@@ -22,10 +22,10 @@ import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class ImageImportUtil {
   public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();
@@ -54,7 +54,7 @@ public final class ImageImportUtil {
         } catch (IOException e) {
           // Don't throw an exception here to allow other files that might be readable to be read.
           // Might not be the best solution, but the easiest workaround I could imagine.
-          Main.error(e, f.getAbsolutePath() + " not found or not readable!");
+          Logging.log(Logging.LEVEL_ERROR, f.getAbsolutePath() + " not found or not readable!", e);
         }
       }
     } else if (IMAGE_FILE_FILTER.accept(f)) {
@@ -155,7 +155,7 @@ public final class ImageImportUtil {
       } catch (FileNotFoundException e) {
         return false;
       } catch (IOException e) {
-        Main.warn(e, "IO-exception while reading file "+f.getAbsolutePath());
+        Logging.log(Logging.LEVEL_WARN, "IO-exception while reading file "+f.getAbsolutePath(), e);
         return false;
       }
     }

@@ -20,7 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -39,6 +38,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Toggle dialog that shows an image and some buttons.
@@ -246,7 +246,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         try {
           this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
-          Main.error(e);
+          Logging.error(e);
         }
 
         // Downloads the full resolution image.
@@ -259,7 +259,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           try {
             this.imageCache.submit(this, false);
           } catch (IOException e) {
-            Main.error(e);
+            Logging.error(e);
           }
         }
       } else if (this.image instanceof MapillaryImportedImage) {
@@ -267,7 +267,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         try {
           this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null);
         } catch (IOException e) {
-          Main.error(e);
+          Logging.error(e);
         }
       }
       updateTitle();
@@ -538,7 +538,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           );
         }
       } catch (IOException e) {
-        Main.error(e);
+        Logging.error(e);
       }
     }
   }

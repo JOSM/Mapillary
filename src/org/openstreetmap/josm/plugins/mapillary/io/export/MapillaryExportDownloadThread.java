@@ -8,7 +8,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.imageio.ImageIO;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -16,6 +15,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * This is the thread that downloads one of the images that are going to be
@@ -68,7 +68,7 @@ public class MapillaryExportDownloadThread extends Thread implements
         this.queueImages.put(this.image);
       }
     } catch (InterruptedException | IOException e) {
-      Main.error(e);
+      Logging.error(e);
     }
   }
 }

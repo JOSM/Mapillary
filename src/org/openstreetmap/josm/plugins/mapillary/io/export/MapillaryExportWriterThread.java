@@ -24,12 +24,12 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Writes the images from the queue in the file system.
@@ -138,10 +138,10 @@ public class MapillaryExportWriterThread extends Thread {
 
         os.close();
       } catch (InterruptedException e) {
-        Main.info("Mapillary export cancelled");
+        Logging.info("Mapillary export cancelled");
         return;
       } catch (IOException | ImageReadException | ImageWriteException e) {
-        Main.error(e);
+        Logging.error(e);
       }
 
       // Increases the progress bar.

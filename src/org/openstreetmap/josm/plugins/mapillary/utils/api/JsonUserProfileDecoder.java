@@ -8,10 +8,10 @@ import javax.imageio.ImageIO;
 import javax.json.JsonObject;
 import javax.swing.ImageIcon;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Decodes the JSON returned by {@link APIv3} into Java objects.
@@ -43,7 +43,7 @@ public final class JsonUserProfileDecoder {
           icon = new ImageIcon(img);
         }
       } catch (IOException e) {
-        Main.debug(e);
+        Logging.debug(e);
       }
     }
     if (icon == null) {

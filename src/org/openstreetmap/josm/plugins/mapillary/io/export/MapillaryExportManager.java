@@ -13,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.xml.sax.SAXException;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Export main thread. Exportation works by creating a
@@ -104,7 +104,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       try {
         this.writer.join();
       } catch (InterruptedException e) {
-        Main.error(e);
+        Logging.error(e);
       }
       return;
     }
@@ -116,14 +116,14 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
           this.ex.execute(new MapillaryExportDownloadThread(
               (MapillaryImage) image, this.queue, this.queueImages));
         } catch (Exception e) {
-          Main.error(e);
+          Logging.error(e);
         }
       } else if (image instanceof MapillaryImportedImage) {
         try {
           this.queue.put(((MapillaryImportedImage) image).getImage());
           this.queueImages.put(image);
         } catch (InterruptedException e) {
-          Main.error(e);
+          Logging.error(e);
         }
       }
       try {
@@ -133,13 +133,13 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
           Thread.sleep(100);
         }
       } catch (Exception e) {
-        Main.error(e);
+        Logging.error(e);
       }
     }
     try {
       this.writer.join();
     } catch (InterruptedException e) {
-      Main.error(e);
+      Logging.error(e);
     }
   }
 

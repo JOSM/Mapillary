@@ -14,6 +14,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class Caches {
 
@@ -37,7 +38,7 @@ public final class Caches {
       try {
         c = createNewCache();
       } catch (IOException e) {
-        Main.warn(e, "Could not initialize cache for " + getClass().getName());
+        Logging.log(Logging.LEVEL_WARN, "Could not initialize cache for " + getClass().getName(), e);
         c = null;
       }
       cache = c;
@@ -65,7 +66,7 @@ public final class Caches {
       try {
         c = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
       } catch (IOException e) {
-        Main.warn("Could not initialize the Mapillary image cache.");
+        Logging.log(Logging.LEVEL_WARN, "Could not initialize the Mapillary image cache.", e);
         c = null;
       }
       cache = c;
