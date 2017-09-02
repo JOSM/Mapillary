@@ -22,10 +22,10 @@ import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 <span class="pc bpc" id="L30" title="1 of 2 branches missed.">public final class ImageImportUtil {</span>
 <span class="fc" id="L31">  public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();</span>
@@ -54,7 +54,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="nc" id="L54">        } catch (IOException e) {</span>
           // Don't throw an exception here to allow other files that might be readable to be read.
           // Might not be the best solution, but the easiest workaround I could imagine.
-<span class="nc" id="L57">          Main.error(e, f.getAbsolutePath() + &quot; not found or not readable!&quot;);</span>
+<span class="nc" id="L57">          Logging.log(Logging.LEVEL_ERROR, f.getAbsolutePath() + &quot; not found or not readable!&quot;, e);</span>
 <span class="fc" id="L58">        }</span>
       }
 <span class="fc bfc" id="L60" title="All 2 branches covered.">    } else if (IMAGE_FILE_FILTER.accept(f)) {</span>
@@ -155,7 +155,7 @@ import org.openstreetmap.josm.tools.I18n;
 <span class="pc bpc" id="L155" title="6 of 8 branches missed.">      } catch (FileNotFoundException e) {</span>
 <span class="nc" id="L156">        return false;</span>
 <span class="nc" id="L157">      } catch (IOException e) {</span>
-<span class="nc" id="L158">        Main.warn(e, &quot;IO-exception while reading file &quot;+f.getAbsolutePath());</span>
+<span class="nc" id="L158">        Logging.log(Logging.LEVEL_WARN, &quot;IO-exception while reading file &quot;+f.getAbsolutePath(), e);</span>
 <span class="nc" id="L159">        return false;</span>
       }
     }

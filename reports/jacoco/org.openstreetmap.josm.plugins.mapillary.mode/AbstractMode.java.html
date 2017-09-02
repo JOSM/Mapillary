@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.util.Calendar;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -37,7 +37,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 <span class="nc" id="L37">    double minDistance = Double.MAX_VALUE;</span>
 <span class="nc" id="L38">    MapillaryAbstractImage closest = null;</span>
 <span class="nc bnc" id="L39" title="All 2 branches missed.">    for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getImages()) {</span>
-<span class="nc" id="L40">      Point imagePoint = Main.map.mapView.getPoint(image.getMovingLatLon());</span>
+<span class="nc" id="L40">      Point imagePoint = MainApplication.getMap().mapView.getPoint(image.getMovingLatLon());</span>
 <span class="nc" id="L41">      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());</span>
 <span class="nc" id="L42">      double dist = clickPoint.distanceSq(imagePoint);</span>
 <span class="nc bnc" id="L43" title="All 4 branches missed.">      if (minDistance &gt; dist &amp;&amp; clickPoint.distance(imagePoint) &lt; snapDistance</span>

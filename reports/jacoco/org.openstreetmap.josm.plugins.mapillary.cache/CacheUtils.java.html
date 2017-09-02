@@ -3,11 +3,11 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.io.IOException;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Utility methods for working with cache.
@@ -88,7 +88,7 @@ public final class CacheUtils {
     try {
 <span class="nc" id="L89">      new MapillaryCache(key, type).submit(lis, false);</span>
 <span class="nc" id="L90">    } catch (IOException e) {</span>
-<span class="nc" id="L91">      Main.error(e);</span>
+<span class="nc" id="L91">      Logging.error(e);</span>
 <span class="nc" id="L92">    }</span>
 <span class="nc" id="L93">  }</span>
 

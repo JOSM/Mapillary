@@ -13,7 +13,6 @@ import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonReader;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -26,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoder;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public class MapObjectDownloadRunnable implements Runnable {
   private final Bounds bounds;
@@ -68,7 +68,7 @@ public class MapObjectDownloadRunnable implements Runnable {
 <span class="fc" id="L68">      }</span>
 <span class="nc" id="L69">    } catch (IOException | JsonException e) {</span>
 <span class="nc" id="L70">      String message = I18n.tr(&quot;{0}\nCould not read map objects from URL\n{1}!&quot;, e.getLocalizedMessage(), nextURL.toString());</span>
-<span class="nc" id="L71">      Main.warn(e, message);</span>
+<span class="nc" id="L71">      Logging.log(Logging.LEVEL_WARN, message, e);</span>
 <span class="nc" id="L72">      new Notification(message)</span>
 <span class="nc" id="L73">        .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
 <span class="nc" id="L74">        .setDuration(Notification.TIME_LONG)</span>
@@ -86,7 +86,7 @@ public class MapObjectDownloadRunnable implements Runnable {
     try {
 <span class="fc" id="L87">      Thread.sleep(1000); // Buffer between downloads to avoid too many downloads when e.g. panning around</span>
 <span class="nc" id="L88">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L89">      Main.debug(e);</span>
+<span class="nc" id="L89">      Logging.debug(e);</span>
 <span class="nc" id="L90">      Thread.currentThread().interrupt();</span>
 <span class="fc" id="L91">    }</span>
 <span class="fc" id="L92">  }</span>

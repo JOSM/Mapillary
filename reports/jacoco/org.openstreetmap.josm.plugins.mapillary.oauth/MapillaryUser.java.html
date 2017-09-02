@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Represents the current logged in user and stores its data.
@@ -40,7 +40,7 @@ public final class MapillaryUser {
 <span class="nc" id="L40">            .getWithHeader(MapillaryURL.APIv3.userURL())</span>
 <span class="nc" id="L41">            .getString(&quot;username&quot;);</span>
 <span class="fc" id="L42">      } catch (IOException e) {</span>
-<span class="fc" id="L43">        Main.warn(e, &quot;Invalid Mapillary token, resetting field&quot;);</span>
+<span class="fc" id="L43">        Logging.log(Logging.LEVEL_WARN, &quot;Invalid Mapillary token, resetting field&quot;, e);</span>
 <span class="fc" id="L44">        reset();</span>
 <span class="nc" id="L45">      }</span>
     }
@@ -66,7 +66,7 @@ public final class MapillaryUser {
 <span class="nc" id="L66">            .getWithHeader(MapillaryURL.uploadSecretsURL())</span>
 <span class="nc" id="L67">            .getString(&quot;images_policy&quot;);</span>
 <span class="nc" id="L68">    } catch (IOException e) {</span>
-<span class="nc" id="L69">      Main.warn(e, &quot;Invalid Mapillary token, resetting field&quot;);</span>
+<span class="nc" id="L69">      Logging.log(Logging.LEVEL_WARN, &quot;Invalid Mapillary token, resetting field&quot;, e);</span>
 <span class="nc" id="L70">      reset();</span>
 <span class="nc" id="L71">    }</span>
 <span class="nc" id="L72">    hash.put(&quot;images_policy&quot;, imagesPolicy);</span>

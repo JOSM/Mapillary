@@ -20,7 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -39,6 +38,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Toggle dialog that shows an image and some buttons.
@@ -246,7 +246,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         try {
 <span class="nc" id="L247">          this.thumbnailCache.submit(this, false);</span>
 <span class="nc" id="L248">        } catch (IOException e) {</span>
-<span class="nc" id="L249">          Main.error(e);</span>
+<span class="nc" id="L249">          Logging.error(e);</span>
 <span class="nc" id="L250">        }</span>
 
         // Downloads the full resolution image.
@@ -259,7 +259,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           try {
 <span class="nc" id="L260">            this.imageCache.submit(this, false);</span>
 <span class="nc" id="L261">          } catch (IOException e) {</span>
-<span class="nc" id="L262">            Main.error(e);</span>
+<span class="nc" id="L262">            Logging.error(e);</span>
 <span class="nc" id="L263">          }</span>
         }
 <span class="nc bnc" id="L265" title="All 2 branches missed.">      } else if (this.image instanceof MapillaryImportedImage) {</span>
@@ -267,7 +267,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         try {
 <span class="nc" id="L268">          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null);</span>
 <span class="nc" id="L269">        } catch (IOException e) {</span>
-<span class="nc" id="L270">          Main.error(e);</span>
+<span class="nc" id="L270">          Logging.error(e);</span>
 <span class="nc" id="L271">        }</span>
       }
 <span class="nc" id="L273">      updateTitle();</span>
@@ -538,7 +538,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           );
         }
 <span class="nc" id="L540">      } catch (IOException e) {</span>
-<span class="nc" id="L541">        Main.error(e);</span>
+<span class="nc" id="L541">        Logging.error(e);</span>
 <span class="nc" id="L542">      }</span>
     }
 <span class="nc" id="L544">  }</span>

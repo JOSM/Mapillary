@@ -3,12 +3,13 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * A MapillaryImage object represents each of the images stored in Mapillary.
@@ -25,7 +26,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Set of traffic signs in the image.
    */
-<span class="fc" id="L28">  private final List&lt;ImageDetection&gt; detections = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L29">  private final List&lt;ImageDetection&gt; detections = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
 
   /**
    * Main constructor of the class MapillaryImage
@@ -35,9 +36,9 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @param ca     The direction of the images in degrees, meaning 0 north.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca) {
-<span class="fc" id="L38">    super(latLon, ca);</span>
-<span class="fc" id="L39">    this.key = key;</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L39">    super(latLon, ca);</span>
+<span class="fc" id="L40">    this.key = key;</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * Returns the unique identifier of the object.
@@ -45,67 +46,69 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @return A {@code String} containing the unique identifier of the object.
    */
   public String getKey() {
-<span class="fc" id="L48">    return this.key;</span>
+<span class="fc" id="L49">    return this.key;</span>
   }
 
   public List&lt;ImageDetection&gt; getDetections() {
-<span class="nc" id="L52">    return detections;</span>
+<span class="nc" id="L53">    return detections;</span>
   }
 
   public UserProfile getUser() {
-<span class="nc" id="L56">    return getSequence().getUser();</span>
+<span class="nc" id="L57">    return getSequence().getUser();</span>
   }
 
-  public void setAllDetections(Collection&lt;ImageDetection&gt; detection) {
-<span class="nc" id="L60">    Main.debug(&quot;Add &quot; + detection.size() + &quot; detections to image &quot; + this.getKey());</span>
-<span class="nc" id="L61">    this.detections.clear();</span>
-<span class="nc" id="L62">    this.detections.addAll(detection);</span>
-<span class="nc" id="L63">  }</span>
+  public void setAllDetections(Collection&lt;ImageDetection&gt; newDetections) {
+<span class="nc" id="L61">    Logging.debug(&quot;Add {0} detections to image {1}&quot;, newDetections.size(), this.getKey());</span>
+<span class="nc" id="L62">    synchronized (detections) {</span>
+<span class="nc" id="L63">      detections.clear();</span>
+<span class="nc" id="L64">      detections.addAll(newDetections);</span>
+<span class="nc" id="L65">    }</span>
+<span class="nc" id="L66">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L67">    return String.format(</span>
-            &quot;Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]&quot;,
-<span class="nc bnc" id="L69" title="All 2 branches missed.">            key, latLon.lat(), latLon.lon(), ca, getUser() == null ? &quot;null&quot; : getUser().getUsername(), capturedAt</span>
+<span class="nc" id="L70">    return String.format(</span>
+      &quot;Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]&quot;,
+<span class="nc bnc" id="L72" title="All 2 branches missed.">      key, latLon.lat(), latLon.lon(), ca, getUser() == null ? &quot;null&quot; : getUser().getUsername(), capturedAt</span>
     );
   }
 
   @Override
   public boolean equals(Object object) {
-<span class="fc bfc" id="L75" title="All 4 branches covered.">    return object instanceof MapillaryImage &amp;&amp; this.key.equals(((MapillaryImage) object).getKey());</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">    return object instanceof MapillaryImage &amp;&amp; this.key.equals(((MapillaryImage) object).getKey());</span>
   }
 
   @Override
   public int compareTo(MapillaryAbstractImage image) {
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">    if (image instanceof MapillaryImage) {</span>
-<span class="fc" id="L81">      return this.key.compareTo(((MapillaryImage) image).getKey());</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">    if (image instanceof MapillaryImage) {</span>
+<span class="fc" id="L84">      return this.key.compareTo(((MapillaryImage) image).getKey());</span>
     }
-<span class="nc" id="L83">    return hashCode() - image.hashCode();</span>
+<span class="nc" id="L86">    return hashCode() - image.hashCode();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L88">    return this.key.hashCode();</span>
+<span class="fc" id="L91">    return this.key.hashCode();</span>
   }
 
   @Override
   public void stopMoving() {
-<span class="fc" id="L93">    super.stopMoving();</span>
-<span class="fc" id="L94">    checkModified();</span>
-<span class="fc" id="L95">  }</span>
+<span class="fc" id="L96">    super.stopMoving();</span>
+<span class="fc" id="L97">    checkModified();</span>
+<span class="fc" id="L98">  }</span>
 
   private void checkModified() {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">    if (isModified()) {</span>
-<span class="fc" id="L99">      MapillaryLayer.getInstance().getLocationChangeset().add(this);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (isModified()) {</span>
+<span class="fc" id="L102">      MapillaryLayer.getInstance().getLocationChangeset().add(this);</span>
     } else {
-<span class="fc" id="L101">      MapillaryLayer.getInstance().getLocationChangeset().remove(this);</span>
+<span class="fc" id="L104">      MapillaryLayer.getInstance().getLocationChangeset().remove(this);</span>
     }
-<span class="fc" id="L103">  }</span>
+<span class="fc" id="L106">  }</span>
 
   @Override
   public void turn(double ca) {
-<span class="fc" id="L107">    super.turn(ca);</span>
-<span class="fc" id="L108">    checkModified();</span>
-<span class="fc" id="L109">  }</span>
+<span class="fc" id="L110">    super.turn(ca);</span>
+<span class="fc" id="L111">    checkModified();</span>
+<span class="fc" id="L112">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

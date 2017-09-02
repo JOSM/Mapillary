@@ -22,7 +22,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -33,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
@@ -69,7 +69,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
 <span class="nc" id="L69">                return MapillaryImportedImage.createInstance(img);</span>
 <span class="nc" id="L70">              } catch (IllegalArgumentException iae) {</span>
 <span class="nc" id="L71">                final String message = I18n.tr(&quot;Could not import a geotagged image to the Mapillary layer!&quot;);</span>
-<span class="nc" id="L72">                Main.warn(iae, message);</span>
+<span class="nc" id="L72">                Logging.log(Logging.LEVEL_WARN, message, iae);</span>
 <span class="nc bnc" id="L73" title="All 2 branches missed.">                if (!GraphicsEnvironment.isHeadless()) {</span>
 <span class="nc" id="L74">                  new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();</span>
                 }

@@ -42,7 +42,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -50,6 +50,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Upload utilities.
@@ -60,7 +61,7 @@ public final class UploadUtils {
   /**
    * Required keys for POST
    */
-<span class="fc" id="L63">  private static final String[] KEYS = {&quot;key&quot;, &quot;AWSAccessKeyId&quot;, &quot;acl&quot;, &quot;policy&quot;, &quot;signature&quot;, &quot;Content-Type&quot;};</span>
+<span class="fc" id="L64">  private static final String[] KEYS = {&quot;key&quot;, &quot;AWSAccessKeyId&quot;, &quot;acl&quot;, &quot;policy&quot;, &quot;signature&quot;, &quot;Content-Type&quot;};</span>
 
   /**
    * Mapillary upload URL
@@ -72,9 +73,9 @@ public final class UploadUtils {
    */
   private static int c;
 
-<span class="nc" id="L75">  private UploadUtils() {</span>
+<span class="nc" id="L76">  private UploadUtils() {</span>
     // Private constructor to avoid instantiation.
-<span class="nc" id="L77">  }</span>
+<span class="nc" id="L78">  }</span>
 
   private static final class SequenceUploadRunnable implements Runnable {
     private final Set&lt;MapillaryAbstractImage&gt; images;
@@ -82,41 +83,41 @@ public final class UploadUtils {
     private final boolean delete;
     private final ThreadPoolExecutor ex;
 
-<span class="nc" id="L85">    public SequenceUploadRunnable(Set&lt;MapillaryAbstractImage&gt; images, boolean delete) {</span>
-<span class="nc" id="L86">      this.images = images;</span>
-<span class="nc" id="L87">      this.uuid = UUID.randomUUID();</span>
-<span class="nc" id="L88">      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span>
-<span class="nc" id="L89">      this.delete = delete;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L86">    public SequenceUploadRunnable(Set&lt;MapillaryAbstractImage&gt; images, boolean delete) {</span>
+<span class="nc" id="L87">      this.images = images;</span>
+<span class="nc" id="L88">      this.uuid = UUID.randomUUID();</span>
+<span class="nc" id="L89">      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(15));</span>
+<span class="nc" id="L90">      this.delete = delete;</span>
+<span class="nc" id="L91">    }</span>
 
     @Override
     public void run() {
-<span class="nc" id="L94">      PluginState.addImagesToUpload(this.images.size());</span>
-<span class="nc" id="L95">      MapillaryUtils.updateHelpText();</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">      for (MapillaryAbstractImage img : this.images) {</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (!(img instanceof MapillaryImportedImage)) {</span>
-<span class="nc" id="L98">          throw new IllegalArgumentException(&quot;The sequence contains downloaded images.&quot;);</span>
+<span class="nc" id="L95">      PluginState.addImagesToUpload(this.images.size());</span>
+<span class="nc" id="L96">      MapillaryUtils.updateHelpText();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">      for (MapillaryAbstractImage img : this.images) {</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (!(img instanceof MapillaryImportedImage)) {</span>
+<span class="nc" id="L99">          throw new IllegalArgumentException(&quot;The sequence contains downloaded images.&quot;);</span>
         }
-<span class="nc" id="L100">        this.ex.execute(() -&gt; upload((MapillaryImportedImage) img, this.uuid));</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0) {</span>
+<span class="nc" id="L101">        this.ex.execute(() -&gt; upload((MapillaryImportedImage) img, this.uuid));</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        while (this.ex.getQueue().remainingCapacity() == 0) {</span>
           try {
-<span class="nc" id="L103">            Thread.sleep(100);</span>
-<span class="nc" id="L104">          } catch (InterruptedException e) {</span>
-<span class="nc" id="L105">            Main.error(e);</span>
-<span class="nc" id="L106">          }</span>
+<span class="nc" id="L104">            Thread.sleep(100);</span>
+<span class="nc" id="L105">          } catch (InterruptedException e) {</span>
+<span class="nc" id="L106">            Logging.error(e);</span>
+<span class="nc" id="L107">          }</span>
         }
-<span class="nc" id="L108">        uploadDoneFile(this.uuid);</span>
-<span class="nc" id="L109">      }</span>
-<span class="nc" id="L110">      this.ex.shutdown();</span>
+<span class="nc" id="L109">        uploadDoneFile(this.uuid);</span>
+<span class="nc" id="L110">      }</span>
+<span class="nc" id="L111">      this.ex.shutdown();</span>
       try {
-<span class="nc" id="L112">        this.ex.awaitTermination(15, TimeUnit.SECONDS);</span>
-<span class="nc" id="L113">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L114">        Main.error(e);</span>
-<span class="nc" id="L115">      }</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (this.delete) {</span>
-<span class="nc" id="L117">        MapillaryRecord.getInstance().addCommand(new CommandDelete(images));</span>
+<span class="nc" id="L113">        this.ex.awaitTermination(15, TimeUnit.SECONDS);</span>
+<span class="nc" id="L114">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L115">        Logging.error(e);</span>
+<span class="nc" id="L116">      }</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">      if (this.delete) {</span>
+<span class="nc" id="L118">        MapillaryRecord.getInstance().addCommand(new CommandDelete(images));</span>
       }
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L120">    }</span>
   }
 
   /**
@@ -132,51 +133,51 @@ public final class UploadUtils {
    * @throws ImageWriteException if there are errors writing the image in the file.
    */
   static File updateFile(MapillaryImportedImage image) throws ImageReadException, IOException, ImageWriteException {
-<span class="fc" id="L135">    TiffOutputSet outputSet = new TiffOutputSet();</span>
+<span class="fc" id="L136">    TiffOutputSet outputSet = new TiffOutputSet();</span>
     TiffOutputDirectory exifDirectory;
     TiffOutputDirectory gpsDirectory;
     TiffOutputDirectory rootDirectory;
 
     // If the image is imported, loads the rest of the EXIF data.
-<span class="fc" id="L141">    final ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">    if (metadata instanceof JpegImageMetadata) {</span>
-<span class="nc" id="L143">      final TiffImageMetadata exif = ((JpegImageMetadata) metadata).getExif();</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">      if (exif != null) {</span>
-<span class="nc" id="L145">        outputSet = exif.getOutputSet();</span>
+<span class="fc" id="L142">    final ImageMetadata metadata = Imaging.getMetadata(image.getFile());</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">    if (metadata instanceof JpegImageMetadata) {</span>
+<span class="nc" id="L144">      final TiffImageMetadata exif = ((JpegImageMetadata) metadata).getExif();</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">      if (exif != null) {</span>
+<span class="nc" id="L146">        outputSet = exif.getOutputSet();</span>
       }
     }
 
-<span class="fc" id="L149">    gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
-<span class="fc" id="L150">    exifDirectory = outputSet.getOrCreateExifDirectory();</span>
-<span class="fc" id="L151">    rootDirectory = outputSet.getOrCreateRootDirectory();</span>
+<span class="fc" id="L150">    gpsDirectory = outputSet.getOrCreateGPSDirectory();</span>
+<span class="fc" id="L151">    exifDirectory = outputSet.getOrCreateExifDirectory();</span>
+<span class="fc" id="L152">    rootDirectory = outputSet.getOrCreateRootDirectory();</span>
 
-<span class="fc" id="L153">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
-<span class="fc" id="L154">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
+<span class="fc" id="L154">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);</span>
+<span class="fc" id="L155">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,</span>
             GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
-<span class="fc" id="L157">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
-<span class="fc" id="L158">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
-<span class="fc" id="L159">            RationalNumber.valueOf(image.getMovingCa()));</span>
+<span class="fc" id="L158">    gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);</span>
+<span class="fc" id="L159">    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,</span>
+<span class="fc" id="L160">            RationalNumber.valueOf(image.getMovingCa()));</span>
 
-<span class="fc" id="L161">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
-<span class="fc" id="L162">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
-<span class="fc" id="L163">            image.getDate(&quot;yyyy/MM/dd HH:mm:ss&quot;));</span>
+<span class="fc" id="L162">    exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);</span>
+<span class="fc" id="L163">    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,</span>
+<span class="fc" id="L164">            image.getDate(&quot;yyyy/MM/dd HH:mm:ss&quot;));</span>
 
     // Removes the ImageDescription tag, that causes problems in the upload.
-<span class="fc" id="L166">    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);</span>
+<span class="fc" id="L167">    rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);</span>
 
-<span class="fc" id="L168">    outputSet.setGPSInDegrees(image.getMovingLatLon().lon(), image.getMovingLatLon().lat());</span>
-<span class="fc" id="L169">    File tempFile = File.createTempFile(&quot;imagetoupload_&quot; + c, &quot;.tmp&quot;);</span>
-<span class="fc" id="L170">    c++;</span>
-<span class="fc" id="L171">    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));</span>
+<span class="fc" id="L169">    outputSet.setGPSInDegrees(image.getMovingLatLon().lon(), image.getMovingLatLon().lat());</span>
+<span class="fc" id="L170">    File tempFile = File.createTempFile(&quot;imagetoupload_&quot; + c, &quot;.tmp&quot;);</span>
+<span class="fc" id="L171">    c++;</span>
+<span class="fc" id="L172">    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));</span>
 
     // Transforms the image into a byte array.
-<span class="fc" id="L174">    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
-<span class="fc" id="L175">    ImageIO.write(image.getImage(), &quot;jpg&quot;, outputStream);</span>
-<span class="fc" id="L176">    byte[] imageBytes = outputStream.toByteArray();</span>
-<span class="fc" id="L177">    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
-<span class="fc" id="L178">    os.close();</span>
-<span class="fc" id="L179">    return tempFile;</span>
+<span class="fc" id="L175">    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+<span class="fc" id="L176">    ImageIO.write(image.getImage(), &quot;jpg&quot;, outputStream);</span>
+<span class="fc" id="L177">    byte[] imageBytes = outputStream.toByteArray();</span>
+<span class="fc" id="L178">    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);</span>
+<span class="fc" id="L179">    os.close();</span>
+<span class="fc" id="L180">    return tempFile;</span>
   }
 
   /**
@@ -186,56 +187,56 @@ public final class UploadUtils {
    * @throws IllegalStateException If {@link MapillaryUser#getSecrets()} returns null
    */
   public static void upload(MapillaryImportedImage image) {
-<span class="nc" id="L189">    upload(image, UUID.randomUUID());</span>
-<span class="nc" id="L190">  }</span>
+<span class="nc" id="L190">    upload(image, UUID.randomUUID());</span>
+<span class="nc" id="L191">  }</span>
 
   /**
    * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
    * @param sequenceUUID  The UUID used to create the sequence.
    */
   public static void uploadDoneFile(UUID sequenceUUID) {
-<span class="nc" id="L197">    Map&lt;String, String&gt; secretMap = MapillaryUser.getSecrets();</span>
-<span class="nc bnc" id="L198" title="All 2 branches missed.">    if (secretMap == null) {</span>
-<span class="nc" id="L199">      throw new IllegalStateException(&quot;Can't obtain secrents from user&quot;);</span>
+<span class="nc" id="L198">    Map&lt;String, String&gt; secretMap = MapillaryUser.getSecrets();</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">    if (secretMap == null) {</span>
+<span class="nc" id="L200">      throw new IllegalStateException(&quot;Can't obtain secrents from user&quot;);</span>
     }
-<span class="nc" id="L201">    String key = MapillaryUser.getUsername() +</span>
+<span class="nc" id="L202">    String key = MapillaryUser.getUsername() +</span>
       '/' + sequenceUUID +
       &quot;/DONE&quot;;
-<span class="nc" id="L204">    Map&lt;String, String&gt; hash = getUploadParts(secretMap);</span>
-<span class="nc" id="L205">    hash.put(&quot;key&quot;, key);</span>
+<span class="nc" id="L205">    Map&lt;String, String&gt; hash = getUploadParts(secretMap);</span>
+<span class="nc" id="L206">    hash.put(&quot;key&quot;, key);</span>
     try {
-<span class="nc" id="L207">      uploadFile(File.createTempFile(&quot;DONE&quot;, &quot;donefile&quot;), hash);</span>
-<span class="nc" id="L208">    } catch (IOException e) {</span>
-<span class="nc" id="L209">      Main.error(e);</span>
-<span class="nc" id="L210">    }</span>
-<span class="nc" id="L211">  }</span>
+<span class="nc" id="L208">      uploadFile(File.createTempFile(&quot;DONE&quot;, &quot;donefile&quot;), hash);</span>
+<span class="nc" id="L209">    } catch (IOException e) {</span>
+<span class="nc" id="L210">      Logging.error(e);</span>
+<span class="nc" id="L211">    }</span>
+<span class="nc" id="L212">  }</span>
   /**
    * @param image The image to be uploaded
    * @param sequenceUUID  The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID sequenceUUID) {
-<span class="nc" id="L217">    Map&lt;String, String&gt; secretMap = MapillaryUser.getSecrets();</span>
-<span class="nc bnc" id="L218" title="All 2 branches missed.">    if (secretMap == null) {</span>
-<span class="nc" id="L219">      throw new IllegalStateException(&quot;Can't obtain secrents from user&quot;);</span>
+<span class="nc" id="L218">    Map&lt;String, String&gt; secretMap = MapillaryUser.getSecrets();</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">    if (secretMap == null) {</span>
+<span class="nc" id="L220">      throw new IllegalStateException(&quot;Can't obtain secrents from user&quot;);</span>
     }
 
-<span class="nc" id="L222">    String key = String.format(Locale.UK, &quot;%s/%s/%f_%f_%f_%d.jpg&quot;,</span>
-<span class="nc" id="L223">      MapillaryUser.getUsername(),</span>
-<span class="nc" id="L224">      sequenceUUID.toString(),</span>
-<span class="nc" id="L225">      image.getMovingLatLon().lat(),</span>
-<span class="nc" id="L226">      image.getMovingLatLon().lon(),</span>
-<span class="nc" id="L227">      image.getMovingCa(),</span>
-<span class="nc" id="L228">      image.getCapturedAt()</span>
+<span class="nc" id="L223">    String key = String.format(Locale.UK, &quot;%s/%s/%f_%f_%f_%d.jpg&quot;,</span>
+<span class="nc" id="L224">      MapillaryUser.getUsername(),</span>
+<span class="nc" id="L225">      sequenceUUID.toString(),</span>
+<span class="nc" id="L226">      image.getMovingLatLon().lat(),</span>
+<span class="nc" id="L227">      image.getMovingLatLon().lon(),</span>
+<span class="nc" id="L228">      image.getMovingCa(),</span>
+<span class="nc" id="L229">      image.getCapturedAt()</span>
     );
 
-<span class="nc" id="L231">    Map&lt;String, String&gt; hash = getUploadParts(secretMap);</span>
-<span class="nc" id="L232">    hash.put(&quot;key&quot;, key);</span>
+<span class="nc" id="L232">    Map&lt;String, String&gt; hash = getUploadParts(secretMap);</span>
+<span class="nc" id="L233">    hash.put(&quot;key&quot;, key);</span>
     try {
-<span class="nc" id="L234">      uploadFile(updateFile(image), hash);</span>
-<span class="nc" id="L235">    } catch (ImageReadException | ImageWriteException | IOException e) {</span>
-<span class="nc" id="L236">      Main.error(e);</span>
-<span class="nc" id="L237">    }</span>
-<span class="nc" id="L238">  }</span>
+<span class="nc" id="L235">      uploadFile(updateFile(image), hash);</span>
+<span class="nc" id="L236">    } catch (ImageReadException | ImageWriteException | IOException e) {</span>
+<span class="nc" id="L237">      Logging.error(e);</span>
+<span class="nc" id="L238">    }</span>
+<span class="nc" id="L239">  }</span>
 
   /**
    * Constructs the parameters necessary to upload files to Amazon S3
@@ -245,16 +246,16 @@ public final class UploadUtils {
   private static Map&lt;String, String&gt; getUploadParts(Map&lt;String, String&gt; secretMap) {
     String policy;
     String signature;
-<span class="nc" id="L248">    policy = secretMap.get(&quot;images_policy&quot;);</span>
-<span class="nc" id="L249">    signature = secretMap.get(&quot;images_hash&quot;);</span>
+<span class="nc" id="L249">    policy = secretMap.get(&quot;images_policy&quot;);</span>
+<span class="nc" id="L250">    signature = secretMap.get(&quot;images_hash&quot;);</span>
 
-<span class="nc" id="L251">    Map&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L252">    hash.put(&quot;AWSAccessKeyId&quot;, &quot;AKIAI2X3BJAT2W75HILA&quot;);</span>
-<span class="nc" id="L253">    hash.put(&quot;acl&quot;, &quot;private&quot;);</span>
-<span class="nc" id="L254">    hash.put(&quot;policy&quot;, policy);</span>
-<span class="nc" id="L255">    hash.put(&quot;signature&quot;, signature);</span>
-<span class="nc" id="L256">    hash.put(&quot;Content-Type&quot;, &quot;image/jpeg&quot;);</span>
-<span class="nc" id="L257">    return hash;</span>
+<span class="nc" id="L252">    Map&lt;String, String&gt; hash = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L253">    hash.put(&quot;AWSAccessKeyId&quot;, &quot;AKIAI2X3BJAT2W75HILA&quot;);</span>
+<span class="nc" id="L254">    hash.put(&quot;acl&quot;, &quot;private&quot;);</span>
+<span class="nc" id="L255">    hash.put(&quot;policy&quot;, policy);</span>
+<span class="nc" id="L256">    hash.put(&quot;signature&quot;, signature);</span>
+<span class="nc" id="L257">    hash.put(&quot;Content-Type&quot;, &quot;image/jpeg&quot;);</span>
+<span class="nc" id="L258">    return hash;</span>
   }
 
   /**
@@ -263,34 +264,34 @@ public final class UploadUtils {
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    */
   private static void uploadFile(File file, Map&lt;String, String&gt; hash) throws IOException {
-<span class="nc" id="L266">    HttpClientBuilder builder = HttpClientBuilder.create();</span>
-<span class="nc" id="L267">    HttpPost httpPost = new HttpPost(UPLOAD_URL);</span>
+<span class="nc" id="L267">    HttpClientBuilder builder = HttpClientBuilder.create();</span>
+<span class="nc" id="L268">    HttpPost httpPost = new HttpPost(UPLOAD_URL);</span>
 
-<span class="nc" id="L269">    try (CloseableHttpClient httpClient = builder.build()) {</span>
-<span class="nc" id="L270">      MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">      for (String key : KEYS) {</span>
-<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (hash.get(key) == null)</span>
-<span class="nc" id="L273">          throw new IllegalArgumentException();</span>
-<span class="nc" id="L274">        entityBuilder.addPart(key, new StringBody(hash.get(key),</span>
+<span class="nc" id="L270">    try (CloseableHttpClient httpClient = builder.build()) {</span>
+<span class="nc" id="L271">      MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">      for (String key : KEYS) {</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (hash.get(key) == null)</span>
+<span class="nc" id="L274">          throw new IllegalArgumentException();</span>
+<span class="nc" id="L275">        entityBuilder.addPart(key, new StringBody(hash.get(key),</span>
                 ContentType.TEXT_PLAIN));
       }
-<span class="nc" id="L277">      entityBuilder.addPart(&quot;file&quot;, new FileBody(file));</span>
-<span class="nc" id="L278">      HttpEntity entity = entityBuilder.build();</span>
-<span class="nc" id="L279">      httpPost.setEntity(entity);</span>
-<span class="nc" id="L280">      try (CloseableHttpResponse response = httpClient.execute(httpPost)) {</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (response.getStatusLine().toString().contains(&quot;204&quot;)) {</span>
-<span class="nc" id="L282">          PluginState.imageUploaded();</span>
-<span class="nc" id="L283">          Main.info(PluginState.getUploadString() + &quot; (Mapillary)&quot;);</span>
+<span class="nc" id="L278">      entityBuilder.addPart(&quot;file&quot;, new FileBody(file));</span>
+<span class="nc" id="L279">      HttpEntity entity = entityBuilder.build();</span>
+<span class="nc" id="L280">      httpPost.setEntity(entity);</span>
+<span class="nc" id="L281">      try (CloseableHttpResponse response = httpClient.execute(httpPost)) {</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (response.getStatusLine().toString().contains(&quot;204&quot;)) {</span>
+<span class="nc" id="L283">          PluginState.imageUploaded();</span>
+<span class="nc" id="L284">          Logging.info(&quot;{0} (Mapillary)&quot;, PluginState.getUploadString());</span>
         } else {
-<span class="nc" id="L285">          Main.info(&quot;Upload error&quot;);</span>
+<span class="nc" id="L286">          Logging.info(&quot;Upload error&quot;);</span>
         }
-<span class="nc bnc" id="L287" title="All 8 branches missed.">      }</span>
-<span class="nc bnc" id="L288" title="All 8 branches missed.">    }</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">    if (!file.delete()) {</span>
-<span class="nc" id="L290">      Main.error(&quot;MapillaryPlugin: File could not be deleted during upload&quot;);</span>
+<span class="nc bnc" id="L288" title="All 8 branches missed.">      }</span>
+<span class="nc bnc" id="L289" title="All 8 branches missed.">    }</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (!file.delete()) {</span>
+<span class="nc" id="L291">      Logging.error(&quot;MapillaryPlugin: File could not be deleted during upload&quot;);</span>
     }
-<span class="nc" id="L292">    MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L293">  }</span>
+<span class="nc" id="L293">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L294">  }</span>
 
   /**
    * Uploads the given {@link MapillarySequence}.
@@ -300,7 +301,7 @@ public final class UploadUtils {
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-<span class="nc" id="L303">    Main.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet&lt;&gt;(sequence.getImages()), delete));</span>
-<span class="nc" id="L304">  }</span>
+<span class="nc" id="L304">    MainApplication.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet&lt;&gt;(sequence.getImages()), delete));</span>
+<span class="nc" id="L305">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

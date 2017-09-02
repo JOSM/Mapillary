@@ -11,9 +11,9 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Decodes the JSON returned by {@link APIv3} into Java objects.
@@ -48,7 +48,7 @@ public final class JsonImageDetectionDecoder {
   private static Shape decodeShape(JsonValue json) {
 <span class="fc bfc" id="L49" title="All 2 branches covered.">    if (json instanceof JsonObject) {</span>
 <span class="fc bfc" id="L50" title="All 2 branches covered.">      if (!&quot;Polygon&quot;.equals(((JsonObject) json).getString(&quot;type&quot;, null))) {</span>
-<span class="fc" id="L51">        Main.warn(</span>
+<span class="fc" id="L51">        Logging.warn(</span>
 <span class="fc" id="L52">          String.format(&quot;Image detections using shapes with type=%s are currently not supported!&quot;,</span>
 <span class="fc" id="L53">          ((JsonObject) json).getString(&quot;type&quot;, &quot;‹no type set›&quot;))</span>
         );

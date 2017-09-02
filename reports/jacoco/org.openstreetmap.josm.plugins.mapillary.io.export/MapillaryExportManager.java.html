@@ -13,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.xml.sax.SAXException;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Export main thread. Exportation works by creating a
@@ -104,7 +104,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       try {
 <span class="nc" id="L105">        this.writer.join();</span>
 <span class="nc" id="L106">      } catch (InterruptedException e) {</span>
-<span class="nc" id="L107">        Main.error(e);</span>
+<span class="nc" id="L107">        Logging.error(e);</span>
 <span class="nc" id="L108">      }</span>
 <span class="nc" id="L109">      return;</span>
     }
@@ -116,14 +116,14 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 <span class="nc" id="L116">          this.ex.execute(new MapillaryExportDownloadThread(</span>
               (MapillaryImage) image, this.queue, this.queueImages));
 <span class="nc" id="L118">        } catch (Exception e) {</span>
-<span class="nc" id="L119">          Main.error(e);</span>
+<span class="nc" id="L119">          Logging.error(e);</span>
 <span class="nc" id="L120">        }</span>
 <span class="nc bnc" id="L121" title="All 2 branches missed.">      } else if (image instanceof MapillaryImportedImage) {</span>
         try {
 <span class="nc" id="L123">          this.queue.put(((MapillaryImportedImage) image).getImage());</span>
 <span class="nc" id="L124">          this.queueImages.put(image);</span>
 <span class="nc" id="L125">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L126">          Main.error(e);</span>
+<span class="nc" id="L126">          Logging.error(e);</span>
 <span class="nc" id="L127">        }</span>
       }
       try {
@@ -133,13 +133,13 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
 <span class="nc" id="L133">          Thread.sleep(100);</span>
         }
 <span class="nc" id="L135">      } catch (Exception e) {</span>
-<span class="nc" id="L136">        Main.error(e);</span>
+<span class="nc" id="L136">        Logging.error(e);</span>
 <span class="nc" id="L137">      }</span>
 <span class="nc" id="L138">    }</span>
     try {
 <span class="nc" id="L140">      this.writer.join();</span>
 <span class="nc" id="L141">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L142">      Main.error(e);</span>
+<span class="nc" id="L142">      Logging.error(e);</span>
 <span class="nc" id="L143">    }</span>
 <span class="nc" id="L144">  }</span>
 

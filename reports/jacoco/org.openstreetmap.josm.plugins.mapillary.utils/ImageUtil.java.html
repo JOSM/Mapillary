@@ -5,7 +5,7 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class ImageUtil {
 <span class="fc" id="L11">  private ImageUtil() {</span>
@@ -20,7 +20,7 @@ public final class ImageUtil {
    *         only the contained {@link Image} is exchanged.
    */
   public static ImageIcon scaleImageIcon(final ImageIcon icon, int size) {
-<span class="fc" id="L23">    Main.debug(&quot;Scale icon &quot; + icon.getIconWidth() + &quot; → &quot; + size);</span>
+<span class="fc" id="L23">    Logging.debug(&quot;Scale icon {0} → {1}&quot;, icon.getIconWidth(), size);</span>
 <span class="fc" id="L24">    return new ImageIcon(icon.getImage().getScaledInstance(</span>
 <span class="fc bfc" id="L25" title="All 2 branches covered.">      icon.getIconWidth() &gt;= icon.getIconHeight() ? size : Math.max(1, Math.round(icon.getIconWidth() / (float) icon.getIconHeight() * size)),</span>
 <span class="fc bfc" id="L26" title="All 2 branches covered.">      icon.getIconHeight() &gt;= icon.getIconWidth() ? size : Math.max(1, Math.round(icon.getIconHeight() / (float) icon.getIconWidth() * size)),</span>

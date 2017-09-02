@@ -20,8 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -127,7 +127,7 @@ public class ImportMethodDialog extends JDialog {
 <span class="nc" id="L127">    });</span>
 <span class="nc" id="L128">    final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));</span>
 <span class="nc" id="L129">    imgLayerBtn.addActionListener(ae -&gt; {</span>
-<span class="nc" id="L130">      List&lt;GeoImageLayer&gt; layers = Main.getLayerManager().getLayersOfType(GeoImageLayer.class);</span>
+<span class="nc" id="L130">      List&lt;GeoImageLayer&gt; layers = MainApplication.getLayerManager().getLayersOfType(GeoImageLayer.class);</span>
 <span class="nc bnc" id="L131" title="All 2 branches missed.">      if (layers.isEmpty()) {</span>
 <span class="nc" id="L132">        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);</span>
       } else {

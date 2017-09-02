@@ -15,7 +15,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -29,6 +28,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonLocationChangesetE
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -74,11 +74,11 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 <span class="nc" id="L74">        httpPost.addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + token);</span>
 <span class="nc" id="L75">        MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
 <span class="nc" id="L76">        String json = JsonLocationChangesetEncoder.encodeLocationChangeset(locationChangeset).build().toString();</span>
-<span class="nc" id="L77">        Main.info(&quot;Sending JSON to &quot; + APIv3.submitChangeset() + &quot;\n  &quot; + json);</span>
+<span class="nc" id="L77">        Logging.info(&quot;Sending JSON to &quot; + APIv3.submitChangeset() + &quot;\n  &quot; + json);</span>
 <span class="nc" id="L78">        try (CloseableHttpClient httpClient = builder.build()) {</span>
 <span class="nc" id="L79">          httpPost.setEntity(new StringEntity(json));</span>
 <span class="nc" id="L80">          CloseableHttpResponse response = httpClient.execute(httpPost);</span>
-<span class="nc" id="L81">          Main.debug(&quot;HTTP request finished with response code &quot; + response.getStatusLine().getStatusCode());</span>
+<span class="nc" id="L81">          Logging.debug(&quot;HTTP request finished with response code &quot; + response.getStatusLine().getStatusCode());</span>
 <span class="nc bnc" id="L82" title="All 2 branches missed.">          if (response.getStatusLine().getStatusCode() == 201) {</span>
 <span class="nc" id="L83">            final String key = Json.createReader(response.getEntity().getContent()).readObject().getString(&quot;key&quot;);</span>
 <span class="nc" id="L84">            final String state = Json.createReader(response.getEntity().getContent()).readObject().getString(&quot;state&quot;);</span>
@@ -86,7 +86,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 <span class="nc" id="L86">            I18n.marktr(&quot;pending&quot;);</span>
 <span class="nc" id="L87">            I18n.marktr(&quot;approved&quot;);</span>
 <span class="nc" id="L88">            final String message = I18n.tr(&quot;{0} images submitted, Changeset key: {1}, State: {2}&quot;, locationChangeset.size(), key, state);</span>
-<span class="nc" id="L89">            Main.debug(message);</span>
+<span class="nc" id="L89">            Logging.debug(message);</span>
 <span class="nc" id="L90">            new Notification(message)</span>
 <span class="nc" id="L91">              .setDuration(Notification.TIME_LONG)</span>
 <span class="nc bnc" id="L92" title="All 2 branches missed.">              .setIcon(&quot;rejected&quot;.equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)</span>
@@ -102,10 +102,10 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 <span class="nc" id="L102">            ).setIcon(JOptionPane.ERROR_MESSAGE)</span>
 <span class="nc" id="L103">              .setDuration(Notification.TIME_LONG)</span>
 <span class="nc" id="L104">              .show();</span>
-<span class="nc" id="L105">            Main.error(&quot;Failed response &quot; + EntityUtils.toString(response.getEntity()));</span>
+<span class="nc" id="L105">            Logging.error(&quot;Failed response &quot; + EntityUtils.toString(response.getEntity()));</span>
           }
 <span class="nc bnc" id="L107" title="All 8 branches missed.">        } catch (IOException e) {</span>
-<span class="nc" id="L108">          Main.error(e, &quot;Exception while trying to submit a changeset to mapillary.com&quot;);</span>
+<span class="nc" id="L108">          Logging.log(Logging.LEVEL_ERROR, &quot;Exception while trying to submit a changeset to mapillary.com&quot;, e);</span>
 <span class="nc" id="L109">          new Notification(</span>
 <span class="nc" id="L110">            I18n.tr(&quot;An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.&quot;)</span>
 <span class="nc" id="L111">          ).setDuration(Notification.TIME_LONG)</span>

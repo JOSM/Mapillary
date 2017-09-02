@@ -15,37 +15,38 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public abstract class BoundsDownloadRunnable implements Runnable {
 
   protected Bounds bounds;
 
-<span class="fc" id="L23">  public BoundsDownloadRunnable(final Bounds bounds) {</span>
-<span class="fc" id="L24">    this.bounds = bounds;</span>
-<span class="fc" id="L25">  }</span>
+<span class="fc" id="L24">  public BoundsDownloadRunnable(final Bounds bounds) {</span>
+<span class="fc" id="L25">    this.bounds = bounds;</span>
+<span class="fc" id="L26">  }</span>
 
   protected abstract Function&lt;Bounds, URL&gt; getUrlGenerator();
 
   @Override
   public void run() {
-<span class="fc" id="L31">    URL nextURL = getUrlGenerator().apply(bounds);</span>
+<span class="fc" id="L32">    URL nextURL = getUrlGenerator().apply(bounds);</span>
     try {
-<span class="fc bfc" id="L33" title="All 2 branches covered.">      while (nextURL != null) {</span>
-<span class="fc" id="L34">        final URLConnection con = nextURL.openConnection();</span>
-<span class="fc" id="L35">        run(con);</span>
-<span class="fc" id="L36">        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField(&quot;Link&quot;));</span>
-<span class="fc" id="L37">      }</span>
-<span class="fc" id="L38">    } catch (IOException e) {</span>
-<span class="fc" id="L39">      String message = I18n.tr(&quot;Could not read from URL {0}!&quot;, nextURL.toString());</span>
-<span class="fc" id="L40">      Main.warn(e, message);</span>
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">      if (!GraphicsEnvironment.isHeadless()) {</span>
-<span class="fc" id="L42">        new Notification(message)</span>
-<span class="fc" id="L43">          .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
-<span class="fc" id="L44">          .setDuration(Notification.TIME_LONG)</span>
-<span class="fc" id="L45">          .show();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">      while (nextURL != null) {</span>
+<span class="fc" id="L35">        final URLConnection con = nextURL.openConnection();</span>
+<span class="fc" id="L36">        run(con);</span>
+<span class="fc" id="L37">        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField(&quot;Link&quot;));</span>
+<span class="fc" id="L38">      }</span>
+<span class="fc" id="L39">    } catch (IOException e) {</span>
+<span class="fc" id="L40">      String message = I18n.tr(&quot;Could not read from URL {0}!&quot;, nextURL.toString());</span>
+<span class="fc" id="L41">      Logging.log(Logging.LEVEL_WARN, message, e);</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">      if (!GraphicsEnvironment.isHeadless()) {</span>
+<span class="fc" id="L43">        new Notification(message)</span>
+<span class="fc" id="L44">          .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())</span>
+<span class="fc" id="L45">          .setDuration(Notification.TIME_LONG)</span>
+<span class="fc" id="L46">          .show();</span>
       }
-<span class="fc" id="L47">    }</span>
-<span class="fc" id="L48">  }</span>
+<span class="fc" id="L48">    }</span>
+<span class="fc" id="L49">  }</span>
 
   /**
    * Logs information about the given connection via {@link Main#info(String)}.
@@ -57,18 +58,18 @@ public abstract class BoundsDownloadRunnable implements Runnable {
    */
   public static void logConnectionInfo(final URLConnection con, final String info) throws IOException {
     final StringBuilder message;
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    if (con instanceof HttpURLConnection) {</span>
-<span class="nc" id="L61">      message = new StringBuilder(((HttpURLConnection) con).getRequestMethod())</span>
-<span class="nc" id="L62">        .append(' ').append(con.getURL())</span>
-<span class="nc" id="L63">        .append(&quot; → &quot;).append(((HttpURLConnection) con).getResponseCode());</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    if (con instanceof HttpURLConnection) {</span>
+<span class="nc" id="L62">      message = new StringBuilder(((HttpURLConnection) con).getRequestMethod())</span>
+<span class="nc" id="L63">        .append(' ').append(con.getURL())</span>
+<span class="nc" id="L64">        .append(&quot; → &quot;).append(((HttpURLConnection) con).getResponseCode());</span>
     } else {
-<span class="fc" id="L65">      message = new StringBuilder(&quot;Download from &quot;).append(con.getURL());</span>
+<span class="fc" id="L66">      message = new StringBuilder(&quot;Download from &quot;).append(con.getURL());</span>
     }
-<span class="pc bpc" id="L67" title="2 of 4 branches missed.">    if (info != null &amp;&amp; info.length() &gt;= 1) {</span>
-<span class="fc" id="L68">      message.append(&quot; (&quot;).append(info).append(')');</span>
+<span class="pc bpc" id="L68" title="2 of 4 branches missed.">    if (info != null &amp;&amp; info.length() &gt;= 1) {</span>
+<span class="fc" id="L69">      message.append(&quot; (&quot;).append(info).append(')');</span>
     }
-<span class="fc" id="L70">    Main.info(message.toString());</span>
-<span class="fc" id="L71">  }</span>
+<span class="fc" id="L71">    Logging.info(message.toString());</span>
+<span class="fc" id="L72">  }</span>
 
   public abstract void run(final URLConnection connection) throws IOException;
 

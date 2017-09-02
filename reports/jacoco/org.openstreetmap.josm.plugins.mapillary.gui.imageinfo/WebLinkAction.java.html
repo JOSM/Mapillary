@@ -8,12 +8,12 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 
 public class WebLinkAction extends AbstractAction {
   private static final long serialVersionUID = 2397830510179013823L;
@@ -42,7 +42,7 @@ public class WebLinkAction extends AbstractAction {
 <span class="nc" id="L42">      MapillaryUtils.browse(url);</span>
 <span class="nc" id="L43">    } catch (IOException e1) {</span>
 <span class="nc bnc" id="L44" title="All 2 branches missed.">      String msg = I18n.tr(&quot;Could not open the URL {0} in a browser&quot;, url == null ? &quot;‹null›&quot; : url);</span>
-<span class="nc" id="L45">      Main.warn(e1, msg);</span>
+<span class="nc" id="L45">      Logging.log(Logging.LEVEL_WARN, msg, e1);</span>
 <span class="nc" id="L46">      new Notification(msg).setIcon(JOptionPane.WARNING_MESSAGE).show();</span>
 <span class="nc" id="L47">    }</span>
 <span class="nc" id="L48">  }</span>

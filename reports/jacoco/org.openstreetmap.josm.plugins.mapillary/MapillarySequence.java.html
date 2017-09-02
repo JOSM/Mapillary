@@ -8,11 +8,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.Json;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Class that stores a sequence of {@link MapillaryAbstractImage} objects.
@@ -176,7 +176,7 @@ public class MapillarySequence {
   private void setUser(String userKey) {
 <span class="fc" id="L177">    (new Thread(() -&gt; {</span>
 <span class="fc" id="L178">      UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">      if(cachedProfile == null) {</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">      if(cachedProfile == null) {</span>
         try {
 <span class="fc" id="L181">          Caches.UserProfileCache.getInstance().put(</span>
             userKey,
@@ -185,7 +185,7 @@ public class MapillarySequence {
             )
           );
 <span class="fc" id="L187">        } catch (IOException var4) {</span>
-<span class="fc" id="L188">          Main.warn(var4, &quot;Error when downloading user profile for user key '&quot; + userKey + &quot;'!&quot;);</span>
+<span class="fc" id="L188">          Logging.log(Logging.LEVEL_WARN, &quot;Error when downloading user profile for user key '&quot; + userKey + &quot;'!&quot;, var4);</span>
 <span class="fc" id="L189">        }</span>
       }
 

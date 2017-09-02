@@ -3,8 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 
 import java.awt.event.ActionEvent;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
@@ -32,9 +32,9 @@ public class MapObjectLayerAction extends JosmAction {
 <span class="fc" id="L32">    GuiHelper.runInEDTAndWait(() -&gt; {</span>
       // Synchronization lock must be held by EDT thread
       // See {@link LayerManager#addLayer(org.openstreetmap.josm.gui.layer.Layer, boolean)}.
-<span class="fc" id="L35">      synchronized (Main.getLayerManager()) {</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (!Main.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {</span>
-<span class="fc" id="L37">          Main.getLayerManager().addLayer(MapObjectLayer.getInstance());</span>
+<span class="fc" id="L35">      synchronized (MainApplication.getLayerManager()) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (!MainApplication.getLayerManager().containsLayer(MapObjectLayer.getInstance())) {</span>
+<span class="fc" id="L37">          MainApplication.getLayerManager().addLayer(MapObjectLayer.getInstance());</span>
         }
 <span class="pc" id="L39">      }</span>
 <span class="fc" id="L40">    });</span>

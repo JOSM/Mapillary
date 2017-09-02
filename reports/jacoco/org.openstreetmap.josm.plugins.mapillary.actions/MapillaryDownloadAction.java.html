@@ -6,8 +6,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -48,9 +48,9 @@ public class MapillaryDownloadAction extends JosmAction {
 <span class="nc" id="L48">      return;</span>
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-<span class="nc" id="L51">    Main.getLayerManager().setActiveLayer(</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        Main.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
-<span class="nc" id="L53">          ? Main.getLayerManager().getEditLayer()</span>
+<span class="nc" id="L51">    MainApplication.getLayerManager().setActiveLayer(</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
+<span class="nc" id="L53">          ? MainApplication.getLayerManager().getEditLayer()</span>
 <span class="nc" id="L54">          : MapillaryLayer.getInstance()</span>
     );
 <span class="nc" id="L56">  }</span>
