@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -25,7 +26,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Set of traffic signs in the image.
    */
-  private final List<ImageDetection> detections = new ArrayList<>();
+  private final List<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
 
   /**
    * Main constructor of the class MapillaryImage
@@ -56,17 +57,19 @@ public class MapillaryImage extends MapillaryAbstractImage {
     return getSequence().getUser();
   }
 
-  public void setAllDetections(Collection<ImageDetection> detection) {
-    Logging.debug("Add {0} detections to image {1}", detection.size(), this.getKey());
-    this.detections.clear();
-    this.detections.addAll(detection);
+  public void setAllDetections(Collection<ImageDetection> newDetections) {
+    Logging.debug("Add {0} detections to image {1}", newDetections.size(), this.getKey());
+    synchronized (detections) {
+      detections.clear();
+      detections.addAll(newDetections);
+    }
   }
 
   @Override
   public String toString() {
     return String.format(
-            "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
-            key, latLon.lat(), latLon.lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt
+      "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
+      key, latLon.lat(), latLon.lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt
     );
   }
 
