@@ -25,8 +25,8 @@ import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.gui.progress.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;

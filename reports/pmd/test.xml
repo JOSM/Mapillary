@@ -1,88 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.7.0" timestamp="2017-08-24T20:25:16.090">
+<pmd version="5.8.1" timestamp="2017-09-02T15:04:23.388">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/AbstractTest.java">
-<violation beginline="18" endline="28" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
+<violation beginline="18" endline="28" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
 This abstract class does not have any abstract methods
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.java">
-<violation beginline="59" endline="59" begincolumn="77" endcolumn="89" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="59" endline="59" begincolumn="77" endcolumn="89" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;loginButton&quot; appears 4 times in this file; the first occurrence is on line 59
 </violation>
-<violation beginline="61" endline="61" begincolumn="57" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="61" endline="61" begincolumn="57" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;loginPanel&quot; appears 4 times in this file; the first occurrence is on line 61
 </violation>
-<violation beginline="79" endline="79" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="79" endline="79" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;arbitrary&quot; appears 5 times in this file; the first occurrence is on line 79
 </violation>
-<violation beginline="79" endline="79" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+<violation beginline="79" endline="79" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
 The String literal &quot;default&quot; appears 6 times in this file; the first occurrence is on line 79
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordTest.java">
-<violation beginline="232" endline="234" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="232" endline="234" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListenerTest.java">
-<violation beginline="43" endline="43" begincolumn="14" endcolumn="22" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="OAuthPortListenerTest" method="responseTest" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
+<violation beginline="43" endline="43" begincolumn="14" endcolumn="22" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="OAuthPortListenerTest" method="responseTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryURLTest.java">
-<violation beginline="28" endline="28" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchDetections" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="28" endline="28" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchDetections" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="28" endline="28" begincolumn="107" endcolumn="126" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchDetections" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="28" endline="28" begincolumn="107" endcolumn="126" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchDetections" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="33" endline="33" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchImages" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="33" endline="33" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchImages" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="33" endline="33" begincolumn="99" endcolumn="118" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchImages" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="33" endline="33" begincolumn="99" endcolumn="118" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchImages" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="38" endline="38" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="38" endline="38" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="41" endline="41" begincolumn="9" endcolumn="28" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="41" endline="41" begincolumn="9" endcolumn="28" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="45" endline="45" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="45" endline="45" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="45" endline="45" begincolumn="105" endcolumn="124" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="45" endline="45" begincolumn="105" endcolumn="124" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchSequences" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="50" endline="50" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="50" endline="50" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="53" endline="53" begincolumn="9" endcolumn="28" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="53" endline="53" begincolumn="9" endcolumn="28" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="57" endline="57" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="57" endline="57" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="57" endline="57" begincolumn="104" endcolumn="123" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="57" endline="57" begincolumn="104" endcolumn="123" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSearchMapObjects" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="63" endline="63" begincolumn="60" endcolumn="79" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSubmitChangeset" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="63" endline="63" begincolumn="60" endcolumn="79" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$APIv3" method="testSubmitChangeset" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="104" endline="104" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$Cloudfront" method="testThumbnail" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="104" endline="104" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$Cloudfront" method="testThumbnail" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
-<violation beginline="105" endline="105" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$Cloudfront" method="testThumbnail" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
+<violation beginline="105" endline="105" begincolumn="7" endcolumn="21" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.utils" class="MapillaryURLTest$Cloudfront" method="testThumbnail" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
 Avoid autogenerated methods to access private fields and methods of inner / outer classes
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/utils/api/JsonImageDetectionDecoderTest.java">
-<violation beginline="2" endline="200" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonImageDetectionDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
+<violation beginline="2" endline="200" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonImageDetectionDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
 Too many static imports may lead to messy code
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/utils/api/JsonUserProfileDecoderTest.java">
-<violation beginline="2" endline="89" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.7.0/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
+<violation beginline="2" endline="89" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
 Too many static imports may lead to messy code
 </violation>
 </file>
