@@ -58,6 +58,7 @@ public class AddTagToPrimitiveAction extends AbstractAction {
       }
       if (JOptionPane.YES_OPTION == conflictResolution) {
         target.put(tag);
+        target.setModified(true);
       }
     }
   }
