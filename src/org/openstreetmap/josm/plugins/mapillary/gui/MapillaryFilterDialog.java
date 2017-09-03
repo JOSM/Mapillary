@@ -52,7 +52,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
   private static final String[] TIME_LIST = {tr("Years"), tr("Months"), tr("Days")};
 
-  private final static long[] TIME_FACTOR = new long[]{
+  private static final long[] TIME_FACTOR = new long[]{
     31_536_000_000L, // = 365 * 24 * 60 * 60 * 1000 = number of ms in a year
     2_592_000_000L, // = 30 * 24 * 60 * 60 * 1000 = number of ms in a month
     86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
@@ -73,27 +73,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   private final SideButton updateButton = new SideButton(new UpdateAction());
   private final SideButton resetButton = new SideButton(new ResetAction());
   private final JButton signChooser = new JButton(new SignChooserAction());
-
-  private final MapillaryFilterChooseSigns signFilter = MapillaryFilterChooseSigns.getInstance();
-
-  /**
-   * The list of sign names
-   */
-  private static final String[] SIGN_TAGS = {
-    "(complementary)|(regulatory)--maximum-speed-limit", "(regulatory)|(warning)--stop",
-    "(regulatory)|(warning)--yield", "(warning)|(regulatory)--roundabout", "regulatory--no-entry",
-    "warning--(crossroads)|(junction)", "regulatory--(turn)|(go-straight)", "warning--(uneven)|(slippery)",
-    "regulatory--no-parking", "regulatory--no-overtaking", "information--pedestrians-crossing", "regulatory--no-.+-turn"
-  };
-  /**
-   * The {@link JCheckBox} where the respective tag should be searched
-   */
-  private final JCheckBox[] SIGN_CHECKBOXES = {this.signFilter.maxSpeed,
-    this.signFilter.stop, this.signFilter.giveWay,
-    this.signFilter.roundabout, this.signFilter.access, this.signFilter.intersection,
-    this.signFilter.direction, this.signFilter.uneven,
-    this.signFilter.noParking, this.signFilter.noOvertaking,
-    this.signFilter.crossing, this.signFilter.noTurn};
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
@@ -244,9 +223,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * @return {@code true} if it fulfills the conditions; {@code false}
    * otherwise.
    */
-  private boolean checkSigns(MapillaryImage img) {
-    for (int i = 0; i < SIGN_TAGS.length; i++) {
-      if (checkSign(img, this.SIGN_CHECKBOXES[i], SIGN_TAGS[i]))
+  private static boolean checkSigns(MapillaryImage img) {
+    for (int i = 0; i < MapillaryFilterChooseSigns.getInstance().SIGN_TAGS.length; i++) {
+      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], MapillaryFilterChooseSigns.getInstance().SIGN_TAGS[i]))
         return true;
     }
     return false;
@@ -255,7 +234,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
     boolean contains = false;
     for (ImageDetection detection : img.getDetections()) {
-      if(Pattern.compile(signTag).matcher(detection.getValue()).find()) {
+      if (Pattern.compile(signTag).matcher(detection.getValue()).find()) {
         contains = true;
       }
     }

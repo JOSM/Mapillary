@@ -224,6 +224,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     private LogoutAction() {
       super(I18n.tr("Logout"));
     }
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
       MapillaryUser.reset();

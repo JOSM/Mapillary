@@ -41,7 +41,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
   public ChooseGeoImageLayersDialog(final Component parent, final List<GeoImageLayer> layers) {
       super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));
     final Container c = getContentPane();
-    c.setLayout(new BorderLayout(10,10));
+    c.setLayout(new BorderLayout(10, 10));
 
     final JPanel questionPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 10));
     questionPanel.add(new JLabel(I18n.tr(QUESTION)));

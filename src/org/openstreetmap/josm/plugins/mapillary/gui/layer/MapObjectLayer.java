@@ -65,6 +65,12 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     zoomChanged();
   }
 
+  private static void clearInstance() {
+    synchronized (MapObjectLayer.class) {
+      instance = null;
+    }
+  }
+
   public static MapObjectLayer getInstance() {
     synchronized (MapObjectLayer.class) {
       if (instance == null) {

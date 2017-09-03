@@ -46,6 +46,17 @@ public final class MapillaryFilterChooseSigns extends JPanel {
   /** Forbidden turn signs */
   public final JCheckBox noTurn = new JCheckBox();
 
+  /**
+   * The {@link JCheckBox}es where the respective tag should be searched
+   */
+  public final JCheckBox[] signCheckboxes = new JCheckBox[]{maxSpeed, stop, giveWay, roundabout, access, intersection, direction, uneven, noParking, noOvertaking, crossing, noTurn};
+  public static final String[] SIGN_TAGS = {
+    "(complementary)|(regulatory)--maximum-speed-limit", "(regulatory)|(warning)--stop",
+    "(regulatory)|(warning)--yield", "(warning)|(regulatory)--roundabout", "regulatory--no-entry",
+    "warning--(crossroads)|(junction)", "regulatory--(turn)|(go-straight)", "warning--(uneven)|(slippery)",
+    "regulatory--no-parking", "regulatory--no-overtaking", "information--pedestrians-crossing", "regulatory--no-.+-turn"
+  };
+
   private static MapillaryFilterChooseSigns instance;
 
   private MapillaryFilterChooseSigns() {
@@ -66,7 +77,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
   }
 
   private static void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,
-      final boolean isSelected, final String iconPath,  final String labelText) {
+      final boolean isSelected, final String iconPath, final String labelText) {
     final JPanel checkBoxPanel = new JPanel();
     final JLabel checkBoxLabel = new JLabel(labelText);
 
@@ -84,8 +95,9 @@ public final class MapillaryFilterChooseSigns extends JPanel {
    * @return the unique instance of the class.
    */
   public static synchronized MapillaryFilterChooseSigns getInstance() {
-    if (instance == null)
+    if (instance == null) {
       instance = new MapillaryFilterChooseSigns();
+    }
     return instance;
   }
 }
