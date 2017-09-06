@@ -29,7 +29,7 @@ public class CommandJoin extends MapillaryExecutableCommand {
    * @throws NullPointerException if {@code a} or {@code b} is null
    */
   public CommandJoin(final MapillaryAbstractImage a, final MapillaryAbstractImage b) {
-    super(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[]{a, b}))); // throws NPE if a or b is null
+    super(new ConcurrentSkipListSet<>(Arrays.asList(a, b))); // throws NPE if a or b is null
     if (a.getSequence() == b.getSequence()) {
       throw new IllegalArgumentException("Both images must be in different sequences for joining.");
     }

@@ -270,7 +270,7 @@ public final class MapillaryUtils {
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
       ret.append(I18n.tr("Downloading Mapillary images"));
-    } else if (MapillaryLayer.getInstance().getData().getImages().size() > 0) {
+    } else if (!MapillaryLayer.getInstance().getData().getImages().isEmpty()) {
       ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
     } else if (PluginState.isSubmittingChangeset()) {
         ret.append(I18n.tr("Submitting Mapillary Changeset"));

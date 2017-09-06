@@ -224,8 +224,8 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * otherwise.
    */
   private static boolean checkSigns(MapillaryImage img) {
-    for (int i = 0; i < MapillaryFilterChooseSigns.getInstance().SIGN_TAGS.length; i++) {
-      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], MapillaryFilterChooseSigns.getInstance().SIGN_TAGS[i]))
+    for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
+      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], MapillaryFilterChooseSigns.SIGN_TAGS[i]))
         return true;
     }
     return false;

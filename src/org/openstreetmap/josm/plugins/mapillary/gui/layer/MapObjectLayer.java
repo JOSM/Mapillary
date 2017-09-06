@@ -214,7 +214,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
    */
   @Override
   public synchronized void destroy() {
-    instance = null;
+    clearInstance();
     super.destroy();
   }
 

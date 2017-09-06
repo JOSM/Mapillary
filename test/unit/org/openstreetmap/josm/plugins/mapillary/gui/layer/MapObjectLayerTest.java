@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.function.Function;
@@ -30,7 +29,7 @@ public class MapObjectLayerTest extends AbstractTest {
   private static Object urlGenValue;
 
   @BeforeClass
-  public static void setUp() throws IllegalAccessException, IOException {
+  public static void setUp() throws IllegalAccessException {
     urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "URL_GEN");
 
     urlGenValue = urlGen.get(null);

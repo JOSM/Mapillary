@@ -84,7 +84,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   ) / 3;
 
   private static final DataSetListenerAdapter DATASET_LISTENER =
-    new DataSetListenerAdapter((e) -> {
+    new DataSetListenerAdapter(e -> {
       if (e instanceof DataChangedEvent) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
@@ -175,6 +175,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
   }
 
+  private static void clearInstance() {
+    synchronized (MapillaryLayer.class) {
+      instance = null;
+    }
+  }
+
   /**
    * Returns the unique instance of this class.
    *
@@ -248,7 +254,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (MainApplication.getLayerManager().getEditLayer() != null) {
         MainApplication.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
       }
-      instance = null;
+      clearInstance();
       super.destroy();
     }
   }
@@ -506,10 +512,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
     return data.getSequences().parallelStream()
-      .filter(seq -> target.getSequence() == null || (seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())))
+      .filter(seq -> target.getSequence() == null || seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
       .map(seq -> { // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter((img) -> img instanceof MapillaryImage && img.isVisible())
+          .filter(img -> img instanceof MapillaryImage && img.isVisible())
           .sorted(new NearestImgToTargetComparator(target))
           .findFirst();
         return resImg.isPresent() ? resImg.get() : null;
@@ -580,6 +586,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   private static class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
     private final MapillaryAbstractImage target;
+
     public NearestImgToTargetComparator(MapillaryAbstractImage target) {
       this.target = target;
     }

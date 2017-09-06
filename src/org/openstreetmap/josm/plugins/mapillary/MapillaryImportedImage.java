@@ -68,7 +68,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     LatLon coord = cachedCoord == null ? null : cachedCoord.getRoundedToOsmPrecision();
     if (coord == null) {
       final MapView mv = MapillaryPlugin.getMapView();
-      coord =  mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
+      coord = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
     }
     final double ca = geoImage.getExifImgDir() == null ? 0 : geoImage.getExifImgDir();
     final long time = geoImage.hasGpsTime()

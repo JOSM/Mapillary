@@ -176,7 +176,7 @@ public class MapillarySequence {
   private void setUser(String userKey) {
     (new Thread(() -> {
       UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
-      if(cachedProfile == null) {
+      if (cachedProfile == null) {
         try {
           Caches.UserProfileCache.getInstance().put(
             userKey,

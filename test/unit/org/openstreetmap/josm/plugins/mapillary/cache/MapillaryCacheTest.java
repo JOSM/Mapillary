@@ -5,8 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
@@ -15,7 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
 public class MapillaryCacheTest extends AbstractTest {
 
   @Test
-  public void test() throws IOException {
+  public void test() {
     MapillaryCache cache = new MapillaryCache("00000", Type.FULL_IMAGE);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());
