@@ -1,20 +1,10 @@
-buildscript {
-  repositories {
-    maven {
-      url "https://floscher.github.io/gradle-josm-plugin/maven"
-    }
-  }
-  dependencies {
-    classpath 'org.openstreetmap.josm:gradle-plugin:0.1.4'
-  }
-}
 plugins {
   id "org.sonarqube" version "2.5"
   id "org.kordamp.markdown.convert" version "1.1.0"
+  id 'org.openstreetmap.josm.gradle.plugin' version '0.1.7'
   id "com.github.ben-manes.versions" version "0.15.0"
 }
 
-apply plugin: 'org.openstreetmap.josm.gradle.plugin'
 apply plugin: 'eclipse'
 apply plugin: 'findbugs'
 apply plugin: 'idea'
@@ -34,7 +24,7 @@ repositories {
 }
 
 dependencies {
-  testImplementation (name: 'josm-unittest'){changing=true}
+  testImplementation ('org.openstreetmap.josm:josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
 }
 
@@ -63,15 +53,16 @@ sourceSets {
 
 josm {
   debugPort = 7051
-  jarName = 'Mapillary.jar'
-  manifest.oldVersionDownloadLink 12128, 'v1.5.5', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.5/Mapillary.jar')
-  manifest.oldVersionDownloadLink 10824, 'v1.5.3', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar')
+  manifest {
+    oldVersionDownloadLink 12128, 'v1.5.5', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.5/Mapillary.jar')
+    oldVersionDownloadLink 10824, 'v1.5.3', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar')
+  }
 }
 
 eclipse {
   project {
     name = 'JOSM-Mapillary'
-    comment = property('plugin.description')
+    comment = josm.manifest.description
     natures 'org.sonarlint.eclipse.core.sonarlintNature', 'ch.acanda.eclipse.pmd.builder.PMDNature', 'org.eclipse.buildship.core.gradleprojectnature'
     buildCommand 'org.sonarlint.eclipse.core.sonarlintBuilder'
     buildCommand 'ch.acanda.eclipse.pmd.builder.PMDBuilder'
