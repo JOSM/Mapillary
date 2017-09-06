@@ -83,9 +83,7 @@ public class MapillaryData {
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
   public void add(MapillaryAbstractImage image, boolean update) {
-    synchronized (images) {
-      this.images.add(image);
-    }
+    images.add(image);
     if (update) {
       MapillaryLayer.getInstance().invalidate();
     }
@@ -104,13 +102,11 @@ public class MapillaryData {
   /**
    * Adds a set of {link MapillaryAbstractImage} objects to this object.
    *
-   * @param images The set of images to be added.
+   * @param newImages The set of images to be added.
    * @param update Whether the map must be updated or not.
    */
-  public void addAll(Collection<? extends MapillaryAbstractImage> images, boolean update) {
-    synchronized (this.images) {
-      this.images.addAll(images);
-    }
+  public void addAll(Collection<? extends MapillaryAbstractImage> newImages, boolean update) {
+    images.addAll(newImages);
     if (update) {
       MapillaryLayer.getInstance().invalidate();
     }
@@ -172,9 +168,7 @@ public class MapillaryData {
    * @param image The {@link MapillaryAbstractImage} that is going to be deleted.
    */
   public void remove(MapillaryAbstractImage image) {
-    synchronized (images) {
-      this.images.remove(image);
-    }
+    images.remove(image);
     if (getMultiSelectedImages().contains(image)) {
       setSelectedImage(null);
     }
@@ -227,9 +221,7 @@ public class MapillaryData {
    * @return A Set object containing all images.
    */
   public Set<MapillaryAbstractImage> getImages() {
-    synchronized (images) {
-      return this.images;
-    }
+    return images;
   }
 
   /**
@@ -237,9 +229,7 @@ public class MapillaryData {
    * @return all sequences that are contained in the Mapillary data
    */
   public Set<MapillarySequence> getSequences() {
-    synchronized (images) {
-      return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
-    }
+    return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
   }
 
   /**
@@ -398,9 +388,9 @@ public class MapillaryData {
    * @param images the new image list (previously set images are completely replaced)
    */
   public void setImages(Collection<MapillaryAbstractImage> images) {
-    synchronized (this.images) {
-      this.images.clear();
-      this.images.addAll(images);
+    synchronized (this) {
+      images.clear();
+      images.addAll(images);
     }
   }
 }

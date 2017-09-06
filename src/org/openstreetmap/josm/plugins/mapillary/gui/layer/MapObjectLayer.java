@@ -81,20 +81,22 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   }
 
   public boolean isDownloadRunnableScheduled() {
-    return nextDownloadRunnable != null;
+    synchronized (this) {
+      return nextDownloadRunnable != null;
+    }
   }
 
   public void finishDownload(boolean replaceMapObjects) {
-    final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
-    if (currentRunnable != null) {
-      synchronized (objects) {
-        if (replaceMapObjects) {
-          objects.clear();
-        }
-        objects.addAll(currentRunnable.getMapObjects());
-      }
-    }
     synchronized (this) {
+      final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
+      if (currentRunnable != null) {
+        synchronized (objects) {
+          if (replaceMapObjects) {
+            objects.clear();
+          }
+          objects.addAll(currentRunnable.getMapObjects());
+        }
+      }
       downloadRunnable = null;
       if (nextDownloadRunnable != null) {
         downloadRunnable = nextDownloadRunnable;
@@ -130,9 +132,11 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
   public void paint(Graphics2D g, MapView mv, Bounds bbox) {
     final long startTime = System.currentTimeMillis();
     final Collection<MapObject> displayedObjects = new HashSet<>();
-    final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
-    if (currentRunnable != null) {
-      displayedObjects.addAll(currentRunnable.getMapObjects());
+    synchronized (this) {
+      final MapObjectDownloadRunnable currentRunnable = downloadRunnable;
+      if (currentRunnable != null) {
+        displayedObjects.addAll(currentRunnable.getMapObjects());
+      }
     }
     displayedObjects.addAll(objects);
 

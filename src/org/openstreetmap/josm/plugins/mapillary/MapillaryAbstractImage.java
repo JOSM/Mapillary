@@ -261,10 +261,12 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
-    if (sequence != null && !sequence.getImages().contains(this)) {
-      throw new IllegalArgumentException();
+    synchronized (this) {
+      if (sequence != null && !sequence.getImages().contains(this)) {
+        throw new IllegalArgumentException();
+      }
+      this.sequence = sequence;
     }
-    this.sequence = sequence;
   }
 
   /**
