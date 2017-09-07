@@ -68,7 +68,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 <span class="nc bnc" id="L68" title="All 2 branches missed.">    LatLon coord = cachedCoord == null ? null : cachedCoord.getRoundedToOsmPrecision();</span>
 <span class="nc bnc" id="L69" title="All 2 branches missed.">    if (coord == null) {</span>
 <span class="nc" id="L70">      final MapView mv = MapillaryPlugin.getMapView();</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">      coord =  mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      coord = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
     }
 <span class="nc bnc" id="L73" title="All 2 branches missed.">    final double ca = geoImage.getExifImgDir() == null ? 0 : geoImage.getExifImgDir();</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">    final long time = geoImage.hasGpsTime()</span>
