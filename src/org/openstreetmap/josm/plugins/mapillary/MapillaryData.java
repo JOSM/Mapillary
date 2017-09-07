@@ -387,10 +387,10 @@ public class MapillaryData {
    *
    * @param images the new image list (previously set images are completely replaced)
    */
-  public void setImages(Collection<MapillaryAbstractImage> images) {
+  public void setImages(Collection<MapillaryAbstractImage> newImages) {
     synchronized (this) {
       images.clear();
-      images.addAll(images);
+      images.addAll(newImages);
     }
   }
 }
