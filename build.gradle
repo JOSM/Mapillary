@@ -74,6 +74,10 @@ eclipseClasspath.dependsOn cleanEclipseClasspath
 eclipseProject.dependsOn cleanEclipseProject
 tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 
+tasks.withType(JavaCompile) {
+  // Character encoding of Java files
+  options.encoding = 'UTF-8'
+}
 tasks.withType(Javadoc) {
   failOnError false
 }
