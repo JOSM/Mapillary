@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -41,17 +42,18 @@ public class MapillaryDownloadAction extends JosmAction {
   }
 
   @Override
-  public void actionPerformed(ActionEvent arg0) {
+  public void actionPerformed(ActionEvent e) {
     if (!MapillaryLayer.hasInstance()) {
       // A new mapillary layer is created, so the active layer is not changed
       MapillaryLayer.getInstance();
       return;
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-    MainApplication.getLayerManager().setActiveLayer(
-        MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
-          ? MainApplication.getLayerManager().getEditLayer()
-          : MapillaryLayer.getInstance()
-    );
+    OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+    if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
+      MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
+    } else if (editLayer != null) {
+      MainApplication.getLayerManager().setActiveLayer(editLayer);
+    }
   }
 }
