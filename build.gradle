@@ -3,7 +3,7 @@ plugins {
   id "org.kordamp.markdown.convert" version "1.1.0"
   id 'org.openstreetmap.josm.gradle.plugin' version '0.1.7'
   id "com.github.ben-manes.versions" version "0.15.0"
-  id "net.ltgt.errorprone" version "0.0.11"
+  id "net.ltgt.errorprone" version "0.0.11" apply false
 }
 
 apply plugin: 'eclipse'
@@ -17,6 +17,15 @@ apply from: 'gradle/version-functions.gradle'
 apply from: 'gradle/tool-config.gradle'
 apply from: 'gradle/markdown.gradle'
 
+// Set up ErrorProne (currently only for JDK8, until JDK9 is supported)
+if (JavaVersion.current().isJava8()) {
+  apply plugin: 'net.ltgt.errorprone'
+  dependencies.errorprone 'com.google.errorprone:error_prone_core:'+property('tool.errorprone.version')
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR'
+  }
+}
+
 sourceCompatibility = '1.8'
 version = getVersionName()
 archivesBaseName = 'Mapillary'
@@ -26,7 +35,6 @@ repositories {
 }
 
 dependencies {
-  errorprone 'com.google.errorprone:error_prone_core:'+property('tool.errorprone.version')
   testImplementation ('org.openstreetmap.josm:josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
 }
@@ -77,7 +85,6 @@ eclipseProject.dependsOn cleanEclipseProject
 tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 
 tasks.withType(JavaCompile) {
-  options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR'
   // Character encoding of Java files
   options.encoding = 'UTF-8'
 }
