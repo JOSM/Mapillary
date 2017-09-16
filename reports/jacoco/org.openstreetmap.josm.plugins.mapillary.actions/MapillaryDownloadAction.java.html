@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -29,30 +30,31 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-<span class="fc" id="L32">    super(</span>
-<span class="fc" id="L33">        tr(&quot;Mapillary&quot;),</span>
-<span class="fc" id="L34">        new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="fc" id="L35">        tr(&quot;Create Mapillary layer&quot;),</span>
-<span class="fc" id="L36">        Shortcut.registerShortcut(&quot;Mapillary&quot;, tr(&quot;Start Mapillary layer&quot;), KeyEvent.VK_COMMA, Shortcut.SHIFT),</span>
+<span class="fc" id="L33">    super(</span>
+<span class="fc" id="L34">        tr(&quot;Mapillary&quot;),</span>
+<span class="fc" id="L35">        new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="fc" id="L36">        tr(&quot;Create Mapillary layer&quot;),</span>
+<span class="fc" id="L37">        Shortcut.registerShortcut(&quot;Mapillary&quot;, tr(&quot;Start Mapillary layer&quot;), KeyEvent.VK_COMMA, Shortcut.SHIFT),</span>
         false,
         &quot;mapillaryDownload&quot;,
         false
     );
-<span class="fc" id="L41">  }</span>
+<span class="fc" id="L42">  }</span>
 
   @Override
-  public void actionPerformed(ActionEvent arg0) {
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (!MapillaryLayer.hasInstance()) {</span>
+  public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (!MapillaryLayer.hasInstance()) {</span>
       // A new mapillary layer is created, so the active layer is not changed
-<span class="nc" id="L47">      MapillaryLayer.getInstance();</span>
-<span class="nc" id="L48">      return;</span>
+<span class="nc" id="L48">      MapillaryLayer.getInstance();</span>
+<span class="nc" id="L49">      return;</span>
     }
     // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-<span class="nc" id="L51">    MainApplication.getLayerManager().setActiveLayer(</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()</span>
-<span class="nc" id="L53">          ? MainApplication.getLayerManager().getEditLayer()</span>
-<span class="nc" id="L54">          : MapillaryLayer.getInstance()</span>
-    );
-<span class="nc" id="L56">  }</span>
+<span class="nc" id="L52">    OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">    if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {</span>
+<span class="nc" id="L54">      MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">    } else if (editLayer != null) {</span>
+<span class="nc" id="L56">      MainApplication.getLayerManager().setActiveLayer(editLayer);</span>
+    }
+<span class="nc" id="L58">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -112,7 +112,7 @@ public final class MapillaryDownloader {
    */
   public static DOWNLOAD_MODE getMode() {
 <span class="pc bpc" id="L114" title="2 of 4 branches missed.">    return MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().tempSemiautomatic</span>
-      ? DOWNLOAD_MODE.VISIBLE_AREA
+<span class="nc" id="L115">      ? DOWNLOAD_MODE.VISIBLE_AREA</span>
 <span class="fc" id="L116">      : DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());</span>
   }
 

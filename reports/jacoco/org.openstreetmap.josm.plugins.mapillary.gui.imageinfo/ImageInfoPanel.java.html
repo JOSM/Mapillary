@@ -174,10 +174,10 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    */
   @Override
   public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
-<span class="nc bnc" id="L177" title="All 2 branches missed.">    L.debug(String.format(</span>
+<span class="nc" id="L177">    L.debug(String.format(</span>
       &quot;Selected Mapillary image changed from %s to %s.&quot;,
 <span class="nc bnc" id="L179" title="All 2 branches missed.">      oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : &quot;‹none›&quot;,</span>
-<span class="nc" id="L180">      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : &quot;‹none›&quot;</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : &quot;‹none›&quot;</span>
     ));
 
 <span class="nc bnc" id="L183" title="All 2 branches missed.">    numDetectionsLabel.setText(I18n.tr(&quot;{0} detections&quot;, newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));</span>

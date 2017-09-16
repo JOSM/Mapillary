@@ -532,9 +532,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 <span class="nc bnc" id="L532" title="All 2 branches missed.">          || img.getHeight() &gt; this.mapillaryImageDisplay.getImage().getHeight()</span>
         ) {
 <span class="nc" id="L534">          final MapillaryAbstractImage mai = getImage();</span>
-<span class="nc bnc" id="L535" title="All 2 branches missed.">          this.mapillaryImageDisplay.setImage(</span>
+<span class="nc" id="L535">          this.mapillaryImageDisplay.setImage(</span>
             img,
-<span class="nc" id="L537">            mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">            mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null</span>
           );
         }
 <span class="nc" id="L540">      } catch (IOException e) {</span>

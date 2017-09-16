@@ -102,7 +102,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
       JList&lt;? extends GeoImageLayer&gt; list, GeoImageLayer value, int index, boolean isSelected, boolean cellHasFocus
     ) {
 <span class="nc bnc" id="L104" title="All 2 branches missed.">      final JLabel result = value == null</span>
-          ? null
+<span class="nc" id="L105">          ? null</span>
 <span class="nc" id="L106">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
 <span class="nc bnc" id="L107" title="All 2 branches missed.">      if (result != null) {</span>
 <span class="nc" id="L108">        result.setOpaque(true);</span>

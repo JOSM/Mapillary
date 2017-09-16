@@ -60,7 +60,7 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="fc bfc" id="L60" title="All 2 branches covered.">    } else if (IMAGE_FILE_FILTER.accept(f)) {</span>
 <span class="pc" id="L61">      try (FileInputStream fis = new FileInputStream(f)) {</span>
 <span class="fc" id="L62">        images.add(readImageFrom(fis, f, defaultLL));</span>
-<span class="pc bpc" id="L63" title="6 of 8 branches missed.">      }</span>
+<span class="pc" id="L63">      }</span>
     }
 <span class="fc" id="L65">    return images;</span>
   }
@@ -152,7 +152,7 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="fc bfc" id="L152" title="All 2 branches covered.">          Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))</span>
 <span class="fc bfc" id="L153" title="All 2 branches covered.">          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)))</span>
         );
-<span class="pc bpc" id="L155" title="6 of 8 branches missed.">      } catch (FileNotFoundException e) {</span>
+<span class="pc bpc" id="L155" title="3 of 4 branches missed.">      } catch (FileNotFoundException e) {</span>
 <span class="nc" id="L156">        return false;</span>
 <span class="nc" id="L157">      } catch (IOException e) {</span>
 <span class="nc" id="L158">        Logging.log(Logging.LEVEL_WARN, &quot;IO-exception while reading file &quot;+f.getAbsolutePath(), e);</span>

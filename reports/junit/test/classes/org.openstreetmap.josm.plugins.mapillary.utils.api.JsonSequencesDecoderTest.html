@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.115s</div>
+<div class="counter">0.059s</div>
 <p>duration</p>
 </div>
 </td>
@@ -64,7 +64,10 @@
 <a href="#tab0">Tests</a>
 </li>
 <li>
-<a href="#tab1">Standard error</a>
+<a href="#tab1">Standard output</a>
+</li>
+<li>
+<a href="#tab2">Standard error</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
@@ -79,7 +82,7 @@
 </thead>
 <tr>
 <td class="success">testDecodeCoordinateProperty</td>
-<td>0.022s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -89,32 +92,32 @@
 </tr>
 <tr>
 <td class="success">testDecodeLatLons</td>
-<td>0.001s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDecodeSequence</td>
-<td>0.003s</td>
+<td>0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDecodeSequenceInvalid</td>
-<td>0.064s</td>
+<td>0.036s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDecodeSequences</td>
-<td>0.005s</td>
+<td>0.010s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDecodeSequencesInvalid</td>
-<td>0.004s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDecodeSequencesWithArbitraryObjectAsFeature</td>
-<td>0.015s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -125,13 +128,12 @@
 </table>
 </div>
 <div id="tab1" class="tab">
-<h2>Standard error</h2>
+<h2>Standard output</h2>
 <span class="code">
-<pre>2017-09-07 13:31:41.439 WARNING: Could not decode time from the timestamp `unrecognizedDateFormat` (called by org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder.decodeSequence:40): java.text.ParseException: Unparseable date: &quot;unrecognizedDateFormat&quot;
-[INFO] CompositeCacheConfigurator - No special ElementAttribute class defined for key [jcs.region.userProfile.elementattributes], using default class.
-[INFO] AbstractDoubleLinkedListMemoryCache - initialized MemoryCache for userProfile
-[INFO] CompositeCache - Constructed cache with name [userProfile] and cache attributes [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 100, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
-[INFO] BlockDiskCache - Region [userProfile_BLOCK_v2] Constructing BlockDiskCache with attributes 
+<pre>2017-09-16 21:30:37.302 FINE: No special ElementAttribute class defined for key [jcs.region.userProfile.elementattributes], using default class.
+2017-09-16 21:30:37.319 FINE: initialized MemoryCache for userProfile
+2017-09-16 21:30:37.319 FINE: Constructed cache with name [userProfile] and cache attributes [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 100, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
+2017-09-16 21:30:37.320 FINE: Region [userProfile_BLOCK_v2] Constructing BlockDiskCache with attributes 
 BlockDiskAttributes 
  DiskPath [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
  MaxKeySize [1000]
@@ -139,15 +141,18 @@ BlockDiskAttributes
  BlockSizeBytes [4096]
  KeyPersistenceIntervalSeconds [300]
  DiskLimitType [SIZE]
-[INFO] BlockDiskCache - Region [userProfile_BLOCK_v2] Cache file root directory: [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
-[INFO] BlockDisk - Constructing BlockDisk, blockSizeBytes [4096]
-[INFO] BlockDiskKeyStore - Region [userProfile_BLOCK_v2] Cache file root directory [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
-[INFO] BlockDiskKeyStore - Region [userProfile_BLOCK_v2] Key File [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache/userProfile_BLOCK_v2.key]
-[INFO] BlockDiskKeyStore - Region [userProfile_BLOCK_v2] Set maxKeySize to: '1000'
-[WARN] BlockDiskCache - Region [userProfile_BLOCK_v2] Resetting cache
-[INFO] BlockDiskKeyStore - Region [userProfile_BLOCK_v2] Saving keys to [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache/userProfile_BLOCK_v2.key], key count [0]
-[INFO] BlockDiskKeyStore - Region [userProfile_BLOCK_v2] Finished saving keys. It took 1ms. to store 0 keys.  Key file length [4]
-[INFO] BlockDiskCache - Region [userProfile_BLOCK_v2] Block Disk Cache is alive.
+2017-09-16 21:30:37.322 FINE: Region [userProfile_BLOCK_v2] Cache file root directory: [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
+2017-09-16 21:30:37.322 FINE: Constructing BlockDisk, blockSizeBytes [4096]
+2017-09-16 21:30:37.323 FINE: Region [userProfile_BLOCK_v2] Cache file root directory [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache]
+2017-09-16 21:30:37.324 FINE: Region [userProfile_BLOCK_v2] Key File [/home/travis/build/JOSM/Mapillary/build/.josm_test/plugins/Mapillary/cache/userProfile_BLOCK_v2.key]
+2017-09-16 21:30:37.324 FINE: Region [userProfile_BLOCK_v2] Set maxKeySize to: '1000'
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>2017-09-16 21:30:37.278 WARNING: Could not decode time from the timestamp `unrecognizedDateFormat` (called by org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder.decodeSequence:40): java.text.ParseException: Unparseable date: &quot;unrecognizedDateFormat&quot;
 </pre>
 </span>
 </div>
@@ -159,7 +164,7 @@ BlockDiskAttributes
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 7, 2017 10:31:44 AM</p>
+<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 16, 2017 6:30:39 PM</p>
 </div>
 </div>
 </body>

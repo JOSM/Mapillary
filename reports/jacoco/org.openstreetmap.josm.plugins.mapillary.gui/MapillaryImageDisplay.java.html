@@ -239,12 +239,12 @@ public class MapillaryImageDisplay extends JComponent {
 <span class="nc bnc" id="L239" title="All 2 branches missed.">      } else if (MapillaryImageDisplay.this.selectedRect != null) {</span>
 <span class="nc" id="L240">        Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());</span>
 <span class="nc" id="L241">        checkPointInVisibleRect(p, visibleRect);</span>
-<span class="nc bnc" id="L242" title="All 8 branches missed.">        Rectangle rect = new Rectangle(p.x &lt; this.mousePointInImg.x ? p.x</span>
-            : this.mousePointInImg.x, p.y &lt; this.mousePointInImg.y ? p.y
-            : this.mousePointInImg.y, p.x &lt; this.mousePointInImg.x ? this.mousePointInImg.x
-            - p.x : p.x - this.mousePointInImg.x,
-            p.y &lt; this.mousePointInImg.y ? this.mousePointInImg.y - p.y : p.y
-                - this.mousePointInImg.y);
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        Rectangle rect = new Rectangle(p.x &lt; this.mousePointInImg.x ? p.x</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">            : this.mousePointInImg.x, p.y &lt; this.mousePointInImg.y ? p.y</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">            : this.mousePointInImg.y, p.x &lt; this.mousePointInImg.x ? this.mousePointInImg.x</span>
+<span class="nc" id="L245">            - p.x : p.x - this.mousePointInImg.x,</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">            p.y &lt; this.mousePointInImg.y ? this.mousePointInImg.y - p.y : p.y</span>
+<span class="nc" id="L247">                - this.mousePointInImg.y);</span>
 <span class="nc" id="L248">        checkVisibleRectSize(image, rect);</span>
 <span class="nc" id="L249">        checkVisibleRectPos(image, rect);</span>
 <span class="nc" id="L250">        MapillaryImageDisplay.this.selectedRect = rect;</span>

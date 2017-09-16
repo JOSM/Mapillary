@@ -356,25 +356,25 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     final Color directionC;
 <span class="nc bnc" id="L357" title="All 4 branches missed.">    if (selectedImg != null &amp;&amp; getData().getMultiSelectedImages().contains(img)) {</span>
 <span class="nc bnc" id="L358" title="All 2 branches missed.">      markerC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED;
+<span class="nc" id="L359">        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED</span>
+<span class="nc" id="L360">        : MapillaryColorScheme.SEQ_HIGHLIGHTED;</span>
 <span class="nc bnc" id="L361" title="All 2 branches missed.">      directionC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+<span class="nc" id="L362">        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA</span>
+<span class="nc" id="L363">        : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;</span>
 <span class="nc bnc" id="L364" title="All 6 branches missed.">    } else if (selectedImg != null &amp;&amp; selectedImg.getSequence() != null &amp;&amp; selectedImg.getSequence().equals(img.getSequence())) {</span>
 <span class="nc bnc" id="L365" title="All 2 branches missed.">      markerC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
-        : MapillaryColorScheme.SEQ_SELECTED;
+<span class="nc" id="L366">        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED</span>
+<span class="nc" id="L367">        : MapillaryColorScheme.SEQ_SELECTED;</span>
 <span class="nc bnc" id="L368" title="All 2 branches missed.">      directionC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA
-        : MapillaryColorScheme.SEQ_SELECTED_CA;
+<span class="nc" id="L369">        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA</span>
+<span class="nc" id="L370">        : MapillaryColorScheme.SEQ_SELECTED_CA;</span>
     } else {
 <span class="nc bnc" id="L372" title="All 2 branches missed.">      markerC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
-        : MapillaryColorScheme.SEQ_UNSELECTED;
+<span class="nc" id="L373">        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED</span>
+<span class="nc" id="L374">        : MapillaryColorScheme.SEQ_UNSELECTED;</span>
 <span class="nc bnc" id="L375" title="All 2 branches missed.">      directionC = img instanceof MapillaryImportedImage</span>
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA
-        : MapillaryColorScheme.SEQ_UNSELECTED_CA;
+<span class="nc" id="L376">        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA</span>
+<span class="nc" id="L377">        : MapillaryColorScheme.SEQ_UNSELECTED_CA;</span>
     }
 
     // Paint direction indicator

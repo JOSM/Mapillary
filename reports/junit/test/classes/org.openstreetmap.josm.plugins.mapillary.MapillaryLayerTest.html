@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.130s</div>
+<div class="counter">0.059s</div>
 <p>duration</p>
 </div>
 </td>
@@ -82,32 +82,32 @@
 </thead>
 <tr>
 <td class="success">testClearInstance</td>
-<td>0.007s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetIcon</td>
-<td>0.015s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetInfoComponent</td>
-<td>0.056s</td>
+<td>0.035s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testIsMergable</td>
-<td>0.018s</td>
+<td>0.015s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMergeFrom</td>
-<td>0.003s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testSetVisible</td>
-<td>0.031s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -115,24 +115,40 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>2017-09-07 09:08:37.058 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=16,height=16]
-</pre>
-</span>
-</div>
-<div id="tab2" class="tab">
-<h2>Standard error</h2>
-<span class="code">
-<pre>[INFO] CompositeCacheManager - Instance is null, returning unconfigured instance
-[WARN] ThreadPoolManager - No configuration settings found.  Using hardcoded default values for all pools.
-[INFO] CompositeCacheManager - Setting default auxiliaries to null
-[INFO] CompositeCacheManager - setting defaultCompositeCacheAttributes to [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 1000, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
-[INFO] CompositeCacheManager - setting defaultElementAttributes to [ IS_LATERAL = true, IS_SPOOL = true, IS_REMOTE = true, IS_ETERNAL = false, MaxLifeSeconds = -1, IdleTime = -1, CreateTime = 1504780296874, LastAccessTime = 1504780296874, getTimeToLiveSeconds() = -1, createTime = 1504780296874 ]
-[INFO] CompositeCacheConfigurator - Parsed regions []
-[INFO] CompositeCacheManager - Finished configuration in 26 ms.
-[INFO] CompositeCacheConfigurator - No special ElementAttribute class defined for key [jcs.region.WMS.elementattributes], using default class.
-[INFO] AbstractDoubleLinkedListMemoryCache - initialized MemoryCache for WMS
-[INFO] CompositeCache - Constructed cache with name [WMS] and cache attributes [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 0, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
-[INFO] BlockDiskCache - Region [WMS_BLOCK_v2] Constructing BlockDiskCache with attributes 
+<pre>2017-09-16 17:07:33.746 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:33.747 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:33.749 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:33.755 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:33.756 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:33.757 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:33.758 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:33.760 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:33.770 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:33.771 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:33.774 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:33.775 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:33.776 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:33.795 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:33.796 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:33.797 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:33.798 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:33.799 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:33.799 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:33.800 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:33.801 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:33.804 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:33.805 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:33.806 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:33.873 FINE: Instance is null, returning unconfigured instance
+2017-09-16 17:07:34.028 FINE: Setting default auxiliaries to null
+2017-09-16 17:07:34.045 FINE: setting defaultCompositeCacheAttributes to [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 1000, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
+2017-09-16 17:07:34.064 FINE: setting defaultElementAttributes to [ IS_LATERAL = true, IS_SPOOL = true, IS_REMOTE = true, IS_ETERNAL = false, MaxLifeSeconds = -1, IdleTime = -1, CreateTime = 1505586634050, LastAccessTime = 1505586634050, getTimeToLiveSeconds() = -1, createTime = 1505586634050 ]
+2017-09-16 17:07:34.076 FINE: Parsed regions []
+2017-09-16 17:07:34.077 FINE: Finished configuration in 52 ms.
+2017-09-16 17:07:34.078 FINE: No special ElementAttribute class defined for key [jcs.region.WMS.elementattributes], using default class.
+2017-09-16 17:07:34.108 FINE: initialized MemoryCache for WMS
+2017-09-16 17:07:34.109 FINE: Constructed cache with name [WMS] and cache attributes [ useLateral = true, useRemote = true, useDisk = true, maxObjs = 0, maxSpoolPerRun = -1, diskUsagePattern = UPDATE, spoolChunkSize = 2 ]
+2017-09-16 17:07:34.159 FINE: Region [WMS_BLOCK_v2] Constructing BlockDiskCache with attributes 
 BlockDiskAttributes 
  DiskPath [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles]
  MaxKeySize [524288]
@@ -140,15 +156,83 @@ BlockDiskAttributes
  BlockSizeBytes [4096]
  KeyPersistenceIntervalSeconds [300]
  DiskLimitType [SIZE]
-[INFO] BlockDiskCache - Region [WMS_BLOCK_v2] Cache file root directory: [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles]
-[INFO] BlockDisk - Constructing BlockDisk, blockSizeBytes [4096]
-[INFO] BlockDiskKeyStore - Region [WMS_BLOCK_v2] Cache file root directory [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles]
-[INFO] BlockDiskKeyStore - Region [WMS_BLOCK_v2] Key File [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles/WMS_BLOCK_v2.key]
-[INFO] BlockDiskKeyStore - Region [WMS_BLOCK_v2] Set maxKeySize to: '524288'
-[WARN] BlockDiskCache - Region [WMS_BLOCK_v2] Resetting cache
-[INFO] BlockDiskKeyStore - Region [WMS_BLOCK_v2] Saving keys to [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles/WMS_BLOCK_v2.key], key count [0]
-[INFO] BlockDiskKeyStore - Region [WMS_BLOCK_v2] Finished saving keys. It took 2ms. to store 0 keys.  Key file length [4]
-[INFO] BlockDiskCache - Region [WMS_BLOCK_v2] Block Disk Cache is alive.
+2017-09-16 17:07:34.186 FINE: Region [WMS_BLOCK_v2] Cache file root directory: [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles]
+2017-09-16 17:07:34.190 FINE: Constructing BlockDisk, blockSizeBytes [4096]
+2017-09-16 17:07:34.195 FINE: Region [WMS_BLOCK_v2] Cache file root directory [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles]
+2017-09-16 17:07:34.196 FINE: Region [WMS_BLOCK_v2] Key File [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles/WMS_BLOCK_v2.key]
+2017-09-16 17:07:34.211 FINE: Region [WMS_BLOCK_v2] Set maxKeySize to: '524288'
+2017-09-16 17:07:34.215 FINE: Region [WMS_BLOCK_v2] Saving keys to [/home/travis/build/JOSM/Mapillary/build/.josm_test/cache/tiles/WMS_BLOCK_v2.key], key count [0]
+2017-09-16 17:07:34.219 FINE: Region [WMS_BLOCK_v2] Finished saving keys. It took 4ms. to store 0 keys.  Key file length [4]
+2017-09-16 17:07:34.221 FINE: Region [WMS_BLOCK_v2] Block Disk Cache is alive.
+2017-09-16 17:07:34.250 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:34.251 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:34.252 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:34.256 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:34.257 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:34.259 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:34.261 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:34.275 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:34.276 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:34.276 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:34.276 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:34.276 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:34.277 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:34.278 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:34.278 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:34.278 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:34.278 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:34.279 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:34.279 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:34.279 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:34.279 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:34.280 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:34.280 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:34.280 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:34.285 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:34.285 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:34.286 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:34.286 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:34.286 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:34.286 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:34.287 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:34.287 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:34.287 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:34.288 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:34.288 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:34.288 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:34.290 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=16,height=16]
+2017-09-16 17:07:34.291 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:34.292 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:34.292 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:34.292 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:34.293 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:34.293 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:34.293 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:34.293 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:34.294 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:34.294 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:34.294 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:34.294 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+2017-09-16 17:07:34.330 INFO: Defaults for imagery.generic.default_autozoom differ: true != 
+2017-09-16 17:07:34.331 INFO: Defaults for imagery.generic.default_autozoom differ:  != true
+2017-09-16 17:07:34.331 INFO: Defaults for imagery.wms.default_autozoom differ: true != 
+2017-09-16 17:07:34.331 INFO: Defaults for imagery.wms.default_autozoom differ:  != true
+2017-09-16 17:07:34.331 INFO: Defaults for imagery.generic.default_autoload differ: true != 
+2017-09-16 17:07:34.332 INFO: Defaults for imagery.generic.default_autoload differ:  != true
+2017-09-16 17:07:34.332 INFO: Defaults for imagery.wms.default_autoload differ: true != 
+2017-09-16 17:07:34.332 INFO: Defaults for imagery.wms.default_autoload differ:  != true
+2017-09-16 17:07:34.332 INFO: Defaults for imagery.generic.default_showerrors differ: true != 
+2017-09-16 17:07:34.333 INFO: Defaults for imagery.generic.default_showerrors differ:  != true
+2017-09-16 17:07:34.333 INFO: Defaults for imagery.wms.default_showerrors differ: true != 
+2017-09-16 17:07:34.333 INFO: Defaults for imagery.wms.default_showerrors differ:  != true
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>2017-09-16 17:07:33.994 WARNING: No configuration settings found.  Using hardcoded default values for all pools.
+2017-09-16 17:07:34.212 WARNING: Region [WMS_BLOCK_v2] Resetting cache
 </pre>
 </span>
 </div>
@@ -160,7 +244,7 @@ BlockDiskAttributes
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 7, 2017 10:31:44 AM</p>
+<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 16, 2017 6:30:39 PM</p>
 </div>
 </div>
 </body>

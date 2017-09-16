@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.1" timestamp="2017-09-07T10:31:03.526">
+<pmd version="5.8.1" timestamp="2017-09-16T18:30:14.772">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
 <violation beginline="2" endline="396" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=53, ATFD=12, TCC=0.0)
@@ -365,17 +365,8 @@ Document empty method body
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java">
-<violation beginline="2" endline="312" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="309" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
-</violation>
-<violation beginline="10" endline="10" begincolumn="1" endcolumn="48" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'java.nio.file.DirectoryNotEmptyException'
-</violation>
-<violation beginline="12" endline="12" begincolumn="1" endcolumn="41" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'java.nio.file.NoSuchFileException'
-</violation>
-<violation beginline="13" endline="13" begincolumn="1" endcolumn="27" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.oauth" class="UploadUtils" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
-Avoid unused imports such as 'java.nio.file.Paths'
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil.java">
