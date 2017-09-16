@@ -21,9 +21,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.projection.Projections;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.I18n;
 
@@ -92,12 +94,16 @@ public final class TestUtil {
     }
     if (!isInitialized) {
       System.setProperty("josm.home", josmHomeForUnitTests);
+
       Main.pref.enableSaveOnPut(false);
+      Main.pref.init(false);
+      Config.setPreferencesInstance(Main.pref);
+      Config.setBaseDirectoriesProvider(Main.pref);
+
       I18n.init();
       Main.determinePlatformHook();
       Main.platform.preStartupHook();
-      Main.pref.init(false);
-      I18n.set(Main.pref.get("language", "en"));
+      I18n.set(Config.getPref().get("language", "en"));
       Main.setProjection(Projections.getProjectionByCode("EPSG:3857")); // Mercator
       JOSMTestRules.cleanLayerEnvironment();
       isInitialized = true;
