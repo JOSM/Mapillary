@@ -3,6 +3,7 @@ plugins {
   id "org.kordamp.markdown.convert" version "1.1.0"
   id 'org.openstreetmap.josm.gradle.plugin' version '0.1.7'
   id "com.github.ben-manes.versions" version "0.15.0"
+  id "net.ltgt.errorprone" version "0.0.11"
 }
 
 apply plugin: 'eclipse'
@@ -25,6 +26,7 @@ repositories {
 }
 
 dependencies {
+  errorprone 'com.google.errorprone:error_prone_core:'+property('tool.errorprone.version')
   testImplementation ('org.openstreetmap.josm:josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
 }
@@ -75,6 +77,7 @@ eclipseProject.dependsOn cleanEclipseProject
 tasks.eclipse.dependsOn = ['eclipseClasspath', 'eclipseProject']
 
 tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR'
   // Character encoding of Java files
   options.encoding = 'UTF-8'
 }
