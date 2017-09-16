@@ -21,7 +21,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import org.openstreetmap.josm.JOSMFixture;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.projection.Projections;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;

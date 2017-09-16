@@ -74,7 +74,7 @@ public class JsonImageDetailsDecoderTest extends AbstractTest {
     assertEquals(0, data.getNumImageRerievals());
   }
 
-  private class MapillaryDataMock extends MapillaryData {
+  private static class MapillaryDataMock extends MapillaryData {
     private int imageRetrievals;
 
     /**

@@ -98,11 +98,11 @@ public class MapillaryURLTest {
     }
   }
 
-  public class Cloudfront {
+  public static class Cloudfront {
     @Test
     public void testThumbnail() {
       assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key", true), "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key/thumb-2048.jpg");
-      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key2", true), "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key2/thumb-320.jpg");
+      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key2", false), "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key2/thumb-320.jpg");
     }
   }
 
@@ -181,8 +181,9 @@ public class MapillaryURLTest {
   }
 
   private static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
-    assertEquals(expectedBaseUrl, actualUrl.toString().substring(0, actualUrl.toString().indexOf('?')));
-    String[] actualParams = actualUrl.getQuery().split("&");
+    final String actualUrlString = actualUrl.toString();
+    assertEquals(expectedBaseUrl, actualUrlString.contains("?") ? actualUrlString.substring(0, actualUrlString.indexOf('?')) : actualUrlString);
+    String[] actualParams = actualUrl.getQuery() == null ? new String[0] : actualUrl.getQuery().split("&");
     assertEquals(expectedParams.length, actualParams.length);
     for (int exIndex = 0; exIndex < expectedParams.length; exIndex++) {
       boolean parameterIsPresent = false;
