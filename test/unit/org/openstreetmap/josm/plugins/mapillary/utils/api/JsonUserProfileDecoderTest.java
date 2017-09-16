@@ -54,7 +54,7 @@ public class JsonUserProfileDecoderTest {
       "https://example.org",
       JsonUserProfileDecoder.class.getResource("/api/v3/responses/userProfile.json").toString()
     );
-    return new ByteArrayInputStream(fileContent.getBytes());
+    return new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
   }
 
   @Test

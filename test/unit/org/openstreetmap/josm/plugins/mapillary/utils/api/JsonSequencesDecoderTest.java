@@ -10,6 +10,7 @@ import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.function.Function;
 
@@ -82,7 +83,7 @@ public class JsonSequencesDecoderTest {
     assertEquals(
       expectedNumberOfSequences,
       JsonDecoder.decodeFeatureCollection(
-        Json.createReader(new ByteArrayInputStream(jsonString.getBytes())).readObject(),
+        Json.createReader(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8))).readObject(),
         JsonSequencesDecoder::decodeSequence
       ).size()
     );
@@ -196,11 +197,11 @@ public class JsonSequencesDecoderTest {
     assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":[]}"))).length);
 
     assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, Json.createReader(new ByteArrayInputStream(
-      "{\"type\": \"Feature\", \"coordinates\": []}".getBytes()
+      "{\"type\": \"Feature\", \"coordinates\": []}".getBytes(StandardCharsets.UTF_8)
     )).readObject())).length);
 
     LatLon[] example = (LatLon[]) decodeLatLons.invoke(null, Json.createReader(new ByteArrayInputStream(
-      "{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}".getBytes()
+      "{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}".getBytes(StandardCharsets.UTF_8)
     )).readObject());
     assertEquals(3, example.length);
     assertNull(example[0]);

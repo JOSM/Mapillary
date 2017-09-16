@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -36,8 +37,7 @@ public class OAuthPortListenerTest {
     try {
       URL url = new URL("http://localhost:"+OAuthPortListener.PORT+"?access_token=access_token");
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      BufferedReader in = new BufferedReader(new InputStreamReader(
-          con.getInputStream()));
+      BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
       in.readLine();
       assertEquals(OAuthPortListener.RESPONSE, in.readLine());
     } catch (Exception e) {

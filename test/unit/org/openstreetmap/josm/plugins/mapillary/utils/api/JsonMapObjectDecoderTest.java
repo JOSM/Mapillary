@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import javax.json.Json;
@@ -54,7 +55,7 @@ public class JsonMapObjectDecoderTest {
   @Test
   public void testDecodeMapObjectInvalid() {
     assertNull(JsonMapObjectDecoder.decodeMapObject(null));
-    assertNull(JsonMapObjectDecoder.decodeMapObject(Json.createReader(new ByteArrayInputStream("{}".getBytes())).readObject()));
+    assertNull(JsonMapObjectDecoder.decodeMapObject(Json.createReader(new ByteArrayInputStream("{}".getBytes(StandardCharsets.UTF_8))).readObject()));
     assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{}}");
     assertMapObjectInvalid("{\"type\":\"Feature\", \"properties\":{}}");
     assertMapObjectInvalid("{\"type\":\"Feature\", \"geometry\":{ \"type\":\"bla\"}, \"properties\":{}}");
@@ -80,7 +81,7 @@ public class JsonMapObjectDecoderTest {
 
   private static void assertMapObjectInvalid(String json) {
     assertNull(JsonMapObjectDecoder.decodeMapObject(
-      Json.createReader(new ByteArrayInputStream(json.getBytes())).readObject()
+      Json.createReader(new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))).readObject()
     ));
   }
 

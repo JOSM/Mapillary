@@ -14,6 +14,7 @@ import java.awt.geom.PathIterator;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -161,7 +162,7 @@ public class JsonImageDetectionDecoderTest {
     decodePolygon.setAccessible(true);
     assertNull(decodePolygon.invoke(
       null,
-      Json.createReader(new ByteArrayInputStream("[\"notAnArray\"]".getBytes())).readArray()
+      Json.createReader(new ByteArrayInputStream("[\"notAnArray\"]".getBytes(StandardCharsets.UTF_8))).readArray()
     ));
   }
 
@@ -171,15 +172,15 @@ public class JsonImageDetectionDecoderTest {
     decodeShape.setAccessible(true);
     assertNull(decodeShape.invoke(
       null,
-      Json.createReader(new ByteArrayInputStream("{\"type\":\"Point\"}".getBytes())).readObject()
+      Json.createReader(new ByteArrayInputStream("{\"type\":\"Point\"}".getBytes(StandardCharsets.UTF_8))).readObject()
     ));
     assertNull(decodeShape.invoke(
       null,
-      Json.createReader(new ByteArrayInputStream("{\"type\":\"Polygon\"}".getBytes())).readObject()
+      Json.createReader(new ByteArrayInputStream("{\"type\":\"Polygon\"}".getBytes(StandardCharsets.UTF_8))).readObject()
     ));
     assertNull(decodeShape.invoke(
       null,
-      Json.createReader(new ByteArrayInputStream("{\"type\":\"Polygon\", \"coordinates\":[]}".getBytes())).readObject()
+      Json.createReader(new ByteArrayInputStream("{\"type\":\"Polygon\", \"coordinates\":[]}".getBytes(StandardCharsets.UTF_8))).readObject()
     ));
   }
 
@@ -189,7 +190,7 @@ public class JsonImageDetectionDecoderTest {
     decodeSimplePolygon.setAccessible(true);
     assertNull(decodeSimplePolygon.invoke(
       null,
-      Json.createReader(new ByteArrayInputStream("[\"notAnArray\"]".getBytes())).readArray()
+      Json.createReader(new ByteArrayInputStream("[\"notAnArray\"]".getBytes(StandardCharsets.UTF_8))).readArray()
     ));
   }
 
