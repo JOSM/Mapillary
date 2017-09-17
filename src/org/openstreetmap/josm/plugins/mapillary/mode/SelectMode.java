@@ -122,11 +122,11 @@ public class SelectMode extends AbstractMode {
     if (data.getSelectedImage() == null) {
       return;
     }
-    if (data.getSelectedImage().getTempCa() != data.getSelectedImage().getMovingCa()) {
+    if (!Objects.equals(data.getSelectedImage().getTempCa(), data.getSelectedImage().getMovingCa())) {
       double from = data.getSelectedImage().getTempCa();
       double to = data.getSelectedImage().getMovingCa();
       record.addCommand(new CommandTurn(data.getMultiSelectedImages(), to - from));
-    } else if (data.getSelectedImage().getTempLatLon() != data.getSelectedImage().getMovingLatLon()) {
+    } else if (!Objects.equals(data.getSelectedImage().getTempLatLon(), data.getSelectedImage().getMovingLatLon())) {
       LatLon from = data.getSelectedImage().getTempLatLon();
       LatLon to = data.getSelectedImage().getMovingLatLon();
       record.addCommand(new CommandMove(data.getMultiSelectedImages(), to.getX() - from.getX(), to.getY() - from.getY()));

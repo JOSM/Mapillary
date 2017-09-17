@@ -97,7 +97,7 @@ public class MapillaryExportAction extends JosmAction {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
       MapillaryLayer.getInstance().getData().getImages().stream().filter(img -> img instanceof MapillaryImportedImage).forEach(img -> images.add((MapillaryImportedImage) img));
       try {
-        MainApplication.worker.submit(new MapillaryExportManager(images));
+        MainApplication.worker.execute(new MapillaryExportManager(images));
       } catch (IOException e1) {
         Logging.error(e1);
       }
@@ -112,7 +112,7 @@ public class MapillaryExportAction extends JosmAction {
    *          The set of images to be exported.
    */
   public void export(Set<MapillaryAbstractImage> images) {
-    MainApplication.worker.submit(new MapillaryExportManager(images,
+    MainApplication.worker.execute(new MapillaryExportManager(images,
         this.dialog.chooser.getSelectedFile().toString()));
   }
 

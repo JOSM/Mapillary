@@ -31,18 +31,28 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
 public final class MapObjectLayer extends Layer implements ZoomChangeListener {
+
   public enum STATUS {
     DOWNLOADING(I18n.marktr("Downloading map objects…"), Color.YELLOW),
     COMPLETE(I18n.marktr("All map objects loaded."), Color.GREEN),
     INCOMPLETE(I18n.marktr("Too many map objects, zoom in to see all."), Color.ORANGE),
     FAILED(I18n.marktr("Downloading map objects failed!"), Color.RED);
 
-    public final Color color;
+    private final int colorValue;
     public final String message;
 
     private STATUS(final String message, final Color color) {
-      this.color = color;
+      this.colorValue = color.getRGB();
       this.message = message;
+    }
+
+    /**
+     * Note: The color is stored as int and each time returned as new {@link Color} instance,
+     * because the class {@link Color} is not strictly immutable.
+     * @return the color associated with the current status
+     */
+    public Color getColor() {
+      return new Color(colorValue, true);
     }
   }
 
@@ -155,7 +165,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 
     final STATUS currentStatus = status;
     g.setFont(g.getFont().deriveFont(Font.PLAIN).deriveFont(12f));
-    g.setColor(currentStatus.color);
+    g.setColor(currentStatus.getColor());
     final FontMetrics fm = g.getFontMetrics();
     g.fillRect(0, mv.getHeight() - fm.getAscent() - fm.getDescent(), fm.stringWidth(I18n.tr(currentStatus.message)), fm.getAscent() + fm.getDescent());
     g.setColor(Color.BLACK);

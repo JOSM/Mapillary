@@ -304,6 +304,6 @@ public final class UploadUtils {
    * @param delete   Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    MainApplication.worker.submit(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
+    MainApplication.worker.execute(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
   }
 }

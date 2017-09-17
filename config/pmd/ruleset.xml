@@ -43,6 +43,8 @@
   <rule ref="rulesets/java/strings.xml"/>
   <rule ref="rulesets/java/sunsecure.xml"/>
   <rule ref="rulesets/java/typeresolution.xml"/>
-  <rule ref="rulesets/java/unnecessary.xml"/>
+  <rule ref="rulesets/java/unnecessary.xml">
+    <exclude name="UselessParentheses" />
+  </rule>
   <rule ref="rulesets/java/unusedcode.xml"/>
 </ruleset>

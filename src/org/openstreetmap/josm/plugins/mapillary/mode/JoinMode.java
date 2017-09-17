@@ -49,15 +49,17 @@ public class JoinMode extends AbstractMode {
     } else if (this.lastClick != null
         && highlighted instanceof MapillaryImportedImage) {
       if (
-        (highlighted.previous() == null && this.lastClick.next() == null
-          || highlighted.next() == null && this.lastClick.previous() == null)
+        (
+          (highlighted.previous() == null && this.lastClick.next() == null) ||
+          (highlighted.next() == null && this.lastClick.previous() == null)
+        )
         && highlighted.getSequence() != this.lastClick.getSequence()
       ) {
         MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));
-      } else if (this.lastClick.next() == highlighted
-          || this.lastClick.previous() == highlighted) {
+      } else if (this.lastClick.next() == highlighted || this.lastClick.previous() == highlighted) {
         MapillaryRecord.getInstance().addCommand(
-            new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));
+          new CommandUnjoin(Arrays.asList(this.lastClick, highlighted))
+        );
       }
       this.lastClick = null;
     }

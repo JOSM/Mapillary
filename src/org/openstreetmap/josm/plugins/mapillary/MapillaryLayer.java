@@ -25,7 +25,6 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
@@ -88,7 +87,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (e instanceof DataChangedEvent) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
-        MainApplication.worker.submit(new DelayedDownload());
+        MainApplication.worker.execute(new DelayedDownload());
       }
     });
 
@@ -230,33 +229,31 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @param n the index for picking from the list of "nearest images", beginning from 1
    * @return the n-nearest image to the currently selected image
    */
-  public MapillaryImage getNNearestImage(final int n) {
+  public synchronized MapillaryImage getNNearestImage(final int n) {
     return n >= 1 && n <= nearestImages.length ? nearestImages[n - 1] : null;
   }
 
   @Override
-  public void destroy() {
-    synchronized (MapillaryLayer.class) {
-      setMode(null);
-      MapillaryRecord.getInstance().reset();
-      AbstractMode.resetThread();
-      MapillaryDownloader.stopAll();
-      MapillaryMainDialog.getInstance().setImage(null);
-      MapillaryMainDialog.getInstance().updateImage();
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
-      final MapView mv = MapillaryPlugin.getMapView();
-      if (mv != null) {
-        mv.removeMouseListener(this.mode);
-        mv.removeMouseMotionListener(this.mode);
-      }
-      MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
-      if (MainApplication.getLayerManager().getEditLayer() != null) {
-        MainApplication.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
-      }
-      clearInstance();
-      super.destroy();
+  public synchronized void destroy() {
+    setMode(null);
+    MapillaryRecord.getInstance().reset();
+    AbstractMode.resetThread();
+    MapillaryDownloader.stopAll();
+    MapillaryMainDialog.getInstance().setImage(null);
+    MapillaryMainDialog.getInstance().updateImage();
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
+    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
+    final MapView mv = MapillaryPlugin.getMapView();
+    if (mv != null) {
+      mv.removeMouseListener(this.mode);
+      mv.removeMouseMotionListener(this.mode);
     }
+    MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
+    if (MainApplication.getLayerManager().getEditLayer() != null) {
+      MainApplication.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
+    }
+    clearInstance();
+    super.destroy();
   }
 
   @Override
@@ -299,7 +296,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
     // Draw the blue and red line
-    synchronized (nearestImages) {
+    synchronized (MapillaryLayer.class) {
       final MapillaryAbstractImage selectedImg = data.getSelectedImage();
       for (int i = 0; i < nearestImages.length && selectedImg != null; i++) {
         if (i == 0) {
@@ -512,7 +509,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
     return data.getSequences().parallelStream()
-      .filter(seq -> target.getSequence() == null || seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
+      .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
       .map(seq -> { // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
           .filter(img -> img instanceof MapillaryImage && img.isVisible())
@@ -530,14 +527,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       .toArray(MapillaryImage[]::new);
   }
 
-  private void updateNearestImages() {
+  private synchronized void updateNearestImages() {
     final MapillaryAbstractImage selected = data.getSelectedImage();
     if (selected != null) {
       nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       nearestImages = new MapillaryImage[0];
     }
-    if (Main.main != null) {
+    if (MainApplication.isDisplayingMapView()) {
       MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
       MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
     }
