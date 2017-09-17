@@ -13,7 +13,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -124,9 +123,6 @@ public final class MapillaryDownloader {
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void downloadVisibleArea() {
-    if (getMode() != DOWNLOAD_MODE.VISIBLE_AREA && getMode() != DOWNLOAD_MODE.MANUAL_ONLY) {
-      throw new IllegalStateException("Download mode must be 'visible area' or 'manual only'");
-    }
     Bounds view = MainApplication.getMap().mapView.getRealBounds();
     if (view.getArea() > MAX_AREA) {
       return;
@@ -183,9 +179,6 @@ public final class MapillaryDownloader {
       showOSMAreaTooBigErrorDialog();
       return;
     }
-    if (getMode() != DOWNLOAD_MODE.OSM_AREA) {
-      throw new IllegalStateException("Must be in automatic mode.");
-    }
     MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
       MapillaryLayer.getInstance().getData().getBounds().add(bounds);
       MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
@@ -206,7 +199,6 @@ public final class MapillaryDownloader {
   private static void showOSMAreaTooBigErrorDialog() {
     if (SwingUtilities.isEventDispatchThread()) {
       MapillaryLayer.getInstance().tempSemiautomatic = true;
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), true);
       JOptionPane
         .showMessageDialog(
           Main.parent,

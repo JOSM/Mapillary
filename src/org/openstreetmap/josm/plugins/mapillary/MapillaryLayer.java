@@ -85,7 +85,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   private static final DataSetListenerAdapter DATASET_LISTENER =
     new DataSetListenerAdapter(e -> {
-      if (e instanceof DataChangedEvent) {
+      if (e instanceof DataChangedEvent && MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
         MainApplication.worker.execute(()-> MapillaryDownloader.downloadOSMArea());

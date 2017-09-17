@@ -30,8 +30,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -87,7 +85,6 @@ public class MapillaryPlugin extends Plugin {
       ZOOM_MENU = MainMenu.add(MainApplication.getMenu().viewMenu, ZOOM_ACTION, false, 15);
       ZOOM_MENU.setEnabled(false);
       DOWNLOAD_VIEW_MENU = MainMenu.add(MainApplication.getMenu().fileMenu, DOWNLOAD_VIEW_ACTION, false, 14);
-      DOWNLOAD_VIEW_MENU.setEnabled(false);
       JOIN_MENU = MainMenu.add(MainApplication.getMenu().dataMenu, JOIN_ACTION, false);
       JOIN_MENU.setEnabled(false);
       WALK_MENU = MainMenu.add(MainApplication.getMenu().moreToolsMenu, WALK_ACTION, false);
@@ -113,13 +110,6 @@ public class MapillaryPlugin extends Plugin {
     if (MapillaryProperties.ACCESS_TOKEN.get() == null) {
       MapillaryUser.setTokenValid(false);
     }
-  }
-
-  /**
-   * @return the menu-item associated with the {@link MapillaryDownloadViewAction}
-   */
-  public static JMenuItem getDownloadViewMenu() {
-    return DOWNLOAD_VIEW_MENU;
   }
 
   /**
@@ -198,9 +188,6 @@ public class MapillaryPlugin extends Plugin {
       MainApplication.getMap().addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       MainApplication.getMap().addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       MainApplication.getMap().addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.MANUAL_ONLY) {
-        setMenuEnabled(DOWNLOAD_VIEW_MENU, true);
-      }
     }
     if (oldFrame != null && newFrame == null) { // map frame destroyed
       MapillaryMainDialog.destroyInstance();
@@ -208,7 +195,6 @@ public class MapillaryPlugin extends Plugin {
       MapillaryChangesetDialog.destroyInstance();
       MapillaryFilterDialog.destroyInstance();
       ImageInfoPanel.destroyInstance();
-      setMenuEnabled(DOWNLOAD_VIEW_MENU, false);
     }
   }
 

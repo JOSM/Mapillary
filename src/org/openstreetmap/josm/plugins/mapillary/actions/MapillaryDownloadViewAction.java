@@ -5,8 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -18,7 +21,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @author nokutu
  *
  */
-public class MapillaryDownloadViewAction extends JosmAction {
+public class MapillaryDownloadViewAction extends JosmAction implements ValueChangeListener<String> {
 
   private static final long serialVersionUID = -6837073336175123503L;
   private static final String DESCRIPTION = I18n.marktr("Download Mapillary images in current view");
@@ -39,11 +42,32 @@ public class MapillaryDownloadViewAction extends JosmAction {
       "mapillaryArea",
       false
     );
-    this.setEnabled(false);
+    MapillaryProperties.DOWNLOAD_MODE.addListener(this);
+    initEnabledState();
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
     MapillaryDownloader.downloadVisibleArea();
+  }
+
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.actions.JosmAction#updateEnabledState()
+   */
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(
+      MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA
+      || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY
+    );
+  }
+
+  /* (non-Javadoc)
+   * @see org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener#valueChanged(org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent)
+   */
+  @Override
+  public void valueChanged(ValueChangeEvent<? extends String> e) {
+    updateEnabledState();
   }
 }

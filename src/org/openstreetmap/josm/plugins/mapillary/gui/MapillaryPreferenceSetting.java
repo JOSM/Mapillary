@@ -163,12 +163,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @SuppressWarnings("PMD.ShortMethodName")
   @Override
   public boolean ok() {
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);
     MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());
-    MapillaryPlugin.setMenuEnabled(
-      MapillaryPlugin.getDownloadViewMenu(),
-      DOWNLOAD_MODE.MANUAL_ONLY.getPrefId().equals(MapillaryProperties.DOWNLOAD_MODE.get())
-    );
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
     MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
