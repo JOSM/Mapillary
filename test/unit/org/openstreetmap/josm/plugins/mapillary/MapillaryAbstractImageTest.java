@@ -9,8 +9,8 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.spi.preferences.Config;
 
 public class MapillaryAbstractImageTest extends AbstractTest{
 
@@ -42,9 +42,9 @@ public class MapillaryAbstractImageTest extends AbstractTest{
 
   private static void testGetDate(String expected, MapillaryAbstractImage img,
       boolean isoDates, boolean displayHour, boolean format24) {
-    Main.pref.put("iso.dates", isoDates);
-    Main.pref.put("mapillary.display-hour", displayHour);
-    Main.pref.put("mapillary.format-24", format24);
+    Config.getPref().putBoolean("iso.dates", isoDates);
+    Config.getPref().putBoolean("mapillary.display-hour", displayHour);
+    Config.getPref().putBoolean("mapillary.format-24", format24);
     assertEquals(expected, img.getDate());
   }
 
