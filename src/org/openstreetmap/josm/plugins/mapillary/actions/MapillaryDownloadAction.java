@@ -13,6 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -42,18 +43,24 @@ public class MapillaryDownloadAction extends JosmAction {
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent ae) {
     if (!MapillaryLayer.hasInstance()) {
       // A new mapillary layer is created, so the active layer is not changed
       MapillaryLayer.getInstance();
       return;
     }
-    // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
-    OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
-    if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
-      MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
-    } else if (editLayer != null) {
-      MainApplication.getLayerManager().setActiveLayer(editLayer);
+
+    try {
+      // Successive calls to this action toggle the active layer between the OSM data layer and the mapillary layer
+      OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+      if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
+        MainApplication.getLayerManager().setActiveLayer(MapillaryLayer.getInstance());
+      } else if (editLayer != null) {
+        MainApplication.getLayerManager().setActiveLayer(editLayer);
+      }
+    } catch (IllegalArgumentException e) {
+      // If the MapillaryLayer is not managed by LayerManager but you try to set it as active layer
+      Logging.warn(e);
     }
   }
 }

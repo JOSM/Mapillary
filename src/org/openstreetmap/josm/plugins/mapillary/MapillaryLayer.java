@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
@@ -87,7 +88,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (e instanceof DataChangedEvent) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
-        MainApplication.worker.execute(new DelayedDownload());
+        MainApplication.worker.execute(()-> MapillaryDownloader.downloadOSMArea());
       }
     });
 
@@ -117,11 +118,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Initializes the Layer.
    */
   private void init() {
+    final DataSet ds = MainApplication.getLayerManager().getEditDataSet();
+    if (ds != null) {
+      ds.addDataSetListener(DATASET_LISTENER);
+    }
     MainApplication.getLayerManager().addLayer(this);
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
-    if (MainApplication.getLayerManager().getEditLayer() != null) {
-      MainApplication.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
-    }
     if (!GraphicsEnvironment.isHeadless()) {
       setMode(new SelectMode());
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
@@ -249,8 +251,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       mv.removeMouseMotionListener(this.mode);
     }
     MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
-    if (MainApplication.getLayerManager().getEditLayer() != null) {
-      MainApplication.getLayerManager().getEditLayer().data.removeDataSetListener(DATASET_LISTENER);
+    if (MainApplication.getLayerManager().getEditDataSet() != null) {
+      MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
     }
     clearInstance();
     super.destroy();
@@ -543,24 +545,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (nearestImages.length >= 2) {
         CacheUtils.downloadPicture(nearestImages[1]);
       }
-    }
-  }
-
-  /**
-   * {@link Runnable} that runs a delayed Mapillary download.
-   *
-   * @author nokutu
-   */
-  private static class DelayedDownload implements Runnable {
-
-    @Override
-    public void run() {
-      try {
-        Thread.sleep(1500);
-      } catch (InterruptedException e) {
-        Logging.error(e);
-      }
-      MapillaryDownloader.downloadOSMArea();
     }
   }
 
