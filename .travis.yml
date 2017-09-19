@@ -43,10 +43,8 @@ deploy:
 
 # Deploy to GitHub pages
 after_script: ./.travis/after_script
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - bash <(curl -s https://codecov.io/bash) -c -F model_and_api
+# Upload code coverage data
+after_success: ./.travis/after_success
 
 matrix:
   fast_finish: true
