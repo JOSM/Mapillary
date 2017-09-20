@@ -26,6 +26,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryDownloadAction extends JosmAction {
 
   private static final long serialVersionUID = 325060354730454948L;
+  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT);
 
   /**
    * Main constructor.
@@ -35,7 +36,7 @@ public class MapillaryDownloadAction extends JosmAction {
         tr("Mapillary"),
         new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Create Mapillary layer"),
-        Shortcut.registerShortcut("Mapillary", tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT),
+        SHORTCUT,
         false,
         "mapillaryDownload",
         false
@@ -47,6 +48,9 @@ public class MapillaryDownloadAction extends JosmAction {
     if (!MapillaryLayer.hasInstance()) {
       // A new mapillary layer is created, so the active layer is not changed
       MapillaryLayer.getInstance();
+      return;
+    } else if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+      MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
       return;
     }
 

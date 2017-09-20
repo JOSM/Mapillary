@@ -270,14 +270,14 @@ public final class MapillaryUtils {
     StringBuilder ret = new StringBuilder();
     if (PluginState.isDownloading()) {
       ret.append(I18n.tr("Downloading Mapillary images"));
-    } else if (!MapillaryLayer.getInstance().getData().getImages().isEmpty()) {
+    } else if (MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getData().getImages().isEmpty()) {
       ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
     } else if (PluginState.isSubmittingChangeset()) {
         ret.append(I18n.tr("Submitting Mapillary Changeset"));
     } else {
       ret.append(I18n.tr("No images found"));
     }
-    if (MapillaryLayer.getInstance().mode != null) {
+    if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().mode != null) {
       ret.append(" — ").append(I18n.tr(MapillaryLayer.getInstance().mode.toString()));
     }
     if (PluginState.isUploading()) {

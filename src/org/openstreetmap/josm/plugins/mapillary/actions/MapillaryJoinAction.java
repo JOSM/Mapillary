@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
@@ -27,8 +28,7 @@ public class MapillaryJoinAction extends JosmAction {
    */
   public MapillaryJoinAction() {
     super(tr("Join mode"), new ImageProvider("mapmode", "mapillary-join").setSize(ImageSizes.DEFAULT),
-        tr("Join/unjoin pictures"), null, false, "mapillaryJoin", false);
-    this.setEnabled(false);
+        tr("Join/unjoin pictures"), null, false, "mapillaryJoin", true);
   }
 
   @Override
@@ -38,5 +38,19 @@ public class MapillaryJoinAction extends JosmAction {
     } else {
       MapillaryLayer.getInstance().setMode(new SelectMode());
     }
+  }
+
+  @Override
+  protected boolean listenToSelectionChange() {
+    return false;
+  }
+
+  /**
+   * Enabled when mapillary layer is the active layer
+   */
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer);
   }
 }

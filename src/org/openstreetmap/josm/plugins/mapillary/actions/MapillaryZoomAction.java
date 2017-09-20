@@ -36,9 +36,8 @@ public class MapillaryZoomAction extends JosmAction implements
       null,
       false,
       "mapillaryZoom",
-      false
+      true
     );
-    this.setEnabled(false);
   }
 
   @Override
@@ -51,16 +50,27 @@ public class MapillaryZoomAction extends JosmAction implements
   }
 
   @Override
+  public void imagesAdded() {
+    // Nothing
+  }
+
+  @Override
+  protected boolean listenToSelectionChange() {
+    return false;
+  }
+
+  @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (oldImage == null && newImage != null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), true);
+      setEnabled(true);
     } else if (oldImage != null && newImage == null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
+      setEnabled(false);
     }
   }
 
   @Override
-  public void imagesAdded() {
-    // Nothing
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
   }
 }

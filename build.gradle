@@ -95,6 +95,6 @@ tasks.withType(Javadoc) {
 test {
   testLogging {
     exceptionFormat "full"
-    events "passed", "skipped", "failed"
+    events "started", "passed", "skipped", "failed"
   }
 }

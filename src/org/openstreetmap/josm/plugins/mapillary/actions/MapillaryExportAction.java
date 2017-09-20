@@ -5,7 +5,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,18 +49,18 @@ public class MapillaryExportAction extends JosmAction {
     super(tr("Export pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Export pictures"), Shortcut.registerShortcut("Export Mapillary",
             tr("Export Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
-            Shortcut.NONE), false, "mapillaryExport", false);
+            Shortcut.NONE), false, "mapillaryExport", true);
     this.setEnabled(false);
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent ae) {
     JOptionPane pane = new JOptionPane();
 
     JButton ok = new JButton("Ok");
-    ok.addActionListener(new OKAction(pane));
+    ok.addActionListener(e -> pane.setValue(JOptionPane.OK_OPTION));
     JButton cancel = new JButton(tr("Cancel"));
-    cancel.addActionListener(new CancelAction(pane));
+    cancel.addActionListener(e -> pane.setValue(JOptionPane.CANCEL_OPTION));
 
     this.dialog = new MapillaryExportDialog(ok);
     pane.setMessage(this.dialog);
@@ -116,29 +115,17 @@ public class MapillaryExportAction extends JosmAction {
         this.dialog.chooser.getSelectedFile().toString()));
   }
 
-  private static class OKAction implements ActionListener {
-    private final JOptionPane pane;
-
-    public OKAction(JOptionPane pane) {
-      this.pane = pane;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      this.pane.setValue(JOptionPane.OK_OPTION);
-    }
+  @Override
+  protected boolean listenToSelectionChange() {
+    return false;
   }
 
-  private static class CancelAction implements ActionListener {
-    private final JOptionPane pane;
-
-    public CancelAction(JOptionPane pane) {
-      this.pane = pane;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      this.pane.setValue(JOptionPane.CANCEL_OPTION);
-    }
+  /**
+   * Enabled when mapillary layer is in layer list
+   */
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(MapillaryLayer.hasInstance());
   }
 }

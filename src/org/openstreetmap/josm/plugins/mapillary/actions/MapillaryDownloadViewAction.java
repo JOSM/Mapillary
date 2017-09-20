@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -40,7 +41,7 @@ public class MapillaryDownloadViewAction extends JosmAction implements ValueChan
       ),
       false,
       "mapillaryArea",
-      false
+      true
     );
     MapillaryProperties.DOWNLOAD_MODE.addListener(this);
     initEnabledState();
@@ -51,21 +52,25 @@ public class MapillaryDownloadViewAction extends JosmAction implements ValueChan
     MapillaryDownloader.downloadVisibleArea();
   }
 
-  /* (non-Javadoc)
-   * @see org.openstreetmap.josm.actions.JosmAction#updateEnabledState()
+  @Override
+  protected boolean listenToSelectionChange() {
+    return false;
+  }
+
+  /**
+   * Enabled when the Mapillary layer is instantiated and download mode is either "osm area" or "manual".
    */
   @Override
   protected void updateEnabledState() {
     super.updateEnabledState();
     setEnabled(
-      MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA
-      || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY
+      MapillaryLayer.hasInstance() && (
+        MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA
+        || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY
+      )
     );
   }
 
-  /* (non-Javadoc)
-   * @see org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener#valueChanged(org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent)
-   */
   @Override
   public void valueChanged(ValueChangeEvent<? extends String> e) {
     updateEnabledState();

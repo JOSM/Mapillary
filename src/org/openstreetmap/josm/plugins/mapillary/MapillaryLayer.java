@@ -25,6 +25,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
@@ -37,6 +38,7 @@ import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
@@ -134,8 +136,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Does not execute when in headless mode
-    if (MapillaryPlugin.getExportMenu() != null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), true);
+    if (Main.main != null) {
       if (!MapillaryMainDialog.getInstance().isShowing()) {
         MapillaryMainDialog.getInstance().showDialog();
       }
@@ -177,9 +178,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   private static void clearInstance() {
-    synchronized (MapillaryLayer.class) {
-      instance = null;
-    }
+    instance = null;
   }
 
   /**
@@ -198,10 +197,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * @return if the unique instance of this layer is currently instantiated
+   * @return if the unique instance of this layer is currently instantiated and added to the {@link LayerManager}
    */
   public static boolean hasInstance() {
-    return instance != null;
+    return instance != null && MainApplication.getLayerManager().containsLayer(instance);
   }
 
   /**
@@ -237,14 +236,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public synchronized void destroy() {
+    clearInstance();
     setMode(null);
     MapillaryRecord.getInstance().reset();
     AbstractMode.resetThread();
     MapillaryDownloader.stopAll();
     MapillaryMainDialog.getInstance().setImage(null);
     MapillaryMainDialog.getInstance().updateImage();
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getExportMenu(), false);
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getZoomMenu(), false);
     final MapView mv = MapillaryPlugin.getMapView();
     if (mv != null) {
       mv.removeMouseListener(this.mode);
@@ -254,7 +252,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (MainApplication.getLayerManager().getEditDataSet() != null) {
       MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
     }
-    clearInstance();
     super.destroy();
   }
 
@@ -469,7 +466,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (MainApplication.getLayerManager().getActiveLayer() == this) {
       MapillaryUtils.updateHelpText();
     }
-    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getJoinMenu(), MainApplication.getLayerManager().getActiveLayer() == this);
 
     if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
       if (MainApplication.getLayerManager().getEditLayer() != null) {

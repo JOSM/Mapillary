@@ -27,8 +27,7 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
  * @author nokutu
  *
  */
-public class MapillaryUploadAction extends JosmAction implements
-    MapillaryDataListener {
+public class MapillaryUploadAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = -1405641273676919943L;
 
@@ -37,7 +36,7 @@ public class MapillaryUploadAction extends JosmAction implements
    */
   public MapillaryUploadAction() {
     super(tr("Upload pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Upload Mapillary pictures"), null, false, "mapillaryUpload", false);
+        tr("Upload Mapillary pictures"), null, false, "mapillaryUpload", true);
     this.setEnabled(false);
   }
 
@@ -61,16 +60,32 @@ public class MapillaryUploadAction extends JosmAction implements
     }
   }
 
+  /**
+   * Enabled if a mapillary image is selected.
+   */
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
+  }
+
+  @Override
+  protected boolean listenToSelectionChange() {
+    return false;
+  }
+
   @Override
   public void imagesAdded() {
+    /** Enforced by {@link MapillaryDataListener} */
   }
+
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (oldImage == null && newImage != null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), true);
+      setEnabled(true);
     } else if (oldImage != null && newImage == null) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getUploadMenu(), false);
+      setEnabled(false);
     }
   }
 }

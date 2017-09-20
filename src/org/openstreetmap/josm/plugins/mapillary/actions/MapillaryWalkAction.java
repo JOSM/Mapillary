@@ -15,6 +15,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryWalkDialog;
@@ -31,7 +32,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
 
   private static final long serialVersionUID = 3454223919402245818L;
 
-  private WalkThread thread = null;
+  private WalkThread thread;
   private final List<WalkListener> listeners = new ArrayList<>();
 
   /**
@@ -40,8 +41,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   public MapillaryWalkAction() {
     super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Walk mode"), null,
-        false, "mapillaryWalk", false);
-    this.setEnabled(false);
+        false, "mapillaryWalk", true);
   }
 
   @Override
@@ -98,8 +98,26 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   }
 
   @Override
+  protected boolean listenToSelectionChange() {
+    return false;
+  }
+
+  @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-      MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getWalkMenu(), newImage != null);
+    if (oldImage == null && newImage != null) {
+      setEnabled(true);
+    } else if (oldImage != null && newImage == null) {
+      setEnabled(false);
+    }
+  }
+
+  /**
+   * Enabled when a mapillary image is selected.
+   */
+  @Override
+  protected void updateEnabledState() {
+    super.updateEnabledState();
+    setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
   }
 
 }

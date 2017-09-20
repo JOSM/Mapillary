@@ -84,7 +84,7 @@ public class MapillaryData {
    */
   public void add(MapillaryAbstractImage image, boolean update) {
     images.add(image);
-    if (update) {
+    if (update && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().invalidate();
     }
     fireImagesAdded();
@@ -107,7 +107,7 @@ public class MapillaryData {
    */
   public void addAll(Collection<? extends MapillaryAbstractImage> newImages, boolean update) {
     images.addAll(newImages);
-    if (update) {
+    if (update && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().invalidate();
     }
     fireImagesAdded();
