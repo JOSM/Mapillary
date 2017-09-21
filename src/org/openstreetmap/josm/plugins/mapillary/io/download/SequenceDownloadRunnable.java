@@ -33,11 +33,12 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
   @Override
   public void run(final URLConnection con) throws IOException {
     try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+      final long startTime = System.currentTimeMillis();
       Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(
         reader.readObject(),
         JsonSequencesDecoder::decodeSequence
       );
-      logConnectionInfo(con, sequences.size() + " sequences");
+      logConnectionInfo(con, String.format("%d sequences in %.2f s", sequences.size(), (System.currentTimeMillis() - startTime) / 1000F));
       for (MapillarySequence seq : sequences) {
         if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
           for (MapillaryAbstractImage img : seq.getImages()) {

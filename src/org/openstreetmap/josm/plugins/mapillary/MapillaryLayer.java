@@ -136,10 +136,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Does not execute when in headless mode
-    if (Main.main != null) {
-      if (!MapillaryMainDialog.getInstance().isShowing()) {
-        MapillaryMainDialog.getInstance().showDialog();
-      }
+    if (Main.main != null && !MapillaryMainDialog.getInstance().isShowing()) {
+      MapillaryMainDialog.getInstance().showDialog();
     }
     if (MapillaryPlugin.getMapView() != null) {
       MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();

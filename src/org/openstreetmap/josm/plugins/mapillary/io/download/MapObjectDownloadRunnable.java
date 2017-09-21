@@ -60,7 +60,7 @@ public class MapObjectDownloadRunnable implements Runnable {
         }
         layer.invalidate();
         BoundsDownloadRunnable.logConnectionInfo(con, String.format(
-          "%d map objects in %f seconds",
+          "%d map objects in %.2f s",
           result.size() - prevResultSize,
           (System.currentTimeMillis() - startTime) / 1000f
         ));

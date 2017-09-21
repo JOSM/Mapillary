@@ -38,11 +38,12 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
   @Override
   public void run(final URLConnection con) throws IOException {
     try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+      final long startTime = System.currentTimeMillis();
       Map<String, List<ImageDetection>> detections = JsonDecoder.decodeFeatureCollection(
         reader.readObject(),
         JsonImageDetectionDecoder::decodeImageDetection
       ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));
-      logConnectionInfo(con, detections.size() + " detections");
+      logConnectionInfo(con, String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
       for (Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
         data.getImages().stream()
