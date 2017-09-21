@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -84,8 +83,8 @@ public class MapillaryData {
    */
   public void add(MapillaryAbstractImage image, boolean update) {
     images.add(image);
-    if (update && MapillaryLayer.hasInstance()) {
-      MapillaryLayer.getInstance().invalidate();
+    if (update) {
+      MapillaryLayer.invalidateInstance();
     }
     fireImagesAdded();
   }
@@ -107,8 +106,8 @@ public class MapillaryData {
    */
   public void addAll(Collection<? extends MapillaryAbstractImage> newImages, boolean update) {
     images.addAll(newImages);
-    if (update && MapillaryLayer.hasInstance()) {
-      MapillaryLayer.getInstance().invalidate();
+    if (update) {
+      MapillaryLayer.invalidateInstance();
     }
     fireImagesAdded();
   }
@@ -136,8 +135,7 @@ public class MapillaryData {
         this.multiSelectedImages.add(image);
       }
     }
-    if (Main.main != null)
-      MainApplication.getMap().mapView.repaint();
+    MapillaryLayer.invalidateInstance();
   }
 
   /**
@@ -154,7 +152,7 @@ public class MapillaryData {
         this.multiSelectedImages.add(image);
       }
     });
-    MainApplication.getMap().mapView.repaint();
+    MapillaryLayer.invalidateInstance();
   }
 
   public List<Bounds> getBounds() {
@@ -175,7 +173,7 @@ public class MapillaryData {
     if (image.getSequence() != null) {
       image.getSequence().remove(image);
     }
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   /**
@@ -358,13 +356,11 @@ public class MapillaryData {
         }
       }
     }
-    if (mv != null) {
-      if (zoom && selectedImage != null) {
-        mv.zoomTo(selectedImage.getMovingLatLon());
-      }
-      mv.repaint();
+    if (mv != null && zoom && selectedImage != null) {
+      mv.zoomTo(selectedImage.getMovingLatLon());
     }
     fireSelectedImageChanged(oldImage, this.selectedImage);
+    MapillaryLayer.invalidateInstance();
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {

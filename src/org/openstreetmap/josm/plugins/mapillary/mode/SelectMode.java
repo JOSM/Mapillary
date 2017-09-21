@@ -112,7 +112,7 @@ public class SelectMode extends AbstractMode {
         MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().filter(img -> !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())
                 .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
-      MapillaryLayer.getInstance().invalidate();
+      MapillaryLayer.invalidateInstance();
     }
   }
 
@@ -132,7 +132,7 @@ public class SelectMode extends AbstractMode {
       record.addCommand(new CommandMove(data.getMultiSelectedImages(), to.getX() - from.getX(), to.getY() - from.getY()));
     }
     data.getMultiSelectedImages().parallelStream().filter(Objects::nonNull).forEach(MapillaryAbstractImage::stopMoving);
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   /**
@@ -180,7 +180,7 @@ public class SelectMode extends AbstractMode {
       MapillaryMainDialog.getInstance().setImage(MapillaryLayer.getInstance().getData().getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();
     }
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override

@@ -37,7 +37,7 @@ public class CommandImport extends MapillaryExecutableCommand {
     for (MapillaryAbstractImage img : this.images) {
       MapillaryLayer.getInstance().getData().getImages().remove(img);
     }
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override

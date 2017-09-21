@@ -140,6 +140,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     return instance;
   }
 
+  /**
+   * @return true, iff the singleton instance is present
+   */
+  public static boolean hasInstance() {
+    return instance != null;
+  }
+
   public synchronized void setImageInfoHelp(ImageInfoHelpPopup popup) {
     this.imageInfoHelp = popup;
   }

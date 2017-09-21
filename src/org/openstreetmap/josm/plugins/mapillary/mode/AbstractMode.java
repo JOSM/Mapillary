@@ -85,12 +85,11 @@ public abstract class AbstractMode extends MouseAdapter implements
     @Override
     public void run() {
       while (true) {
-        if (this.moved
-          && Calendar.getInstance().getTimeInMillis() - this.lastDownload >= DOWNLOAD_COOLDOWN) {
+        if (this.moved && Calendar.getInstance().getTimeInMillis() - this.lastDownload >= DOWNLOAD_COOLDOWN) {
           this.lastDownload = Calendar.getInstance().getTimeInMillis();
           MapillaryDownloader.downloadVisibleArea();
           this.moved = false;
-          MapillaryLayer.getInstance().invalidate();
+          MapillaryLayer.invalidateInstance();
         }
         try {
           Thread.sleep(100);

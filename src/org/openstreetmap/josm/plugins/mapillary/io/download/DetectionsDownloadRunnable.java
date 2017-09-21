@@ -52,7 +52,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
     } catch (JsonException e) {
       throw new IOException(e);
     }
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override

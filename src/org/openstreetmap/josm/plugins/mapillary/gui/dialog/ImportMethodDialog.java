@@ -104,7 +104,7 @@ public class ImportMethodDialog extends JDialog {
             JOptionPane.showMessageDialog(this, I18n.tr("Could not import the image ''{0}''!", f.getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
           }
         }
-        MapillaryLayer.getInstance().invalidate();
+        MapillaryLayer.invalidateInstance();
         dispose();
       }
     });
@@ -121,7 +121,7 @@ public class ImportMethodDialog extends JDialog {
         } catch (IOException e1) {
           JOptionPane.showMessageDialog(this, I18n.tr("Could not import the directory ''{0}''!", DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
         }
-        MapillaryLayer.getInstance().invalidate();
+        MapillaryLayer.invalidateInstance();
         dispose();
       }
     });

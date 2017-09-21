@@ -85,7 +85,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
         MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
         MapillaryImportAction.recordChanges(seq.getImages());
       });
-      MapillaryLayer.getInstance().invalidate();
+      MapillaryLayer.invalidateInstance();
       dispose();
     });
     buttonPanel.add(importButton);

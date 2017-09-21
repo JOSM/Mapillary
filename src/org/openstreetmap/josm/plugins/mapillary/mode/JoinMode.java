@@ -63,7 +63,7 @@ public class JoinMode extends AbstractMode {
       }
       this.lastClick = null;
     }
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override
@@ -73,7 +73,7 @@ public class JoinMode extends AbstractMode {
       return;
     MapillaryAbstractImage closestTemp = getClosest(e.getPoint());
     MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);
-    MapillaryLayer.getInstance().invalidate();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override

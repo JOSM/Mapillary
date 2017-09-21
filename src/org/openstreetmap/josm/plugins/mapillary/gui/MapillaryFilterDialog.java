@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
@@ -169,14 +168,18 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * Applies the selected filter.
    */
   public synchronized void refresh() {
-    boolean imported = this.imported.isSelected();
-    boolean downloaded = this.downloaded.isSelected();
-    boolean timeFilter = filterByDateCheckbox.isSelected();
-    boolean onlySigns = this.onlySigns.isSelected();
+    final boolean layerVisible = MapillaryLayer.getInstance().isVisible();
+    final boolean imported = this.imported.isSelected();
+    final boolean downloaded = this.downloaded.isSelected();
+    final boolean timeFilter = filterByDateCheckbox.isSelected();
+    final boolean onlySigns = this.onlySigns.isSelected();
 
     // This predicate returns true is the image should be made invisible
-    Predicate<MapillaryAbstractImage> p =
+    Predicate<MapillaryAbstractImage> shouldHide =
       img -> {
+        if (!layerVisible) {
+          return true;
+        }
         if (timeFilter && checkValidTime(img)) {
           return true;
         }
@@ -198,9 +201,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
         return false;
       };
 
-    MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!p.test(img)));
+    MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!shouldHide.test(img)));
 
-    MainApplication.getMap().repaint();
+    MapillaryLayer.invalidateInstance();
   }
 
   private boolean checkValidTime(MapillaryAbstractImage img) {

@@ -155,6 +155,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     invalidate();
   }
 
+  public static void invalidateInstance() {
+    if (hasInstance()) {
+      getInstance().invalidate();
+    }
+  }
+
   /**
    * Changes the mode the the given one.
    *
@@ -177,7 +183,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
   }
 
-  private static void clearInstance() {
+  private static synchronized void clearInstance() {
     instance = null;
   }
 
@@ -186,14 +192,17 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The unique instance of this class.
    */
-  public static MapillaryLayer getInstance() {
-    synchronized (MapillaryLayer.class) {
-      if (instance == null) {
-        instance = new MapillaryLayer();
-        instance.init();
+  public static synchronized MapillaryLayer getInstance() {
+    if (instance != null) {
+      if (!MainApplication.getLayerManager().containsLayer(instance)) {
+        MainApplication.getLayerManager().addLayer(instance);
       }
       return instance;
     }
+    final MapillaryLayer layer = new MapillaryLayer();
+    instance = layer;
+    layer.init();
+    return layer;
   }
 
   /**
@@ -241,16 +250,22 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     MapillaryRecord.getInstance().reset();
     AbstractMode.resetThread();
     MapillaryDownloader.stopAll();
-    MapillaryMainDialog.getInstance().setImage(null);
-    MapillaryMainDialog.getInstance().updateImage();
+    if (MapillaryMainDialog.hasInstance()) {
+      MapillaryMainDialog.getInstance().setImage(null);
+      MapillaryMainDialog.getInstance().updateImage();
+    }
     final MapView mv = MapillaryPlugin.getMapView();
     if (mv != null) {
       mv.removeMouseListener(this.mode);
       mv.removeMouseMotionListener(this.mode);
     }
-    MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
-    if (MainApplication.getLayerManager().getEditDataSet() != null) {
-      MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
+    try {
+      MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
+      if (MainApplication.getLayerManager().getEditDataSet() != null) {
+        MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
+      }
+    } catch (IllegalArgumentException e) {
+      // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has already been removed.
     }
     super.destroy();
   }
@@ -263,7 +278,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
-    this.data.getImages().parallelStream().forEach(img -> img.setVisible(visible));
+    getData().getImages().parallelStream().forEach(img -> img.setVisible(visible));
     if (MainApplication.getMap() != null) {
       MapillaryFilterDialog.getInstance().refresh();
     }

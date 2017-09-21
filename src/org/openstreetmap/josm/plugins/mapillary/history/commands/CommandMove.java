@@ -5,9 +5,8 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.Set;
 
-import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 
 /**
  * Command created when an image's position is changed.
@@ -42,8 +41,7 @@ public class CommandMove extends MapillaryCommand {
       image.move(-this.x, -this.y);
       image.stopMoving();
     }
-    if (Main.main != null)
-      MainApplication.getMap().repaint();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override
@@ -52,8 +50,7 @@ public class CommandMove extends MapillaryCommand {
       image.move(this.x, this.y);
       image.stopMoving();
     }
-    if (Main.main != null)
-      MainApplication.getMap().repaint();
+    MapillaryLayer.invalidateInstance();
   }
 
   @Override
