@@ -14,16 +14,21 @@ import javax.swing.Icon;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-public class MapObjectLayerTest extends AbstractTest {
+public class MapObjectLayerTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
 
   private static Field urlGen;
   private static Object urlGenValue;

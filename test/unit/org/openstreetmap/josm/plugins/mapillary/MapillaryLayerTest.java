@@ -8,15 +8,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapillaryLayerTest extends AbstractTest {
-  private final Layer dummyLayer = ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
+public class MapillaryLayerTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().main().preferences().projection();
+
+  private static Layer getDummyLayer() {
+    return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
+  }
 
   @Test
   public void testGetIcon() {
@@ -25,12 +34,12 @@ public class MapillaryLayerTest extends AbstractTest {
 
   @Test
   public void testIsMergable() {
-    assertFalse(MapillaryLayer.getInstance().isMergable(dummyLayer));
+    assertFalse(MapillaryLayer.getInstance().isMergable(getDummyLayer()));
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void testMergeFrom() {
-    MapillaryLayer.getInstance().mergeFrom(dummyLayer);
+    MapillaryLayer.getInstance().mergeFrom(getDummyLayer());
   }
 
   @Test
@@ -64,7 +73,7 @@ public class MapillaryLayerTest extends AbstractTest {
   public void testClearInstance() {
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());
-    MapillaryLayer.getInstance().destroy();
+    JOSMTestRules.cleanLayerEnvironment();
     assertFalse(MapillaryLayer.hasInstance());
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());

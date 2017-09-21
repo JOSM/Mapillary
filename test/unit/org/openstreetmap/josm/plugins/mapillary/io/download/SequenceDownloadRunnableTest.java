@@ -8,16 +8,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Function;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class SequenceDownloadRunnableTest extends AbstractTest {
+public class SequenceDownloadRunnableTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
 
   private static final Function<Bounds, URL> SEARCH_SEQUENCES_URL_GEN = b -> {
     return SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json");
@@ -30,6 +37,11 @@ public class SequenceDownloadRunnableTest extends AbstractTest {
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 
     urlGenField = TestUtil.getAccessibleField(SequenceDownloadRunnable.class, "URL_GEN");
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    MainApplication.getLayerManager().resetState();
   }
 
   @Test

@@ -7,12 +7,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.TimeZone;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.spi.preferences.Config;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapillaryAbstractImageTest extends AbstractTest{
+public class MapillaryAbstractImageTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
 
   /**
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.

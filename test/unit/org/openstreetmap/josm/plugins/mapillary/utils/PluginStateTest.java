@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import org.openstreetmap.josm.Main;
+
 /**
  * Tests {@link PluginState} class.
  *
@@ -34,6 +36,7 @@ public class PluginStateTest {
    */
   @Test
   public void uploadTest() {
+    Main.main = null;
     assertEquals(false, PluginState.isUploading());
     PluginState.addImagesToUpload(2);
     assertEquals(2, PluginState.getImagesToUpload());

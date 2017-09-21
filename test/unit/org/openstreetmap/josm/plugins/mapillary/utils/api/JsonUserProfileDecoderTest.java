@@ -17,23 +17,26 @@ import java.nio.file.Paths;
 
 import javax.json.Json;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 public class JsonUserProfileDecoderTest {
-  private static final Object FAKE_AVATAR;
 
-  static {
-    Object fakeAvatar;
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().preferences();
+
+  public static Object getFakeAvatar() {
     try {
-      fakeAvatar = TestUtil.getAccessibleField(JsonUserProfileDecoder.class, "FAKE_AVATAR").get(null);
+      return TestUtil.getAccessibleField(JsonUserProfileDecoder.class, "FAKE_AVATAR").get(null);
     } catch (IllegalArgumentException | IllegalAccessException e) {
-      fakeAvatar = null;
+      return null;
     }
-    FAKE_AVATAR = fakeAvatar;
   }
 
   @Test
@@ -63,7 +66,7 @@ public class JsonUserProfileDecoderTest {
     assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
     assertEquals("gyllen", profile.getUsername());
     assertNotNull(profile.getAvatar());
-    assertFalse(FAKE_AVATAR == profile.getAvatar());
+    assertFalse(getFakeAvatar() == profile.getAvatar());
   }
 
   @Test
@@ -71,7 +74,7 @@ public class JsonUserProfileDecoderTest {
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile2.json")).readObject());
     assertEquals("abcdefg1", profile.getKey());
     assertEquals("mapillary_userÄ2!", profile.getUsername());
-    assertTrue(FAKE_AVATAR == profile.getAvatar());
+    assertTrue(getFakeAvatar() == profile.getAvatar());
   }
 
   @Test
@@ -81,9 +84,9 @@ public class JsonUserProfileDecoderTest {
     assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
 
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\"}"));
-    assertTrue(FAKE_AVATAR == profile.getAvatar());
+    assertTrue(getFakeAvatar() == profile.getAvatar());
 
     profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"https://127.0.0.1/nonExistingAvatarFile\"}"));
-    assertTrue(FAKE_AVATAR == profile.getAvatar());
+    assertTrue(getFakeAvatar() == profile.getAvatar());
   }
 }

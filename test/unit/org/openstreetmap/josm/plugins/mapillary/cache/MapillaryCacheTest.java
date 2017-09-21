@@ -5,12 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Rule;
 import org.junit.Test;
 
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapillaryCacheTest extends AbstractTest {
+public class MapillaryCacheTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   @Test
   public void test() {

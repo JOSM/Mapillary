@@ -19,7 +19,6 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -30,7 +29,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @author nokutu
  * @see UploadUtils
  */
-public class UploadTest extends AbstractTest {
+public class UploadTest {
 
   /**
    * Tests the {@link UploadUtils#updateFile(MapillaryImportedImage)} method.

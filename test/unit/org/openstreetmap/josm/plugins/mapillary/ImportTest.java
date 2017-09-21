@@ -20,7 +20,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
  * @author nokutu
  *
  */
-public class ImportTest extends AbstractTest {
+public class ImportTest {
 
   /**
    * Test the importation of images in PNG format.

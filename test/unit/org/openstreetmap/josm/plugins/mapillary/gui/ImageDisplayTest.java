@@ -12,12 +12,10 @@ import javax.swing.JFrame;
 
 import org.junit.Test;
 
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
-
 /**
  * Tests {@link MapillaryImageDisplay}
  */
-public class ImageDisplayTest extends AbstractTest {
+public class ImageDisplayTest {
 
   private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 

@@ -10,18 +10,23 @@ import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class JsonImageDetailsDecoderTest extends AbstractTest {
+public class JsonImageDetailsDecoderTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform().preferences();
 
   @Test
   public void testUtilityClass() {

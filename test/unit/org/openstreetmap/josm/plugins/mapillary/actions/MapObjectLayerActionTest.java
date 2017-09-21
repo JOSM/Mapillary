@@ -4,11 +4,17 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 public class MapObjectLayerActionTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
 
   @Before
   public void resetLayers() {

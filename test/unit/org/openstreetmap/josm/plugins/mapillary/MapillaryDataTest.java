@@ -7,9 +7,12 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Tests for {@link MapillaryData} class.
@@ -17,7 +20,10 @@ import org.openstreetmap.josm.data.coor.LatLon;
  * @author nokutu
  * @see MapillaryData
  */
-public class MapillaryDataTest extends AbstractTest {
+public class MapillaryDataTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
 
   private MapillaryData data;
   private MapillaryImage img1;

@@ -10,10 +10,10 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.AbstractTest;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -25,13 +25,18 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Tests the command record system.
  *
  * @author nokutu
  */
-public class MapillaryRecordTest extends AbstractTest {
+public class MapillaryRecordTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   private MapillaryRecord record;
   private MapillaryImage img1;
@@ -48,7 +53,9 @@ public class MapillaryRecordTest extends AbstractTest {
     img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 0.1);
     img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 0.2);
     img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 0.3);
-    MapillaryLayer.getInstance().getData().getImages().clear();
+    if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getImages().size() >= 1) {
+      MapillaryLayer.getInstance().getData().getImages().clear();
+    }
   }
 
   /**

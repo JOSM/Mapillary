@@ -11,30 +11,45 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Function;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 public class MapObjectTest {
 
-  private static final MapObject MO_1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
-  private static final MapObject MO_2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0, 0);
-  private static final MapObject MO_3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
-  private static final MapObject MO_NULL_KEY = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
-  private static final MapObject MO_NULL_KEY2 = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().platform();
+
+  private static MapObject mo1;
+  private static MapObject mo2;
+  private static MapObject mo3;
+  private static MapObject moNullKey;
+  private static MapObject moNullKey2;
 
   private static Field iconUrlGen;
   private static Object iconUrlGenValue;
 
-  @BeforeClass
-  public static void setUp() throws IllegalArgumentException, IllegalAccessException {
+  public static void initMapObjects() {
+    mo1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
+    mo2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0, 0);
+    mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
+    moNullKey = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
+    moNullKey2 = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
+  }
+
+  @Before
+  public void setUp() throws IllegalArgumentException, IllegalAccessException {
+    initMapObjects();
     // Sets the keys of the null-key-constants to null
     Field keyField = TestUtil.getAccessibleField(KeyIndexedObject.class, "key");
-    keyField.set(MO_NULL_KEY, null);
-    keyField.set(MO_NULL_KEY2, null);
+    keyField.set(moNullKey, null);
+    keyField.set(moNullKey2, null);
 
     // Replace function for generating icon URLs with one that searches the local resources for files
     // If a resource can't be found, return an invalid URL
@@ -53,8 +68,8 @@ public class MapObjectTest {
     }));
   }
 
-  @AfterClass
-  public static void cleanUp() throws IllegalArgumentException, IllegalAccessException {
+  @After
+  public void cleanUp() throws IllegalArgumentException, IllegalAccessException {
     iconUrlGen.set(null, iconUrlGenValue);
   }
 
@@ -100,15 +115,15 @@ public class MapObjectTest {
   @Test
   @SuppressWarnings({ "PMD.EqualsNull", "PMD.PositionLiteralsFirstInComparisons" })
   public void testEquals() throws SecurityException, IllegalArgumentException {
-    assertEquals(MO_NULL_KEY2.hashCode(), MO_NULL_KEY.hashCode());
-    assertTrue(MO_1.equals(MO_1));
-    assertFalse(MO_1.equals(null));
-    assertFalse(MO_1.equals(""));
-    assertFalse(MO_NULL_KEY.equals(MO_1));
-    assertTrue(MO_NULL_KEY.equals(MO_NULL_KEY2));
-    assertFalse(MO_1.equals(MO_2));
-    assertTrue(MO_1.equals(MO_3));
-    assertEquals(MO_1.hashCode(), MO_3.hashCode());
+    assertEquals(moNullKey2.hashCode(), moNullKey.hashCode());
+    assertTrue(mo1.equals(mo1));
+    assertFalse(mo1.equals(null));
+    assertFalse(mo1.equals(""));
+    assertFalse(moNullKey.equals(mo1));
+    assertTrue(moNullKey.equals(moNullKey2));
+    assertFalse(mo1.equals(mo2));
+    assertTrue(mo1.equals(mo3));
+    assertEquals(mo1.hashCode(), mo3.hashCode());
   }
 
 }
