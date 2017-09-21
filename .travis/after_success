@@ -1,5 +1,7 @@
-#!/usr/bin/env sh
-if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_PULL_REQUEST" -ne false  ] || [ "$TRAVIS_TAG" -ne false  ]; then
-  bash <(curl -s https://codecov.io/bash)
-  bash <(curl -s https://codecov.io/bash) -c -F model_and_api
+#!/usr/bin/env bash
+if [ "$TRAVIS_PULL_REQUEST" != "" ] && [ "$TRAVIS_TAG" != ""  ]; then
+  if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_PULL_REQUEST" != "false"  ] || [ "$TRAVIS_TAG" != "false"  ]; then
+    bash <(curl -s https://codecov.io/bash)
+    bash <(curl -s https://codecov.io/bash) -c -F model_and_api
+  fi
 fi
