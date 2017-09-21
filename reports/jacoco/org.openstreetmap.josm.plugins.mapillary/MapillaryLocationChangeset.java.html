@@ -15,8 +15,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener
 <span class="fc" id="L15">  private final Set&lt;MapillaryImage&gt; changeset = Collections.newSetFromMap(new ConcurrentHashMap&lt;&gt;());</span>
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
-<span class="nc" id="L18">    this.listeners.add(listener);</span>
-<span class="nc" id="L19">  }</span>
+<span class="fc" id="L18">    this.listeners.add(listener);</span>
+<span class="fc" id="L19">  }</span>
 
   public void cleanChangeset() {
 <span class="nc" id="L22">    changeset.clear();</span>
@@ -41,7 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener
 
   @Override
   public int size() {
-<span class="nc" id="L44">    return changeset.size();</span>
+<span class="fc" id="L44">    return changeset.size();</span>
   }
 
   @Override

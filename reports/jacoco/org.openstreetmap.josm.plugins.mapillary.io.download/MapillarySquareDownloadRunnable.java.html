@@ -49,7 +49,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 <span class="nc" id="L49">    }</span>
 
 <span class="nc" id="L51">    MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L52">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L52">    MapillaryLayer.invalidateInstance();</span>
 <span class="nc" id="L53">    MapillaryFilterDialog.getInstance().refresh();</span>
 <span class="nc" id="L54">    MapillaryMainDialog.getInstance().updateImage();</span>
 <span class="nc" id="L55">  }</span>

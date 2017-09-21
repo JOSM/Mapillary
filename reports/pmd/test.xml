@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.1" timestamp="2017-09-16T18:30:23.458">
-<file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/AbstractTest.java">
-<violation beginline="18" endline="28" begincolumn="17" endcolumn="1" rule="AbstractClassWithoutAbstractMethod" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="AbstractTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AbstractClassWithoutAbstractMethod" priority="3">
-This abstract class does not have any abstract methods
-</violation>
-</file>
+<pmd version="5.8.1" timestamp="2017-09-21T18:44:47.647">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.java">
-<violation beginline="59" endline="59" begincolumn="77" endcolumn="89" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
-The String literal &quot;loginButton&quot; appears 4 times in this file; the first occurrence is on line 59
+<violation beginline="64" endline="64" begincolumn="77" endcolumn="89" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+The String literal &quot;loginButton&quot; appears 4 times in this file; the first occurrence is on line 64
 </violation>
-<violation beginline="61" endline="61" begincolumn="57" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
-The String literal &quot;loginPanel&quot; appears 4 times in this file; the first occurrence is on line 61
+<violation beginline="66" endline="66" begincolumn="57" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testLoginLogout" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+The String literal &quot;loginPanel&quot; appears 4 times in this file; the first occurrence is on line 66
 </violation>
-<violation beginline="79" endline="79" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
-The String literal &quot;arbitrary&quot; appears 5 times in this file; the first occurrence is on line 79
+<violation beginline="84" endline="84" begincolumn="65" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+The String literal &quot;arbitrary&quot; appears 5 times in this file; the first occurrence is on line 84
 </violation>
-<violation beginline="79" endline="79" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
-The String literal &quot;default&quot; appears 6 times in this file; the first occurrence is on line 79
+<violation beginline="84" endline="84" begincolumn="50" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" method="testOk" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals" priority="3">
+The String literal &quot;default&quot; appears 6 times in this file; the first occurrence is on line 84
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/history/MapillaryRecordTest.java">
-<violation beginline="232" endline="234" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="239" endline="241" begincolumn="7" endcolumn="5" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.openstreetmap.josm.plugins.mapillary.history" class="MapillaryRecordTest" method="commandUnjoinClass" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -82,7 +77,7 @@ Too many static imports may lead to messy code
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/utils/api/JsonUserProfileDecoderTest.java">
-<violation beginline="2" endline="89" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
+<violation beginline="2" endline="92" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.utils.api" class="JsonUserProfileDecoderTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#TooManyStaticImports" priority="3">
 Too many static imports may lead to messy code
 </violation>
 </file>

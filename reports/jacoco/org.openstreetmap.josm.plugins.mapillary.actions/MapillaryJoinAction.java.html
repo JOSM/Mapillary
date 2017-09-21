@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.awt.event.ActionEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
@@ -26,10 +27,9 @@ public class MapillaryJoinAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryJoinAction() {
-<span class="fc" id="L29">    super(tr(&quot;Join mode&quot;), new ImageProvider(&quot;mapmode&quot;, &quot;mapillary-join&quot;).setSize(ImageSizes.DEFAULT),</span>
-<span class="fc" id="L30">        tr(&quot;Join/unjoin pictures&quot;), null, false, &quot;mapillaryJoin&quot;, false);</span>
-<span class="fc" id="L31">    this.setEnabled(false);</span>
-<span class="fc" id="L32">  }</span>
+<span class="nc" id="L30">    super(tr(&quot;Join mode&quot;), new ImageProvider(&quot;mapmode&quot;, &quot;mapillary-join&quot;).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L31">        tr(&quot;Join/unjoin pictures&quot;), null, false, &quot;mapillaryJoin&quot;, true);</span>
+<span class="nc" id="L32">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
@@ -39,5 +39,19 @@ public class MapillaryJoinAction extends JosmAction {
 <span class="nc" id="L39">      MapillaryLayer.getInstance().setMode(new SelectMode());</span>
     }
 <span class="nc" id="L41">  }</span>
+
+  @Override
+  protected boolean listenToSelectionChange() {
+<span class="nc" id="L45">    return false;</span>
+  }
+
+  /**
+   * Enabled when mapillary layer is the active layer
+   */
+  @Override
+  protected void updateEnabledState() {
+<span class="nc" id="L53">    super.updateEnabledState();</span>
+<span class="nc" id="L54">    setEnabled(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer);</span>
+<span class="nc" id="L55">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">1.844s</div>
+<div class="counter">1.833s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,6 +66,9 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
+<li>
+<a href="#tab2">Standard error</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -79,22 +82,22 @@
 </thead>
 <tr>
 <td class="success">testAddGui</td>
-<td>0.372s</td>
+<td>0.433s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testIsExpert</td>
-<td>0.007s</td>
+<td>0.190s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testLoginLogout</td>
-<td>1.279s</td>
+<td>0.811s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testOk</td>
-<td>0.186s</td>
+<td>0.399s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -102,39 +105,685 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>2017-09-16 17:07:34.675 INFO: Defaults for mapillary.display-hour differ: default != true
-2017-09-16 17:07:34.676 INFO: Defaults for mapillary.format-24 differ: default != true
-2017-09-16 17:07:34.677 INFO: Defaults for mapillary.move-to-picture differ: default != true
-2017-09-16 17:07:34.678 INFO: Defaults for mapillary.hover-enabled differ: default != true
-2017-09-16 17:07:34.679 INFO: Defaults for mapillary.download-mode differ: default != osmArea
-2017-09-16 17:07:34.680 INFO: Defaults for mapillary.download-mode differ: osmArea != default
-2017-09-16 17:07:34.682 INFO: Defaults for mapillary.display-hour differ: false != default
-2017-09-16 17:07:34.683 INFO: Defaults for mapillary.format-24 differ: false != default
-2017-09-16 17:07:34.686 INFO: Defaults for mapillary.move-to-picture differ: false != default
-2017-09-16 17:07:34.687 INFO: Defaults for mapillary.hover-enabled differ: false != default
-2017-09-16 17:07:34.692 INFO: Defaults for mapillary.display-hour differ: true != false
-2017-09-16 17:07:34.693 INFO: Defaults for mapillary.format-24 differ: true != false
-2017-09-16 17:07:34.693 INFO: Defaults for mapillary.move-to-picture differ: true != false
-2017-09-16 17:07:34.694 INFO: Defaults for mapillary.hover-enabled differ: true != false
-2017-09-16 17:07:34.695 INFO: Defaults for mapillary.download-mode differ: default != osmArea
-2017-09-16 17:07:34.780 INFO: Defaults for mapillary.download-mode differ: osmArea != default
-2017-09-16 17:07:34.781 INFO: Defaults for mapillary.download-mode differ: default != osmArea
-2017-09-16 17:07:34.784 INFO: Defaults for mapillary.download-mode differ: osmArea != default
-2017-09-16 17:07:34.789 INFO: Defaults for mapillary.download-mode differ: default != osmArea
-2017-09-16 17:07:35.679 INFO: Defaults for draw.rawgps.layer.wpt.pattern differ: ?{ '{name} ({desc})' | '{name} ({cmt})' | '{name}' | '{desc}' | '{cmt}' } != 
-2017-09-16 17:07:35.685 INFO: Defaults for draw.rawgps.layer.audiowpt.pattern differ: ?{ '{name}' | '{desc}' | '{formattedWaypointOffset}' } != 
-2017-09-16 17:07:35.846 FINE: Errors
-2017-09-16 17:07:35.847 FINE: Warnings
-2017-09-16 17:07:35.848 FINE: Other
-2017-09-16 17:07:35.936 INFO: Defaults for language differ:  != en
-2017-09-16 17:07:35.989 FINEST: Enforcing image transparency of javax.imageio.stream.FileCacheImageInputStream@18e126a0 for java.awt.Color[r=0,g=0,b=0]
-2017-09-16 17:07:35.993 FINE: Transparency has been forced for image jar:file:/home/travis/.gradle/caches/modules-2/files-2.1/org.openstreetmap.josm/josm/12866/5ede264ff62460bc602a25e818d17036176c0e5/josm-12866.jar!/images/preferences/toolbar.png
-2017-09-16 17:07:36.070 INFO: Defaults for mapillary.download-mode differ: osmArea != default
-2017-09-16 17:07:36.076 FINEST: createImageFromSvg: file:/home/travis/build/JOSM/Mapillary/build/resources/main/images/mapillary-logo.svg java.awt.Dimension[width=12,height=12]
-2017-09-16 17:07:36.112 INFO: Registered toolbar action help overwritten: org.openstreetmap.josm.actions.HelpAction gets org.openstreetmap.josm.actions.HelpAction
-2017-09-16 17:07:36.353 FINE: Errors
-2017-09-16 17:07:36.353 FINE: Warnings
-2017-09-16 17:07:36.379 FINE: Other
+<pre>2017-09-21 18:45:07.532 INFO: Keystroke ctrl pressed N is already assigned to org.openstreetmap.josm.actions.NewAction@2876cd9d, will be overridden by org.openstreetmap.josm.actions.NewAction@58b93046
+2017-09-21 18:45:07.533 INFO: Registered toolbar action new overwritten: org.openstreetmap.josm.actions.NewAction gets org.openstreetmap.josm.actions.NewAction
+2017-09-21 18:45:07.533 INFO: Keystroke ctrl pressed O is already assigned to org.openstreetmap.josm.actions.OpenFileAction@3342f595, will be overridden by org.openstreetmap.josm.actions.OpenFileAction@3f3a013
+2017-09-21 18:45:07.533 INFO: Registered toolbar action open overwritten: org.openstreetmap.josm.actions.OpenFileAction gets org.openstreetmap.josm.actions.OpenFileAction
+2017-09-21 18:45:07.533 INFO: Keystroke ctrl pressed L is already assigned to org.openstreetmap.josm.actions.OpenLocationAction@609719ee, will be overridden by org.openstreetmap.josm.actions.OpenLocationAction@6e23a8b7
+2017-09-21 18:45:07.534 INFO: Registered toolbar action openlocation overwritten: org.openstreetmap.josm.actions.OpenLocationAction gets org.openstreetmap.josm.actions.OpenLocationAction
+2017-09-21 18:45:07.534 INFO: Keystroke ctrl pressed F4 is already assigned to org.openstreetmap.josm.actions.DeleteLayerAction@563541fb, will be overridden by org.openstreetmap.josm.actions.DeleteLayerAction@2e0108b3
+2017-09-21 18:45:07.534 INFO: Registered toolbar action delete-layer overwritten: org.openstreetmap.josm.actions.DeleteLayerAction gets org.openstreetmap.josm.actions.DeleteLayerAction
+2017-09-21 18:45:07.534 INFO: Keystroke ctrl pressed E is already assigned to org.openstreetmap.josm.actions.GpxExportAction@48b17485, will be overridden by org.openstreetmap.josm.actions.GpxExportAction@3f2b2635
+2017-09-21 18:45:07.534 INFO: Registered toolbar action exportgpx overwritten: org.openstreetmap.josm.actions.GpxExportAction gets org.openstreetmap.josm.actions.GpxExportAction
+2017-09-21 18:45:07.535 INFO: Keystroke shift ctrl pressed DOWN is already assigned to org.openstreetmap.josm.actions.DownloadAction@6cfbde5b, will be overridden by org.openstreetmap.josm.actions.DownloadAction@2146fafb
+2017-09-21 18:45:07.535 INFO: Registered toolbar action download overwritten: org.openstreetmap.josm.actions.DownloadAction gets org.openstreetmap.josm.actions.DownloadAction
+2017-09-21 18:45:07.535 INFO: Keystroke shift ctrl pressed O is already assigned to org.openstreetmap.josm.actions.DownloadPrimitiveAction@34fbe243, will be overridden by org.openstreetmap.josm.actions.DownloadPrimitiveAction@52538874
+2017-09-21 18:45:07.535 INFO: Registered toolbar action downloadprimitive overwritten: org.openstreetmap.josm.actions.DownloadPrimitiveAction gets org.openstreetmap.josm.actions.DownloadPrimitiveAction
+2017-09-21 18:45:07.535 INFO: Keystroke ctrl alt pressed D is already assigned to org.openstreetmap.josm.actions.DownloadReferrersAction@483d47be, will be overridden by org.openstreetmap.josm.actions.DownloadReferrersAction@74b1561d
+2017-09-21 18:45:07.535 INFO: Registered toolbar action downloadreferrers overwritten: org.openstreetmap.josm.actions.DownloadReferrersAction gets org.openstreetmap.josm.actions.DownloadReferrersAction
+2017-09-21 18:45:07.536 INFO: Keystroke ctrl alt pressed Q is already assigned to org.openstreetmap.josm.actions.CloseChangesetAction@b6b1760, will be overridden by org.openstreetmap.josm.actions.CloseChangesetAction@124ddc30
+2017-09-21 18:45:07.536 INFO: Registered toolbar action closechangeset overwritten: org.openstreetmap.josm.actions.CloseChangesetAction gets org.openstreetmap.josm.actions.CloseChangesetAction
+2017-09-21 18:45:07.536 INFO: Keystroke ctrl pressed U is already assigned to org.openstreetmap.josm.actions.UpdateDataAction@39d00950, will be overridden by org.openstreetmap.josm.actions.UpdateDataAction@4ca6da0
+2017-09-21 18:45:07.536 INFO: Registered toolbar action updatedata overwritten: org.openstreetmap.josm.actions.UpdateDataAction gets org.openstreetmap.josm.actions.UpdateDataAction
+2017-09-21 18:45:07.536 INFO: Keystroke ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UpdateSelectionAction@52d21dd3, will be overridden by org.openstreetmap.josm.actions.UpdateSelectionAction@4a145565
+2017-09-21 18:45:07.537 INFO: Registered toolbar action updateselection overwritten: org.openstreetmap.josm.actions.UpdateSelectionAction gets org.openstreetmap.josm.actions.UpdateSelectionAction
+2017-09-21 18:45:07.537 INFO: Keystroke ctrl alt pressed M is already assigned to org.openstreetmap.josm.actions.UpdateModifiedAction@70f0b080, will be overridden by org.openstreetmap.josm.actions.UpdateModifiedAction@346bf384
+2017-09-21 18:45:07.537 INFO: Registered toolbar action updatemodified overwritten: org.openstreetmap.josm.actions.UpdateModifiedAction gets org.openstreetmap.josm.actions.UpdateModifiedAction
+2017-09-21 18:45:07.537 INFO: Keystroke shift ctrl pressed UP is already assigned to org.openstreetmap.josm.actions.UploadAction@23f369e9, will be overridden by org.openstreetmap.josm.actions.UploadAction@48bb1565
+2017-09-21 18:45:07.537 INFO: Registered toolbar action upload overwritten: org.openstreetmap.josm.actions.UploadAction gets org.openstreetmap.josm.actions.UploadAction
+2017-09-21 18:45:07.537 INFO: Keystroke shift ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UploadSelectionAction@1ad07e4e, will be overridden by org.openstreetmap.josm.actions.UploadSelectionAction@1f4bc6bf
+2017-09-21 18:45:07.538 INFO: Registered toolbar action uploadselection overwritten: org.openstreetmap.josm.actions.UploadSelectionAction gets org.openstreetmap.josm.actions.UploadSelectionAction
+2017-09-21 18:45:07.538 INFO: Keystroke shift ctrl alt pressed J is already assigned to org.openstreetmap.josm.actions.RestartAction@58aed442, will be overridden by org.openstreetmap.josm.actions.RestartAction@779c174e
+2017-09-21 18:45:07.538 INFO: Registered toolbar action action/restart overwritten: org.openstreetmap.josm.actions.RestartAction gets org.openstreetmap.josm.actions.RestartAction
+2017-09-21 18:45:07.538 INFO: Keystroke ctrl pressed Q is already assigned to org.openstreetmap.josm.actions.ExitAction@2daf0b67, will be overridden by org.openstreetmap.josm.actions.ExitAction@1c802dea
+2017-09-21 18:45:07.538 INFO: Registered toolbar action exit overwritten: org.openstreetmap.josm.actions.ExitAction gets org.openstreetmap.josm.actions.ExitAction
+2017-09-21 18:45:07.539 INFO: Keystroke ctrl pressed Z is already assigned to org.openstreetmap.josm.actions.UndoAction@15ab831a, will be overridden by org.openstreetmap.josm.actions.UndoAction@c800322
+2017-09-21 18:45:07.539 INFO: Registered toolbar action undo overwritten: org.openstreetmap.josm.actions.UndoAction gets org.openstreetmap.josm.actions.UndoAction
+2017-09-21 18:45:07.539 INFO: Keystroke ctrl pressed Y is already assigned to org.openstreetmap.josm.actions.RedoAction@c90adef, will be overridden by org.openstreetmap.josm.actions.RedoAction@4d3f4233
+2017-09-21 18:45:07.539 INFO: Registered toolbar action redo overwritten: org.openstreetmap.josm.actions.RedoAction gets org.openstreetmap.josm.actions.RedoAction
+2017-09-21 18:45:07.539 INFO: Keystroke ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyAction@223264fb, will be overridden by org.openstreetmap.josm.actions.CopyAction@5a0e1abd
+2017-09-21 18:45:07.540 INFO: Registered toolbar action copy overwritten: org.openstreetmap.josm.actions.CopyAction gets org.openstreetmap.josm.actions.CopyAction
+2017-09-21 18:45:07.540 INFO: Keystroke ctrl pressed INSERT is already assigned to org.openstreetmap.josm.actions.CopyAction@223264fb, will be overridden by org.openstreetmap.josm.actions.CopyAction@5a0e1abd
+2017-09-21 18:45:07.540 INFO: Keystroke shift ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyCoordinatesAction@7713b7e9, will be overridden by org.openstreetmap.josm.actions.CopyCoordinatesAction@47fc936b
+2017-09-21 18:45:07.540 INFO: Keystroke ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteAction@3ee95942, will be overridden by org.openstreetmap.josm.actions.PasteAction@4b6901a5
+2017-09-21 18:45:07.540 INFO: Registered toolbar action paste overwritten: org.openstreetmap.josm.actions.PasteAction gets org.openstreetmap.josm.actions.PasteAction
+2017-09-21 18:45:07.541 INFO: Keystroke shift pressed INSERT is already assigned to org.openstreetmap.josm.actions.PasteAction@3ee95942, will be overridden by org.openstreetmap.josm.actions.PasteAction@4b6901a5
+2017-09-21 18:45:07.541 INFO: Keystroke ctrl alt pressed V is already assigned to org.openstreetmap.josm.actions.PasteAtSourcePositionAction@379f74a5, will be overridden by org.openstreetmap.josm.actions.PasteAtSourcePositionAction@7c70ec21
+2017-09-21 18:45:07.541 INFO: Registered toolbar action pasteatsource overwritten: org.openstreetmap.josm.actions.PasteAtSourcePositionAction gets org.openstreetmap.josm.actions.PasteAtSourcePositionAction
+2017-09-21 18:45:07.541 INFO: Keystroke shift ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteTagsAction@6bbcb11, will be overridden by org.openstreetmap.josm.actions.PasteTagsAction@5601dae0
+2017-09-21 18:45:07.541 INFO: Registered toolbar action pastetags overwritten: org.openstreetmap.josm.actions.PasteTagsAction gets org.openstreetmap.josm.actions.PasteTagsAction
+2017-09-21 18:45:07.541 INFO: Keystroke ctrl pressed D is already assigned to org.openstreetmap.josm.actions.DuplicateAction@6cfd88d0, will be overridden by org.openstreetmap.josm.actions.DuplicateAction@75457c80
+2017-09-21 18:45:07.542 INFO: Registered toolbar action duplicate overwritten: org.openstreetmap.josm.actions.DuplicateAction gets org.openstreetmap.josm.actions.DuplicateAction
+2017-09-21 18:45:07.542 INFO: Keystroke pressed DELETE is already assigned to org.openstreetmap.josm.actions.DeleteAction@18aaef44, will be overridden by org.openstreetmap.josm.actions.DeleteAction@76a23fa4
+2017-09-21 18:45:07.542 INFO: Registered toolbar action dialogs/delete overwritten: org.openstreetmap.josm.actions.DeleteAction gets org.openstreetmap.josm.actions.DeleteAction
+2017-09-21 18:45:07.542 INFO: Keystroke shift ctrl pressed P is already assigned to org.openstreetmap.josm.actions.PurgeAction@54dc8aa8, will be overridden by org.openstreetmap.josm.actions.PurgeAction@dc8d4b5
+2017-09-21 18:45:07.542 INFO: Registered toolbar action purge overwritten: org.openstreetmap.josm.actions.PurgeAction gets org.openstreetmap.josm.actions.PurgeAction
+2017-09-21 18:45:07.543 INFO: Keystroke ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeLayerAction@c672061, will be overridden by org.openstreetmap.josm.actions.MergeLayerAction@5546c936
+2017-09-21 18:45:07.543 INFO: Registered toolbar action action/mergelayer overwritten: org.openstreetmap.josm.actions.MergeLayerAction gets org.openstreetmap.josm.actions.MergeLayerAction
+2017-09-21 18:45:07.543 INFO: Keystroke shift ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeSelectionAction@c5c9235, will be overridden by org.openstreetmap.josm.actions.MergeSelectionAction@bb90e62
+2017-09-21 18:45:07.544 INFO: Registered toolbar action dialogs/mergedown overwritten: org.openstreetmap.josm.actions.MergeSelectionAction gets org.openstreetmap.josm.actions.MergeSelectionAction
+2017-09-21 18:45:07.544 INFO: Keystroke ctrl pressed F is already assigned to org.openstreetmap.josm.actions.search.SearchAction@43c39c35, will be overridden by org.openstreetmap.josm.actions.search.SearchAction@6c015fae
+2017-09-21 18:45:07.544 INFO: Registered toolbar action dialogs/search overwritten: org.openstreetmap.josm.actions.search.SearchAction gets org.openstreetmap.josm.actions.search.SearchAction
+2017-09-21 18:45:07.545 INFO: Keystroke pressed F12 is already assigned to org.openstreetmap.josm.actions.PreferencesAction@73fac72f, will be overridden by org.openstreetmap.josm.actions.PreferencesAction@27a743e7
+2017-09-21 18:45:07.545 INFO: Registered toolbar action preference overwritten: org.openstreetmap.josm.actions.PreferencesAction gets org.openstreetmap.josm.actions.PreferencesAction
+2017-09-21 18:45:07.545 INFO: Keystroke ctrl pressed W is already assigned to org.openstreetmap.josm.actions.WireframeToggleAction@46ab8519, will be overridden by org.openstreetmap.josm.actions.WireframeToggleAction@444b215c
+2017-09-21 18:45:07.545 INFO: Registered toolbar action wireframe overwritten: org.openstreetmap.josm.actions.WireframeToggleAction gets org.openstreetmap.josm.actions.WireframeToggleAction
+2017-09-21 18:45:07.546 INFO: Keystroke ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoAction@2e0e7ac3, will be overridden by org.openstreetmap.josm.actions.InfoAction@7c2fda9
+2017-09-21 18:45:07.546 INFO: Registered toolbar action action/info overwritten: org.openstreetmap.josm.actions.InfoAction gets org.openstreetmap.josm.actions.InfoAction
+2017-09-21 18:45:07.546 INFO: Keystroke shift ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoWebAction@71f36903, will be overridden by org.openstreetmap.josm.actions.InfoWebAction@61582ed0
+2017-09-21 18:45:07.547 INFO: Registered toolbar action action/infoweb overwritten: org.openstreetmap.josm.actions.InfoWebAction gets org.openstreetmap.josm.actions.InfoWebAction
+2017-09-21 18:45:07.550 INFO: Keystroke ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoAction@54950bad, will be overridden by org.openstreetmap.josm.actions.HistoryInfoAction@7c7de167
+2017-09-21 18:45:07.550 INFO: Registered toolbar action action/historyinfo overwritten: org.openstreetmap.josm.actions.HistoryInfoAction gets org.openstreetmap.josm.actions.HistoryInfoAction
+2017-09-21 18:45:07.551 INFO: Keystroke shift ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoWebAction@4e0ccf6b, will be overridden by org.openstreetmap.josm.actions.HistoryInfoWebAction@61217e75
+2017-09-21 18:45:07.551 INFO: Registered toolbar action action/historyinfoweb overwritten: org.openstreetmap.josm.actions.HistoryInfoWebAction gets org.openstreetmap.josm.actions.HistoryInfoWebAction
+2017-09-21 18:45:07.551 INFO: Keystroke ctrl pressed J is already assigned to org.openstreetmap.josm.actions.JumpToAction@13897c0b, will be overridden by org.openstreetmap.josm.actions.JumpToAction@711ef84d
+2017-09-21 18:45:07.552 INFO: Registered toolbar action action/jumpto overwritten: org.openstreetmap.josm.actions.JumpToAction gets org.openstreetmap.josm.actions.JumpToAction
+2017-09-21 18:45:07.557 INFO: Keystroke pressed P is already assigned to org.openstreetmap.josm.actions.SplitWayAction@7958b408, will be overridden by org.openstreetmap.josm.actions.SplitWayAction@51906610
+2017-09-21 18:45:07.557 INFO: Registered toolbar action splitway overwritten: org.openstreetmap.josm.actions.SplitWayAction gets org.openstreetmap.josm.actions.SplitWayAction
+2017-09-21 18:45:07.558 INFO: Keystroke pressed C is already assigned to org.openstreetmap.josm.actions.CombineWayAction@56c10ed, will be overridden by org.openstreetmap.josm.actions.CombineWayAction@42f5c39c
+2017-09-21 18:45:07.558 INFO: Registered toolbar action combineway overwritten: org.openstreetmap.josm.actions.CombineWayAction gets org.openstreetmap.josm.actions.CombineWayAction
+2017-09-21 18:45:07.558 INFO: Keystroke pressed R is already assigned to org.openstreetmap.josm.actions.ReverseWayAction@2d33e0bc, will be overridden by org.openstreetmap.josm.actions.ReverseWayAction@28cdcf61
+2017-09-21 18:45:07.560 INFO: Registered toolbar action wayflip overwritten: org.openstreetmap.josm.actions.ReverseWayAction gets org.openstreetmap.josm.actions.ReverseWayAction
+2017-09-21 18:45:07.560 INFO: Keystroke shift pressed Y is already assigned to org.openstreetmap.josm.actions.SimplifyWayAction@7502b835, will be overridden by org.openstreetmap.josm.actions.SimplifyWayAction@2e1796a5
+2017-09-21 18:45:07.561 INFO: Registered toolbar action simplify overwritten: org.openstreetmap.josm.actions.SimplifyWayAction gets org.openstreetmap.josm.actions.SimplifyWayAction
+2017-09-21 18:45:07.561 INFO: Keystroke pressed O is already assigned to org.openstreetmap.josm.actions.AlignInCircleAction@4946aa69, will be overridden by org.openstreetmap.josm.actions.AlignInCircleAction@7c65c591
+2017-09-21 18:45:07.561 INFO: Registered toolbar action aligncircle overwritten: org.openstreetmap.josm.actions.AlignInCircleAction gets org.openstreetmap.josm.actions.AlignInCircleAction
+2017-09-21 18:45:07.562 INFO: Keystroke pressed L is already assigned to org.openstreetmap.josm.actions.AlignInLineAction@2c4830d4, will be overridden by org.openstreetmap.josm.actions.AlignInLineAction@106000a2
+2017-09-21 18:45:07.562 INFO: Registered toolbar action alignline overwritten: org.openstreetmap.josm.actions.AlignInLineAction gets org.openstreetmap.josm.actions.AlignInLineAction
+2017-09-21 18:45:07.563 INFO: Keystroke shift pressed B is already assigned to org.openstreetmap.josm.actions.DistributeAction@1e4c13e1, will be overridden by org.openstreetmap.josm.actions.DistributeAction@56106308
+2017-09-21 18:45:07.563 INFO: Registered toolbar action distribute overwritten: org.openstreetmap.josm.actions.DistributeAction gets org.openstreetmap.josm.actions.DistributeAction
+2017-09-21 18:45:07.563 INFO: Keystroke pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction@7e6fd30d, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction@44a075d1
+2017-09-21 18:45:07.564 INFO: Registered toolbar action ortho overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction gets org.openstreetmap.josm.actions.OrthogonalizeAction
+2017-09-21 18:45:07.564 INFO: Keystroke shift pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@2062b4b, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@16bb7999
+2017-09-21 18:45:07.564 INFO: Registered toolbar action action/orthogonalize/undo overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction$Undo gets org.openstreetmap.josm.actions.OrthogonalizeAction$Undo
+2017-09-21 18:45:07.565 INFO: Keystroke shift pressed M is already assigned to org.openstreetmap.josm.actions.MirrorAction@6f25754f, will be overridden by org.openstreetmap.josm.actions.MirrorAction@64e0efc
+2017-09-21 18:45:07.565 INFO: Registered toolbar action mirror overwritten: org.openstreetmap.josm.actions.MirrorAction gets org.openstreetmap.josm.actions.MirrorAction
+2017-09-21 18:45:07.566 INFO: Keystroke pressed F is already assigned to org.openstreetmap.josm.actions.FollowLineAction@1108a051, will be overridden by org.openstreetmap.josm.actions.FollowLineAction@5393351e
+2017-09-21 18:45:07.566 INFO: Registered toolbar action followline overwritten: org.openstreetmap.josm.actions.FollowLineAction gets org.openstreetmap.josm.actions.FollowLineAction
+2017-09-21 18:45:07.566 INFO: Keystroke shift pressed D is already assigned to org.openstreetmap.josm.actions.AddNodeAction@11ffeec6, will be overridden by org.openstreetmap.josm.actions.AddNodeAction@14dacc40
+2017-09-21 18:45:07.566 INFO: Registered toolbar action addnode overwritten: org.openstreetmap.josm.actions.AddNodeAction gets org.openstreetmap.josm.actions.AddNodeAction
+2017-09-21 18:45:07.567 INFO: Registered toolbar action movenode overwritten: org.openstreetmap.josm.actions.MoveNodeAction gets org.openstreetmap.josm.actions.MoveNodeAction
+2017-09-21 18:45:07.567 INFO: Keystroke shift pressed O is already assigned to org.openstreetmap.josm.actions.CreateCircleAction@2290c3c1, will be overridden by org.openstreetmap.josm.actions.CreateCircleAction@596008f3
+2017-09-21 18:45:07.567 INFO: Registered toolbar action createcircle overwritten: org.openstreetmap.josm.actions.CreateCircleAction gets org.openstreetmap.josm.actions.CreateCircleAction
+2017-09-21 18:45:07.568 INFO: Keystroke pressed M is already assigned to org.openstreetmap.josm.actions.MergeNodesAction@66db45d1, will be overridden by org.openstreetmap.josm.actions.MergeNodesAction@2fafc4cd
+2017-09-21 18:45:07.568 INFO: Registered toolbar action mergenodes overwritten: org.openstreetmap.josm.actions.MergeNodesAction gets org.openstreetmap.josm.actions.MergeNodesAction
+2017-09-21 18:45:07.569 INFO: Keystroke pressed J is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@32857b73, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@655e3fe3
+2017-09-21 18:45:07.569 INFO: Registered toolbar action joinnodeway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:07.569 INFO: Keystroke pressed N is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@5ce23a3b, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@272457c4
+2017-09-21 18:45:07.570 INFO: Registered toolbar action movenodeontoway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:07.570 INFO: Keystroke alt pressed J is already assigned to org.openstreetmap.josm.actions.UnJoinNodeWayAction@78c874ad, will be overridden by org.openstreetmap.josm.actions.UnJoinNodeWayAction@7edae443
+2017-09-21 18:45:07.570 INFO: Registered toolbar action unjoinnodeway overwritten: org.openstreetmap.josm.actions.UnJoinNodeWayAction gets org.openstreetmap.josm.actions.UnJoinNodeWayAction
+2017-09-21 18:45:07.570 INFO: Keystroke pressed G is already assigned to org.openstreetmap.josm.actions.UnGlueAction@440153a8, will be overridden by org.openstreetmap.josm.actions.UnGlueAction@2f02def9
+2017-09-21 18:45:07.571 INFO: Registered toolbar action unglueways overwritten: org.openstreetmap.josm.actions.UnGlueAction gets org.openstreetmap.josm.actions.UnGlueAction
+2017-09-21 18:45:07.571 INFO: Keystroke shift pressed J is already assigned to org.openstreetmap.josm.actions.JoinAreasAction@5dc6f6b8, will be overridden by org.openstreetmap.josm.actions.JoinAreasAction@3bb74ddd
+2017-09-21 18:45:07.571 INFO: Registered toolbar action joinareas overwritten: org.openstreetmap.josm.actions.JoinAreasAction gets org.openstreetmap.josm.actions.JoinAreasAction
+2017-09-21 18:45:07.572 INFO: Keystroke ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@10b82cd9, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@3e28b718
+2017-09-21 18:45:07.572 INFO: Registered toolbar action multipoly_create overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:07.573 INFO: Keystroke shift ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@2b6e5f7f, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@17f9a462
+2017-09-21 18:45:07.573 INFO: Registered toolbar action multipoly_update overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:07.573 INFO: Keystroke ctrl pressed A is already assigned to org.openstreetmap.josm.actions.SelectAllAction@653cc5a9, will be overridden by org.openstreetmap.josm.actions.SelectAllAction@2eb55572
+2017-09-21 18:45:07.574 INFO: Registered toolbar action selectall overwritten: org.openstreetmap.josm.actions.SelectAllAction gets org.openstreetmap.josm.actions.SelectAllAction
+2017-09-21 18:45:07.574 INFO: Keystroke pressed ESCAPE is already assigned to org.openstreetmap.josm.actions.UnselectAllAction@f258c80, will be overridden by org.openstreetmap.josm.actions.UnselectAllAction@2f6d2cdc
+2017-09-21 18:45:07.574 INFO: Registered toolbar action unselectall overwritten: org.openstreetmap.josm.actions.UnselectAllAction gets org.openstreetmap.josm.actions.UnselectAllAction
+2017-09-21 18:45:07.575 INFO: Keystroke shift pressed W is already assigned to org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@5e2ab759, will be overridden by org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@5406ce5e
+2017-09-21 18:45:07.575 INFO: Registered toolbar action way-select overwritten: org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction gets org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction
+2017-09-21 18:45:07.575 INFO: Keystroke pressed PERIOD is already assigned to org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@7669e44, will be overridden by org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@e86ba08
+2017-09-21 18:45:07.576 INFO: Registered toolbar action audio-playpause overwritten: org.openstreetmap.josm.actions.audio.AudioPlayPauseAction gets org.openstreetmap.josm.actions.audio.AudioPlayPauseAction
+2017-09-21 18:45:07.576 INFO: Keystroke pressed F8 is already assigned to org.openstreetmap.josm.actions.audio.AudioNextAction@4f4028c, will be overridden by org.openstreetmap.josm.actions.audio.AudioNextAction@a1c706f
+2017-09-21 18:45:07.577 INFO: Registered toolbar action audio-next overwritten: org.openstreetmap.josm.actions.audio.AudioNextAction gets org.openstreetmap.josm.actions.audio.AudioNextAction
+2017-09-21 18:45:07.581 INFO: Keystroke pressed F5 is already assigned to org.openstreetmap.josm.actions.audio.AudioPrevAction@2796df1e, will be overridden by org.openstreetmap.josm.actions.audio.AudioPrevAction@4c51b63c
+2017-09-21 18:45:07.582 INFO: Registered toolbar action audio-prev overwritten: org.openstreetmap.josm.actions.audio.AudioPrevAction gets org.openstreetmap.josm.actions.audio.AudioPrevAction
+2017-09-21 18:45:07.582 INFO: Keystroke pressed F7 is already assigned to org.openstreetmap.josm.actions.audio.AudioFwdAction@2c8d24ca, will be overridden by org.openstreetmap.josm.actions.audio.AudioFwdAction@2ec7f5d6
+2017-09-21 18:45:07.583 INFO: Registered toolbar action audio-fwd overwritten: org.openstreetmap.josm.actions.audio.AudioFwdAction gets org.openstreetmap.josm.actions.audio.AudioFwdAction
+2017-09-21 18:45:07.583 INFO: Keystroke pressed F6 is already assigned to org.openstreetmap.josm.actions.audio.AudioBackAction@1f2a0ba1, will be overridden by org.openstreetmap.josm.actions.audio.AudioBackAction@152a4cfc
+2017-09-21 18:45:07.584 INFO: Registered toolbar action audio-back overwritten: org.openstreetmap.josm.actions.audio.AudioBackAction gets org.openstreetmap.josm.actions.audio.AudioBackAction
+2017-09-21 18:45:07.584 INFO: Keystroke pressed F9 is already assigned to org.openstreetmap.josm.actions.audio.AudioFasterAction@3bee8aaa, will be overridden by org.openstreetmap.josm.actions.audio.AudioFasterAction@7c5cd93e
+2017-09-21 18:45:07.584 INFO: Registered toolbar action audio-faster overwritten: org.openstreetmap.josm.actions.audio.AudioFasterAction gets org.openstreetmap.josm.actions.audio.AudioFasterAction
+2017-09-21 18:45:07.585 INFO: Keystroke pressed F4 is already assigned to org.openstreetmap.josm.actions.audio.AudioSlowerAction@2a91cce6, will be overridden by org.openstreetmap.josm.actions.audio.AudioSlowerAction@3d7d70df
+2017-09-21 18:45:07.585 INFO: Registered toolbar action audio-slower overwritten: org.openstreetmap.josm.actions.audio.AudioSlowerAction gets org.openstreetmap.josm.actions.audio.AudioSlowerAction
+2017-09-21 18:45:07.586 INFO: Keystroke ctrl alt pressed C is already assigned to org.openstreetmap.josm.actions.ChangesetManagerToggleAction@6f7f160a, will be overridden by org.openstreetmap.josm.actions.ChangesetManagerToggleAction@2c855be3
+2017-09-21 18:45:07.586 INFO: Registered toolbar action dialogs/changeset/changesetmanager overwritten: org.openstreetmap.josm.actions.ChangesetManagerToggleAction gets org.openstreetmap.josm.actions.ChangesetManagerToggleAction
+2017-09-21 18:45:07.586 INFO: Keystroke pressed F1 is already assigned to org.openstreetmap.josm.actions.HelpAction@20476f47, will be overridden by org.openstreetmap.josm.actions.HelpAction@6b8faf23
+2017-09-21 18:45:07.587 INFO: Registered toolbar action help overwritten: org.openstreetmap.josm.actions.HelpAction gets org.openstreetmap.josm.actions.HelpAction
+2017-09-21 18:45:07.587 INFO: Keystroke shift pressed F1 is already assigned to org.openstreetmap.josm.actions.AboutAction@6fb30a3f, will be overridden by org.openstreetmap.josm.actions.AboutAction@71000e45
+2017-09-21 18:45:07.587 INFO: Registered toolbar action logo overwritten: org.openstreetmap.josm.actions.AboutAction gets org.openstreetmap.josm.actions.AboutAction
+2017-09-21 18:45:07.588 INFO: Registered toolbar action help/showstatusreport overwritten: org.openstreetmap.josm.actions.ShowStatusReportAction gets org.openstreetmap.josm.actions.ShowStatusReportAction
+2017-09-21 18:45:07.588 INFO: Registered toolbar action bug overwritten: org.openstreetmap.josm.actions.ReportBugAction gets org.openstreetmap.josm.actions.ReportBugAction
+2017-09-21 18:45:07.606 INFO: Registered toolbar action imagery-offset overwritten: org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction gets org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction
+2017-09-21 18:45:07.606 INFO: Registered toolbar action OLmarker overwritten: org.openstreetmap.josm.actions.MapRectifierWMSmenuAction gets org.openstreetmap.josm.actions.MapRectifierWMSmenuAction
+2017-09-21 18:45:07.608 INFO: Keystroke shift pressed UP is already assigned to org.openstreetmap.josm.actions.MoveAction@4be10dd3, will be overridden by org.openstreetmap.josm.actions.MoveAction@272d6332
+2017-09-21 18:45:07.610 INFO: Registered toolbar action action/move/up overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.611 INFO: Keystroke shift pressed DOWN is already assigned to org.openstreetmap.josm.actions.MoveAction@5cb99de3, will be overridden by org.openstreetmap.josm.actions.MoveAction@21f17e77
+2017-09-21 18:45:07.611 INFO: Registered toolbar action action/move/down overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.611 INFO: Keystroke shift pressed LEFT is already assigned to org.openstreetmap.josm.actions.MoveAction@479ffc64, will be overridden by org.openstreetmap.josm.actions.MoveAction@37912bdd
+2017-09-21 18:45:07.612 INFO: Registered toolbar action action/move/left overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.612 INFO: Keystroke shift pressed RIGHT is already assigned to org.openstreetmap.josm.actions.MoveAction@308ae45a, will be overridden by org.openstreetmap.josm.actions.MoveAction@4612794c
+2017-09-21 18:45:07.612 INFO: Registered toolbar action action/move/right overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.613 INFO: Keystroke pressed F3 is already assigned to org.openstreetmap.josm.actions.TaggingPresetSearchAction@73c6e80d, will be overridden by org.openstreetmap.josm.actions.TaggingPresetSearchAction@a6aa64f
+2017-09-21 18:45:07.613 INFO: Registered toolbar action presets/search overwritten: org.openstreetmap.josm.actions.TaggingPresetSearchAction gets org.openstreetmap.josm.actions.TaggingPresetSearchAction
+2017-09-21 18:45:07.613 INFO: Keystroke shift pressed F3 is already assigned to org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@63003513, will be overridden by org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@204273b3
+2017-09-21 18:45:07.613 INFO: Registered toolbar action presets/search-objects overwritten: org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action gets org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action
+2017-09-21 18:45:07.614 INFO: Keystroke pressed TAB is already assigned to org.openstreetmap.josm.actions.DialogsToggleAction@5bc489cb, will be overridden by org.openstreetmap.josm.actions.DialogsToggleAction@1e336ba5
+2017-09-21 18:45:07.614 INFO: Registered toolbar action dialogspanel overwritten: org.openstreetmap.josm.actions.DialogsToggleAction gets org.openstreetmap.josm.actions.DialogsToggleAction
+2017-09-21 18:45:07.633 INFO: Defaults for mapillary.display-hour differ: default != true
+2017-09-21 18:45:07.669 INFO: Defaults for mapillary.format-24 differ: default != true
+2017-09-21 18:45:07.669 INFO: Defaults for mapillary.move-to-picture differ: default != true
+2017-09-21 18:45:07.670 INFO: Defaults for mapillary.hover-enabled differ: default != true
+2017-09-21 18:45:07.670 INFO: Defaults for mapillary.download-mode differ: default != osmArea
+2017-09-21 18:45:07.672 INFO: Defaults for mapillary.display-hour differ: false != default
+2017-09-21 18:45:07.672 INFO: Defaults for mapillary.format-24 differ: false != default
+2017-09-21 18:45:07.672 INFO: Defaults for mapillary.move-to-picture differ: false != default
+2017-09-21 18:45:07.672 INFO: Defaults for mapillary.hover-enabled differ: false != default
+2017-09-21 18:45:07.673 INFO: Defaults for mapillary.display-hour differ: true != false
+2017-09-21 18:45:07.673 INFO: Defaults for mapillary.format-24 differ: true != false
+2017-09-21 18:45:07.673 INFO: Defaults for mapillary.move-to-picture differ: true != false
+2017-09-21 18:45:07.674 INFO: Defaults for mapillary.hover-enabled differ: true != false
+2017-09-21 18:45:07.871 INFO: Keystroke ctrl pressed N is already assigned to org.openstreetmap.josm.actions.NewAction@58b93046, will be overridden by org.openstreetmap.josm.actions.NewAction@4bbea936
+2017-09-21 18:45:07.872 INFO: Registered toolbar action new overwritten: org.openstreetmap.josm.actions.NewAction gets org.openstreetmap.josm.actions.NewAction
+2017-09-21 18:45:07.872 INFO: Keystroke ctrl pressed O is already assigned to org.openstreetmap.josm.actions.OpenFileAction@3f3a013, will be overridden by org.openstreetmap.josm.actions.OpenFileAction@143926d0
+2017-09-21 18:45:07.872 INFO: Registered toolbar action open overwritten: org.openstreetmap.josm.actions.OpenFileAction gets org.openstreetmap.josm.actions.OpenFileAction
+2017-09-21 18:45:07.872 INFO: Keystroke ctrl pressed L is already assigned to org.openstreetmap.josm.actions.OpenLocationAction@6e23a8b7, will be overridden by org.openstreetmap.josm.actions.OpenLocationAction@2755000f
+2017-09-21 18:45:07.872 INFO: Registered toolbar action openlocation overwritten: org.openstreetmap.josm.actions.OpenLocationAction gets org.openstreetmap.josm.actions.OpenLocationAction
+2017-09-21 18:45:07.873 INFO: Keystroke ctrl pressed F4 is already assigned to org.openstreetmap.josm.actions.DeleteLayerAction@2e0108b3, will be overridden by org.openstreetmap.josm.actions.DeleteLayerAction@22be2903
+2017-09-21 18:45:07.873 INFO: Registered toolbar action delete-layer overwritten: org.openstreetmap.josm.actions.DeleteLayerAction gets org.openstreetmap.josm.actions.DeleteLayerAction
+2017-09-21 18:45:07.873 INFO: Keystroke ctrl pressed E is already assigned to org.openstreetmap.josm.actions.GpxExportAction@3f2b2635, will be overridden by org.openstreetmap.josm.actions.GpxExportAction@1cf7d37b
+2017-09-21 18:45:07.873 INFO: Registered toolbar action exportgpx overwritten: org.openstreetmap.josm.actions.GpxExportAction gets org.openstreetmap.josm.actions.GpxExportAction
+2017-09-21 18:45:07.873 INFO: Keystroke shift ctrl pressed DOWN is already assigned to org.openstreetmap.josm.actions.DownloadAction@2146fafb, will be overridden by org.openstreetmap.josm.actions.DownloadAction@41a57993
+2017-09-21 18:45:07.874 INFO: Registered toolbar action download overwritten: org.openstreetmap.josm.actions.DownloadAction gets org.openstreetmap.josm.actions.DownloadAction
+2017-09-21 18:45:07.874 INFO: Keystroke shift ctrl pressed O is already assigned to org.openstreetmap.josm.actions.DownloadPrimitiveAction@52538874, will be overridden by org.openstreetmap.josm.actions.DownloadPrimitiveAction@4e7f5cd0
+2017-09-21 18:45:07.874 INFO: Registered toolbar action downloadprimitive overwritten: org.openstreetmap.josm.actions.DownloadPrimitiveAction gets org.openstreetmap.josm.actions.DownloadPrimitiveAction
+2017-09-21 18:45:07.874 INFO: Keystroke ctrl alt pressed D is already assigned to org.openstreetmap.josm.actions.DownloadReferrersAction@74b1561d, will be overridden by org.openstreetmap.josm.actions.DownloadReferrersAction@1dda822d
+2017-09-21 18:45:07.874 INFO: Registered toolbar action downloadreferrers overwritten: org.openstreetmap.josm.actions.DownloadReferrersAction gets org.openstreetmap.josm.actions.DownloadReferrersAction
+2017-09-21 18:45:07.875 INFO: Keystroke ctrl alt pressed Q is already assigned to org.openstreetmap.josm.actions.CloseChangesetAction@124ddc30, will be overridden by org.openstreetmap.josm.actions.CloseChangesetAction@3f14f6e6
+2017-09-21 18:45:07.875 INFO: Registered toolbar action closechangeset overwritten: org.openstreetmap.josm.actions.CloseChangesetAction gets org.openstreetmap.josm.actions.CloseChangesetAction
+2017-09-21 18:45:07.875 INFO: Keystroke ctrl pressed U is already assigned to org.openstreetmap.josm.actions.UpdateDataAction@4ca6da0, will be overridden by org.openstreetmap.josm.actions.UpdateDataAction@55177976
+2017-09-21 18:45:07.875 INFO: Registered toolbar action updatedata overwritten: org.openstreetmap.josm.actions.UpdateDataAction gets org.openstreetmap.josm.actions.UpdateDataAction
+2017-09-21 18:45:07.875 INFO: Keystroke ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UpdateSelectionAction@4a145565, will be overridden by org.openstreetmap.josm.actions.UpdateSelectionAction@61ba36d8
+2017-09-21 18:45:07.875 INFO: Registered toolbar action updateselection overwritten: org.openstreetmap.josm.actions.UpdateSelectionAction gets org.openstreetmap.josm.actions.UpdateSelectionAction
+2017-09-21 18:45:07.876 INFO: Keystroke ctrl alt pressed M is already assigned to org.openstreetmap.josm.actions.UpdateModifiedAction@346bf384, will be overridden by org.openstreetmap.josm.actions.UpdateModifiedAction@28381b28
+2017-09-21 18:45:07.876 INFO: Registered toolbar action updatemodified overwritten: org.openstreetmap.josm.actions.UpdateModifiedAction gets org.openstreetmap.josm.actions.UpdateModifiedAction
+2017-09-21 18:45:07.876 INFO: Keystroke shift ctrl pressed UP is already assigned to org.openstreetmap.josm.actions.UploadAction@48bb1565, will be overridden by org.openstreetmap.josm.actions.UploadAction@30037b0f
+2017-09-21 18:45:07.876 INFO: Registered toolbar action upload overwritten: org.openstreetmap.josm.actions.UploadAction gets org.openstreetmap.josm.actions.UploadAction
+2017-09-21 18:45:07.876 INFO: Keystroke shift ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UploadSelectionAction@1f4bc6bf, will be overridden by org.openstreetmap.josm.actions.UploadSelectionAction@5e3178b0
+2017-09-21 18:45:07.876 INFO: Registered toolbar action uploadselection overwritten: org.openstreetmap.josm.actions.UploadSelectionAction gets org.openstreetmap.josm.actions.UploadSelectionAction
+2017-09-21 18:45:07.877 INFO: Keystroke shift ctrl alt pressed J is already assigned to org.openstreetmap.josm.actions.RestartAction@779c174e, will be overridden by org.openstreetmap.josm.actions.RestartAction@6e8d8958
+2017-09-21 18:45:07.877 INFO: Registered toolbar action action/restart overwritten: org.openstreetmap.josm.actions.RestartAction gets org.openstreetmap.josm.actions.RestartAction
+2017-09-21 18:45:07.883 INFO: Keystroke ctrl pressed Q is already assigned to org.openstreetmap.josm.actions.ExitAction@1c802dea, will be overridden by org.openstreetmap.josm.actions.ExitAction@6842efa
+2017-09-21 18:45:07.883 INFO: Registered toolbar action exit overwritten: org.openstreetmap.josm.actions.ExitAction gets org.openstreetmap.josm.actions.ExitAction
+2017-09-21 18:45:07.883 INFO: Keystroke ctrl pressed Z is already assigned to org.openstreetmap.josm.actions.UndoAction@c800322, will be overridden by org.openstreetmap.josm.actions.UndoAction@2df4f626
+2017-09-21 18:45:07.883 INFO: Registered toolbar action undo overwritten: org.openstreetmap.josm.actions.UndoAction gets org.openstreetmap.josm.actions.UndoAction
+2017-09-21 18:45:07.884 INFO: Keystroke ctrl pressed Y is already assigned to org.openstreetmap.josm.actions.RedoAction@4d3f4233, will be overridden by org.openstreetmap.josm.actions.RedoAction@78d5efd0
+2017-09-21 18:45:07.884 INFO: Registered toolbar action redo overwritten: org.openstreetmap.josm.actions.RedoAction gets org.openstreetmap.josm.actions.RedoAction
+2017-09-21 18:45:07.884 INFO: Keystroke ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyAction@5a0e1abd, will be overridden by org.openstreetmap.josm.actions.CopyAction@7a906edb
+2017-09-21 18:45:07.884 INFO: Registered toolbar action copy overwritten: org.openstreetmap.josm.actions.CopyAction gets org.openstreetmap.josm.actions.CopyAction
+2017-09-21 18:45:07.884 INFO: Keystroke ctrl pressed INSERT is already assigned to org.openstreetmap.josm.actions.CopyAction@5a0e1abd, will be overridden by org.openstreetmap.josm.actions.CopyAction@7a906edb
+2017-09-21 18:45:07.884 INFO: Keystroke shift ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyCoordinatesAction@47fc936b, will be overridden by org.openstreetmap.josm.actions.CopyCoordinatesAction@5d447c8d
+2017-09-21 18:45:07.885 INFO: Keystroke ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteAction@4b6901a5, will be overridden by org.openstreetmap.josm.actions.PasteAction@570be4c5
+2017-09-21 18:45:07.885 INFO: Registered toolbar action paste overwritten: org.openstreetmap.josm.actions.PasteAction gets org.openstreetmap.josm.actions.PasteAction
+2017-09-21 18:45:07.885 INFO: Keystroke shift pressed INSERT is already assigned to org.openstreetmap.josm.actions.PasteAction@4b6901a5, will be overridden by org.openstreetmap.josm.actions.PasteAction@570be4c5
+2017-09-21 18:45:07.885 INFO: Keystroke ctrl alt pressed V is already assigned to org.openstreetmap.josm.actions.PasteAtSourcePositionAction@7c70ec21, will be overridden by org.openstreetmap.josm.actions.PasteAtSourcePositionAction@773a9b
+2017-09-21 18:45:07.885 INFO: Registered toolbar action pasteatsource overwritten: org.openstreetmap.josm.actions.PasteAtSourcePositionAction gets org.openstreetmap.josm.actions.PasteAtSourcePositionAction
+2017-09-21 18:45:07.886 INFO: Keystroke shift ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteTagsAction@5601dae0, will be overridden by org.openstreetmap.josm.actions.PasteTagsAction@79e86af8
+2017-09-21 18:45:07.886 INFO: Registered toolbar action pastetags overwritten: org.openstreetmap.josm.actions.PasteTagsAction gets org.openstreetmap.josm.actions.PasteTagsAction
+2017-09-21 18:45:07.886 INFO: Keystroke ctrl pressed D is already assigned to org.openstreetmap.josm.actions.DuplicateAction@75457c80, will be overridden by org.openstreetmap.josm.actions.DuplicateAction@7b6d15c
+2017-09-21 18:45:07.886 INFO: Registered toolbar action duplicate overwritten: org.openstreetmap.josm.actions.DuplicateAction gets org.openstreetmap.josm.actions.DuplicateAction
+2017-09-21 18:45:07.886 INFO: Keystroke pressed DELETE is already assigned to org.openstreetmap.josm.actions.DeleteAction@76a23fa4, will be overridden by org.openstreetmap.josm.actions.DeleteAction@f1320a3
+2017-09-21 18:45:07.887 INFO: Registered toolbar action dialogs/delete overwritten: org.openstreetmap.josm.actions.DeleteAction gets org.openstreetmap.josm.actions.DeleteAction
+2017-09-21 18:45:07.887 INFO: Keystroke shift ctrl pressed P is already assigned to org.openstreetmap.josm.actions.PurgeAction@dc8d4b5, will be overridden by org.openstreetmap.josm.actions.PurgeAction@36096038
+2017-09-21 18:45:07.887 INFO: Registered toolbar action purge overwritten: org.openstreetmap.josm.actions.PurgeAction gets org.openstreetmap.josm.actions.PurgeAction
+2017-09-21 18:45:07.887 INFO: Keystroke ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeLayerAction@5546c936, will be overridden by org.openstreetmap.josm.actions.MergeLayerAction@c8c63ab
+2017-09-21 18:45:07.887 INFO: Registered toolbar action action/mergelayer overwritten: org.openstreetmap.josm.actions.MergeLayerAction gets org.openstreetmap.josm.actions.MergeLayerAction
+2017-09-21 18:45:07.888 INFO: Keystroke shift ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeSelectionAction@bb90e62, will be overridden by org.openstreetmap.josm.actions.MergeSelectionAction@3d817f57
+2017-09-21 18:45:07.888 INFO: Registered toolbar action dialogs/mergedown overwritten: org.openstreetmap.josm.actions.MergeSelectionAction gets org.openstreetmap.josm.actions.MergeSelectionAction
+2017-09-21 18:45:07.888 INFO: Keystroke ctrl pressed F is already assigned to org.openstreetmap.josm.actions.search.SearchAction@6c015fae, will be overridden by org.openstreetmap.josm.actions.search.SearchAction@2b01467c
+2017-09-21 18:45:07.888 INFO: Registered toolbar action dialogs/search overwritten: org.openstreetmap.josm.actions.search.SearchAction gets org.openstreetmap.josm.actions.search.SearchAction
+2017-09-21 18:45:07.888 INFO: Keystroke pressed F12 is already assigned to org.openstreetmap.josm.actions.PreferencesAction@27a743e7, will be overridden by org.openstreetmap.josm.actions.PreferencesAction@56f4eb84
+2017-09-21 18:45:07.888 INFO: Registered toolbar action preference overwritten: org.openstreetmap.josm.actions.PreferencesAction gets org.openstreetmap.josm.actions.PreferencesAction
+2017-09-21 18:45:07.889 INFO: Keystroke ctrl pressed W is already assigned to org.openstreetmap.josm.actions.WireframeToggleAction@444b215c, will be overridden by org.openstreetmap.josm.actions.WireframeToggleAction@398a5bca
+2017-09-21 18:45:07.889 INFO: Registered toolbar action wireframe overwritten: org.openstreetmap.josm.actions.WireframeToggleAction gets org.openstreetmap.josm.actions.WireframeToggleAction
+2017-09-21 18:45:07.889 INFO: Keystroke ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoAction@7c2fda9, will be overridden by org.openstreetmap.josm.actions.InfoAction@f47e06b
+2017-09-21 18:45:07.889 INFO: Registered toolbar action action/info overwritten: org.openstreetmap.josm.actions.InfoAction gets org.openstreetmap.josm.actions.InfoAction
+2017-09-21 18:45:07.889 INFO: Keystroke shift ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoWebAction@61582ed0, will be overridden by org.openstreetmap.josm.actions.InfoWebAction@2e546559
+2017-09-21 18:45:07.890 INFO: Registered toolbar action action/infoweb overwritten: org.openstreetmap.josm.actions.InfoWebAction gets org.openstreetmap.josm.actions.InfoWebAction
+2017-09-21 18:45:07.890 INFO: Keystroke ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoAction@7c7de167, will be overridden by org.openstreetmap.josm.actions.HistoryInfoAction@5f8d13dc
+2017-09-21 18:45:07.890 INFO: Registered toolbar action action/historyinfo overwritten: org.openstreetmap.josm.actions.HistoryInfoAction gets org.openstreetmap.josm.actions.HistoryInfoAction
+2017-09-21 18:45:07.890 INFO: Keystroke shift ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoWebAction@61217e75, will be overridden by org.openstreetmap.josm.actions.HistoryInfoWebAction@34b257ec
+2017-09-21 18:45:07.890 INFO: Registered toolbar action action/historyinfoweb overwritten: org.openstreetmap.josm.actions.HistoryInfoWebAction gets org.openstreetmap.josm.actions.HistoryInfoWebAction
+2017-09-21 18:45:07.891 INFO: Keystroke ctrl pressed J is already assigned to org.openstreetmap.josm.actions.JumpToAction@711ef84d, will be overridden by org.openstreetmap.josm.actions.JumpToAction@446bda9
+2017-09-21 18:45:07.891 INFO: Registered toolbar action action/jumpto overwritten: org.openstreetmap.josm.actions.JumpToAction gets org.openstreetmap.josm.actions.JumpToAction
+2017-09-21 18:45:07.894 INFO: Keystroke pressed P is already assigned to org.openstreetmap.josm.actions.SplitWayAction@51906610, will be overridden by org.openstreetmap.josm.actions.SplitWayAction@9356ed5
+2017-09-21 18:45:07.894 INFO: Registered toolbar action splitway overwritten: org.openstreetmap.josm.actions.SplitWayAction gets org.openstreetmap.josm.actions.SplitWayAction
+2017-09-21 18:45:07.894 INFO: Keystroke pressed C is already assigned to org.openstreetmap.josm.actions.CombineWayAction@42f5c39c, will be overridden by org.openstreetmap.josm.actions.CombineWayAction@3e918fdc
+2017-09-21 18:45:07.895 INFO: Registered toolbar action combineway overwritten: org.openstreetmap.josm.actions.CombineWayAction gets org.openstreetmap.josm.actions.CombineWayAction
+2017-09-21 18:45:07.895 INFO: Keystroke pressed R is already assigned to org.openstreetmap.josm.actions.ReverseWayAction@28cdcf61, will be overridden by org.openstreetmap.josm.actions.ReverseWayAction@18baa2d5
+2017-09-21 18:45:07.895 INFO: Registered toolbar action wayflip overwritten: org.openstreetmap.josm.actions.ReverseWayAction gets org.openstreetmap.josm.actions.ReverseWayAction
+2017-09-21 18:45:07.895 INFO: Keystroke shift pressed Y is already assigned to org.openstreetmap.josm.actions.SimplifyWayAction@2e1796a5, will be overridden by org.openstreetmap.josm.actions.SimplifyWayAction@2920ef9e
+2017-09-21 18:45:07.895 INFO: Registered toolbar action simplify overwritten: org.openstreetmap.josm.actions.SimplifyWayAction gets org.openstreetmap.josm.actions.SimplifyWayAction
+2017-09-21 18:45:07.896 INFO: Keystroke pressed O is already assigned to org.openstreetmap.josm.actions.AlignInCircleAction@7c65c591, will be overridden by org.openstreetmap.josm.actions.AlignInCircleAction@bc17fa9
+2017-09-21 18:45:07.896 INFO: Registered toolbar action aligncircle overwritten: org.openstreetmap.josm.actions.AlignInCircleAction gets org.openstreetmap.josm.actions.AlignInCircleAction
+2017-09-21 18:45:07.896 INFO: Keystroke pressed L is already assigned to org.openstreetmap.josm.actions.AlignInLineAction@106000a2, will be overridden by org.openstreetmap.josm.actions.AlignInLineAction@391cfe62
+2017-09-21 18:45:07.896 INFO: Registered toolbar action alignline overwritten: org.openstreetmap.josm.actions.AlignInLineAction gets org.openstreetmap.josm.actions.AlignInLineAction
+2017-09-21 18:45:07.896 INFO: Keystroke shift pressed B is already assigned to org.openstreetmap.josm.actions.DistributeAction@56106308, will be overridden by org.openstreetmap.josm.actions.DistributeAction@74fd5f9e
+2017-09-21 18:45:07.896 INFO: Registered toolbar action distribute overwritten: org.openstreetmap.josm.actions.DistributeAction gets org.openstreetmap.josm.actions.DistributeAction
+2017-09-21 18:45:07.897 INFO: Keystroke pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction@44a075d1, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction@5a0f1280
+2017-09-21 18:45:07.897 INFO: Registered toolbar action ortho overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction gets org.openstreetmap.josm.actions.OrthogonalizeAction
+2017-09-21 18:45:07.901 INFO: Keystroke shift pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@16bb7999, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@5a33025f
+2017-09-21 18:45:07.902 INFO: Registered toolbar action action/orthogonalize/undo overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction$Undo gets org.openstreetmap.josm.actions.OrthogonalizeAction$Undo
+2017-09-21 18:45:07.902 INFO: Keystroke shift pressed M is already assigned to org.openstreetmap.josm.actions.MirrorAction@64e0efc, will be overridden by org.openstreetmap.josm.actions.MirrorAction@4021895
+2017-09-21 18:45:07.903 INFO: Registered toolbar action mirror overwritten: org.openstreetmap.josm.actions.MirrorAction gets org.openstreetmap.josm.actions.MirrorAction
+2017-09-21 18:45:07.903 INFO: Keystroke pressed F is already assigned to org.openstreetmap.josm.actions.FollowLineAction@5393351e, will be overridden by org.openstreetmap.josm.actions.FollowLineAction@1a9db624
+2017-09-21 18:45:07.903 INFO: Registered toolbar action followline overwritten: org.openstreetmap.josm.actions.FollowLineAction gets org.openstreetmap.josm.actions.FollowLineAction
+2017-09-21 18:45:07.904 INFO: Keystroke shift pressed D is already assigned to org.openstreetmap.josm.actions.AddNodeAction@14dacc40, will be overridden by org.openstreetmap.josm.actions.AddNodeAction@38a42ce5
+2017-09-21 18:45:07.904 INFO: Registered toolbar action addnode overwritten: org.openstreetmap.josm.actions.AddNodeAction gets org.openstreetmap.josm.actions.AddNodeAction
+2017-09-21 18:45:07.904 INFO: Registered toolbar action movenode overwritten: org.openstreetmap.josm.actions.MoveNodeAction gets org.openstreetmap.josm.actions.MoveNodeAction
+2017-09-21 18:45:07.905 INFO: Keystroke shift pressed O is already assigned to org.openstreetmap.josm.actions.CreateCircleAction@596008f3, will be overridden by org.openstreetmap.josm.actions.CreateCircleAction@7ac7f054
+2017-09-21 18:45:07.905 INFO: Registered toolbar action createcircle overwritten: org.openstreetmap.josm.actions.CreateCircleAction gets org.openstreetmap.josm.actions.CreateCircleAction
+2017-09-21 18:45:07.905 INFO: Keystroke pressed M is already assigned to org.openstreetmap.josm.actions.MergeNodesAction@2fafc4cd, will be overridden by org.openstreetmap.josm.actions.MergeNodesAction@6e158929
+2017-09-21 18:45:07.906 INFO: Registered toolbar action mergenodes overwritten: org.openstreetmap.josm.actions.MergeNodesAction gets org.openstreetmap.josm.actions.MergeNodesAction
+2017-09-21 18:45:07.906 INFO: Keystroke pressed J is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@655e3fe3, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@194e3e59
+2017-09-21 18:45:07.907 INFO: Registered toolbar action joinnodeway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:07.907 INFO: Keystroke pressed N is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@272457c4, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@94fa91
+2017-09-21 18:45:07.907 INFO: Registered toolbar action movenodeontoway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:07.907 INFO: Keystroke alt pressed J is already assigned to org.openstreetmap.josm.actions.UnJoinNodeWayAction@7edae443, will be overridden by org.openstreetmap.josm.actions.UnJoinNodeWayAction@4594ef87
+2017-09-21 18:45:07.908 INFO: Registered toolbar action unjoinnodeway overwritten: org.openstreetmap.josm.actions.UnJoinNodeWayAction gets org.openstreetmap.josm.actions.UnJoinNodeWayAction
+2017-09-21 18:45:07.908 INFO: Keystroke pressed G is already assigned to org.openstreetmap.josm.actions.UnGlueAction@2f02def9, will be overridden by org.openstreetmap.josm.actions.UnGlueAction@70a7add
+2017-09-21 18:45:07.908 INFO: Registered toolbar action unglueways overwritten: org.openstreetmap.josm.actions.UnGlueAction gets org.openstreetmap.josm.actions.UnGlueAction
+2017-09-21 18:45:07.909 INFO: Keystroke shift pressed J is already assigned to org.openstreetmap.josm.actions.JoinAreasAction@3bb74ddd, will be overridden by org.openstreetmap.josm.actions.JoinAreasAction@6fde2093
+2017-09-21 18:45:07.909 INFO: Registered toolbar action joinareas overwritten: org.openstreetmap.josm.actions.JoinAreasAction gets org.openstreetmap.josm.actions.JoinAreasAction
+2017-09-21 18:45:07.910 INFO: Keystroke ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@3e28b718, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@48390f8b
+2017-09-21 18:45:07.910 INFO: Registered toolbar action multipoly_create overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:07.910 INFO: Keystroke shift ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@17f9a462, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@2a3339dc
+2017-09-21 18:45:07.911 INFO: Registered toolbar action multipoly_update overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:07.911 INFO: Keystroke ctrl pressed A is already assigned to org.openstreetmap.josm.actions.SelectAllAction@2eb55572, will be overridden by org.openstreetmap.josm.actions.SelectAllAction@7e3b62d5
+2017-09-21 18:45:07.911 INFO: Registered toolbar action selectall overwritten: org.openstreetmap.josm.actions.SelectAllAction gets org.openstreetmap.josm.actions.SelectAllAction
+2017-09-21 18:45:07.912 INFO: Keystroke pressed ESCAPE is already assigned to org.openstreetmap.josm.actions.UnselectAllAction@2f6d2cdc, will be overridden by org.openstreetmap.josm.actions.UnselectAllAction@60ff0f39
+2017-09-21 18:45:07.912 INFO: Registered toolbar action unselectall overwritten: org.openstreetmap.josm.actions.UnselectAllAction gets org.openstreetmap.josm.actions.UnselectAllAction
+2017-09-21 18:45:07.912 INFO: Keystroke shift pressed W is already assigned to org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@5406ce5e, will be overridden by org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@603a11fa
+2017-09-21 18:45:07.913 INFO: Registered toolbar action way-select overwritten: org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction gets org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction
+2017-09-21 18:45:07.913 INFO: Keystroke pressed PERIOD is already assigned to org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@e86ba08, will be overridden by org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@53f429f8
+2017-09-21 18:45:07.913 INFO: Registered toolbar action audio-playpause overwritten: org.openstreetmap.josm.actions.audio.AudioPlayPauseAction gets org.openstreetmap.josm.actions.audio.AudioPlayPauseAction
+2017-09-21 18:45:07.914 INFO: Keystroke pressed F8 is already assigned to org.openstreetmap.josm.actions.audio.AudioNextAction@a1c706f, will be overridden by org.openstreetmap.josm.actions.audio.AudioNextAction@767cd499
+2017-09-21 18:45:07.914 INFO: Registered toolbar action audio-next overwritten: org.openstreetmap.josm.actions.audio.AudioNextAction gets org.openstreetmap.josm.actions.audio.AudioNextAction
+2017-09-21 18:45:07.915 INFO: Keystroke pressed F5 is already assigned to org.openstreetmap.josm.actions.audio.AudioPrevAction@4c51b63c, will be overridden by org.openstreetmap.josm.actions.audio.AudioPrevAction@6e629ba8
+2017-09-21 18:45:07.915 INFO: Registered toolbar action audio-prev overwritten: org.openstreetmap.josm.actions.audio.AudioPrevAction gets org.openstreetmap.josm.actions.audio.AudioPrevAction
+2017-09-21 18:45:07.916 INFO: Keystroke pressed F7 is already assigned to org.openstreetmap.josm.actions.audio.AudioFwdAction@2ec7f5d6, will be overridden by org.openstreetmap.josm.actions.audio.AudioFwdAction@5ee7f25f
+2017-09-21 18:45:07.916 INFO: Registered toolbar action audio-fwd overwritten: org.openstreetmap.josm.actions.audio.AudioFwdAction gets org.openstreetmap.josm.actions.audio.AudioFwdAction
+2017-09-21 18:45:07.916 INFO: Keystroke pressed F6 is already assigned to org.openstreetmap.josm.actions.audio.AudioBackAction@152a4cfc, will be overridden by org.openstreetmap.josm.actions.audio.AudioBackAction@2c2ebb92
+2017-09-21 18:45:07.917 INFO: Registered toolbar action audio-back overwritten: org.openstreetmap.josm.actions.audio.AudioBackAction gets org.openstreetmap.josm.actions.audio.AudioBackAction
+2017-09-21 18:45:07.917 INFO: Keystroke pressed F9 is already assigned to org.openstreetmap.josm.actions.audio.AudioFasterAction@7c5cd93e, will be overridden by org.openstreetmap.josm.actions.audio.AudioFasterAction@3c666a92
+2017-09-21 18:45:07.918 INFO: Registered toolbar action audio-faster overwritten: org.openstreetmap.josm.actions.audio.AudioFasterAction gets org.openstreetmap.josm.actions.audio.AudioFasterAction
+2017-09-21 18:45:07.918 INFO: Keystroke pressed F4 is already assigned to org.openstreetmap.josm.actions.audio.AudioSlowerAction@3d7d70df, will be overridden by org.openstreetmap.josm.actions.audio.AudioSlowerAction@4623096d
+2017-09-21 18:45:07.918 INFO: Registered toolbar action audio-slower overwritten: org.openstreetmap.josm.actions.audio.AudioSlowerAction gets org.openstreetmap.josm.actions.audio.AudioSlowerAction
+2017-09-21 18:45:07.919 INFO: Keystroke ctrl alt pressed C is already assigned to org.openstreetmap.josm.actions.ChangesetManagerToggleAction@2c855be3, will be overridden by org.openstreetmap.josm.actions.ChangesetManagerToggleAction@27b76efc
+2017-09-21 18:45:07.923 INFO: Registered toolbar action dialogs/changeset/changesetmanager overwritten: org.openstreetmap.josm.actions.ChangesetManagerToggleAction gets org.openstreetmap.josm.actions.ChangesetManagerToggleAction
+2017-09-21 18:45:07.924 INFO: Keystroke pressed F1 is already assigned to org.openstreetmap.josm.actions.HelpAction@6b8faf23, will be overridden by org.openstreetmap.josm.actions.HelpAction@7e9cb3b3
+2017-09-21 18:45:07.924 INFO: Registered toolbar action help overwritten: org.openstreetmap.josm.actions.HelpAction gets org.openstreetmap.josm.actions.HelpAction
+2017-09-21 18:45:07.924 INFO: Keystroke shift pressed F1 is already assigned to org.openstreetmap.josm.actions.AboutAction@71000e45, will be overridden by org.openstreetmap.josm.actions.AboutAction@71a16408
+2017-09-21 18:45:07.925 INFO: Registered toolbar action logo overwritten: org.openstreetmap.josm.actions.AboutAction gets org.openstreetmap.josm.actions.AboutAction
+2017-09-21 18:45:07.925 INFO: Registered toolbar action help/showstatusreport overwritten: org.openstreetmap.josm.actions.ShowStatusReportAction gets org.openstreetmap.josm.actions.ShowStatusReportAction
+2017-09-21 18:45:07.925 INFO: Registered toolbar action bug overwritten: org.openstreetmap.josm.actions.ReportBugAction gets org.openstreetmap.josm.actions.ReportBugAction
+2017-09-21 18:45:07.928 INFO: Registered toolbar action imagery-offset overwritten: org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction gets org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction
+2017-09-21 18:45:07.929 INFO: Registered toolbar action OLmarker overwritten: org.openstreetmap.josm.actions.MapRectifierWMSmenuAction gets org.openstreetmap.josm.actions.MapRectifierWMSmenuAction
+2017-09-21 18:45:07.931 INFO: Keystroke shift pressed UP is already assigned to org.openstreetmap.josm.actions.MoveAction@272d6332, will be overridden by org.openstreetmap.josm.actions.MoveAction@2f177330
+2017-09-21 18:45:07.931 INFO: Registered toolbar action action/move/up overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.931 INFO: Keystroke shift pressed DOWN is already assigned to org.openstreetmap.josm.actions.MoveAction@21f17e77, will be overridden by org.openstreetmap.josm.actions.MoveAction@334b38a0
+2017-09-21 18:45:07.932 INFO: Registered toolbar action action/move/down overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.932 INFO: Keystroke shift pressed LEFT is already assigned to org.openstreetmap.josm.actions.MoveAction@37912bdd, will be overridden by org.openstreetmap.josm.actions.MoveAction@28510451
+2017-09-21 18:45:07.932 INFO: Registered toolbar action action/move/left overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.933 INFO: Keystroke shift pressed RIGHT is already assigned to org.openstreetmap.josm.actions.MoveAction@4612794c, will be overridden by org.openstreetmap.josm.actions.MoveAction@522ab477
+2017-09-21 18:45:07.933 INFO: Registered toolbar action action/move/right overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:07.934 INFO: Keystroke pressed F3 is already assigned to org.openstreetmap.josm.actions.TaggingPresetSearchAction@a6aa64f, will be overridden by org.openstreetmap.josm.actions.TaggingPresetSearchAction@4630c3f1
+2017-09-21 18:45:07.934 INFO: Registered toolbar action presets/search overwritten: org.openstreetmap.josm.actions.TaggingPresetSearchAction gets org.openstreetmap.josm.actions.TaggingPresetSearchAction
+2017-09-21 18:45:07.934 INFO: Keystroke shift pressed F3 is already assigned to org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@204273b3, will be overridden by org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@2c546daf
+2017-09-21 18:45:07.935 INFO: Registered toolbar action presets/search-objects overwritten: org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action gets org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action
+2017-09-21 18:45:07.935 INFO: Keystroke pressed TAB is already assigned to org.openstreetmap.josm.actions.DialogsToggleAction@1e336ba5, will be overridden by org.openstreetmap.josm.actions.DialogsToggleAction@c0797f8
+2017-09-21 18:45:07.935 INFO: Registered toolbar action dialogspanel overwritten: org.openstreetmap.josm.actions.DialogsToggleAction gets org.openstreetmap.josm.actions.DialogsToggleAction
+2017-09-21 18:45:08.066 INFO: Keystroke ctrl pressed N is already assigned to org.openstreetmap.josm.actions.NewAction@4bbea936, will be overridden by org.openstreetmap.josm.actions.NewAction@b891303
+2017-09-21 18:45:08.067 INFO: Registered toolbar action new overwritten: org.openstreetmap.josm.actions.NewAction gets org.openstreetmap.josm.actions.NewAction
+2017-09-21 18:45:08.067 INFO: Keystroke ctrl pressed O is already assigned to org.openstreetmap.josm.actions.OpenFileAction@143926d0, will be overridden by org.openstreetmap.josm.actions.OpenFileAction@4be676c8
+2017-09-21 18:45:08.067 INFO: Registered toolbar action open overwritten: org.openstreetmap.josm.actions.OpenFileAction gets org.openstreetmap.josm.actions.OpenFileAction
+2017-09-21 18:45:08.068 INFO: Keystroke ctrl pressed L is already assigned to org.openstreetmap.josm.actions.OpenLocationAction@2755000f, will be overridden by org.openstreetmap.josm.actions.OpenLocationAction@4450530e
+2017-09-21 18:45:08.068 INFO: Registered toolbar action openlocation overwritten: org.openstreetmap.josm.actions.OpenLocationAction gets org.openstreetmap.josm.actions.OpenLocationAction
+2017-09-21 18:45:08.068 INFO: Keystroke ctrl pressed F4 is already assigned to org.openstreetmap.josm.actions.DeleteLayerAction@22be2903, will be overridden by org.openstreetmap.josm.actions.DeleteLayerAction@74d8a42b
+2017-09-21 18:45:08.068 INFO: Registered toolbar action delete-layer overwritten: org.openstreetmap.josm.actions.DeleteLayerAction gets org.openstreetmap.josm.actions.DeleteLayerAction
+2017-09-21 18:45:08.068 INFO: Keystroke ctrl pressed E is already assigned to org.openstreetmap.josm.actions.GpxExportAction@1cf7d37b, will be overridden by org.openstreetmap.josm.actions.GpxExportAction@378aa0b8
+2017-09-21 18:45:08.068 INFO: Registered toolbar action exportgpx overwritten: org.openstreetmap.josm.actions.GpxExportAction gets org.openstreetmap.josm.actions.GpxExportAction
+2017-09-21 18:45:08.069 INFO: Keystroke shift ctrl pressed DOWN is already assigned to org.openstreetmap.josm.actions.DownloadAction@41a57993, will be overridden by org.openstreetmap.josm.actions.DownloadAction@4fa2d0b7
+2017-09-21 18:45:08.069 INFO: Registered toolbar action download overwritten: org.openstreetmap.josm.actions.DownloadAction gets org.openstreetmap.josm.actions.DownloadAction
+2017-09-21 18:45:08.069 INFO: Keystroke shift ctrl pressed O is already assigned to org.openstreetmap.josm.actions.DownloadPrimitiveAction@4e7f5cd0, will be overridden by org.openstreetmap.josm.actions.DownloadPrimitiveAction@92c226e
+2017-09-21 18:45:08.069 INFO: Registered toolbar action downloadprimitive overwritten: org.openstreetmap.josm.actions.DownloadPrimitiveAction gets org.openstreetmap.josm.actions.DownloadPrimitiveAction
+2017-09-21 18:45:08.069 INFO: Keystroke ctrl alt pressed D is already assigned to org.openstreetmap.josm.actions.DownloadReferrersAction@1dda822d, will be overridden by org.openstreetmap.josm.actions.DownloadReferrersAction@38e4369c
+2017-09-21 18:45:08.070 INFO: Registered toolbar action downloadreferrers overwritten: org.openstreetmap.josm.actions.DownloadReferrersAction gets org.openstreetmap.josm.actions.DownloadReferrersAction
+2017-09-21 18:45:08.070 INFO: Keystroke ctrl alt pressed Q is already assigned to org.openstreetmap.josm.actions.CloseChangesetAction@3f14f6e6, will be overridden by org.openstreetmap.josm.actions.CloseChangesetAction@5a89ce58
+2017-09-21 18:45:08.070 INFO: Registered toolbar action closechangeset overwritten: org.openstreetmap.josm.actions.CloseChangesetAction gets org.openstreetmap.josm.actions.CloseChangesetAction
+2017-09-21 18:45:08.070 INFO: Keystroke ctrl pressed U is already assigned to org.openstreetmap.josm.actions.UpdateDataAction@55177976, will be overridden by org.openstreetmap.josm.actions.UpdateDataAction@3778ad6
+2017-09-21 18:45:08.070 INFO: Registered toolbar action updatedata overwritten: org.openstreetmap.josm.actions.UpdateDataAction gets org.openstreetmap.josm.actions.UpdateDataAction
+2017-09-21 18:45:08.070 INFO: Keystroke ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UpdateSelectionAction@61ba36d8, will be overridden by org.openstreetmap.josm.actions.UpdateSelectionAction@6ba0f784
+2017-09-21 18:45:08.071 INFO: Registered toolbar action updateselection overwritten: org.openstreetmap.josm.actions.UpdateSelectionAction gets org.openstreetmap.josm.actions.UpdateSelectionAction
+2017-09-21 18:45:08.071 INFO: Keystroke ctrl alt pressed M is already assigned to org.openstreetmap.josm.actions.UpdateModifiedAction@28381b28, will be overridden by org.openstreetmap.josm.actions.UpdateModifiedAction@72697cba
+2017-09-21 18:45:08.071 INFO: Registered toolbar action updatemodified overwritten: org.openstreetmap.josm.actions.UpdateModifiedAction gets org.openstreetmap.josm.actions.UpdateModifiedAction
+2017-09-21 18:45:08.071 INFO: Keystroke shift ctrl pressed UP is already assigned to org.openstreetmap.josm.actions.UploadAction@30037b0f, will be overridden by org.openstreetmap.josm.actions.UploadAction@668697a1
+2017-09-21 18:45:08.072 INFO: Registered toolbar action upload overwritten: org.openstreetmap.josm.actions.UploadAction gets org.openstreetmap.josm.actions.UploadAction
+2017-09-21 18:45:08.072 INFO: Keystroke shift ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UploadSelectionAction@5e3178b0, will be overridden by org.openstreetmap.josm.actions.UploadSelectionAction@5998909d
+2017-09-21 18:45:08.073 INFO: Registered toolbar action uploadselection overwritten: org.openstreetmap.josm.actions.UploadSelectionAction gets org.openstreetmap.josm.actions.UploadSelectionAction
+2017-09-21 18:45:08.073 INFO: Keystroke shift ctrl alt pressed J is already assigned to org.openstreetmap.josm.actions.RestartAction@6e8d8958, will be overridden by org.openstreetmap.josm.actions.RestartAction@35e840fd
+2017-09-21 18:45:08.074 INFO: Registered toolbar action action/restart overwritten: org.openstreetmap.josm.actions.RestartAction gets org.openstreetmap.josm.actions.RestartAction
+2017-09-21 18:45:08.074 INFO: Keystroke ctrl pressed Q is already assigned to org.openstreetmap.josm.actions.ExitAction@6842efa, will be overridden by org.openstreetmap.josm.actions.ExitAction@cdd7656
+2017-09-21 18:45:08.074 INFO: Registered toolbar action exit overwritten: org.openstreetmap.josm.actions.ExitAction gets org.openstreetmap.josm.actions.ExitAction
+2017-09-21 18:45:08.075 INFO: Keystroke ctrl pressed Z is already assigned to org.openstreetmap.josm.actions.UndoAction@2df4f626, will be overridden by org.openstreetmap.josm.actions.UndoAction@5e34d3f3
+2017-09-21 18:45:08.075 INFO: Registered toolbar action undo overwritten: org.openstreetmap.josm.actions.UndoAction gets org.openstreetmap.josm.actions.UndoAction
+2017-09-21 18:45:08.075 INFO: Keystroke ctrl pressed Y is already assigned to org.openstreetmap.josm.actions.RedoAction@78d5efd0, will be overridden by org.openstreetmap.josm.actions.RedoAction@4335acd0
+2017-09-21 18:45:08.075 INFO: Registered toolbar action redo overwritten: org.openstreetmap.josm.actions.RedoAction gets org.openstreetmap.josm.actions.RedoAction
+2017-09-21 18:45:08.076 INFO: Keystroke ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyAction@7a906edb, will be overridden by org.openstreetmap.josm.actions.CopyAction@342df3e3
+2017-09-21 18:45:08.076 INFO: Registered toolbar action copy overwritten: org.openstreetmap.josm.actions.CopyAction gets org.openstreetmap.josm.actions.CopyAction
+2017-09-21 18:45:08.076 INFO: Keystroke ctrl pressed INSERT is already assigned to org.openstreetmap.josm.actions.CopyAction@7a906edb, will be overridden by org.openstreetmap.josm.actions.CopyAction@342df3e3
+2017-09-21 18:45:08.077 INFO: Keystroke shift ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyCoordinatesAction@5d447c8d, will be overridden by org.openstreetmap.josm.actions.CopyCoordinatesAction@53a55cf6
+2017-09-21 18:45:08.077 INFO: Keystroke ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteAction@570be4c5, will be overridden by org.openstreetmap.josm.actions.PasteAction@2b76a63a
+2017-09-21 18:45:08.077 INFO: Registered toolbar action paste overwritten: org.openstreetmap.josm.actions.PasteAction gets org.openstreetmap.josm.actions.PasteAction
+2017-09-21 18:45:08.078 INFO: Keystroke shift pressed INSERT is already assigned to org.openstreetmap.josm.actions.PasteAction@570be4c5, will be overridden by org.openstreetmap.josm.actions.PasteAction@2b76a63a
+2017-09-21 18:45:08.078 INFO: Keystroke ctrl alt pressed V is already assigned to org.openstreetmap.josm.actions.PasteAtSourcePositionAction@773a9b, will be overridden by org.openstreetmap.josm.actions.PasteAtSourcePositionAction@454bcca8
+2017-09-21 18:45:08.078 INFO: Registered toolbar action pasteatsource overwritten: org.openstreetmap.josm.actions.PasteAtSourcePositionAction gets org.openstreetmap.josm.actions.PasteAtSourcePositionAction
+2017-09-21 18:45:08.079 INFO: Keystroke shift ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteTagsAction@79e86af8, will be overridden by org.openstreetmap.josm.actions.PasteTagsAction@1ea28d09
+2017-09-21 18:45:08.079 INFO: Registered toolbar action pastetags overwritten: org.openstreetmap.josm.actions.PasteTagsAction gets org.openstreetmap.josm.actions.PasteTagsAction
+2017-09-21 18:45:08.079 INFO: Keystroke ctrl pressed D is already assigned to org.openstreetmap.josm.actions.DuplicateAction@7b6d15c, will be overridden by org.openstreetmap.josm.actions.DuplicateAction@671930c7
+2017-09-21 18:45:08.079 INFO: Registered toolbar action duplicate overwritten: org.openstreetmap.josm.actions.DuplicateAction gets org.openstreetmap.josm.actions.DuplicateAction
+2017-09-21 18:45:08.080 INFO: Keystroke pressed DELETE is already assigned to org.openstreetmap.josm.actions.DeleteAction@f1320a3, will be overridden by org.openstreetmap.josm.actions.DeleteAction@79400d68
+2017-09-21 18:45:08.080 INFO: Registered toolbar action dialogs/delete overwritten: org.openstreetmap.josm.actions.DeleteAction gets org.openstreetmap.josm.actions.DeleteAction
+2017-09-21 18:45:08.080 INFO: Keystroke shift ctrl pressed P is already assigned to org.openstreetmap.josm.actions.PurgeAction@36096038, will be overridden by org.openstreetmap.josm.actions.PurgeAction@62f5a064
+2017-09-21 18:45:08.081 INFO: Registered toolbar action purge overwritten: org.openstreetmap.josm.actions.PurgeAction gets org.openstreetmap.josm.actions.PurgeAction
+2017-09-21 18:45:08.081 INFO: Keystroke ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeLayerAction@c8c63ab, will be overridden by org.openstreetmap.josm.actions.MergeLayerAction@68b5b3f6
+2017-09-21 18:45:08.081 INFO: Registered toolbar action action/mergelayer overwritten: org.openstreetmap.josm.actions.MergeLayerAction gets org.openstreetmap.josm.actions.MergeLayerAction
+2017-09-21 18:45:08.082 INFO: Keystroke shift ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeSelectionAction@3d817f57, will be overridden by org.openstreetmap.josm.actions.MergeSelectionAction@4684292f
+2017-09-21 18:45:08.082 INFO: Registered toolbar action dialogs/mergedown overwritten: org.openstreetmap.josm.actions.MergeSelectionAction gets org.openstreetmap.josm.actions.MergeSelectionAction
+2017-09-21 18:45:08.082 INFO: Keystroke ctrl pressed F is already assigned to org.openstreetmap.josm.actions.search.SearchAction@2b01467c, will be overridden by org.openstreetmap.josm.actions.search.SearchAction@3fd657da
+2017-09-21 18:45:08.083 INFO: Registered toolbar action dialogs/search overwritten: org.openstreetmap.josm.actions.search.SearchAction gets org.openstreetmap.josm.actions.search.SearchAction
+2017-09-21 18:45:08.083 INFO: Keystroke pressed F12 is already assigned to org.openstreetmap.josm.actions.PreferencesAction@56f4eb84, will be overridden by org.openstreetmap.josm.actions.PreferencesAction@706f36c4
+2017-09-21 18:45:08.083 INFO: Registered toolbar action preference overwritten: org.openstreetmap.josm.actions.PreferencesAction gets org.openstreetmap.josm.actions.PreferencesAction
+2017-09-21 18:45:08.083 INFO: Keystroke ctrl pressed W is already assigned to org.openstreetmap.josm.actions.WireframeToggleAction@398a5bca, will be overridden by org.openstreetmap.josm.actions.WireframeToggleAction@3580013c
+2017-09-21 18:45:08.084 INFO: Registered toolbar action wireframe overwritten: org.openstreetmap.josm.actions.WireframeToggleAction gets org.openstreetmap.josm.actions.WireframeToggleAction
+2017-09-21 18:45:08.084 INFO: Keystroke ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoAction@f47e06b, will be overridden by org.openstreetmap.josm.actions.InfoAction@52aa9bf2
+2017-09-21 18:45:08.084 INFO: Registered toolbar action action/info overwritten: org.openstreetmap.josm.actions.InfoAction gets org.openstreetmap.josm.actions.InfoAction
+2017-09-21 18:45:08.085 INFO: Keystroke shift ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoWebAction@2e546559, will be overridden by org.openstreetmap.josm.actions.InfoWebAction@5fcf6efa
+2017-09-21 18:45:08.085 INFO: Registered toolbar action action/infoweb overwritten: org.openstreetmap.josm.actions.InfoWebAction gets org.openstreetmap.josm.actions.InfoWebAction
+2017-09-21 18:45:08.085 INFO: Keystroke ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoAction@5f8d13dc, will be overridden by org.openstreetmap.josm.actions.HistoryInfoAction@569fbad1
+2017-09-21 18:45:08.086 INFO: Registered toolbar action action/historyinfo overwritten: org.openstreetmap.josm.actions.HistoryInfoAction gets org.openstreetmap.josm.actions.HistoryInfoAction
+2017-09-21 18:45:08.086 INFO: Keystroke shift ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoWebAction@34b257ec, will be overridden by org.openstreetmap.josm.actions.HistoryInfoWebAction@6323d8df
+2017-09-21 18:45:08.086 INFO: Registered toolbar action action/historyinfoweb overwritten: org.openstreetmap.josm.actions.HistoryInfoWebAction gets org.openstreetmap.josm.actions.HistoryInfoWebAction
+2017-09-21 18:45:08.086 INFO: Keystroke ctrl pressed J is already assigned to org.openstreetmap.josm.actions.JumpToAction@446bda9, will be overridden by org.openstreetmap.josm.actions.JumpToAction@65d0aa42
+2017-09-21 18:45:08.087 INFO: Registered toolbar action action/jumpto overwritten: org.openstreetmap.josm.actions.JumpToAction gets org.openstreetmap.josm.actions.JumpToAction
+2017-09-21 18:45:08.091 INFO: Keystroke pressed P is already assigned to org.openstreetmap.josm.actions.SplitWayAction@9356ed5, will be overridden by org.openstreetmap.josm.actions.SplitWayAction@41ccb0bc
+2017-09-21 18:45:08.091 INFO: Registered toolbar action splitway overwritten: org.openstreetmap.josm.actions.SplitWayAction gets org.openstreetmap.josm.actions.SplitWayAction
+2017-09-21 18:45:08.091 INFO: Keystroke pressed C is already assigned to org.openstreetmap.josm.actions.CombineWayAction@3e918fdc, will be overridden by org.openstreetmap.josm.actions.CombineWayAction@6a2ec366
+2017-09-21 18:45:08.092 INFO: Registered toolbar action combineway overwritten: org.openstreetmap.josm.actions.CombineWayAction gets org.openstreetmap.josm.actions.CombineWayAction
+2017-09-21 18:45:08.092 INFO: Keystroke pressed R is already assigned to org.openstreetmap.josm.actions.ReverseWayAction@18baa2d5, will be overridden by org.openstreetmap.josm.actions.ReverseWayAction@17b61bdc
+2017-09-21 18:45:08.092 INFO: Registered toolbar action wayflip overwritten: org.openstreetmap.josm.actions.ReverseWayAction gets org.openstreetmap.josm.actions.ReverseWayAction
+2017-09-21 18:45:08.092 INFO: Keystroke shift pressed Y is already assigned to org.openstreetmap.josm.actions.SimplifyWayAction@2920ef9e, will be overridden by org.openstreetmap.josm.actions.SimplifyWayAction@775431d2
+2017-09-21 18:45:08.093 INFO: Registered toolbar action simplify overwritten: org.openstreetmap.josm.actions.SimplifyWayAction gets org.openstreetmap.josm.actions.SimplifyWayAction
+2017-09-21 18:45:08.093 INFO: Keystroke pressed O is already assigned to org.openstreetmap.josm.actions.AlignInCircleAction@bc17fa9, will be overridden by org.openstreetmap.josm.actions.AlignInCircleAction@533936d4
+2017-09-21 18:45:08.093 INFO: Registered toolbar action aligncircle overwritten: org.openstreetmap.josm.actions.AlignInCircleAction gets org.openstreetmap.josm.actions.AlignInCircleAction
+2017-09-21 18:45:08.094 INFO: Keystroke pressed L is already assigned to org.openstreetmap.josm.actions.AlignInLineAction@391cfe62, will be overridden by org.openstreetmap.josm.actions.AlignInLineAction@4f90ea26
+2017-09-21 18:45:08.094 INFO: Registered toolbar action alignline overwritten: org.openstreetmap.josm.actions.AlignInLineAction gets org.openstreetmap.josm.actions.AlignInLineAction
+2017-09-21 18:45:08.094 INFO: Keystroke shift pressed B is already assigned to org.openstreetmap.josm.actions.DistributeAction@74fd5f9e, will be overridden by org.openstreetmap.josm.actions.DistributeAction@68df70f3
+2017-09-21 18:45:08.095 INFO: Registered toolbar action distribute overwritten: org.openstreetmap.josm.actions.DistributeAction gets org.openstreetmap.josm.actions.DistributeAction
+2017-09-21 18:45:08.095 INFO: Keystroke pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction@5a0f1280, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction@3e53069b
+2017-09-21 18:45:08.096 INFO: Registered toolbar action ortho overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction gets org.openstreetmap.josm.actions.OrthogonalizeAction
+2017-09-21 18:45:08.096 INFO: Keystroke shift pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@5a33025f, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@24c61813
+2017-09-21 18:45:08.096 INFO: Registered toolbar action action/orthogonalize/undo overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction$Undo gets org.openstreetmap.josm.actions.OrthogonalizeAction$Undo
+2017-09-21 18:45:08.097 INFO: Keystroke shift pressed M is already assigned to org.openstreetmap.josm.actions.MirrorAction@4021895, will be overridden by org.openstreetmap.josm.actions.MirrorAction@6ccf0777
+2017-09-21 18:45:08.097 INFO: Registered toolbar action mirror overwritten: org.openstreetmap.josm.actions.MirrorAction gets org.openstreetmap.josm.actions.MirrorAction
+2017-09-21 18:45:08.098 INFO: Keystroke pressed F is already assigned to org.openstreetmap.josm.actions.FollowLineAction@1a9db624, will be overridden by org.openstreetmap.josm.actions.FollowLineAction@7f04aaf5
+2017-09-21 18:45:08.098 INFO: Registered toolbar action followline overwritten: org.openstreetmap.josm.actions.FollowLineAction gets org.openstreetmap.josm.actions.FollowLineAction
+2017-09-21 18:45:08.098 INFO: Keystroke shift pressed D is already assigned to org.openstreetmap.josm.actions.AddNodeAction@38a42ce5, will be overridden by org.openstreetmap.josm.actions.AddNodeAction@59c51c50
+2017-09-21 18:45:08.098 INFO: Registered toolbar action addnode overwritten: org.openstreetmap.josm.actions.AddNodeAction gets org.openstreetmap.josm.actions.AddNodeAction
+2017-09-21 18:45:08.099 INFO: Registered toolbar action movenode overwritten: org.openstreetmap.josm.actions.MoveNodeAction gets org.openstreetmap.josm.actions.MoveNodeAction
+2017-09-21 18:45:08.099 INFO: Keystroke shift pressed O is already assigned to org.openstreetmap.josm.actions.CreateCircleAction@7ac7f054, will be overridden by org.openstreetmap.josm.actions.CreateCircleAction@4dd781fb
+2017-09-21 18:45:08.099 INFO: Registered toolbar action createcircle overwritten: org.openstreetmap.josm.actions.CreateCircleAction gets org.openstreetmap.josm.actions.CreateCircleAction
+2017-09-21 18:45:08.100 INFO: Keystroke pressed M is already assigned to org.openstreetmap.josm.actions.MergeNodesAction@6e158929, will be overridden by org.openstreetmap.josm.actions.MergeNodesAction@59b7d389
+2017-09-21 18:45:08.100 INFO: Registered toolbar action mergenodes overwritten: org.openstreetmap.josm.actions.MergeNodesAction gets org.openstreetmap.josm.actions.MergeNodesAction
+2017-09-21 18:45:08.100 INFO: Keystroke pressed J is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@194e3e59, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@3be8948
+2017-09-21 18:45:08.100 INFO: Registered toolbar action joinnodeway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:08.101 INFO: Keystroke pressed N is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@94fa91, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@726832f3
+2017-09-21 18:45:08.101 INFO: Registered toolbar action movenodeontoway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:08.101 INFO: Keystroke alt pressed J is already assigned to org.openstreetmap.josm.actions.UnJoinNodeWayAction@4594ef87, will be overridden by org.openstreetmap.josm.actions.UnJoinNodeWayAction@3c1ad1c
+2017-09-21 18:45:08.102 INFO: Registered toolbar action unjoinnodeway overwritten: org.openstreetmap.josm.actions.UnJoinNodeWayAction gets org.openstreetmap.josm.actions.UnJoinNodeWayAction
+2017-09-21 18:45:08.102 INFO: Keystroke pressed G is already assigned to org.openstreetmap.josm.actions.UnGlueAction@70a7add, will be overridden by org.openstreetmap.josm.actions.UnGlueAction@640d0d76
+2017-09-21 18:45:08.102 INFO: Registered toolbar action unglueways overwritten: org.openstreetmap.josm.actions.UnGlueAction gets org.openstreetmap.josm.actions.UnGlueAction
+2017-09-21 18:45:08.102 INFO: Keystroke shift pressed J is already assigned to org.openstreetmap.josm.actions.JoinAreasAction@6fde2093, will be overridden by org.openstreetmap.josm.actions.JoinAreasAction@130e3c76
+2017-09-21 18:45:08.103 INFO: Registered toolbar action joinareas overwritten: org.openstreetmap.josm.actions.JoinAreasAction gets org.openstreetmap.josm.actions.JoinAreasAction
+2017-09-21 18:45:08.104 INFO: Keystroke ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@48390f8b, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@20427b4e
+2017-09-21 18:45:08.104 INFO: Registered toolbar action multipoly_create overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:08.105 INFO: Keystroke shift ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@2a3339dc, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@2e659b17
+2017-09-21 18:45:08.105 INFO: Registered toolbar action multipoly_update overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:08.105 INFO: Keystroke ctrl pressed A is already assigned to org.openstreetmap.josm.actions.SelectAllAction@7e3b62d5, will be overridden by org.openstreetmap.josm.actions.SelectAllAction@220f5510
+2017-09-21 18:45:08.105 INFO: Registered toolbar action selectall overwritten: org.openstreetmap.josm.actions.SelectAllAction gets org.openstreetmap.josm.actions.SelectAllAction
+2017-09-21 18:45:08.106 INFO: Keystroke pressed ESCAPE is already assigned to org.openstreetmap.josm.actions.UnselectAllAction@60ff0f39, will be overridden by org.openstreetmap.josm.actions.UnselectAllAction@400020ab
+2017-09-21 18:45:08.106 INFO: Registered toolbar action unselectall overwritten: org.openstreetmap.josm.actions.UnselectAllAction gets org.openstreetmap.josm.actions.UnselectAllAction
+2017-09-21 18:45:08.106 INFO: Keystroke shift pressed W is already assigned to org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@603a11fa, will be overridden by org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@73abbbee
+2017-09-21 18:45:08.107 INFO: Registered toolbar action way-select overwritten: org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction gets org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction
+2017-09-21 18:45:08.107 INFO: Keystroke pressed PERIOD is already assigned to org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@53f429f8, will be overridden by org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@71942baf
+2017-09-21 18:45:08.108 INFO: Registered toolbar action audio-playpause overwritten: org.openstreetmap.josm.actions.audio.AudioPlayPauseAction gets org.openstreetmap.josm.actions.audio.AudioPlayPauseAction
+2017-09-21 18:45:08.108 INFO: Keystroke pressed F8 is already assigned to org.openstreetmap.josm.actions.audio.AudioNextAction@767cd499, will be overridden by org.openstreetmap.josm.actions.audio.AudioNextAction@29eb4758
+2017-09-21 18:45:08.108 INFO: Registered toolbar action audio-next overwritten: org.openstreetmap.josm.actions.audio.AudioNextAction gets org.openstreetmap.josm.actions.audio.AudioNextAction
+2017-09-21 18:45:08.109 INFO: Keystroke pressed F5 is already assigned to org.openstreetmap.josm.actions.audio.AudioPrevAction@6e629ba8, will be overridden by org.openstreetmap.josm.actions.audio.AudioPrevAction@68af3fb6
+2017-09-21 18:45:08.109 INFO: Registered toolbar action audio-prev overwritten: org.openstreetmap.josm.actions.audio.AudioPrevAction gets org.openstreetmap.josm.actions.audio.AudioPrevAction
+2017-09-21 18:45:08.113 INFO: Keystroke pressed F7 is already assigned to org.openstreetmap.josm.actions.audio.AudioFwdAction@5ee7f25f, will be overridden by org.openstreetmap.josm.actions.audio.AudioFwdAction@46f58d86
+2017-09-21 18:45:08.114 INFO: Registered toolbar action audio-fwd overwritten: org.openstreetmap.josm.actions.audio.AudioFwdAction gets org.openstreetmap.josm.actions.audio.AudioFwdAction
+2017-09-21 18:45:08.114 INFO: Keystroke pressed F6 is already assigned to org.openstreetmap.josm.actions.audio.AudioBackAction@2c2ebb92, will be overridden by org.openstreetmap.josm.actions.audio.AudioBackAction@166c1fa4
+2017-09-21 18:45:08.115 INFO: Registered toolbar action audio-back overwritten: org.openstreetmap.josm.actions.audio.AudioBackAction gets org.openstreetmap.josm.actions.audio.AudioBackAction
+2017-09-21 18:45:08.115 INFO: Keystroke pressed F9 is already assigned to org.openstreetmap.josm.actions.audio.AudioFasterAction@3c666a92, will be overridden by org.openstreetmap.josm.actions.audio.AudioFasterAction@65ce4bb6
+2017-09-21 18:45:08.116 INFO: Registered toolbar action audio-faster overwritten: org.openstreetmap.josm.actions.audio.AudioFasterAction gets org.openstreetmap.josm.actions.audio.AudioFasterAction
+2017-09-21 18:45:08.116 INFO: Keystroke pressed F4 is already assigned to org.openstreetmap.josm.actions.audio.AudioSlowerAction@4623096d, will be overridden by org.openstreetmap.josm.actions.audio.AudioSlowerAction@748d9a36
+2017-09-21 18:45:08.116 INFO: Registered toolbar action audio-slower overwritten: org.openstreetmap.josm.actions.audio.AudioSlowerAction gets org.openstreetmap.josm.actions.audio.AudioSlowerAction
+2017-09-21 18:45:08.118 INFO: Keystroke ctrl alt pressed C is already assigned to org.openstreetmap.josm.actions.ChangesetManagerToggleAction@27b76efc, will be overridden by org.openstreetmap.josm.actions.ChangesetManagerToggleAction@1efeb09c
+2017-09-21 18:45:08.118 INFO: Registered toolbar action dialogs/changeset/changesetmanager overwritten: org.openstreetmap.josm.actions.ChangesetManagerToggleAction gets org.openstreetmap.josm.actions.ChangesetManagerToggleAction
+2017-09-21 18:45:08.118 INFO: Keystroke pressed F1 is already assigned to org.openstreetmap.josm.actions.HelpAction@7e9cb3b3, will be overridden by org.openstreetmap.josm.actions.HelpAction@68190dd8
+2017-09-21 18:45:08.119 INFO: Registered toolbar action help overwritten: org.openstreetmap.josm.actions.HelpAction gets org.openstreetmap.josm.actions.HelpAction
+2017-09-21 18:45:08.119 INFO: Keystroke shift pressed F1 is already assigned to org.openstreetmap.josm.actions.AboutAction@71a16408, will be overridden by org.openstreetmap.josm.actions.AboutAction@7f9d7896
+2017-09-21 18:45:08.119 INFO: Registered toolbar action logo overwritten: org.openstreetmap.josm.actions.AboutAction gets org.openstreetmap.josm.actions.AboutAction
+2017-09-21 18:45:08.119 INFO: Registered toolbar action help/showstatusreport overwritten: org.openstreetmap.josm.actions.ShowStatusReportAction gets org.openstreetmap.josm.actions.ShowStatusReportAction
+2017-09-21 18:45:08.120 INFO: Registered toolbar action bug overwritten: org.openstreetmap.josm.actions.ReportBugAction gets org.openstreetmap.josm.actions.ReportBugAction
+2017-09-21 18:45:08.124 INFO: Registered toolbar action imagery-offset overwritten: org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction gets org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction
+2017-09-21 18:45:08.125 INFO: Registered toolbar action OLmarker overwritten: org.openstreetmap.josm.actions.MapRectifierWMSmenuAction gets org.openstreetmap.josm.actions.MapRectifierWMSmenuAction
+2017-09-21 18:45:08.126 INFO: Keystroke shift pressed UP is already assigned to org.openstreetmap.josm.actions.MoveAction@2f177330, will be overridden by org.openstreetmap.josm.actions.MoveAction@67d91179
+2017-09-21 18:45:08.126 INFO: Registered toolbar action action/move/up overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.127 INFO: Keystroke shift pressed DOWN is already assigned to org.openstreetmap.josm.actions.MoveAction@334b38a0, will be overridden by org.openstreetmap.josm.actions.MoveAction@cc8274e
+2017-09-21 18:45:08.127 INFO: Registered toolbar action action/move/down overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.127 INFO: Keystroke shift pressed LEFT is already assigned to org.openstreetmap.josm.actions.MoveAction@28510451, will be overridden by org.openstreetmap.josm.actions.MoveAction@2c9f8cc2
+2017-09-21 18:45:08.128 INFO: Registered toolbar action action/move/left overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.128 INFO: Keystroke shift pressed RIGHT is already assigned to org.openstreetmap.josm.actions.MoveAction@522ab477, will be overridden by org.openstreetmap.josm.actions.MoveAction@38d2080f
+2017-09-21 18:45:08.128 INFO: Registered toolbar action action/move/right overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.129 INFO: Keystroke pressed F3 is already assigned to org.openstreetmap.josm.actions.TaggingPresetSearchAction@4630c3f1, will be overridden by org.openstreetmap.josm.actions.TaggingPresetSearchAction@17af94b5
+2017-09-21 18:45:08.129 INFO: Registered toolbar action presets/search overwritten: org.openstreetmap.josm.actions.TaggingPresetSearchAction gets org.openstreetmap.josm.actions.TaggingPresetSearchAction
+2017-09-21 18:45:08.129 INFO: Keystroke shift pressed F3 is already assigned to org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@2c546daf, will be overridden by org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@5a902359
+2017-09-21 18:45:08.129 INFO: Registered toolbar action presets/search-objects overwritten: org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action gets org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action
+2017-09-21 18:45:08.129 INFO: Keystroke pressed TAB is already assigned to org.openstreetmap.josm.actions.DialogsToggleAction@c0797f8, will be overridden by org.openstreetmap.josm.actions.DialogsToggleAction@a394d55
+2017-09-21 18:45:08.130 INFO: Registered toolbar action dialogspanel overwritten: org.openstreetmap.josm.actions.DialogsToggleAction gets org.openstreetmap.josm.actions.DialogsToggleAction
+2017-09-21 18:45:08.474 INFO: Defaults for draw.rawgps.layer.wpt.pattern differ: ?{ '{name} ({desc})' | '{name} ({cmt})' | '{name}' | '{desc}' | '{cmt}' } != 
+2017-09-21 18:45:08.476 INFO: Defaults for draw.rawgps.layer.audiowpt.pattern differ: ?{ '{name}' | '{desc}' | '{formattedWaypointOffset}' } != 
+2017-09-21 18:45:08.635 INFO: Defaults for mapillary.download-mode differ: osmArea != default
+2017-09-21 18:45:08.919 INFO: Keystroke ctrl pressed N is already assigned to org.openstreetmap.josm.actions.NewAction@b891303, will be overridden by org.openstreetmap.josm.actions.NewAction@2283ae6d
+2017-09-21 18:45:08.919 INFO: Registered toolbar action new overwritten: org.openstreetmap.josm.actions.NewAction gets org.openstreetmap.josm.actions.NewAction
+2017-09-21 18:45:08.919 INFO: Keystroke ctrl pressed O is already assigned to org.openstreetmap.josm.actions.OpenFileAction@4be676c8, will be overridden by org.openstreetmap.josm.actions.OpenFileAction@49629cb4
+2017-09-21 18:45:08.920 INFO: Registered toolbar action open overwritten: org.openstreetmap.josm.actions.OpenFileAction gets org.openstreetmap.josm.actions.OpenFileAction
+2017-09-21 18:45:08.921 INFO: Keystroke ctrl pressed L is already assigned to org.openstreetmap.josm.actions.OpenLocationAction@4450530e, will be overridden by org.openstreetmap.josm.actions.OpenLocationAction@1233e42a
+2017-09-21 18:45:08.921 INFO: Registered toolbar action openlocation overwritten: org.openstreetmap.josm.actions.OpenLocationAction gets org.openstreetmap.josm.actions.OpenLocationAction
+2017-09-21 18:45:08.922 INFO: Keystroke ctrl pressed F4 is already assigned to org.openstreetmap.josm.actions.DeleteLayerAction@74d8a42b, will be overridden by org.openstreetmap.josm.actions.DeleteLayerAction@52a050dc
+2017-09-21 18:45:08.922 INFO: Registered toolbar action delete-layer overwritten: org.openstreetmap.josm.actions.DeleteLayerAction gets org.openstreetmap.josm.actions.DeleteLayerAction
+2017-09-21 18:45:08.922 INFO: Keystroke ctrl pressed E is already assigned to org.openstreetmap.josm.actions.GpxExportAction@378aa0b8, will be overridden by org.openstreetmap.josm.actions.GpxExportAction@6d6f7c23
+2017-09-21 18:45:08.922 INFO: Registered toolbar action exportgpx overwritten: org.openstreetmap.josm.actions.GpxExportAction gets org.openstreetmap.josm.actions.GpxExportAction
+2017-09-21 18:45:08.922 INFO: Keystroke shift ctrl pressed DOWN is already assigned to org.openstreetmap.josm.actions.DownloadAction@4fa2d0b7, will be overridden by org.openstreetmap.josm.actions.DownloadAction@3035da06
+2017-09-21 18:45:08.922 INFO: Registered toolbar action download overwritten: org.openstreetmap.josm.actions.DownloadAction gets org.openstreetmap.josm.actions.DownloadAction
+2017-09-21 18:45:08.923 INFO: Keystroke shift ctrl pressed O is already assigned to org.openstreetmap.josm.actions.DownloadPrimitiveAction@92c226e, will be overridden by org.openstreetmap.josm.actions.DownloadPrimitiveAction@3daa7a9e
+2017-09-21 18:45:08.923 INFO: Registered toolbar action downloadprimitive overwritten: org.openstreetmap.josm.actions.DownloadPrimitiveAction gets org.openstreetmap.josm.actions.DownloadPrimitiveAction
+2017-09-21 18:45:08.923 INFO: Keystroke ctrl alt pressed D is already assigned to org.openstreetmap.josm.actions.DownloadReferrersAction@38e4369c, will be overridden by org.openstreetmap.josm.actions.DownloadReferrersAction@6d5cfb47
+2017-09-21 18:45:08.923 INFO: Registered toolbar action downloadreferrers overwritten: org.openstreetmap.josm.actions.DownloadReferrersAction gets org.openstreetmap.josm.actions.DownloadReferrersAction
+2017-09-21 18:45:08.923 INFO: Keystroke ctrl alt pressed Q is already assigned to org.openstreetmap.josm.actions.CloseChangesetAction@5a89ce58, will be overridden by org.openstreetmap.josm.actions.CloseChangesetAction@7b441cab
+2017-09-21 18:45:08.924 INFO: Registered toolbar action closechangeset overwritten: org.openstreetmap.josm.actions.CloseChangesetAction gets org.openstreetmap.josm.actions.CloseChangesetAction
+2017-09-21 18:45:08.924 INFO: Keystroke ctrl pressed U is already assigned to org.openstreetmap.josm.actions.UpdateDataAction@3778ad6, will be overridden by org.openstreetmap.josm.actions.UpdateDataAction@653f0c2f
+2017-09-21 18:45:08.924 INFO: Registered toolbar action updatedata overwritten: org.openstreetmap.josm.actions.UpdateDataAction gets org.openstreetmap.josm.actions.UpdateDataAction
+2017-09-21 18:45:08.924 INFO: Keystroke ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UpdateSelectionAction@6ba0f784, will be overridden by org.openstreetmap.josm.actions.UpdateSelectionAction@baff49c
+2017-09-21 18:45:08.924 INFO: Registered toolbar action updateselection overwritten: org.openstreetmap.josm.actions.UpdateSelectionAction gets org.openstreetmap.josm.actions.UpdateSelectionAction
+2017-09-21 18:45:08.924 INFO: Keystroke ctrl alt pressed M is already assigned to org.openstreetmap.josm.actions.UpdateModifiedAction@72697cba, will be overridden by org.openstreetmap.josm.actions.UpdateModifiedAction@1a3a06d
+2017-09-21 18:45:08.925 INFO: Registered toolbar action updatemodified overwritten: org.openstreetmap.josm.actions.UpdateModifiedAction gets org.openstreetmap.josm.actions.UpdateModifiedAction
+2017-09-21 18:45:08.925 INFO: Keystroke shift ctrl pressed UP is already assigned to org.openstreetmap.josm.actions.UploadAction@668697a1, will be overridden by org.openstreetmap.josm.actions.UploadAction@5ad945b6
+2017-09-21 18:45:08.928 INFO: Registered toolbar action upload overwritten: org.openstreetmap.josm.actions.UploadAction gets org.openstreetmap.josm.actions.UploadAction
+2017-09-21 18:45:08.928 INFO: Keystroke shift ctrl alt pressed U is already assigned to org.openstreetmap.josm.actions.UploadSelectionAction@5998909d, will be overridden by org.openstreetmap.josm.actions.UploadSelectionAction@471a74b6
+2017-09-21 18:45:08.928 INFO: Registered toolbar action uploadselection overwritten: org.openstreetmap.josm.actions.UploadSelectionAction gets org.openstreetmap.josm.actions.UploadSelectionAction
+2017-09-21 18:45:08.928 INFO: Keystroke shift ctrl alt pressed J is already assigned to org.openstreetmap.josm.actions.RestartAction@35e840fd, will be overridden by org.openstreetmap.josm.actions.RestartAction@33e563dd
+2017-09-21 18:45:08.929 INFO: Registered toolbar action action/restart overwritten: org.openstreetmap.josm.actions.RestartAction gets org.openstreetmap.josm.actions.RestartAction
+2017-09-21 18:45:08.929 INFO: Keystroke ctrl pressed Q is already assigned to org.openstreetmap.josm.actions.ExitAction@cdd7656, will be overridden by org.openstreetmap.josm.actions.ExitAction@2f591d04
+2017-09-21 18:45:08.929 INFO: Registered toolbar action exit overwritten: org.openstreetmap.josm.actions.ExitAction gets org.openstreetmap.josm.actions.ExitAction
+2017-09-21 18:45:08.929 INFO: Keystroke ctrl pressed Z is already assigned to org.openstreetmap.josm.actions.UndoAction@5e34d3f3, will be overridden by org.openstreetmap.josm.actions.UndoAction@3fbd09ac
+2017-09-21 18:45:08.929 INFO: Registered toolbar action undo overwritten: org.openstreetmap.josm.actions.UndoAction gets org.openstreetmap.josm.actions.UndoAction
+2017-09-21 18:45:08.929 INFO: Keystroke ctrl pressed Y is already assigned to org.openstreetmap.josm.actions.RedoAction@4335acd0, will be overridden by org.openstreetmap.josm.actions.RedoAction@2b966529
+2017-09-21 18:45:08.930 INFO: Registered toolbar action redo overwritten: org.openstreetmap.josm.actions.RedoAction gets org.openstreetmap.josm.actions.RedoAction
+2017-09-21 18:45:08.930 INFO: Keystroke ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyAction@342df3e3, will be overridden by org.openstreetmap.josm.actions.CopyAction@33f5100d
+2017-09-21 18:45:08.930 INFO: Registered toolbar action copy overwritten: org.openstreetmap.josm.actions.CopyAction gets org.openstreetmap.josm.actions.CopyAction
+2017-09-21 18:45:08.930 INFO: Keystroke ctrl pressed INSERT is already assigned to org.openstreetmap.josm.actions.CopyAction@342df3e3, will be overridden by org.openstreetmap.josm.actions.CopyAction@33f5100d
+2017-09-21 18:45:08.930 INFO: Keystroke shift ctrl pressed C is already assigned to org.openstreetmap.josm.actions.CopyCoordinatesAction@53a55cf6, will be overridden by org.openstreetmap.josm.actions.CopyCoordinatesAction@54238a4a
+2017-09-21 18:45:08.930 INFO: Keystroke ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteAction@2b76a63a, will be overridden by org.openstreetmap.josm.actions.PasteAction@384090b
+2017-09-21 18:45:08.931 INFO: Registered toolbar action paste overwritten: org.openstreetmap.josm.actions.PasteAction gets org.openstreetmap.josm.actions.PasteAction
+2017-09-21 18:45:08.931 INFO: Keystroke shift pressed INSERT is already assigned to org.openstreetmap.josm.actions.PasteAction@2b76a63a, will be overridden by org.openstreetmap.josm.actions.PasteAction@384090b
+2017-09-21 18:45:08.931 INFO: Keystroke ctrl alt pressed V is already assigned to org.openstreetmap.josm.actions.PasteAtSourcePositionAction@454bcca8, will be overridden by org.openstreetmap.josm.actions.PasteAtSourcePositionAction@1ba38b7f
+2017-09-21 18:45:08.931 INFO: Registered toolbar action pasteatsource overwritten: org.openstreetmap.josm.actions.PasteAtSourcePositionAction gets org.openstreetmap.josm.actions.PasteAtSourcePositionAction
+2017-09-21 18:45:08.931 INFO: Keystroke shift ctrl pressed V is already assigned to org.openstreetmap.josm.actions.PasteTagsAction@1ea28d09, will be overridden by org.openstreetmap.josm.actions.PasteTagsAction@cd857e
+2017-09-21 18:45:08.932 INFO: Registered toolbar action pastetags overwritten: org.openstreetmap.josm.actions.PasteTagsAction gets org.openstreetmap.josm.actions.PasteTagsAction
+2017-09-21 18:45:08.932 INFO: Keystroke ctrl pressed D is already assigned to org.openstreetmap.josm.actions.DuplicateAction@671930c7, will be overridden by org.openstreetmap.josm.actions.DuplicateAction@48742ef7
+2017-09-21 18:45:08.932 INFO: Registered toolbar action duplicate overwritten: org.openstreetmap.josm.actions.DuplicateAction gets org.openstreetmap.josm.actions.DuplicateAction
+2017-09-21 18:45:08.932 INFO: Keystroke pressed DELETE is already assigned to org.openstreetmap.josm.actions.DeleteAction@79400d68, will be overridden by org.openstreetmap.josm.actions.DeleteAction@6b1baaa3
+2017-09-21 18:45:08.932 INFO: Registered toolbar action dialogs/delete overwritten: org.openstreetmap.josm.actions.DeleteAction gets org.openstreetmap.josm.actions.DeleteAction
+2017-09-21 18:45:08.932 INFO: Keystroke shift ctrl pressed P is already assigned to org.openstreetmap.josm.actions.PurgeAction@62f5a064, will be overridden by org.openstreetmap.josm.actions.PurgeAction@6ce42ccc
+2017-09-21 18:45:08.933 INFO: Registered toolbar action purge overwritten: org.openstreetmap.josm.actions.PurgeAction gets org.openstreetmap.josm.actions.PurgeAction
+2017-09-21 18:45:08.933 INFO: Keystroke ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeLayerAction@68b5b3f6, will be overridden by org.openstreetmap.josm.actions.MergeLayerAction@6eb25b
+2017-09-21 18:45:08.933 INFO: Registered toolbar action action/mergelayer overwritten: org.openstreetmap.josm.actions.MergeLayerAction gets org.openstreetmap.josm.actions.MergeLayerAction
+2017-09-21 18:45:08.933 INFO: Keystroke shift ctrl pressed M is already assigned to org.openstreetmap.josm.actions.MergeSelectionAction@4684292f, will be overridden by org.openstreetmap.josm.actions.MergeSelectionAction@69042737
+2017-09-21 18:45:08.933 INFO: Registered toolbar action dialogs/mergedown overwritten: org.openstreetmap.josm.actions.MergeSelectionAction gets org.openstreetmap.josm.actions.MergeSelectionAction
+2017-09-21 18:45:08.933 INFO: Keystroke ctrl pressed F is already assigned to org.openstreetmap.josm.actions.search.SearchAction@3fd657da, will be overridden by org.openstreetmap.josm.actions.search.SearchAction@5ffcd606
+2017-09-21 18:45:08.934 INFO: Registered toolbar action dialogs/search overwritten: org.openstreetmap.josm.actions.search.SearchAction gets org.openstreetmap.josm.actions.search.SearchAction
+2017-09-21 18:45:08.934 INFO: Keystroke pressed F12 is already assigned to org.openstreetmap.josm.actions.PreferencesAction@706f36c4, will be overridden by org.openstreetmap.josm.actions.PreferencesAction@12330379
+2017-09-21 18:45:08.934 INFO: Registered toolbar action preference overwritten: org.openstreetmap.josm.actions.PreferencesAction gets org.openstreetmap.josm.actions.PreferencesAction
+2017-09-21 18:45:08.934 INFO: Keystroke ctrl pressed W is already assigned to org.openstreetmap.josm.actions.WireframeToggleAction@3580013c, will be overridden by org.openstreetmap.josm.actions.WireframeToggleAction@67ba870e
+2017-09-21 18:45:08.934 INFO: Registered toolbar action wireframe overwritten: org.openstreetmap.josm.actions.WireframeToggleAction gets org.openstreetmap.josm.actions.WireframeToggleAction
+2017-09-21 18:45:08.935 INFO: Keystroke ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoAction@52aa9bf2, will be overridden by org.openstreetmap.josm.actions.InfoAction@2fcf3951
+2017-09-21 18:45:08.935 INFO: Registered toolbar action action/info overwritten: org.openstreetmap.josm.actions.InfoAction gets org.openstreetmap.josm.actions.InfoAction
+2017-09-21 18:45:08.935 INFO: Keystroke shift ctrl pressed I is already assigned to org.openstreetmap.josm.actions.InfoWebAction@5fcf6efa, will be overridden by org.openstreetmap.josm.actions.InfoWebAction@16ba8648
+2017-09-21 18:45:08.935 INFO: Registered toolbar action action/infoweb overwritten: org.openstreetmap.josm.actions.InfoWebAction gets org.openstreetmap.josm.actions.InfoWebAction
+2017-09-21 18:45:08.935 INFO: Keystroke ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoAction@569fbad1, will be overridden by org.openstreetmap.josm.actions.HistoryInfoAction@1c98772d
+2017-09-21 18:45:08.935 INFO: Registered toolbar action action/historyinfo overwritten: org.openstreetmap.josm.actions.HistoryInfoAction gets org.openstreetmap.josm.actions.HistoryInfoAction
+2017-09-21 18:45:08.936 INFO: Keystroke shift ctrl pressed H is already assigned to org.openstreetmap.josm.actions.HistoryInfoWebAction@6323d8df, will be overridden by org.openstreetmap.josm.actions.HistoryInfoWebAction@2f291147
+2017-09-21 18:45:08.936 INFO: Registered toolbar action action/historyinfoweb overwritten: org.openstreetmap.josm.actions.HistoryInfoWebAction gets org.openstreetmap.josm.actions.HistoryInfoWebAction
+2017-09-21 18:45:08.936 INFO: Keystroke ctrl pressed J is already assigned to org.openstreetmap.josm.actions.JumpToAction@65d0aa42, will be overridden by org.openstreetmap.josm.actions.JumpToAction@79fab042
+2017-09-21 18:45:08.936 INFO: Registered toolbar action action/jumpto overwritten: org.openstreetmap.josm.actions.JumpToAction gets org.openstreetmap.josm.actions.JumpToAction
+2017-09-21 18:45:08.939 INFO: Keystroke pressed P is already assigned to org.openstreetmap.josm.actions.SplitWayAction@41ccb0bc, will be overridden by org.openstreetmap.josm.actions.SplitWayAction@3b30f1f3
+2017-09-21 18:45:08.940 INFO: Registered toolbar action splitway overwritten: org.openstreetmap.josm.actions.SplitWayAction gets org.openstreetmap.josm.actions.SplitWayAction
+2017-09-21 18:45:08.940 INFO: Keystroke pressed C is already assigned to org.openstreetmap.josm.actions.CombineWayAction@6a2ec366, will be overridden by org.openstreetmap.josm.actions.CombineWayAction@644ec8a7
+2017-09-21 18:45:08.940 INFO: Registered toolbar action combineway overwritten: org.openstreetmap.josm.actions.CombineWayAction gets org.openstreetmap.josm.actions.CombineWayAction
+2017-09-21 18:45:08.940 INFO: Keystroke pressed R is already assigned to org.openstreetmap.josm.actions.ReverseWayAction@17b61bdc, will be overridden by org.openstreetmap.josm.actions.ReverseWayAction@30a4e40
+2017-09-21 18:45:08.940 INFO: Registered toolbar action wayflip overwritten: org.openstreetmap.josm.actions.ReverseWayAction gets org.openstreetmap.josm.actions.ReverseWayAction
+2017-09-21 18:45:08.941 INFO: Keystroke shift pressed Y is already assigned to org.openstreetmap.josm.actions.SimplifyWayAction@775431d2, will be overridden by org.openstreetmap.josm.actions.SimplifyWayAction@2fde86c3
+2017-09-21 18:45:08.941 INFO: Registered toolbar action simplify overwritten: org.openstreetmap.josm.actions.SimplifyWayAction gets org.openstreetmap.josm.actions.SimplifyWayAction
+2017-09-21 18:45:08.941 INFO: Keystroke pressed O is already assigned to org.openstreetmap.josm.actions.AlignInCircleAction@533936d4, will be overridden by org.openstreetmap.josm.actions.AlignInCircleAction@13dd55a2
+2017-09-21 18:45:08.941 INFO: Registered toolbar action aligncircle overwritten: org.openstreetmap.josm.actions.AlignInCircleAction gets org.openstreetmap.josm.actions.AlignInCircleAction
+2017-09-21 18:45:08.942 INFO: Keystroke pressed L is already assigned to org.openstreetmap.josm.actions.AlignInLineAction@4f90ea26, will be overridden by org.openstreetmap.josm.actions.AlignInLineAction@1c4bc8e
+2017-09-21 18:45:08.942 INFO: Registered toolbar action alignline overwritten: org.openstreetmap.josm.actions.AlignInLineAction gets org.openstreetmap.josm.actions.AlignInLineAction
+2017-09-21 18:45:08.942 INFO: Keystroke shift pressed B is already assigned to org.openstreetmap.josm.actions.DistributeAction@68df70f3, will be overridden by org.openstreetmap.josm.actions.DistributeAction@506d9ab8
+2017-09-21 18:45:08.955 INFO: Registered toolbar action distribute overwritten: org.openstreetmap.josm.actions.DistributeAction gets org.openstreetmap.josm.actions.DistributeAction
+2017-09-21 18:45:08.956 INFO: Keystroke pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction@3e53069b, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction@b5ee6e8
+2017-09-21 18:45:08.956 INFO: Registered toolbar action ortho overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction gets org.openstreetmap.josm.actions.OrthogonalizeAction
+2017-09-21 18:45:08.957 INFO: Keystroke shift pressed Q is already assigned to org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@24c61813, will be overridden by org.openstreetmap.josm.actions.OrthogonalizeAction$Undo@7257c264
+2017-09-21 18:45:08.957 INFO: Registered toolbar action action/orthogonalize/undo overwritten: org.openstreetmap.josm.actions.OrthogonalizeAction$Undo gets org.openstreetmap.josm.actions.OrthogonalizeAction$Undo
+2017-09-21 18:45:08.957 INFO: Keystroke shift pressed M is already assigned to org.openstreetmap.josm.actions.MirrorAction@6ccf0777, will be overridden by org.openstreetmap.josm.actions.MirrorAction@56d3306c
+2017-09-21 18:45:08.958 INFO: Registered toolbar action mirror overwritten: org.openstreetmap.josm.actions.MirrorAction gets org.openstreetmap.josm.actions.MirrorAction
+2017-09-21 18:45:08.958 INFO: Keystroke pressed F is already assigned to org.openstreetmap.josm.actions.FollowLineAction@7f04aaf5, will be overridden by org.openstreetmap.josm.actions.FollowLineAction@6a57d854
+2017-09-21 18:45:08.959 INFO: Registered toolbar action followline overwritten: org.openstreetmap.josm.actions.FollowLineAction gets org.openstreetmap.josm.actions.FollowLineAction
+2017-09-21 18:45:08.959 INFO: Keystroke shift pressed D is already assigned to org.openstreetmap.josm.actions.AddNodeAction@59c51c50, will be overridden by org.openstreetmap.josm.actions.AddNodeAction@16421a50
+2017-09-21 18:45:08.959 INFO: Registered toolbar action addnode overwritten: org.openstreetmap.josm.actions.AddNodeAction gets org.openstreetmap.josm.actions.AddNodeAction
+2017-09-21 18:45:08.960 INFO: Registered toolbar action movenode overwritten: org.openstreetmap.josm.actions.MoveNodeAction gets org.openstreetmap.josm.actions.MoveNodeAction
+2017-09-21 18:45:08.960 INFO: Keystroke shift pressed O is already assigned to org.openstreetmap.josm.actions.CreateCircleAction@4dd781fb, will be overridden by org.openstreetmap.josm.actions.CreateCircleAction@5a4abe1e
+2017-09-21 18:45:08.960 INFO: Registered toolbar action createcircle overwritten: org.openstreetmap.josm.actions.CreateCircleAction gets org.openstreetmap.josm.actions.CreateCircleAction
+2017-09-21 18:45:08.960 INFO: Keystroke pressed M is already assigned to org.openstreetmap.josm.actions.MergeNodesAction@59b7d389, will be overridden by org.openstreetmap.josm.actions.MergeNodesAction@15d5b56b
+2017-09-21 18:45:08.961 INFO: Registered toolbar action mergenodes overwritten: org.openstreetmap.josm.actions.MergeNodesAction gets org.openstreetmap.josm.actions.MergeNodesAction
+2017-09-21 18:45:08.961 INFO: Keystroke pressed J is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@3be8948, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@41944afd
+2017-09-21 18:45:08.961 INFO: Registered toolbar action joinnodeway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:08.962 INFO: Keystroke pressed N is already assigned to org.openstreetmap.josm.actions.JoinNodeWayAction@726832f3, will be overridden by org.openstreetmap.josm.actions.JoinNodeWayAction@47024805
+2017-09-21 18:45:08.962 INFO: Registered toolbar action movenodeontoway overwritten: org.openstreetmap.josm.actions.JoinNodeWayAction gets org.openstreetmap.josm.actions.JoinNodeWayAction
+2017-09-21 18:45:08.962 INFO: Keystroke alt pressed J is already assigned to org.openstreetmap.josm.actions.UnJoinNodeWayAction@3c1ad1c, will be overridden by org.openstreetmap.josm.actions.UnJoinNodeWayAction@48b7b4b5
+2017-09-21 18:45:08.962 INFO: Registered toolbar action unjoinnodeway overwritten: org.openstreetmap.josm.actions.UnJoinNodeWayAction gets org.openstreetmap.josm.actions.UnJoinNodeWayAction
+2017-09-21 18:45:08.963 INFO: Keystroke pressed G is already assigned to org.openstreetmap.josm.actions.UnGlueAction@640d0d76, will be overridden by org.openstreetmap.josm.actions.UnGlueAction@70f12e25
+2017-09-21 18:45:08.965 INFO: Registered toolbar action unglueways overwritten: org.openstreetmap.josm.actions.UnGlueAction gets org.openstreetmap.josm.actions.UnGlueAction
+2017-09-21 18:45:08.966 INFO: Keystroke shift pressed J is already assigned to org.openstreetmap.josm.actions.JoinAreasAction@130e3c76, will be overridden by org.openstreetmap.josm.actions.JoinAreasAction@13d14164
+2017-09-21 18:45:08.966 INFO: Registered toolbar action joinareas overwritten: org.openstreetmap.josm.actions.JoinAreasAction gets org.openstreetmap.josm.actions.JoinAreasAction
+2017-09-21 18:45:08.966 INFO: Keystroke ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@20427b4e, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@46c6717b
+2017-09-21 18:45:08.967 INFO: Registered toolbar action multipoly_create overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:08.967 INFO: Keystroke shift ctrl pressed B is already assigned to org.openstreetmap.josm.actions.CreateMultipolygonAction@2e659b17, will be overridden by org.openstreetmap.josm.actions.CreateMultipolygonAction@3321670a
+2017-09-21 18:45:08.968 INFO: Registered toolbar action multipoly_update overwritten: org.openstreetmap.josm.actions.CreateMultipolygonAction gets org.openstreetmap.josm.actions.CreateMultipolygonAction
+2017-09-21 18:45:08.968 INFO: Keystroke ctrl pressed A is already assigned to org.openstreetmap.josm.actions.SelectAllAction@220f5510, will be overridden by org.openstreetmap.josm.actions.SelectAllAction@4a58e74d
+2017-09-21 18:45:08.968 INFO: Registered toolbar action selectall overwritten: org.openstreetmap.josm.actions.SelectAllAction gets org.openstreetmap.josm.actions.SelectAllAction
+2017-09-21 18:45:08.968 INFO: Keystroke pressed ESCAPE is already assigned to org.openstreetmap.josm.actions.UnselectAllAction@400020ab, will be overridden by org.openstreetmap.josm.actions.UnselectAllAction@539b4503
+2017-09-21 18:45:08.969 INFO: Registered toolbar action unselectall overwritten: org.openstreetmap.josm.actions.UnselectAllAction gets org.openstreetmap.josm.actions.UnselectAllAction
+2017-09-21 18:45:08.969 INFO: Keystroke shift pressed W is already assigned to org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@73abbbee, will be overridden by org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction@2623bba2
+2017-09-21 18:45:08.969 INFO: Registered toolbar action way-select overwritten: org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction gets org.openstreetmap.josm.actions.SelectNonBranchingWaySequencesAction
+2017-09-21 18:45:08.970 INFO: Keystroke pressed PERIOD is already assigned to org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@71942baf, will be overridden by org.openstreetmap.josm.actions.audio.AudioPlayPauseAction@1e02915b
+2017-09-21 18:45:08.970 INFO: Registered toolbar action audio-playpause overwritten: org.openstreetmap.josm.actions.audio.AudioPlayPauseAction gets org.openstreetmap.josm.actions.audio.AudioPlayPauseAction
+2017-09-21 18:45:08.971 INFO: Keystroke pressed F8 is already assigned to org.openstreetmap.josm.actions.audio.AudioNextAction@29eb4758, will be overridden by org.openstreetmap.josm.actions.audio.AudioNextAction@136d7f59
+2017-09-21 18:45:08.971 INFO: Registered toolbar action audio-next overwritten: org.openstreetmap.josm.actions.audio.AudioNextAction gets org.openstreetmap.josm.actions.audio.AudioNextAction
+2017-09-21 18:45:08.971 INFO: Keystroke pressed F5 is already assigned to org.openstreetmap.josm.actions.audio.AudioPrevAction@68af3fb6, will be overridden by org.openstreetmap.josm.actions.audio.AudioPrevAction@1ad7936a
+2017-09-21 18:45:08.972 INFO: Registered toolbar action audio-prev overwritten: org.openstreetmap.josm.actions.audio.AudioPrevAction gets org.openstreetmap.josm.actions.audio.AudioPrevAction
+2017-09-21 18:45:08.972 INFO: Keystroke pressed F7 is already assigned to org.openstreetmap.josm.actions.audio.AudioFwdAction@46f58d86, will be overridden by org.openstreetmap.josm.actions.audio.AudioFwdAction@2112c539
+2017-09-21 18:45:08.972 INFO: Registered toolbar action audio-fwd overwritten: org.openstreetmap.josm.actions.audio.AudioFwdAction gets org.openstreetmap.josm.actions.audio.AudioFwdAction
+2017-09-21 18:45:08.973 INFO: Keystroke pressed F6 is already assigned to org.openstreetmap.josm.actions.audio.AudioBackAction@166c1fa4, will be overridden by org.openstreetmap.josm.actions.audio.AudioBackAction@2b900009
+2017-09-21 18:45:08.973 INFO: Registered toolbar action audio-back overwritten: org.openstreetmap.josm.actions.audio.AudioBackAction gets org.openstreetmap.josm.actions.audio.AudioBackAction
+2017-09-21 18:45:08.974 INFO: Keystroke pressed F9 is already assigned to org.openstreetmap.josm.actions.audio.AudioFasterAction@65ce4bb6, will be overridden by org.openstreetmap.josm.actions.audio.AudioFasterAction@537f2595
+2017-09-21 18:45:08.974 INFO: Registered toolbar action audio-faster overwritten: org.openstreetmap.josm.actions.audio.AudioFasterAction gets org.openstreetmap.josm.actions.audio.AudioFasterAction
+2017-09-21 18:45:08.975 INFO: Keystroke pressed F4 is already assigned to org.openstreetmap.josm.actions.audio.AudioSlowerAction@748d9a36, will be overridden by org.openstreetmap.josm.actions.audio.AudioSlowerAction@7595a053
+2017-09-21 18:45:08.975 INFO: Registered toolbar action audio-slower overwritten: org.openstreetmap.josm.actions.audio.AudioSlowerAction gets org.openstreetmap.josm.actions.audio.AudioSlowerAction
+2017-09-21 18:45:08.975 INFO: Keystroke ctrl alt pressed C is already assigned to org.openstreetmap.josm.actions.ChangesetManagerToggleAction@1efeb09c, will be overridden by org.openstreetmap.josm.actions.ChangesetManagerToggleAction@421988d5
+2017-09-21 18:45:08.976 INFO: Registered toolbar action dialogs/changeset/changesetmanager overwritten: org.openstreetmap.josm.actions.ChangesetManagerToggleAction gets org.openstreetmap.josm.actions.ChangesetManagerToggleAction
+2017-09-21 18:45:08.976 INFO: Keystroke pressed F1 is already assigned to org.openstreetmap.josm.actions.HelpAction@68190dd8, will be overridden by org.openstreetmap.josm.actions.HelpAction@692258d7
+2017-09-21 18:45:08.976 INFO: Registered toolbar action help overwritten: org.openstreetmap.josm.actions.HelpAction gets org.openstreetmap.josm.actions.HelpAction
+2017-09-21 18:45:08.977 INFO: Keystroke shift pressed F1 is already assigned to org.openstreetmap.josm.actions.AboutAction@7f9d7896, will be overridden by org.openstreetmap.josm.actions.AboutAction@43db9beb
+2017-09-21 18:45:08.977 INFO: Registered toolbar action logo overwritten: org.openstreetmap.josm.actions.AboutAction gets org.openstreetmap.josm.actions.AboutAction
+2017-09-21 18:45:08.977 INFO: Registered toolbar action help/showstatusreport overwritten: org.openstreetmap.josm.actions.ShowStatusReportAction gets org.openstreetmap.josm.actions.ShowStatusReportAction
+2017-09-21 18:45:08.977 INFO: Registered toolbar action bug overwritten: org.openstreetmap.josm.actions.ReportBugAction gets org.openstreetmap.josm.actions.ReportBugAction
+2017-09-21 18:45:08.980 INFO: Registered toolbar action imagery-offset overwritten: org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction gets org.openstreetmap.josm.gui.ImageryMenu$AdjustImageryOffsetAction
+2017-09-21 18:45:08.981 INFO: Registered toolbar action OLmarker overwritten: org.openstreetmap.josm.actions.MapRectifierWMSmenuAction gets org.openstreetmap.josm.actions.MapRectifierWMSmenuAction
+2017-09-21 18:45:08.982 INFO: Keystroke shift pressed UP is already assigned to org.openstreetmap.josm.actions.MoveAction@67d91179, will be overridden by org.openstreetmap.josm.actions.MoveAction@1b143cfb
+2017-09-21 18:45:08.982 INFO: Registered toolbar action action/move/up overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.983 INFO: Keystroke shift pressed DOWN is already assigned to org.openstreetmap.josm.actions.MoveAction@cc8274e, will be overridden by org.openstreetmap.josm.actions.MoveAction@15c5406c
+2017-09-21 18:45:08.983 INFO: Registered toolbar action action/move/down overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.983 INFO: Keystroke shift pressed LEFT is already assigned to org.openstreetmap.josm.actions.MoveAction@2c9f8cc2, will be overridden by org.openstreetmap.josm.actions.MoveAction@6eda56e3
+2017-09-21 18:45:08.984 INFO: Registered toolbar action action/move/left overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.984 INFO: Keystroke shift pressed RIGHT is already assigned to org.openstreetmap.josm.actions.MoveAction@38d2080f, will be overridden by org.openstreetmap.josm.actions.MoveAction@71419c10
+2017-09-21 18:45:08.984 INFO: Registered toolbar action action/move/right overwritten: org.openstreetmap.josm.actions.MoveAction gets org.openstreetmap.josm.actions.MoveAction
+2017-09-21 18:45:08.985 INFO: Keystroke pressed F3 is already assigned to org.openstreetmap.josm.actions.TaggingPresetSearchAction@17af94b5, will be overridden by org.openstreetmap.josm.actions.TaggingPresetSearchAction@4b089527
+2017-09-21 18:45:08.985 INFO: Registered toolbar action presets/search overwritten: org.openstreetmap.josm.actions.TaggingPresetSearchAction gets org.openstreetmap.josm.actions.TaggingPresetSearchAction
+2017-09-21 18:45:08.985 INFO: Keystroke shift pressed F3 is already assigned to org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@5a902359, will be overridden by org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action@74717a0a
+2017-09-21 18:45:08.985 INFO: Registered toolbar action presets/search-objects overwritten: org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action gets org.openstreetmap.josm.gui.tagging.presets.TaggingPresetSearchPrimitiveDialog$Action
+2017-09-21 18:45:08.986 INFO: Keystroke pressed TAB is already assigned to org.openstreetmap.josm.actions.DialogsToggleAction@a394d55, will be overridden by org.openstreetmap.josm.actions.DialogsToggleAction@48a04729
+2017-09-21 18:45:08.991 INFO: Registered toolbar action dialogspanel overwritten: org.openstreetmap.josm.actions.DialogsToggleAction gets org.openstreetmap.josm.actions.DialogsToggleAction
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>2017-09-21 18:45:07.668 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.669 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.669 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.670 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.670 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.670 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.671 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.671 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.671 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.671 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.671 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.672 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.673 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.673 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.673 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.680 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
+2017-09-21 18:45:07.686 WARNING: Failed to persist preferences to '/tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml': java.io.FileNotFoundException: /tmp/junit2344701927178092459/junit4101030820069580128/preferences.xml_tmp (No such file or directory)
 </pre>
 </span>
 </div>
@@ -146,7 +795,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 16, 2017 6:30:39 PM</p>
+<a href="http://www.gradle.org">Gradle 4.1</a> at Sep 21, 2017 6:45:16 PM</p>
 </div>
 </div>
 </body>

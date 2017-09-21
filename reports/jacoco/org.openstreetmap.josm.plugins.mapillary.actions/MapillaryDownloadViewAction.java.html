@@ -5,8 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -18,33 +22,58 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @author nokutu
  *
  */
-public class MapillaryDownloadViewAction extends JosmAction {
+public class MapillaryDownloadViewAction extends JosmAction implements ValueChangeListener&lt;String&gt; {
 
   private static final long serialVersionUID = -6837073336175123503L;
-<span class="fc" id="L24">  private static final String DESCRIPTION = I18n.marktr(&quot;Download Mapillary images in current view&quot;);</span>
+<span class="nc" id="L28">  private static final String DESCRIPTION = I18n.marktr(&quot;Download Mapillary images in current view&quot;);</span>
 
   /**
    * Main constructor.
    */
   public MapillaryDownloadViewAction() {
-<span class="fc" id="L30">    super(</span>
-<span class="fc" id="L31">      I18n.tr(DESCRIPTION),</span>
-<span class="fc" id="L32">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="fc" id="L33">      I18n.tr(DESCRIPTION),</span>
-<span class="fc" id="L34">      Shortcut.registerShortcut(</span>
-<span class="fc" id="L35">        &quot;Mapillary area&quot;, I18n.tr(DESCRIPTION),</span>
+<span class="nc" id="L34">    super(</span>
+<span class="nc" id="L35">      I18n.tr(DESCRIPTION),</span>
+<span class="nc" id="L36">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L37">      I18n.tr(DESCRIPTION),</span>
+<span class="nc" id="L38">      Shortcut.registerShortcut(</span>
+<span class="nc" id="L39">        &quot;Mapillary area&quot;, I18n.tr(DESCRIPTION),</span>
         KeyEvent.VK_PERIOD, Shortcut.SHIFT
       ),
       false,
       &quot;mapillaryArea&quot;,
-      false
+      true
     );
-<span class="fc" id="L42">    this.setEnabled(false);</span>
-<span class="fc" id="L43">  }</span>
+<span class="nc" id="L46">    MapillaryProperties.DOWNLOAD_MODE.addListener(this);</span>
+<span class="nc" id="L47">    initEnabledState();</span>
+<span class="nc" id="L48">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L47">    MapillaryDownloader.downloadVisibleArea();</span>
-<span class="nc" id="L48">  }</span>
+<span class="nc" id="L52">    MapillaryDownloader.downloadVisibleArea();</span>
+<span class="nc" id="L53">  }</span>
+
+  @Override
+  protected boolean listenToSelectionChange() {
+<span class="nc" id="L57">    return false;</span>
+  }
+
+  /**
+   * Enabled when the Mapillary layer is instantiated and download mode is either &quot;osm area&quot; or &quot;manual&quot;.
+   */
+  @Override
+  protected void updateEnabledState() {
+<span class="nc" id="L65">    super.updateEnabledState();</span>
+<span class="nc" id="L66">    setEnabled(</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">      MapillaryLayer.hasInstance() &amp;&amp; (</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY</span>
+      )
+    );
+<span class="nc" id="L72">  }</span>
+
+  @Override
+  public void valueChanged(ValueChangeEvent&lt;? extends String&gt; e) {
+<span class="nc" id="L76">    updateEnabledState();</span>
+<span class="nc" id="L77">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

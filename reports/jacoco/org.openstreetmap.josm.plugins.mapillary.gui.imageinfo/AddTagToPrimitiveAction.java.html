@@ -20,13 +20,13 @@ public class AddTagToPrimitiveAction extends AbstractAction {
   private AbstractPrimitive target;
 
   public AddTagToPrimitiveAction(final String name) {
-<span class="nc" id="L23">    super(name, ImageProvider.get(&quot;dialogs/add&quot;, ImageSizes.SMALLICON));</span>
-<span class="nc" id="L24">  }</span>
+<span class="fc" id="L23">    super(name, ImageProvider.get(&quot;dialogs/add&quot;, ImageSizes.SMALLICON));</span>
+<span class="fc" id="L24">  }</span>
 
   public void setTag(Tag tag) {
-<span class="nc" id="L27">    this.tag = tag;</span>
-<span class="nc" id="L28">    updateEnabled();</span>
-<span class="nc" id="L29">  }</span>
+<span class="fc" id="L27">    this.tag = tag;</span>
+<span class="fc" id="L28">    updateEnabled();</span>
+<span class="fc" id="L29">  }</span>
 
   public void setTarget(AbstractPrimitive target) {
 <span class="nc" id="L32">    this.target = target;</span>
@@ -34,8 +34,8 @@ public class AddTagToPrimitiveAction extends AbstractAction {
 <span class="nc" id="L34">  }</span>
 
   private void updateEnabled() {
-<span class="nc bnc" id="L37" title="All 4 branches missed.">    setEnabled(tag != null &amp;&amp; target != null);</span>
-<span class="nc" id="L38">  }</span>
+<span class="pc bpc" id="L37" title="3 of 4 branches missed.">    setEnabled(tag != null &amp;&amp; target != null);</span>
+<span class="fc" id="L38">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {

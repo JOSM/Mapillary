@@ -163,26 +163,21 @@ import org.openstreetmap.josm.tools.Logging;
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   @Override
   public boolean ok() {
-<span class="fc" id="L166">    MapillaryPlugin.setMenuEnabled(MapillaryPlugin.getDownloadViewMenu(), false);</span>
-<span class="fc" id="L167">    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());</span>
-<span class="fc" id="L168">    MapillaryPlugin.setMenuEnabled(</span>
-<span class="fc" id="L169">      MapillaryPlugin.getDownloadViewMenu(),</span>
-<span class="fc" id="L170">      DOWNLOAD_MODE.MANUAL_ONLY.getPrefId().equals(MapillaryProperties.DOWNLOAD_MODE.get())</span>
-    );
-<span class="fc" id="L172">    MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());</span>
-<span class="fc" id="L173">    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());</span>
-<span class="fc" id="L174">    MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());</span>
-<span class="fc" id="L175">    MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());</span>
-<span class="fc" id="L176">    MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());</span>
-<span class="fc" id="L177">    MapillaryProperties.DEVELOPER.put(developer.isSelected());</span>
+<span class="fc" id="L166">    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());</span>
+<span class="fc" id="L167">    MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());</span>
+<span class="fc" id="L168">    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());</span>
+<span class="fc" id="L169">    MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());</span>
+<span class="fc" id="L170">    MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());</span>
+<span class="fc" id="L171">    MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());</span>
+<span class="fc" id="L172">    MapillaryProperties.DEVELOPER.put(developer.isSelected());</span>
 
     //Restart is never required
-<span class="fc" id="L180">    return false;</span>
+<span class="fc" id="L175">    return false;</span>
   }
 
   @Override
   public boolean isExpert() {
-<span class="fc" id="L185">    return false;</span>
+<span class="fc" id="L180">    return false;</span>
   }
 
   /**
@@ -196,20 +191,20 @@ import org.openstreetmap.josm.tools.Logging;
     private final transient MapillaryLoginListener callback;
 
     LoginAction(MapillaryLoginListener loginCallback) {
-<span class="fc" id="L199">      super(I18n.tr(&quot;Login&quot;));</span>
-<span class="fc" id="L200">      this.callback = loginCallback;</span>
-<span class="fc" id="L201">    }</span>
+<span class="fc" id="L194">      super(I18n.tr(&quot;Login&quot;));</span>
+<span class="fc" id="L195">      this.callback = loginCallback;</span>
+<span class="fc" id="L196">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L205">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
-<span class="nc" id="L206">      portListener.start();</span>
+<span class="nc" id="L200">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
+<span class="nc" id="L201">      portListener.start();</span>
       try {
-<span class="nc" id="L208">        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
-<span class="nc" id="L209">      } catch (IOException e) {</span>
-<span class="nc" id="L210">        Logging.error(e);</span>
-<span class="nc" id="L211">      }</span>
-<span class="nc" id="L212">    }</span>
+<span class="nc" id="L203">        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
+<span class="nc" id="L204">      } catch (IOException e) {</span>
+<span class="nc" id="L205">        Logging.error(e);</span>
+<span class="nc" id="L206">      }</span>
+<span class="nc" id="L207">    }</span>
   }
 
   /**
@@ -221,15 +216,15 @@ import org.openstreetmap.josm.tools.Logging;
   private class LogoutAction extends AbstractAction {
     private static final long serialVersionUID = 3434780936404707219L;
 
-<span class="fc" id="L224">    private LogoutAction() {</span>
-<span class="fc" id="L225">      super(I18n.tr(&quot;Logout&quot;));</span>
-<span class="fc" id="L226">    }</span>
+<span class="fc" id="L219">    private LogoutAction() {</span>
+<span class="fc" id="L220">      super(I18n.tr(&quot;Logout&quot;));</span>
+<span class="fc" id="L221">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L230">      MapillaryUser.reset();</span>
-<span class="nc" id="L231">      onLogout();</span>
-<span class="nc" id="L232">    }</span>
+<span class="nc" id="L225">      MapillaryUser.reset();</span>
+<span class="nc" id="L226">      onLogout();</span>
+<span class="nc" id="L227">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

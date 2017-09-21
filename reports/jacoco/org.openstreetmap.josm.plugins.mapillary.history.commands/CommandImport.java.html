@@ -37,7 +37,7 @@ public class CommandImport extends MapillaryExecutableCommand {
 <span class="fc bfc" id="L37" title="All 2 branches covered.">    for (MapillaryAbstractImage img : this.images) {</span>
 <span class="fc" id="L38">      MapillaryLayer.getInstance().getData().getImages().remove(img);</span>
 <span class="fc" id="L39">    }</span>
-<span class="fc" id="L40">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="fc" id="L40">    MapillaryLayer.invalidateInstance();</span>
 <span class="fc" id="L41">  }</span>
 
   @Override

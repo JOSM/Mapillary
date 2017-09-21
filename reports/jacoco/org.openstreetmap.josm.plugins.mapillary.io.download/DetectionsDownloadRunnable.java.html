@@ -38,26 +38,27 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
   @Override
   public void run(final URLConnection con) throws IOException {
 <span class="nc" id="L40">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
-<span class="nc" id="L41">      Map&lt;String, List&lt;ImageDetection&gt;&gt; detections = JsonDecoder.decodeFeatureCollection(</span>
-<span class="nc" id="L42">        reader.readObject(),</span>
+<span class="nc" id="L41">      final long startTime = System.currentTimeMillis();</span>
+<span class="nc" id="L42">      Map&lt;String, List&lt;ImageDetection&gt;&gt; detections = JsonDecoder.decodeFeatureCollection(</span>
+<span class="nc" id="L43">        reader.readObject(),</span>
         JsonImageDetectionDecoder::decodeImageDetection
-<span class="nc" id="L44">      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));</span>
-<span class="nc" id="L45">      logConnectionInfo(con, detections.size() + &quot; detections&quot;);</span>
+<span class="nc" id="L45">      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));</span>
+<span class="nc" id="L46">      logConnectionInfo(con, String.format(&quot;%d detections in %.2f s&quot;, detections.size(), (System.currentTimeMillis() - startTime) / 1000F));</span>
 
-<span class="nc bnc" id="L47" title="All 2 branches missed.">      for (Entry&lt;String, List&lt;ImageDetection&gt;&gt; entry : detections.entrySet()) {</span>
-<span class="nc" id="L48">        data.getImages().stream()</span>
-<span class="nc bnc" id="L49" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; ((MapillaryImage) img).getKey().equals(entry.getKey()))</span>
-<span class="nc" id="L50">          .forEach(img -&gt; ((MapillaryImage) img).setAllDetections(entry.getValue()));</span>
-<span class="nc" id="L51">      }</span>
-<span class="nc bnc" id="L52" title="All 8 branches missed.">    } catch (JsonException e) {</span>
-<span class="nc" id="L53">      throw new IOException(e);</span>
-<span class="nc" id="L54">    }</span>
-<span class="nc" id="L55">    MapillaryLayer.getInstance().invalidate();</span>
-<span class="nc" id="L56">  }</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">      for (Entry&lt;String, List&lt;ImageDetection&gt;&gt; entry : detections.entrySet()) {</span>
+<span class="nc" id="L49">        data.getImages().stream()</span>
+<span class="nc bnc" id="L50" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; ((MapillaryImage) img).getKey().equals(entry.getKey()))</span>
+<span class="nc" id="L51">          .forEach(img -&gt; ((MapillaryImage) img).setAllDetections(entry.getValue()));</span>
+<span class="nc" id="L52">      }</span>
+<span class="nc bnc" id="L53" title="All 8 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L54">      throw new IOException(e);</span>
+<span class="nc" id="L55">    }</span>
+<span class="nc" id="L56">    MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L57">  }</span>
 
   @Override
   protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
-<span class="nc" id="L60">    return URL_GEN;</span>
+<span class="nc" id="L61">    return URL_GEN;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

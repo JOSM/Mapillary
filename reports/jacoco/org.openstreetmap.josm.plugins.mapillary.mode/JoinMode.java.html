@@ -49,44 +49,46 @@ public class JoinMode extends AbstractMode {
 <span class="nc bnc" id="L49" title="All 4 branches missed.">    } else if (this.lastClick != null</span>
         &amp;&amp; highlighted instanceof MapillaryImportedImage) {
 <span class="nc" id="L51">      if (</span>
-<span class="nc bnc" id="L52" title="All 4 branches missed.">        (highlighted.previous() == null &amp;&amp; this.lastClick.next() == null</span>
-<span class="nc bnc" id="L53" title="All 4 branches missed.">          || highlighted.next() == null &amp;&amp; this.lastClick.previous() == null)</span>
-<span class="nc bnc" id="L54" title="All 2 branches missed.">        &amp;&amp; highlighted.getSequence() != this.lastClick.getSequence()</span>
+        (
+<span class="nc bnc" id="L53" title="All 4 branches missed.">          (highlighted.previous() == null &amp;&amp; this.lastClick.next() == null) ||</span>
+<span class="nc bnc" id="L54" title="All 4 branches missed.">          (highlighted.next() == null &amp;&amp; this.lastClick.previous() == null)</span>
+        )
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        &amp;&amp; highlighted.getSequence() != this.lastClick.getSequence()</span>
       ) {
-<span class="nc" id="L56">        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">      } else if (this.lastClick.next() == highlighted</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">          || this.lastClick.previous() == highlighted) {</span>
-<span class="nc" id="L59">        MapillaryRecord.getInstance().addCommand(</span>
-<span class="nc" id="L60">            new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));</span>
+<span class="nc" id="L58">        MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">      } else if (this.lastClick.next() == highlighted || this.lastClick.previous() == highlighted) {</span>
+<span class="nc" id="L60">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L61">          new CommandUnjoin(Arrays.asList(this.lastClick, highlighted))</span>
+        );
       }
-<span class="nc" id="L62">      this.lastClick = null;</span>
+<span class="nc" id="L64">      this.lastClick = null;</span>
     }
-<span class="nc" id="L64">    MapillaryLayer.getInstance().invalidate();</span>
-<span class="nc" id="L65">  }</span>
+<span class="nc" id="L66">    MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L67">  }</span>
 
   @Override
   public void mouseMoved(MouseEvent e) {
-<span class="nc" id="L69">    this.lastPos = e;</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (!(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer))</span>
-<span class="nc" id="L71">      return;</span>
-<span class="nc" id="L72">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
-<span class="nc" id="L73">    MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);</span>
-<span class="nc" id="L74">    MapillaryLayer.getInstance().invalidate();</span>
-<span class="nc" id="L75">  }</span>
+<span class="nc" id="L71">    this.lastPos = e;</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (!(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer))</span>
+<span class="nc" id="L73">      return;</span>
+<span class="nc" id="L74">    MapillaryAbstractImage closestTemp = getClosest(e.getPoint());</span>
+<span class="nc" id="L75">    MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);</span>
+<span class="nc" id="L76">    MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L77">  }</span>
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
-<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
-<span class="nc" id="L80">      g.setColor(Color.WHITE);</span>
-<span class="nc" id="L81">      Point p0 = mv.getPoint(this.lastClick.getMovingLatLon());</span>
-<span class="nc" id="L82">      Point p1 = this.lastPos.getPoint();</span>
-<span class="nc" id="L83">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    if (this.lastClick != null) {</span>
+<span class="nc" id="L82">      g.setColor(Color.WHITE);</span>
+<span class="nc" id="L83">      Point p0 = mv.getPoint(this.lastClick.getMovingLatLon());</span>
+<span class="nc" id="L84">      Point p1 = this.lastPos.getPoint();</span>
+<span class="nc" id="L85">      g.drawLine(p0.x, p0.y, p1.x, p1.y);</span>
     }
-<span class="nc" id="L85">  }</span>
+<span class="nc" id="L87">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L89">    return tr(&quot;Join mode&quot;);</span>
+<span class="nc" id="L91">    return tr(&quot;Join mode&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

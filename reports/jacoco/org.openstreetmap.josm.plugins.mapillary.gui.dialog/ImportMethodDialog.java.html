@@ -104,7 +104,7 @@ public class ImportMethodDialog extends JDialog {
 <span class="nc" id="L104">            JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the image ''{0}''!&quot;, f.getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
 <span class="nc" id="L105">          }</span>
         }
-<span class="nc" id="L107">        MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L107">        MapillaryLayer.invalidateInstance();</span>
 <span class="nc" id="L108">        dispose();</span>
       }
 <span class="nc" id="L110">    });</span>
@@ -121,7 +121,7 @@ public class ImportMethodDialog extends JDialog {
 <span class="nc" id="L121">        } catch (IOException e1) {</span>
 <span class="nc" id="L122">          JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the directory ''{0}''!&quot;, DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
 <span class="nc" id="L123">        }</span>
-<span class="nc" id="L124">        MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L124">        MapillaryLayer.invalidateInstance();</span>
 <span class="nc" id="L125">        dispose();</span>
       }
 <span class="nc" id="L127">    });</span>

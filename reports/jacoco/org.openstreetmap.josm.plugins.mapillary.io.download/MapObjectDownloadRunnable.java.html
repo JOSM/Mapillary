@@ -60,7 +60,7 @@ public class MapObjectDownloadRunnable implements Runnable {
 <span class="pc bpc" id="L60" title="6 of 8 branches missed.">        }</span>
 <span class="fc" id="L61">        layer.invalidate();</span>
 <span class="fc" id="L62">        BoundsDownloadRunnable.logConnectionInfo(con, String.format(</span>
-          &quot;%d map objects in %f seconds&quot;,
+          &quot;%d map objects in %.2f s&quot;,
 <span class="fc" id="L64">          result.size() - prevResultSize,</span>
 <span class="fc" id="L65">          (System.currentTimeMillis() - startTime) / 1000f</span>
         ));

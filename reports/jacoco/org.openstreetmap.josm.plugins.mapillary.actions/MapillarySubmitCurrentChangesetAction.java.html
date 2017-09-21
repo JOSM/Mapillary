@@ -44,21 +44,21 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
    * @param changesetDialog Mapillary changeset dialog
    */
   public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
-<span class="nc" id="L47">    super(</span>
-<span class="nc" id="L48">      I18n.tr(&quot;Submit changeset&quot;),</span>
-<span class="nc" id="L49">      new ImageProvider(&quot;dialogs&quot;, &quot;mapillary-upload&quot;).setSize(ImageSizes.DEFAULT),</span>
-<span class="nc" id="L50">      I18n.tr(&quot;Submit the current changeset&quot;),</span>
-<span class="nc" id="L51">      Shortcut.registerShortcut(</span>
-<span class="nc" id="L52">        &quot;Submit changeset to Mapillary&quot;, I18n.tr(&quot;Submit the current changeset to Mapillary&quot;),</span>
+<span class="fc" id="L47">    super(</span>
+<span class="fc" id="L48">      I18n.tr(&quot;Submit changeset&quot;),</span>
+<span class="fc" id="L49">      new ImageProvider(&quot;dialogs&quot;, &quot;mapillary-upload&quot;).setSize(ImageSizes.DEFAULT),</span>
+<span class="fc" id="L50">      I18n.tr(&quot;Submit the current changeset&quot;),</span>
+<span class="fc" id="L51">      Shortcut.registerShortcut(</span>
+<span class="fc" id="L52">        &quot;Submit changeset to Mapillary&quot;, I18n.tr(&quot;Submit the current changeset to Mapillary&quot;),</span>
         KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
       ),
       false,
       &quot;mapillarySubmitChangeset&quot;,
       false
     );
-<span class="nc" id="L59">    this.changesetDialog = changesetDialog;</span>
-<span class="nc" id="L60">    setEnabled(false);</span>
-<span class="nc" id="L61">  }</span>
+<span class="fc" id="L59">    this.changesetDialog = changesetDialog;</span>
+<span class="fc" id="L60">    setEnabled(false);</span>
+<span class="fc" id="L61">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent event) {

@@ -80,54 +80,50 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 <span class="nc" id="L80">    this.group.add(this.selected);</span>
 <span class="nc" id="L81">    this.group.add(this.rewrite);</span>
     // Some options are disabled depending on the circumstances
-<span class="nc bnc" id="L83" title="All 2 branches missed.">    if (!(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage)</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        || MapillaryLayer.getInstance().getData().getSelectedImage().getSequence() == null</span>
-    ) {
-<span class="nc" id="L86">      this.sequence.setEnabled(false);</span>
+<span class="nc" id="L83">    this.sequence.setEnabled(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {</span>
+<span class="nc" id="L85">      this.selected.setEnabled(false);</span>
     }
-<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {</span>
-<span class="nc" id="L89">      this.selected.setEnabled(false);</span>
-    }
-<span class="nc" id="L91">    this.rewrite.setEnabled(MapillaryLayer.getInstance().getData().getImages().parallelStream().anyMatch(img -&gt; img instanceof MapillaryImportedImage));</span>
+<span class="nc" id="L87">    this.rewrite.setEnabled(MapillaryLayer.getInstance().getData().getImages().parallelStream().anyMatch(img -&gt; img instanceof MapillaryImportedImage));</span>
 
-<span class="nc" id="L93">    this.path = new JLabel(tr(&quot;Select a folder&quot;));</span>
-<span class="nc" id="L94">    this.choose = new JButton(tr(&quot;Explore&quot;));</span>
-<span class="nc" id="L95">    this.choose.addActionListener(this);</span>
+<span class="nc" id="L89">    this.path = new JLabel(tr(&quot;Select a folder&quot;));</span>
+<span class="nc" id="L90">    this.choose = new JButton(tr(&quot;Explore&quot;));</span>
+<span class="nc" id="L91">    this.choose.addActionListener(this);</span>
 
     // All options belong to the same JPanel so the are in line.
-<span class="nc" id="L98">    JPanel jpanel = new JPanel();</span>
-<span class="nc" id="L99">    jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));</span>
-<span class="nc" id="L100">    jpanel.add(this.all);</span>
-<span class="nc" id="L101">    jpanel.add(this.sequence);</span>
-<span class="nc" id="L102">    jpanel.add(this.selected);</span>
-<span class="nc" id="L103">    jpanel.add(this.rewrite);</span>
-<span class="nc" id="L104">    jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L105">    this.path.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
-<span class="nc" id="L106">    this.choose.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L94">    JPanel jpanel = new JPanel();</span>
+<span class="nc" id="L95">    jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.PAGE_AXIS));</span>
+<span class="nc" id="L96">    jpanel.add(this.all);</span>
+<span class="nc" id="L97">    jpanel.add(this.sequence);</span>
+<span class="nc" id="L98">    jpanel.add(this.selected);</span>
+<span class="nc" id="L99">    jpanel.add(this.rewrite);</span>
+<span class="nc" id="L100">    jpanel.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L101">    this.path.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
+<span class="nc" id="L102">    this.choose.setAlignmentX(Component.CENTER_ALIGNMENT);</span>
 
-<span class="nc" id="L108">    add(jpanel);</span>
-<span class="nc" id="L109">    add(this.path);</span>
-<span class="nc" id="L110">    add(this.choose);</span>
-<span class="nc" id="L111">  }</span>
+<span class="nc" id="L104">    add(jpanel);</span>
+<span class="nc" id="L105">    add(this.path);</span>
+<span class="nc" id="L106">    add(this.choose);</span>
+<span class="nc" id="L107">  }</span>
 
   /**
    * Creates the folder chooser GUI.
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-<span class="nc" id="L118">    this.chooser = new JFileChooser();</span>
-<span class="nc" id="L119">    this.chooser.setCurrentDirectory(new java.io.File(System</span>
-<span class="nc" id="L120">        .getProperty(&quot;user.home&quot;)));</span>
-<span class="nc" id="L121">    this.chooser.setDialogTitle(tr(&quot;Select a directory&quot;));</span>
-<span class="nc" id="L122">    this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
-<span class="nc" id="L123">    this.chooser.setAcceptAllFileFilterUsed(false);</span>
+<span class="nc" id="L114">    this.chooser = new JFileChooser();</span>
+<span class="nc" id="L115">    this.chooser.setCurrentDirectory(new java.io.File(System</span>
+<span class="nc" id="L116">        .getProperty(&quot;user.home&quot;)));</span>
+<span class="nc" id="L117">    this.chooser.setDialogTitle(tr(&quot;Select a directory&quot;));</span>
+<span class="nc" id="L118">    this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+<span class="nc" id="L119">    this.chooser.setAcceptAllFileFilterUsed(false);</span>
 
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (this.chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {</span>
-<span class="nc" id="L126">      this.path.setText(this.chooser.getSelectedFile().toString());</span>
-<span class="nc" id="L127">      this.updateUI();</span>
-<span class="nc" id="L128">      this.ok.setEnabled(true);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">    if (this.chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc" id="L122">      this.path.setText(this.chooser.getSelectedFile().toString());</span>
+<span class="nc" id="L123">      this.updateUI();</span>
+<span class="nc" id="L124">      this.ok.setEnabled(true);</span>
     }
-<span class="nc" id="L130">  }</span>
+<span class="nc" id="L126">  }</span>
 
   /**
    * Enables/disables some parts of the panel depending if the rewrite button is
@@ -148,21 +144,21 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
      * @param dlg
      *          Parent dialog.
      */
-<span class="nc" id="L151">    public RewriteButtonAction(MapillaryExportDialog dlg) {</span>
-<span class="nc" id="L152">      this.dlg = dlg;</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L147">    public RewriteButtonAction(MapillaryExportDialog dlg) {</span>
+<span class="nc" id="L148">      this.dlg = dlg;</span>
+<span class="nc" id="L149">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L157">      MapillaryExportDialog.this.choose</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">          .setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">      if (MapillaryExportDialog.this.rewrite.isSelected()) {</span>
-<span class="nc" id="L160">        this.lastPath = this.dlg.path.getText();</span>
-<span class="nc" id="L161">        this.dlg.path.setText(&quot; &quot;);</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">      } else if (this.lastPath != null) {</span>
-<span class="nc" id="L163">        this.dlg.path.setText(this.lastPath);</span>
+<span class="nc" id="L153">      MapillaryExportDialog.this.choose</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">          .setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (MapillaryExportDialog.this.rewrite.isSelected()) {</span>
+<span class="nc" id="L156">        this.lastPath = this.dlg.path.getText();</span>
+<span class="nc" id="L157">        this.dlg.path.setText(&quot; &quot;);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">      } else if (this.lastPath != null) {</span>
+<span class="nc" id="L159">        this.dlg.path.setText(this.lastPath);</span>
       }
-<span class="nc" id="L165">    }</span>
+<span class="nc" id="L161">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

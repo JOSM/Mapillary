@@ -85,24 +85,23 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
     @Override
     public void run() {
       while (true) {
-<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (this.moved</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">          &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
-<span class="nc" id="L90">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
-<span class="nc" id="L91">          MapillaryDownloader.downloadVisibleArea();</span>
-<span class="nc" id="L92">          this.moved = false;</span>
-<span class="nc" id="L93">          MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (this.moved &amp;&amp; Calendar.getInstance().getTimeInMillis() - this.lastDownload &gt;= DOWNLOAD_COOLDOWN) {</span>
+<span class="nc" id="L89">          this.lastDownload = Calendar.getInstance().getTimeInMillis();</span>
+<span class="nc" id="L90">          MapillaryDownloader.downloadVisibleArea();</span>
+<span class="nc" id="L91">          this.moved = false;</span>
+<span class="nc" id="L92">          MapillaryLayer.invalidateInstance();</span>
         }
         try {
-<span class="nc" id="L96">          Thread.sleep(100);</span>
-<span class="nc" id="L97">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L98">          return;</span>
-<span class="nc" id="L99">        }</span>
+<span class="nc" id="L95">          Thread.sleep(100);</span>
+<span class="nc" id="L96">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L97">          return;</span>
+<span class="nc" id="L98">        }</span>
       }
     }
 
     public void moved() {
-<span class="nc" id="L104">      this.moved = true;</span>
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L103">      this.moved = true;</span>
+<span class="nc" id="L104">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -112,7 +112,7 @@ public class SelectMode extends AbstractMode {
 <span class="nc bnc" id="L112" title="All 4 branches missed.">        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().filter(img -&gt; !(img instanceof MapillaryImage) || MapillaryProperties.DEVELOPER.get())</span>
 <span class="nc" id="L113">                .forEach(img -&gt; img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));</span>
       }
-<span class="nc" id="L115">      MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L115">      MapillaryLayer.invalidateInstance();</span>
     }
 <span class="nc" id="L117">  }</span>
 
@@ -122,17 +122,17 @@ public class SelectMode extends AbstractMode {
 <span class="nc bnc" id="L122" title="All 2 branches missed.">    if (data.getSelectedImage() == null) {</span>
 <span class="nc" id="L123">      return;</span>
     }
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (data.getSelectedImage().getTempCa() != data.getSelectedImage().getMovingCa()) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (!Objects.equals(data.getSelectedImage().getTempCa(), data.getSelectedImage().getMovingCa())) {</span>
 <span class="nc" id="L126">      double from = data.getSelectedImage().getTempCa();</span>
 <span class="nc" id="L127">      double to = data.getSelectedImage().getMovingCa();</span>
 <span class="nc" id="L128">      record.addCommand(new CommandTurn(data.getMultiSelectedImages(), to - from));</span>
-<span class="nc bnc" id="L129" title="All 2 branches missed.">    } else if (data.getSelectedImage().getTempLatLon() != data.getSelectedImage().getMovingLatLon()) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    } else if (!Objects.equals(data.getSelectedImage().getTempLatLon(), data.getSelectedImage().getMovingLatLon())) {</span>
 <span class="nc" id="L130">      LatLon from = data.getSelectedImage().getTempLatLon();</span>
 <span class="nc" id="L131">      LatLon to = data.getSelectedImage().getMovingLatLon();</span>
 <span class="nc" id="L132">      record.addCommand(new CommandMove(data.getMultiSelectedImages(), to.getX() - from.getX(), to.getY() - from.getY()));</span>
     }
 <span class="nc" id="L134">    data.getMultiSelectedImages().parallelStream().filter(Objects::nonNull).forEach(MapillaryAbstractImage::stopMoving);</span>
-<span class="nc" id="L135">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L135">    MapillaryLayer.invalidateInstance();</span>
 <span class="nc" id="L136">  }</span>
 
   /**
@@ -180,7 +180,7 @@ public class SelectMode extends AbstractMode {
 <span class="nc" id="L180">      MapillaryMainDialog.getInstance().setImage(MapillaryLayer.getInstance().getData().getSelectedImage());</span>
 <span class="nc" id="L181">      MapillaryMainDialog.getInstance().updateImage();</span>
     }
-<span class="nc" id="L183">    MapillaryLayer.getInstance().invalidate();</span>
+<span class="nc" id="L183">    MapillaryLayer.invalidateInstance();</span>
 <span class="nc" id="L184">  }</span>
 
   @Override
@@ -189,7 +189,7 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public String toString() {
-<span class="nc" id="L192">    return tr(&quot;Select mode&quot;);</span>
+<span class="fc" id="L192">    return tr(&quot;Select mode&quot;);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
