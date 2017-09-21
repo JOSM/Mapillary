@@ -54,7 +54,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   public UserProfile getUser() {
-<span class="nc" id="L57">    return getSequence().getUser();</span>
+<span class="fc" id="L57">    return getSequence().getUser();</span>
   }
 
   public void setAllDetections(Collection&lt;ImageDetection&gt; newDetections) {
@@ -67,9 +67,9 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   @Override
   public String toString() {
-<span class="nc" id="L70">    return String.format(</span>
+<span class="fc" id="L70">    return String.format(</span>
       &quot;Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]&quot;,
-<span class="nc bnc" id="L72" title="All 2 branches missed.">      key, latLon.lat(), latLon.lon(), ca, getUser() == null ? &quot;null&quot; : getUser().getUsername(), capturedAt</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">      key, latLon.lat(), latLon.lon(), ca, getUser() == null ? &quot;null&quot; : getUser().getUsername(), capturedAt</span>
     );
   }
 

@@ -115,15 +115,15 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
   private void buildTree() {
 <span class="fc" id="L117">    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    submitButton.setEnabled(!changeset.isEmpty());</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    submitButton.setEnabled(!changeset.isEmpty());</span>
 <span class="fc" id="L119">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
 
 <span class="fc" id="L121">    this.map.clear();</span>
 <span class="fc" id="L122">    changeset.parallelStream().filter(Objects::nonNull).forEach(img -&gt; {</span>
-<span class="nc" id="L123">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());</span>
-<span class="nc" id="L124">      this.map.put(node, img);</span>
-<span class="nc" id="L125">      changesetRoot.add(node);</span>
-<span class="nc" id="L126">    });</span>
+<span class="fc" id="L123">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());</span>
+<span class="fc" id="L124">      this.map.put(node, img);</span>
+<span class="fc" id="L125">      changesetRoot.add(node);</span>
+<span class="fc" id="L126">    });</span>
 
 <span class="fc" id="L128">    this.spacer.setVisible(changeset.isEmpty());</span>
 
