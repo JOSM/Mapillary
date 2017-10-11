@@ -5,7 +5,7 @@ var signs = fs.readdirSync('./package_signs');
 
 var mapping = JSON.parse(mappingJson);
 
-signs.map((signFilename) => {
+signs.forEach(function(signFilename) {
     var signName = signFilename.split('.')[0]
     if (mapping[signName] === undefined) {
         mapping[signName] = {
