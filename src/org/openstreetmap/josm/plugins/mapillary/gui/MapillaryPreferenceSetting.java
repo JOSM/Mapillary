@@ -68,7 +68,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
   private final JCheckBox developer =
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
-  private final JTextField preFetchSize = new JTextField("", 3);
+  private final JTextField preFetchSize = new JTextField("2", 2);
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(new LogoutAction());
   private final JLabel loginLabel = new JLabel();
