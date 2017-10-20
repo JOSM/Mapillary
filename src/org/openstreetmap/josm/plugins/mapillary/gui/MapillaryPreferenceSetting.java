@@ -20,8 +20,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
@@ -66,7 +68,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
   private final JCheckBox developer =
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
-
+  private final JTextField preFetchSize = new JTextField("", 3);
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(new LogoutAction());
   private final JLabel loginLabel = new JLabel();
@@ -119,11 +121,17 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
+
+    JPanel preFetchPanel = new JPanel();
+    preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
+    preFetchPanel.add(preFetchSize);
+    mainPanel.add(preFetchPanel, GBC.eol());
+
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       mainPanel.add(developer, GBC.eol());
     }
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer, preFetchPanel
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -170,6 +178,13 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());
+
+    try {
+      Integer prefetch_count = Integer.parseInt(preFetchSize.getText());
+      MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(prefetch_count);
+    } catch (NumberFormatException e) {
+      Logging.warn("Prefetch Image count is not a valid number. Resetting to default value.");
+    }
 
     //Restart is never required
     return false;

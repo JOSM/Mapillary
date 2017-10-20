@@ -341,19 +341,9 @@ public class MapillaryData {
       this.multiSelectedImages.add(image);
       if (mv != null && image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
+
         // Downloading thumbnails of surrounding pictures.
-        if (mapillaryImage.next() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
-          if (mapillaryImage.next().next() != null) {
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());
-          }
-        }
-        if (mapillaryImage.previous() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
-          if (mapillaryImage.previous().previous() != null) {
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());
-          }
-        }
+        downloadSurroundingImages(mapillaryImage);
       }
     }
     if (mv != null && zoom && selectedImage != null) {
@@ -361,6 +351,30 @@ public class MapillaryData {
     }
     fireSelectedImageChanged(oldImage, this.selectedImage);
     MapillaryLayer.invalidateInstance();
+  }
+
+  /**
+   * Downloads surrounding images of this mapillary image.
+   * @param mapillaryImage
+   */
+  private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
+    final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
+    MapillaryImage nextImage = mapillaryImage;
+    MapillaryImage prevImage = mapillaryImage;
+
+    for (int i = 0; i < prefetchCount; i++) {
+      if (nextImage != null &&
+            nextImage.next() != null) {
+
+        CacheUtils.downloadPicture((MapillaryImage) nextImage.next());
+        nextImage = (MapillaryImage) nextImage.next();
+      }
+      if (prevImage != null &&
+            prevImage.previous() != null) {
+        CacheUtils.downloadPicture((MapillaryImage) prevImage.previous());
+        prevImage = (MapillaryImage) prevImage.previous();
+      }
+    }
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
