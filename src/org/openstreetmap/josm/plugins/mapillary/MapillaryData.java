@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -354,27 +355,28 @@ public class MapillaryData {
   }
 
   /**
-   * Downloads surrounding images of this mapillary image.
+   * Downloads surrounding images of this mapillary image in background threads
    * @param mapillaryImage
    */
   private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
-    final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
-    MapillaryImage nextImage = mapillaryImage;
-    MapillaryImage prevImage = mapillaryImage;
+    MainApplication.worker.submit(() -> {
+      final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
+      MapillaryImage nextImage = mapillaryImage;
+      MapillaryImage prevImage = mapillaryImage;
 
-    for (int i = 0; i < prefetchCount; i++) {
-      if (nextImage != null &&
-            nextImage.next() != null) {
-
-        CacheUtils.downloadPicture((MapillaryImage) nextImage.next());
-        nextImage = (MapillaryImage) nextImage.next();
+      for (int i = 0; i < prefetchCount; i++) {
+        if (nextImage != null &&
+                nextImage.next() != null) {
+          CacheUtils.downloadPicture((MapillaryImage) nextImage.next());
+          nextImage = (MapillaryImage) nextImage.next();
+        }
+        if (prevImage != null &&
+                prevImage.previous() != null) {
+          CacheUtils.downloadPicture((MapillaryImage) prevImage.previous());
+          prevImage = (MapillaryImage) prevImage.previous();
+        }
       }
-      if (prevImage != null &&
-            prevImage.previous() != null) {
-        CacheUtils.downloadPicture((MapillaryImage) prevImage.previous());
-        prevImage = (MapillaryImage) prevImage.previous();
-      }
-    }
+    });
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
