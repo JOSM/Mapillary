@@ -10,12 +10,19 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
+import org.junit.Rule;
 import org.junit.Test;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Tests {@link MapillaryImageDisplay}
  */
 public class ImageDisplayTest {
+
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 

@@ -4,9 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import java.awt.Color;
 
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.data.preferences.ColorProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
+import org.openstreetmap.josm.data.preferences.NamedColorProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -32,11 +32,11 @@ public final class MapillaryProperties {
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
    */
-  public static final ColorProperty BACKGROUND = new ColorProperty("background", Color.BLACK);
+  public static final NamedColorProperty BACKGROUND = new NamedColorProperty("background", Color.BLACK);
   /**
    * @see OsmDataLayer#PROPERTY_OUTSIDE_COLOR
    */
-  public static final ColorProperty OUTSIDE_DOWNLOADED_AREA = new ColorProperty("outside downloaded area", Color.YELLOW);
+  public static final NamedColorProperty OUTSIDE_DOWNLOADED_AREA = new NamedColorProperty("outside downloaded area", Color.YELLOW);
 
   public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty("mapillary.max-download-area", 0.015);
 
