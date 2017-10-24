@@ -5,14 +5,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -39,10 +37,16 @@ public final class MapillaryDownloader {
       this.label = label;
     }
 
+    /**
+     * @return the ID that is used to represent this download mode in the JOSM preferences
+     */
     public String getPrefId() {
       return prefId;
     }
 
+    /**
+     * @return the (internationalized) label describing this download mode
+     */
     public String getLabel() {
       return label;
     }
@@ -77,6 +81,12 @@ public final class MapillaryDownloader {
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(
     3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
 
+  /**
+   * Indicates whether the last download request has been rejected because it requested an area that was too big.
+   * Iff true, the last download has been rejected, if false, it was executed.
+   */
+  private static boolean stoppedDownload;
+
   private MapillaryDownloader() {
     // Private constructor to avoid instantiation
   }
@@ -110,9 +120,7 @@ public final class MapillaryDownloader {
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
   public static DOWNLOAD_MODE getMode() {
-    return MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().tempSemiautomatic
-      ? DOWNLOAD_MODE.VISIBLE_AREA
-      : DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());
+    return DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());
   }
 
   private static void run(Runnable t) {
@@ -124,7 +132,7 @@ public final class MapillaryDownloader {
    */
   public static void downloadVisibleArea() {
     Bounds view = MainApplication.getMap().mapView.getRealBounds();
-    if (view.getArea() > MAX_AREA) {
+    if (isAreaTooBig(view.getArea())) {
       return;
     }
     if (isViewDownloaded(view)) {
@@ -175,8 +183,7 @@ public final class MapillaryDownloader {
     if (MainApplication.getLayerManager().getEditLayer() == null) {
       return;
     }
-    if (isOSMAreaTooBig()) {
-      showOSMAreaTooBigErrorDialog();
+    if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum))) {
       return;
     }
     MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
@@ -186,26 +193,26 @@ public final class MapillaryDownloader {
   }
 
   /**
-   * Checks if the area of the OSM data is too big. This means that probably
+   * Checks if the area for which Mapillary images should be downloaded is too big. This means that probably
    * lots of Mapillary images are going to be downloaded, slowing down the
-   * program too much. To solve this the automatic is stopped, an alert is shown
-   * and you will have to download areas manually.
+   * program too much. A notification is shown when the download has stopped or continued.
    */
-  private static boolean isOSMAreaTooBig() {
-    double area = MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum);
-    return area > MAX_AREA;
-  }
-
-  private static void showOSMAreaTooBigErrorDialog() {
-    if (SwingUtilities.isEventDispatchThread()) {
-      MapillaryLayer.getInstance().tempSemiautomatic = true;
-      JOptionPane
-        .showMessageDialog(
-          Main.parent,
-          I18n.tr("The downloaded OSM area is too big. Download mode has been changed to OSM area until the layer is restarted."));
-    } else {
-      SwingUtilities.invokeLater(MapillaryDownloader::showOSMAreaTooBigErrorDialog);
+  private static boolean isAreaTooBig(final double area) {
+    final boolean tooBig = area > MAX_AREA;
+    if (!stoppedDownload && tooBig) {
+      new Notification(
+        I18n.tr("The Mapillary layer has stopped downloading images, because the requested area is too big!") + (
+          getMode() == DOWNLOAD_MODE.VISIBLE_AREA
+          ? "\n"+I18n.tr("To solve this problem, you could zoom in and load a smaller area of the map.")
+          : (getMode() == DOWNLOAD_MODE.OSM_AREA ? "\n"+I18n.tr("To solve this problem, you could switch to download mode ''{0}'' and load Mapillary images for a smaller portion of the map.", DOWNLOAD_MODE.MANUAL_ONLY): "")
+        )
+      ).setIcon(MapillaryPlugin.LOGO.get()).setDuration(Notification.TIME_LONG).show();
     }
+    if (stoppedDownload && !tooBig) {
+      new Notification("The Mapillary layer now continues to download images…").setIcon(MapillaryPlugin.LOGO.get()).show();
+    }
+    stoppedDownload = tooBig;
+    return tooBig;
   }
 
   /**
@@ -219,6 +226,6 @@ public final class MapillaryDownloader {
       Logging.error(e);
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(100));
+      new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
   }
 }

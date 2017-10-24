@@ -31,6 +31,10 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     // Download basic sequence data synchronously
     new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds).run();
 
+    if (Thread.interrupted()) {
+      return;
+    }
+
     // Asynchronously load the rest of the image details
     Thread imgDetailsThread = new Thread(new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
     imgDetailsThread.start();

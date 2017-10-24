@@ -91,9 +91,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     });
 
-  /** If the download is in semiautomatic during this object lifetime. */
-  public boolean tempSemiautomatic;
-
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
   /** The nearest images to the selected image from different sequences sorted by distance from selection. */

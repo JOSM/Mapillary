@@ -168,7 +168,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * Applies the selected filter.
    */
   public synchronized void refresh() {
-    final boolean layerVisible = MapillaryLayer.getInstance().isVisible();
+    final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
     final boolean imported = this.imported.isSelected();
     final boolean downloaded = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
@@ -201,7 +201,9 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
         return false;
       };
 
-    MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!shouldHide.test(img)));
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!shouldHide.test(img)));
+    }
 
     MapillaryLayer.invalidateInstance();
   }
