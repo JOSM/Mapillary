@@ -9,11 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -359,21 +362,27 @@ public class MapillaryData {
    * @param mapillaryImage
    */
   private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
-    MainApplication.worker.submit(() -> {
+    MainApplication.worker.execute(() -> {
       final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
-      MapillaryImage nextImage = mapillaryImage;
-      MapillaryImage prevImage = mapillaryImage;
+      CacheAccess <String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance().getCache();
+
+      MapillaryAbstractImage nextImage = mapillaryImage.next();
+      MapillaryAbstractImage prevImage = mapillaryImage.previous();
 
       for (int i = 0; i < prefetchCount; i++) {
-        if (nextImage != null &&
-                nextImage.next() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) nextImage.next());
-          nextImage = (MapillaryImage) nextImage.next();
+        if (nextImage != null) {
+          if ((nextImage instanceof MapillaryImage) &&
+            (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
+            CacheUtils.downloadPicture((MapillaryImage) nextImage);
+          }
+          nextImage = nextImage.next();
         }
-        if (prevImage != null &&
-                prevImage.previous() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) prevImage.previous());
-          prevImage = (MapillaryImage) prevImage.previous();
+        if (prevImage != null) {
+          if ((prevImage instanceof MapillaryImage) &&
+            (imageCache.get(((MapillaryImage) prevImage).getKey()) == null)) {
+            CacheUtils.downloadPicture((MapillaryImage) prevImage);
+          }
+          prevImage = prevImage.previous();
         }
       }
     });
