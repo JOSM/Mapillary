@@ -20,11 +20,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.JOptionPane;
 
-
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
@@ -68,7 +70,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
   private final JCheckBox developer =
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
-  private final JTextField preFetchSize = new JTextField("2", 2);
+  private final JSpinner preFetchSize =
+    new JSpinner(new SpinnerNumberModel(MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue(), 0, Integer.MAX_VALUE, 1));
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(new LogoutAction());
   private final JLabel loginLabel = new JLabel();
@@ -179,11 +182,15 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());
 
-    try {
-      Integer prefetch_count = Integer.parseInt(preFetchSize.getText());
+    if (preFetchSize.getModel() instanceof SpinnerNumberModel) {
+            Integer prefetch_count = ((SpinnerNumberModel) preFetchSize.getModel()).getNumber().intValue();
       MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(prefetch_count);
-    } catch (NumberFormatException e) {
-      Logging.warn("Prefetch Image count is not a valid number. Resetting to default value.");
+    } else {
+      JOptionPane.showMessageDialog(
+        Main.parent,
+        I18n.tr("The Mapillary image prefetch count is not a valid number"),
+        I18n.tr("Warning"),
+        JOptionPane.INFORMATION_MESSAGE);
     }
 
     //Restart is never required
