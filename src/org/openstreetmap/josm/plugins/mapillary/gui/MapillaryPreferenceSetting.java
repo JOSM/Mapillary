@@ -20,13 +20,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
@@ -129,9 +127,13 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
 
-    JPanel preFetchPanel = new JPanel();
+    final JPanel preFetchPanel = new JPanel();
     preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
-    preFetchPanel.add(new JSpinner(preFetchSize));
+    final JSpinner spinner = new JSpinner(preFetchSize);
+    final JSpinner.DefaultEditor editor = new JSpinner.NumberEditor(spinner);
+    editor.getTextField().setColumns(3);
+    spinner.setEditor(editor);
+    preFetchPanel.add(spinner);
     mainPanel.add(preFetchPanel, GBC.eol());
 
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
