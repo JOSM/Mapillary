@@ -69,18 +69,18 @@ public class OAuthPortListener extends Thread {
 <span class="fc" id="L69">      MapillaryUser.setTokenValid(true);</span>
 <span class="pc bpc" id="L70" title="1 of 2 branches missed.">      if (Main.main != null) {</span>
 <span class="fc" id="L71">        MapillaryProperties.ACCESS_TOKEN.put(accessToken);</span>
-<span class="fc" id="L72">        String username = MapillaryUser.getUsername();</span>
-<span class="fc" id="L73">        Logging.info(&quot;The username is: {0}&quot;, username);</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (callback != null) {</span>
+<span class="nc" id="L72">        String username = MapillaryUser.getUsername();</span>
+<span class="nc" id="L73">        Logging.info(&quot;The username is: {0}&quot;, username);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (callback != null) {</span>
 <span class="nc" id="L75">          callback.onLogin(username);</span>
         }
       }
-<span class="pc bpc" id="L78" title="3 of 4 branches missed.">    } catch (BindException e) {</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">    } catch (BindException e) {</span>
 <span class="nc" id="L79">      Logging.warn(e);</span>
 <span class="nc" id="L80">    } catch (IOException e) {</span>
 <span class="nc" id="L81">      Logging.error(e);</span>
-<span class="pc" id="L82">    }</span>
-<span class="fc" id="L83">  }</span>
+<span class="nc" id="L82">    }</span>
+<span class="nc" id="L83">  }</span>
 
   private static void writeContent(PrintWriter out) {
 <span class="fc" id="L86">    out.println(&quot;HTTP/1.1 200 OK&quot;);</span>

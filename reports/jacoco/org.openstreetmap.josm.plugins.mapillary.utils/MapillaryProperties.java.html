@@ -4,9 +4,9 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import java.awt.Color;
 
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.data.preferences.ColorProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
+import org.openstreetmap.josm.data.preferences.NamedColorProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
@@ -32,11 +32,11 @@ public final class MapillaryProperties {
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
    */
-<span class="fc" id="L35">  public static final ColorProperty BACKGROUND = new ColorProperty(&quot;background&quot;, Color.BLACK);</span>
+<span class="fc" id="L35">  public static final NamedColorProperty BACKGROUND = new NamedColorProperty(&quot;background&quot;, Color.BLACK);</span>
   /**
    * @see OsmDataLayer#PROPERTY_OUTSIDE_COLOR
    */
-<span class="fc" id="L39">  public static final ColorProperty OUTSIDE_DOWNLOADED_AREA = new ColorProperty(&quot;outside downloaded area&quot;, Color.YELLOW);</span>
+<span class="fc" id="L39">  public static final NamedColorProperty OUTSIDE_DOWNLOADED_AREA = new NamedColorProperty(&quot;outside downloaded area&quot;, Color.YELLOW);</span>
 
 <span class="fc" id="L41">  public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty(&quot;mapillary.max-download-area&quot;, 0.015);</span>
 
@@ -60,8 +60,13 @@ public final class MapillaryProperties {
 <span class="fc" id="L60">  public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =</span>
     new IntegerProperty(&quot;mapillary.imageInfo.helpDisplayedCountdown&quot;, 4);
 
-<span class="fc" id="L63">  private MapillaryProperties() {</span>
+  /**
+   * The number of images to be prefetched when a mapillary image is selected
+   */
+<span class="fc" id="L66">  public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty(&quot;mapillary.prefetch-image-count&quot;, 2);</span>
+
+<span class="fc" id="L68">  private MapillaryProperties() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L70">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

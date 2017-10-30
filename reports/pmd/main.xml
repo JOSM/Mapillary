@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.1" timestamp="2017-09-21T19:18:52.171">
+<pmd version="5.8.1" timestamp="2017-10-30T22:11:02.538">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
-<violation beginline="2" endline="392" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#GodClass" priority="3">
-Possible God class (WMC=51, ATFD=11, TCC=0.0)
+<violation beginline="2" endline="417" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#GodClass" priority="3">
+Possible God class (WMC=55, ATFD=11, TCC=0.0)
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryLayer.java">
@@ -285,10 +285,16 @@ Possible God class (WMC=70, ATFD=37, TCC=0.029411764705882353)
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java">
-<violation beginline="2" endline="229" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="245" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
-<violation beginline="71" endline="71" begincolumn="60" endcolumn="77" rule="AccessorClassGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorClassGeneration" priority="3">
+<violation beginline="27" endline="27" begincolumn="1" endcolumn="31" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'javax.swing.JOptionPane'
+</violation>
+<violation beginline="29" endline="29" begincolumn="1" endcolumn="35" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'org.openstreetmap.josm.Main'
+</violation>
+<violation beginline="80" endline="80" begincolumn="60" endcolumn="77" rule="AccessorClassGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSetting" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/design.html#AccessorClassGeneration" priority="3">
 Avoid instantiation through private constructors from outside of the constructors class.
 </violation>
 </file>

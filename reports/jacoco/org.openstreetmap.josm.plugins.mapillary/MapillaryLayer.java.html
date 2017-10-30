@@ -136,7 +136,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Does not execute when in headless mode
-<span class="pc bpc" id="L139" title="1 of 4 branches missed.">    if (Main.main != null &amp;&amp; !MapillaryMainDialog.getInstance().isShowing()) {</span>
+<span class="pc bpc" id="L139" title="2 of 4 branches missed.">    if (Main.main != null &amp;&amp; !MapillaryMainDialog.getInstance().isShowing()) {</span>
 <span class="fc" id="L140">      MapillaryMainDialog.getInstance().showDialog();</span>
     }
 <span class="fc bfc" id="L142" title="All 2 branches covered.">    if (MapillaryPlugin.getMapView() != null) {</span>
@@ -248,7 +248,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="fc" id="L248">    MapillaryRecord.getInstance().reset();</span>
 <span class="fc" id="L249">    AbstractMode.resetThread();</span>
 <span class="fc" id="L250">    MapillaryDownloader.stopAll();</span>
-<span class="fc bfc" id="L251" title="All 2 branches covered.">    if (MapillaryMainDialog.hasInstance()) {</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">    if (MapillaryMainDialog.hasInstance()) {</span>
 <span class="fc" id="L252">      MapillaryMainDialog.getInstance().setImage(null);</span>
 <span class="fc" id="L253">      MapillaryMainDialog.getInstance().updateImage();</span>
     }

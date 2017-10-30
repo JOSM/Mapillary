@@ -20,9 +20,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.JOptionPane;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
@@ -47,137 +51,149 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  *
  */
-<span class="fc" id="L50">public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {</span>
-<span class="fc" id="L51">  private final JComboBox&lt;String&gt; downloadModeComboBox = new JComboBox&lt;&gt;(new String[]{</span>
-<span class="fc" id="L52">      DOWNLOAD_MODE.VISIBLE_AREA.getLabel(),</span>
-<span class="fc" id="L53">      DOWNLOAD_MODE.OSM_AREA.getLabel(),</span>
-<span class="fc" id="L54">      DOWNLOAD_MODE.MANUAL_ONLY.getLabel()</span>
+<span class="fc" id="L54">public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {</span>
+<span class="fc" id="L55">  private final JComboBox&lt;String&gt; downloadModeComboBox = new JComboBox&lt;&gt;(new String[]{</span>
+<span class="fc" id="L56">      DOWNLOAD_MODE.VISIBLE_AREA.getLabel(),</span>
+<span class="fc" id="L57">      DOWNLOAD_MODE.OSM_AREA.getLabel(),</span>
+<span class="fc" id="L58">      DOWNLOAD_MODE.MANUAL_ONLY.getLabel()</span>
   });
 
-<span class="fc" id="L57">  private final JCheckBox displayHour =</span>
-<span class="fc" id="L58">    new JCheckBox(I18n.tr(&quot;Display hour when the picture was taken&quot;), MapillaryProperties.DISPLAY_HOUR.get());</span>
-<span class="fc" id="L59">  private final JCheckBox format24 =</span>
-<span class="fc" id="L60">    new JCheckBox(I18n.tr(&quot;Use 24 hour format&quot;), MapillaryProperties.TIME_FORMAT_24.get());</span>
-<span class="fc" id="L61">  private final JCheckBox moveTo =</span>
-<span class="fc" id="L62">    new JCheckBox(I18n.tr(&quot;Move to picture''s location with next/previous buttons&quot;), MapillaryProperties.MOVE_TO_IMG.get());</span>
-<span class="fc" id="L63">  private final JCheckBox hoverEnabled =</span>
-<span class="fc" id="L64">    new JCheckBox(I18n.tr(&quot;Preview images when hovering its icon&quot;), MapillaryProperties.HOVER_ENABLED.get());</span>
-<span class="fc" id="L65">  private final JCheckBox cutOffSeq =</span>
-<span class="fc" id="L66">    new JCheckBox(I18n.tr(&quot;Cut off sequences at download bounds&quot;), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());</span>
-<span class="fc" id="L67">  private final JCheckBox developer =</span>
-<span class="fc" id="L68">    new JCheckBox(I18n.tr(&quot;Enable experimental beta-features (might be unstable)&quot;), MapillaryProperties.DEVELOPER.get());</span>
-
-<span class="fc" id="L70">  private final JButton loginButton = new MapillaryButton(new LoginAction(this));</span>
-<span class="fc" id="L71">  private final JButton logoutButton = new MapillaryButton(new LogoutAction());</span>
-<span class="fc" id="L72">  private final JLabel loginLabel = new JLabel();</span>
-<span class="fc" id="L73">  private final JPanel loginPanel = new JPanel();</span>
+<span class="fc" id="L61">  private final JCheckBox displayHour =</span>
+<span class="fc" id="L62">    new JCheckBox(I18n.tr(&quot;Display hour when the picture was taken&quot;), MapillaryProperties.DISPLAY_HOUR.get());</span>
+<span class="fc" id="L63">  private final JCheckBox format24 =</span>
+<span class="fc" id="L64">    new JCheckBox(I18n.tr(&quot;Use 24 hour format&quot;), MapillaryProperties.TIME_FORMAT_24.get());</span>
+<span class="fc" id="L65">  private final JCheckBox moveTo =</span>
+<span class="fc" id="L66">    new JCheckBox(I18n.tr(&quot;Move to picture''s location with next/previous buttons&quot;), MapillaryProperties.MOVE_TO_IMG.get());</span>
+<span class="fc" id="L67">  private final JCheckBox hoverEnabled =</span>
+<span class="fc" id="L68">    new JCheckBox(I18n.tr(&quot;Preview images when hovering its icon&quot;), MapillaryProperties.HOVER_ENABLED.get());</span>
+<span class="fc" id="L69">  private final JCheckBox cutOffSeq =</span>
+<span class="fc" id="L70">    new JCheckBox(I18n.tr(&quot;Cut off sequences at download bounds&quot;), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());</span>
+<span class="fc" id="L71">  private final JCheckBox developer =</span>
+<span class="fc" id="L72">    new JCheckBox(I18n.tr(&quot;Enable experimental beta-features (might be unstable)&quot;), MapillaryProperties.DEVELOPER.get());</span>
+<span class="fc" id="L73">  private final SpinnerNumberModel preFetchSize = new SpinnerNumberModel(</span>
+<span class="fc" id="L74">    MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue(),</span>
+    0,
+    Integer.MAX_VALUE,
+    1
+  );
+<span class="fc" id="L79">  private final JButton loginButton = new MapillaryButton(new LoginAction(this));</span>
+<span class="fc" id="L80">  private final JButton logoutButton = new MapillaryButton(new LogoutAction());</span>
+<span class="fc" id="L81">  private final JLabel loginLabel = new JLabel();</span>
+<span class="fc" id="L82">  private final JPanel loginPanel = new JPanel();</span>
 
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
-<span class="fc" id="L77">    return gui.getDisplayPreference();</span>
+<span class="fc" id="L86">    return gui.getDisplayPreference();</span>
   }
 
   @Override
   public void addGui(PreferenceTabbedPane gui) {
-<span class="fc" id="L82">    JPanel container = new JPanel(new BorderLayout());</span>
+<span class="fc" id="L91">    JPanel container = new JPanel(new BorderLayout());</span>
 
-<span class="fc" id="L84">    loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.LINE_AXIS));</span>
-<span class="fc" id="L85">    loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));</span>
-<span class="fc" id="L86">    loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);</span>
-<span class="fc" id="L87">    JLabel brandImage = new JLabel();</span>
-<span class="pc" id="L88">    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream(&quot;/images/mapillary-logo-white.png&quot;)) {</span>
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">      if (is != null) {</span>
-<span class="fc" id="L90">        brandImage.setIcon(new ImageIcon(ImageIO.read(is)));</span>
+<span class="fc" id="L93">    loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.LINE_AXIS));</span>
+<span class="fc" id="L94">    loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));</span>
+<span class="fc" id="L95">    loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);</span>
+<span class="fc" id="L96">    JLabel brandImage = new JLabel();</span>
+<span class="pc" id="L97">    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream(&quot;/images/mapillary-logo-white.png&quot;)) {</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">      if (is != null) {</span>
+<span class="fc" id="L99">        brandImage.setIcon(new ImageIcon(ImageIO.read(is)));</span>
       } else {
-<span class="nc" id="L92">        Logging.warn(&quot;Could not load Mapillary brand image!&quot;);</span>
+<span class="nc" id="L101">        Logging.warn(&quot;Could not load Mapillary brand image!&quot;);</span>
       }
-<span class="pc bpc" id="L94" title="6 of 8 branches missed.">    } catch (IOException e) {</span>
-<span class="nc" id="L95">      Logging.warn(&quot;While reading Mapillary brand image, an IO-exception occured!&quot;);</span>
-<span class="fc" id="L96">    }</span>
-<span class="fc" id="L97">    loginPanel.add(brandImage, 0);</span>
-<span class="fc" id="L98">    loginPanel.add(Box.createHorizontalGlue(), 1);</span>
-<span class="fc" id="L99">    loginLabel.setForeground(Color.WHITE);</span>
-<span class="fc" id="L100">    loginLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));</span>
-<span class="fc" id="L101">    loginPanel.add(loginLabel, 2);</span>
-<span class="fc" id="L102">    loginPanel.add(loginButton, 3);</span>
-<span class="fc" id="L103">    onLogout();</span>
-<span class="fc" id="L104">    container.add(loginPanel, BorderLayout.NORTH);</span>
+<span class="pc bpc" id="L103" title="6 of 8 branches missed.">    } catch (IOException e) {</span>
+<span class="nc" id="L104">      Logging.warn(&quot;While reading Mapillary brand image, an IO-exception occured!&quot;);</span>
+<span class="fc" id="L105">    }</span>
+<span class="fc" id="L106">    loginPanel.add(brandImage, 0);</span>
+<span class="fc" id="L107">    loginPanel.add(Box.createHorizontalGlue(), 1);</span>
+<span class="fc" id="L108">    loginLabel.setForeground(Color.WHITE);</span>
+<span class="fc" id="L109">    loginLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));</span>
+<span class="fc" id="L110">    loginPanel.add(loginLabel, 2);</span>
+<span class="fc" id="L111">    loginPanel.add(loginButton, 3);</span>
+<span class="fc" id="L112">    onLogout();</span>
+<span class="fc" id="L113">    container.add(loginPanel, BorderLayout.NORTH);</span>
 
-<span class="fc" id="L106">    JPanel mainPanel = new JPanel();</span>
-<span class="fc" id="L107">    mainPanel.setLayout(new GridBagLayout());</span>
-<span class="fc" id="L108">    mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));</span>
+<span class="fc" id="L115">    JPanel mainPanel = new JPanel();</span>
+<span class="fc" id="L116">    mainPanel.setLayout(new GridBagLayout());</span>
+<span class="fc" id="L117">    mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));</span>
 
-<span class="fc" id="L110">    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getLabel());</span>
+<span class="fc" id="L119">    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getLabel());</span>
 
-<span class="fc" id="L112">    JPanel downloadModePanel = new JPanel();</span>
-<span class="fc" id="L113">    downloadModePanel.add(new JLabel(I18n.tr(&quot;Download mode&quot;)));</span>
-<span class="fc" id="L114">    downloadModePanel.add(downloadModeComboBox);</span>
-<span class="fc" id="L115">    mainPanel.add(downloadModePanel, GBC.eol());</span>
+<span class="fc" id="L121">    JPanel downloadModePanel = new JPanel();</span>
+<span class="fc" id="L122">    downloadModePanel.add(new JLabel(I18n.tr(&quot;Download mode&quot;)));</span>
+<span class="fc" id="L123">    downloadModePanel.add(downloadModeComboBox);</span>
+<span class="fc" id="L124">    mainPanel.add(downloadModePanel, GBC.eol());</span>
 
-<span class="fc" id="L117">    mainPanel.add(displayHour, GBC.eol());</span>
-<span class="fc" id="L118">    mainPanel.add(format24, GBC.eol());</span>
-<span class="fc" id="L119">    mainPanel.add(moveTo, GBC.eol());</span>
-<span class="fc" id="L120">    mainPanel.add(hoverEnabled, GBC.eol());</span>
-<span class="fc" id="L121">    mainPanel.add(cutOffSeq, GBC.eol());</span>
-<span class="pc bpc" id="L122" title="2 of 4 branches missed.">    if (ExpertToggleAction.isExpert() || developer.isSelected()) {</span>
-<span class="nc" id="L123">      mainPanel.add(developer, GBC.eol());</span>
+<span class="fc" id="L126">    mainPanel.add(displayHour, GBC.eol());</span>
+<span class="fc" id="L127">    mainPanel.add(format24, GBC.eol());</span>
+<span class="fc" id="L128">    mainPanel.add(moveTo, GBC.eol());</span>
+<span class="fc" id="L129">    mainPanel.add(hoverEnabled, GBC.eol());</span>
+<span class="fc" id="L130">    mainPanel.add(cutOffSeq, GBC.eol());</span>
+
+<span class="fc" id="L132">    JPanel preFetchPanel = new JPanel();</span>
+<span class="fc" id="L133">    preFetchPanel.add(new JLabel(I18n.tr(&quot;Number of images to be pre-fetched (forwards and backwards)&quot;)));</span>
+<span class="fc" id="L134">    preFetchPanel.add(new JSpinner(preFetchSize));</span>
+<span class="fc" id="L135">    mainPanel.add(preFetchPanel, GBC.eol());</span>
+
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">    if (ExpertToggleAction.isExpert() || developer.isSelected()) {</span>
+<span class="nc" id="L138">      mainPanel.add(developer, GBC.eol());</span>
     }
-<span class="fc" id="L125">    MapillaryColorScheme.styleAsDefaultPanel(</span>
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer
+<span class="fc" id="L140">    MapillaryColorScheme.styleAsDefaultPanel(</span>
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer, preFetchPanel
     );
-<span class="fc" id="L128">    mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));</span>
+<span class="fc" id="L143">    mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));</span>
 
-<span class="fc" id="L130">    container.add(mainPanel, BorderLayout.CENTER);</span>
+<span class="fc" id="L145">    container.add(mainPanel, BorderLayout.CENTER);</span>
 
-<span class="fc" id="L132">    synchronized (gui.getDisplayPreference().getTabPane()) {</span>
-<span class="fc" id="L133">      gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, new JScrollPane(container));</span>
-<span class="fc" id="L134">      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.LOGO.setSize(12, 12).get());</span>
-<span class="pc" id="L135">    }</span>
+<span class="fc" id="L147">    synchronized (gui.getDisplayPreference().getTabPane()) {</span>
+<span class="fc" id="L148">      gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, new JScrollPane(container));</span>
+<span class="fc" id="L149">      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.LOGO.setSize(12, 12).get());</span>
+<span class="pc" id="L150">    }</span>
 
-<span class="fc" id="L137">    new Thread(() -&gt; {</span>
-<span class="fc" id="L138">      String username = MapillaryUser.getUsername();</span>
-<span class="pc bpc" id="L139" title="1 of 2 branches missed.">      if (username != null) {</span>
-<span class="nc" id="L140">        SwingUtilities.invokeLater(() -&gt; onLogin(MapillaryUser.getUsername()));</span>
+<span class="fc" id="L152">    new Thread(() -&gt; {</span>
+<span class="fc" id="L153">      String username = MapillaryUser.getUsername();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">      if (username != null) {</span>
+<span class="nc" id="L155">        SwingUtilities.invokeLater(() -&gt; onLogin(MapillaryUser.getUsername()));</span>
       }
-<span class="fc" id="L142">    }).start();</span>
-<span class="fc" id="L143">  }</span>
+<span class="fc" id="L157">    }).start();</span>
+<span class="fc" id="L158">  }</span>
 
   @Override
   public void onLogin(final String username) {
-<span class="fc" id="L147">    loginPanel.remove(loginButton);</span>
-<span class="fc" id="L148">    loginPanel.add(logoutButton, 3);</span>
-<span class="fc" id="L149">    loginLabel.setText(I18n.tr(&quot;You are logged in as ''{0}''.&quot;, username));</span>
-<span class="fc" id="L150">    loginPanel.revalidate();</span>
-<span class="fc" id="L151">    loginPanel.repaint();</span>
-<span class="fc" id="L152">  }</span>
+<span class="fc" id="L162">    loginPanel.remove(loginButton);</span>
+<span class="fc" id="L163">    loginPanel.add(logoutButton, 3);</span>
+<span class="fc" id="L164">    loginLabel.setText(I18n.tr(&quot;You are logged in as ''{0}''.&quot;, username));</span>
+<span class="fc" id="L165">    loginPanel.revalidate();</span>
+<span class="fc" id="L166">    loginPanel.repaint();</span>
+<span class="fc" id="L167">  }</span>
 
   @Override
   public void onLogout() {
-<span class="fc" id="L156">    loginPanel.remove(logoutButton);</span>
-<span class="fc" id="L157">    loginPanel.add(loginButton, 3);</span>
-<span class="fc" id="L158">    loginLabel.setText(I18n.tr(&quot;You are currently not logged in.&quot;));</span>
-<span class="fc" id="L159">    loginPanel.revalidate();</span>
-<span class="fc" id="L160">    loginPanel.repaint();</span>
-<span class="fc" id="L161">  }</span>
+<span class="fc" id="L171">    loginPanel.remove(logoutButton);</span>
+<span class="fc" id="L172">    loginPanel.add(loginButton, 3);</span>
+<span class="fc" id="L173">    loginLabel.setText(I18n.tr(&quot;You are currently not logged in.&quot;));</span>
+<span class="fc" id="L174">    loginPanel.revalidate();</span>
+<span class="fc" id="L175">    loginPanel.repaint();</span>
+<span class="fc" id="L176">  }</span>
 
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   @Override
   public boolean ok() {
-<span class="fc" id="L166">    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());</span>
-<span class="fc" id="L167">    MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());</span>
-<span class="fc" id="L168">    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());</span>
-<span class="fc" id="L169">    MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());</span>
-<span class="fc" id="L170">    MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());</span>
-<span class="fc" id="L171">    MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());</span>
-<span class="fc" id="L172">    MapillaryProperties.DEVELOPER.put(developer.isSelected());</span>
+<span class="fc" id="L181">    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());</span>
+<span class="fc" id="L182">    MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());</span>
+<span class="fc" id="L183">    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());</span>
+<span class="fc" id="L184">    MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());</span>
+<span class="fc" id="L185">    MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());</span>
+<span class="fc" id="L186">    MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());</span>
+<span class="fc" id="L187">    MapillaryProperties.DEVELOPER.put(developer.isSelected());</span>
+<span class="fc" id="L188">    MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());</span>
 
     //Restart is never required
-<span class="fc" id="L175">    return false;</span>
+<span class="fc" id="L191">    return false;</span>
   }
 
   @Override
   public boolean isExpert() {
-<span class="fc" id="L180">    return false;</span>
+<span class="fc" id="L196">    return false;</span>
   }
 
   /**
@@ -191,20 +207,20 @@ import org.openstreetmap.josm.tools.Logging;
     private final transient MapillaryLoginListener callback;
 
     LoginAction(MapillaryLoginListener loginCallback) {
-<span class="fc" id="L194">      super(I18n.tr(&quot;Login&quot;));</span>
-<span class="fc" id="L195">      this.callback = loginCallback;</span>
-<span class="fc" id="L196">    }</span>
+<span class="fc" id="L210">      super(I18n.tr(&quot;Login&quot;));</span>
+<span class="fc" id="L211">      this.callback = loginCallback;</span>
+<span class="fc" id="L212">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L200">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
-<span class="nc" id="L201">      portListener.start();</span>
+<span class="nc" id="L216">      OAuthPortListener portListener = new OAuthPortListener(callback);</span>
+<span class="nc" id="L217">      portListener.start();</span>
       try {
-<span class="nc" id="L203">        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
-<span class="nc" id="L204">      } catch (IOException e) {</span>
-<span class="nc" id="L205">        Logging.error(e);</span>
-<span class="nc" id="L206">      }</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L219">        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect(&quot;http://localhost:&quot;+OAuthPortListener.PORT+'/'));</span>
+<span class="nc" id="L220">      } catch (IOException e) {</span>
+<span class="nc" id="L221">        Logging.error(e);</span>
+<span class="nc" id="L222">      }</span>
+<span class="nc" id="L223">    }</span>
   }
 
   /**
@@ -216,15 +232,15 @@ import org.openstreetmap.josm.tools.Logging;
   private class LogoutAction extends AbstractAction {
     private static final long serialVersionUID = 3434780936404707219L;
 
-<span class="fc" id="L219">    private LogoutAction() {</span>
-<span class="fc" id="L220">      super(I18n.tr(&quot;Logout&quot;));</span>
-<span class="fc" id="L221">    }</span>
+<span class="fc" id="L235">    private LogoutAction() {</span>
+<span class="fc" id="L236">      super(I18n.tr(&quot;Logout&quot;));</span>
+<span class="fc" id="L237">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L225">      MapillaryUser.reset();</span>
-<span class="nc" id="L226">      onLogout();</span>
-<span class="nc" id="L227">    }</span>
+<span class="nc" id="L241">      MapillaryUser.reset();</span>
+<span class="nc" id="L242">      onLogout();</span>
+<span class="nc" id="L243">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
