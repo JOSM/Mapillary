@@ -1,15 +1,9 @@
-findbugs {
-  toolVersion = project.property('tool.findbugs.version')
+spotbugs {
+  toolVersion = project.property('tool.spotbugs.version')
   ignoreFailures = true
   effort = "max"
   reportLevel = "low"
   sourceSets = [sourceSets.main, sourceSets.test]
-}
-tasks.withType(FindBugs) {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
 }
 
 jacoco {
