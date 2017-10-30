@@ -98,9 +98,17 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
   }
 }
 
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 test {
   testLogging {
     exceptionFormat "full"
-    events "started", "passed", "skipped", "failed"
+    events TestLogEvent.FAILED, TestLogEvent.SKIPPED
+    showCauses true
+
+    info {
+      events TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR
+      showStandardStreams true
+    }
   }
 }
