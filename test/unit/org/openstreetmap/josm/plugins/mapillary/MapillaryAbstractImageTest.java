@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.TimeZone;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -56,7 +55,6 @@ public class MapillaryAbstractImageTest {
   }
 
   @Test
-  @Ignore("https://github.com/JOSM/Mapillary/issues/63")
   public void testIsModified() {
     MapillaryImage img = new MapillaryImage("key___________________", new LatLon(0, 0), 0);
     assertFalse(img.isModified());

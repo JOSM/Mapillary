@@ -98,10 +98,12 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   private void checkModified() {
-    if (isModified()) {
-      MapillaryLayer.getInstance().getLocationChangeset().add(this);
-    } else {
-      MapillaryLayer.getInstance().getLocationChangeset().remove(this);
+    if (MapillaryLayer.hasInstance()) {
+      if (isModified()) {
+        MapillaryLayer.getInstance().getLocationChangeset().add(this);
+      } else {
+        MapillaryLayer.getInstance().getLocationChangeset().remove(this);
+      }
     }
   }
 
