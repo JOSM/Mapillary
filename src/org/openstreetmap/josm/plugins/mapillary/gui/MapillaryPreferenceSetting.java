@@ -20,9 +20,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.JOptionPane;
 
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
@@ -66,7 +70,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
   private final JCheckBox developer =
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
-
+  private final SpinnerNumberModel preFetchSize = new SpinnerNumberModel(
+    MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue(),
+    0,
+    Integer.MAX_VALUE,
+    1
+  );
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
   private final JButton logoutButton = new MapillaryButton(new LogoutAction());
   private final JLabel loginLabel = new JLabel();
@@ -119,11 +128,17 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
+
+    JPanel preFetchPanel = new JPanel();
+    preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
+    preFetchPanel.add(new JSpinner(preFetchSize));
+    mainPanel.add(preFetchPanel, GBC.eol());
+
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       mainPanel.add(developer, GBC.eol());
     }
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer, preFetchPanel
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -170,6 +185,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());
+    MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
 
     //Restart is never required
     return false;

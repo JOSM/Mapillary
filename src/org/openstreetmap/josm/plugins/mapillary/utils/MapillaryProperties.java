@@ -60,6 +60,11 @@ public final class MapillaryProperties {
   public static final IntegerProperty IMAGEINFO_HELP_COUNTDOWN =
     new IntegerProperty("mapillary.imageInfo.helpDisplayedCountdown", 4);
 
+  /**
+   * The number of images to be prefetched when a mapillary image is selected
+   */
+  public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty("mapillary.prefetch-image-count", 2);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

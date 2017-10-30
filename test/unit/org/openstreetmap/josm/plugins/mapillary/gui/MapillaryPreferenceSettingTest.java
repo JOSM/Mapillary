@@ -14,11 +14,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
 
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
@@ -86,6 +88,7 @@ public class MapillaryPreferenceSettingTest {
     new StringProperty("mapillary.move-to-picture", "default").put("arbitrary");
     new StringProperty("mapillary.hover-enabled", "default").put("arbitrary");
     new StringProperty("mapillary.download-mode", "default").put("arbitrary");
+    new StringProperty("mapillary.prefetch-image-count", "default").put("arbitrary");
 
     // Test checkboxes
     settings.ok();
@@ -93,12 +96,14 @@ public class MapillaryPreferenceSettingTest {
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"), "mapillary.format-24");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"), "mapillary.move-to-picture");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"), "mapillary.hover-enabled");
+    assertEquals(String.valueOf(((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).getNumber().intValue()), new StringProperty("mapillary.prefetch-image-count", "default").get());
 
     // Toggle state of the checkboxes
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "displayHour"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "format24"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "moveTo"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"));
+    ((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).setValue(73);
 
     // Test the second state of the checkboxes
     settings.ok();
@@ -106,6 +111,7 @@ public class MapillaryPreferenceSettingTest {
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"), "mapillary.format-24");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"), "mapillary.move-to-picture");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"), "mapillary.hover-enabled");
+    assertEquals(String.valueOf(((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).getNumber().intValue()), new StringProperty("mapillary.prefetch-image-count", "default").get());
 
     // Test combobox
     for (int i = 0; i < ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getItemCount(); i++) {

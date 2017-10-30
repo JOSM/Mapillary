@@ -9,10 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import org.apache.commons.jcs.access.CacheAccess;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -341,19 +345,9 @@ public class MapillaryData {
       this.multiSelectedImages.add(image);
       if (mv != null && image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
+
         // Downloading thumbnails of surrounding pictures.
-        if (mapillaryImage.next() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next());
-          if (mapillaryImage.next().next() != null) {
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.next().next());
-          }
-        }
-        if (mapillaryImage.previous() != null) {
-          CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous());
-          if (mapillaryImage.previous().previous() != null) {
-            CacheUtils.downloadPicture((MapillaryImage) mapillaryImage.previous().previous());
-          }
-        }
+        downloadSurroundingImages(mapillaryImage);
       }
     }
     if (mv != null && zoom && selectedImage != null) {
@@ -361,6 +355,37 @@ public class MapillaryData {
     }
     fireSelectedImageChanged(oldImage, this.selectedImage);
     MapillaryLayer.invalidateInstance();
+  }
+
+  /**
+   * Downloads surrounding images of this mapillary image in background threads
+   * @param mapillaryImage
+   */
+  private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
+    MainApplication.worker.execute(() -> {
+      final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
+      CacheAccess <String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance().getCache();
+
+      MapillaryAbstractImage nextImage = mapillaryImage.next();
+      MapillaryAbstractImage prevImage = mapillaryImage.previous();
+
+      for (int i = 0; i < prefetchCount; i++) {
+        if (nextImage != null) {
+          if ((nextImage instanceof MapillaryImage) &&
+            (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
+            CacheUtils.downloadPicture((MapillaryImage) nextImage);
+          }
+          nextImage = nextImage.next();
+        }
+        if (prevImage != null) {
+          if ((prevImage instanceof MapillaryImage) &&
+            (imageCache.get(((MapillaryImage) prevImage).getKey()) == null)) {
+            CacheUtils.downloadPicture((MapillaryImage) prevImage);
+          }
+          prevImage = prevImage.previous();
+        }
+      }
+    });
   }
 
   private void fireSelectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
