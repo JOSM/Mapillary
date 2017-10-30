@@ -69,9 +69,6 @@ import org.openstreetmap.josm.tools.Logging;
 public final class MapillaryLayer extends AbstractModifiableLayer implements
   ActiveLayerChangeListener, MapillaryDataListener {
 
-  /** Maximum distance for the red/blue lines. */
-  public static final int SEQUENCE_MAX_JUMP_DISTANCE = MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get();
-
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
   /** The radius of the circular sector that indicates the camera angle */
