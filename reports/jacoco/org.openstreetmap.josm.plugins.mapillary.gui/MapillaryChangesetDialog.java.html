@@ -114,21 +114,21 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   }
 
   private void buildTree() {
-<span class="fc" id="L117">    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    submitButton.setEnabled(!changeset.isEmpty());</span>
-<span class="fc" id="L119">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
+<span class="nc" id="L117">    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    submitButton.setEnabled(!changeset.isEmpty());</span>
+<span class="nc" id="L119">    DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();</span>
 
-<span class="fc" id="L121">    this.map.clear();</span>
-<span class="fc" id="L122">    changeset.parallelStream().filter(Objects::nonNull).forEach(img -&gt; {</span>
+<span class="nc" id="L121">    this.map.clear();</span>
+<span class="nc" id="L122">    changeset.parallelStream().filter(Objects::nonNull).forEach(img -&gt; {</span>
 <span class="nc" id="L123">      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());</span>
 <span class="nc" id="L124">      this.map.put(node, img);</span>
 <span class="nc" id="L125">      changesetRoot.add(node);</span>
 <span class="nc" id="L126">    });</span>
 
-<span class="fc" id="L128">    this.spacer.setVisible(changeset.isEmpty());</span>
+<span class="nc" id="L128">    this.spacer.setVisible(changeset.isEmpty());</span>
 
-<span class="fc" id="L130">    this.changesetTreeModel.setRoot(changesetRoot);</span>
-<span class="fc" id="L131">  }</span>
+<span class="nc" id="L130">    this.changesetTreeModel.setRoot(changesetRoot);</span>
+<span class="nc" id="L131">  }</span>
 
   public void setUploadPending(final boolean isUploadPending) {
 <span class="pc bpc" id="L134" title="1 of 2 branches missed.">    if (isUploadPending) {</span>
@@ -143,11 +143,11 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
   @Override
   public void changesetChanged() {
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
-<span class="fc" id="L147">      SwingUtilities.invokeLater(this::buildTree);</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (!SwingUtilities.isEventDispatchThread()) {</span>
+<span class="nc" id="L147">      SwingUtilities.invokeLater(this::buildTree);</span>
     } else {
 <span class="nc" id="L149">      buildTree();</span>
     }
-<span class="fc" id="L151">  }</span>
+<span class="nc" id="L151">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

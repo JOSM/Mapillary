@@ -31,27 +31,31 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     // Download basic sequence data synchronously
 <span class="nc" id="L32">    new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds).run();</span>
 
-    // Asynchronously load the rest of the image details
-<span class="nc" id="L35">    Thread imgDetailsThread = new Thread(new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
-<span class="nc" id="L36">    imgDetailsThread.start();</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (Thread.interrupted()) {</span>
+<span class="nc" id="L35">      return;</span>
+    }
 
-<span class="nc" id="L38">    Thread detectionsThread = new Thread(new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
-<span class="nc" id="L39">    detectionsThread.start();</span>
+    // Asynchronously load the rest of the image details
+<span class="nc" id="L39">    Thread imgDetailsThread = new Thread(new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
+<span class="nc" id="L40">    imgDetailsThread.start();</span>
+
+<span class="nc" id="L42">    Thread detectionsThread = new Thread(new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));</span>
+<span class="nc" id="L43">    detectionsThread.start();</span>
 
     try {
-<span class="nc" id="L42">      imgDetailsThread.join();</span>
-<span class="nc" id="L43">      detectionsThread.join();</span>
-<span class="nc" id="L44">    } catch (InterruptedException e) {</span>
-<span class="nc" id="L45">      Logging.log(Logging.LEVEL_WARN, &quot;Mapillary download interrupted (probably because of closing the layer).&quot;, e);</span>
-<span class="nc" id="L46">      Thread.currentThread().interrupt();</span>
+<span class="nc" id="L46">      imgDetailsThread.join();</span>
+<span class="nc" id="L47">      detectionsThread.join();</span>
+<span class="nc" id="L48">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L49">      Logging.log(Logging.LEVEL_WARN, &quot;Mapillary download interrupted (probably because of closing the layer).&quot;, e);</span>
+<span class="nc" id="L50">      Thread.currentThread().interrupt();</span>
     } finally {
-<span class="nc" id="L48">      PluginState.finishDownload();</span>
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L52">      PluginState.finishDownload();</span>
+<span class="nc" id="L53">    }</span>
 
-<span class="nc" id="L51">    MapillaryUtils.updateHelpText();</span>
-<span class="nc" id="L52">    MapillaryLayer.invalidateInstance();</span>
-<span class="nc" id="L53">    MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L54">    MapillaryMainDialog.getInstance().updateImage();</span>
-<span class="nc" id="L55">  }</span>
+<span class="nc" id="L55">    MapillaryUtils.updateHelpText();</span>
+<span class="nc" id="L56">    MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L57">    MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L58">    MapillaryMainDialog.getInstance().updateImage();</span>
+<span class="nc" id="L59">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
