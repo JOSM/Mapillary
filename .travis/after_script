@@ -26,7 +26,7 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] &
   cp -R "$mainDir/build/reports/jacoco/" reports/jacoco/
   cp -R "$mainDir/build/reports/spotbugs/" reports/spotbugs/
   cp -R "$mainDir/build/reports/pmd/" reports/pmd/
-  cp -R "$mainDir/build/po/*.pot" pot/
+  cp -R "$mainDir/build/po/"*.pot pot/
   git stage --all
   git commit -m "Publish developer resources to GitHub pages
 
