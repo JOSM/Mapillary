@@ -1,17 +1,17 @@
 plugins {
-  id "org.sonarqube" version "2.5"
+  id "org.sonarqube" version "2.6.1"
   id "org.kordamp.markdown.convert" version "1.1.0"
-  id 'org.openstreetmap.josm.gradle.plugin' version '0.1.8'
+  id 'org.openstreetmap.josm' version '0.2.0'
   id "com.github.ben-manes.versions" version "0.17.0"
   id 'com.github.spotbugs' version '1.6.0'
   id "net.ltgt.errorprone" version "0.0.13" apply false
-}
 
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'jacoco'
-apply plugin: 'java'
-apply plugin: 'pmd'
+  id 'eclipse'
+  id 'idea'
+  id 'jacoco'
+  id 'java'
+  id 'pmd'
+}
 
 apply from: 'gradle/version-functions.gradle'
 apply from: 'gradle/tool-config.gradle'
@@ -37,6 +37,7 @@ repositories {
 dependencies {
   testImplementation ('org.openstreetmap.josm:josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
+  testImplementation 'com.github.tomakehurst:wiremock-standalone:2.12.0'
 }
 
 sourceSets {
