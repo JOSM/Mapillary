@@ -137,6 +137,26 @@ public final class MapillaryURL {
     }
 
     /**
+     * Gives you the URL for the blur editor of the image with the given key.
+     * @param key the key of the image for which you want to open the blur editor
+     * @return the URL of the blur editor
+     * @throws IllegalArgumentException if the image key is <code>null</code>
+     */
+    public static URL blurEditImage(final String key) {
+      if (key == null) {
+        throw new IllegalArgumentException("The image key must not be null!");
+      }
+      String urlEncodedKey;
+      try {
+        urlEncodedKey = URLEncoder.encode(key, StandardCharsets.UTF_8.name());
+      } catch (UnsupportedEncodingException e) {
+        Logging.log(Logging.LEVEL_ERROR, "Unsupported encoding when URL encoding", e);
+        urlEncodedKey = key;
+      }
+      return string2URL(BASE_URL, "app/blur?focus=photo&pKey=", urlEncodedKey);
+    }
+
+    /**
      * Gives you the URL which the user should visit to initiate the OAuth authentication process
      * @param redirectURI the URI to which the user will be redirected when the authentication is finished.
      *        When this is <code>null</code>, it's omitted from the query string.

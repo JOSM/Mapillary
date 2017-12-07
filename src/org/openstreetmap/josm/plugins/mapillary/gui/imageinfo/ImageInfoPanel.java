@@ -23,6 +23,8 @@ import org.openstreetmap.josm.data.SelectionChangedListener;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
@@ -48,6 +50,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final ClipboardAction copyImgKeyAction;
   private final AddTagToPrimitiveAction addMapillaryTagAction;
   private final JTextPane seqKeyValue;
+
+  private ValueChangeListener<Boolean> imageLinkChangeListener;
 
   private ImageInfoPanel() {
     super(
@@ -184,13 +188,27 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
+      imageLinkChangeListener = b -> {
+        imgLinkAction.setURL(
+          MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
+          ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
+          : MapillaryURL.MainWebsite.browseImage(newImageKey)
+        );
+      };
+      imageLinkChangeListener.valueChanged(null);
+      MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.addListener(imageLinkChangeListener);
+
       imgKeyValue.setText(newImageKey);
-      imgLinkAction.setURL(MapillaryURL.MainWebsite.browseImage(newImageKey));
       copyImgKeyAction.setContents(new StringSelection(newImageKey));
       addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
     } else {
-      imgKeyValue.setText('‹' + I18n.tr("image has no key") + '›');
+      if (imageLinkChangeListener != null) {
+        MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.removeListener(imageLinkChangeListener);
+        imageLinkChangeListener = null;
+      }
       imgLinkAction.setURL(null);
+
+      imgKeyValue.setText('‹' + I18n.tr("image has no key") + '›');
       copyImgKeyAction.setContents(null);
       addMapillaryTagAction.setTag(null);
     }

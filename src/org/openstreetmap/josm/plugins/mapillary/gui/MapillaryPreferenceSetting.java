@@ -66,6 +66,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
   private final JCheckBox cutOffSeq =
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
+  private final JCheckBox imageLinkToBlurEditor =
+    new JCheckBox(
+      I18n.tr("Point link to image on mapillary.com to the blur editor instead of the image viewer"),
+      MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
+    );
   private final JCheckBox developer =
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
   private final SpinnerNumberModel preFetchSize = new SpinnerNumberModel(
@@ -126,6 +131,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
+    mainPanel.add(imageLinkToBlurEditor, GBC.eol());
 
     final JPanel preFetchPanel = new JPanel();
     preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
@@ -140,7 +146,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       mainPanel.add(developer, GBC.eol());
     }
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, developer, preFetchPanel
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -186,6 +192,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
+    MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
 
