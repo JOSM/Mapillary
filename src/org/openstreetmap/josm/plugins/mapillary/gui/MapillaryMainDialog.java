@@ -352,6 +352,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     NextPictureAction() {
       super(tr("Next picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
+      new ImageProvider("help", "next").getResource().attachImageIcon(this, true);
     }
 
     @Override
@@ -375,6 +376,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     PreviousPictureAction() {
       super(tr("Previous picture"));
       putValue(SHORT_DESCRIPTION, tr("Shows the previous picture in the sequence"));
+      new ImageProvider("help", "previous").getResource().attachImageIcon(this, true);
     }
 
     @Override
@@ -399,6 +401,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       putValue(NAME, tr("Jump to red"));
       putValue(SHORT_DESCRIPTION,
               tr("Jumps to the picture at the other side of the red line"));
+      new ImageProvider("dialogs", "red").getResource().attachImageIcon(this, true);
     }
 
     @Override
@@ -426,6 +429,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       putValue(NAME, tr("Jump to blue"));
       putValue(SHORT_DESCRIPTION,
               tr("Jumps to the picture at the other side of the blue line"));
+      new ImageProvider("dialogs", "blue").getResource().attachImageIcon(this, true);
     }
 
     @Override
