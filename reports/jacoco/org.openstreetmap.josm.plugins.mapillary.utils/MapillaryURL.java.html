@@ -137,35 +137,55 @@ public final class MapillaryURL {
     }
 
     /**
+     * Gives you the URL for the blur editor of the image with the given key.
+     * @param key the key of the image for which you want to open the blur editor
+     * @return the URL of the blur editor
+     * @throws IllegalArgumentException if the image key is &lt;code&gt;null&lt;/code&gt;
+     */
+    public static URL blurEditImage(final String key) {
+<span class="nc bnc" id="L146" title="All 2 branches missed.">      if (key == null) {</span>
+<span class="nc" id="L147">        throw new IllegalArgumentException(&quot;The image key must not be null!&quot;);</span>
+      }
+      String urlEncodedKey;
+      try {
+<span class="nc" id="L151">        urlEncodedKey = URLEncoder.encode(key, StandardCharsets.UTF_8.name());</span>
+<span class="nc" id="L152">      } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L153">        Logging.log(Logging.LEVEL_ERROR, &quot;Unsupported encoding when URL encoding&quot;, e);</span>
+<span class="nc" id="L154">        urlEncodedKey = key;</span>
+<span class="nc" id="L155">      }</span>
+<span class="nc" id="L156">      return string2URL(BASE_URL, &quot;app/blur?focus=photo&amp;pKey=&quot;, urlEncodedKey);</span>
+    }
+
+    /**
      * Gives you the URL which the user should visit to initiate the OAuth authentication process
      * @param redirectURI the URI to which the user will be redirected when the authentication is finished.
      *        When this is &lt;code&gt;null&lt;/code&gt;, it's omitted from the query string.
      * @return the URL that the user should visit to start the OAuth authentication
      */
     public static URL connect(String redirectURI) {
-<span class="fc" id="L146">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L147" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
-<span class="fc" id="L148">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
+<span class="fc" id="L166">      HashMap&lt;String, String&gt; parts = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L167" title="All 4 branches covered.">      if (redirectURI != null &amp;&amp; redirectURI.length() &gt;= 1) {</span>
+<span class="fc" id="L168">        parts.put(&quot;redirect_uri&quot;, redirectURI);</span>
       }
-<span class="fc" id="L150">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
-<span class="fc" id="L151">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
-<span class="fc" id="L152">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
+<span class="fc" id="L170">      parts.put(&quot;response_type&quot;, &quot;token&quot;);</span>
+<span class="fc" id="L171">      parts.put(&quot;scope&quot;, &quot;user:read public:upload public:write&quot;);</span>
+<span class="fc" id="L172">      return string2URL(BASE_URL, &quot;connect&quot;, queryString(parts));</span>
     }
 
     public static URL mapObjectIcon(String key) {
-<span class="fc" id="L156">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
+<span class="fc" id="L176">      return string2URL(BASE_URL, &quot;developer/api-documentation/images/traffic_sign/&quot; + key + &quot;.png&quot;);</span>
     }
   }
 
-<span class="fc" id="L160">  private MapillaryURL() {</span>
+<span class="fc" id="L180">  private MapillaryURL() {</span>
     // Private constructor to avoid instantiation
-<span class="fc" id="L162">  }</span>
+<span class="fc" id="L182">  }</span>
 
   /**
    * @return the URL where you'll find the upload secrets as JSON
    */
   public static URL uploadSecretsURL() {
-<span class="fc" id="L168">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
+<span class="fc" id="L188">    return string2URL(BASE_API_V2_URL, &quot;me/uploads/secrets&quot;, queryString(null));</span>
   }
 
   /**
@@ -174,20 +194,20 @@ public final class MapillaryURL {
    * @return the constructed query string (including a leading ?)
    */
   static String queryString(Map&lt;String, String&gt; parts) {
-<span class="fc" id="L177">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">    if (parts != null) {</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
+<span class="fc" id="L197">    StringBuilder ret = new StringBuilder(&quot;?client_id=&quot;).append(CLIENT_ID);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">    if (parts != null) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">      for (Entry&lt;String, String&gt; entry : parts.entrySet()) {</span>
         try {
-<span class="fc" id="L181">          ret.append('&amp;')</span>
-<span class="fc" id="L182">            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))</span>
-<span class="fc" id="L183">            .append('=')</span>
-<span class="fc" id="L184">            .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));</span>
-<span class="nc" id="L185">        } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L186">          Logging.error(e); // This should not happen, as the encoding is hard-coded</span>
-<span class="fc" id="L187">        }</span>
-<span class="fc" id="L188">      }</span>
+<span class="fc" id="L201">          ret.append('&amp;')</span>
+<span class="fc" id="L202">            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))</span>
+<span class="fc" id="L203">            .append('=')</span>
+<span class="fc" id="L204">            .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));</span>
+<span class="nc" id="L205">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L206">          Logging.error(e); // This should not happen, as the encoding is hard-coded</span>
+<span class="fc" id="L207">        }</span>
+<span class="fc" id="L208">      }</span>
     }
-<span class="fc" id="L190">    return ret.toString();</span>
+<span class="fc" id="L210">    return ret.toString();</span>
   }
 
   /**
@@ -198,19 +218,19 @@ public final class MapillaryURL {
    * @return the URL that is constructed from the given string
    */
   static URL string2URL(String... strings) {
-<span class="fc" id="L201">    StringBuilder builder = new StringBuilder();</span>
-<span class="fc bfc" id="L202" title="All 4 branches covered.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
-<span class="fc" id="L203">      builder.append(strings[i]);</span>
+<span class="fc" id="L221">    StringBuilder builder = new StringBuilder();</span>
+<span class="fc bfc" id="L222" title="All 4 branches covered.">    for (int i = 0; strings != null &amp;&amp; i &lt; strings.length; i++) {</span>
+<span class="fc" id="L223">      builder.append(strings[i]);</span>
     }
     try {
-<span class="fc" id="L206">      return new URL(builder.toString());</span>
-<span class="fc" id="L207">    } catch (MalformedURLException e) {</span>
-<span class="fc" id="L208">      Logging.log(Logging.LEVEL_ERROR, String.format(</span>
+<span class="fc" id="L226">      return new URL(builder.toString());</span>
+<span class="fc" id="L227">    } catch (MalformedURLException e) {</span>
+<span class="fc" id="L228">      Logging.log(Logging.LEVEL_ERROR, String.format(</span>
           &quot;The class '%s' produces malformed URLs like '%s'!&quot;,
-<span class="fc" id="L210">          MapillaryURL.class.getName(),</span>
+<span class="fc" id="L230">          MapillaryURL.class.getName(),</span>
           builder
       ), e);
-<span class="fc" id="L213">      return null;</span>
+<span class="fc" id="L233">      return null;</span>
     }
   }
 }

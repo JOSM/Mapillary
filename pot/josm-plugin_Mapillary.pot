@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin/Mapillary v1.5.8-6-g9b7d1b4\n"
+"Project-Id-Version: josm-plugin/Mapillary v1.5.8-8-ge9a937b\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-04 15:57+0000\n"
+"POT-Creation-Date: 2017-12-08 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -233,7 +233,7 @@ msgid "Speed limit"
 msgstr ""
 
 #: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java:64
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:450
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:454
 msgid "Stop"
 msgstr ""
 
@@ -306,7 +306,7 @@ msgid "Not older than: "
 msgstr ""
 
 #: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog.java:106
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:108
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:112
 msgid "User"
 msgstr ""
 
@@ -372,47 +372,47 @@ msgstr ""
 msgid "Shows the next picture in the sequence"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:376
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:377
 msgid "Previous picture"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:377
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:378
 msgid "Shows the previous picture in the sequence"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:399
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:401
 msgid "Jump to red"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:401
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:403
 msgid "Jumps to the picture at the other side of the red line"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:426
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:429
 msgid "Jump to blue"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:428
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:431
 msgid "Jumps to the picture at the other side of the blue line"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:451
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:455
 msgid "Stops the walk."
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:477
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:481
 msgid "Play"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:478
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:482
 msgid "Continues with the paused walk."
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:506
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:510
 msgid "Pause"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:507
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java:511
 msgid "Pauses the walk."
 msgstr ""
 
@@ -436,32 +436,38 @@ msgstr ""
 msgid "Cut off sequences at download bounds"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:70
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:71
+msgid ""
+"Point link to image on mapillary.com to the blur editor instead of the image "
+"viewer"
+msgstr ""
+
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:75
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:120
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:125
 msgid "Download mode"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:131
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:137
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:166
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:172
 #, java-format
 msgid "You are logged in as ''{0}''."
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:175
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:181
 msgid "You are currently not logged in."
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:212
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:219
 msgid "Login"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:238
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java:245
 msgid "Logout"
 msgstr ""
 
@@ -587,60 +593,60 @@ msgstr ""
 msgid "I got it, close this."
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:54
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:58
 msgid "Image info"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:56
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:60
 msgid "Displays detail information on the currently selected Mapillary image"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:65
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:69
 msgid "Show detections on top of image"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:79
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:83
 msgid "View in browser"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:81
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:85
 msgid "Copy key"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:85
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:89
 msgid "Add Mapillary tag"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:105
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:109
 msgid "Image detections"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:110
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:114
 msgid "Image actions"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:112
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:116
 msgid "Image key"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:114
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:118
 msgid "Sequence key"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:183
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:187
 #, java-format
 msgid "{0} detections"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:192
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:211
 msgid "image has no key"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:204
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:222
 msgid "unknown user"
 msgstr ""
 
-#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:213
+#: /home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java:231
 msgid "sequence has no key"
 msgstr ""
 

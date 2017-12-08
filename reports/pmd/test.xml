@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.1" timestamp="2017-12-04T15:55:33.388">
+<pmd version="5.8.1" timestamp="2017-12-08T00:09:54.650">
 <file name="/home/travis/build/JOSM/Mapillary/test/unit/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSettingTest.java">
 <violation beginline="23" endline="23" begincolumn="1" endcolumn="63" rule="UnusedImports" ruleset="Import Statements" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryPreferenceSettingTest" externalInfoUrl="https://pmd.github.io/pmd-5.8.1/pmd-java/rules/java/imports.html#UnusedImports" priority="4">
 Avoid unused imports such as 'org.openstreetmap.josm.data.preferences.IntegerProperty'
