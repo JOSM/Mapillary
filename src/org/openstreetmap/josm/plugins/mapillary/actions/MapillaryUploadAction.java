@@ -17,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryUploadDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
@@ -30,13 +31,14 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapillaryUploadAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = -1405641273676919943L;
+  private static final String title = I18n.marktr("Upload Mapillary images");
 
   /**
    * Main constructor.
    */
   public MapillaryUploadAction() {
-    super(tr("Upload pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Upload Mapillary pictures"), null, false, "mapillaryUpload", true);
+    super(I18n.tr(title), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+        I18n.tr(title), null, false, "mapillaryUpload", true);
     this.setEnabled(false);
   }
 
@@ -45,7 +47,7 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     MapillaryUploadDialog dialog = new MapillaryUploadDialog();
     JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
-    JDialog dlg = pane.createDialog(Main.parent, tr("Upload pictures."));
+    JDialog dlg = pane.createDialog(Main.parent, I18n.tr(title));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 

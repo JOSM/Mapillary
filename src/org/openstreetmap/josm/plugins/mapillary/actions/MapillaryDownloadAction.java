@@ -26,7 +26,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryDownloadAction extends JosmAction {
 
   private static final long serialVersionUID = 325060354730454948L;
-  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Start Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT);
+  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Open Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT);
 
   /**
    * Main constructor.
@@ -35,7 +35,7 @@ public class MapillaryDownloadAction extends JosmAction {
     super(
         tr("Mapillary"),
         new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Create Mapillary layer"),
+        tr("Open Mapillary layer"),
         SHORTCUT,
         false,
         "mapillaryDownload",
