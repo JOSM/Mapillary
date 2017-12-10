@@ -103,6 +103,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     ) {
       final JLabel result = value == null
           ? null
+          /* i18n: {0} is the layer name, {1} the number of images in it */
           : new JLabel(I18n.tr("{0} ({1} images)", value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);
       if (result != null) {
         result.setOpaque(true);

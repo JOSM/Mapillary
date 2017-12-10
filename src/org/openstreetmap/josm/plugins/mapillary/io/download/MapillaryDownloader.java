@@ -25,8 +25,11 @@ public final class MapillaryDownloader {
 
   /** Possible download modes. */
   public enum DOWNLOAD_MODE {
+    // i18n: download mode for Mapillary images
     VISIBLE_AREA("visibleArea", I18n.tr("everything in the visible area")),
+    // i18n: download mode for Mapillary images
     OSM_AREA("osmArea", I18n.tr("areas with downloaded OSM-data")),
+    // i18n: download mode for Mapillary images
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
 
     private final String prefId;

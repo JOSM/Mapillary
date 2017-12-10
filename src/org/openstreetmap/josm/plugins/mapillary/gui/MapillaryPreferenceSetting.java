@@ -57,21 +57,28 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   });
 
   private final JCheckBox displayHour =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Display hour when the picture was taken"), MapillaryProperties.DISPLAY_HOUR.get());
   private final JCheckBox format24 =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Use 24 hour format"), MapillaryProperties.TIME_FORMAT_24.get());
   private final JCheckBox moveTo =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"), MapillaryProperties.MOVE_TO_IMG.get());
   private final JCheckBox hoverEnabled =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
   private final JCheckBox cutOffSeq =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
   private final JCheckBox imageLinkToBlurEditor =
     new JCheckBox(
-      I18n.tr("Point link to image on mapillary.com to the blur editor instead of the image viewer"),
+      // i18n: Checkbox label in JOSM settings
+      I18n.tr("When opening Mapillary image in web browser, show the blur editor instead of the image viewer"),
       MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
     );
   private final JCheckBox developer =
+    // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
   private final SpinnerNumberModel preFetchSize = new SpinnerNumberModel(
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue(),
@@ -134,6 +141,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(imageLinkToBlurEditor, GBC.eol());
 
     final JPanel preFetchPanel = new JPanel();
+    // i18n: Spinner label in JOSM settings
     preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
     final JSpinner spinner = new JSpinner(preFetchSize);
     final JSpinner.DefaultEditor editor = new JSpinner.NumberEditor(spinner);

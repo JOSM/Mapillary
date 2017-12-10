@@ -60,17 +60,29 @@ public final class MapillaryFilterChooseSigns extends JPanel {
   private static MapillaryFilterChooseSigns instance;
 
   private MapillaryFilterChooseSigns() {
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, maxSpeed, true, "signs/speed.png", tr("Speed limit"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, stop, true, "signs/stop.png", tr("Stop"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, giveWay, true, "signs/right_of_way.png", tr("Give way"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, roundabout, true, "signs/roundabout_right.png", tr("Roundabout"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, access, true, "signs/no_entry.png", tr("No entry"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, intersection, true, "signs/intersection_danger.png", tr("Intersection danger"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, direction, true, "signs/only_straight_on.png", tr("Mandatory direction (any)"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, uneven, true, "signs/uneven.png", tr("Uneven road"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, noParking, true, "signs/no_parking.png", tr("No parking"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, noOvertaking, true, "signs/no_overtaking.png", tr("No overtaking"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, crossing, true, "signs/crossing.png", tr("Pedestrian crossing"));
+    // i18n: traffic sign
     addCheckBoxWithLabel(this, noTurn, true, "signs/no_turn.png", tr("No turn"));
 
     setPreferredSize(new Dimension(600, 250));

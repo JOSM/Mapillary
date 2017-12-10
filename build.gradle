@@ -1,7 +1,7 @@
 plugins {
   id "org.sonarqube" version "2.6.1"
   id "org.kordamp.markdown.convert" version "1.1.0"
-  id 'org.openstreetmap.josm' version '0.2.1'
+  id 'org.openstreetmap.josm' version '0.2.2'
   id "com.github.ben-manes.versions" version "0.17.0"
   id 'com.github.spotbugs' version '1.6.0'
   id "net.ltgt.errorprone" version "0.0.13" apply false
@@ -69,6 +69,9 @@ josm {
     oldVersionDownloadLink 12675, 'v1.5.7', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.7/Mapillary.jar')
     oldVersionDownloadLink 12128, 'v1.5.5', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.5/Mapillary.jar')
     oldVersionDownloadLink 10824, 'v1.5.3', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar')
+  }
+  i18n {
+    pathTransformer = getGithubPathTransformer('JOSM/Mapillary')
   }
 }
 
