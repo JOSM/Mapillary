@@ -103,12 +103,13 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     ) {
 <span class="nc bnc" id="L104" title="All 2 branches missed.">      final JLabel result = value == null</span>
 <span class="nc" id="L105">          ? null</span>
-<span class="nc" id="L106">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">      if (result != null) {</span>
-<span class="nc" id="L108">        result.setOpaque(true);</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">        result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
+          /* i18n: {0} is the layer name, {1} the number of images in it */
+<span class="nc" id="L107">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">      if (result != null) {</span>
+<span class="nc" id="L109">        result.setOpaque(true);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
       }
-<span class="nc" id="L111">      return result;</span>
+<span class="nc" id="L112">      return result;</span>
     }
   }
 
@@ -116,18 +117,18 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     private static final long serialVersionUID = 3107247955341855290L;
     private final List&lt;T&gt; list;
 
-<span class="nc" id="L119">    public BasicListModel(List&lt;T&gt; list) {</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L120">    public BasicListModel(List&lt;T&gt; list) {</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
+<span class="nc" id="L122">    }</span>
 
     @Override
     public int getSize() {
-<span class="nc" id="L125">      return list.size();</span>
+<span class="nc" id="L126">      return list.size();</span>
     }
 
     @Override
     public T getElementAt(int index) {
-<span class="nc" id="L130">      return list.get(index);</span>
+<span class="nc" id="L131">      return list.get(index);</span>
     }
   }
 }
