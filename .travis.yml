@@ -21,6 +21,10 @@ addons:
     packages:
     - gettext
 
+cache:
+  directories:
+  - $HOME/.gradle/caches
+
 language: java
 jdk:
   - oraclejdk9
