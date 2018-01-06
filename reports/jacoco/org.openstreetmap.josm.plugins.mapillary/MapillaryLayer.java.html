@@ -87,7 +87,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc bnc" id="L87" title="All 4 branches missed.">      if (e instanceof DataChangedEvent &amp;&amp; MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {</span>
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
-<span class="nc" id="L90">        MainApplication.worker.execute(()-&gt; MapillaryDownloader.downloadOSMArea());</span>
+<span class="nc" id="L90">        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);</span>
       }
 <span class="nc" id="L92">    });</span>
 
@@ -518,70 +518,69 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 <span class="nc" id="L518">      .map(seq -&gt; { // Maps sequence to image from sequence that is nearest to target</span>
 <span class="nc" id="L519">        Optional&lt;MapillaryAbstractImage&gt; resImg = seq.getImages().parallelStream()</span>
 <span class="nc bnc" id="L520" title="All 4 branches missed.">          .filter(img -&gt; img instanceof MapillaryImage &amp;&amp; img.isVisible())</span>
-<span class="nc" id="L521">          .sorted(new NearestImgToTargetComparator(target))</span>
-<span class="nc" id="L522">          .findFirst();</span>
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        return resImg.isPresent() ? resImg.get() : null;</span>
+<span class="nc" id="L521">          .min(new NearestImgToTargetComparator(target));</span>
+<span class="nc" id="L522">        return resImg.orElse(null);</span>
       })
-<span class="nc" id="L525">      .filter(img -&gt; // Filters out images too far away from target</span>
-<span class="nc bnc" id="L526" title="All 2 branches missed.">        img != null &amp;&amp;</span>
-<span class="nc" id="L527">        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
-<span class="nc bnc" id="L528" title="All 2 branches missed.">          &lt; MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()</span>
+<span class="nc" id="L524">      .filter(img -&gt; // Filters out images too far away from target</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">        img != null &amp;&amp;</span>
+<span class="nc" id="L526">        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
+<span class="nc bnc" id="L527" title="All 2 branches missed.">          &lt; MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()</span>
        )
-<span class="nc" id="L530">      .sorted(new NearestImgToTargetComparator(target))</span>
-<span class="nc" id="L531">      .limit(limit)</span>
-<span class="nc" id="L532">      .toArray(MapillaryImage[]::new);</span>
+<span class="nc" id="L529">      .sorted(new NearestImgToTargetComparator(target))</span>
+<span class="nc" id="L530">      .limit(limit)</span>
+<span class="nc" id="L531">      .toArray(MapillaryImage[]::new);</span>
   }
 
   private synchronized void updateNearestImages() {
-<span class="fc" id="L536">    final MapillaryAbstractImage selected = data.getSelectedImage();</span>
-<span class="pc bpc" id="L537" title="1 of 2 branches missed.">    if (selected != null) {</span>
-<span class="nc" id="L538">      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);</span>
+<span class="fc" id="L535">    final MapillaryAbstractImage selected = data.getSelectedImage();</span>
+<span class="pc bpc" id="L536" title="1 of 2 branches missed.">    if (selected != null) {</span>
+<span class="nc" id="L537">      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);</span>
     } else {
-<span class="fc" id="L540">      nearestImages = new MapillaryImage[0];</span>
+<span class="fc" id="L539">      nearestImages = new MapillaryImage[0];</span>
     }
-<span class="fc bfc" id="L542" title="All 2 branches covered.">    if (MainApplication.isDisplayingMapView()) {</span>
-<span class="pc bpc" id="L543" title="1 of 2 branches missed.">      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length &gt;= 1);</span>
-<span class="pc bpc" id="L544" title="1 of 2 branches missed.">      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length &gt;= 2);</span>
+<span class="fc bfc" id="L541" title="All 2 branches covered.">    if (MainApplication.isDisplayingMapView()) {</span>
+<span class="pc bpc" id="L542" title="1 of 2 branches missed.">      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length &gt;= 1);</span>
+<span class="pc bpc" id="L543" title="1 of 2 branches missed.">      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length &gt;= 2);</span>
     }
-<span class="pc bpc" id="L546" title="1 of 2 branches missed.">    if (nearestImages.length &gt;= 1) {</span>
-<span class="nc" id="L547">      CacheUtils.downloadPicture(nearestImages[0]);</span>
-<span class="nc bnc" id="L548" title="All 2 branches missed.">      if (nearestImages.length &gt;= 2) {</span>
-<span class="nc" id="L549">        CacheUtils.downloadPicture(nearestImages[1]);</span>
+<span class="pc bpc" id="L545" title="1 of 2 branches missed.">    if (nearestImages.length &gt;= 1) {</span>
+<span class="nc" id="L546">      CacheUtils.downloadPicture(nearestImages[0]);</span>
+<span class="nc bnc" id="L547" title="All 2 branches missed.">      if (nearestImages.length &gt;= 2) {</span>
+<span class="nc" id="L548">        CacheUtils.downloadPicture(nearestImages[1]);</span>
       }
     }
-<span class="fc" id="L552">  }</span>
+<span class="fc" id="L551">  }</span>
 
   /**
    * Action used to delete images.
    *
    * @author nokutu
    */
-<span class="fc" id="L559">  private class DeleteImageAction extends AbstractAction {</span>
+<span class="fc" id="L558">  private class DeleteImageAction extends AbstractAction {</span>
 
     private static final long serialVersionUID = -982809854631863962L;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<span class="nc bnc" id="L565" title="All 2 branches missed.">      if (instance != null)</span>
-<span class="nc" id="L566">        MapillaryRecord.getInstance().addCommand(</span>
-<span class="nc" id="L567">          new CommandDelete(getData().getMultiSelectedImages()));</span>
-<span class="nc" id="L568">    }</span>
+<span class="nc bnc" id="L564" title="All 2 branches missed.">      if (instance != null)</span>
+<span class="nc" id="L565">        MapillaryRecord.getInstance().addCommand(</span>
+<span class="nc" id="L566">          new CommandDelete(getData().getMultiSelectedImages()));</span>
+<span class="nc" id="L567">    }</span>
   }
 
   private static class NearestImgToTargetComparator implements Comparator&lt;MapillaryAbstractImage&gt; {
     private final MapillaryAbstractImage target;
 
-<span class="nc" id="L574">    public NearestImgToTargetComparator(MapillaryAbstractImage target) {</span>
-<span class="nc" id="L575">      this.target = target;</span>
-<span class="nc" id="L576">    }</span>
+<span class="nc" id="L573">    public NearestImgToTargetComparator(MapillaryAbstractImage target) {</span>
+<span class="nc" id="L574">      this.target = target;</span>
+<span class="nc" id="L575">    }</span>
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
     public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
-<span class="nc" id="L582">      return (int) Math.signum(</span>
-<span class="nc" id="L583">        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -</span>
-<span class="nc" id="L584">        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
+<span class="nc" id="L581">      return (int) Math.signum(</span>
+<span class="nc" id="L582">        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -</span>
+<span class="nc" id="L583">        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())</span>
       );
     }
   }

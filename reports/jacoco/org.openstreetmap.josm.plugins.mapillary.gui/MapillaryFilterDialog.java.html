@@ -69,154 +69,152 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   private final JComboBox&lt;String&gt; time;
   private final JTextField user;
 
-<span class="fc" id="L72">  private final SideButton updateButton = new SideButton(new UpdateAction());</span>
-<span class="fc" id="L73">  private final SideButton resetButton = new SideButton(new ResetAction());</span>
-<span class="fc" id="L74">  private final JButton signChooser = new JButton(new SignChooserAction());</span>
+<span class="fc" id="L72">  private final JButton signChooser = new JButton(new SignChooserAction());</span>
 
   private MapillaryFilterDialog() {
-<span class="fc" id="L77">    super(tr(&quot;Mapillary filter&quot;), &quot;mapillary-filter&quot;, tr(&quot;Open Mapillary filter dialog&quot;), null, 200,</span>
+<span class="fc" id="L75">    super(tr(&quot;Mapillary filter&quot;), &quot;mapillary-filter&quot;, tr(&quot;Open Mapillary filter dialog&quot;), null, 200,</span>
         false, MapillaryPreferenceSetting.class);
 
-<span class="fc" id="L80">    this.signChooser.setEnabled(false);</span>
-<span class="fc" id="L81">    JPanel signChooserPanel = new JPanel();</span>
-<span class="fc" id="L82">    signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="fc" id="L83">    signChooserPanel.add(this.signChooser);</span>
+<span class="fc" id="L78">    this.signChooser.setEnabled(false);</span>
+<span class="fc" id="L79">    JPanel signChooserPanel = new JPanel();</span>
+<span class="fc" id="L80">    signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L81">    signChooserPanel.add(this.signChooser);</span>
 
-<span class="fc" id="L85">    JPanel fromPanel = new JPanel();</span>
-<span class="fc" id="L86">    fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="fc" id="L87">    filterByDateCheckbox = new JCheckBox(tr(&quot;Not older than: &quot;));</span>
-<span class="fc" id="L88">    fromPanel.add(filterByDateCheckbox);</span>
-<span class="fc" id="L89">    this.spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);</span>
-<span class="fc" id="L90">    JSpinner spinner = new JSpinner(spinnerModel);</span>
-<span class="fc" id="L91">    spinner.setEnabled(false);</span>
-<span class="fc" id="L92">    fromPanel.add(spinner);</span>
-<span class="fc" id="L93">    time = new JComboBox&lt;&gt;(TIME_LIST);</span>
-<span class="fc" id="L94">    time.setEnabled(false);</span>
-<span class="fc" id="L95">    fromPanel.add(this.time);</span>
+<span class="fc" id="L83">    JPanel fromPanel = new JPanel();</span>
+<span class="fc" id="L84">    fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L85">    filterByDateCheckbox = new JCheckBox(tr(&quot;Not older than: &quot;));</span>
+<span class="fc" id="L86">    fromPanel.add(filterByDateCheckbox);</span>
+<span class="fc" id="L87">    this.spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);</span>
+<span class="fc" id="L88">    JSpinner spinner = new JSpinner(spinnerModel);</span>
+<span class="fc" id="L89">    spinner.setEnabled(false);</span>
+<span class="fc" id="L90">    fromPanel.add(spinner);</span>
+<span class="fc" id="L91">    time = new JComboBox&lt;&gt;(TIME_LIST);</span>
+<span class="fc" id="L92">    time.setEnabled(false);</span>
+<span class="fc" id="L93">    fromPanel.add(this.time);</span>
 
-<span class="fc" id="L97">    filterByDateCheckbox.addItemListener(itemE -&gt; {</span>
-<span class="nc" id="L98">      spinner.setEnabled(filterByDateCheckbox.isSelected());</span>
-<span class="nc" id="L99">      time.setEnabled(filterByDateCheckbox.isSelected());</span>
-<span class="nc" id="L100">    });</span>
+<span class="fc" id="L95">    filterByDateCheckbox.addItemListener(itemE -&gt; {</span>
+<span class="nc" id="L96">      spinner.setEnabled(filterByDateCheckbox.isSelected());</span>
+<span class="nc" id="L97">      time.setEnabled(filterByDateCheckbox.isSelected());</span>
+<span class="nc" id="L98">    });</span>
 
-<span class="fc" id="L102">    JPanel userSearchPanel = new JPanel();</span>
-<span class="fc" id="L103">    userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
-<span class="fc" id="L104">    this.user = new DisableShortcutsOnFocusGainedTextField(10);</span>
-<span class="fc" id="L105">    this.user.addActionListener(new UpdateAction());</span>
-<span class="fc" id="L106">    userSearchPanel.add(new JLabel(tr(&quot;User&quot;)));</span>
-<span class="fc" id="L107">    userSearchPanel.add(this.user);</span>
+<span class="fc" id="L100">    JPanel userSearchPanel = new JPanel();</span>
+<span class="fc" id="L101">    userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));</span>
+<span class="fc" id="L102">    this.user = new DisableShortcutsOnFocusGainedTextField(10);</span>
+<span class="fc" id="L103">    this.user.addActionListener(new UpdateAction());</span>
+<span class="fc" id="L104">    userSearchPanel.add(new JLabel(tr(&quot;User&quot;)));</span>
+<span class="fc" id="L105">    userSearchPanel.add(this.user);</span>
 
-<span class="fc" id="L109">    this.imported.setSelected(true);</span>
-<span class="fc" id="L110">    this.downloaded.setSelected(true);</span>
+<span class="fc" id="L107">    this.imported.setSelected(true);</span>
+<span class="fc" id="L108">    this.downloaded.setSelected(true);</span>
 
-<span class="fc" id="L112">    JPanel panel = new JPanel();</span>
-<span class="fc" id="L113">    panel.setLayout(new GridBagLayout());</span>
-<span class="fc" id="L114">    GridBagConstraints c = new GridBagConstraints();</span>
-<span class="fc" id="L115">    c.anchor = GridBagConstraints.LINE_START;</span>
-<span class="fc" id="L116">    panel.add(this.downloaded, c);</span>
-<span class="fc" id="L117">    c.gridx = 1;</span>
-<span class="fc" id="L118">    panel.add(this.imported, c);</span>
-<span class="fc" id="L119">    c.gridx = 0;</span>
-<span class="fc" id="L120">    c.gridy = 1;</span>
-<span class="fc" id="L121">    c.gridwidth = 2;</span>
-<span class="fc" id="L122">    panel.add(fromPanel, c);</span>
-<span class="fc" id="L123">    c.gridy = 2;</span>
-<span class="fc" id="L124">    panel.add(userSearchPanel, c);</span>
-<span class="fc" id="L125">    c.gridwidth = 1;</span>
-<span class="fc" id="L126">    c.gridy = 3;</span>
-<span class="fc" id="L127">    panel.add(this.onlySigns, c);</span>
-<span class="fc" id="L128">    c.gridx = 1;</span>
-<span class="fc" id="L129">    panel.add(signChooserPanel, c);</span>
+<span class="fc" id="L110">    JPanel panel = new JPanel();</span>
+<span class="fc" id="L111">    panel.setLayout(new GridBagLayout());</span>
+<span class="fc" id="L112">    GridBagConstraints c = new GridBagConstraints();</span>
+<span class="fc" id="L113">    c.anchor = GridBagConstraints.LINE_START;</span>
+<span class="fc" id="L114">    panel.add(this.downloaded, c);</span>
+<span class="fc" id="L115">    c.gridx = 1;</span>
+<span class="fc" id="L116">    panel.add(this.imported, c);</span>
+<span class="fc" id="L117">    c.gridx = 0;</span>
+<span class="fc" id="L118">    c.gridy = 1;</span>
+<span class="fc" id="L119">    c.gridwidth = 2;</span>
+<span class="fc" id="L120">    panel.add(fromPanel, c);</span>
+<span class="fc" id="L121">    c.gridy = 2;</span>
+<span class="fc" id="L122">    panel.add(userSearchPanel, c);</span>
+<span class="fc" id="L123">    c.gridwidth = 1;</span>
+<span class="fc" id="L124">    c.gridy = 3;</span>
+<span class="fc" id="L125">    panel.add(this.onlySigns, c);</span>
+<span class="fc" id="L126">    c.gridx = 1;</span>
+<span class="fc" id="L127">    panel.add(signChooserPanel, c);</span>
 
-<span class="fc" id="L131">    createLayout(panel, true, Arrays.asList(updateButton, resetButton));</span>
-<span class="fc" id="L132">  }</span>
+<span class="fc" id="L129">    createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));</span>
+<span class="fc" id="L130">  }</span>
 
   /**
    * @return the unique instance of the class.
    */
   public static synchronized MapillaryFilterDialog getInstance() {
-<span class="fc bfc" id="L138" title="All 2 branches covered.">    if (instance == null)</span>
-<span class="fc" id="L139">      instance = new MapillaryFilterDialog();</span>
-<span class="fc" id="L140">    return instance;</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (instance == null)</span>
+<span class="fc" id="L137">      instance = new MapillaryFilterDialog();</span>
+<span class="fc" id="L138">    return instance;</span>
   }
 
   @Override
   public void imagesAdded() {
-<span class="nc" id="L145">    refresh();</span>
-<span class="nc" id="L146">  }</span>
+<span class="nc" id="L143">    refresh();</span>
+<span class="nc" id="L144">  }</span>
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     // Do nothing when image selection changed
-<span class="nc" id="L151">  }</span>
+<span class="nc" id="L149">  }</span>
 
   /**
    * Resets the dialog to its default state.
    */
   public void reset() {
-<span class="nc" id="L157">    this.imported.setSelected(true);</span>
-<span class="nc" id="L158">    this.downloaded.setSelected(true);</span>
-<span class="nc" id="L159">    this.onlySigns.setEnabled(true);</span>
-<span class="nc" id="L160">    this.onlySigns.setSelected(false);</span>
-<span class="nc" id="L161">    this.user.setText(&quot;&quot;);</span>
-<span class="nc" id="L162">    this.time.setSelectedItem(TIME_LIST[0]);</span>
-<span class="nc" id="L163">    this.spinnerModel.setValue(1);</span>
-<span class="nc" id="L164">    refresh();</span>
-<span class="nc" id="L165">  }</span>
+<span class="nc" id="L155">    this.imported.setSelected(true);</span>
+<span class="nc" id="L156">    this.downloaded.setSelected(true);</span>
+<span class="nc" id="L157">    this.onlySigns.setEnabled(true);</span>
+<span class="nc" id="L158">    this.onlySigns.setSelected(false);</span>
+<span class="nc" id="L159">    this.user.setText(&quot;&quot;);</span>
+<span class="nc" id="L160">    this.time.setSelectedItem(TIME_LIST[0]);</span>
+<span class="nc" id="L161">    this.spinnerModel.setValue(1);</span>
+<span class="nc" id="L162">    refresh();</span>
+<span class="nc" id="L163">  }</span>
 
   /**
    * Applies the selected filter.
    */
   public synchronized void refresh() {
-<span class="pc bpc" id="L171" title="1 of 4 branches missed.">    final boolean layerVisible = MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().isVisible();</span>
-<span class="fc" id="L172">    final boolean imported = this.imported.isSelected();</span>
-<span class="fc" id="L173">    final boolean downloaded = this.downloaded.isSelected();</span>
-<span class="fc" id="L174">    final boolean timeFilter = filterByDateCheckbox.isSelected();</span>
-<span class="fc" id="L175">    final boolean onlySigns = this.onlySigns.isSelected();</span>
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">    final boolean layerVisible = MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().isVisible();</span>
+<span class="fc" id="L170">    final boolean imported = this.imported.isSelected();</span>
+<span class="fc" id="L171">    final boolean downloaded = this.downloaded.isSelected();</span>
+<span class="fc" id="L172">    final boolean timeFilter = filterByDateCheckbox.isSelected();</span>
+<span class="fc" id="L173">    final boolean onlySigns = this.onlySigns.isSelected();</span>
 
     // This predicate returns true is the image should be made invisible
-<span class="fc" id="L178">    Predicate&lt;MapillaryAbstractImage&gt; shouldHide =</span>
+<span class="fc" id="L176">    Predicate&lt;MapillaryAbstractImage&gt; shouldHide =</span>
       img -&gt; {
-<span class="fc bfc" id="L180" title="All 2 branches covered.">        if (!layerVisible) {</span>
-<span class="fc" id="L181">          return true;</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        if (!layerVisible) {</span>
+<span class="fc" id="L179">          return true;</span>
         }
-<span class="pc bpc" id="L183" title="3 of 4 branches missed.">        if (timeFilter &amp;&amp; checkValidTime(img)) {</span>
-<span class="nc" id="L184">          return true;</span>
+<span class="pc bpc" id="L181" title="3 of 4 branches missed.">        if (timeFilter &amp;&amp; checkValidTime(img)) {</span>
+<span class="nc" id="L182">          return true;</span>
         }
-<span class="pc bpc" id="L186" title="3 of 4 branches missed.">        if (!imported &amp;&amp; img instanceof MapillaryImportedImage) {</span>
-<span class="nc" id="L187">          return true;</span>
+<span class="pc bpc" id="L184" title="3 of 4 branches missed.">        if (!imported &amp;&amp; img instanceof MapillaryImportedImage) {</span>
+<span class="nc" id="L185">          return true;</span>
         }
-<span class="pc bpc" id="L189" title="1 of 2 branches missed.">        if (img instanceof MapillaryImage) {</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">          if (!downloaded) {</span>
-<span class="nc" id="L191">            return true;</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (img instanceof MapillaryImage) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">          if (!downloaded) {</span>
+<span class="nc" id="L189">            return true;</span>
           }
-<span class="nc bnc" id="L193" title="All 6 branches missed.">          if (onlySigns &amp;&amp; (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {</span>
-<span class="nc" id="L194">            return true;</span>
+<span class="nc bnc" id="L191" title="All 6 branches missed.">          if (onlySigns &amp;&amp; (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {</span>
+<span class="nc" id="L192">            return true;</span>
           }
-<span class="nc" id="L196">          UserProfile userProfile = ((MapillaryImage) img).getUser();</span>
-<span class="nc bnc" id="L197" title="All 6 branches missed.">          if (!&quot;&quot;.equals(user.getText()) &amp;&amp; (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {</span>
-<span class="nc" id="L198">            return true;</span>
+<span class="nc" id="L194">          UserProfile userProfile = ((MapillaryImage) img).getUser();</span>
+<span class="nc bnc" id="L195" title="All 6 branches missed.">          if (!&quot;&quot;.equals(user.getText()) &amp;&amp; (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {</span>
+<span class="nc" id="L196">            return true;</span>
           }
         }
-<span class="fc" id="L201">        return false;</span>
+<span class="fc" id="L199">        return false;</span>
       };
 
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">    if (MapillaryLayer.hasInstance()) {</span>
-<span class="fc bfc" id="L205" title="All 2 branches covered.">      MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -&gt; img.setVisible(!shouldHide.test(img)));</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">    if (MapillaryLayer.hasInstance()) {</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">      MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -&gt; img.setVisible(!shouldHide.test(img)));</span>
     }
 
-<span class="fc" id="L208">    MapillaryLayer.invalidateInstance();</span>
-<span class="fc" id="L209">  }</span>
+<span class="fc" id="L206">    MapillaryLayer.invalidateInstance();</span>
+<span class="fc" id="L207">  }</span>
 
   private boolean checkValidTime(MapillaryAbstractImage img) {
-<span class="nc" id="L212">    Long currentTime = currentTime();</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">    for (int i = 0; i &lt; 3; i++) {</span>
-<span class="nc bnc" id="L214" title="All 2 branches missed.">      if (TIME_LIST[i].equals(time.getSelectedItem()) &amp;&amp;</span>
-<span class="nc bnc" id="L215" title="All 2 branches missed.">        img.getCapturedAt() &lt; currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {</span>
-<span class="nc" id="L216">        return true;</span>
+<span class="nc" id="L210">    Long currentTime = currentTime();</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">      if (TIME_LIST[i].equals(time.getSelectedItem()) &amp;&amp;</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        img.getCapturedAt() &lt; currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {</span>
+<span class="nc" id="L214">        return true;</span>
       }
     }
-<span class="nc" id="L219">    return false;</span>
+<span class="nc" id="L217">    return false;</span>
   }
 
   /**
@@ -229,90 +227,90 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
    * otherwise.
    */
   private static boolean checkSigns(MapillaryImage img) {
-<span class="nc bnc" id="L232" title="All 2 branches missed.">    for (int i = 0; i &lt; MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {</span>
-<span class="nc bnc" id="L233" title="All 2 branches missed.">      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], MapillaryFilterChooseSigns.SIGN_TAGS[i]))</span>
-<span class="nc" id="L234">        return true;</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">    for (int i = 0; i &lt; MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], MapillaryFilterChooseSigns.SIGN_TAGS[i]))</span>
+<span class="nc" id="L232">        return true;</span>
     }
-<span class="nc" id="L236">    return false;</span>
+<span class="nc" id="L234">    return false;</span>
   }
 
   private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
-<span class="nc" id="L240">    boolean contains = false;</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">    for (ImageDetection detection : img.getDetections()) {</span>
-<span class="nc bnc" id="L242" title="All 2 branches missed.">      if (Pattern.compile(signTag).matcher(detection.getValue()).find()) {</span>
-<span class="nc" id="L243">        contains = true;</span>
+<span class="nc" id="L238">    boolean contains = false;</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">    for (ImageDetection detection : img.getDetections()) {</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">      if (Pattern.compile(signTag).matcher(detection.getValue()).find()) {</span>
+<span class="nc" id="L241">        contains = true;</span>
       }
-<span class="nc" id="L245">    }</span>
-<span class="nc bnc" id="L246" title="All 4 branches missed.">    return contains == signCheckBox.isSelected() &amp;&amp; contains;</span>
+<span class="nc" id="L243">    }</span>
+<span class="nc bnc" id="L244" title="All 4 branches missed.">    return contains == signCheckBox.isSelected() &amp;&amp; contains;</span>
   }
 
   private static long currentTime() {
-<span class="nc" id="L250">    Calendar cal = Calendar.getInstance();</span>
-<span class="nc" id="L251">    return cal.getTimeInMillis();</span>
+<span class="nc" id="L248">    Calendar cal = Calendar.getInstance();</span>
+<span class="nc" id="L249">    return cal.getTimeInMillis();</span>
   }
 
   /**
    * Destroys the unique instance of the class.
    */
   public static synchronized void destroyInstance() {
-<span class="nc" id="L258">    instance = null;</span>
-<span class="nc" id="L259">  }</span>
+<span class="nc" id="L256">    instance = null;</span>
+<span class="nc" id="L257">  }</span>
 
   private class DownloadCheckBoxAction extends AbstractAction {
 
     private static final long serialVersionUID = 4672634002899519496L;
 
-<span class="fc" id="L265">    DownloadCheckBoxAction() {</span>
-<span class="fc" id="L266">      putValue(NAME, tr(&quot;Downloaded images&quot;));</span>
-<span class="fc" id="L267">    }</span>
+<span class="fc" id="L263">    DownloadCheckBoxAction() {</span>
+<span class="fc" id="L264">      putValue(NAME, tr(&quot;Downloaded images&quot;));</span>
+<span class="fc" id="L265">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L271">      onlySigns.setEnabled(downloaded.isSelected());</span>
-<span class="nc" id="L272">    }</span>
+<span class="nc" id="L269">      onlySigns.setEnabled(downloaded.isSelected());</span>
+<span class="nc" id="L270">    }</span>
   }
 
   private static class UpdateAction extends AbstractAction {
 
     private static final long serialVersionUID = -7417238601979689863L;
 
-<span class="fc" id="L279">    UpdateAction() {</span>
-<span class="fc" id="L280">      putValue(NAME, tr(&quot;Update&quot;));</span>
-<span class="fc" id="L281">      new ImageProvider(&quot;dialogs&quot;, &quot;refresh&quot;).getResource().attachImageIcon(this, true);</span>
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L277">    UpdateAction() {</span>
+<span class="fc" id="L278">      putValue(NAME, tr(&quot;Update&quot;));</span>
+<span class="fc" id="L279">      new ImageProvider(&quot;dialogs&quot;, &quot;refresh&quot;).getResource().attachImageIcon(this, true);</span>
+<span class="fc" id="L280">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L286">      MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L287">    }</span>
+<span class="nc" id="L284">      MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L285">    }</span>
   }
 
   private static class ResetAction extends AbstractAction {
     private static final long serialVersionUID = 1178261778165525040L;
 
-<span class="fc" id="L293">    ResetAction() {</span>
-<span class="fc" id="L294">      putValue(NAME, tr(&quot;Reset&quot;));</span>
-<span class="fc" id="L295">      new ImageProvider(&quot;preferences&quot;, &quot;reset&quot;).getResource().attachImageIcon(this, true);</span>
-<span class="fc" id="L296">    }</span>
+<span class="fc" id="L291">    ResetAction() {</span>
+<span class="fc" id="L292">      putValue(NAME, tr(&quot;Reset&quot;));</span>
+<span class="fc" id="L293">      new ImageProvider(&quot;preferences&quot;, &quot;reset&quot;).getResource().attachImageIcon(this, true);</span>
+<span class="fc" id="L294">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L300">      MapillaryFilterDialog.getInstance().reset();</span>
-<span class="nc" id="L301">    }</span>
+<span class="nc" id="L298">      MapillaryFilterDialog.getInstance().reset();</span>
+<span class="nc" id="L299">    }</span>
   }
 
   private class OnlySignsAction extends AbstractAction {
 
     private static final long serialVersionUID = -2937440338019185723L;
 
-<span class="fc" id="L308">    OnlySignsAction() {</span>
-<span class="fc" id="L309">      putValue(NAME, tr(&quot;Only images with signs&quot;));</span>
-<span class="fc" id="L310">    }</span>
+<span class="fc" id="L306">    OnlySignsAction() {</span>
+<span class="fc" id="L307">      putValue(NAME, tr(&quot;Only images with signs&quot;));</span>
+<span class="fc" id="L308">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L314">      signChooser.setEnabled(onlySigns.isSelected());</span>
-<span class="nc" id="L315">    }</span>
+<span class="nc" id="L312">      signChooser.setEnabled(onlySigns.isSelected());</span>
+<span class="nc" id="L313">    }</span>
   }
 
   /**
@@ -324,21 +322,21 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     private static final long serialVersionUID = 8706299665735930148L;
 
-<span class="fc" id="L327">    SignChooserAction() {</span>
-<span class="fc" id="L328">      putValue(NAME, tr(&quot;Choose signs&quot;));</span>
-<span class="fc" id="L329">    }</span>
+<span class="fc" id="L325">    SignChooserAction() {</span>
+<span class="fc" id="L326">      putValue(NAME, tr(&quot;Choose signs&quot;));</span>
+<span class="fc" id="L327">    }</span>
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L333">      JPanel dialog = MapillaryFilterChooseSigns.getInstance();</span>
-<span class="nc" id="L334">      JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
+<span class="nc" id="L331">      JPanel dialog = MapillaryFilterChooseSigns.getInstance();</span>
+<span class="nc" id="L332">      JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
         JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L336">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Choose signs&quot;));</span>
-<span class="nc" id="L337">      dlg.setVisible(true);</span>
-<span class="nc bnc" id="L338" title="All 2 branches missed.">      if ((int) pane.getValue() == JOptionPane.OK_OPTION)</span>
-<span class="nc" id="L339">        MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L340">      dlg.dispose();</span>
-<span class="nc" id="L341">    }</span>
+<span class="nc" id="L334">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Choose signs&quot;));</span>
+<span class="nc" id="L335">      dlg.setVisible(true);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">      if ((int) pane.getValue() == JOptionPane.OK_OPTION)</span>
+<span class="nc" id="L337">        MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L338">      dlg.dispose();</span>
+<span class="nc" id="L339">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -46,9 +46,9 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-<span class="nc" id="L49">    super(tr(&quot;Export pictures&quot;), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="nc" id="L50">        tr(&quot;Export pictures&quot;), Shortcut.registerShortcut(&quot;Export Mapillary&quot;,</span>
-<span class="nc" id="L51">            tr(&quot;Export Mapillary pictures&quot;), KeyEvent.CHAR_UNDEFINED,</span>
+<span class="nc" id="L49">    super(tr(&quot;Export Mapillary images&quot;), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L50">        tr(&quot;Export Mapillary images&quot;), Shortcut.registerShortcut(&quot;Export Mapillary&quot;,</span>
+<span class="nc" id="L51">            tr(&quot;Export Mapillary images&quot;), KeyEvent.CHAR_UNDEFINED,</span>
             Shortcut.NONE), false, &quot;mapillaryExport&quot;, true);
 <span class="nc" id="L53">    this.setEnabled(false);</span>
 <span class="nc" id="L54">  }</span>
@@ -66,7 +66,7 @@ public class MapillaryExportAction extends JosmAction {
 <span class="nc" id="L66">    pane.setMessage(this.dialog);</span>
 <span class="nc" id="L67">    pane.setOptions(new JButton[] {ok, cancel});</span>
 
-<span class="nc" id="L69">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Export images&quot;));</span>
+<span class="nc" id="L69">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Export Mapillary images&quot;));</span>
 <span class="nc" id="L70">    dlg.setMinimumSize(new Dimension(400, 150));</span>
 <span class="nc" id="L71">    dlg.setVisible(true);</span>
 
