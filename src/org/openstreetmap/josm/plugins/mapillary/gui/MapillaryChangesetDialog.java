@@ -49,9 +49,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private static MapillaryChangesetDialog instance;
 
   private final DefaultTreeModel changesetTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
-  private final JTree changesetTree = new JTree(this.changesetTreeModel);
 
-  private final JSeparator separator = new JSeparator();
   private final Component spacer = Box.createRigidArea(new Dimension(0, 3));
 
   private final Container rootComponent = new JPanel(new BorderLayout());
@@ -81,16 +79,17 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
 
     this.map = new ConcurrentHashMap<>();
 
-    this.changesetTree.expandRow(0);
-    this.changesetTree.setShowsRootHandles(true);
-    this.changesetTree.setRootVisible(false);
-    this.changesetTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
-    this.changesetTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    final JTree changesetTree = new JTree(this.changesetTreeModel);
+    changesetTree.expandRow(0);
+    changesetTree.setShowsRootHandles(true);
+    changesetTree.setRootVisible(false);
+    changesetTree.setCellRenderer(new MapillaryImageTreeCellRenderer());
+    changesetTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-    JPanel treesPanel = new JPanel(new GridBagLayout());
+    final JPanel treesPanel = new JPanel(new GridBagLayout());
     treesPanel.add(this.spacer, GBC.eol());
-    treesPanel.add(this.changesetTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    treesPanel.add(this.separator, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(changesetTree, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    treesPanel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     treesPanel.add(Box.createRigidArea(new Dimension(0, 0)), GBC.std().weight(0, 1));
     rootComponent.add(new JScrollPane(treesPanel), BorderLayout.CENTER);
 
@@ -114,13 +113,13 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   }
 
   private void buildTree() {
-    MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();
+    final MapillaryLocationChangeset changeset = MapillaryLayer.getInstance().getLocationChangeset();
     submitButton.setEnabled(!changeset.isEmpty());
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
     this.map.clear();
     changeset.parallelStream().filter(Objects::nonNull).forEach(img -> {
-      DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());
+      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());
       this.map.put(node, img);
       changesetRoot.add(node);
     });

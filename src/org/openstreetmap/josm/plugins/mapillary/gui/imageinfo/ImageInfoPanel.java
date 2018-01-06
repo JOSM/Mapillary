@@ -23,7 +23,6 @@ import org.openstreetmap.josm.data.SelectionChangedListener;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
-import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -188,13 +187,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
-      imageLinkChangeListener = b -> {
-        imgLinkAction.setURL(
-          MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
-          ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
-          : MapillaryURL.MainWebsite.browseImage(newImageKey)
-        );
-      };
+      imageLinkChangeListener = b -> imgLinkAction.setURL(
+        MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
+        ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
+        : MapillaryURL.MainWebsite.browseImage(newImageKey)
+      );
       imageLinkChangeListener.valueChanged(null);
       MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.addListener(imageLinkChangeListener);
 

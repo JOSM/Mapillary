@@ -87,7 +87,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (e instanceof DataChangedEvent && MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
         // When more data is downloaded, a delayed update is thrown, in order to
         // wait for the data bounds to be set.
-        MainApplication.worker.execute(()-> MapillaryDownloader.downloadOSMArea());
+        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);
       }
     });
 
@@ -518,9 +518,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       .map(seq -> { // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
           .filter(img -> img instanceof MapillaryImage && img.isVisible())
-          .sorted(new NearestImgToTargetComparator(target))
-          .findFirst();
-        return resImg.isPresent() ? resImg.get() : null;
+          .min(new NearestImgToTargetComparator(target));
+        return resImg.orElse(null);
       })
       .filter(img -> // Filters out images too far away from target
         img != null &&

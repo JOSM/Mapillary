@@ -13,7 +13,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -30,7 +29,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 public class MapillaryExportDialog extends JPanel implements ActionListener {
 
   private static final long serialVersionUID = 8675637080225099248L;
-  protected JOptionPane optionPane;
   /** Button to export all downloaded images. */
   public final JRadioButton all;
   /**
@@ -50,7 +48,6 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   private final JLabel path;
   /** File chooser. */
   public JFileChooser chooser;
-  protected String exportDirectory;
   private final JButton ok;
 
   /**

@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
@@ -78,7 +76,7 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
 
   @Override
   public void imagesAdded() {
-    /** Enforced by {@link MapillaryDataListener} */
+    // Enforced by {@link MapillaryDataListener}
   }
 
 

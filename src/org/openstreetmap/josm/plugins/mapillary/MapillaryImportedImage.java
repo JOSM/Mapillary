@@ -26,7 +26,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   /** The picture file. */
   protected File file;
-  /** The date when the picture was taken. */
 
   /**
    * Creates a new MapillaryImportedImage object using as date the current date.

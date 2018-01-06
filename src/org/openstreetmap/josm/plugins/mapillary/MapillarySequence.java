@@ -42,7 +42,7 @@ public class MapillarySequence {
    */
   public MapillarySequence() {
     this.images = new CopyOnWriteArrayList<>();
-    this.capturedAt = -1l;
+    this.capturedAt = -1L;
     this.key = null;
   }
 

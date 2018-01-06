@@ -69,8 +69,6 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
   private final JComboBox<String> time;
   private final JTextField user;
 
-  private final SideButton updateButton = new SideButton(new UpdateAction());
-  private final SideButton resetButton = new SideButton(new ResetAction());
   private final JButton signChooser = new JButton(new SignChooserAction());
 
   private MapillaryFilterDialog() {
@@ -128,7 +126,7 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
     c.gridx = 1;
     panel.add(signChooserPanel, c);
 
-    createLayout(panel, true, Arrays.asList(updateButton, resetButton));
+    createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
   }
 
   /**

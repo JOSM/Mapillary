@@ -29,7 +29,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillarySequence
  */
 public class MapillaryData {
-  private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.<MapillaryAbstractImage>newKeySet();
+  private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.newKeySet();
   /**
    * The image currently selected, this is the one being shown.
    */
@@ -41,7 +41,7 @@ public class MapillaryData {
   /**
    * All the images selected, can be more than one.
    */
-  private final Set<MapillaryAbstractImage> multiSelectedImages = ConcurrentHashMap.<MapillaryAbstractImage>newKeySet();
+  private final Set<MapillaryAbstractImage> multiSelectedImages = ConcurrentHashMap.newKeySet();
   /**
    * Listeners of the class.
    */
@@ -359,7 +359,7 @@ public class MapillaryData {
 
   /**
    * Downloads surrounding images of this mapillary image in background threads
-   * @param mapillaryImage
+   * @param mapillaryImage the image for which the surrounding images should be downloaded
    */
   private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
     MainApplication.worker.execute(() -> {
