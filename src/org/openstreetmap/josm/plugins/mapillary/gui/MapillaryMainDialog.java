@@ -50,7 +50,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 
   private static final long serialVersionUID = 6856496736429480600L;
 
-  private static final String BASE_TITLE = marktr("Mapillary picture");
+  private static final String BASE_TITLE = marktr("Mapillary image");
   private static final String MESSAGE_SEPARATOR = " — ";
 
   private static MapillaryMainDialog instance;

@@ -46,9 +46,9 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-    super(tr("Export pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Export pictures"), Shortcut.registerShortcut("Export Mapillary",
-            tr("Export Mapillary pictures"), KeyEvent.CHAR_UNDEFINED,
+    super(tr("Export Mapillary images"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+        tr("Export Mapillary images"), Shortcut.registerShortcut("Export Mapillary",
+            tr("Export Mapillary images"), KeyEvent.CHAR_UNDEFINED,
             Shortcut.NONE), false, "mapillaryExport", true);
     this.setEnabled(false);
   }
@@ -66,7 +66,7 @@ public class MapillaryExportAction extends JosmAction {
     pane.setMessage(this.dialog);
     pane.setOptions(new JButton[] {ok, cancel});
 
-    JDialog dlg = pane.createDialog(Main.parent, tr("Export images"));
+    JDialog dlg = pane.createDialog(Main.parent, tr("Export Mapillary images"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 
