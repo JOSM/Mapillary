@@ -86,7 +86,7 @@ public final class TestUtil {
 
   public static class MapillaryTestRules extends JOSMTestRules {
     @Override
-    protected void before() throws InitializationError {
+    protected void before() throws InitializationError, ReflectiveOperationException {
       Logging.getLogger().setFilter(record -> record.getLevel().intValue() >= Level.WARNING.intValue() || record.getSourceClassName().startsWith("org.openstreetmap.josm.plugins.mapillary"));
       Utils.updateSystemProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tT.%1$tL %2$s %4$s: %5$s%6$s%n");
       final String isHeadless = Boolean.toString(GraphicsEnvironment.isHeadless());
