@@ -48,10 +48,9 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       I18n.tr("Submit changeset"),
       new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       I18n.tr("Submit the current changeset"),
-      Shortcut.registerShortcut(
-        "Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"),
-        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
-      ),
+      // CHECKSTYLE.OFF: LineLength
+      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      // CHECKSTYLE.ON: LineLength
       false,
       "mapillarySubmitChangeset",
       false

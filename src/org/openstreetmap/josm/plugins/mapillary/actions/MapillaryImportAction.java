@@ -28,7 +28,6 @@ public class MapillaryImportAction extends JosmAction {
 
   /**
    * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
-   * @see Shortcut#registerShortcut(String, String, int, int)
    */
   public MapillaryImportAction() {
     super(

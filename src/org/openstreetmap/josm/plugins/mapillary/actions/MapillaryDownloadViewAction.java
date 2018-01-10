@@ -35,10 +35,7 @@ public class MapillaryDownloadViewAction extends JosmAction implements ValueChan
       I18n.tr(DESCRIPTION),
       new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
       I18n.tr(DESCRIPTION),
-      Shortcut.registerShortcut(
-        "Mapillary area", I18n.tr(DESCRIPTION),
-        KeyEvent.VK_PERIOD, Shortcut.SHIFT
-      ),
+      Shortcut.registerShortcut("Mapillary area", I18n.tr(DESCRIPTION), KeyEvent.VK_PERIOD, Shortcut.SHIFT),
       false,
       "mapillaryArea",
       true
