@@ -22,18 +22,21 @@ cache:
 
 language: java
 jdk:
-  - oraclejdk9
-  - oraclejdk8
   - openjdk8
+  - oraclejdk8
+  - oraclejdk9
 
-install: pip install --user transifex-client
 before_script: # init GUI for tests that can't run headless (https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI)
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
 script: ./.travis/script
-
+# Deploy to GitHub pages
+after_script: ./.travis/after_script
+# Upload code coverage data
+after_success: ./.travis/after_success
 # Release the plugin via GitHub releases when pushing a tag
+
 deploy:
   provider: releases
   file_glob: true
@@ -47,12 +50,27 @@ deploy:
     tags: true
     jdk: openjdk8
 
-# Deploy to GitHub pages
-after_script: ./.travis/after_script
-# Upload code coverage data
-after_success: ./.travis/after_success
+jobs:
+  include:
+    - stage: i18n
+      language: python
+      python: "3.5"
+      install: pip install git+https://github.com/transifex/transifex-client.git@a706ba0cb910e66e852010bcd742221363c7e8be#egg=transifex-client
+      script: ./gradlew generatePot
+      after_success: |
+        if [ ! -z "$TRANSIFEX_TOKEN" ]; then
+          tx --token="$TRANSIFEX_TOKEN" --force-save --no-interactive init
+          git checkout HEAD .tx/config
+          tx push -s --no-interactive
+        fi
+
+stages:
+  - test
+  - name: i18n
+    if: branch = master
 
 matrix:
   fast_finish: true
   allow_failures:
   - jdk: oraclejdk9
+  - language: python

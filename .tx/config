@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[josm.josm-plugin_Mapillary]
+file_filter = poSrc/<lang>.po
+source_file = build/i18n/josm-plugin_Mapillary.pot
+source_lang = en
+type = PO
