@@ -3,3 +3,8 @@ if [ "$TRAVIS_BRANCH" == "master" ] || [ "$TRAVIS_PULL_REQUEST" != "false"  ] ||
   bash <(curl -s https://codecov.io/bash)
   bash <(curl -s https://codecov.io/bash) -c -F model_and_api
 fi
+
+if [ "$TRAVIS_JDK_VERSION" == "openjdk8" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ ! -z "$TRANSIFEX_TOKEN" ]; then
+  tx init --token="$TRANSIFEX_TOKEN"
+  tx push -s
+fi

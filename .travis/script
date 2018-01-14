@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-./gradlew --info --build-cache build compileMinJosmVersion javadoc i18n-xgettext
+./gradlew --info --build-cache build compileMinJosmVersion javadoc generatePot
 
 echo "branch $TRAVIS_BRANCH | JDK $TRAVIS_JDK_VERSION | PR #$TRAVIS_PULL_REQUEST | Submit to SonarQube? $SUBMIT_TO_SONARQUBE"
 

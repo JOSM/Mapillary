@@ -16,11 +16,6 @@
 sudo: false
 dist: trusty
 
-addons:
-  apt:
-    packages:
-    - gettext
-
 cache:
   directories:
   - $HOME/.gradle/caches
@@ -30,6 +25,8 @@ jdk:
   - oraclejdk9
   - oraclejdk8
   - openjdk8
+
+install: pip install --user transifex-client
 before_script: # init GUI for tests that can't run headless (https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI)
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
