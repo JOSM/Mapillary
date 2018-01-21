@@ -1,0 +1,625 @@
+# Translations for the JOSM plugin 'Mapillary' (pl)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.9-12-g47f2b14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-21 18:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: floscher <florian@schaeferban.de>, 2018\n"
+"Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+msgid "2 images joined"
+msgstr "2 zdjęcia połączone"
+
+msgid "2 images unjoined"
+msgstr "2 zdjęcia rozłączone"
+
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr ""
+"Znacznik z kluczem <i>{0}</i> obecnie istnieje w wybranym obiekcie OSM."
+
+msgid "Add Mapillary tag"
+msgstr "Dodaj znacznik Mapillary"
+
+msgid "All images in a directory"
+msgstr "Wszystkie zdjęcia w katalogu"
+
+msgid "All map objects loaded."
+msgstr "Wsyzstkie dane mapy załadowane."
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"Wystąpił błąd podczas próby wysyłania zestawu zmian. Jeśli powtarza się to "
+"często, zgłoś błąd poprzez menu pomocy. Jeśli wiadomość pojawiła się "
+"pierwszy raz, po prostu spróbuj ponownie. Może wystąpiły jakieś problemy z "
+"połączeniem internetowym."
+
+msgid "Cancel"
+msgstr "Anuluj"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "Błąd wysyłania zestawu zmian z {0} ''{1} {2}''!"
+
+msgid "Choose signs"
+msgstr "Wybierz znaki:"
+
+msgid "Continues with the paused walk."
+msgstr "Kontynuuje przerwany spacer."
+
+msgid "Copy key"
+msgstr "Kopuj klucz"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr ""
+"Nie można zaimportować zdjęc z zapisaną pozycją GPS do warstwy Mapillary."
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "Nie można zaimportować katalogu ''{0}''!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "Nie można zaimportować zdjęcia ''{0}''!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "Nie można otworzyć adresu URL {0} w przeglądarce"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Nie można odczytać z URL {0}!"
+
+msgid "Current Mapillary changeset"
+msgstr "Obecny zestaw zmian Mapillary"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Obetnij sekwencje na granicach pobierania"
+
+msgid "Days"
+msgstr "Dni"
+
+msgid "Delete after upload"
+msgstr "Usuń po wysłaniu"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Wyświetlaj godzinę wykonania zdjęcia."
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr "Wyświetla szczegółowe informacje o obecnie wybranym obrazie Mapillary"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr "Wyświetla obiekty wykryte przez Mapillary z ich podkładu street view"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr "Wyświetla warstwę pokazującą obiekty na mapie wykryte przez Mapillary"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr "Na pewno chcesz zamienić obecną wartość <i>{0}</i> nową <i>{1}</i>?"
+
+msgid "Download Mapillary images in current view"
+msgstr "Pobierz obrazy Mapillary w obecnym widoku"
+
+msgid "Download mode"
+msgstr "Tryb pobierania"
+
+msgid "Downloaded images"
+msgstr "Pobrane obrazy:"
+
+msgid "Downloading"
+msgstr "Pobieranie"
+
+msgid "Downloading Mapillary images"
+msgstr "Pobieranie obrazów Mapillary"
+
+msgid "Downloading map objects failed!"
+msgstr "Błąd pobierania elementów mapy!"
+
+msgid "Downloading map objects…"
+msgstr "Pobieranie elementów mapy…"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Włącz tryb eksperymentalny (może być niestabilny)"
+
+msgid "Explore"
+msgstr "Przeglądaj"
+
+msgid "Export all images"
+msgstr "Eksportuj wszystkie obrazy"
+
+msgid "Export selected images"
+msgstr "Eksportuj wybrane obrazy"
+
+msgid "Export selected sequence"
+msgstr "Eksportuj wybraną sekwencję"
+
+msgid "Finished upload"
+msgstr "Zakończono wysyłanie"
+
+msgid "Follow selected image"
+msgstr "Podążaj za wybranym zdjęciem"
+
+msgid "From existing image layer"
+msgstr "Z istniejącej warstwy zdjęć"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Z jakiego źródła chcesz zaimportować zdjęcia do warstwy Mapillary?"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Ustąp pierwszeństwa"
+
+msgid "Go forward"
+msgstr "Idź do przodu"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr "Wejdź w ustawienia i zaloguj się na Mapillary przed wysłaniem."
+
+msgid "I got it, close this."
+msgstr "Zrozumiałem, zamknij okno."
+
+msgid "Image actions"
+msgstr "Akcje zdjęcia"
+
+msgid "Image detections"
+msgstr "Wykrywanie zdjęcia"
+
+msgid "Image info"
+msgstr "Informacje o obrazie"
+
+msgid "Image key"
+msgstr "Klucz zdjęcia"
+
+msgid "Images from my file system"
+msgstr "Zdjęcia z mojego systemu plików"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Import exception"
+msgstr "Wyjątek importowania"
+
+msgid "Import local pictures"
+msgstr "Importuj lokalne zdjęcia"
+
+msgid "Import pictures"
+msgstr "Importuj zdjęcia"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Importuj zdjęcia na warstwę Mapillary"
+
+msgid "Imported images"
+msgstr "Zaimportowane obrazy"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Niebezpieczne skrzyżowanie"
+
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+"Może on zostać aktywowany poprzez naciśnięcie lewego przycisku myszy na "
+"przycisk tej wiadomości lub przycisk na pasku narzędzi po lewej, który używa"
+" takiej samej ikony."
+
+msgid "Join mode"
+msgstr "Tryb łączenia"
+
+msgid "Join/unjoin pictures"
+msgstr "Łączenie/rozłączanie zdjęć"
+
+msgid "Jump to blue"
+msgstr "Skocz do niebieskiego"
+
+msgid "Jump to red"
+msgstr "Skocz do czerwonego"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "Przeskakuje do zdjęcia po drugiej stronie niebieskiej linii"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "Przeskakuje do zdjęcia po drugiej stronie czerwonej linii"
+
+msgid "Key copied to clipboard"
+msgstr "Klucz skopiowany do schowka"
+
+msgid "Login"
+msgstr "Zaloguj"
+
+msgid "Login successful, return to JOSM."
+msgstr "Zalogowano pomyślnie, powrót do JOSM."
+
+msgid "Logout"
+msgstr "Wyloguj"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr "Nakaz skrętu"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Obrazy Mapillary"
+
+msgid "Mapillary changeset"
+msgstr "Zestaw zmian Mapillary"
+
+msgid "Mapillary filter"
+msgstr "Filtr Mapillary"
+
+msgid "Mapillary history"
+msgstr "Historia Mapillary"
+
+msgid "Mapillary layer"
+msgstr "Warstwy Mapillary"
+
+msgid "Mapillary login"
+msgstr "Logowanie Mapillary"
+
+msgid "Mapillary object layer"
+msgstr "Warstwa obiektów Mapillary"
+
+msgid "Mapillary objects"
+msgstr "Obiekty Mapillary"
+
+msgid "Months"
+msgstr "Miesiące"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr ""
+"Przesuwaj do lokalizacji zdjęć za pomocą przycisków następny/poprzedni."
+
+msgid "Next picture"
+msgstr "Następne zdjęcie"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Zakaz wjazdu"
+
+msgid "No image selected"
+msgstr "Nie wybrano obrazu"
+
+msgid "No images found"
+msgstr "Nie znaleziono zdjęć"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Zakaz wyprzedzania"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Zakaz postoju"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Zakaz zawracania"
+
+msgid "Not Logged in to Mapillary"
+msgstr "Nie zalogowany do Mapillary"
+
+msgid "Not older than: "
+msgstr "Nie starsze niż: "
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr "Ilość obrazów które mają być wstępnie pobrane (do przodu i tyłu)"
+
+msgid "Only images with signs"
+msgstr "Tylko obrazy ze znakami:"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Otwórz okno zestawu zmian Mapillary"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Otwiera okno filtrów Mapillary"
+
+msgid "Open Mapillary history dialog"
+msgstr "Otwiera okno histori Mapillary"
+
+msgid "Open Mapillary layer"
+msgstr "Otwórz wartwę Mapillary"
+
+msgid "Open Mapillary window"
+msgstr "Otwiera okno Mapillary"
+
+msgid "Pause"
+msgstr "Zatrzymaj"
+
+msgid "Pauses the walk."
+msgstr "Zatrzymuje spacer."
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Przejście dla pieszych"
+
+msgid "Play"
+msgstr "Idź"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "Wciśnij \"{0}\" aby pobrać obrazy"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Podgląd zdjęć po najechaniu na ich ikonę"
+
+msgid "Previous picture"
+msgstr "Poprzednie zdjęcie"
+
+msgid "Redo"
+msgstr "Ponów"
+
+msgid "Reset"
+msgstr "Przywróć domyślne"
+
+msgid "Rewrite imported images"
+msgstr "Przepisz zaimportowane obrazy"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Rondo"
+
+msgid "Select a directory"
+msgstr "Wybierz katalog"
+
+msgid "Select directory to import images from"
+msgstr "Wybierz katalog z którego zaimportować zdjęcia"
+
+msgid "Select mode"
+msgstr "Wybierz tryb"
+
+msgid "Select the images you want to import"
+msgstr "Wybierz zdjęcia które chcesz zaimportować"
+
+msgid "Sequence key"
+msgstr "Klucz sekwencji"
+
+msgid "Show detections on top of image"
+msgstr "Pokaż wykrywanie na górze obrazu"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Pokazuje następne zdjęcie w sekwencji"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Pokazuje poprzednie zdjęcie w sekwencji"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Ograniczenie prędkości"
+
+#. i18n: traffic sign
+msgid "Stop"
+msgstr "Znak stop"
+
+msgid "Stops the walk."
+msgstr "Zatrzymaj spacer."
+
+msgid "Submit changeset"
+msgstr "Zatwierdź zestaw zmian"
+
+msgid "Submit the current changeset"
+msgstr "Zatwierdź obecny zestaw zmian"
+
+#. CHECKSTYLE.OFF: LineLength
+msgid "Submit the current changeset to Mapillary"
+msgstr "Zatwierdź obecny zestaw zmian do Mapillary"
+
+msgid "Submitting Mapillary Changeset"
+msgstr "Wysyłanie zestawu zmian Mapillary"
+
+msgid "Submitting changeset to server…"
+msgstr "Wysyłanie zestawu zmian na serwer…"
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Obsługiwane formaty obrazów (JPG i PNG)"
+
+msgid "Tag conflict"
+msgstr "Konflikt znaczników"
+
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr ""
+"Warstwa Mapillary przestała pobierać obrazy, ponieważ żądany obszar jest za "
+"duży!"
+
+msgid ""
+"The Mapillary plugin now uses a separate panel to display extra information "
+"(like the image key) and actions for the currently selected Mapillary image "
+"(like viewing it in a browser)."
+msgstr ""
+"Wtyczka Mapillary uzywa teraz osobnego panelu do wyświetlania dodatkowych "
+"informacji (jak klucz obrazu) i akcji dla obecnie wybranego obrazu Mapillary"
+" (np. wyświetlanie w przeglądarce)."
+
+msgid "There are currently no layers with geotagged images!"
+msgstr "Nie ma obecnie warstw ze zdjęciami z zapisaną pozycją GPS."
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr ""
+"By rozwiązać ten problem, powinieneś przełączyć na tryb pobierania ''{0}'' i"
+" załadować obrazy Mapillary z mniejszej części mapy."
+
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr ""
+"By rozwiązać ten problem, powinieneś przybliżyć i załadować mniejszy obszar "
+"mapy."
+
+msgid "Too many map objects, zoom in to see all."
+msgstr "Za dużo elementów mapy, przybliż żeby zobaczyć wszystko."
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Łącznie obrazów Mapillary: {0}"
+
+msgid "Undo"
+msgstr "Cofnij"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Koleiny"
+
+msgid "Update"
+msgstr "Aktualizuj"
+
+msgid "Upload Mapillary images"
+msgstr "Wyślij obrazy Mapillary"
+
+msgid "Upload selected sequence"
+msgstr "Wyślij wybraną sekwencję"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Wysyłanie: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Używaj formatu 24-godzinnego."
+
+msgid "User"
+msgstr "Użytkownik"
+
+msgid "View in browser"
+msgstr "Zobacz w przeglądarce"
+
+msgid "Wait for full quality pictures"
+msgstr "Czekaj na zdjęcia w pełnej rozdzielczości"
+
+msgid "Walk mode"
+msgstr "Tryb spaceru"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"When opening Mapillary image in web browser, show the blur editor instead of"
+" the image viewer"
+msgstr ""
+"Podczas odwierania obrazu Mapillary w przeglądarce, pokaż edytor rozmazania "
+"zamiast podglądu zdjęcia"
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "Które warstwy zdjęć chcesz zaimportować do warstwy Mapillary?"
+
+msgid "Years"
+msgstr "Lata"
+
+msgid "You are currently not logged in."
+msgstr "Nie jesteś zalogowany."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Jesteś zalogowany jako \"{0}\"."
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr "Nie jesteś zalogowany, proszę to zrobić w ustawieniach Mapillary"
+
+#, java-format
+msgid "You have successfully uploaded {0} images to mapillary.com"
+msgstr "Pomyślnie wysłano {0} obrazów do mapillary.com"
+
+msgid "Zoom to selected image"
+msgstr "Powiększ do wybranego obrazu"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Powiększ do obecnie wybranego obrazu"
+
+msgid "approved"
+msgstr "przyjęte"
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "obszary z pobranymi danymi OSM"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "wszystko w widocznym obszarze"
+
+msgid "image has no key"
+msgstr "obraz nie ma klucza"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "tylko przy ręcznym żądaniu"
+
+msgid "pending"
+msgstr "oczekujące"
+
+msgid "rejected"
+msgstr "odrzucone"
+
+msgid "sequence has no key"
+msgstr "sekwencja nie ma klucza"
+
+msgid "unknown user"
+msgstr "nieznany użytkownik"
+
+#, java-format
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"Nie można odczytać elementów mapy z URL\n"
+"{1}!"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} images)"
+msgstr "{0} ({1} zdjęć)"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} wykryć"
+
+#, java-format
+msgid "{0} downloaded images"
+msgstr "{0} pobranych obrazów"
+
+#, java-format
+msgid "{0} images in total"
+msgstr "{0} łącznie obrazów"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{0} obrazów w {1} sekwencjach"
+
+#, java-format
+msgid "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr "{0} zdjęć zatwierdzonych, Klucz zestawu zmian: {1}, stan: {2}"
+
+#, java-format
+msgid "{0} imported images"
+msgstr "{0} zaimportowanych obrazów"
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr "Pozwala użytkownikom używać obrazów przechowywanych na mapillary.com."

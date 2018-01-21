@@ -1,0 +1,561 @@
+# Translations for the JOSM plugin 'Mapillary' (hu)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.9-12-g47f2b14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-21 18:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Gábor Babos <gabor.babos@gmail.com>, 2018\n"
+"Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "2 images joined"
+msgstr "2 két összekapcsolva"
+
+msgid "2 images unjoined"
+msgstr "2 kép szétválasztva"
+
+msgid "Add Mapillary tag"
+msgstr "Mapillary címke hozzáadása"
+
+msgid "All images in a directory"
+msgstr "Egy könyvtár összes képe"
+
+msgid "All map objects loaded."
+msgstr "Az összes térképobjektum betöltve."
+
+msgid "Cancel"
+msgstr "Mégse"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "A módosításcsomag feltöltése meghiúsult, hibakód: {0}, „{1} {2}”"
+
+msgid "Choose signs"
+msgstr "Táblák kiválasztása"
+
+msgid "Continues with the paused walk."
+msgstr "Folytatja a szüneteltetett sétát."
+
+msgid "Copy key"
+msgstr "Kulcs másolása"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr "Nem sikerült a geocímkézett kép importlása a Mapillary rétegre!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "A(z) „{0}” könyvtár nem importálható."
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "A(z) „{0}” kép nem importálható."
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "A(z) {0} URL nem nyitható meg böngészőben"
+
+msgid "Current Mapillary changeset"
+msgstr "Jelenlegi Mapillary módosításcsomag"
+
+msgid "Days"
+msgstr "Nap"
+
+msgid "Delete after upload"
+msgstr "Feltöltés után törlés"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "{0} kép törölve"
+msgstr[1] "{0} kép törölve"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Kép készítési idejének megjelenítése"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr "Megjeleníti a Mapillary által észlelt térképobjektumokat"
+
+msgid "Download Mapillary images in current view"
+msgstr "Mapillary képek letöltése a jelenlegi nézetben"
+
+msgid "Download mode"
+msgstr "Letöltési mód"
+
+msgid "Downloaded images"
+msgstr "Letöltött képek"
+
+msgid "Downloading"
+msgstr "Letöltés"
+
+msgid "Downloading Mapillary images"
+msgstr "Mapillary képek letöltése"
+
+msgid "Downloading map objects failed!"
+msgstr "A térképobjektumok letöltése sikertelen."
+
+msgid "Downloading map objects…"
+msgstr "Összes térképobjektum letöltése…"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Kísérleti béta funkciók engedélyezése (lehet hogy nem stabilak)"
+
+msgid "Explore"
+msgstr "Böngészés"
+
+msgid "Export Mapillary images"
+msgstr "Mapillary képek exportálása"
+
+msgid "Export all images"
+msgstr "Összes kép exportálása"
+
+msgid "Export selected images"
+msgstr "Kijelölt képek exportálása"
+
+msgid "Export selected sequence"
+msgstr "Kijelölt sorozat exportálása"
+
+msgid "Finished upload"
+msgstr "Feltöltés befejeződött"
+
+msgid "Follow selected image"
+msgstr "Kijelölt kép követése"
+
+msgid "From existing image layer"
+msgstr "Létező képrétegről"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Melyik forrásból akarsz képeket importálni a Mapillary rétegre?"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Elsőbbségadás kötelező"
+
+msgid "Go forward"
+msgstr "Előre"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr ""
+"A feltöltés előtt menj a beállításokba és jelentkezz be a Mapillary "
+"fiókodba."
+
+msgid "I got it, close this."
+msgstr "Rendben, bezárás"
+
+msgid "Image actions"
+msgstr "Képműveletek"
+
+msgid "Image detections"
+msgstr "Képészlelések"
+
+msgid "Image info"
+msgstr "Képinformációk"
+
+msgid "Image key"
+msgstr "Képkulcs"
+
+msgid "Images from my file system"
+msgstr "Képek a fájlrendszerről"
+
+msgid "Import"
+msgstr "Importálás"
+
+msgid "Import exception"
+msgstr "Importálási kivétel"
+
+msgid "Import local pictures"
+msgstr "Helyi képek importálása"
+
+msgid "Import pictures"
+msgstr "Képek importálása"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Képek importálása a Mapillary rétegre"
+
+msgid "Imported images"
+msgstr "Importált képek"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "{0} kép importálva"
+msgstr[1] "{0} kép importálva"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Veszélyes útkereszteződés"
+
+msgid "Join mode"
+msgstr "Összekapcsolási mód"
+
+msgid "Join/unjoin pictures"
+msgstr "Képek össze-/szétkapcsolása"
+
+msgid "Jump to blue"
+msgstr "Kékhez ugrás"
+
+msgid "Jump to red"
+msgstr "Piroshoz ugrás"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "A kék vonal végén lévő képhez ugrik"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "A piros vonal végén lévő képhez ugrik"
+
+msgid "Key copied to clipboard"
+msgstr "Kulcs vágólapra másolva"
+
+msgid "Login"
+msgstr "Belépés"
+
+msgid "Login successful, return to JOSM."
+msgstr "Bejelentkezés sikeres, vissza a JOSM-hez."
+
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr "Kötelező haladási irány"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Mapillary képek"
+
+msgid "Mapillary changeset"
+msgstr "Mapillary módosításcsomag"
+
+msgid "Mapillary filter"
+msgstr "Mapillary szűrő"
+
+msgid "Mapillary history"
+msgstr "Mapillary előzmények"
+
+msgid "Mapillary layer"
+msgstr "Mapillary réteg"
+
+msgid "Mapillary login"
+msgstr "Mapillary bejelentkezés"
+
+msgid "Mapillary object layer"
+msgstr "Mapillary objektumréteg"
+
+msgid "Mapillary objects"
+msgstr "Mapillary objektumok"
+
+msgid "Months"
+msgstr "Hónap"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr "Képhez ugrás az előző/következő gomb megnyomásakor"
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "{0} kép áthelyezve"
+msgstr[1] "{0} kép áthelyezve"
+
+msgid "Next picture"
+msgstr "Következő kép"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Behajtani tilos"
+
+msgid "No image selected"
+msgstr "Nincs kép kijelölve"
+
+msgid "No images found"
+msgstr "Nem található kép"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Előzni tilos"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Várakozni tilos"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Bekanyarodni tilos"
+
+msgid "Not Logged in to Mapillary"
+msgstr "Nem vagy bejelentkezve Mapillary-be"
+
+msgid "Not older than: "
+msgstr "Nem régebbi mint: "
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr "Előtöltendő képek száma (előre és hátra)"
+
+msgid "Only images with signs"
+msgstr "Csak jelzőtáblás képek"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Mapillary módosításcsomag párbeszédablak megnyitása"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Mapillary szűrő párbeszédablak megnyitása"
+
+msgid "Open Mapillary history dialog"
+msgstr "Mapillary előzmény-párbeszédablak megnyitása"
+
+msgid "Open Mapillary layer"
+msgstr "Mapillary réteg megnyitása"
+
+msgid "Open Mapillary window"
+msgstr "Mapillary-ablak megnyitása"
+
+msgid "Pause"
+msgstr "Szünet"
+
+msgid "Pauses the walk."
+msgstr "Szünetelteti a sétát."
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Gyalogosátkelő"
+
+msgid "Play"
+msgstr "Lejátszás"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "Képek letöltéséhez nyomd meg a következőt: ''{0}''"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Kép előnézete, ha az egér az ikon fölött áll"
+
+msgid "Previous picture"
+msgstr "Előző kép"
+
+msgid "Redo"
+msgstr "Újra"
+
+msgid "Reset"
+msgstr "Alaphelyzet"
+
+msgid "Rewrite imported images"
+msgstr "Importált képek átírása"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Körforgalom"
+
+msgid "Select a directory"
+msgstr "Könyvtár kijelölése"
+
+msgid "Select directory to import images from"
+msgstr "Az importálandó képeket tartalmazó könyvtár kijelölése"
+
+msgid "Select mode"
+msgstr "Kijelölés mód"
+
+msgid "Select the images you want to import"
+msgstr "Importálandó képek kijelölése"
+
+msgid "Sequence key"
+msgstr "Sorozat kulcs"
+
+msgid "Show detections on top of image"
+msgstr "Észlelések jelzése a kép tetején"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Megmutatja a sorozat következő képét"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Megmutatja a sorozat előző képét"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Sebességkorlátozás"
+
+#. i18n: traffic sign
+msgid "Stop"
+msgstr "Stoptábla"
+
+msgid "Stops the walk."
+msgstr "Séta megállítása"
+
+msgid "Submit changeset"
+msgstr "Módosításcsomag beküldése"
+
+msgid "Submit the current changeset"
+msgstr "Jelenlegi módosításcsomag beküldése"
+
+#. CHECKSTYLE.OFF: LineLength
+msgid "Submit the current changeset to Mapillary"
+msgstr "Jelenlegi módosításcsomag beküldése a Mapillary-re"
+
+msgid "Submitting Mapillary Changeset"
+msgstr "Mapillary módosításcsomagok beküldése"
+
+msgid "Submitting changeset to server…"
+msgstr "Módosításcsomag elküldése a kiszolgálónak…"
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Támogatott képformátumok (JPG és PNG)"
+
+msgid "Tag conflict"
+msgstr "Címkeütközés"
+
+msgid "There are currently no layers with geotagged images!"
+msgstr "Jelenleg nincsenek geocímkézett képrétegek."
+
+msgid "Too many map objects, zoom in to see all."
+msgstr "Túl sok térképobjektum, nagyíts hogy lásd mindet."
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Összes Mapillary kép: {0}"
+
+#, java-format
+msgid "Turned {0} image"
+msgid_plural "Turned {0} images"
+msgstr[0] "{0} kép elfordítva"
+msgstr[1] "{0} kép elfordítva"
+
+msgid "Undo"
+msgstr "Visszavonás"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Egyenetlen úttest"
+
+msgid "Update"
+msgstr "Frissítés"
+
+msgid "Upload Mapillary images"
+msgstr "Mapillary képek feltöltése"
+
+msgid "Upload selected sequence"
+msgstr "Kijelölt sorozat feltöltése"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Feltöltés: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "24 órás formátum használata"
+
+msgid "User"
+msgstr "Felhasználó"
+
+msgid "View in browser"
+msgstr "Megtekintés böngészőben"
+
+msgid "Wait for full quality pictures"
+msgstr "Várj a teljes minőségű képekre"
+
+msgid "Walk mode"
+msgstr "Gyalogos mód"
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "Melyik képréteget akarod beimportálni a Mapillary rétegre?"
+
+msgid "Years"
+msgstr "Év"
+
+msgid "You are currently not logged in."
+msgstr "Jelenleg nem vagy bejelentkezve."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Be vagy jelentkezve „{0}” néven."
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr ""
+"Nem vagy bejelentkezve. Kérlek jelentkezz be Mapillary-be a beállításokban"
+
+#, java-format
+msgid "You have successfully uploaded {0} images to mapillary.com"
+msgstr "Sikeresen feltöltöttél {0} képet a mapillary.com-ra"
+
+msgid "Zoom to selected image"
+msgstr "Nagyítás a kijelölt képre"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Nagyítás a jelenleg kijelölt Mapillary képre"
+
+msgid "approved"
+msgstr "elfogadva"
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "letöltött OSM-adatokat tartalmazó területek"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "minden, a látható területen"
+
+msgid "image has no key"
+msgstr "a képnek nincs kulcsa"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "csak kézi lekérésre"
+
+msgid "pending"
+msgstr "függőben"
+
+msgid "rejected"
+msgstr "elutasítva"
+
+msgid "unknown user"
+msgstr "ismeretlen felhasználó"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} images)"
+msgstr "{0} ({1} kép)"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} észlelés"
+
+#, java-format
+msgid "{0} downloaded images"
+msgstr "{0} letöltött kép"
+
+#, java-format
+msgid "{0} images in total"
+msgstr "{0} kép összesen"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{0} kép {1} sorozatban"
+
+#, java-format
+msgid "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr "{0} kép beküldve, Módosításcsomag kulcsa: {1}, Állapot: {2}"
+
+#, java-format
+msgid "{0} imported images"
+msgstr "{0} importált kép"
+
+#, java-format
+msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr "{0} sorozat, egyenként {1} és {2} közti képpel (ø {3})"
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr "Lehetővé teszi a mapillary.com fotóinak használatát"

@@ -1,0 +1,336 @@
+# Translations for the JOSM plugin 'Mapillary' (ca)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.9-12-g47f2b14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-21 18:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: floscher <florian@schaeferban.de>, 2018\n"
+"Language-Team: Catalan (https://www.transifex.com/josm/teams/2544/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "2 images joined"
+msgstr "2 imatges afegides"
+
+msgid "2 images unjoined"
+msgstr "2 imatges tretes"
+
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgid "Choose signs"
+msgstr "Selecciona un senyal"
+
+msgid "Continues with the paused walk."
+msgstr "Continua amb la cminada pausada."
+
+msgid "Days"
+msgstr "Dies"
+
+msgid "Delete after upload"
+msgstr "Suprimeix un cop s''hagi pujat"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "Suprimida {0} imatge"
+msgstr[1] "Suprimides {0} imatges"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Mostra l''hora a la qual es van fer les fotografies"
+
+msgid "Download Mapillary images in current view"
+msgstr "Descarrega imatges de Mapillary a la vista actual"
+
+msgid "Download mode"
+msgstr "Mode de descàrrega"
+
+msgid "Downloaded images"
+msgstr "Imatges descarregades"
+
+msgid "Downloading"
+msgstr "Descarregant"
+
+msgid "Downloading Mapillary images"
+msgstr "Descarregant imatges de Mapillary"
+
+msgid "Explore"
+msgstr "Explora"
+
+msgid "Export all images"
+msgstr "Exporta totes les imatges"
+
+msgid "Export selected images"
+msgstr "Exporta les imatges seleccionades"
+
+msgid "Export selected sequence"
+msgstr "Exporta la seqüència seleccionada"
+
+msgid "Finished upload"
+msgstr "La pujada ha finalitzat"
+
+msgid "Follow selected image"
+msgstr "Segueix la imatge seleccionada"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Cediu el pas"
+
+msgid "Go forward"
+msgstr "Vés endavant"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr ""
+"Aneu a la configuració i inicieu una sessió de Mapillary abans de fer la "
+"pujada."
+
+msgid "Import"
+msgstr "Importa"
+
+msgid "Import local pictures"
+msgstr "Importa imatges locals"
+
+msgid "Import pictures"
+msgstr "Importa imatges"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Importa imatges a la capa de Mapillary"
+
+msgid "Imported images"
+msgstr "Imatges importades"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "Importada {0} imatge"
+msgstr[1] "Importades {0} imatges"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Intersecció"
+
+msgid "Join mode"
+msgstr "Afegeix mode"
+
+msgid "Join/unjoin pictures"
+msgstr "Afegeix/treu fotografies"
+
+msgid "Jump to blue"
+msgstr "Salta al blau"
+
+msgid "Jump to red"
+msgstr "Salta al vermell"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "Salta a la fotografia de l''altra banda de la línia blava"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "Salta a la fotografia de l''altra banda de la línia vermella"
+
+msgid "Login"
+msgstr "Inici de sessió"
+
+msgid "Login successful, return to JOSM."
+msgstr "Sessió iniciada correctament, retorn a JOSM."
+
+msgid "Logout"
+msgstr "Tanca la sessió"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr "Sentit obligatori"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Imatges de Mapillary"
+
+msgid "Mapillary filter"
+msgstr "Filtre de Mapillary"
+
+msgid "Mapillary history"
+msgstr "Historial de Mapillary"
+
+msgid "Mapillary layer"
+msgstr "Capa de Mapillary"
+
+msgid "Mapillary login"
+msgstr "Inici de sessió de Mapillar"
+
+msgid "Months"
+msgstr "Mesos"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr "Mou a la ubicació de les fotografies amb els botons següent/previ"
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "{0} imatge moguda"
+msgstr[1] "{0} imatges mogudes"
+
+msgid "Next picture"
+msgstr "Imatge següent"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Entrada prohibida"
+
+msgid "No image selected"
+msgstr "No heu seleccionat cap imatge"
+
+msgid "No images found"
+msgstr "No s''ha trobat cap imatge"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Avançament prohibit"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Estacionament prohibit"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Gir prohibit"
+
+msgid "Not older than: "
+msgstr "No anteriors a: "
+
+msgid "Only images with signs"
+msgstr "Només les imatges amb senyals"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Obre el diàleg de filtre de  Mapillary"
+
+msgid "Open Mapillary history dialog"
+msgstr "Obre el diàleg de l''historial de Mapillary"
+
+msgid "Open Mapillary window"
+msgstr "Obre una finestra de Mapillary"
+
+msgid "Pause"
+msgstr "Pausa"
+
+msgid "Pauses the walk."
+msgstr "Posa en pausa la caminada."
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Pas de vianants"
+
+msgid "Play"
+msgstr "Reprodueix"
+
+msgid "Previous picture"
+msgstr "Imatge anterior"
+
+msgid "Redo"
+msgstr "Refés"
+
+msgid "Reset"
+msgstr "Reinicia"
+
+msgid "Rewrite imported images"
+msgstr "Reescriu les imatges importades"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Rotonda"
+
+msgid "Select a directory"
+msgstr "Seleccioneu un directori"
+
+msgid "Select mode"
+msgstr "Seleccioneu el mode"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Mostra la següent imatge de la seqüència"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Mostra la imatge anterior de la seqüència"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Límit de velocitat"
+
+#. i18n: traffic sign
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Stops the walk."
+msgstr "Atura la caminada."
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Els formats de fitxer suportats  són JPG i PNG"
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Nombre total d''imatges de Mapillary: {0}"
+
+#, java-format
+msgid "Turned {0} image"
+msgid_plural "Turned {0} images"
+msgstr[0] "{0} imatge girada"
+msgstr[1] "{0} imatges girades"
+
+msgid "Undo"
+msgstr "Desfés"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Perfil irregular"
+
+msgid "Update"
+msgstr "Actualitza"
+
+msgid "Upload selected sequence"
+msgstr "Puja la seqüència seleccionada"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Pujant: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Utilitza un format de 24 hores"
+
+msgid "User"
+msgstr "Usuari"
+
+msgid "Wait for full quality pictures"
+msgstr "Espereu per a imatges de la màxima qualitat"
+
+msgid "Walk mode"
+msgstr "Mode caminant"
+
+msgid "Years"
+msgstr "Anys"
+
+msgid "You are currently not logged in."
+msgstr "Ara no esteu connectat."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Esteu connectat com ''{0}''."
+
+msgid "Zoom to selected image"
+msgstr "Amplia la imatge seleccionada"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Amplia la imatge seleccionada de Mapillary"
+
+msgid "pending"
+msgstr "pendent"

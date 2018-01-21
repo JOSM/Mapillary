@@ -48,7 +48,7 @@ sonarqube {
     property 'sonar.host.url', 'https://sonarqube.com'
     property 'sonar.projectKey', 'org.openstreetmap.josm.plugins:Mapillary'
     property 'sonar.projectName', 'josm-mapillary-plugin'
-    property 'sonar.projectVersion', getVersionName()
+    property 'sonar.projectVersion', project.version
     property 'sonar.projectDescription', property('plugin.description')
     property 'sonar.sources', ['src']
   }

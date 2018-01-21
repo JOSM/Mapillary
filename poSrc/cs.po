@@ -1,0 +1,664 @@
+# Translations for the JOSM plugin 'Mapillary' (cs)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.9-12-g47f2b14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-21 18:23+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: floscher <florian@schaeferban.de>, 2018\n"
+"Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgid "2 images joined"
+msgstr "2 obrázky sloučeny"
+
+msgid "2 images unjoined"
+msgstr "2 obrázky rozděleny"
+
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr "Značka s klíčem <i>{0}</i> je již na vybraném objektu OSM přítomna."
+
+msgid "Add Mapillary tag"
+msgstr "Přidat značku Mapillary"
+
+msgid "All images in a directory"
+msgstr "Všechny obrázky v adresáři"
+
+msgid "All map objects loaded."
+msgstr "Všechny objekty mapy načteny."
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"Při pokusu o odeslání sady změn na server došlo k výjimce. Pokud k tomu "
+"dojde opakovaně, zvažte zaslání hlášení o chybě pomocí menu Nápověda. Pokud "
+"tuto zprávu vidíte poprvé, tak to prostě zkuste udělat znovu. Může se jednat"
+" o problém s připojením k Internetu."
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "Nahrání sady změn na server selhalo s {0} chybou ''{1} {2}''!"
+
+msgid "Choose signs"
+msgstr "Zvolit značky"
+
+msgid "Continues with the paused walk."
+msgstr "Pokračuje v pozastaveném průchodu."
+
+msgid "Copy key"
+msgstr "Kopírovat klíč"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr ""
+"Nepodařilo se importovat obrázek se zem. souřadnicemi do vrstvy Mapillary!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "Nepodařilo se importovat adresář ''{0}''!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "Nepodařilo se importovat obrázek ''{0}''!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "Nemohu otevřít URL {0} v prohlížeči"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Nelze číst z URL {0}!"
+
+msgid "Current Mapillary changeset"
+msgstr "Aktuální sada změn Mapillary"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Useknout sekvence na hranicích stahování"
+
+msgid "Days"
+msgstr "Dnů"
+
+msgid "Delete after upload"
+msgstr "Smazat po nahrání"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "Smazán {0} obrázek"
+msgstr[1] "Smazány {0} obrázky"
+msgstr[2] "Smazáno {0} obrázků"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Zobrazit hodinu, kdy byl obrázek pořízen"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr "Zobrazí podrobné informace o aktuálně zvoleném obrázku Mapillary."
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr "Zobrazí objekty detekované Mapillary z jejich fotografií ulic"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr "Zobrazí vrstvu, ve které jsou mapové objekty detekované Mapillary"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Opravdu chcete nahradit současnou hodnotu <i>{0}</i> novou hodnotou "
+"<i>{1}</i>?"
+
+msgid "Download Mapillary images in current view"
+msgstr "Stáhnout obrázky Mapillary v aktuálním zobrazení"
+
+msgid "Download mode"
+msgstr "Režim stahování"
+
+msgid "Downloaded images"
+msgstr "Stažené obrázky"
+
+msgid "Downloading"
+msgstr "Stahuji"
+
+msgid "Downloading Mapillary images"
+msgstr "Stáhnout obrázky z Mapillary"
+
+msgid "Downloading map objects failed!"
+msgstr "Stažení objektů mapy selhalo!"
+
+msgid "Downloading map objects…"
+msgstr "Stahuji objekty mapy..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Povolit experimentální beta-funkce (může být nestabilní)"
+
+msgid "Explore"
+msgstr "Prozkoumat"
+
+msgid "Export Mapillary images"
+msgstr "Exportovat obrázky Mapillary"
+
+msgid "Export all images"
+msgstr "Exportovat všechny obrázky"
+
+msgid "Export selected images"
+msgstr "Exportovat zvolené obrázky"
+
+msgid "Export selected sequence"
+msgstr "Exportovat vybranou sekvenci"
+
+msgid "Finished upload"
+msgstr "Nahrávání na server dokončeno"
+
+msgid "Follow selected image"
+msgstr "Následovat vybraný obrázek"
+
+msgid "From existing image layer"
+msgstr "Z existující vrstvy obrázků"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Z jakého zdroje chcete importovat obrázky do vrstvy Mapillary?"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Dej přednost"
+
+msgid "Go forward"
+msgstr "Vpřed"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr "Jděte do nastavení a před nahráváním se přihlašte na Mapillary."
+
+msgid "I got it, close this."
+msgstr "Rozumím, zavřít."
+
+msgid "Image actions"
+msgstr "Akce s obrázkem"
+
+msgid "Image detections"
+msgstr "Detekce obrázků"
+
+msgid "Image info"
+msgstr "Informace o obrázku"
+
+msgid "Image key"
+msgstr "Klíč obrázku"
+
+msgid "Images from my file system"
+msgstr "Obrázky z mého souborového systému"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Import exception"
+msgstr "Výjimka z importu"
+
+msgid "Import local pictures"
+msgstr "Import lokálních obrázků"
+
+msgid "Import pictures"
+msgstr "Importovat obrázky"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Importovat obrázky do vrstvy Mapillary"
+
+msgid "Imported images"
+msgstr "Importované obrázky"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "Importován {0} obrázek"
+msgstr[1] "Importovány {0} obrázky"
+msgstr[2] "Importováno {0} obrázků"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Upozornění na křižovatku"
+
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+"Lze ho aktivovat kliknutím levým tlačítkem na spodek této zprávy nebo "
+"tlačítkem na panelu nástrojů vlevo, které má stejnou ikonu."
+
+msgid "Join mode"
+msgstr "Režim slučování"
+
+msgid "Join/unjoin pictures"
+msgstr "Sloučit/rozdělit obrázky"
+
+msgid "Jump to blue"
+msgstr "Skočit na modrou"
+
+msgid "Jump to red"
+msgstr "Skočit na červenou"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "Skočí na obrázek na druhé straně modré čáry"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "Skočí na obrázek na druhé straně červené čáry"
+
+msgid "Key copied to clipboard"
+msgstr "Klíč zkopírován do schránky"
+
+msgid "Login"
+msgstr "Přihlásit se"
+
+msgid "Login successful, return to JOSM."
+msgstr "Přihlášení úspěšné, návrat do JOSM."
+
+msgid "Logout"
+msgstr "Odhlásit se"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr "Přikázaný směr jízdy (jakýkoliv)"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Obrázky Mapillary"
+
+msgid "Mapillary changeset"
+msgstr "Sada změn Mapillary"
+
+msgid "Mapillary filter"
+msgstr "Filtr Mapillary"
+
+msgid "Mapillary history"
+msgstr "Historie Mapillary"
+
+msgid "Mapillary image"
+msgstr "Obrázek Mapillary"
+
+msgid "Mapillary layer"
+msgstr "Vrstva Mapillary"
+
+msgid "Mapillary login"
+msgstr "Přihlášení Mapillary"
+
+msgid "Mapillary object layer"
+msgstr "Vrstva objektů Mapillary"
+
+msgid "Mapillary objects"
+msgstr "Objekty Mapillary"
+
+msgid "Months"
+msgstr "Měsíců"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr "Přesunout se na umístění obrázku tlačítky další/předchozí"
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "Posunut {0} obrázek"
+msgstr[1] "Posunuty {0} obrázky"
+msgstr[2] "Posunuto {0} obrázků"
+
+msgid "Next picture"
+msgstr "Další obrázek"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Zákaz vjezdu"
+
+msgid "No image selected"
+msgstr "Nebyl vybrán žádný obrázek"
+
+msgid "No images found"
+msgstr "Nebyly nalezeny žádné obrázky"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Zákaz předjíždění"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Zákaz parkování"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Zákaz odbočení"
+
+msgid "Not Logged in to Mapillary"
+msgstr "Nepřihlášeno k Mapillary"
+
+msgid "Not older than: "
+msgstr "Ne starší než: "
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr "Počet snímků, která se mají načíst dopředu (vpřed a vzad)"
+
+msgid "Only images with signs"
+msgstr "Pouze obrázky se značkami"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Otevřít dialog sady změn Mapillary"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Otevřít okno filtru Mapillary"
+
+msgid "Open Mapillary history dialog"
+msgstr "Otevřít dialog historie Mapillary"
+
+msgid "Open Mapillary layer"
+msgstr "Otevřená vrstva Mapillary"
+
+msgid "Open Mapillary window"
+msgstr "Otevřít okno Mapillary"
+
+msgid "Pause"
+msgstr "Pozastavit"
+
+msgid "Pauses the walk."
+msgstr "Pozastaví průchod."
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Přechod pro chodce"
+
+msgid "Play"
+msgstr "Přehrát"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "Stiskněte \"{0}\" pro stažení obrázků"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Nahlédnout obrázek při ukázání na jeho ikonu"
+
+msgid "Previous picture"
+msgstr "Předchozí obrázek"
+
+msgid "Redo"
+msgstr "Znovu"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Rewrite imported images"
+msgstr "Přepsat importované obrázky"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Kruhový objezd"
+
+msgid "Select a directory"
+msgstr "Zvolte adresář"
+
+msgid "Select directory to import images from"
+msgstr "Zvolte adresář, ze kterého chcete importovat obrázky"
+
+msgid "Select mode"
+msgstr "Výběr režimu"
+
+msgid "Select the images you want to import"
+msgstr "Zvolte obrázky, které chcete importovat"
+
+msgid "Sequence key"
+msgstr "Klíč sekvence"
+
+msgid "Show detections on top of image"
+msgstr "Zobrazit detekce na vrcholu snímku"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Ukáže další obrázek v sekvenci"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Ukáže předchozí obrázek v sekvenci"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Omezení rychlosti"
+
+#. i18n: traffic sign
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Stops the walk."
+msgstr "Ukončí průchod."
+
+msgid "Submit changeset"
+msgstr "Odeslat sadu změn"
+
+msgid "Submit the current changeset"
+msgstr "Odeslat aktuální sadu změn"
+
+#. CHECKSTYLE.OFF: LineLength
+msgid "Submit the current changeset to Mapillary"
+msgstr "Odeslat aktuální sadu změn na Mapillary"
+
+msgid "Submitting Mapillary Changeset"
+msgstr "Odesílání sady změn Mapillary"
+
+msgid "Submitting changeset to server…"
+msgstr "Odesílám sadu změn na server…"
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Podporované formáty obrázků (JPG a PNG)"
+
+msgid "Tag conflict"
+msgstr "Konflikt značek"
+
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr ""
+"Do vrstvy Mapillary se již nenačítají obrázky, protože požadovaná oblast je "
+"příliš velká!"
+
+msgid ""
+"The Mapillary plugin now uses a separate panel to display extra information "
+"(like the image key) and actions for the currently selected Mapillary image "
+"(like viewing it in a browser)."
+msgstr ""
+"Doplněk Mapillary nyní používá zvláštní panel pro zobrazení dodatečných "
+"informací (jako třeba klíče image) a akcí s aktuálně zvoleným obrázkem z "
+"Mapillary (jako třeba zobrazení v prohlížeči)."
+
+msgid "There are currently no layers with geotagged images!"
+msgstr ""
+"Momentálně nemáme žádné vrstvy s obrázky se zeměpisnými sourřadnicemi!"
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr ""
+"Chcete-li tento problém vyřešit, přepněte na režim stahování ''{0}'' a "
+"načtěte obrázky Mapillary z menší části mapy."
+
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr ""
+"Chcete-li tento problém vyřešit, přibližte obraz a načtěte menší oblast "
+"mapy."
+
+msgid "Too many map objects, zoom in to see all."
+msgstr ""
+"Příliš mnoho mapových objektů, zvětšte přiblížení, abyste viděli všechny."
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Celkem obrázků z Mapillary: {0}"
+
+#, java-format
+msgid "Turned {0} image"
+msgid_plural "Turned {0} images"
+msgstr[0] "Otočen {0} obrázek"
+msgstr[1] "Otočeny {0} obrázky"
+msgstr[2] "Otočeno {0} obrázků"
+
+msgid "Undo"
+msgstr "Zpět"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Nerovnost vozovky"
+
+msgid "Update"
+msgstr "Aktualizovat"
+
+msgid "Upload Mapillary images"
+msgstr "Nahrát na server obrázky Mapillary"
+
+msgid "Upload selected sequence"
+msgstr "Nahrát vybranou sekvenci"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Nahrávám na server: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Použít 24hodinový formát"
+
+msgid "User"
+msgstr "Uživatel"
+
+msgid "View in browser"
+msgstr "Zobrazit v prohlížeči"
+
+msgid "Wait for full quality pictures"
+msgstr "Počkat na obrázek v maximální kvalitě"
+
+msgid "Walk mode"
+msgstr "Režim chůze"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"When opening Mapillary image in web browser, show the blur editor instead of"
+" the image viewer"
+msgstr ""
+"Při otevírání obrázku Mapillary v internetovém prohlížeči zobrazit namísto "
+"prohlížeče obrázků editor rozmazání."
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "Které vrstvy obrázků chcete importovat do vrstvy Mapillary?"
+
+msgid "Years"
+msgstr "Let"
+
+msgid "You are currently not logged in."
+msgstr "Momentálně nejste přihlášen."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Jste přihlášen jako ''{0}''."
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr "Nejste přihlášeni, prosím, přihlaste se k Mapillary v předvolbách"
+
+#, java-format
+msgid "You have successfully uploaded {0} images to mapillary.com"
+msgstr "Úspěšně jste nahrál {0} obrázky na mapillary.com"
+
+msgid "Zoom to selected image"
+msgstr "Zvětšit na zvolený obrázek"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Zvětšit na aktuálně zvolený obrázek Mapillary"
+
+msgid "approved"
+msgstr "schváleno"
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "oblasti se staženými daty OSM"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "vše ve viditelné oblasti"
+
+msgid "image has no key"
+msgstr "obrázek nemá žádný klíč"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "pouze pokud je ručně požadováno"
+
+msgid "pending"
+msgstr "čekající"
+
+msgid "rejected"
+msgstr "zamítnuto"
+
+msgid "sequence has no key"
+msgstr "sekvence nemá žádný klíč"
+
+msgid "unknown user"
+msgstr "neznámý uživatel"
+
+#, java-format
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"Nelze načíst objekty mapy z URL\n"
+"{1}!"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} images)"
+msgstr "{0} ({1} obrázků)"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} detekcí"
+
+#, java-format
+msgid "{0} downloaded images"
+msgstr "{0} stažených obrázků"
+
+#, java-format
+msgid "{0} images in total"
+msgstr "{0} obrázků celkem"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{0} obrázků ve {1} sekvencích"
+
+#, java-format
+msgid "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr "{0} obrázků předáno, klíč sady změn: {1}, stav: {2}"
+
+#, java-format
+msgid "{0} imported images"
+msgstr "{0} importovaných obrázků"
+
+#, java-format
+msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr "{0} sekvencí, každá obsahuje mezi {1} a {2} obrázky (ø {3})"
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr "Dovoluje uživateli pracovat s obrázky uloženými na mapillary.com"
