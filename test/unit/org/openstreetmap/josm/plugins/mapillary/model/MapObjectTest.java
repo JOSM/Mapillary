@@ -2,9 +2,8 @@
 package org.openstreetmap.josm.plugins.mapillary.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
@@ -29,8 +28,6 @@ public class MapObjectTest {
   private static MapObject mo1;
   private static MapObject mo2;
   private static MapObject mo3;
-  private static MapObject moNullKey;
-  private static MapObject moNullKey2;
 
   private static Field iconUrlGen;
   private static Object iconUrlGenValue;
@@ -39,8 +36,6 @@ public class MapObjectTest {
     mo1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
     mo2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0, 0);
     mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
-    moNullKey = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
-    moNullKey2 = new MapObject(new LatLon(0, 0), "", "", "", 0, 0, 0);
   }
 
   @Before
@@ -48,8 +43,6 @@ public class MapObjectTest {
     initMapObjects();
     // Sets the keys of the null-key-constants to null
     Field keyField = TestUtil.getAccessibleField(KeyIndexedObject.class, "key");
-    keyField.set(moNullKey, null);
-    keyField.set(moNullKey2, null);
 
     // Replace function for generating icon URLs with one that searches the local resources for files
     // If a resource can't be found, return an invalid URL
@@ -113,16 +106,12 @@ public class MapObjectTest {
   }
 
   @Test
-  @SuppressWarnings({ "PMD.EqualsNull", "PMD.PositionLiteralsFirstInComparisons" })
   public void testEquals() throws SecurityException, IllegalArgumentException {
-    assertEquals(moNullKey2.hashCode(), moNullKey.hashCode());
-    assertTrue(mo1.equals(mo1));
-    assertFalse(mo1.equals(null));
-    assertFalse(mo1.equals(""));
-    assertFalse(moNullKey.equals(mo1));
-    assertTrue(moNullKey.equals(moNullKey2));
-    assertFalse(mo1.equals(mo2));
-    assertTrue(mo1.equals(mo3));
+    assertEquals(mo1, mo1);
+    assertNotEquals(mo1, null);
+    assertNotEquals(mo1, "");
+    assertNotEquals(mo1, mo2);
+    assertEquals(mo1, mo3);
     assertEquals(mo1.hashCode(), mo3.hashCode());
   }
 

@@ -27,7 +27,7 @@ public class KeyIndexedObject {
   @Override
   public int hashCode() {
     final int prime = 31;
-    return prime * (prime + getClass().getName().hashCode()) + ((key == null) ? 0 : key.hashCode());
+    return prime * (prime + getClass().getName().hashCode()) + key.hashCode();
   }
 
   /* (non-Javadoc)
@@ -45,11 +45,7 @@ public class KeyIndexedObject {
       return false;
     }
     KeyIndexedObject other = (KeyIndexedObject) obj;
-    if (key == null) {
-      if (other.key != null) {
-        return false;
-      }
-    } else if (!key.equals(other.key)) {
+    if (!key.equals(other.key)) {
       return false;
     }
     return true;

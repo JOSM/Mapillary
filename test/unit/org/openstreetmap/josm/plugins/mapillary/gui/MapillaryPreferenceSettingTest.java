@@ -20,7 +20,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
