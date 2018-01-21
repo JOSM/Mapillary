@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -212,7 +211,7 @@ public final class MapillaryURL {
 
   /**
    * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
-   * Instead such an exception will lead to an {@link Main#error(Throwable)}.
+   * Instead such an exception will lead to an {@link Logging#error(Throwable)}.
    * So you should be very confident that your URL is well-formed when calling this method.
    * @param strings the Strings describing the URL
    * @return the URL that is constructed from the given string

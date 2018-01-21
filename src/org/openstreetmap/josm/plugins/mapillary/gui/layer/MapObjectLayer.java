@@ -41,7 +41,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     private final int colorValue;
     public final String message;
 
-    private STATUS(final String message, final Color color) {
+    STATUS(final String message, final Color color) {
       this.colorValue = color.getRGB();
       this.message = message;
     }

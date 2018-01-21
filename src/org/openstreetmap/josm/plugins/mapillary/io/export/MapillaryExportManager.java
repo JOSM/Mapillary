@@ -5,17 +5,15 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.xml.sax.SAXException;
-
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.io.OsmTransferException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
@@ -35,10 +33,10 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
-  private final ArrayBlockingQueue<BufferedImage> queue;
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
+  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages = new ArrayBlockingQueue<>(10);
 
-  private final int amount;
+  private int amount;
   private Set<MapillaryAbstractImage> images;
   private String path;
 
@@ -48,20 +46,18 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   /**
    * Main constructor.
    *
-   * @param images
-   *          Set of {@link MapillaryAbstractImage} objects to be exported.
-   * @param path
-   *          Export path.
+   * @param images Set of {@link MapillaryAbstractImage} objects to be exported.
+   * @param path Export path.
    */
   public MapillaryExportManager(Set<MapillaryAbstractImage> images, String path) {
-    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
-        "Exporting Mapillary Images"), true);
-    this.queue = new ArrayBlockingQueue<>(10);
-    this.queueImages = new ArrayBlockingQueue<>(10);
-
-    this.images = images;
-    this.amount = images.size();
+    super(
+      tr("Downloading") + "…",
+      new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images")),
+      true
+    );
+    this.images = images == null ? new HashSet<>() : images;
     this.path = path;
+    this.amount = this.images.size();
   }
 
   /**
@@ -74,12 +70,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    *           If the file of one of the {@link MapillaryImportedImage} objects
    *           doesn't contain a picture.
    */
-  public MapillaryExportManager(List<MapillaryImportedImage> images)
-      throws IOException {
-    super(tr("Downloading") + "...", new PleaseWaitProgressMonitor(
-        "Exporting Mapillary Images"), true);
-    this.queue = new ArrayBlockingQueue<>(10);
-    this.queueImages = new ArrayBlockingQueue<>(10);
+  public MapillaryExportManager(List<MapillaryImportedImage> images) throws IOException {
+    this(null, null);
     for (MapillaryImportedImage image : images) {
       this.queue.add(image.getImage());
       this.queueImages.add(image);
@@ -94,8 +86,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   }
 
   @Override
-  protected void realRun() throws SAXException, IOException,
-      OsmTransferException {
+  protected void realRun() throws IOException {
     // Starts a writer thread in order to write the pictures on the disk.
     this.writer = new MapillaryExportWriterThread(this.path, this.queue,
         this.queueImages, this.amount, this.getProgressMonitor());

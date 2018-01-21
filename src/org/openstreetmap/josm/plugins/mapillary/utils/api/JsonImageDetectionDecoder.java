@@ -69,7 +69,7 @@ public final class JsonImageDetectionDecoder {
    */
   private static Path2D decodePolygon(final JsonArray json) {
     final Path2D shape = new Path2D.Double();
-    json.stream().forEach(val -> {
+    json.forEach(val -> {
       final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;
       if (part != null) {
         shape.append(part, false);
@@ -89,7 +89,7 @@ public final class JsonImageDetectionDecoder {
    */
   private static Path2D decodeSimplePolygon(final JsonArray json) {
     final Path2D shape = new Path2D.Double();
-    json.stream().forEach(val -> {
+    json.forEach(val -> {
       double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);
       if (shape.getCurrentPoint() == null && coord != null) {
         shape.moveTo(coord[0], coord[1]);

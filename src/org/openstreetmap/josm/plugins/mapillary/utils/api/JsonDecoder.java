@@ -13,7 +13,6 @@ import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -92,7 +91,7 @@ public final class JsonDecoder {
    * @param timestamp the timestamp formatted according to the format <code>yyyy-MM-dd'T'HH:mm:ss.SSSX</code>
    * @return the point in time as a {@link Long} value representing the UNIX epoch time, or <code>null</code> if the
    *   parameter does not match the required format (this also triggers a warning via
-   *   {@link Main#warn(Throwable, String)}), or the parameter is <code>null</code>.
+   *   {@link Logging#warn(Throwable)}), or the parameter is <code>null</code>.
    */
   static Long decodeTimestamp(final String timestamp) {
     if (timestamp != null) {

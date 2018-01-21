@@ -49,7 +49,7 @@ public final class MapillaryProperties {
 
   public static final StringProperty ACCESS_TOKEN = new StringProperty("mapillary.access-token", null);
   public static final StringProperty DOWNLOAD_MODE =
-    new StringProperty("mapillary.download-mode", MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());
+    new StringProperty("mapillary.download-mode", MapillaryDownloader.DOWNLOAD_MODE.DEFAULT.getPrefId());
   public static final StringProperty START_DIR =
     new StringProperty("mapillary.start-directory", System.getProperty("user.home"));
 

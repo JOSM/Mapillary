@@ -32,6 +32,8 @@ public final class MapillaryDownloader {
     // i18n: download mode for Mapillary images
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
 
+    public final static DOWNLOAD_MODE DEFAULT = OSM_AREA;
+
     private final String prefId;
     private final String label;
 
@@ -60,7 +62,7 @@ public final class MapillaryDownloader {
           return mode;
         }
       }
-      return getDefault();
+      return DEFAULT;
     }
 
     public static DOWNLOAD_MODE fromLabel(String label) {
@@ -69,11 +71,7 @@ public final class MapillaryDownloader {
           return mode;
         }
       }
-      return getDefault();
-    }
-
-    public static DOWNLOAD_MODE getDefault() {
-      return OSM_AREA;
+      return DEFAULT;
     }
   }
 
