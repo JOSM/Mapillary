@@ -43,7 +43,7 @@ public class MapillaryDataTest {
     this.img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90);
     final MapillarySequence seq = new MapillarySequence();
 
-    seq.add(Arrays.asList(new MapillaryAbstractImage[] {img1, img2, img3, img4}));
+    seq.add(Arrays.asList(img1, img2, img3, img4));
 
     this.data = new MapillaryData();
     this.data.addAll(new ConcurrentSkipListSet<>(seq.getImages()));
@@ -61,9 +61,9 @@ public class MapillaryDataTest {
     assertEquals(1, this.data.getImages().size());
     this.data.add(this.img1);
     assertEquals(1, this.data.getImages().size());
-    this.data.addAll(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] {this.img2, this.img3})));
+    this.data.addAll(new ConcurrentSkipListSet<>(Arrays.asList(this.img2, this.img3)));
     assertEquals(3, this.data.getImages().size());
-    this.data.addAll(new ConcurrentSkipListSet<>(Arrays.asList(new MapillaryAbstractImage[] {this.img3, this.img4})));
+    this.data.addAll(new ConcurrentSkipListSet<>(Arrays.asList(this.img3, this.img4)));
     assertEquals(4, this.data.getImages().size());
   }
 

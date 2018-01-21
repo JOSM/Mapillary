@@ -34,7 +34,7 @@ public class MapillarySequenceTest {
    */
   @Before
   public void setUp() {
-    seq.add(Arrays.asList(new MapillaryAbstractImage[] { img1, img2, img3, img4 }));
+    seq.add(Arrays.asList(img1, img2, img3, img4));
   }
 
   /**
