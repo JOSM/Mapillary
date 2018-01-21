@@ -57,16 +57,17 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
         } else {
           boolean sequenceCrossesThroughBounds = false;
           for (int i = 0; i < seq.getImages().size() && !sequenceCrossesThroughBounds; i++) {
-            sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());
+            sequenceCrossesThroughBounds = bounds.contains(seq.getImages().get(i).getLatLon());
           }
           if (sequenceCrossesThroughBounds) {
             data.addAll(seq.getImages(), true);
           }
         }
       }
-    } catch (JsonException e) {
+    } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     }
+
   }
 
   @Override

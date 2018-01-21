@@ -50,7 +50,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
           .filter(img -> img instanceof MapillaryImage && ((MapillaryImage) img).getKey().equals(entry.getKey()))
           .forEach(img -> ((MapillaryImage) img).setAllDetections(entry.getValue()));
       }
-    } catch (JsonException e) {
+    } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     }
     MapillaryLayer.invalidateInstance();

@@ -33,7 +33,7 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
       JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);
       logConnectionInfo(con, null);
       MapillaryMainDialog.getInstance().updateTitle();
-    } catch (JsonException e) {
+    } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     }
   }
