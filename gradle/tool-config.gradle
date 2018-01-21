@@ -1,29 +1,47 @@
+def pmdVersion = "5.8.1"
+def spotbugsVersion = "3.1.1"
+def jacocoVersion = "0.7.9"
+def errorproneVersion = "2.2.0"
+
+// Set up ErrorProne (currently only for JDK8, until JDK9 is supported)
+if (JavaVersion.current().isJava8()) {
+    apply plugin: 'net.ltgt.errorprone'
+    dependencies.errorprone 'com.google.errorprone:error_prone_core:' + errorproneVersion
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR' << '-Xep:StringSplitter:WARN'
+    }
+}
+
+// Spotbugs config
 spotbugs {
-  toolVersion = project.property('tool.spotbugs.version')
+  toolVersion = spotbugsVersion
   ignoreFailures = true
   effort = "max"
   reportLevel = "low"
   sourceSets = [sourceSets.main, sourceSets.test]
 }
 
+// JaCoCo config
 jacoco {
-  toolVersion = project.property('tool.jacoco.version')
+  toolVersion = jacocoVersion
 }
 jacocoTestReport {
   reports {
-    xml.enabled true
+    xml.enabled = true
     html.destination file("$buildDir/reports/jacoco")
   }
 }
 build.dependsOn jacocoTestReport
 
+// PMD config
 pmd {
-  toolVersion project.property('tool.pmd.version')
+  toolVersion pmdVersion
   ignoreFailures true
   ruleSetConfig = resources.text.fromFile('config/pmd/ruleset.xml')
   sourceSets = [sourceSets.main, sourceSets.test]
 }
 
+// SonarQube config
 sonarqube {
   properties {
     property 'sonar.forceAuthentication', 'true'

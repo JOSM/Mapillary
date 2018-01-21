@@ -1,7 +1,7 @@
 plugins {
   id "org.sonarqube" version "2.6.1"
   id "org.kordamp.markdown.convert" version "1.1.0"
-  id 'org.openstreetmap.josm' version "0.3.1"
+  id 'org.openstreetmap.josm' version "0.3.2"
   id "com.github.ben-manes.versions" version "0.17.0"
   id 'com.github.spotbugs' version '1.6.0'
   id "net.ltgt.errorprone" version "0.0.13" apply false
@@ -13,21 +13,19 @@ plugins {
   id 'pmd'
 }
 
-apply from: 'gradle/version-functions.gradle'
 apply from: 'gradle/tool-config.gradle'
 apply from: 'gradle/markdown.gradle'
 
-// Set up ErrorProne (currently only for JDK8, until JDK9 is supported)
-if (JavaVersion.current().isJava8()) {
-  apply plugin: 'net.ltgt.errorprone'
-  dependencies.errorprone 'com.google.errorprone:error_prone_core:'+property('tool.errorprone.version')
-  tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR'
-  }
-}
-
 sourceCompatibility = '1.8'
-version = getVersionName()
+
+def versionProcess = new ProcessBuilder("git", "describe", "--always", "--dirty").start()
+versionProcess.waitFor()
+if (versionProcess.exitValue() != 0) {
+  logger.error("Could not determine the current version of this JOSM plugin!")
+  version = "‹unknown›"
+} else {
+  version = versionProcess.in.text.trim()
+}
 archivesBaseName = 'Mapillary'
 
 repositories {
@@ -44,6 +42,9 @@ sourceSets {
   main {
     java {
       srcDirs = ['src']
+    }
+    po {
+      srcDirs = ['poSrc']
     }
     resources {
       srcDirs = ["$projectDir"]
@@ -113,7 +114,7 @@ test {
 
     info {
       events TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR
-      showStandardStreams true
+      showStandardStreams = true
     }
   }
 }
