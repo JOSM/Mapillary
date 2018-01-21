@@ -29,14 +29,14 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapillaryUploadAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = -1405641273676919943L;
-  private static final String title = I18n.marktr("Upload Mapillary images");
+  private static final String TITLE = I18n.tr("Upload Mapillary images");
 
   /**
    * Main constructor.
    */
   public MapillaryUploadAction() {
-    super(I18n.tr(title), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        I18n.tr(title), null, false, "mapillaryUpload", true);
+    super(TITLE, new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+        TITLE, null, false, "mapillaryUpload", true);
     this.setEnabled(false);
   }
 
@@ -45,7 +45,7 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     MapillaryUploadDialog dialog = new MapillaryUploadDialog();
     JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
-    JDialog dlg = pane.createDialog(Main.parent, I18n.tr(title));
+    JDialog dlg = pane.createDialog(Main.parent, TITLE);
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 

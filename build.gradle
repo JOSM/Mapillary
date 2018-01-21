@@ -35,7 +35,6 @@ repositories {
 dependencies {
   testImplementation ('org.openstreetmap.josm:josm-unittest'){changing=true}
   testImplementation 'junit:junit:4.12'
-  testImplementation 'com.github.tomakehurst:wiremock-standalone:2.13.0'
 }
 
 sourceSets {

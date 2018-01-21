@@ -10,7 +10,10 @@
 /*.ipr
 /out/
 /.idea/*
-!/.idea/codeStyleSettings.xml
+!/.idea/codeStyles/
+/.idea/codeStyles/*
+!/.idea/codeStyles/codeStyleConfig.xml
+!/.idea/codeStyles/Project.xml
 
 # Gradle
 /build/

@@ -362,7 +362,7 @@ public class MapillaryData {
    * Downloads surrounding images of this mapillary image in background threads
    * @param mapillaryImage the image for which the surrounding images should be downloaded
    */
-  private void downloadSurroundingImages (MapillaryImage mapillaryImage) {
+  private static void downloadSurroundingImages (MapillaryImage mapillaryImage) {
     MainApplication.worker.execute(() -> {
       final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
       CacheAccess <String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance().getCache();

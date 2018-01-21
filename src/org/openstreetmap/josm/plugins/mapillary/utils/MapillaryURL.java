@@ -62,11 +62,11 @@ public final class MapillaryURL {
     public static URL parseNextFromLinkHeaderValue(String value) {
       if (value != null) {
         // Iterate over the different entries of the Link header
-        for (String link : value.split(",")) {
+        for (String link : value.split(",", Integer.MAX_VALUE)) {
           boolean isNext = false;
           URL url = null;
           // Iterate over the parts of each entry (typically it's one `rel="‹linkType›"` and one like `<https://URL>`)
-          for (String linkPart : link.split(";")) {
+          for (String linkPart : link.split(";", Integer.MAX_VALUE)) {
             linkPart = linkPart.trim();
             isNext |= linkPart.matches("rel\\s*=\\s*\"next\"");
             if (linkPart.length() >= 1 && linkPart.charAt(0) == '<' && linkPart.endsWith(">")) {

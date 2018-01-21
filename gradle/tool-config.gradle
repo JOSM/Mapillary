@@ -5,11 +5,19 @@ def errorproneVersion = "2.2.0"
 
 // Set up ErrorProne (currently only for JDK8, until JDK9 is supported)
 if (JavaVersion.current().isJava8()) {
-    apply plugin: 'net.ltgt.errorprone'
-    dependencies.errorprone 'com.google.errorprone:error_prone_core:' + errorproneVersion
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << '-Xep:DefaultCharset:ERROR' << '-Xep:ClassCanBeStatic:ERROR' << '-Xep:StringSplitter:WARN'
-    }
+  apply plugin: 'net.ltgt.errorprone'
+  dependencies.errorprone 'com.google.errorprone:error_prone_core:' + errorproneVersion
+  tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-Xep:DefaultCharset:ERROR',
+      '-Xep:ClassCanBeStatic:ERROR',
+      '-Xep:StringEquality:ERROR',
+      '-Xep:MethodCanBeStatic:WARN',
+      '-Xep:RemoveUnusedImports:WARN',
+      '-Xep:PrivateConstructorForUtilityClass:WARN',
+      '-Xep:WildcardImport:WARN',
+      '-Xep:LambdaFunctionalInterface:WARN',
+      '-Xep:ConstantField:WARN']
+  }
 }
 
 // Spotbugs config
