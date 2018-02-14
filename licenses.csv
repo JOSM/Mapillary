@@ -114,7 +114,7 @@ htmlescape, 1.1.1, MIT
 http-signature, 1.1.1, MIT
 https-browserify, 0.0.1, MIT
 ieee754, 1.1.8, "New BSD"
-indexof, 0.0.1, unknown
+indexof, 0.0.1, MIT
 inflight, 1.0.6, ISC
 inherits, 2.0.1, ISC
 inherits, 2.0.3, ISC
@@ -139,7 +139,7 @@ labeled-stream-splicer, 2.0.0, MIT
 lexical-scope, 1.2.0, MIT
 mapillary_sprite_source, 1.3.3, MIT
 mapnik, 3.5.14, BSD
-mapnik-vector-tile, 1.2.2, unknown
+mapnik-vector-tile, 1.2.2, "New BSD"
 miller-rabin, 4.0.1, MIT
 mime-db, 1.30.0, MIT
 mime-types, 2.1.17, MIT
