@@ -55,8 +55,8 @@ jobs:
   include:
     - stage: i18n
       language: python
-      python: "3.5"
-      install: pip install git+https://github.com/transifex/transifex-client.git@a706ba0cb910e66e852010bcd742221363c7e8be#egg=transifex-client
+      python: "3.6"
+      install: pip install git+https://github.com/transifex/transifex-client.git@08deb1255de7217d2574e3c49dcb578f03b195e0#egg=transifex-client
       script: ./gradlew generatePot
       after_success: |
         if [ ! -z "$TRANSIFEX_TOKEN" ]; then
