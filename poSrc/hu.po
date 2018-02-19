@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.9-12-g47f2b14\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-21 18:23+0000\n"
+"POT-Creation-Date: 2018-01-21 21:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Gábor Babos <gabor.babos@gmail.com>, 2018\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
