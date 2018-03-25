@@ -474,12 +474,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       MapillaryUtils.updateHelpText();
     }
 
-    if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousEditLayer()) {
+    if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousDataLayer()) {
       if (MainApplication.getLayerManager().getEditLayer() != null) {
-        MainApplication.getLayerManager().getEditLayer().data.addDataSetListener(DATASET_LISTENER);
+        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSetListener(DATASET_LISTENER);
       }
-      if (e.getPreviousEditLayer() != null) {
-        e.getPreviousEditLayer().data.removeDataSetListener(DATASET_LISTENER);
+      if (e.getPreviousDataLayer() != null) {
+        e.getPreviousDataLayer().getDataSet().removeDataSetListener(DATASET_LISTENER);
       }
     }
   }
