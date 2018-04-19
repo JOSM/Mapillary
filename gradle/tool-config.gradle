@@ -1,18 +1,18 @@
-def pmdVersion = "5.8.1"
-def spotbugsVersion = "3.1.1"
-def jacocoVersion = "0.7.9"
-def errorproneVersion = "2.2.0"
+def pmdVersion = "5.8.0" // TODO: Update to PMD 6
+def spotbugsVersion = "3.1.3"
+def jacocoVersion = "0.8.1"
+def errorproneVersion = "2.3.0"
 
-// Set up ErrorProne (currently only for JDK8, until JDK9 is supported)
+// Set up ErrorProne
 dependencies.errorprone "com.google.errorprone:error_prone_core:$errorproneVersion"
 tasks.withType(JavaCompile) {
 options.compilerArgs += ['-Xep:DefaultCharset:ERROR',
   '-Xep:ClassCanBeStatic:ERROR',
   '-Xep:StringEquality:ERROR',
+  '-Xep:WildcardImport:ERROR',
   '-Xep:MethodCanBeStatic:WARN',
   '-Xep:RemoveUnusedImports:WARN',
   '-Xep:PrivateConstructorForUtilityClass:WARN',
-  '-Xep:WildcardImport:WARN',
   '-Xep:LambdaFunctionalInterface:WARN',
   '-Xep:ConstantField:WARN']
 }
