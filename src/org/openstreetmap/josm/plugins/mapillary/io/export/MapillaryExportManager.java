@@ -51,8 +51,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    */
   public MapillaryExportManager(Set<MapillaryAbstractImage> images, String path) {
     super(
-      tr("Downloading") + "…",
-      new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images")),
+      tr("Downloading…"),
+      new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")),
       true
     );
     this.images = images == null ? new HashSet<>() : images;

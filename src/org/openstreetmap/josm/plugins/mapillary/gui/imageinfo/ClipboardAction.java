@@ -48,7 +48,7 @@ public class ClipboardAction extends AbstractAction {
 
     // Init popup
     popup = new JPopupMenu();
-    JLabel label = new JLabel(I18n.tr("Key copied to clipboard") + '…');
+    JLabel label = new JLabel(I18n.tr("Key copied to clipboard…"));
     label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     popup.add(label);
     popup.setBackground(new Color(0f, 0f, 0f, .5f));
