@@ -1,0 +1,365 @@
+# Translations for the JOSM plugin 'Mapillary' (it)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: Italian (https://www.transifex.com/josm/teams/2544/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "2 images joined"
+msgstr "2 imagini unite"
+
+msgid "2 images unjoined"
+msgstr "2 imagini separate"
+
+msgid "Add Mapillary tag"
+msgstr "Aggiungi etichetta Mapillary"
+
+msgid "All images in a directory"
+msgstr "Tutte le immagini di una cartella"
+
+msgid "Cancel"
+msgstr "Annulla"
+
+msgid "Copy key"
+msgstr "Copia chiave"
+
+msgid "Days"
+msgstr "Giorni"
+
+msgid "Delete after upload"
+msgstr "Cancella dopo il caricamento"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "Immagine {0} cancellata"
+msgstr[1] "Immagini {0} cancellate"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Mostra l''ora in cui è stata scattata la foto"
+
+msgid "Download Mapillary images in current view"
+msgstr "Scarica immagini Mapillary nella vista corrente"
+
+msgid "Download mode"
+msgstr "Modalità scaricamento"
+
+msgid "Downloaded images"
+msgstr "Immagini scaricate"
+
+msgid "Downloading"
+msgstr "Download in corso"
+
+msgid "Downloading Mapillary images"
+msgstr "Scaricamento delle immagini Mapillary in corso..."
+
+msgid "Downloading map objects failed!"
+msgstr "Scaricamento degli oggetti della mappa fallito!"
+
+msgid "Downloading map objects…"
+msgstr "Scaricamento degli oggetti della mappa in corso..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Abilita funzioni beta sperimentali (potrebbe essere instabile)"
+
+msgid "Explore"
+msgstr "Esplora"
+
+msgid "Export Mapillary images"
+msgstr "Esporta immagini Mapillary"
+
+msgid "Export all images"
+msgstr "Esporta tutte le immagini"
+
+msgid "Export selected images"
+msgstr "Esporta le immagini selezionate"
+
+msgid "Export selected sequence"
+msgstr "Esporta la sequenza selezionata"
+
+msgid "Exporting Mapillary Images"
+msgstr "Esportazione delle immagini Mapillary in corso..."
+
+msgid "Finished upload"
+msgstr "Caricamento terminato"
+
+msgid "Follow selected image"
+msgstr "Segui l’immagine selezionata"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Dare la precedenza"
+
+msgid "Go forward"
+msgstr "Procedi"
+
+msgid "Image info"
+msgstr "Info immagine"
+
+msgid "Image key"
+msgstr "Chiave immagine"
+
+msgid "Images from my file system"
+msgstr "Immagini dal mio computer"
+
+msgid "Import"
+msgstr "Importa"
+
+msgid "Import exception"
+msgstr "Eccezione d’importazione"
+
+msgid "Import local pictures"
+msgstr "Importa foto locali"
+
+msgid "Import pictures"
+msgstr "Importa immagini"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Importa foto nel livello Mapillary"
+
+msgid "Imported images"
+msgstr "Immagini importate"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "Immagine {0} importata"
+msgstr[1] "Immagini {0} importate"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Pericolo di incrocio"
+
+msgid "Join mode"
+msgstr "modalità unisci"
+
+msgid "Join/unjoin pictures"
+msgstr "unisci/dividi foto"
+
+msgid "Login"
+msgstr "Accedi"
+
+msgid "Login successful, return to JOSM."
+msgstr "Autenticazione riuscita, ritorno a JOSM."
+
+msgid "Logout"
+msgstr "Esci"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Immagini Mapillary"
+
+msgid "Mapillary changeset"
+msgstr "Gruppo di modifiche di Mapillary"
+
+msgid "Mapillary filter"
+msgstr "Filtro di Mapillary"
+
+msgid "Mapillary history"
+msgstr "Cronologia di Mapillary"
+
+msgid "Mapillary image"
+msgstr "Immagine di Mapillary"
+
+msgid "Mapillary layer"
+msgstr "Livelli Mapillary"
+
+msgid "Mapillary login"
+msgstr "login di Mapillary"
+
+msgid "Mapillary object layer"
+msgstr "Livello degli oggetti di Mapillary"
+
+msgid "Mapillary objects"
+msgstr "oggetti di Mapillary"
+
+msgid "Months"
+msgstr "Mesi"
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "Spostata {0} immagine"
+msgstr[1] "Spostate {0} immagini"
+
+msgid "Next picture"
+msgstr "Immagine successiva"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Divieto di accesso"
+
+msgid "No image selected"
+msgstr "Nessuna immagine selezionata"
+
+msgid "No images found"
+msgstr "Nessuna immagine trovata"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Divieto di sorpasso"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Divieto di parcheggio"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Divieto di svolta"
+
+msgid "Not older than: "
+msgstr "Non più vecchio di: "
+
+msgid "Pause"
+msgstr "Metti in pausa"
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Strisce pedonali"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Anteprima delle immagini quando il mouse passa sopra la loro icona"
+
+msgid "Previous picture"
+msgstr "Immagine precedente"
+
+msgid "Redo"
+msgstr "Ripeti"
+
+msgid "Reset"
+msgstr "Azzera"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Rotatoria"
+
+msgid "Select a directory"
+msgstr "Selezionare una cartella"
+
+msgid "Select directory to import images from"
+msgstr "Seleziona la cartella da cui importare le immagini"
+
+msgid "Select mode"
+msgstr "Modalità Selezione"
+
+msgid "Select the images you want to import"
+msgstr "Seleziona l’immagine da importare"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Limite di velocità"
+
+#. i18n: traffic sign
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Formati grafici supportati (JPG e PNG)"
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Immagini Mapillary totali: {0}"
+
+msgid "Undo"
+msgstr "Annulla"
+
+msgid "Update"
+msgstr "Aggiorna"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "In caricamento: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Utilizza il formato a 24 ore"
+
+msgid "User"
+msgstr "Utente"
+
+msgid "View in browser"
+msgstr "Vedi nel browser"
+
+msgid "Walk mode"
+msgstr "Modalità camminata"
+
+msgid "Years"
+msgstr "Anni"
+
+msgid "You are currently not logged in."
+msgstr "Non sei autenticato."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Sei collegato come ''{0}''."
+
+msgid "Zoom to selected image"
+msgstr "Ingrandisci l''immagine selezionata"
+
+msgid "approved"
+msgstr "approvato"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "tutto nell’area visibile"
+
+msgid "image has no key"
+msgstr "l’immagine non ha una chiave"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "solo quando richiesto manualmente"
+
+msgid "pending"
+msgstr "in sospeso"
+
+msgid "rejected"
+msgstr "rifiutato"
+
+msgid "sequence has no key"
+msgstr "la sequenza non ha una chiave"
+
+msgid "unknown user"
+msgstr "utente sconosciuto"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} images)"
+msgstr "{0} ({1} immagini)"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} rilevamenti"
+
+#, java-format
+msgid "{0} downloaded images"
+msgstr "{0} immagini scaricate"
+
+#, java-format
+msgid "{0} images in total"
+msgstr "{0} immagini in totale"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{0} immagini in {1} sequenze"
+
+#, java-format
+msgid "{0} imported images"
+msgstr "{0} immagini importate"

@@ -6,11 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-21 21:47+0000\n"
+"POT-Creation-Date: 2018-03-25 01:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Nikolay Parukhin <parukhin@gmail.com>, 2018\n"
 "Language-Team: Russian (https://www.transifex.com/josm/teams/2544/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +49,7 @@ msgstr ""
 "это была проблема с подключением к Интернету."
 
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "Отменить"
 
 #, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
@@ -366,7 +365,7 @@ msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Количество снимков для упреждающей загрузки (вперёд и назад)"
 
 msgid "Only images with signs"
-msgstr "Только изображения со знаками"
+msgstr "Только снимки со знаками"
 
 msgid "Open Mapillary changeset dialog"
 msgstr "Открыть диалог пакета правок Mapillary"
@@ -526,7 +525,7 @@ msgstr[2] "Повёрнуто {0} снимков"
 msgstr[3] "Повёрнуто {0} снимка"
 
 msgid "Undo"
-msgstr "Отмена"
+msgstr "Отменить"
 
 #. i18n: traffic sign
 msgid "Uneven road"

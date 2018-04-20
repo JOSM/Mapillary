@@ -6,11 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-21 21:47+0000\n"
+"POT-Creation-Date: 2018-03-25 01:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Gábor Babos <gabor.babos@gmail.com>, 2018\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +49,7 @@ msgid "Copy key"
 msgstr "Kulcs másolása"
 
 msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Nem sikerült a geocímkézett kép importlása a Mapillary rétegre!"
+msgstr "Nem sikerült a geokódolt kép importlása a Mapillary rétegre!"
 
 #, java-format
 msgid "Could not import the directory ''{0}''!"
@@ -64,8 +63,16 @@ msgstr "A(z) „{0}” kép nem importálható."
 msgid "Could not open the URL {0} in a browser"
 msgstr "A(z) {0} URL nem nyitható meg böngészőben"
 
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Nem sikerült olvasni a(z) {0} URL-ről!"
+
 msgid "Current Mapillary changeset"
 msgstr "Jelenlegi Mapillary módosításcsomag"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Sorozatok levágása a letöltési határokon"
 
 msgid "Days"
 msgstr "Nap"
@@ -82,6 +89,14 @@ msgstr[1] "{0} kép törölve"
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Kép készítési idejének megjelenítése"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr ""
+"Részletes információkat jelenít meg az aktuálisan kiválasztott Mapillary "
+"képről"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr "Megjeleníti a Mapillary által az utcaképekről felismert objektumokat"
 
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Megjeleníti a Mapillary által észlelt térképobjektumokat"
@@ -126,6 +141,9 @@ msgstr "Kijelölt képek exportálása"
 msgid "Export selected sequence"
 msgstr "Kijelölt sorozat exportálása"
 
+msgid "Exporting Mapillary Images"
+msgstr "Mapillary képek exportálása"
+
 msgid "Finished upload"
 msgstr "Feltöltés befejeződött"
 
@@ -157,7 +175,7 @@ msgid "Image actions"
 msgstr "Képműveletek"
 
 msgid "Image detections"
-msgstr "Képészlelések"
+msgstr "Észlelések"
 
 msgid "Image info"
 msgstr "Képinformációk"
@@ -244,6 +262,9 @@ msgstr "Mapillary szűrő"
 
 msgid "Mapillary history"
 msgstr "Mapillary előzmények"
+
+msgid "Mapillary image"
+msgstr "Mapillary kép"
 
 msgid "Mapillary layer"
 msgstr "Mapillary réteg"
@@ -376,7 +397,7 @@ msgid "Sequence key"
 msgstr "Sorozat kulcs"
 
 msgid "Show detections on top of image"
-msgstr "Észlelések jelzése a kép tetején"
+msgstr "Észlelések jelzése a kép fölött"
 
 msgid "Shows the next picture in the sequence"
 msgstr "Megmutatja a sorozat következő képét"
@@ -417,8 +438,32 @@ msgstr "Támogatott képformátumok (JPG és PNG)"
 msgid "Tag conflict"
 msgstr "Címkeütközés"
 
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr ""
+"A Mapillary réteg leállította a képek letöltését, mert a kért terület túl "
+"nagy!"
+
+msgid ""
+"The Mapillary plugin now uses a separate panel to display extra information "
+"(like the image key) and actions for the currently selected Mapillary image "
+"(like viewing it in a browser)."
+msgstr ""
+"A Mapillary bővítmény mostantól külön panelen jelenít meg további "
+"részleteket (mint a kép kulcsa) és műveleteket az aktuálisan kiválasztott "
+"Mapillary képhez (mint megtekintés böngészőben)."
+
 msgid "There are currently no layers with geotagged images!"
 msgstr "Jelenleg nincsenek geocímkézett képrétegek."
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr ""
+"A probléma megoldásához a letöltési módot állítsd ''{0}'' módba és csak a "
+"térképnek egy kisebb területéről próbálj betölteni Mapillary képeket."
 
 msgid "Too many map objects, zoom in to see all."
 msgstr "Túl sok térképobjektum, nagyíts hogy lásd mindet."
@@ -468,6 +513,14 @@ msgstr "Várj a teljes minőségű képekre"
 
 msgid "Walk mode"
 msgstr "Gyalogos mód"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"When opening Mapillary image in web browser, show the blur editor instead of"
+" the image viewer"
+msgstr ""
+"Mapillary képet böngészőben megnyitva mutassa rögtön a kitakarás szerkesztőt"
+" a képnézegető helyett"
 
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "Melyik képréteget akarod beimportálni a Mapillary rétegre?"

@@ -6,11 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-21 21:47+0000\n"
+"POT-Creation-Date: 2018-03-25 01:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: floscher, 2018\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -99,6 +98,14 @@ msgstr "Dni"
 msgid "Delete after upload"
 msgstr "Usuń po wysłaniu"
 
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "Usunięto {0} obraz"
+msgstr[1] "Usunięto {0} obrazy"
+msgstr[2] "Usunięto {0} obrazów"
+msgstr[3] "Usunięto {0} obrazów"
+
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Wyświetlaj godzinę wykonania zdjęcia."
@@ -146,6 +153,9 @@ msgstr "Włącz tryb eksperymentalny (może być niestabilny)"
 msgid "Explore"
 msgstr "Przeglądaj"
 
+msgid "Export Mapillary images"
+msgstr "Eksportuj obrazy Mapillary"
+
 msgid "Export all images"
 msgstr "Eksportuj wszystkie obrazy"
 
@@ -154,6 +164,9 @@ msgstr "Eksportuj wybrane obrazy"
 
 msgid "Export selected sequence"
 msgstr "Eksportuj wybraną sekwencję"
+
+msgid "Exporting Mapillary Images"
+msgstr "Eksportowanie obrazów Mapillary"
 
 msgid "Finished upload"
 msgstr "Zakończono wysyłanie"
@@ -212,6 +225,14 @@ msgstr "Importuj zdjęcia na warstwę Mapillary"
 
 msgid "Imported images"
 msgstr "Zaimportowane obrazy"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "Zaimportowano {0} obraz"
+msgstr[1] "Zaimportowano {0} obrazy"
+msgstr[2] "Zaimportowano {0} obrazów"
+msgstr[3] "Zaimportowano {0} obrazów"
 
 #. i18n: traffic sign
 msgid "Intersection danger"
@@ -273,6 +294,9 @@ msgstr "Filtr Mapillary"
 
 msgid "Mapillary history"
 msgstr "Historia Mapillary"
+
+msgid "Mapillary image"
+msgstr "Obraz Mapillary"
 
 msgid "Mapillary layer"
 msgstr "Warstwy Mapillary"
