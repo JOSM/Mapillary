@@ -32,7 +32,7 @@ public class MapObjectTest {
   private static Field iconUrlGen;
   private static Object iconUrlGenValue;
 
-  public static void initMapObjects() {
+  private static void initMapObjects() {
     mo1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
     mo2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0, 0);
     mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
@@ -45,7 +45,7 @@ public class MapObjectTest {
     Field keyField = TestUtil.getAccessibleField(KeyIndexedObject.class, "key");
 
     // Replace function for generating icon URLs with one that searches the local resources for files
-    // If a resource can't be found, return an invalid URL
+    // If a resource can't be found, return a URL for example.org, which does not exist.
     iconUrlGen = TestUtil.getAccessibleField(MapObject.class, "iconUrlGen");
     iconUrlGenValue = iconUrlGen.get(null);
     iconUrlGen.set(null, (Function<String, URL>) (str -> {
@@ -54,7 +54,7 @@ public class MapObjectTest {
         return result;
       }
       try {
-        return new URL("https://invalidURL" + str);
+        return new URL("https://example.org/nonExistent" + str);
       } catch (MalformedURLException e) {
         return null;
       }

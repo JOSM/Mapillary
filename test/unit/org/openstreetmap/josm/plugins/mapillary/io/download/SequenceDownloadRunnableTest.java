@@ -57,7 +57,7 @@ public class SequenceDownloadRunnableTest {
   @Test
   public void testRun3() throws IllegalArgumentException, IllegalAccessException {
     testNumberOfDecodedImages(0, b -> {
-      try { return new URL("https://mapillary/nonexistentURL"); } catch (MalformedURLException e) { return null; }
+      try { return new URL("https://example.org/nonexistentURL"); } catch (MalformedURLException e) { return null; }
     }, new Bounds(0, 0, 0, 0));
   }
 
