@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.awt.Dimension;
 
@@ -63,7 +64,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     // i18n: traffic sign
     addCheckBoxWithLabel(this, maxSpeed, true, "signs/speed.png", tr("Speed limit"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, stop, true, "signs/stop.png", tr("Stop"));
+    addCheckBoxWithLabel(this, stop, true, "signs/stop.png", trc("name of the traffic sign", "Stop"));
     // i18n: traffic sign
     addCheckBoxWithLabel(this, giveWay, true, "signs/right_of_way.png", tr("Give way"));
     // i18n: traffic sign

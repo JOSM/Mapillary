@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -453,7 +454,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
      * Constructs a normal StopAction
      */
     StopAction() {
-      putValue(NAME, tr("Stop"));
+      putValue(NAME, trc("as synonym to halt or stand still", "Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
       new ImageProvider("dialogs/mapillaryStop.png").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
