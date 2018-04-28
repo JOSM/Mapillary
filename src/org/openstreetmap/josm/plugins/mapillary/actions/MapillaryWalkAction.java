@@ -35,9 +35,6 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   private WalkThread thread;
   private final List<WalkListener> listeners = new ArrayList<>();
 
-  /**
-   *
-   */
   public MapillaryWalkAction() {
     super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
         tr("Walk mode"), null,

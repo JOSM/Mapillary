@@ -176,6 +176,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     if (MODE.NORMAL.equals(mode)) {
       updateImage();
     }
+    revalidate();
+    repaint();
   }
 
   /**

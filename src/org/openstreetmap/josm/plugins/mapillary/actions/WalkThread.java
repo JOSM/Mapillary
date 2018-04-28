@@ -5,13 +5,18 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Thread containing the walk process.
@@ -50,32 +55,37 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   @Override
   public void run() {
     try {
-      while (!this.end && this.data.getSelectedImage().next() != null) {
-        MapillaryAbstractImage image = this.data.getSelectedImage();
-        if (image != null && image.next() instanceof MapillaryImage) {
-          // Predownload next 10 thumbnails.
-          preDownloadImages((MapillaryImage) image.next(), 10, CacheUtils.PICTURE.THUMBNAIL);
-          if (this.waitForFullQuality) {
-            // Start downloading 3 next full images.
-            preDownloadImages((MapillaryImage) image.next(), 3, CacheUtils.PICTURE.FULL_IMAGE);
-          }
+      MapillaryAbstractImage curSelection;
+      MapillaryImage curImage;
+      while (
+          !this.end &&
+          (curSelection = this.data.getSelectedImage().next()) != null &&
+          (curImage = curSelection instanceof MapillaryImage ? (MapillaryImage) curSelection : null) != null
+      ) {
+        // Predownload next 10 thumbnails.
+        preDownloadImages(curImage, 10, CacheUtils.PICTURE.THUMBNAIL, goForward);
+        if (this.waitForFullQuality) {
+          // Start downloading 3 next full images.
+          preDownloadImages(curImage, 3, CacheUtils.PICTURE.FULL_IMAGE, goForward);
         }
         try {
-          // Waits for full quality picture.
-          final BufferedImage displayImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
-          if (this.waitForFullQuality && image instanceof MapillaryImage) {
-            while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 2048) {
-              Thread.sleep(100);
-            }
-          } else { // Waits for thumbnail.
-            while (displayImage == this.lastImage || displayImage == null || displayImage.getWidth() < 320) {
-              Thread.sleep(100);
+          // Wait for picture for 1 minute.
+          final MapillaryCache cache = new MapillaryCache(curImage.getKey(), waitForFullQuality ? MapillaryCache.Type.FULL_IMAGE : MapillaryCache.Type.THUMBNAIL);
+          int limit = 240; // 240 * 250 = 60000 ms
+          while (cache.get() == null) {
+            Thread.sleep(250);
+            if (limit-- < 0) {
+              new Notification(I18n.tr("Walk mode: Waiting for next image takes too long! Exiting walk mode…"))
+                  .setIcon(MapillaryPlugin.LOGO.get())
+                  .show();
+              end();
+              return;
             }
           }
           while (this.paused) {
             Thread.sleep(100);
           }
-          wait(this.interval);
+          Thread.sleep(this.interval);
           while (this.paused) {
             Thread.sleep(100);
           }
@@ -86,10 +96,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
             this.data.selectPrevious(this.followSelected);
           }
         } catch (InterruptedException e) {
+          end();
           return;
         }
+
       }
     } catch (NullPointerException e) {
+      Logging.warn(e);
+      end();
       // TODO: Avoid NPEs instead of waiting until they are thrown and then catching them
       return;
     }
@@ -102,12 +116,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * @param startImage the image to start with (this and the next n-1 images in the same sequence are downloaded)
    * @param n the number of images to download
    * @param type the quality of the image (full or thumbnail)
+   * @param goForward true if the next images, false if the previous ones should be downloaded
    */
-  private static void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type) {
+  private static void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type, final boolean goForward) {
     if (n >= 1 && startImage != null) {
       CacheUtils.downloadPicture(startImage, type);
-      if (startImage.next() instanceof MapillaryImage && n >= 2) {
-        preDownloadImages((MapillaryImage) startImage.next(), n - 1, type);
+      final MapillaryAbstractImage nextImg = goForward ? startImage.next() : startImage.previous();
+      if (nextImg instanceof MapillaryImage && n >= 2) {
+        preDownloadImages((MapillaryImage) nextImg, n - 1, type, goForward);
       }
     }
   }
