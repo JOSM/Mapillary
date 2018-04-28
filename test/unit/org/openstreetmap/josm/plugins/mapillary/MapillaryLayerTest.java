@@ -73,7 +73,7 @@ public class MapillaryLayerTest {
   public void testClearInstance() {
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());
-    JOSMTestRules.cleanLayerEnvironment();
+    MapillaryLayer.getInstance().destroy();
     assertFalse(MapillaryLayer.hasInstance());
     MapillaryLayer.getInstance();
     assertTrue(MapillaryLayer.hasInstance());

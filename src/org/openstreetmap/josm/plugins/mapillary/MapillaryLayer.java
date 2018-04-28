@@ -38,7 +38,6 @@ import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
@@ -119,7 +118,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       ds.addDataSetListener(DATASET_LISTENER);
     }
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
-    MainApplication.getLayerManager().addLayer(this);
     if (!GraphicsEnvironment.isHeadless()) {
       setMode(new SelectMode());
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
@@ -186,9 +184,6 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    */
   public static synchronized MapillaryLayer getInstance() {
     if (instance != null) {
-      if (!MainApplication.getLayerManager().containsLayer(instance)) {
-        MainApplication.getLayerManager().addLayer(instance);
-      }
       return instance;
     }
     final MapillaryLayer layer = new MapillaryLayer();
@@ -198,10 +193,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * @return if the unique instance of this layer is currently instantiated and added to the {@link LayerManager}
+   * @return if the unique instance of this layer is currently instantiated
    */
   public static boolean hasInstance() {
-    return instance != null && MainApplication.getLayerManager().containsLayer(instance);
+    return instance != null;
   }
 
   /**

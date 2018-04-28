@@ -45,11 +45,7 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent ae) {
-    if (!MapillaryLayer.hasInstance()) {
-      // A new mapillary layer is created, so the active layer is not changed
-      MapillaryLayer.getInstance();
-      return;
-    } else if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+    if (!MapillaryLayer.hasInstance() || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
       MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
       return;
     }

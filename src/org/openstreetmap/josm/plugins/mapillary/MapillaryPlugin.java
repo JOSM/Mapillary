@@ -74,11 +74,8 @@ public class MapillaryPlugin extends Plugin {
     }
   }
 
-  /**
-   * @return the {@link MapillaryUploadAction} for the plugin
-   */
-  public static MapillaryDataListener getUploadAction() {
-    return UPLOAD_ACTION;
+  static MapillaryDataListener[] getMapillaryDataListeners() {
+    return new MapillaryDataListener[]{UPLOAD_ACTION, WALK_ACTION, ZOOM_ACTION};
   }
 
   /**
@@ -86,13 +83,6 @@ public class MapillaryPlugin extends Plugin {
    */
   public static MapillaryWalkAction getWalkAction() {
     return WALK_ACTION;
-  }
-
-  /**
-   * @return the {@link MapillaryZoomAction} for the plugin
-   */
-  public static MapillaryDataListener getZoomAction() {
-    return ZOOM_ACTION;
   }
 
   /**

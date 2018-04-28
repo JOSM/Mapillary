@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -60,9 +61,7 @@ public class MapillaryData {
     this.bounds = new CopyOnWriteArrayList<>();
 
     // Adds the basic set of listeners.
-    addListener(MapillaryPlugin.getWalkAction());
-    addListener(MapillaryPlugin.getZoomAction());
-    addListener(MapillaryPlugin.getUploadAction());
+    Arrays.stream(MapillaryPlugin.getMapillaryDataListeners()).forEach(this::addListener);
     if (Main.main != null) {
       addListener(MapillaryMainDialog.getInstance());
       addListener(ImageInfoPanel.getInstance());
