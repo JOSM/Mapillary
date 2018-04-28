@@ -118,12 +118,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (ds != null) {
       ds.addDataSetListener(DATASET_LISTENER);
     }
-    MainApplication.getLayerManager().addLayer(this);
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
+    MainApplication.getLayerManager().addLayer(this);
     if (!GraphicsEnvironment.isHeadless()) {
       setMode(new SelectMode());
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
-        MapillaryDownloader.downloadOSMArea();
+        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);
       }
       if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.VISIBLE_AREA) {
         this.mode.zoomChanged();
@@ -192,9 +192,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       return instance;
     }
     final MapillaryLayer layer = new MapillaryLayer();
-    instance = layer;
     layer.init();
-    return layer;
+    instance = layer; // Only set instance field after initialization is complete
+    return instance;
   }
 
   /**
@@ -438,7 +438,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public Object getInfoComponent() {
     IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size()).summaryStatistics();
     return new StringBuilder(I18n.tr("Mapillary layer"))
-      .append("\n")
+      .append('\n')
       .append(I18n.tr(
         "{0} sequences, each containing between {1} and {2} images (ø {3})",
         getData().getSequences().size(),
