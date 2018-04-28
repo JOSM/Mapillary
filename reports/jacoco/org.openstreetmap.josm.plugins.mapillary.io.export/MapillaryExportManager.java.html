@@ -51,8 +51,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    */
   public MapillaryExportManager(Set&lt;MapillaryAbstractImage&gt; images, String path) {
 <span class="nc" id="L53">    super(</span>
-<span class="nc" id="L54">      tr(&quot;Downloading&quot;) + &quot;…&quot;,</span>
-<span class="nc" id="L55">      new PleaseWaitProgressMonitor(tr(&quot;Exporting Mapillary Images&quot;)),</span>
+<span class="nc" id="L54">      tr(&quot;Downloading…&quot;),</span>
+<span class="nc" id="L55">      new PleaseWaitProgressMonitor(tr(&quot;Exporting Mapillary Images…&quot;)),</span>
       true
     );
 <span class="nc bnc" id="L58" title="All 2 branches missed.">    this.images = images == null ? new HashSet&lt;&gt;() : images;</span>

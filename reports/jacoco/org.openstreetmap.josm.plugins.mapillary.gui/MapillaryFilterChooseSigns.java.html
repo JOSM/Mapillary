@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.awt.Dimension;
 
@@ -22,35 +23,35 @@ public final class MapillaryFilterChooseSigns extends JPanel {
   private static final long serialVersionUID = -3513805549022406720L;
 
   /** Max speed signs */
-<span class="nc" id="L25">  public final JCheckBox maxSpeed = new JCheckBox();</span>
+<span class="nc" id="L26">  public final JCheckBox maxSpeed = new JCheckBox();</span>
   /** Stop signs */
-<span class="nc" id="L27">  public final JCheckBox stop = new JCheckBox();</span>
+<span class="nc" id="L28">  public final JCheckBox stop = new JCheckBox();</span>
   /** Give way signs */
-<span class="nc" id="L29">  public final JCheckBox giveWay = new JCheckBox();</span>
+<span class="nc" id="L30">  public final JCheckBox giveWay = new JCheckBox();</span>
   /** Roundabout sings */
-<span class="nc" id="L31">  public final JCheckBox roundabout = new JCheckBox();</span>
+<span class="nc" id="L32">  public final JCheckBox roundabout = new JCheckBox();</span>
   /** Forbidden access or forbidden direction signs */
-<span class="nc" id="L33">  public final JCheckBox access = new JCheckBox();</span>
+<span class="nc" id="L34">  public final JCheckBox access = new JCheckBox();</span>
   /** Intersection danger signs */
-<span class="nc" id="L35">  public final JCheckBox intersection = new JCheckBox();</span>
+<span class="nc" id="L36">  public final JCheckBox intersection = new JCheckBox();</span>
   /** Mandatory direction signs */
-<span class="nc" id="L37">  public final JCheckBox direction = new JCheckBox();</span>
+<span class="nc" id="L38">  public final JCheckBox direction = new JCheckBox();</span>
   /** Uneven pavement signs */
-<span class="nc" id="L39">  public final JCheckBox uneven = new JCheckBox();</span>
+<span class="nc" id="L40">  public final JCheckBox uneven = new JCheckBox();</span>
   /** No parking signs */
-<span class="nc" id="L41">  public final JCheckBox noParking = new JCheckBox();</span>
+<span class="nc" id="L42">  public final JCheckBox noParking = new JCheckBox();</span>
   /** Forbidden overtaking signs */
-<span class="nc" id="L43">  public final JCheckBox noOvertaking = new JCheckBox();</span>
+<span class="nc" id="L44">  public final JCheckBox noOvertaking = new JCheckBox();</span>
   /** Pedestrian crossing signs */
-<span class="nc" id="L45">  public final JCheckBox crossing = new JCheckBox();</span>
+<span class="nc" id="L46">  public final JCheckBox crossing = new JCheckBox();</span>
   /** Forbidden turn signs */
-<span class="nc" id="L47">  public final JCheckBox noTurn = new JCheckBox();</span>
+<span class="nc" id="L48">  public final JCheckBox noTurn = new JCheckBox();</span>
 
   /**
    * The {@link JCheckBox}es where the respective tag should be searched
    */
-<span class="nc" id="L52">  public final JCheckBox[] signCheckboxes = new JCheckBox[]{maxSpeed, stop, giveWay, roundabout, access, intersection, direction, uneven, noParking, noOvertaking, crossing, noTurn};</span>
-<span class="nc" id="L53">  public static final String[] SIGN_TAGS = {</span>
+<span class="nc" id="L53">  public final JCheckBox[] signCheckboxes = new JCheckBox[]{maxSpeed, stop, giveWay, roundabout, access, intersection, direction, uneven, noParking, noOvertaking, crossing, noTurn};</span>
+<span class="nc" id="L54">  public static final String[] SIGN_TAGS = {</span>
     &quot;(complementary)|(regulatory)--maximum-speed-limit&quot;, &quot;(regulatory)|(warning)--stop&quot;,
     &quot;(regulatory)|(warning)--yield&quot;, &quot;(warning)|(regulatory)--roundabout&quot;, &quot;regulatory--no-entry&quot;,
     &quot;warning--(crossroads)|(junction)&quot;, &quot;regulatory--(turn)|(go-straight)&quot;, &quot;warning--(uneven)|(slippery)&quot;,
@@ -59,47 +60,47 @@ public final class MapillaryFilterChooseSigns extends JPanel {
 
   private static MapillaryFilterChooseSigns instance;
 
-<span class="nc" id="L62">  private MapillaryFilterChooseSigns() {</span>
+<span class="nc" id="L63">  private MapillaryFilterChooseSigns() {</span>
     // i18n: traffic sign
-<span class="nc" id="L64">    addCheckBoxWithLabel(this, maxSpeed, true, &quot;signs/speed.png&quot;, tr(&quot;Speed limit&quot;));</span>
+<span class="nc" id="L65">    addCheckBoxWithLabel(this, maxSpeed, true, &quot;signs/speed.png&quot;, tr(&quot;Speed limit&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L66">    addCheckBoxWithLabel(this, stop, true, &quot;signs/stop.png&quot;, tr(&quot;Stop&quot;));</span>
+<span class="nc" id="L67">    addCheckBoxWithLabel(this, stop, true, &quot;signs/stop.png&quot;, trc(&quot;name of the traffic sign&quot;, &quot;Stop&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L68">    addCheckBoxWithLabel(this, giveWay, true, &quot;signs/right_of_way.png&quot;, tr(&quot;Give way&quot;));</span>
+<span class="nc" id="L69">    addCheckBoxWithLabel(this, giveWay, true, &quot;signs/right_of_way.png&quot;, tr(&quot;Give way&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L70">    addCheckBoxWithLabel(this, roundabout, true, &quot;signs/roundabout_right.png&quot;, tr(&quot;Roundabout&quot;));</span>
+<span class="nc" id="L71">    addCheckBoxWithLabel(this, roundabout, true, &quot;signs/roundabout_right.png&quot;, tr(&quot;Roundabout&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L72">    addCheckBoxWithLabel(this, access, true, &quot;signs/no_entry.png&quot;, tr(&quot;No entry&quot;));</span>
+<span class="nc" id="L73">    addCheckBoxWithLabel(this, access, true, &quot;signs/no_entry.png&quot;, tr(&quot;No entry&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L74">    addCheckBoxWithLabel(this, intersection, true, &quot;signs/intersection_danger.png&quot;, tr(&quot;Intersection danger&quot;));</span>
+<span class="nc" id="L75">    addCheckBoxWithLabel(this, intersection, true, &quot;signs/intersection_danger.png&quot;, tr(&quot;Intersection danger&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L76">    addCheckBoxWithLabel(this, direction, true, &quot;signs/only_straight_on.png&quot;, tr(&quot;Mandatory direction (any)&quot;));</span>
+<span class="nc" id="L77">    addCheckBoxWithLabel(this, direction, true, &quot;signs/only_straight_on.png&quot;, tr(&quot;Mandatory direction (any)&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L78">    addCheckBoxWithLabel(this, uneven, true, &quot;signs/uneven.png&quot;, tr(&quot;Uneven road&quot;));</span>
+<span class="nc" id="L79">    addCheckBoxWithLabel(this, uneven, true, &quot;signs/uneven.png&quot;, tr(&quot;Uneven road&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L80">    addCheckBoxWithLabel(this, noParking, true, &quot;signs/no_parking.png&quot;, tr(&quot;No parking&quot;));</span>
+<span class="nc" id="L81">    addCheckBoxWithLabel(this, noParking, true, &quot;signs/no_parking.png&quot;, tr(&quot;No parking&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L82">    addCheckBoxWithLabel(this, noOvertaking, true, &quot;signs/no_overtaking.png&quot;, tr(&quot;No overtaking&quot;));</span>
+<span class="nc" id="L83">    addCheckBoxWithLabel(this, noOvertaking, true, &quot;signs/no_overtaking.png&quot;, tr(&quot;No overtaking&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L84">    addCheckBoxWithLabel(this, crossing, true, &quot;signs/crossing.png&quot;, tr(&quot;Pedestrian crossing&quot;));</span>
+<span class="nc" id="L85">    addCheckBoxWithLabel(this, crossing, true, &quot;signs/crossing.png&quot;, tr(&quot;Pedestrian crossing&quot;));</span>
     // i18n: traffic sign
-<span class="nc" id="L86">    addCheckBoxWithLabel(this, noTurn, true, &quot;signs/no_turn.png&quot;, tr(&quot;No turn&quot;));</span>
+<span class="nc" id="L87">    addCheckBoxWithLabel(this, noTurn, true, &quot;signs/no_turn.png&quot;, tr(&quot;No turn&quot;));</span>
 
-<span class="nc" id="L88">    setPreferredSize(new Dimension(600, 250));</span>
-<span class="nc" id="L89">  }</span>
+<span class="nc" id="L89">    setPreferredSize(new Dimension(600, 250));</span>
+<span class="nc" id="L90">  }</span>
 
   private static void addCheckBoxWithLabel(final JPanel parentPanel, final JCheckBox checkBox,
       final boolean isSelected, final String iconPath, final String labelText) {
-<span class="nc" id="L93">    final JPanel checkBoxPanel = new JPanel();</span>
-<span class="nc" id="L94">    final JLabel checkBoxLabel = new JLabel(labelText);</span>
+<span class="nc" id="L94">    final JPanel checkBoxPanel = new JPanel();</span>
+<span class="nc" id="L95">    final JLabel checkBoxLabel = new JLabel(labelText);</span>
 
-<span class="nc" id="L96">    checkBoxLabel.setIcon(new ImageProvider(iconPath).get());</span>
-<span class="nc" id="L97">    checkBoxLabel.setLabelFor(checkBox);</span>
-<span class="nc" id="L98">    checkBoxPanel.add(checkBoxLabel);</span>
-<span class="nc" id="L99">    checkBox.setSelected(isSelected);</span>
-<span class="nc" id="L100">    checkBoxPanel.add(checkBox);</span>
-<span class="nc" id="L101">    parentPanel.add(checkBoxPanel);</span>
-<span class="nc" id="L102">  }</span>
+<span class="nc" id="L97">    checkBoxLabel.setIcon(new ImageProvider(iconPath).get());</span>
+<span class="nc" id="L98">    checkBoxLabel.setLabelFor(checkBox);</span>
+<span class="nc" id="L99">    checkBoxPanel.add(checkBoxLabel);</span>
+<span class="nc" id="L100">    checkBox.setSelected(isSelected);</span>
+<span class="nc" id="L101">    checkBoxPanel.add(checkBox);</span>
+<span class="nc" id="L102">    parentPanel.add(checkBoxPanel);</span>
+<span class="nc" id="L103">  }</span>
 
   /**
    * Return the unique instance of the class.
@@ -107,10 +108,10 @@ public final class MapillaryFilterChooseSigns extends JPanel {
    * @return the unique instance of the class.
    */
   public static synchronized MapillaryFilterChooseSigns getInstance() {
-<span class="nc bnc" id="L110" title="All 2 branches missed.">    if (instance == null) {</span>
-<span class="nc" id="L111">      instance = new MapillaryFilterChooseSigns();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (instance == null) {</span>
+<span class="nc" id="L112">      instance = new MapillaryFilterChooseSigns();</span>
     }
-<span class="nc" id="L113">    return instance;</span>
+<span class="nc" id="L114">    return instance;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
