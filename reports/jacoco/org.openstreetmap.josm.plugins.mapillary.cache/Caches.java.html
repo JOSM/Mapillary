@@ -18,9 +18,9 @@ import org.openstreetmap.josm.tools.Logging;
 
 public final class Caches {
 
-<span class="fc" id="L21">  private Caches() {</span>
+  private Caches() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L23">  }</span>
+  }
 
   public static File getCacheDirectory() {
 <span class="fc" id="L26">    final File f = new File(Main.pref.getPluginsDirectory().getPath() + &quot;/Mapillary/cache&quot;);</span>
@@ -82,7 +82,7 @@ public final class Caches {
 <span class="fc" id="L82">          instance = new ImageCache();</span>
         }
 <span class="fc" id="L84">        return instance;</span>
-<span class="nc" id="L85">      }</span>
+      }
     }
   }
 
@@ -95,7 +95,7 @@ public final class Caches {
 <span class="fc" id="L95">          instance = new MapObjectIconCache();</span>
         }
 <span class="fc" id="L97">        return instance;</span>
-<span class="nc" id="L98">      }</span>
+      }
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class Caches {
 <span class="fc" id="L113">          instance = new UserProfileCache();</span>
         }
 <span class="fc" id="L115">        return instance;</span>
-<span class="nc" id="L116">      }</span>
+      }
     }
 
     @Override
@@ -127,4 +127,4 @@ public final class Caches {
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -104,13 +104,13 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="fc" id="L104">    loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));</span>
 <span class="fc" id="L105">    loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);</span>
 <span class="fc" id="L106">    JLabel brandImage = new JLabel();</span>
-<span class="pc" id="L107">    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream(&quot;/images/mapillary-logo-white.png&quot;)) {</span>
+<span class="fc" id="L107">    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream(&quot;/images/mapillary-logo-white.png&quot;)) {</span>
 <span class="pc bpc" id="L108" title="1 of 2 branches missed.">      if (is != null) {</span>
 <span class="fc" id="L109">        brandImage.setIcon(new ImageIcon(ImageIO.read(is)));</span>
       } else {
 <span class="nc" id="L111">        Logging.warn(&quot;Could not load Mapillary brand image!&quot;);</span>
       }
-<span class="pc bpc" id="L113" title="6 of 8 branches missed.">    } catch (IOException e) {</span>
+<span class="nc" id="L113">    } catch (IOException e) {</span>
 <span class="nc" id="L114">      Logging.warn(&quot;While reading Mapillary brand image, an IO-exception occured!&quot;);</span>
 <span class="fc" id="L115">    }</span>
 <span class="fc" id="L116">    loginPanel.add(brandImage, 0);</span>
@@ -163,7 +163,7 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="fc" id="L163">    synchronized (gui.getDisplayPreference().getTabPane()) {</span>
 <span class="fc" id="L164">      gui.getDisplayPreference().addSubTab(this, &quot;Mapillary&quot;, new JScrollPane(container));</span>
 <span class="fc" id="L165">      gui.getDisplayPreference().getTabPane().setIconAt(gui.getDisplayPreference().getTabPane().getTabCount()-1, MapillaryPlugin.LOGO.setSize(12, 12).get());</span>
-<span class="pc" id="L166">    }</span>
+<span class="fc" id="L166">    }</span>
 
 <span class="fc" id="L168">    new Thread(() -&gt; {</span>
 <span class="fc" id="L169">      String username = MapillaryUser.getUsername();</span>
@@ -260,4 +260,4 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="nc" id="L260">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

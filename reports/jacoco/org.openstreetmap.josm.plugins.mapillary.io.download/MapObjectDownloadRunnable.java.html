@@ -52,12 +52,12 @@ public class MapObjectDownloadRunnable implements Runnable {
 <span class="fc" id="L52">        final int prevResultSize = result.size();</span>
 <span class="fc" id="L53">        final long startTime = System.currentTimeMillis();</span>
 <span class="fc" id="L54">        final URLConnection con = nextURL.openConnection();</span>
-<span class="pc" id="L55">        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="fc" id="L55">        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
 <span class="fc" id="L56">          result.addAll(JsonDecoder.decodeFeatureCollection(</span>
 <span class="fc" id="L57">            reader.readObject(),</span>
             JsonMapObjectDecoder::decodeMapObject
           ));
-<span class="pc bpc" id="L60" title="6 of 8 branches missed.">        }</span>
+        }
 <span class="fc" id="L61">        layer.invalidate();</span>
 <span class="fc" id="L62">        BoundsDownloadRunnable.logConnectionInfo(con, String.format(</span>
           &quot;%d map objects in %.2f s&quot;,
@@ -92,4 +92,4 @@ public class MapObjectDownloadRunnable implements Runnable {
 <span class="fc" id="L92">  }</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

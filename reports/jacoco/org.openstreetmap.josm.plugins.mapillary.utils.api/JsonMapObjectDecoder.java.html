@@ -14,9 +14,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
  * Takes a {@link JsonObject} and {@link #decodeMapObject(JsonObject)} tries to convert it to a {@link MapObject}.
  */
 public final class JsonMapObjectDecoder {
-<span class="fc" id="L17">  private JsonMapObjectDecoder() {</span>
+  private JsonMapObjectDecoder() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L19">  }</span>
+  }
 
   public static MapObject decodeMapObject(final JsonObject json) {
 <span class="fc bfc" id="L22" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
@@ -59,4 +59,4 @@ public final class JsonMapObjectDecoder {
 <span class="fc" id="L59">    return null;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

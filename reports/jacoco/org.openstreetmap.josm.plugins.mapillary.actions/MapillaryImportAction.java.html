@@ -28,32 +28,31 @@ public class MapillaryImportAction extends JosmAction {
 
   /**
    * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
-   * @see Shortcut#registerShortcut(String, String, int, int)
    */
   public MapillaryImportAction() {
-<span class="nc" id="L34">    super(</span>
-<span class="nc" id="L35">      tr(&quot;Import pictures&quot;),</span>
-<span class="nc" id="L36">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="nc" id="L37">      tr(&quot;Import local pictures&quot;),</span>
-<span class="nc" id="L38">      Shortcut.registerShortcut(&quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),</span>
+<span class="nc" id="L33">    super(</span>
+<span class="nc" id="L34">      tr(&quot;Import pictures&quot;),</span>
+<span class="nc" id="L35">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+<span class="nc" id="L36">      tr(&quot;Import local pictures&quot;),</span>
+<span class="nc" id="L37">      Shortcut.registerShortcut(&quot;Import Mapillary&quot;, tr(&quot;Import pictures into Mapillary layer&quot;), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),</span>
       false,
       &quot;mapillaryImport&quot;,
       false
     );
-<span class="nc" id="L43">  }</span>
+<span class="nc" id="L42">  }</span>
 
   /**
    * Records in the history, that the given images were loaded
    * @param addedImages the images that have been loaded
    */
   public static void recordChanges(List&lt;MapillaryAbstractImage&gt; addedImages) {
-<span class="nc" id="L50">    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(addedImages)));</span>
-<span class="nc" id="L51">    MapillaryUtils.showAllPictures();</span>
-<span class="nc" id="L52">  }</span>
+<span class="nc" id="L49">    MapillaryRecord.getInstance().addCommand(new CommandImport(new ConcurrentSkipListSet&lt;&gt;(addedImages)));</span>
+<span class="nc" id="L50">    MapillaryUtils.showAllPictures();</span>
+<span class="nc" id="L51">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent event) {
-<span class="nc" id="L56">    new ImportMethodDialog(Main.parent).setVisible(true);</span>
-<span class="nc" id="L57">  }</span>
+<span class="nc" id="L55">    new ImportMethodDialog(Main.parent).setVisible(true);</span>
+<span class="nc" id="L56">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

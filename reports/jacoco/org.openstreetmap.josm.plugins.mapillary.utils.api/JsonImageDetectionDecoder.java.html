@@ -20,9 +20,9 @@ import org.openstreetmap.josm.tools.Logging;
  * Takes a {@link JsonObject} and {@link #decodeImageDetection(JsonObject)} tries to convert it to a {@link ImageDetection}.
  */
 public final class JsonImageDetectionDecoder {
-<span class="fc" id="L23">  private JsonImageDetectionDecoder() {</span>
+  private JsonImageDetectionDecoder() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L25">  }</span>
+  }
 
   public static ImageDetection decodeImageDetection(final JsonObject json) {
 <span class="fc bfc" id="L28" title="All 4 branches covered.">    if (json == null || !&quot;Feature&quot;.equals(json.getString(&quot;type&quot;, null))) {</span>
@@ -69,7 +69,7 @@ public final class JsonImageDetectionDecoder {
    */
   private static Path2D decodePolygon(final JsonArray json) {
 <span class="fc" id="L71">    final Path2D shape = new Path2D.Double();</span>
-<span class="fc" id="L72">    json.stream().forEach(val -&gt; {</span>
+<span class="fc" id="L72">    json.forEach(val -&gt; {</span>
 <span class="fc bfc" id="L73" title="All 2 branches covered.">      final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;</span>
 <span class="fc bfc" id="L74" title="All 2 branches covered.">      if (part != null) {</span>
 <span class="fc" id="L75">        shape.append(part, false);</span>
@@ -89,7 +89,7 @@ public final class JsonImageDetectionDecoder {
    */
   private static Path2D decodeSimplePolygon(final JsonArray json) {
 <span class="fc" id="L91">    final Path2D shape = new Path2D.Double();</span>
-<span class="fc" id="L92">    json.stream().forEach(val -&gt; {</span>
+<span class="fc" id="L92">    json.forEach(val -&gt; {</span>
 <span class="fc bfc" id="L93" title="All 2 branches covered.">      double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);</span>
 <span class="fc bfc" id="L94" title="All 4 branches covered.">      if (shape.getCurrentPoint() == null &amp;&amp; coord != null) {</span>
 <span class="fc" id="L95">        shape.moveTo(coord[0], coord[1]);</span>
@@ -104,4 +104,4 @@ public final class JsonImageDetectionDecoder {
 <span class="fc" id="L104">    return null;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

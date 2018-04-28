@@ -22,9 +22,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  */
 public final class OAuthUtils {
 
-<span class="nc" id="L25">  private OAuthUtils() {</span>
+  private OAuthUtils() {
     // Private constructor to avoid instantiation
-<span class="nc" id="L27">  }</span>
+  }
 
   /**
    * Returns a JsonObject containing the result of making a GET request with the
@@ -45,9 +45,9 @@ public final class OAuthUtils {
 <span class="nc" id="L45">      JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), &quot;UTF-8&quot;)))</span>
     ) {
 <span class="nc" id="L47">      return reader.readObject();</span>
-<span class="nc bnc" id="L48" title="All 8 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L48">    } catch (JsonException e) {</span>
 <span class="nc" id="L49">      throw new IOException(e);</span>
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

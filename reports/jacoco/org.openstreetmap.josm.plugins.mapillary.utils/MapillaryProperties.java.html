@@ -19,7 +19,7 @@ public final class MapillaryProperties {
 <span class="fc" id="L19">  public static final BooleanProperty HOVER_ENABLED = new BooleanProperty(&quot;mapillary.hover-enabled&quot;, true);</span>
 <span class="fc" id="L20">  public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty(&quot;mapillary.move-to-picture&quot;, true);</span>
 <span class="fc" id="L21">  public static final BooleanProperty TIME_FORMAT_24 = new BooleanProperty(&quot;mapillary.format-24&quot;, true);</span>
-<span class="fc" id="L22">  public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(&quot;mapillary.image-link-to-blur-editor&quot;, true);</span>
+<span class="fc" id="L22">  public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(&quot;mapillary.image-link-to-blur-editor&quot;, false);</span>
   /**
    * If false, all sequences that cross the download bounds are put completely into the MapillaryData object.
    * Otherwise only all images (!) inside the download bounds are added, the others are discarded.
@@ -49,7 +49,7 @@ public final class MapillaryProperties {
 
 <span class="fc" id="L50">  public static final StringProperty ACCESS_TOKEN = new StringProperty(&quot;mapillary.access-token&quot;, null);</span>
 <span class="fc" id="L51">  public static final StringProperty DOWNLOAD_MODE =</span>
-<span class="fc" id="L52">    new StringProperty(&quot;mapillary.download-mode&quot;, MapillaryDownloader.DOWNLOAD_MODE.getDefault().getPrefId());</span>
+<span class="fc" id="L52">    new StringProperty(&quot;mapillary.download-mode&quot;, MapillaryDownloader.DOWNLOAD_MODE.DEFAULT.getPrefId());</span>
 <span class="fc" id="L53">  public static final StringProperty START_DIR =</span>
 <span class="fc" id="L54">    new StringProperty(&quot;mapillary.start-directory&quot;, System.getProperty(&quot;user.home&quot;));</span>
 
@@ -66,8 +66,8 @@ public final class MapillaryProperties {
    */
 <span class="fc" id="L67">  public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty(&quot;mapillary.prefetch-image-count&quot;, 2);</span>
 
-<span class="fc" id="L69">  private MapillaryProperties() {</span>
+  private MapillaryProperties() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L71">  }</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -20,9 +20,9 @@ import org.openstreetmap.josm.tools.Logging;
 public final class JsonUserProfileDecoder {
 <span class="fc" id="L21">  private static final ImageIcon FAKE_AVATAR = new ImageProvider(&quot;fake-avatar&quot;).get();</span>
 
-<span class="fc" id="L23">  private JsonUserProfileDecoder() {</span>
+  private JsonUserProfileDecoder() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L25">  }</span>
+  }
 
   public static UserProfile decodeUserProfile(JsonObject json) {
 <span class="fc bfc" id="L28" title="All 2 branches covered.">    if (json == null) {</span>
@@ -52,4 +52,4 @@ public final class JsonUserProfileDecoder {
 <span class="fc" id="L52">    return new UserProfile(key, username, icon);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

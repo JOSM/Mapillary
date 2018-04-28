@@ -15,8 +15,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener
 <span class="fc" id="L15">  private final Set&lt;MapillaryImage&gt; changeset = Collections.newSetFromMap(new ConcurrentHashMap&lt;&gt;());</span>
 
   public void addChangesetListener(MapillaryChangesetListener listener) {
-<span class="fc" id="L18">    this.listeners.add(listener);</span>
-<span class="fc" id="L19">  }</span>
+<span class="nc" id="L18">    this.listeners.add(listener);</span>
+<span class="nc" id="L19">  }</span>
 
   public void cleanChangeset() {
 <span class="nc" id="L22">    changeset.clear();</span>
@@ -41,14 +41,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener
 
   @Override
   public int size() {
-<span class="fc" id="L44">    return changeset.size();</span>
+<span class="nc" id="L44">    return changeset.size();</span>
   }
 
   @Override
   public boolean remove(Object image) {
-<span class="nc" id="L49">    boolean remove = changeset.remove(image);</span>
-<span class="nc" id="L50">    fireListeners();</span>
-<span class="nc" id="L51">    return remove;</span>
+<span class="fc" id="L49">    boolean remove = changeset.remove(image);</span>
+<span class="fc" id="L50">    fireListeners();</span>
+<span class="fc" id="L51">    return remove;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

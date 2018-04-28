@@ -35,7 +35,7 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
 <span class="pc bpc" id="L35" title="1 of 2 branches missed.">    if (Thread.interrupted()) {</span>
 <span class="nc" id="L36">      return;</span>
     }
-<span class="pc" id="L38">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
+<span class="fc" id="L38">    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {</span>
 <span class="fc" id="L39">      final long startTime = System.currentTimeMillis();</span>
 <span class="fc" id="L40">      final Collection&lt;MapillarySequence&gt; sequences = JsonDecoder.decodeFeatureCollection(</span>
 <span class="fc" id="L41">        reader.readObject(),</span>
@@ -57,21 +57,22 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
         } else {
 <span class="fc" id="L58">          boolean sequenceCrossesThroughBounds = false;</span>
 <span class="fc bfc" id="L59" title="All 4 branches covered.">          for (int i = 0; i &lt; seq.getImages().size() &amp;&amp; !sequenceCrossesThroughBounds; i++) {</span>
-<span class="fc" id="L60">            sequenceCrossesThroughBounds |= bounds.contains(seq.getImages().get(i).getLatLon());</span>
+<span class="fc" id="L60">            sequenceCrossesThroughBounds = bounds.contains(seq.getImages().get(i).getLatLon());</span>
           }
 <span class="fc bfc" id="L62" title="All 2 branches covered.">          if (sequenceCrossesThroughBounds) {</span>
 <span class="fc" id="L63">            data.addAll(seq.getImages(), true);</span>
           }
         }
 <span class="fc" id="L66">      }</span>
-<span class="pc bpc" id="L67" title="10 of 12 branches missed.">    } catch (JsonException e) {</span>
+<span class="nc" id="L67">    } catch (JsonException | NumberFormatException e) {</span>
 <span class="nc" id="L68">      throw new IOException(e);</span>
 <span class="fc" id="L69">    }</span>
-<span class="fc" id="L70">  }</span>
+
+<span class="fc" id="L71">  }</span>
 
   @Override
   protected Function&lt;Bounds, URL&gt; getUrlGenerator() {
-<span class="fc" id="L74">    return URL_GEN;</span>
+<span class="fc" id="L75">    return URL_GEN;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

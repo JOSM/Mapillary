@@ -35,26 +35,23 @@ public class MapillaryDownloadViewAction extends JosmAction implements ValueChan
 <span class="nc" id="L35">      I18n.tr(DESCRIPTION),</span>
 <span class="nc" id="L36">      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
 <span class="nc" id="L37">      I18n.tr(DESCRIPTION),</span>
-<span class="nc" id="L38">      Shortcut.registerShortcut(</span>
-<span class="nc" id="L39">        &quot;Mapillary area&quot;, I18n.tr(DESCRIPTION),</span>
-        KeyEvent.VK_PERIOD, Shortcut.SHIFT
-      ),
+<span class="nc" id="L38">      Shortcut.registerShortcut(&quot;Mapillary area&quot;, I18n.tr(DESCRIPTION), KeyEvent.VK_PERIOD, Shortcut.SHIFT),</span>
       false,
       &quot;mapillaryArea&quot;,
       true
     );
-<span class="nc" id="L46">    MapillaryProperties.DOWNLOAD_MODE.addListener(this);</span>
-<span class="nc" id="L47">    initEnabledState();</span>
-<span class="nc" id="L48">  }</span>
+<span class="nc" id="L43">    MapillaryProperties.DOWNLOAD_MODE.addListener(this);</span>
+<span class="nc" id="L44">    initEnabledState();</span>
+<span class="nc" id="L45">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L52">    MapillaryDownloader.downloadVisibleArea();</span>
-<span class="nc" id="L53">  }</span>
+<span class="nc" id="L49">    MapillaryDownloader.downloadVisibleArea();</span>
+<span class="nc" id="L50">  }</span>
 
   @Override
   protected boolean listenToSelectionChange() {
-<span class="nc" id="L57">    return false;</span>
+<span class="nc" id="L54">    return false;</span>
   }
 
   /**
@@ -62,18 +59,18 @@ public class MapillaryDownloadViewAction extends JosmAction implements ValueChan
    */
   @Override
   protected void updateEnabledState() {
-<span class="nc" id="L65">    super.updateEnabledState();</span>
-<span class="nc" id="L66">    setEnabled(</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">      MapillaryLayer.hasInstance() &amp;&amp; (</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY</span>
+<span class="nc" id="L62">    super.updateEnabledState();</span>
+<span class="nc" id="L63">    setEnabled(</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      MapillaryLayer.hasInstance() &amp;&amp; (</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        || MapillaryDownloader.getMode() == MapillaryDownloader.DOWNLOAD_MODE.MANUAL_ONLY</span>
       )
     );
-<span class="nc" id="L72">  }</span>
+<span class="nc" id="L69">  }</span>
 
   @Override
   public void valueChanged(ValueChangeEvent&lt;? extends String&gt; e) {
-<span class="nc" id="L76">    updateEnabledState();</span>
-<span class="nc" id="L77">  }</span>
+<span class="nc" id="L73">    updateEnabledState();</span>
+<span class="nc" id="L74">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

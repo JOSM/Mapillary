@@ -33,9 +33,9 @@ public final class MapillaryUtils {
 
   private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
 
-<span class="fc" id="L36">  private MapillaryUtils() {</span>
+  private MapillaryUtils() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L38">  }</span>
+  }
 
   /**
    * Open the default browser in the given URL.
@@ -126,7 +126,7 @@ public final class MapillaryUtils {
 <span class="nc" id="L126">        throw new IllegalArgumentException(&quot;Null value in array.&quot;);</span>
     }
 
-<span class="pc bpc" id="L129" title="8 of 15 branches missed.">    switch (ref) {</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">    switch (ref) {</span>
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_NORTH:
       case GpsTagConstants.GPS_TAG_GPS_LATITUDE_REF_VALUE_SOUTH:
       case GpsTagConstants.GPS_TAG_GPS_LONGITUDE_REF_VALUE_EAST:
@@ -261,26 +261,26 @@ public final class MapillaryUtils {
    * Updates the help text at the bottom of the window.
    */
   public static void updateHelpText() {
-<span class="pc bpc" id="L264" title="2 of 4 branches missed.">    if (MainApplication.getMap() == null || MainApplication.getMap().statusLine == null) {</span>
+<span class="nc bnc" id="L264" title="All 4 branches missed.">    if (MainApplication.getMap() == null || MainApplication.getMap().statusLine == null) {</span>
 <span class="nc" id="L265">      return;</span>
     }
-<span class="fc" id="L267">    StringBuilder ret = new StringBuilder();</span>
-<span class="pc bpc" id="L268" title="1 of 2 branches missed.">    if (PluginState.isDownloading()) {</span>
+<span class="nc" id="L267">    StringBuilder ret = new StringBuilder();</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">    if (PluginState.isDownloading()) {</span>
 <span class="nc" id="L269">      ret.append(I18n.tr(&quot;Downloading Mapillary images&quot;));</span>
-<span class="pc bpc" id="L270" title="2 of 4 branches missed.">    } else if (MapillaryLayer.hasInstance() &amp;&amp; !MapillaryLayer.getInstance().getData().getImages().isEmpty()) {</span>
+<span class="nc bnc" id="L270" title="All 4 branches missed.">    } else if (MapillaryLayer.hasInstance() &amp;&amp; !MapillaryLayer.getInstance().getData().getImages().isEmpty()) {</span>
 <span class="nc" id="L271">      ret.append(I18n.tr(&quot;Total Mapillary images: {0}&quot;, MapillaryLayer.getInstance().getToolTipText()));</span>
-<span class="pc bpc" id="L272" title="1 of 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">    } else if (PluginState.isSubmittingChangeset()) {</span>
 <span class="nc" id="L273">        ret.append(I18n.tr(&quot;Submitting Mapillary Changeset&quot;));</span>
     } else {
-<span class="fc" id="L275">      ret.append(I18n.tr(&quot;No images found&quot;));</span>
+<span class="nc" id="L275">      ret.append(I18n.tr(&quot;No images found&quot;));</span>
     }
-<span class="pc bpc" id="L277" title="2 of 4 branches missed.">    if (MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().mode != null) {</span>
-<span class="fc" id="L278">      ret.append(&quot; — &quot;).append(I18n.tr(MapillaryLayer.getInstance().mode.toString()));</span>
+<span class="nc bnc" id="L277" title="All 4 branches missed.">    if (MapillaryLayer.hasInstance() &amp;&amp; MapillaryLayer.getInstance().mode != null) {</span>
+<span class="nc" id="L278">      ret.append(&quot; — &quot;).append(I18n.tr(MapillaryLayer.getInstance().mode.toString()));</span>
     }
-<span class="pc bpc" id="L280" title="1 of 2 branches missed.">    if (PluginState.isUploading()) {</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">    if (PluginState.isUploading()) {</span>
 <span class="nc" id="L281">      ret.append(&quot; — &quot;).append(PluginState.getUploadString());</span>
     }
-<span class="fc" id="L283">    MainApplication.getMap().statusLine.setHelpText(ret.toString());</span>
-<span class="fc" id="L284">  }</span>
+<span class="nc" id="L283">    MainApplication.getMap().statusLine.setHelpText(ret.toString());</span>
+<span class="nc" id="L284">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

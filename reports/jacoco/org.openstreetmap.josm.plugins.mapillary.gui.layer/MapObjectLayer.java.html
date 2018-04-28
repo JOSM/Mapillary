@@ -41,7 +41,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     private final int colorValue;
     public final String message;
 
-<span class="fc" id="L44">    private STATUS(final String message, final Color color) {</span>
+<span class="fc" id="L44">    STATUS(final String message, final Color color) {</span>
 <span class="fc" id="L45">      this.colorValue = color.getRGB();</span>
 <span class="fc" id="L46">      this.message = message;</span>
 <span class="fc" id="L47">    }</span>
@@ -87,13 +87,13 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 <span class="fc" id="L87">        instance = new MapObjectLayer();</span>
       }
 <span class="fc" id="L89">      return instance;</span>
-<span class="nc" id="L90">    }</span>
+    }
   }
 
   public boolean isDownloadRunnableScheduled() {
 <span class="fc" id="L94">    synchronized (this) {</span>
 <span class="pc bpc" id="L95" title="1 of 2 branches missed.">      return nextDownloadRunnable != null;</span>
-<span class="nc" id="L96">    }</span>
+    }
   }
 
   public void finishDownload(boolean replaceMapObjects) {
@@ -105,7 +105,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 <span class="fc" id="L105">            objects.clear();</span>
           }
 <span class="fc" id="L107">          objects.addAll(currentRunnable.getMapObjects());</span>
-<span class="pc" id="L108">        }</span>
+<span class="fc" id="L108">        }</span>
       }
 <span class="fc" id="L110">      downloadRunnable = null;</span>
 <span class="pc bpc" id="L111" title="1 of 2 branches missed.">      if (nextDownloadRunnable != null) {</span>
@@ -113,7 +113,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
 <span class="nc" id="L113">        nextDownloadRunnable = null;</span>
 <span class="nc" id="L114">        new Thread(downloadRunnable, &quot;downloadMapObjects&quot;).start();</span>
       }
-<span class="pc" id="L116">    }</span>
+<span class="fc" id="L116">    }</span>
 <span class="fc" id="L117">    new Thread(() -&gt; {</span>
 <span class="fc" id="L118">      synchronized (objects) {</span>
 <span class="fc bfc" id="L119" title="All 2 branches covered.">        for (MapObject object : objects) {</span>
@@ -124,7 +124,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
             );
           }
 <span class="fc" id="L126">        }</span>
-<span class="pc" id="L127">      }</span>
+<span class="fc" id="L127">      }</span>
 <span class="fc" id="L128">      invalidate();</span>
 <span class="fc" id="L129">    }, &quot;downloadMapObjectIcons&quot;).start();</span>
 <span class="fc" id="L130">  }</span>
@@ -216,7 +216,7 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
       } else {
 <span class="nc" id="L217">        nextDownloadRunnable = new MapObjectDownloadRunnable(this, bounds);</span>
       }
-<span class="pc" id="L219">    }</span>
+<span class="fc" id="L219">    }</span>
 <span class="fc" id="L220">  }</span>
 
   /* (non-Javadoc)
@@ -236,4 +236,4 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
     }
 <span class="fc" id="L237">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

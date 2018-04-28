@@ -30,9 +30,9 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="pc bpc" id="L30" title="1 of 2 branches missed.">public final class ImageImportUtil {</span>
 <span class="fc" id="L31">  public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();</span>
 
-<span class="fc" id="L33">  private ImageImportUtil() {</span>
+  private ImageImportUtil() {
     // Private constructor to avoid instantiation
-<span class="fc" id="L35">  }</span>
+  }
 
   /**
    * Recursive method to retrieve all images inside a directory or in a single file.
@@ -58,9 +58,9 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="fc" id="L58">        }</span>
       }
 <span class="fc bfc" id="L60" title="All 2 branches covered.">    } else if (IMAGE_FILE_FILTER.accept(f)) {</span>
-<span class="pc" id="L61">      try (FileInputStream fis = new FileInputStream(f)) {</span>
+<span class="fc" id="L61">      try (FileInputStream fis = new FileInputStream(f)) {</span>
 <span class="fc" id="L62">        images.add(readImageFrom(fis, f, defaultLL));</span>
-<span class="pc" id="L63">      }</span>
+      }
     }
 <span class="fc" id="L65">    return images;</span>
   }
@@ -146,13 +146,13 @@ import org.openstreetmap.josm.tools.Logging;
 <span class="pc bpc" id="L146" title="1 of 2 branches missed.">      if (f.isDirectory()) {</span>
 <span class="nc" id="L147">        return true;</span>
       }
-<span class="pc" id="L149">      try (FileInputStream fis = new FileInputStream(f)) {</span>
+<span class="fc" id="L149">      try (FileInputStream fis = new FileInputStream(f)) {</span>
 <span class="fc" id="L150">        int numBytes = fis.read(magic);</span>
 <span class="fc bfc" id="L151" title="All 2 branches covered.">        return numBytes &gt;= 0 &amp;&amp; (</span>
 <span class="fc bfc" id="L152" title="All 2 branches covered.">          Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))</span>
 <span class="fc bfc" id="L153" title="All 2 branches covered.">          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)))</span>
         );
-<span class="pc bpc" id="L155" title="3 of 4 branches missed.">      } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L155">      } catch (FileNotFoundException e) {</span>
 <span class="nc" id="L156">        return false;</span>
 <span class="nc" id="L157">      } catch (IOException e) {</span>
 <span class="nc" id="L158">        Logging.log(Logging.LEVEL_WARN, &quot;IO-exception while reading file &quot;+f.getAbsolutePath(), e);</span>
@@ -167,4 +167,4 @@ import org.openstreetmap.josm.tools.Logging;
 
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

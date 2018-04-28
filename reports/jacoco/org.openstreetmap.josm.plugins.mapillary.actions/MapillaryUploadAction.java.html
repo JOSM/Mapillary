@@ -29,14 +29,14 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapillaryUploadAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = -1405641273676919943L;
-<span class="fc" id="L32">  private static final String title = I18n.marktr(&quot;Upload Mapillary images&quot;);</span>
+<span class="fc" id="L32">  private static final String TITLE = I18n.tr(&quot;Upload Mapillary images&quot;);</span>
 
   /**
    * Main constructor.
    */
   public MapillaryUploadAction() {
-<span class="fc" id="L38">    super(I18n.tr(title), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
-<span class="fc" id="L39">        I18n.tr(title), null, false, &quot;mapillaryUpload&quot;, true);</span>
+<span class="fc" id="L38">    super(TITLE, new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),</span>
+        TITLE, null, false, &quot;mapillaryUpload&quot;, true);
 <span class="fc" id="L40">    this.setEnabled(false);</span>
 <span class="fc" id="L41">  }</span>
 
@@ -45,7 +45,7 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
 <span class="nc" id="L45">    MapillaryUploadDialog dialog = new MapillaryUploadDialog();</span>
 <span class="nc" id="L46">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
         JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L48">    JDialog dlg = pane.createDialog(Main.parent, I18n.tr(title));</span>
+<span class="nc" id="L48">    JDialog dlg = pane.createDialog(Main.parent, TITLE);</span>
 <span class="nc" id="L49">    dlg.setMinimumSize(new Dimension(400, 150));</span>
 <span class="nc" id="L50">    dlg.setVisible(true);</span>
 
@@ -89,4 +89,4 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     }
 <span class="fc" id="L90">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

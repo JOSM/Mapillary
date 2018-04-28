@@ -98,11 +98,11 @@ public class MapillaryImage extends MapillaryAbstractImage {
 <span class="fc" id="L98">  }</span>
 
   private void checkModified() {
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">    if (MapillaryLayer.hasInstance()) {</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">      if (isModified()) {</span>
-<span class="nc" id="L103">        MapillaryLayer.getInstance().getLocationChangeset().add(this);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (MapillaryLayer.hasInstance()) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">      if (isModified()) {</span>
+<span class="fc" id="L103">        MapillaryLayer.getInstance().getLocationChangeset().add(this);</span>
       } else {
-<span class="nc" id="L105">        MapillaryLayer.getInstance().getLocationChangeset().remove(this);</span>
+<span class="fc" id="L105">        MapillaryLayer.getInstance().getLocationChangeset().remove(this);</span>
       }
     }
 <span class="fc" id="L108">  }</span>
@@ -113,4 +113,4 @@ public class MapillaryImage extends MapillaryAbstractImage {
 <span class="fc" id="L113">    checkModified();</span>
 <span class="fc" id="L114">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

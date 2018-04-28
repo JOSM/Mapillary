@@ -27,7 +27,7 @@ public class KeyIndexedObject {
   @Override
   public int hashCode() {
 <span class="fc" id="L29">    final int prime = 31;</span>
-<span class="fc bfc" id="L30" title="All 2 branches covered.">    return prime * (prime + getClass().getName().hashCode()) + ((key == null) ? 0 : key.hashCode());</span>
+<span class="fc" id="L30">    return prime * (prime + getClass().getName().hashCode()) + key.hashCode();</span>
   }
 
   /* (non-Javadoc)
@@ -45,15 +45,11 @@ public class KeyIndexedObject {
 <span class="fc" id="L45">      return false;</span>
     }
 <span class="fc" id="L47">    KeyIndexedObject other = (KeyIndexedObject) obj;</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">    if (key == null) {</span>
-<span class="fc bfc" id="L49" title="All 2 branches covered.">      if (other.key != null) {</span>
-<span class="fc" id="L50">        return false;</span>
-      }
-<span class="fc bfc" id="L52" title="All 2 branches covered.">    } else if (!key.equals(other.key)) {</span>
-<span class="fc" id="L53">      return false;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    if (!key.equals(other.key)) {</span>
+<span class="fc" id="L49">      return false;</span>
     }
-<span class="fc" id="L55">    return true;</span>
+<span class="fc" id="L51">    return true;</span>
   }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

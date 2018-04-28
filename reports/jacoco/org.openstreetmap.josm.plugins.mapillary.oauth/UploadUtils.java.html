@@ -74,9 +74,9 @@ public final class UploadUtils {
    */
   private static int c;
 
-<span class="nc" id="L77">  private UploadUtils() {</span>
+  private UploadUtils() {
     // Private constructor to avoid instantiation.
-<span class="nc" id="L79">  }</span>
+  }
 
   private static final class SequenceUploadRunnable implements Runnable {
     private final Set&lt;MapillaryAbstractImage&gt; images;
@@ -286,8 +286,8 @@ public final class UploadUtils {
         } else {
 <span class="nc" id="L287">          Logging.info(&quot;Upload error&quot;);</span>
         }
-<span class="nc bnc" id="L289" title="All 4 branches missed.">      }</span>
-<span class="nc bnc" id="L290" title="All 4 branches missed.">    }</span>
+      }
+    }
     try {
 <span class="nc" id="L292">      Files.delete(file.toPath());</span>
 <span class="nc" id="L293">    } catch (IOException | SecurityException e) {</span>
@@ -307,4 +307,4 @@ public final class UploadUtils {
 <span class="nc" id="L307">    MainApplication.worker.execute(new SequenceUploadRunnable(new ConcurrentSkipListSet&lt;&gt;(sequence.getImages()), delete));</span>
 <span class="nc" id="L308">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

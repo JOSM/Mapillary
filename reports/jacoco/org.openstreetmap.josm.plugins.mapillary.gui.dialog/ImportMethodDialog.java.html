@@ -99,56 +99,62 @@ public class ImportMethodDialog extends JDialog {
 <span class="nc" id="L99">            final MapillarySequence seq = new MapillarySequence();</span>
 <span class="nc" id="L100">            seq.add(ImageImportUtil.readImagesFrom(f, center));</span>
 <span class="nc" id="L101">            MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
-<span class="nc" id="L102">            MapillaryImportAction.recordChanges(seq.getImages());</span>
-<span class="nc" id="L103">          } catch (IOException e1) {</span>
-<span class="nc" id="L104">            JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the image ''{0}''!&quot;, f.getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
-<span class="nc" id="L105">          }</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {</span>
+<span class="nc" id="L103">              MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());</span>
+            }
+<span class="nc" id="L105">            MapillaryImportAction.recordChanges(seq.getImages());</span>
+<span class="nc" id="L106">          } catch (IOException e1) {</span>
+<span class="nc" id="L107">            JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the image ''{0}''!&quot;, f.getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
+<span class="nc" id="L108">          }</span>
         }
-<span class="nc" id="L107">        MapillaryLayer.invalidateInstance();</span>
-<span class="nc" id="L108">        dispose();</span>
+<span class="nc" id="L110">        MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L111">        dispose();</span>
       }
-<span class="nc" id="L110">    });</span>
-<span class="nc" id="L111">    final JButton directoryBtn = new JButton(I18n.tr(IMPORT_METHOD_DIRECTORY));</span>
-<span class="nc" id="L112">    directoryBtn.addActionListener(e -&gt; {</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">      if (JFileChooser.APPROVE_OPTION == DIRECTORY_CHOOSER.showOpenDialog(this)) {</span>
-<span class="nc" id="L114">        final MapView mv = MapillaryPlugin.getMapView();</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
+<span class="nc" id="L113">    });</span>
+<span class="nc" id="L114">    final JButton directoryBtn = new JButton(I18n.tr(IMPORT_METHOD_DIRECTORY));</span>
+<span class="nc" id="L115">    directoryBtn.addActionListener(e -&gt; {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (JFileChooser.APPROVE_OPTION == DIRECTORY_CHOOSER.showOpenDialog(this)) {</span>
+<span class="nc" id="L117">        final MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());</span>
         try {
-<span class="nc" id="L117">          final MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L118">          seq.add(ImageImportUtil.readImagesFrom(DIRECTORY_CHOOSER.getSelectedFile(), center));</span>
-<span class="nc" id="L119">          MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
-<span class="nc" id="L120">          MapillaryImportAction.recordChanges(seq.getImages());</span>
-<span class="nc" id="L121">        } catch (IOException e1) {</span>
-<span class="nc" id="L122">          JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the directory ''{0}''!&quot;, DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
-<span class="nc" id="L123">        }</span>
-<span class="nc" id="L124">        MapillaryLayer.invalidateInstance();</span>
-<span class="nc" id="L125">        dispose();</span>
+<span class="nc" id="L120">          final MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L121">          seq.add(ImageImportUtil.readImagesFrom(DIRECTORY_CHOOSER.getSelectedFile(), center));</span>
+<span class="nc" id="L122">          MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">          if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {</span>
+<span class="nc" id="L124">            MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());</span>
+          }
+<span class="nc" id="L126">          MapillaryImportAction.recordChanges(seq.getImages());</span>
+<span class="nc" id="L127">        } catch (IOException e1) {</span>
+<span class="nc" id="L128">          JOptionPane.showMessageDialog(this, I18n.tr(&quot;Could not import the directory ''{0}''!&quot;, DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr(&quot;Import exception&quot;), JOptionPane.ERROR_MESSAGE));</span>
+<span class="nc" id="L129">        }</span>
+<span class="nc" id="L130">        MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L131">        dispose();</span>
       }
-<span class="nc" id="L127">    });</span>
-<span class="nc" id="L128">    final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));</span>
-<span class="nc" id="L129">    imgLayerBtn.addActionListener(ae -&gt; {</span>
-<span class="nc" id="L130">      List&lt;GeoImageLayer&gt; layers = MainApplication.getLayerManager().getLayersOfType(GeoImageLayer.class);</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">      if (layers.isEmpty()) {</span>
-<span class="nc" id="L132">        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);</span>
+<span class="nc" id="L133">    });</span>
+<span class="nc" id="L134">    final JButton imgLayerBtn = new JButton(I18n.tr(IMPORT_METHOD_LAYER));</span>
+<span class="nc" id="L135">    imgLayerBtn.addActionListener(ae -&gt; {</span>
+<span class="nc" id="L136">      List&lt;GeoImageLayer&gt; layers = MainApplication.getLayerManager().getLayersOfType(GeoImageLayer.class);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (layers.isEmpty()) {</span>
+<span class="nc" id="L138">        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);</span>
       } else {
-<span class="nc" id="L134">        ChooseGeoImageLayersDialog dia = new ChooseGeoImageLayersDialog(this, layers);</span>
-<span class="nc" id="L135">        dia.setVisible(true);</span>
-<span class="nc" id="L136">        dia.addWindowListener(new WindowAdapter() {</span>
+<span class="nc" id="L140">        ChooseGeoImageLayersDialog dia = new ChooseGeoImageLayersDialog(this, layers);</span>
+<span class="nc" id="L141">        dia.setVisible(true);</span>
+<span class="nc" id="L142">        dia.addWindowListener(new WindowAdapter() {</span>
           @Override
           public void windowClosed(WindowEvent we) {
-<span class="nc" id="L139">            dispose();</span>
-<span class="nc" id="L140">          }</span>
+<span class="nc" id="L145">            dispose();</span>
+<span class="nc" id="L146">          }</span>
         });
       }
-<span class="nc" id="L143">    });</span>
+<span class="nc" id="L149">    });</span>
 
 
-<span class="nc" id="L146">    final JPanel answerPanel = new JPanel(new GridLayout(1, 3, 10, 10));</span>
-<span class="nc" id="L147">    answerPanel.add(filesBtn);</span>
-<span class="nc" id="L148">    answerPanel.add(directoryBtn);</span>
-<span class="nc" id="L149">    answerPanel.add(imgLayerBtn);</span>
-<span class="nc" id="L150">    answerPanel.setPreferredSize(new Dimension(answerPanel.getPreferredSize().width, answerPanel.getPreferredSize().height*3));</span>
-<span class="nc" id="L151">    return answerPanel;</span>
+<span class="nc" id="L152">    final JPanel answerPanel = new JPanel(new GridLayout(1, 3, 10, 10));</span>
+<span class="nc" id="L153">    answerPanel.add(filesBtn);</span>
+<span class="nc" id="L154">    answerPanel.add(directoryBtn);</span>
+<span class="nc" id="L155">    answerPanel.add(imgLayerBtn);</span>
+<span class="nc" id="L156">    answerPanel.setPreferredSize(new Dimension(answerPanel.getPreferredSize().width, answerPanel.getPreferredSize().height*3));</span>
+<span class="nc" id="L157">    return answerPanel;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

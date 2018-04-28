@@ -161,7 +161,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
 <span class="fc" id="L161">        sequence.add(this);</span>
       }
 <span class="fc" id="L163">      return this.sequence;</span>
-<span class="nc" id="L164">    }</span>
+    }
   }
 
   /**
@@ -219,7 +219,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
   public MapillaryAbstractImage next() {
 <span class="fc" id="L220">    synchronized (this) {</span>
 <span class="fc" id="L221">      return getSequence().next(this);</span>
-<span class="nc" id="L222">    }</span>
+    }
   }
 
   /**
@@ -231,7 +231,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
   public MapillaryAbstractImage previous() {
 <span class="fc" id="L232">    synchronized (this) {</span>
 <span class="fc" id="L233">      return getSequence().previous(this);</span>
-<span class="nc" id="L234">    }</span>
+    }
   }
 
   public void setCa(final double ca) {
@@ -266,7 +266,7 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
 <span class="nc" id="L266">        throw new IllegalArgumentException();</span>
       }
 <span class="fc" id="L268">      this.sequence = sequence;</span>
-<span class="pc" id="L269">    }</span>
+<span class="fc" id="L269">    }</span>
 <span class="fc" id="L270">  }</span>
 
   /**
@@ -296,4 +296,4 @@ public abstract class MapillaryAbstractImage implements Comparable&lt;MapillaryA
 <span class="fc" id="L296">    this.movingCa = this.tempCa + ca;</span>
 <span class="fc" id="L297">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
