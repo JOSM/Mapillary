@@ -2,16 +2,22 @@
   <code_scheme name="Project" version="173">
     <option name="LINE_SEPARATOR" value="&#10;" />
     <JavaCodeStyleSettings>
+      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999" />
+      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999" />
+      <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+        <value />
+      </option>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
-          <package name="" withSubpackages="true" static="false" />
+          <package name="" withSubpackages="true" static="true" />
           <emptyLine />
           <package name="org.openstreetmap.josm" withSubpackages="true" static="true" />
           <emptyLine />
-          <package name="javax" withSubpackages="true" static="false" />
           <package name="java" withSubpackages="true" static="false" />
           <emptyLine />
-          <package name="" withSubpackages="true" static="true" />
+          <package name="javax" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="false" />
           <emptyLine />
           <package name="org.openstreetmap.josm" withSubpackages="true" static="false" />
         </value>
