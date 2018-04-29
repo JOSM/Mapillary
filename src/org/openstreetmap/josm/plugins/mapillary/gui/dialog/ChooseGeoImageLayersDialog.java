@@ -21,7 +21,9 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionListener;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -39,7 +41,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
   private static final String QUESTION = I18n.marktr("Which image layers do you want to import into the Mapillary layer?");
 
   public ChooseGeoImageLayersDialog(final Component parent, final List<GeoImageLayer> layers) {
-      super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));
+    super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));
     final Container c = getContentPane();
     c.setLayout(new BorderLayout(10, 10));
 
@@ -59,6 +61,12 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     cancelButton.requestFocus();
     buttonPanel.add(cancelButton);
     final JButton importButton = new JButton(I18n.tr("Import"), new ImageProvider("copy").get());
+
+    // Set the import button enabled/disabled depending on if there are selected items in the layer list
+    final ListSelectionListener importButtonEnabler = it -> importButton.setEnabled(list.getSelectedValuesList().size() >= 1);
+    importButtonEnabler.valueChanged(null);
+    list.addListSelectionListener(importButtonEnabler);
+
     importButton.addActionListener(e -> {
       list.getSelectedValuesList().parallelStream().map(gil -> {
         MapillarySequence seq = new MapillarySequence();
@@ -84,6 +92,9 @@ public class ChooseGeoImageLayersDialog extends JDialog {
       }).forEach(seq -> {
         MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
         MapillaryImportAction.recordChanges(seq.getImages());
+        if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+          MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
+        }
       });
       MapillaryLayer.invalidateInstance();
       dispose();
