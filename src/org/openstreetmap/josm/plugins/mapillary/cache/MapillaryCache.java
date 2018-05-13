@@ -3,9 +3,11 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
+import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
 
 /**
@@ -41,7 +43,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *          FULL_IMAGE).
    */
   public MapillaryCache(final String key, final Type type) {
-    super(Caches.ImageCache.getInstance().getCache(), 50000, 50000, new HashMap<>());
+    super(Caches.ImageCache.getInstance().getCache(), new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)));
     if (key == null || type == null) {
       this.key = null;
       this.url = null;
