@@ -14,7 +14,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
  */
 public abstract class MapillaryCommand {
   /** Set of {@link MapillaryAbstractImage} objects affected by the command */
-  public Set<MapillaryAbstractImage> images;
+  public final Set<MapillaryAbstractImage> images;
 
   /**
    * Main constructor.

@@ -21,19 +21,19 @@ public class MapillaryWalkDialog extends JPanel {
   private static final long serialVersionUID = -6258767312211941358L;
 
   /** Spin containing the interval value. */
-  public SpinnerModel spin;
+  public final SpinnerModel spin;
   /** Whether it must wait for the picture to be downloaded */
-  public JCheckBox waitForPicture;
+  public final JCheckBox waitForPicture;
   /** Whether the view must follow the selected image. */
-  public JCheckBox followSelection;
+  public final JCheckBox followSelection;
   /** Go forward or backwards */
-  public JCheckBox goForward;
+  public final JCheckBox goForward;
 
   /**
    * Main constructor
    */
   public MapillaryWalkDialog() {
-    JPanel interval = new JPanel();
+    final JPanel interval = new JPanel();
     this.spin = new SpinnerNumberModel(2000, 500, 10000, 500);
     interval.add(new JLabel("Interval (miliseconds): "));
     interval.add(new JSpinner(this.spin));

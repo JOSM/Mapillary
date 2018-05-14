@@ -26,9 +26,9 @@ public class SequenceDownloadRunnableTest {
   @Rule
   public JOSMTestRules rules = new MapillaryTestRules().platform();
 
-  private static final Function<Bounds, URL> SEARCH_SEQUENCES_URL_GEN = b -> {
-    return SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json");
-  };
+  private static final Function<Bounds, URL> SEARCH_SEQUENCES_URL_GEN = b ->
+    SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json");
+
   private Field urlGenField;
 
   @Before

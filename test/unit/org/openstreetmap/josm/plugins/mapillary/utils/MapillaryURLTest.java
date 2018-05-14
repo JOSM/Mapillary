@@ -89,12 +89,12 @@ public class MapillaryURLTest {
 
     @Test
     public void testParseNextFromHeaderValueNull() {
-      assertEquals(null, MapillaryURL.APIv3.parseNextFromLinkHeaderValue(null));
+      assertNull(MapillaryURL.APIv3.parseNextFromLinkHeaderValue(null));
     }
 
     @Test
     public void testParseNextFromHeaderValueMalformed() {
-      assertEquals(null, MapillaryURL.APIv3.parseNextFromLinkHeaderValue("<###>; rel=\"next\", blub"));
+      assertNull(MapillaryURL.APIv3.parseNextFromLinkHeaderValue("<###>; rel=\"next\", blub"));
     }
   }
 
@@ -185,13 +185,13 @@ public class MapillaryURLTest {
     assertEquals(expectedBaseUrl, actualUrlString.contains("?") ? actualUrlString.substring(0, actualUrlString.indexOf('?')) : actualUrlString);
     String[] actualParams = actualUrl.getQuery() == null ? new String[0] : actualUrl.getQuery().split("&");
     assertEquals(expectedParams.length, actualParams.length);
-    for (int exIndex = 0; exIndex < expectedParams.length; exIndex++) {
+    for (String expectedParam : expectedParams) {
       boolean parameterIsPresent = false;
       for (int acIndex = 0; !parameterIsPresent && acIndex < actualParams.length; acIndex++) {
-        parameterIsPresent |= actualParams[acIndex].equals(expectedParams[exIndex]);
+        parameterIsPresent = actualParams[acIndex].equals(expectedParam);
       }
       assertTrue(
-          expectedParams[exIndex] + " was expected in the query string of " + actualUrl.toString() + " but wasn't there.",
+          expectedParam + " was expected in the query string of " + actualUrl.toString() + " but wasn't there.",
           parameterIsPresent
       );
     }

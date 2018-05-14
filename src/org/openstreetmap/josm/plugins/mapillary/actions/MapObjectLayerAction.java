@@ -26,7 +26,6 @@ public class MapObjectLayerAction extends JosmAction {
     );
   }
 
-
   @Override
   public void actionPerformed(ActionEvent e) {
     GuiHelper.runInEDTAndWait(() -> {

@@ -94,7 +94,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Object containing the shown image and that handles zoom and drag
    */
-  public MapillaryImageDisplay mapillaryImageDisplay;
+  public final MapillaryImageDisplay mapillaryImageDisplay;
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;

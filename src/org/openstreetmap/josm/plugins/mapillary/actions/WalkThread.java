@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import java.awt.image.BufferedImage;
-
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.gui.Notification;
@@ -30,7 +28,6 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   private final boolean waitForFullQuality;
   private final boolean followSelected;
   private final boolean goForward;
-  private BufferedImage lastImage;
   private volatile boolean paused;
 
   /**
@@ -89,7 +86,6 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           while (this.paused) {
             Thread.sleep(100);
           }
-          this.lastImage = MapillaryMainDialog.getInstance().mapillaryImageDisplay.getImage();
           if (this.goForward) {
             this.data.selectNext(this.followSelected);
           } else {
@@ -170,7 +166,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
   /**
    * Called when the walk stops by itself of forcefully.
    */
-  public void end() {
+  private void end() {
     if (SwingUtilities.isEventDispatchThread()) {
       this.end = true;
       this.data.removeListener(this);

@@ -43,7 +43,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
+public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -328,9 +328,11 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      JPanel dialog = MapillaryFilterChooseSigns.getInstance();
-      JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.OK_CANCEL_OPTION);
+      final JOptionPane pane = new JOptionPane(
+        MapillaryFilterChooseSigns.getInstance(),
+        JOptionPane.PLAIN_MESSAGE,
+        JOptionPane.OK_CANCEL_OPTION
+      );
       JDialog dlg = pane.createDialog(Main.parent, tr("Choose signs"));
       dlg.setVisible(true);
       if ((int) pane.getValue() == JOptionPane.OK_OPTION)

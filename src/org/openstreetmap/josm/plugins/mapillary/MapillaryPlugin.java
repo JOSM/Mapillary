@@ -1,8 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.io.IOException;
-
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
@@ -63,10 +61,9 @@ public class MapillaryPlugin extends Plugin {
    * Main constructor.
    *
    * @param info
-   *          Required information of the plugin. Obtained from the jar file.
-   * @throws IOException if the mapillary cache directory is not found
+   *        Required information of the plugin. Obtained from the jar file.
    */
-  public MapillaryPlugin(PluginInformation info) throws IOException {
+  public MapillaryPlugin(PluginInformation info) {
     super(info);
 
     if (MapillaryProperties.ACCESS_TOKEN.get() == null) {

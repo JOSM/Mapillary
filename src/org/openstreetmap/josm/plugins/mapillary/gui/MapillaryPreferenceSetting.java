@@ -246,7 +246,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
    * @author nokutu
    *
    */
-  private class LogoutAction extends AbstractAction {
+  private final class LogoutAction extends AbstractAction {
     private static final long serialVersionUID = 3434780936404707219L;
 
     private LogoutAction() {

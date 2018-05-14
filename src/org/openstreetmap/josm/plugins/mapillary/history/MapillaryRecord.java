@@ -22,7 +22,7 @@ public class MapillaryRecord {
   private final List<MapillaryRecordListener> listeners = new ArrayList<>();
 
   /** The set of commands that have taken place or that have been undone. */
-  public List<MapillaryCommand> commandList;
+  public final List<MapillaryCommand> commandList = new ArrayList<>();
   /** Last written command. */
   public int position;
 
@@ -30,7 +30,6 @@ public class MapillaryRecord {
    * Main constructor.
    */
   public MapillaryRecord() {
-    this.commandList = new ArrayList<>();
     this.position = -1;
   }
 

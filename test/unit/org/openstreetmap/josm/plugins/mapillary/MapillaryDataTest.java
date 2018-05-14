@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -87,7 +88,7 @@ public class MapillaryDataTest {
     assertEquals(this.img1, this.data.getHighlightedImage());
 
     this.data.setHighlightedImage(null);
-    assertEquals(null, this.data.getHighlightedImage());
+    assertNull(this.data.getHighlightedImage());
   }
 
   /**
@@ -102,7 +103,7 @@ public class MapillaryDataTest {
     assertEquals(this.img4, this.data.getSelectedImage());
 
     this.data.setSelectedImage(null);
-    assertEquals(null, this.data.getSelectedImage());
+    assertNull(this.data.getSelectedImage());
   }
 
   /**

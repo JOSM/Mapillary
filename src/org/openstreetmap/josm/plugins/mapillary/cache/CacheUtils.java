@@ -17,7 +17,7 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public final class CacheUtils {
 
-  private static IgnoreDownload ignoreDownload = new IgnoreDownload();
+  private final static IgnoreDownload ignoreDownload = new IgnoreDownload();
 
   /** Picture quality */
   public enum PICTURE {

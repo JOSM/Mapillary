@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -92,8 +93,10 @@ public class MapObjectTest {
 
   @Test
   public void testIcon() throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
-    assertNotNull(MapObject.getIcon("/images/mapicon.png"));
+    final String mapIconKey = "/images/mapicon.png";
+    assertNotNull(MapObject.getIcon(mapIconKey));
+    assertNotNull(Caches.MapObjectIconCache.getInstance().get(mapIconKey));
+    assertNotNull(MapObject.getIcon(mapIconKey)); // To test a cache hit
 
     Field iconUnknownType = MapObject.class.getDeclaredField("ICON_UNKNOWN_TYPE");
     iconUnknownType.setAccessible(true);

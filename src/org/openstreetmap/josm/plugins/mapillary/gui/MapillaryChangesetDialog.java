@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -27,7 +26,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitCurrentChangesetAction;
@@ -56,8 +54,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
   private final JProgressBar uploadPendingProgress = new JProgressBar();
 
-  private final ConcurrentHashMap<Object, MapillaryAbstractImage> map;
-
   /**
    * Destroys the unique instance of the class.
    */
@@ -76,8 +72,6 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
       200
     );
     createLayout(rootComponent, false, Collections.singletonList(submitButton));
-
-    this.map = new ConcurrentHashMap<>();
 
     final JTree changesetTree = new JTree(this.changesetTreeModel);
     changesetTree.expandRow(0);
@@ -117,10 +111,8 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     submitButton.setEnabled(!changeset.isEmpty());
     DefaultMutableTreeNode changesetRoot = new DefaultMutableTreeNode();
 
-    this.map.clear();
     changeset.parallelStream().filter(Objects::nonNull).forEach(img -> {
-      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(img.toString());
-      this.map.put(node, img);
+      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(img);
       changesetRoot.add(node);
     });
 

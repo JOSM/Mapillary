@@ -56,7 +56,7 @@ public class JsonLocationChangesetEncoderTest {
       if ("changes".equals(e.getKey())) {
         final JsonArray changes = (JsonArray) e.getValue();
         final JsonArrayBuilder sortedChanges = Json.createArrayBuilder();
-        changes.stream().sorted(Comparator.comparing(o -> ((JsonObject) o).getString("image_key"))).forEachOrdered(a -> sortedChanges.add(a));
+        changes.stream().sorted(Comparator.comparing(o -> ((JsonObject) o).getString("image_key"))).forEachOrdered(sortedChanges::add);
         result.add(e.getKey(), sortedChanges);
       } else {
         result.add(e.getKey(), e.getValue());

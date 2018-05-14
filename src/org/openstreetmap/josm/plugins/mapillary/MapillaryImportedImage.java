@@ -25,7 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   /** The picture file. */
-  protected File file;
+  protected final File file;
 
   /**
    * Creates a new MapillaryImportedImage object using as date the current date.

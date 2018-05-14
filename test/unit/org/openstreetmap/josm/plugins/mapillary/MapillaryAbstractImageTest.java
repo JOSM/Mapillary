@@ -28,7 +28,7 @@ public class MapillaryAbstractImageTest {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0745"));
 
     MapillaryAbstractImage mai = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
-    mai.setCapturedAt(1044087606000l); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
+    mai.setCapturedAt(1_044_087_606_000L); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
 
 
     testGetDate("01/02/2003", mai, false, false, false);
@@ -41,7 +41,7 @@ public class MapillaryAbstractImageTest {
     testGetDate("2003-02-01 - 16:05:06 (GMT+07:45)", mai, true, true, true);
 
     TimeZone.setDefault(TimeZone.getTimeZone("GMT-0123"));
-    mai.setCapturedAt(1440671802000l); // in Timezone GMT-0123 this is Thursday, August 27, 2015 09:13:42 AM
+    mai.setCapturedAt(1_440_671_802_000L); // in Timezone GMT-0123 this is Thursday, August 27, 2015 09:13:42 AM
 
     testGetDate("27/08/2015 - 09:13:42 (GMT-01:23)", mai, false, true, true);
   }

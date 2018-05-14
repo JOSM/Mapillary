@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -52,13 +51,13 @@ public class MapillaryLayerTest {
 
     MapillaryLayer.getInstance().setVisible(false);
     for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      assertEquals(false, img.isVisible());
+      assertFalse(img.isVisible());
     }
 
 
     MapillaryLayer.getInstance().setVisible(true);
     for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      assertEquals(true, img.isVisible());
+      assertTrue(img.isVisible());
     }
   }
 

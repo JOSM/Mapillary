@@ -37,8 +37,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages = new ArrayBlockingQueue<>(10);
 
   private int amount;
-  private Set<MapillaryAbstractImage> images;
-  private String path;
+  private final Set<MapillaryAbstractImage> images;
+  private final String path;
 
   private Thread writer;
   private ThreadPoolExecutor ex;

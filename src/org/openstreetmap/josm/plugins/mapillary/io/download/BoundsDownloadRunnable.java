@@ -18,7 +18,7 @@ import org.openstreetmap.josm.tools.Logging;
 
 public abstract class BoundsDownloadRunnable implements Runnable {
 
-  protected Bounds bounds;
+  protected final Bounds bounds;
   protected abstract Function<Bounds, URL> getUrlGenerator();
 
   public BoundsDownloadRunnable(final Bounds bounds) {

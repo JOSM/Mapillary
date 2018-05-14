@@ -79,7 +79,6 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     // Enforced by {@link MapillaryDataListener}
   }
 
-
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     if (oldImage == null && newImage != null) {

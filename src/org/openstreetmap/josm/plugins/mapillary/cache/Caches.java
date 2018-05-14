@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 import javax.swing.ImageIcon;
@@ -14,7 +13,6 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.tools.Logging;
 
 public final class Caches {
 
@@ -34,17 +32,10 @@ public final class Caches {
     private final CacheAccess<K, V> cache;
 
     public CacheProxy() {
-      CacheAccess<K, V> c;
-      try {
-        c = createNewCache();
-      } catch (IOException e) {
-        Logging.log(Logging.LEVEL_WARN, "Could not initialize cache for " + getClass().getName(), e);
-        c = null;
-      }
-      cache = c;
+      cache = createNewCache();
     }
 
-    protected abstract CacheAccess<K, V> createNewCache() throws IOException;
+    protected abstract CacheAccess<K, V> createNewCache();
 
     public V get(final K key) {
       return cache == null ? null : cache.get(key);
@@ -89,7 +80,7 @@ public final class Caches {
     }
 
     @Override
-    protected CacheAccess<String, ImageIcon> createNewCache() throws IOException {
+    protected CacheAccess<String, ImageIcon> createNewCache() {
       return JCSCacheManager.getCache("mapillaryObjectIcons", 100, 1000, getCacheDirectory().getPath());
     }
   }
@@ -107,7 +98,7 @@ public final class Caches {
     }
 
     @Override
-    protected CacheAccess<String, UserProfile> createNewCache() throws IOException {
+    protected CacheAccess<String, UserProfile> createNewCache() {
       CacheAccess<String, UserProfile> cache =
         JCSCacheManager.getCache("userProfile", 100, 1000, getCacheDirectory().getPath());
       IElementAttributes atts = cache.getDefaultElementAttributes();

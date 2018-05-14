@@ -2,10 +2,10 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,12 +31,8 @@ public class JsonUserProfileDecoderTest {
   @Rule
   public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
-  public static Object getFakeAvatar() {
-    try {
-      return TestUtil.getAccessibleField(JsonUserProfileDecoder.class, "FAKE_AVATAR").get(null);
-    } catch (IllegalArgumentException | IllegalAccessException e) {
-      return null;
-    }
+  private static Object getFakeAvatar() throws IllegalAccessException {
+    return TestUtil.getAccessibleField(JsonUserProfileDecoder.class, "FAKE_AVATAR").get(null);
   }
 
   @Test
@@ -61,32 +57,34 @@ public class JsonUserProfileDecoderTest {
   }
 
   @Test
-  public void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
+  public void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException, IllegalAccessException {
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile.json")).readObject());
     assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
     assertEquals("gyllen", profile.getUsername());
     assertNotNull(profile.getAvatar());
-    assertFalse(getFakeAvatar() == profile.getAvatar());
+    assertNotSame(getFakeAvatar(), profile.getAvatar());
   }
 
   @Test
-  public void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
+  public void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException, IllegalAccessException {
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile2.json")).readObject());
     assertEquals("abcdefg1", profile.getKey());
     assertEquals("mapillary_userÄ2!", profile.getUsername());
-    assertTrue(getFakeAvatar() == profile.getAvatar());
+    assertSame(getFakeAvatar(), profile.getAvatar());
   }
 
   @Test
-  public void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException {
+  public void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException, IllegalAccessException {
     assertNull(JsonUserProfileDecoder.decodeUserProfile(null));
     assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{}")));
     assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
 
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\"}"));
-    assertTrue(getFakeAvatar() == profile.getAvatar());
+    assertNotNull(profile);
+    assertSame(getFakeAvatar(), profile.getAvatar());
 
     profile = JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\", \"username\":\"arbitrary_username\", \"avatar\":\"https://127.0.0.1/nonExistingAvatarFile\"}"));
-    assertTrue(getFakeAvatar() == profile.getAvatar());
+    assertNotNull(profile);
+    assertSame(getFakeAvatar(), profile.getAvatar());
   }
 }

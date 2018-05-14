@@ -16,7 +16,7 @@ import org.openstreetmap.josm.tools.Logging;
 
 public class MapObject extends KeyIndexedObject {
   private static final ImageIcon ICON_UNKNOWN_TYPE = ImageProvider.get("unknown-mapobject-type");
-  private static Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
+  private static final Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
 
   private final LatLon coordinate;
   private final String objPackage;

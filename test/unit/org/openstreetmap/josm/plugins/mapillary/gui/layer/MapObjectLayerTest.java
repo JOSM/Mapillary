@@ -38,9 +38,9 @@ public class MapObjectLayerTest {
     urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "URL_GEN");
 
     urlGenValue = urlGen.get(null);
-    urlGen.set(null, (Function<Bounds, URL>) str -> {
-      return MapObjectLayer.class.getResource("/api/v3/responses/searchMapObjects.json");
-    });
+    urlGen.set(null,
+      (Function<Bounds, URL>) str -> MapObjectLayer.class.getResource("/api/v3/responses/searchMapObjects.json")
+    );
   }
 
   @AfterClass

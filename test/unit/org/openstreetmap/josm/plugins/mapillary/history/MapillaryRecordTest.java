@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.history;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -251,7 +252,7 @@ public class MapillaryRecordTest {
     CommandJoin join2 = new CommandJoin(img2, img3);
 
     CommandDelete cmd1 = new CommandDelete(
-            new ConcurrentSkipListSet<>(Arrays.asList(img1)));
+            new ConcurrentSkipListSet<>(Collections.singletonList(img1)));
     CommandDelete cmd2 = new CommandDelete(
             new ConcurrentSkipListSet<>(Arrays.asList(img2, img3)));
 
@@ -265,7 +266,7 @@ public class MapillaryRecordTest {
 
     this.record.addCommand(cmd1);
     assertFalse(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));
-    assertEquals(null, this.img2.previous());
+    assertNull(this.img2.previous());
     this.record.undo();
     assertTrue(MapillaryLayer.getInstance().getData().getImages().contains(this.img1));
     this.record.redo();
@@ -282,7 +283,7 @@ public class MapillaryRecordTest {
     data.remove(data.getImages());
 
     CommandImport cmd1 = new CommandImport(
-            new ConcurrentSkipListSet<>(Arrays.asList(this.img1)));
+            new ConcurrentSkipListSet<>(Collections.singletonList(this.img1)));
     CommandImport cmd2 = new CommandImport(
             new ConcurrentSkipListSet<>(Arrays.asList(this.img2, this.img3)));
 
