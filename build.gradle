@@ -1,10 +1,10 @@
 plugins {
   id "org.sonarqube" version "2.6.2"
   id "org.kordamp.markdown.convert" version "1.1.0"
-  id 'org.openstreetmap.josm' version "0.4.0"
+  id 'org.openstreetmap.josm' version "0.4.2"
   id "com.github.ben-manes.versions" version "0.17.0"
-  id 'com.github.spotbugs' version '1.6.0'
-  id "net.ltgt.errorprone" version "0.0.13"
+  id 'com.github.spotbugs' version '1.6.1'
+  id "net.ltgt.errorprone" version "0.0.14"
 
   id 'eclipse'
   id 'jacoco'
