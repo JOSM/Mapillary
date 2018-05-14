@@ -59,18 +59,8 @@ public final class Caches {
 
   public static class ImageCache {
     private static ImageCache instance;
-    private final CacheAccess<String, BufferedImageCacheEntry> cache;
-
-    public ImageCache() {
-      CacheAccess<String, BufferedImageCacheEntry> c;
-      try {
-        c = JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
-      } catch (IOException e) {
-        Logging.log(Logging.LEVEL_WARN, "Could not initialize the Mapillary image cache.", e);
-        c = null;
-      }
-      cache = c;
-    }
+    private final CacheAccess<String, BufferedImageCacheEntry> cache =
+        JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
 
     public CacheAccess<String, BufferedImageCacheEntry> getCache() {
       return cache;
