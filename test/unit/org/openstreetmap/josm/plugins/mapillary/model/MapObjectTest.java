@@ -93,7 +93,7 @@ public class MapObjectTest {
 
   @Test
   public void testIcon() throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-    final String mapIconKey = "/images/mapicon.png";
+    final String mapIconKey = "/images/fake-avatar.png";
     assertNotNull(MapObject.getIcon(mapIconKey));
     assertNotNull(Caches.MapObjectIconCache.getInstance().get(mapIconKey));
     assertNotNull(MapObject.getIcon(mapIconKey)); // To test a cache hit
