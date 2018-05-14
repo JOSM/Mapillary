@@ -21,7 +21,9 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionListener;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -36,80 +38,89 @@ import org.openstreetmap.josm.tools.Logging;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
-<span class="nc" id="L39">  private static final String QUESTION = I18n.marktr(&quot;Which image layers do you want to import into the Mapillary layer?&quot;);</span>
+<span class="nc" id="L41">  private static final String QUESTION = I18n.marktr(&quot;Which image layers do you want to import into the Mapillary layer?&quot;);</span>
 
   public ChooseGeoImageLayersDialog(final Component parent, final List&lt;GeoImageLayer&gt; layers) {
-<span class="nc" id="L42">      super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));</span>
-<span class="nc" id="L43">    final Container c = getContentPane();</span>
-<span class="nc" id="L44">    c.setLayout(new BorderLayout(10, 10));</span>
+<span class="nc" id="L44">    super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));</span>
+<span class="nc" id="L45">    final Container c = getContentPane();</span>
+<span class="nc" id="L46">    c.setLayout(new BorderLayout(10, 10));</span>
 
-<span class="nc" id="L46">    final JPanel questionPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 10));</span>
-<span class="nc" id="L47">    questionPanel.add(new JLabel(I18n.tr(QUESTION)));</span>
-<span class="nc" id="L48">    c.add(questionPanel, BorderLayout.NORTH);</span>
+<span class="nc" id="L48">    final JPanel questionPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 10));</span>
+<span class="nc" id="L49">    questionPanel.add(new JLabel(I18n.tr(QUESTION)));</span>
+<span class="nc" id="L50">    c.add(questionPanel, BorderLayout.NORTH);</span>
 
-<span class="nc" id="L50">    final JList&lt;GeoImageLayer&gt; list = new JList&lt;&gt;();</span>
-<span class="nc" id="L51">    list.setModel(new BasicListModel&lt;&gt;(layers));</span>
-<span class="nc" id="L52">    list.setCellRenderer(new GeoImageLayerListCellRenderer());</span>
-<span class="nc" id="L53">    list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);</span>
-<span class="nc" id="L54">    c.add(list, BorderLayout.CENTER);</span>
+<span class="nc" id="L52">    final JList&lt;GeoImageLayer&gt; list = new JList&lt;&gt;();</span>
+<span class="nc" id="L53">    list.setModel(new BasicListModel&lt;&gt;(layers));</span>
+<span class="nc" id="L54">    list.setCellRenderer(new GeoImageLayerListCellRenderer());</span>
+<span class="nc" id="L55">    list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);</span>
+<span class="nc" id="L56">    c.add(list, BorderLayout.CENTER);</span>
 
-<span class="nc" id="L56">    final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));</span>
-<span class="nc" id="L57">    final JButton cancelButton = new JButton(I18n.tr(&quot;Cancel&quot;), new ImageProvider(&quot;cancel&quot;).get());</span>
-<span class="nc" id="L58">    cancelButton.addActionListener(e -&gt; dispose());</span>
-<span class="nc" id="L59">    cancelButton.requestFocus();</span>
-<span class="nc" id="L60">    buttonPanel.add(cancelButton);</span>
-<span class="nc" id="L61">    final JButton importButton = new JButton(I18n.tr(&quot;Import&quot;), new ImageProvider(&quot;copy&quot;).get());</span>
-<span class="nc" id="L62">    importButton.addActionListener(e -&gt; {</span>
-<span class="nc" id="L63">      list.getSelectedValuesList().parallelStream().map(gil -&gt; {</span>
-<span class="nc" id="L64">        MapillarySequence seq = new MapillarySequence();</span>
-<span class="nc" id="L65">        seq.add(</span>
-<span class="nc" id="L66">          gil.getImages().parallelStream()</span>
-<span class="nc" id="L67">            .map(img -&gt; {</span>
+<span class="nc" id="L58">    final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));</span>
+<span class="nc" id="L59">    final JButton cancelButton = new JButton(I18n.tr(&quot;Cancel&quot;), new ImageProvider(&quot;cancel&quot;).get());</span>
+<span class="nc" id="L60">    cancelButton.addActionListener(e -&gt; dispose());</span>
+<span class="nc" id="L61">    cancelButton.requestFocus();</span>
+<span class="nc" id="L62">    buttonPanel.add(cancelButton);</span>
+<span class="nc" id="L63">    final JButton importButton = new JButton(I18n.tr(&quot;Import&quot;), new ImageProvider(&quot;copy&quot;).get());</span>
+
+    // Set the import button enabled/disabled depending on if there are selected items in the layer list
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    final ListSelectionListener importButtonEnabler = it -&gt; importButton.setEnabled(list.getSelectedValuesList().size() &gt;= 1);</span>
+<span class="nc" id="L67">    importButtonEnabler.valueChanged(null);</span>
+<span class="nc" id="L68">    list.addListSelectionListener(importButtonEnabler);</span>
+
+<span class="nc" id="L70">    importButton.addActionListener(e -&gt; {</span>
+<span class="nc" id="L71">      list.getSelectedValuesList().parallelStream().map(gil -&gt; {</span>
+<span class="nc" id="L72">        MapillarySequence seq = new MapillarySequence();</span>
+<span class="nc" id="L73">        seq.add(</span>
+<span class="nc" id="L74">          gil.getImages().parallelStream()</span>
+<span class="nc" id="L75">            .map(img -&gt; {</span>
               try {
-<span class="nc" id="L69">                return MapillaryImportedImage.createInstance(img);</span>
-<span class="nc" id="L70">              } catch (IllegalArgumentException iae) {</span>
-<span class="nc" id="L71">                final String message = I18n.tr(&quot;Could not import a geotagged image to the Mapillary layer!&quot;);</span>
-<span class="nc" id="L72">                Logging.log(Logging.LEVEL_WARN, message, iae);</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">                if (!GraphicsEnvironment.isHeadless()) {</span>
-<span class="nc" id="L74">                  new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();</span>
+<span class="nc" id="L77">                return MapillaryImportedImage.createInstance(img);</span>
+<span class="nc" id="L78">              } catch (IllegalArgumentException iae) {</span>
+<span class="nc" id="L79">                final String message = I18n.tr(&quot;Could not import a geotagged image to the Mapillary layer!&quot;);</span>
+<span class="nc" id="L80">                Logging.log(Logging.LEVEL_WARN, message, iae);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                if (!GraphicsEnvironment.isHeadless()) {</span>
+<span class="nc" id="L82">                  new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();</span>
                 }
-<span class="nc" id="L76">                return null;</span>
+<span class="nc" id="L84">                return null;</span>
               }
             })
-<span class="nc" id="L79">            .filter(Objects::nonNull)</span>
-<span class="nc" id="L80">            .sorted((o1, o2) -&gt; (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order by capturedAt timestamp (ascending)</span>
-<span class="nc" id="L81">            .collect(Collectors.toList())</span>
+<span class="nc" id="L87">            .filter(Objects::nonNull)</span>
+<span class="nc" id="L88">            .sorted((o1, o2) -&gt; (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order by capturedAt timestamp (ascending)</span>
+<span class="nc" id="L89">            .collect(Collectors.toList())</span>
         );
-<span class="nc" id="L83">        return seq;</span>
-<span class="nc" id="L84">      }).forEach(seq -&gt; {</span>
-<span class="nc" id="L85">        MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
-<span class="nc" id="L86">        MapillaryImportAction.recordChanges(seq.getImages());</span>
-<span class="nc" id="L87">      });</span>
-<span class="nc" id="L88">      MapillaryLayer.invalidateInstance();</span>
-<span class="nc" id="L89">      dispose();</span>
-<span class="nc" id="L90">    });</span>
-<span class="nc" id="L91">    buttonPanel.add(importButton);</span>
-<span class="nc" id="L92">    c.add(buttonPanel, BorderLayout.SOUTH);</span>
+<span class="nc" id="L91">        return seq;</span>
+<span class="nc" id="L92">      }).forEach(seq -&gt; {</span>
+<span class="nc" id="L93">        MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);</span>
+<span class="nc" id="L94">        MapillaryImportAction.recordChanges(seq.getImages());</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {</span>
+<span class="nc" id="L96">          MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());</span>
+        }
+<span class="nc" id="L98">      });</span>
+<span class="nc" id="L99">      MapillaryLayer.invalidateInstance();</span>
+<span class="nc" id="L100">      dispose();</span>
+<span class="nc" id="L101">    });</span>
+<span class="nc" id="L102">    buttonPanel.add(importButton);</span>
+<span class="nc" id="L103">    c.add(buttonPanel, BorderLayout.SOUTH);</span>
 
-<span class="nc" id="L94">    setModal(true);</span>
-<span class="nc" id="L95">    pack();</span>
-<span class="nc" id="L96">    setLocationRelativeTo(parent);</span>
-<span class="nc" id="L97">  }</span>
+<span class="nc" id="L105">    setModal(true);</span>
+<span class="nc" id="L106">    pack();</span>
+<span class="nc" id="L107">    setLocationRelativeTo(parent);</span>
+<span class="nc" id="L108">  }</span>
 
-<span class="nc" id="L99">  protected static class GeoImageLayerListCellRenderer implements ListCellRenderer&lt;GeoImageLayer&gt; {</span>
+<span class="nc" id="L110">  protected static class GeoImageLayerListCellRenderer implements ListCellRenderer&lt;GeoImageLayer&gt; {</span>
     @Override
     public Component getListCellRendererComponent(
       JList&lt;? extends GeoImageLayer&gt; list, GeoImageLayer value, int index, boolean isSelected, boolean cellHasFocus
     ) {
-<span class="nc bnc" id="L104" title="All 2 branches missed.">      final JLabel result = value == null</span>
-<span class="nc" id="L105">          ? null</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">      final JLabel result = value == null</span>
+<span class="nc" id="L116">          ? null</span>
           /* i18n: {0} is the layer name, {1} the number of images in it */
-<span class="nc" id="L107">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">      if (result != null) {</span>
-<span class="nc" id="L109">        result.setOpaque(true);</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
+<span class="nc" id="L118">          : new JLabel(I18n.tr(&quot;{0} ({1} images)&quot;, value.getName(), value.getImages().size()), value.getIcon(), SwingConstants.LEADING);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">      if (result != null) {</span>
+<span class="nc" id="L120">        result.setOpaque(true);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        result.setBackground(isSelected ? UIManager.getColor(&quot;List.selectionBackground&quot;) : UIManager.getColor(&quot;List.background&quot;));</span>
       }
-<span class="nc" id="L112">      return result;</span>
+<span class="nc" id="L123">      return result;</span>
     }
   }
 
@@ -117,18 +128,18 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     private static final long serialVersionUID = 3107247955341855290L;
     private final List&lt;T&gt; list;
 
-<span class="nc" id="L120">    public BasicListModel(List&lt;T&gt; list) {</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L131">    public BasicListModel(List&lt;T&gt; list) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">      this.list = list == null ? new ArrayList&lt;&gt;() : list;</span>
+<span class="nc" id="L133">    }</span>
 
     @Override
     public int getSize() {
-<span class="nc" id="L126">      return list.size();</span>
+<span class="nc" id="L137">      return list.size();</span>
     }
 
     @Override
     public T getElementAt(int index) {
-<span class="nc" id="L131">      return list.get(index);</span>
+<span class="nc" id="L142">      return list.get(index);</span>
     }
   }
 }
