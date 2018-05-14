@@ -57,73 +57,63 @@ public final class Caches {
 <span class="fc" id="L57">    }</span>
   }
 
-  public static class ImageCache {
+<span class="fc" id="L60">  public static class ImageCache {</span>
     private static ImageCache instance;
-    private final CacheAccess&lt;String, BufferedImageCacheEntry&gt; cache;
-
-<span class="fc" id="L64">    public ImageCache() {</span>
-      CacheAccess&lt;String, BufferedImageCacheEntry&gt; c;
-      try {
-<span class="fc" id="L67">        c = JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000, getCacheDirectory().getPath());</span>
-<span class="nc" id="L68">      } catch (IOException e) {</span>
-<span class="nc" id="L69">        Logging.log(Logging.LEVEL_WARN, &quot;Could not initialize the Mapillary image cache.&quot;, e);</span>
-<span class="nc" id="L70">        c = null;</span>
-<span class="fc" id="L71">      }</span>
-<span class="fc" id="L72">      cache = c;</span>
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L62">    private final CacheAccess&lt;String, BufferedImageCacheEntry&gt; cache =</span>
+<span class="fc" id="L63">        JCSCacheManager.getCache(&quot;mapillary&quot;, 10, 10000, getCacheDirectory().getPath());</span>
 
     public CacheAccess&lt;String, BufferedImageCacheEntry&gt; getCache() {
-<span class="fc" id="L76">      return cache;</span>
+<span class="fc" id="L66">      return cache;</span>
     }
 
     public static ImageCache getInstance() {
-<span class="fc" id="L80">      synchronized (ImageCache.class) {</span>
-<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (instance == null) {</span>
-<span class="fc" id="L82">          instance = new ImageCache();</span>
+<span class="fc" id="L70">      synchronized (ImageCache.class) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L72">          instance = new ImageCache();</span>
         }
-<span class="fc" id="L84">        return instance;</span>
+<span class="fc" id="L74">        return instance;</span>
       }
     }
   }
 
-<span class="fc" id="L89">  public static class MapObjectIconCache extends CacheProxy&lt;String, ImageIcon&gt; {</span>
+<span class="fc" id="L79">  public static class MapObjectIconCache extends CacheProxy&lt;String, ImageIcon&gt; {</span>
     private static CacheProxy&lt;String, ImageIcon&gt; instance;
 
     public static CacheProxy&lt;String, ImageIcon&gt; getInstance() {
-<span class="fc" id="L93">      synchronized (MapObjectIconCache.class) {</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (instance == null) {</span>
-<span class="fc" id="L95">          instance = new MapObjectIconCache();</span>
+<span class="fc" id="L83">      synchronized (MapObjectIconCache.class) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L85">          instance = new MapObjectIconCache();</span>
         }
-<span class="fc" id="L97">        return instance;</span>
+<span class="fc" id="L87">        return instance;</span>
       }
     }
 
     @Override
     protected CacheAccess&lt;String, ImageIcon&gt; createNewCache() throws IOException {
-<span class="fc" id="L103">      return JCSCacheManager.getCache(&quot;mapillaryObjectIcons&quot;, 100, 1000, getCacheDirectory().getPath());</span>
+<span class="fc" id="L93">      return JCSCacheManager.getCache(&quot;mapillaryObjectIcons&quot;, 100, 1000, getCacheDirectory().getPath());</span>
     }
   }
 
-<span class="fc" id="L107">  public static class UserProfileCache extends CacheProxy&lt;String, UserProfile&gt; {</span>
+<span class="fc" id="L97">  public static class UserProfileCache extends CacheProxy&lt;String, UserProfile&gt; {</span>
     private static CacheProxy&lt;String, UserProfile&gt; instance;
 
     public static CacheProxy&lt;String, UserProfile&gt; getInstance() {
-<span class="fc" id="L111">      synchronized (UserProfileCache.class) {</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (instance == null) {</span>
-<span class="fc" id="L113">          instance = new UserProfileCache();</span>
+<span class="fc" id="L101">      synchronized (UserProfileCache.class) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L103">          instance = new UserProfileCache();</span>
         }
-<span class="fc" id="L115">        return instance;</span>
+<span class="fc" id="L105">        return instance;</span>
       }
     }
 
     @Override
     protected CacheAccess&lt;String, UserProfile&gt; createNewCache() throws IOException {
-<span class="fc" id="L121">      CacheAccess&lt;String, UserProfile&gt; cache =</span>
-<span class="fc" id="L122">        JCSCacheManager.getCache(&quot;userProfile&quot;, 100, 1000, getCacheDirectory().getPath());</span>
-<span class="fc" id="L123">      IElementAttributes atts = cache.getDefaultElementAttributes();</span>
-<span class="fc" id="L124">      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)</span>
-<span class="fc" id="L125">      cache.setDefaultElementAttributes(atts);</span>
-<span class="fc" id="L126">      return cache;</span>
+<span class="fc" id="L111">      CacheAccess&lt;String, UserProfile&gt; cache =</span>
+<span class="fc" id="L112">        JCSCacheManager.getCache(&quot;userProfile&quot;, 100, 1000, getCacheDirectory().getPath());</span>
+<span class="fc" id="L113">      IElementAttributes atts = cache.getDefaultElementAttributes();</span>
+<span class="fc" id="L114">      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)</span>
+<span class="fc" id="L115">      cache.setDefaultElementAttributes(atts);</span>
+<span class="fc" id="L116">      return cache;</span>
     }
   }
 }
