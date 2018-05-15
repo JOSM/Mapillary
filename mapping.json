@@ -184,6 +184,30 @@
             "eu"
         ]
     },
+    "object--logo--claro": {
+        "regions": [
+            "us",
+            "eu"
+        ]
+    },
+    "object--logo--movistar": {
+        "regions": [
+            "us",
+            "eu"
+        ]
+    },
+    "object--logo--pepsi": {
+        "regions": [
+            "us",
+            "eu"
+        ]
+    },
+    "object--logo--tigo": {
+        "regions": [
+            "us",
+            "eu"
+        ]
+    },
     "regulatory--bicycles-only--g1": {
         "regions": [
             "eu"
