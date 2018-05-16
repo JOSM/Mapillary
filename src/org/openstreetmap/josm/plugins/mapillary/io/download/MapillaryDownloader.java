@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -132,15 +133,14 @@ public final class MapillaryDownloader {
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void downloadVisibleArea() {
-    Bounds view = MainApplication.getMap().mapView.getRealBounds();
-    if (isAreaTooBig(view.getArea())) {
-      return;
+    final MapView mv = MapillaryPlugin.getMapView();
+    if (mv != null) {
+      final Bounds view = mv.getRealBounds();
+      if (!isAreaTooBig(view.getArea()) && !isViewDownloaded(view)) {
+        MapillaryLayer.getInstance().getData().getBounds().add(view);
+        getImages(view);
+      }
     }
-    if (isViewDownloaded(view)) {
-      return;
-    }
-    MapillaryLayer.getInstance().getData().getBounds().add(view);
-    getImages(view);
   }
 
   private static boolean isViewDownloaded(Bounds view) {
