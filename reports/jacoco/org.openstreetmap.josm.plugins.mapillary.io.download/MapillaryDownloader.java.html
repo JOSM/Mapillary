@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -24,62 +25,62 @@ import org.openstreetmap.josm.tools.Logging;
 public final class MapillaryDownloader {
 
   /** Possible download modes. */
-<span class="fc" id="L27">  public enum DOWNLOAD_MODE {</span>
+<span class="fc" id="L28">  public enum DOWNLOAD_MODE {</span>
     // i18n: download mode for Mapillary images
-<span class="fc" id="L29">    VISIBLE_AREA(&quot;visibleArea&quot;, I18n.tr(&quot;everything in the visible area&quot;)),</span>
+<span class="fc" id="L30">    VISIBLE_AREA(&quot;visibleArea&quot;, I18n.tr(&quot;everything in the visible area&quot;)),</span>
     // i18n: download mode for Mapillary images
-<span class="fc" id="L31">    OSM_AREA(&quot;osmArea&quot;, I18n.tr(&quot;areas with downloaded OSM-data&quot;)),</span>
+<span class="fc" id="L32">    OSM_AREA(&quot;osmArea&quot;, I18n.tr(&quot;areas with downloaded OSM-data&quot;)),</span>
     // i18n: download mode for Mapillary images
-<span class="fc" id="L33">    MANUAL_ONLY(&quot;manualOnly&quot;, I18n.tr(&quot;only when manually requested&quot;));</span>
+<span class="fc" id="L34">    MANUAL_ONLY(&quot;manualOnly&quot;, I18n.tr(&quot;only when manually requested&quot;));</span>
 
-<span class="fc" id="L35">    public final static DOWNLOAD_MODE DEFAULT = OSM_AREA;</span>
+<span class="fc" id="L36">    public final static DOWNLOAD_MODE DEFAULT = OSM_AREA;</span>
 
     private final String prefId;
     private final String label;
 
-<span class="fc" id="L40">    DOWNLOAD_MODE(String prefId, String label) {</span>
-<span class="fc" id="L41">      this.prefId = prefId;</span>
-<span class="fc" id="L42">      this.label = label;</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L41">    DOWNLOAD_MODE(String prefId, String label) {</span>
+<span class="fc" id="L42">      this.prefId = prefId;</span>
+<span class="fc" id="L43">      this.label = label;</span>
+<span class="fc" id="L44">    }</span>
 
     /**
      * @return the ID that is used to represent this download mode in the JOSM preferences
      */
     public String getPrefId() {
-<span class="fc" id="L49">      return prefId;</span>
+<span class="fc" id="L50">      return prefId;</span>
     }
 
     /**
      * @return the (internationalized) label describing this download mode
      */
     public String getLabel() {
-<span class="fc" id="L56">      return label;</span>
+<span class="fc" id="L57">      return label;</span>
     }
 
     public static DOWNLOAD_MODE fromPrefId(String prefId) {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (mode.getPrefId().equals(prefId)) {</span>
-<span class="fc" id="L62">          return mode;</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (mode.getPrefId().equals(prefId)) {</span>
+<span class="fc" id="L63">          return mode;</span>
         }
       }
-<span class="nc" id="L65">      return DEFAULT;</span>
+<span class="nc" id="L66">      return DEFAULT;</span>
     }
 
     public static DOWNLOAD_MODE fromLabel(String label) {
-<span class="pc bpc" id="L69" title="1 of 2 branches missed.">      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (mode.getLabel().equals(label)) {</span>
-<span class="fc" id="L71">          return mode;</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">      for (DOWNLOAD_MODE mode : DOWNLOAD_MODE.values()) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (mode.getLabel().equals(label)) {</span>
+<span class="fc" id="L72">          return mode;</span>
         }
       }
-<span class="nc" id="L74">      return DEFAULT;</span>
+<span class="nc" id="L75">      return DEFAULT;</span>
     }
   }
 
   /** Max area to be downloaded */
-<span class="fc" id="L79">  private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();</span>
+<span class="fc" id="L80">  private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();</span>
 
   /** Executor that will run the petitions. */
-<span class="fc" id="L82">  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(</span>
+<span class="fc" id="L83">  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(</span>
     3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(100), new ThreadPoolExecutor.DiscardPolicy());
 
   /**
@@ -100,11 +101,11 @@ public final class MapillaryDownloader {
    * @param maxLatLon The maximum latitude and longitude of the rectangle
    */
   public static void getImages(LatLon minLatLon, LatLon maxLatLon) {
-<span class="nc bnc" id="L103" title="All 4 branches missed.">    if (minLatLon == null || maxLatLon == null) {</span>
-<span class="nc" id="L104">      throw new IllegalArgumentException();</span>
+<span class="nc bnc" id="L104" title="All 4 branches missed.">    if (minLatLon == null || maxLatLon == null) {</span>
+<span class="nc" id="L105">      throw new IllegalArgumentException();</span>
     }
-<span class="nc" id="L106">    getImages(new Bounds(minLatLon, maxLatLon));</span>
-<span class="nc" id="L107">  }</span>
+<span class="nc" id="L107">    getImages(new Bounds(minLatLon, maxLatLon));</span>
+<span class="nc" id="L108">  }</span>
 
   /**
    * Gets the images within the given bounds.
@@ -112,8 +113,8 @@ public final class MapillaryDownloader {
    * @param bounds A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
-<span class="nc" id="L115">    run(new MapillarySquareDownloadRunnable(bounds));</span>
-<span class="nc" id="L116">  }</span>
+<span class="nc" id="L116">    run(new MapillarySquareDownloadRunnable(bounds));</span>
+<span class="nc" id="L117">  }</span>
 
   /**
    * Returns the current download mode.
@@ -121,26 +122,25 @@ public final class MapillaryDownloader {
    * @return the currently enabled {@link DOWNLOAD_MODE}
    */
   public static DOWNLOAD_MODE getMode() {
-<span class="fc" id="L124">    return DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());</span>
+<span class="fc" id="L125">    return DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get());</span>
   }
 
   private static void run(Runnable t) {
-<span class="nc" id="L128">    executor.execute(t);</span>
-<span class="nc" id="L129">  }</span>
+<span class="nc" id="L129">    executor.execute(t);</span>
+<span class="nc" id="L130">  }</span>
 
   /**
    * If some part of the current view has not been downloaded, it is downloaded.
    */
   public static void downloadVisibleArea() {
-<span class="nc" id="L135">    Bounds view = MainApplication.getMap().mapView.getRealBounds();</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (isAreaTooBig(view.getArea())) {</span>
-<span class="nc" id="L137">      return;</span>
+<span class="nc" id="L136">    final MapView mv = MapillaryPlugin.getMapView();</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (mv != null) {</span>
+<span class="nc" id="L138">      final Bounds view = mv.getRealBounds();</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">      if (!isAreaTooBig(view.getArea()) &amp;&amp; !isViewDownloaded(view)) {</span>
+<span class="nc" id="L140">        MapillaryLayer.getInstance().getData().getBounds().add(view);</span>
+<span class="nc" id="L141">        getImages(view);</span>
+      }
     }
-<span class="nc bnc" id="L139" title="All 2 branches missed.">    if (isViewDownloaded(view)) {</span>
-<span class="nc" id="L140">      return;</span>
-    }
-<span class="nc" id="L142">    MapillaryLayer.getInstance().getData().getBounds().add(view);</span>
-<span class="nc" id="L143">    getImages(view);</span>
 <span class="nc" id="L144">  }</span>
 
   private static boolean isViewDownloaded(Bounds view) {

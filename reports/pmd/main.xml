@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.0" timestamp="2018-05-14T09:59:39.230">
+<pmd version="5.8.0" timestamp="2018-05-16T11:00:58.659">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
 <violation beginline="2" endline="417" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=55, ATFD=9, TCC=0.0)
@@ -28,38 +28,37 @@ The String literal &quot;Export Mapillary images&quot; appears 4 times in this f
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.java">
-<violation beginline="29" endline="29" begincolumn="11" endcolumn="22" rule="AvoidFieldNameMatchingMethodName" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" variable="end" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingMethodName" priority="3">
+<violation beginline="27" endline="27" begincolumn="11" endcolumn="22" rule="AvoidFieldNameMatchingMethodName" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" variable="end" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/naming.html#AvoidFieldNameMatchingMethodName" priority="3">
 Field end has the same name as a method
 </violation>
-<violation beginline="33" endline="33" begincolumn="25" endcolumn="33" rule="UnusedPrivateField" ruleset="Unused Code" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" variable="lastImage" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/unusedcode.html#UnusedPrivateField" priority="3">
-Avoid unused private fields such as 'lastImage'.
-</violation>
-<violation beginline="33" endline="33" begincolumn="11" endcolumn="34" rule="SingularField" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" variable="lastImage" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SingularField" priority="3">
-Perhaps 'lastImage' could be replaced by a local variable.
-</violation>
-<violation beginline="61" endline="63" begincolumn="11" endcolumn="108" rule="AssignmentInOperand" ruleset="Controversial" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/controversial.html#AssignmentInOperand" priority="3">
+<violation beginline="58" endline="60" begincolumn="11" endcolumn="108" rule="AssignmentInOperand" ruleset="Controversial" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/controversial.html#AssignmentInOperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="77" endline="77" begincolumn="17" endcolumn="27" rule="AssignmentInOperand" ruleset="Controversial" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/controversial.html#AssignmentInOperand" priority="3">
+<violation beginline="74" endline="74" begincolumn="17" endcolumn="27" rule="AssignmentInOperand" ruleset="Controversial" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/controversial.html#AssignmentInOperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="104" endline="104" begincolumn="14" endcolumn="33" rule="AvoidCatchingNPE" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/strictexception.html#AvoidCatchingNPE" priority="3">
+<violation beginline="100" endline="100" begincolumn="14" endcolumn="33" rule="AvoidCatchingNPE" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/strictexception.html#AvoidCatchingNPE" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="104" endline="104" begincolumn="14" endcolumn="33" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
+<violation beginline="100" endline="100" begincolumn="14" endcolumn="33" rule="AvoidCatchingGenericException" ruleset="Strict Exceptions" package="org.openstreetmap.josm.plugins.mapillary.actions" class="WalkThread" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/strictexception.html#AvoidCatchingGenericException" priority="3">
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 </violation>
 </file>
+<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/cache/CacheUtils.java">
+<violation beginline="20" endline="20" begincolumn="39" endcolumn="52" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.cache" class="CacheUtils" variable="ignoreDownload" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+Variables that are final and static should be all capitals, 'ignoreDownload' is not all capitals.
+</violation>
+</file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/cache/Caches.java">
-<violation beginline="82" endline="89" begincolumn="19" endcolumn="5" rule="SingleMethodSingleton" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.cache" class="Caches$MapObjectIconCache" method="getInstance" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SingleMethodSingleton" priority="2">
+<violation beginline="73" endline="80" begincolumn="19" endcolumn="5" rule="SingleMethodSingleton" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.cache" class="Caches$MapObjectIconCache" method="getInstance" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SingleMethodSingleton" priority="2">
 Class contains multiple getInstance methods. Please review.
 </violation>
-<violation beginline="100" endline="107" begincolumn="19" endcolumn="5" rule="SingleMethodSingleton" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.cache" class="Caches$UserProfileCache" method="getInstance" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SingleMethodSingleton" priority="2">
+<violation beginline="91" endline="98" begincolumn="19" endcolumn="5" rule="SingleMethodSingleton" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.cache" class="Caches$UserProfileCache" method="getInstance" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SingleMethodSingleton" priority="2">
 Class contains multiple getInstance methods. Please review.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryChangesetDialog.java">
-<violation beginline="2" endline="151" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryChangesetDialog" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="143" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryChangesetDialog" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
 </file>
@@ -87,7 +86,7 @@ Avoid autogenerated methods to access private fields and methods of inner / oute
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterDialog.java">
-<violation beginline="2" endline="341" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryFilterDialog" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
+<violation beginline="2" endline="343" begincolumn="1" endcolumn="2" rule="ExcessiveImports" ruleset="Coupling" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryFilterDialog" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/coupling.html#ExcessiveImports" priority="3">
 A high number of imports can indicate a high degree of coupling within an object.
 </violation>
 <violation beginline="269" endline="269" begincolumn="7" endcolumn="26" rule="AccessorMethodGeneration" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.gui" class="MapillaryFilterDialog$DownloadCheckBoxAction" method="actionPerformed" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#AccessorMethodGeneration" priority="3">
@@ -377,6 +376,11 @@ Document empty method body
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/model/KeyIndexedObject.java">
 <violation beginline="48" endline="50" begincolumn="5" endcolumn="5" rule="SimplifyBooleanReturns" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary.model" class="KeyIndexedObject" method="equals" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#SimplifyBooleanReturns" priority="3">
 Avoid unnecessary if..then..else statements when returning booleans
+</violation>
+</file>
+<file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/model/MapObject.java">
+<violation beginline="19" endline="19" begincolumn="46" endcolumn="55" rule="VariableNamingConventions" ruleset="Naming" package="org.openstreetmap.josm.plugins.mapillary.model" class="MapObject" variable="iconUrlGen" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/naming.html#VariableNamingConventions" priority="1">
+Variables that are final and static should be all capitals, 'iconUrlGen' is not all capitals.
 </violation>
 </file>
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java">

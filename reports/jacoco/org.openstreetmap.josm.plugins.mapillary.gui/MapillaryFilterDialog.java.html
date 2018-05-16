@@ -43,7 +43,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
+public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -328,15 +328,17 @@ public class MapillaryFilterDialog extends ToggleDialog implements MapillaryData
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-<span class="nc" id="L331">      JPanel dialog = MapillaryFilterChooseSigns.getInstance();</span>
-<span class="nc" id="L332">      JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
-        JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L334">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Choose signs&quot;));</span>
-<span class="nc" id="L335">      dlg.setVisible(true);</span>
-<span class="nc bnc" id="L336" title="All 2 branches missed.">      if ((int) pane.getValue() == JOptionPane.OK_OPTION)</span>
-<span class="nc" id="L337">        MapillaryFilterDialog.getInstance().refresh();</span>
-<span class="nc" id="L338">      dlg.dispose();</span>
-<span class="nc" id="L339">    }</span>
+<span class="nc" id="L331">      final JOptionPane pane = new JOptionPane(</span>
+<span class="nc" id="L332">        MapillaryFilterChooseSigns.getInstance(),</span>
+        JOptionPane.PLAIN_MESSAGE,
+        JOptionPane.OK_CANCEL_OPTION
+      );
+<span class="nc" id="L336">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Choose signs&quot;));</span>
+<span class="nc" id="L337">      dlg.setVisible(true);</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">      if ((int) pane.getValue() == JOptionPane.OK_OPTION)</span>
+<span class="nc" id="L339">        MapillaryFilterDialog.getInstance().refresh();</span>
+<span class="nc" id="L340">      dlg.dispose();</span>
+<span class="nc" id="L341">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

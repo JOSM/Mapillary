@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.Component;
 
+import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -12,16 +13,18 @@ import org.openstreetmap.josm.tools.ImageProvider;
 /**
  * Renders an item in a {@link JTree} that represents a {@link MapillaryAbstractImage}.
  */
-<span class="nc" id="L15">public class MapillaryImageTreeCellRenderer extends DefaultTreeCellRenderer {</span>
+<span class="nc" id="L16">public class MapillaryImageTreeCellRenderer extends DefaultTreeCellRenderer {</span>
   private static final long serialVersionUID = 5359276673450659572L;
+
+<span class="nc" id="L19">  private static final Icon ICON = new ImageProvider(&quot;mapicon&quot;).setMaxSize(16).get();</span>
 
   @Override
   public Component getTreeCellRendererComponent(
     JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
   ) {
-<span class="nc" id="L22">    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);</span>
-<span class="nc" id="L23">    setIcon(ImageProvider.get(&quot;mapicon.png&quot;));</span>
-<span class="nc" id="L24">    return this;</span>
+<span class="nc" id="L25">    super.getTreeCellRendererComponent(tree, value.toString(), sel, expanded, leaf, row, hasFocus);</span>
+<span class="nc" id="L26">    setIcon(ICON);</span>
+<span class="nc" id="L27">    return this;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
