@@ -67,6 +67,8 @@ josm {
   debugPort = 7051
   manifest {
     // See https://floscher.github.io/gradle-josm-plugin/kdoc/current/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
+    oldVersionDownloadLink 13710, 'v1.5.13+pre13733', new URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.13%2Bpre13733/Mapillary.jar")
+    oldVersionDownloadLink 13643, 'v1.5.12+post13643', new URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.12%2Bpost13643/Mapillary.jar")
     oldVersionDownloadLink 13558, 'v1.5.12+pre13643', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.12%2Bpre13643/Mapillary.jar')
     oldVersionDownloadLink 12987, 'v1.5.10', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.10/Mapillary.jar')
     oldVersionDownloadLink 12675, 'v1.5.7', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.7/Mapillary.jar')
