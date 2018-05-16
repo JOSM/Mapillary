@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -110,9 +110,6 @@ msgstr "Letöltési mód"
 msgid "Downloaded images"
 msgstr "Letöltött képek"
 
-msgid "Downloading"
-msgstr "Letöltés"
-
 msgid "Downloading Mapillary images"
 msgstr "Mapillary képek letöltése"
 
@@ -140,9 +137,6 @@ msgstr "Kijelölt képek exportálása"
 
 msgid "Export selected sequence"
 msgstr "Kijelölt sorozat exportálása"
-
-msgid "Exporting Mapillary Images"
-msgstr "Mapillary képek exportálása"
 
 msgid "Finished upload"
 msgstr "Feltöltés befejeződött"
@@ -231,9 +225,6 @@ msgstr "A kék vonal végén lévő képhez ugrik"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "A piros vonal végén lévő képhez ugrik"
-
-msgid "Key copied to clipboard"
-msgstr "Kulcs vágólapra másolva"
 
 msgid "Login"
 msgstr "Belépés"
@@ -409,7 +400,12 @@ msgstr "Megmutatja a sorozat előző képét"
 msgid "Speed limit"
 msgstr "Sebességkorlátozás"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Stoptábla"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stoptábla"
 

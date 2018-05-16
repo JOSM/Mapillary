@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Russian (https://www.transifex.com/josm/teams/2544/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -136,9 +136,6 @@ msgstr "Режим скачивания"
 msgid "Downloaded images"
 msgstr "Скачанные снимки"
 
-msgid "Downloading"
-msgstr "Загрузка"
-
 msgid "Downloading Mapillary images"
 msgstr "Скачивание снимков Mapillary"
 
@@ -147,6 +144,9 @@ msgstr "Не удалось скачать объекты карты!"
 
 msgid "Downloading map objects…"
 msgstr "Скачивание объектов карты…"
+
+msgid "Downloading…"
+msgstr "Загрузка…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -167,8 +167,8 @@ msgstr "Экспортировать выбранные снимки"
 msgid "Export selected sequence"
 msgstr "Экспортировать выбранную последовательность"
 
-msgid "Exporting Mapillary Images"
-msgstr "Экспорт снимков Mapillary"
+msgid "Exporting Mapillary Images…"
+msgstr "Экспорт снимков Mapillary…"
 
 msgid "Finished upload"
 msgstr "Отправка завершена"
@@ -266,8 +266,8 @@ msgstr "Перейти к изображению на другой сторон�
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Перейти к изображению на другой стороне красной линии"
 
-msgid "Key copied to clipboard"
-msgstr "Ключ скопирован в буфер обмена"
+msgid "Key copied to clipboard…"
+msgstr "Ключ скопирован в буфер обмена…"
 
 msgid "Login"
 msgstr "Войти"
@@ -447,7 +447,12 @@ msgstr "Показать предыдущее изображение в посл
 msgid "Speed limit"
 msgstr "Ограничение скорости"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Стоп"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
 
@@ -559,6 +564,11 @@ msgstr "Ждать загрузки снимков в полном разреш�
 
 msgid "Walk mode"
 msgstr "Режим прогулки"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Режим прогулки: Ожидание следующего изображения занимает слишком много "
+"времени! Выход из режима прогулки…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""

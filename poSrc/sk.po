@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Slovak (https://www.transifex.com/josm/teams/2544/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -134,9 +134,6 @@ msgstr "Režim sťahovania"
 msgid "Downloaded images"
 msgstr "Stiahnuté obrázky"
 
-msgid "Downloading"
-msgstr "Sťahuje sa"
-
 msgid "Downloading Mapillary images"
 msgstr "Sťahujú sa obrázky Mapillary"
 
@@ -255,9 +252,6 @@ msgstr "Preskočí na obrázok na druhej strane modrej čiary"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Preskočí na obrázok na druhej strane červenej čiary"
-
-msgid "Key copied to clipboard"
-msgstr "Kľúč skopírovaný do schránky"
 
 msgid "Login"
 msgstr "Prihlásiť sa"
@@ -431,7 +425,12 @@ msgstr "Zobrazí predchádzajúci obrázok v postupnosti"
 msgid "Speed limit"
 msgstr "Rýchlostné obmedzenie"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Značka \"Zastaviť (stop)\""
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Značka \"Zastaviť (stop)\""
 

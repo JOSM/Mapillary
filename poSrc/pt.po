@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Portuguese (https://www.transifex.com/josm/teams/2544/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -134,9 +134,6 @@ msgstr "Modo de descarregamento"
 msgid "Downloaded images"
 msgstr "Imagens descarregadas"
 
-msgid "Downloading"
-msgstr "A descarregar"
-
 msgid "Downloading Mapillary images"
 msgstr "A descarregar imagens Mapillary"
 
@@ -145,6 +142,9 @@ msgstr "Não foi possível descarregar objetos do mapa!"
 
 msgid "Downloading map objects…"
 msgstr "A descarregar objetos do mapa..."
+
+msgid "Downloading…"
+msgstr "A descarregar…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -165,8 +165,8 @@ msgstr "Exportar imagens selecionadas"
 msgid "Export selected sequence"
 msgstr "Exportar sequência selecionada"
 
-msgid "Exporting Mapillary Images"
-msgstr "A exportar Imagens Mapillary"
+msgid "Exporting Mapillary Images…"
+msgstr "Exportar Imagens Mapillary…"
 
 msgid "Finished upload"
 msgstr "Envio terminado"
@@ -262,8 +262,8 @@ msgstr "Mostra a imagem na extremidade da linha azul"
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Mostra a imagem na extremidade da linha vermelha"
 
-msgid "Key copied to clipboard"
-msgstr "Chave copiada para a área de transferência"
+msgid "Key copied to clipboard…"
+msgstr "Chave copiada para a área de transferência…"
 
 msgid "Login"
 msgstr "Iniciar sessão"
@@ -439,7 +439,12 @@ msgstr "Mostra a imagem anterior na sequência de imagens"
 msgid "Speed limit"
 msgstr "Limite de velocidade"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Sinal de Stop"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Sinal de Stop"
 
@@ -549,6 +554,11 @@ msgstr "Esperar pelas imagens em alta qualidade"
 
 msgid "Walk mode"
 msgstr "Modo a pé"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Modo a pé: está a demorar demasiado a espera pela próxima imagem! A sair do "
+"modo a pé…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""

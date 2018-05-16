@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -104,9 +104,6 @@ msgstr "下载模式"
 msgid "Downloaded images"
 msgstr "已下载图像"
 
-msgid "Downloading"
-msgstr "正在下载"
-
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "启用实验性功能（可能不稳定）"
@@ -188,9 +185,6 @@ msgstr "合并模式"
 
 msgid "Join/unjoin pictures"
 msgstr "合并/分离图像"
-
-msgid "Key copied to clipboard"
-msgstr "已复制键至剪贴板"
 
 msgid "Login"
 msgstr "登录"
@@ -337,7 +331,12 @@ msgstr "按序显示上一个图像"
 msgid "Speed limit"
 msgstr "限速"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "停车让行"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "停车让行"
 

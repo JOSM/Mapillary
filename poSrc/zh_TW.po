@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -125,9 +125,6 @@ msgstr "下載模式"
 msgid "Downloaded images"
 msgstr "下載的影像"
 
-msgid "Downloading"
-msgstr "正在下載"
-
 msgid "Downloading Mapillary images"
 msgstr "下載 Mapillary 影像"
 
@@ -155,9 +152,6 @@ msgstr "匯出選取圖片"
 
 msgid "Export selected sequence"
 msgstr "匯出選取片段"
-
-msgid "Exporting Mapillary Images"
-msgstr "匯出 Mapillary 圖片"
 
 msgid "Finished upload"
 msgstr "上傳完畢"
@@ -248,9 +242,6 @@ msgstr "跳到藍線另一邊的圖片"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "跳到紅線另一邊的圖片"
-
-msgid "Key copied to clipboard"
-msgstr "鍵複製到剪貼簿"
 
 msgid "Login"
 msgstr "登入"
@@ -425,7 +416,12 @@ msgstr "從片段顯示上一張圖片"
 msgid "Speed limit"
 msgstr "速限"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "禁止通行"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "禁止通行"
 

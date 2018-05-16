@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Błąd wysyłania zestawu zmian z {0} ''{1} {2}''!"
 
 msgid "Choose signs"
-msgstr "Wybierz znaki:"
+msgstr "Wybierz znaki"
 
 msgid "Continues with the paused walk."
 msgstr "Kontynuuje przerwany spacer."
@@ -134,9 +134,6 @@ msgstr "Tryb pobierania"
 msgid "Downloaded images"
 msgstr "Pobrane obrazy:"
 
-msgid "Downloading"
-msgstr "Pobieranie"
-
 msgid "Downloading Mapillary images"
 msgstr "Pobieranie obrazów Mapillary"
 
@@ -145,6 +142,9 @@ msgstr "Błąd pobierania elementów mapy!"
 
 msgid "Downloading map objects…"
 msgstr "Pobieranie elementów mapy…"
+
+msgid "Downloading…"
+msgstr "Pobieranie..."
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -165,8 +165,8 @@ msgstr "Eksportuj wybrane obrazy"
 msgid "Export selected sequence"
 msgstr "Eksportuj wybraną sekwencję"
 
-msgid "Exporting Mapillary Images"
-msgstr "Eksportowanie obrazów Mapillary"
+msgid "Exporting Mapillary Images…"
+msgstr "Eksportowanie obrazów Mapillary..."
 
 msgid "Finished upload"
 msgstr "Zakończono wysyłanie"
@@ -263,9 +263,6 @@ msgstr "Przeskakuje do zdjęcia po drugiej stronie niebieskiej linii"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Przeskakuje do zdjęcia po drugiej stronie czerwonej linii"
-
-msgid "Key copied to clipboard"
-msgstr "Klucz skopiowany do schowka"
 
 msgid "Login"
 msgstr "Zaloguj"
@@ -436,7 +433,12 @@ msgstr "Pokazuje poprzednie zdjęcie w sekwencji"
 msgid "Speed limit"
 msgstr "Ograniczenie prędkości"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Znak stop"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Znak stop"
 
@@ -541,6 +543,11 @@ msgstr "Czekaj na zdjęcia w pełnej rozdzielczości"
 msgid "Walk mode"
 msgstr "Tryb spaceru"
 
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Tryb spaceru: Oczekiwanie na następny obraz zajmuje zbyt dużo czasu! Wyjście"
+" z trybu spaceru…"
+
 #. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -643,6 +650,10 @@ msgstr "{0} zdjęć zatwierdzonych, Klucz zestawu zmian: {1}, stan: {2}"
 #, java-format
 msgid "{0} imported images"
 msgstr "{0} zaimportowanych obrazów"
+
+#, java-format
+msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr "{0} sekwencje, każda zawiera pomiędzy {1} a {2} obrazami (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

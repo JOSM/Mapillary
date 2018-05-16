@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/josm/teams/2544/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -81,9 +81,6 @@ msgstr "Modo de download"
 
 msgid "Downloaded images"
 msgstr "Imagens baixadas"
-
-msgid "Downloading"
-msgstr "Baixando"
 
 msgid "Downloading Mapillary images"
 msgstr "Baixar imagens do Mapillary"
@@ -319,7 +316,12 @@ msgstr "Mostra a foto anterior na sequência"
 msgid "Speed limit"
 msgstr "Limite de velocidade"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Pare"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Pare"
 

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
 "MIME-Version: 1.0\n"
@@ -135,9 +135,6 @@ msgstr "Download tilstand"
 msgid "Downloaded images"
 msgstr "Downloadede billeder"
 
-msgid "Downloading"
-msgstr "Downloader"
-
 msgid "Downloading Mapillary images"
 msgstr "Downloader Mapillary billeder"
 
@@ -165,9 +162,6 @@ msgstr "Eksporter valgte billeder"
 
 msgid "Export selected sequence"
 msgstr "Eksporter valgte rækkefølge"
-
-msgid "Exporting Mapillary Images"
-msgstr "Eksporter Mapillary billeder"
 
 msgid "Finished upload"
 msgstr "Upload færdig"
@@ -262,9 +256,6 @@ msgstr "Hopper til billedet i den anden ende af den blå linje"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Hopper til billedet i den anden ende af den røde linje"
-
-msgid "Key copied to clipboard"
-msgstr "Nøgle kopieret til udklipsholder"
 
 msgid "Login"
 msgstr "Log ind"
@@ -440,7 +431,12 @@ msgstr "Viser det forrige billede i sekvensen"
 msgid "Speed limit"
 msgstr "Hastighedsbegrænsning"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Stop"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
 

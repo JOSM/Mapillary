@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: German (https://www.transifex.com/josm/teams/2544/de/)\n"
 "MIME-Version: 1.0\n"
@@ -139,9 +139,6 @@ msgstr "Herunterlademodus"
 msgid "Downloaded images"
 msgstr "Heruntergeladene Bilder"
 
-msgid "Downloading"
-msgstr "Wird heruntergeladen"
-
 msgid "Downloading Mapillary images"
 msgstr "Mapillary-Bilder werden heruntergeladen"
 
@@ -149,7 +146,10 @@ msgid "Downloading map objects failed!"
 msgstr "Herunterladen von Kartenobjekten fehlgeschlagen!"
 
 msgid "Downloading map objects…"
-msgstr "Kartenobjekte werden heruntergeladen…"
+msgstr "Kartenobjekte werden heruntergeladen …"
+
+msgid "Downloading…"
+msgstr "Wird heruntergeladen …"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -170,8 +170,8 @@ msgstr "Ausgewählte Bilder exportieren"
 msgid "Export selected sequence"
 msgstr "Ausgewählte Sequenz exportieren"
 
-msgid "Exporting Mapillary Images"
-msgstr "Exportiere Mapillary-Bilder"
+msgid "Exporting Mapillary Images…"
+msgstr "Exportiere Mapillary-Bilder …"
 
 msgid "Finished upload"
 msgstr "Hochladen abgeschlossen"
@@ -270,8 +270,8 @@ msgstr "Wechselt zu dem Bild auf der anderen Seite der blauen Linie"
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Wechselt zu dem Bild auf der anderen Seite der roten Linie"
 
-msgid "Key copied to clipboard"
-msgstr "Schlüssel wurde in die Zwischenablage kopiert"
+msgid "Key copied to clipboard…"
+msgstr "Schlüssel wird in die Zwischenablage kopiert …"
 
 msgid "Login"
 msgstr "Anmelden"
@@ -448,9 +448,14 @@ msgstr "Zeigt das vorherige Bild in der Sequenz an"
 msgid "Speed limit"
 msgstr "Geschwindigkeitsbegrenzung"
 
-#. i18n: traffic sign
+msgctxt "as synonym to halt or stand still"
 msgid "Stop"
-msgstr "Stopp-Schild"
+msgstr "Anhalten"
+
+#. i18n: traffic sign
+msgctxt "name of the traffic sign"
+msgid "Stop"
+msgstr "Stoppschild"
 
 msgid "Stops the walk."
 msgstr "Stoppt den Spaziergang."
@@ -469,7 +474,7 @@ msgid "Submitting Mapillary Changeset"
 msgstr "Mapillary-Änderungssatz wird gesendet"
 
 msgid "Submitting changeset to server…"
-msgstr "Änderungssatz wird an Server gesendet…"
+msgstr "Änderungssatz wird an Server gesendet …"
 
 msgid "Supported image formats (JPG and PNG)"
 msgstr "Unterstützte Bildformate (JPG und PNG)"
@@ -559,6 +564,11 @@ msgstr "Warten Sie für Bilder in voller Qualität"
 
 msgid "Walk mode"
 msgstr "Spaziergangmodus"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Spaziergangmodus: Es dauert zu lange, das nächste Bild zu laden! "
+"Spaziergangmodus wird geschlossen …"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""

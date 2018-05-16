@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.10-4-g5125157\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-25 01:21+0000\n"
+"POT-Creation-Date: 2018-05-14 10:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Spanish (https://www.transifex.com/josm/teams/2544/es/)\n"
 "MIME-Version: 1.0\n"
@@ -139,9 +139,6 @@ msgstr "Modo de descarga"
 msgid "Downloaded images"
 msgstr "Imágenes descargadas"
 
-msgid "Downloading"
-msgstr "Descargando"
-
 msgid "Downloading Mapillary images"
 msgstr "Descargando imágenes de Mapillary"
 
@@ -150,6 +147,9 @@ msgstr "¡La descarga de objetos de mapa ha fallado!"
 
 msgid "Downloading map objects…"
 msgstr "Descargando objetos de mapas..."
+
+msgid "Downloading…"
+msgstr "Descargando... "
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -172,8 +172,8 @@ msgstr "Exportar las imágenes seleccionadas"
 msgid "Export selected sequence"
 msgstr "Exportar la secuencia seleccionada"
 
-msgid "Exporting Mapillary Images"
-msgstr "Exportando Imágenes Mapillary"
+msgid "Exporting Mapillary Images…"
+msgstr "Exportando imágenes de Mapillary..."
 
 msgid "Finished upload"
 msgstr "Carga terminada"
@@ -269,9 +269,6 @@ msgstr "Saltar a la imagen al otro lado de la línea azul"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Saltar a la imagen al otro lado de la línea roja"
-
-msgid "Key copied to clipboard"
-msgstr "Clave copiada al portapapeles"
 
 msgid "Login"
 msgstr "Acceder"
@@ -449,7 +446,12 @@ msgstr "Mostrar la imagen previa de la secuencia"
 msgid "Speed limit"
 msgstr "Límite de velocidad"
 
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Stop"
+
 #. i18n: traffic sign
+msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
 
