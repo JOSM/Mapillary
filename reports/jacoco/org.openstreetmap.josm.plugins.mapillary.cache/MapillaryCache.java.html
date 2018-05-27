@@ -3,9 +3,11 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
+import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
 
 /**
@@ -24,11 +26,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob&lt;String, BufferedIm
    *
    * @author nokutu
    */
-<span class="fc" id="L27">  public enum Type {</span>
+<span class="fc" id="L29">  public enum Type {</span>
     /** Full quality image */
-<span class="fc" id="L29">    FULL_IMAGE,</span>
+<span class="fc" id="L31">    FULL_IMAGE,</span>
     /** Low quality image */
-<span class="fc" id="L31">    THUMBNAIL</span>
+<span class="fc" id="L33">    THUMBNAIL</span>
   }
 
   /**
@@ -41,38 +43,38 @@ public class MapillaryCache extends JCSCachedTileLoaderJob&lt;String, BufferedIm
    *          FULL_IMAGE).
    */
   public MapillaryCache(final String key, final Type type) {
-<span class="fc" id="L44">    super(Caches.ImageCache.getInstance().getCache(), 50000, 50000, new HashMap&lt;&gt;());</span>
-<span class="pc bpc" id="L45" title="1 of 4 branches missed.">    if (key == null || type == null) {</span>
-<span class="fc" id="L46">      this.key = null;</span>
-<span class="fc" id="L47">      this.url = null;</span>
+<span class="fc" id="L46">    super(Caches.ImageCache.getInstance().getCache(), new TileJobOptions(50_000, 50_000, new HashMap&lt;&gt;(), TimeUnit.HOURS.toSeconds(4)));</span>
+<span class="pc bpc" id="L47" title="1 of 4 branches missed.">    if (key == null || type == null) {</span>
+<span class="fc" id="L48">      this.key = null;</span>
+<span class="fc" id="L49">      this.url = null;</span>
     } else {
-<span class="fc bfc" id="L49" title="All 2 branches covered.">      this.key = key + (type == Type.FULL_IMAGE ? &quot;.FULL_IMAGE&quot; : &quot;.THUMBNAIL&quot;);</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">      this.url = Cloudfront.thumbnail(key, type == Type.FULL_IMAGE);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">      this.key = key + (type == Type.FULL_IMAGE ? &quot;.FULL_IMAGE&quot; : &quot;.THUMBNAIL&quot;);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      this.url = Cloudfront.thumbnail(key, type == Type.FULL_IMAGE);</span>
     }
-<span class="fc" id="L52">  }</span>
+<span class="fc" id="L54">  }</span>
 
   @Override
   public String getCacheKey() {
-<span class="fc" id="L56">    return this.key;</span>
+<span class="fc" id="L58">    return this.key;</span>
   }
 
   @Override
   public URL getUrl() {
-<span class="fc" id="L61">    return this.url;</span>
+<span class="fc" id="L63">    return this.url;</span>
   }
 
   @Override
   protected BufferedImageCacheEntry createCacheEntry(byte[] content) {
-<span class="nc" id="L66">    return new BufferedImageCacheEntry(content);</span>
+<span class="nc" id="L68">    return new BufferedImageCacheEntry(content);</span>
   }
 
   @Override
   protected boolean isObjectLoadable() {
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">    if (this.cacheData == null) {</span>
-<span class="fc" id="L72">      return false;</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    if (this.cacheData == null) {</span>
+<span class="fc" id="L74">      return false;</span>
     }
-<span class="nc" id="L74">    byte[] content = this.cacheData.getContent();</span>
-<span class="nc bnc" id="L75" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
+<span class="nc" id="L76">    byte[] content = this.cacheData.getContent();</span>
+<span class="nc bnc" id="L77" title="All 4 branches missed.">    return content != null &amp;&amp; content.length &gt; 0;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
