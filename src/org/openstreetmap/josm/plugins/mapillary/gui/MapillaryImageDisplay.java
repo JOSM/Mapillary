@@ -22,6 +22,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.IntStream;
 
 import javax.swing.JComponent;
 
@@ -49,6 +50,8 @@ public class MapillaryImageDisplay extends JComponent {
   /** The image currently displayed */
   private volatile BufferedImage image;
 
+  private boolean is360 = false;
+
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
    * rectangle is calculated each time the zoom is modified
@@ -61,6 +64,12 @@ public class MapillaryImageDisplay extends JComponent {
    */
   private Rectangle selectedRect;
 
+  /**
+   * When panorama 360-degree photo is downloaded, use offscreen buffer for display.
+   */
+  private VectorUtil vectorUtil;
+  private BufferedImage offscreenImage;
+
   private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
     private long lastTimeForMousePoint;
@@ -72,6 +81,8 @@ public class MapillaryImageDisplay extends JComponent {
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+      if (is360)
+        return;
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
@@ -143,34 +154,40 @@ public class MapillaryImageDisplay extends JComponent {
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
-        if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
-          if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
-            // Zooms to 1:1
-            MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
-                image.getWidth(null), image.getHeight(null));
-          } else {
-            // Zooms to best fit.
-            MapillaryImageDisplay.this.visibleRect = new Rectangle(
-                0,
-                (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
-                image.getWidth(null),
-                (image.getWidth(null) * getHeight()) / getWidth()
-            );
+        if (MapillaryImageDisplay.this.is360) {
+          Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
+          Vector3D vec = vectorUtil.getVector3D(click.x, click.y);
+          vectorUtil.setRotation(vec);
+        } else {
+          if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
+            if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
+              // Zooms to 1:1
+              MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
+                  image.getWidth(null), image.getHeight(null));
+            } else {
+              // Zooms to best fit.
+              MapillaryImageDisplay.this.visibleRect = new Rectangle(
+                  0,
+                  (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
+                  image.getWidth(null),
+                  (image.getWidth(null) * getHeight()) / getWidth()
+              );
+            }
+            MapillaryImageDisplay.this.repaint();
+            return;
+          } else if (e.getButton() != MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
+            return;
           }
-          MapillaryImageDisplay.this.repaint();
-          return;
-        } else if (e.getButton() != MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
-          return;
-        }
-        // Calculate the translation to set the clicked point the center of
-        // the view.
-        Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        Point center = getCenterImgCoord(visibleRect);
-        visibleRect.x += click.x - center.x;
-        visibleRect.y += click.y - center.y;
-        checkVisibleRectPos(image, visibleRect);
-        synchronized (MapillaryImageDisplay.this) {
-          MapillaryImageDisplay.this.visibleRect = visibleRect;
+          // Calculate the translation to set the clicked point the center of
+          // the view.
+          Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
+          Point center = getCenterImgCoord(visibleRect);
+          visibleRect.x += click.x - center.x;
+          visibleRect.y += click.y - center.y;
+          checkVisibleRectPos(image, visibleRect);
+          synchronized (MapillaryImageDisplay.this) {
+            MapillaryImageDisplay.this.visibleRect = visibleRect;
+          }
         }
         MapillaryImageDisplay.this.repaint();
       }
@@ -187,6 +204,8 @@ public class MapillaryImageDisplay extends JComponent {
         MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
+      if (is360)
+        return;
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
@@ -214,6 +233,8 @@ public class MapillaryImageDisplay extends JComponent {
     @Override
     public void mouseDragged(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+        return;
+      if (is360)
         return;
       Image image;
       Rectangle visibleRect;
@@ -254,6 +275,8 @@ public class MapillaryImageDisplay extends JComponent {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+        return;
+      if (is360)
         return;
       Image image;
       synchronized (MapillaryImageDisplay.this) {
@@ -343,6 +366,7 @@ public class MapillaryImageDisplay extends JComponent {
     addMouseMotionListener(mouseListener);
 
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
+    vectorUtil = new VectorUtil();
   }
 
   /**
@@ -359,9 +383,29 @@ public class MapillaryImageDisplay extends JComponent {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
-      if (image != null)
-        this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
-            image.getHeight(null));
+      if (image != null) {
+        if (image.getWidth(null) >= 2048 && (image.getWidth(null) == image.getHeight(null) * 2)) {
+          is360 = true;
+        } else {
+          is360 = false;
+        }
+        if (is360) {
+          Dimension s = getSize();
+          if (s.width == 0 || s.height == 0) {
+            s.width = Math.min(800, image.getWidth(null));
+            s.height = Math.min(600, image.getHeight(null));
+          }
+          this.visibleRect = new Rectangle(0, 0, s.width, s.height);
+          setSize(s);
+          offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);
+          double FOV = Math.toRadians(110);
+          double cameraPlaneDistance = (s.width / 2) / Math.tan(FOV / 2);
+          vectorUtil.setCameraScreen(s.width, s.height, cameraPlaneDistance);
+        } else {
+          this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
+              image.getHeight(null));
+        }
+      }
     }
     repaint();
   }
@@ -380,7 +424,7 @@ public class MapillaryImageDisplay extends JComponent {
    */
   @Override
   public void paintComponent(Graphics g) {
-    Image image;
+    BufferedImage image;
     Rectangle visibleRect;
     synchronized (this) {
       image = this.image;
@@ -396,10 +440,18 @@ public class MapillaryImageDisplay extends JComponent {
           (int) ((size.width - noImageSize.getWidth()) / 2),
           (int) ((size.height - noImageSize.getHeight()) / 2));
     } else {
-      Rectangle target = calculateDrawImageRectangle(visibleRect);
+      Rectangle target;
+      if (this.is360) {
+        synchronized (this) {
+          redrawOffscreenImage(image);
+        }
+        target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
+      } else {
+        target = calculateDrawImageRectangle(visibleRect);
+      }
       g.drawImage(image, target.x, target.y, target.x + target.width, target.y
-          + target.height, visibleRect.x, visibleRect.y, visibleRect.x
-          + visibleRect.width, visibleRect.y + visibleRect.height, null);
+            + target.height, visibleRect.x, visibleRect.y, visibleRect.x
+            + visibleRect.width, visibleRect.y + visibleRect.height, null);
       if (this.selectedRect != null) {
         Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
             this.selectedRect.y);
@@ -454,8 +506,8 @@ public class MapillaryImageDisplay extends JComponent {
   private Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
     return new Point(
-        visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
-        visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height
+            visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
+            visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height
     );
   }
 
@@ -549,4 +601,17 @@ public class MapillaryImageDisplay extends JComponent {
       visibleRect.height = image.getHeight(null);
     }
   }
+
+  private void redrawOffscreenImage(BufferedImage image) {
+    int height = offscreenImage.getHeight();
+    int width = offscreenImage.getWidth();
+    IntStream.range(0, height).parallel().forEach(y -> {
+      IntStream.range(0, width).forEach(x -> {
+        Vector3D vec = vectorUtil.getVector3D(x, y);
+        Point p = vectorUtil.mapping(vec, image.getWidth(),image.getHeight());
+        int color = image.getRGB(p.x, p.y);
+        offscreenImage.setRGB(x, y, color);
+      });
+   });
+ }
 }
