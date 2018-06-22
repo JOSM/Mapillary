@@ -40,7 +40,6 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
-
 /**
  * Toggle dialog that shows an image and some buttons.
  *
@@ -211,7 +210,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
       if (this.image == null) {
-        this.mapillaryImageDisplay.setImage(null, null);
+        this.mapillaryImageDisplay.setImage(null, null, false);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -248,7 +247,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         // Downloads the thumbnail.
-        this.mapillaryImageDisplay.setImage(null, null);
+        this.mapillaryImageDisplay.setImage(null, null, false);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
@@ -275,7 +274,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null);
+          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null, false);
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -548,7 +547,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           final MapillaryAbstractImage mai = getImage();
           this.mapillaryImageDisplay.setImage(
             img,
-            mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null
+            mai instanceof MapillaryImage? ((MapillaryImage) getImage()).getDetections() : null,
+            mai.getPano()
           );
         }
       } catch (IOException e) {

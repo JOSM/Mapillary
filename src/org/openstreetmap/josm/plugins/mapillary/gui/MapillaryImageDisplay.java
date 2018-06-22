@@ -376,26 +376,19 @@ public class MapillaryImageDisplay extends JComponent {
    * @param image The picture to be displayed.
    * @param detections image detections
    */
-  public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
+  public void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean is360) {
     synchronized (this) {
       this.image = image;
+      this.is360 = is360;
       this.detections.clear();
       if (detections != null) {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
       if (image != null) {
-        if (image.getWidth(null) >= 2048 && (image.getWidth(null) == image.getHeight(null) * 2)) {
-          is360 = true;
-        } else {
-          is360 = false;
-        }
-        if (is360) {
-          Dimension s = getSize();
-          if (s.width == 0 || s.height == 0) {
-            s.width = Math.min(800, image.getWidth(null));
-            s.height = Math.min(600, image.getHeight(null));
-          }
+        Dimension s = getSize();
+        if (is360 && image.getWidth(null) >= 2048 && image.getWidth(null) == image.getHeight(null) * 2
+                && s.width >= 800 && s.height >= 400) {
           this.visibleRect = new Rectangle(0, 0, s.width, s.height);
           setSize(s);
           offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);

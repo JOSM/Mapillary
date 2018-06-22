@@ -38,10 +38,10 @@ public class MapillaryDataTest {
    */
   @Before
   public void setUp() {
-    this.img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90);
-    this.img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90);
-    this.img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90);
-    this.img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90);
+    this.img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false);
+    this.img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false);
+    this.img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false);
+    this.img4 = new MapillaryImage("key4__________________", new LatLon(0.4, 0.4), 90, false);
     final MapillarySequence seq = new MapillarySequence();
 
     seq.add(Arrays.asList(img1, img2, img3, img4));
@@ -74,7 +74,7 @@ public class MapillaryDataTest {
   @Test
   public void sizeTest() {
     assertEquals(4, this.data.getImages().size());
-    this.data.add(new MapillaryImage("key5__________________", new LatLon(0.1, 0.1), 90));
+    this.data.add(new MapillaryImage("key5__________________", new LatLon(0.1, 0.1), 90, false));
     assertEquals(5, this.data.getImages().size());
   }
 

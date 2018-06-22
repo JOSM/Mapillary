@@ -28,14 +28,14 @@ public class JsonLocationChangesetEncoderTest {
     Field tempLatLonField = TestUtil.getAccessibleField(MapillaryAbstractImage.class, "tempLatLon");
     Field tempCaField = TestUtil.getAccessibleField(MapillaryAbstractImage.class, "tempCa");
 
-    MapillaryImage img1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(0, 0), 0);
+    MapillaryImage img1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(0, 0), 0, false);
     tempLatLonField.set(img1, new LatLon(50.44612, 13.3323));
     tempCaField.set(img1, 273.3);
-    MapillaryImage img2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0);
+    MapillaryImage img2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0, false);
     tempLatLonField.set(img2, new LatLon(50.44619, 13.3328));
-    MapillaryImage img3 = new MapillaryImage("31KDbCOzla0fJBtIeoBr1A", new LatLon(0, 0), 0);
+    MapillaryImage img3 = new MapillaryImage("31KDbCOzla0fJBtIeoBr1A", new LatLon(0, 0), 0, false);
     tempCaField.set(img3, 13.4);
-    MapillaryImage img4 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0);
+    MapillaryImage img4 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0, false);
     tempCaField.set(img4, 13.4);
 
     MapillaryLocationChangeset cs = new MapillaryLocationChangeset();
