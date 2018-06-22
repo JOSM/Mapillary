@@ -67,7 +67,8 @@ public class MapillaryImageDisplay extends JComponent {
   /**
    * When panorama 360-degree photo is downloaded, use offscreen buffer for display.
    */
-  private VectorUtil vectorUtil;
+  private CameraPlane cameraPlane;
+
   private BufferedImage offscreenImage;
 
   private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
@@ -156,8 +157,8 @@ public class MapillaryImageDisplay extends JComponent {
       if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
         if (MapillaryImageDisplay.this.is360) {
           Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
-          Vector3D vec = vectorUtil.getVector3D(click.x, click.y);
-          vectorUtil.setRotation(vec);
+          Vector3D vec = cameraPlane.getVector3D(click.x, click.y);
+          cameraPlane.setRotation(vec);
         } else {
           if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
             if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
@@ -366,7 +367,7 @@ public class MapillaryImageDisplay extends JComponent {
     addMouseMotionListener(mouseListener);
 
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
-    vectorUtil = new VectorUtil();
+    cameraPlane = new CameraPlane();
   }
 
   /**
@@ -400,7 +401,7 @@ public class MapillaryImageDisplay extends JComponent {
           offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);
           double FOV = Math.toRadians(110);
           double cameraPlaneDistance = (s.width / 2) / Math.tan(FOV / 2);
-          vectorUtil.setCameraScreen(s.width, s.height, cameraPlaneDistance);
+          cameraPlane.setCameraPlane(s.width, s.height, cameraPlaneDistance);
         } else {
           this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
               image.getHeight(null));
@@ -607,8 +608,8 @@ public class MapillaryImageDisplay extends JComponent {
     int width = offscreenImage.getWidth();
     IntStream.range(0, height).parallel().forEach(y -> {
       IntStream.range(0, width).forEach(x -> {
-        Vector3D vec = vectorUtil.getVector3D(x, y);
-        Point p = vectorUtil.mapping(vec, image.getWidth(),image.getHeight());
+        Vector3D vec = cameraPlane.getVector3D(x, y);
+        Point p = cameraPlane.mapping(vec, image.getWidth(),image.getHeight());
         int color = image.getRGB(p.x, p.y);
         offscreenImage.setRGB(x, y, color);
       });
