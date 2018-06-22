@@ -211,7 +211,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
       if (this.image == null) {
-        this.mapillaryImageDisplay.setImage(null, null); // FIXME
+        this.mapillaryImageDisplay.setImage(null, null);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -248,7 +248,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         // Downloads the thumbnail.
-        this.mapillaryImageDisplay.setImage(null, null); // FIXME
+        this.mapillaryImageDisplay.setImage(null, null);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
@@ -275,7 +275,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null); // FIXME
+          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null);
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -542,8 +542,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           return;
         }
         if (
-            mapillaryImageDisplay.getImage() == null
-              || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
+          mapillaryImageDisplay.getImage() == null
+          || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
             ) {
           final MapillaryAbstractImage mai = getImage();
           this.mapillaryImageDisplay.setImage(
