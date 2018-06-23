@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.gui;
+package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
 public class Vector3D {
 
@@ -11,7 +11,6 @@ public class Vector3D {
         this.x = x;
         this.y = y;
         this.z = z;
-
     }
 
     public double getX() {

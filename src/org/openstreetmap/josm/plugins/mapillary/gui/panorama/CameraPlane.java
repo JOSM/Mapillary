@@ -1,21 +1,21 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.gui;
+package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
 import java.awt.Point;
 import java.util.stream.IntStream;
 
-class CameraPlane {
+public class CameraPlane {
   private Vector3D[][] vectors;
   private double sinTheta;
   private double cosTheta;
   private double sinPhi;
   private double cosPhi;
 
-  CameraPlane() {
+  public CameraPlane() {
     setRotation(0.0, 0.0);
   }
 
-  void setCameraPlane(int width, int height, double d) {
+  public void setCameraPlane(int width, int height, double d) {
     vectors = new Vector3D[width][height];
     IntStream.range(0, height).forEach(y -> {
       IntStream.range(0, width).forEach(x -> {
@@ -28,7 +28,7 @@ class CameraPlane {
     });
   }
 
-  Vector3D getVector3D(int x, int y) {
+  public Vector3D getVector3D(int x, int y) {
     Vector3D res;
     try {
       res = rotate(vectors[x][y]);
@@ -38,7 +38,7 @@ class CameraPlane {
     return res;
   }
 
-  void setRotation(Vector3D vec) {
+  public void setRotation(Vector3D vec) {
     double theta, phi;
     try {
       theta = Math.atan2(vec.getX(), vec.getZ());
@@ -50,14 +50,11 @@ class CameraPlane {
     setRotation(theta, phi);
   }
 
-  void setRotation(double theta, double phi) {
-    this.sinTheta = Math.sin(theta);
-    this.cosTheta = Math.cos(theta);
-    this.sinPhi = Math.sin(phi);
-    this.cosPhi = Math.cos(phi);
-  };
+  public Vector3D getRotation() {
+    return new Vector3D(sinTheta, sinPhi, cosPhi * cosTheta);
+  }
 
-  Point mapping(Vector3D vec, int width, int height) {
+  public Point mapping(Vector3D vec, int width, int height) {
     // https://en.wikipedia.org/wiki/UV_mapping
     double u = 0.5 + (Math.atan2(vec.getX(), vec.getZ()) / (2 * Math.PI));
     double v = 0.5 + (Math.asin(vec.getY()) / Math.PI);
@@ -65,6 +62,13 @@ class CameraPlane {
     int ty = (int) ((height - 1) * v);
     return new Point(tx, ty);
   }
+
+  private void setRotation(double theta, double phi) {
+    this.sinTheta = Math.sin(theta);
+    this.cosTheta = Math.cos(theta);
+    this.sinPhi = Math.sin(phi);
+    this.cosPhi = Math.cos(phi);
+  };
 
   private Vector3D rotate(Vector3D vec) {
     double vecX, vecY, vecZ;

@@ -28,6 +28,8 @@ import javax.swing.JComponent;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
+import org.openstreetmap.josm.plugins.mapillary.gui.panorama.Vector3D;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -67,9 +69,12 @@ public class MapillaryImageDisplay extends JComponent {
   /**
    * When panorama 360-degree photo is downloaded, use offscreen buffer for display.
    */
-  private CameraPlane cameraPlane;
-
   private BufferedImage offscreenImage;
+
+  /**
+   * 360-degree panorama photo projection class.
+   */
+  private CameraPlane cameraPlane;
 
   private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
