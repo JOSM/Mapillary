@@ -87,8 +87,6 @@ public class MapillaryImageDisplay extends JComponent {
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-      if (pano)
-        return;
       Image image;
       Rectangle visibleRect;
       synchronized (MapillaryImageDisplay.this) {
@@ -131,20 +129,34 @@ public class MapillaryImageDisplay extends JComponent {
         } else {
           visibleRect.height = wFact / getSize().width;
         }
-        // The size of the visible rectangle is limited by the image size.
-        checkVisibleRectSize(image, visibleRect);
-        // Set the position of the visible rectangle, so that the mouse
-        // cursor doesn't move on the image.
-        Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-        visibleRect.x = this.mousePointInImg.x
-            + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
-        visibleRect.y = this.mousePointInImg.y
-            + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
-        // The position is also limited by the image size
-        checkVisibleRectPos(image, visibleRect);
-        synchronized (MapillaryImageDisplay.this) {
-          MapillaryImageDisplay.this.visibleRect = visibleRect;
+        if (MapillaryImageDisplay.this.pano) {
+           // The size of the visible rectangle is limited by the offscreenImage size.
+          checkVisibleRectSize(offscreenImage, visibleRect);
+          // Set the position of the visible rectangle, so that the mouse
+          // cursor doesn't move on the image.
+          Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
+          visibleRect.x = this.mousePointInImg.x
+              + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
+          visibleRect.y = this.mousePointInImg.y
+              + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
+          // The position is also limited by the image size
+          checkVisibleRectPos(offscreenImage, visibleRect);
+        } else {
+          // The size of the visible rectangle is limited by the image size.
+          checkVisibleRectSize(image, visibleRect);
+          // Set the position of the visible rectangle, so that the mouse
+          // cursor doesn't move on the image.
+          Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
+          visibleRect.x = this.mousePointInImg.x
+              + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
+          visibleRect.y = this.mousePointInImg.y
+              + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
+          // The position is also limited by the image size
+          checkVisibleRectPos(image, visibleRect);
         }
+          synchronized (MapillaryImageDisplay.this) {
+            MapillaryImageDisplay.this.visibleRect = visibleRect;
+          }
         MapillaryImageDisplay.this.repaint();
       }
     }
