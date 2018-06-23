@@ -50,7 +50,7 @@ public class MapillaryImageDisplay extends JComponent {
   /** The image currently displayed */
   private volatile BufferedImage image;
 
-  private boolean is360 = false;
+  private boolean pano = false;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
@@ -82,7 +82,7 @@ public class MapillaryImageDisplay extends JComponent {
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-      if (is360)
+      if (pano)
         return;
       Image image;
       Rectangle visibleRect;
@@ -155,7 +155,7 @@ public class MapillaryImageDisplay extends JComponent {
         visibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
-        if (MapillaryImageDisplay.this.is360) {
+        if (MapillaryImageDisplay.this.pano) {
           Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
           Vector3D vec = cameraPlane.getVector3D(click.x, click.y);
           cameraPlane.setRotation(vec);
@@ -205,7 +205,7 @@ public class MapillaryImageDisplay extends JComponent {
         MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
-      if (is360)
+      if (pano)
         return;
       Image image;
       Rectangle visibleRect;
@@ -235,7 +235,7 @@ public class MapillaryImageDisplay extends JComponent {
     public void mouseDragged(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
-      if (is360)
+      if (pano)
         return;
       Image image;
       Rectangle visibleRect;
@@ -277,7 +277,7 @@ public class MapillaryImageDisplay extends JComponent {
     public void mouseReleased(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
-      if (is360)
+      if (pano)
         return;
       Image image;
       synchronized (MapillaryImageDisplay.this) {
@@ -376,10 +376,10 @@ public class MapillaryImageDisplay extends JComponent {
    * @param image The picture to be displayed.
    * @param detections image detections
    */
-  public void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean is360) {
+  public void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
     synchronized (this) {
       this.image = image;
-      this.is360 = is360;
+      this.pano = pano;
       this.detections.clear();
       if (detections != null) {
         this.detections.addAll(detections);
@@ -387,10 +387,12 @@ public class MapillaryImageDisplay extends JComponent {
       this.selectedRect = null;
       if (image != null) {
         Dimension s = getSize();
-        if (is360 && image.getWidth(null) >= 2048 && image.getWidth(null) == image.getHeight(null) * 2
-                && s.width >= 800 && s.height >= 400) {
+        if (pano && ( image.getWidth(null) < 2048 || image.getWidth(null) != image.getHeight(null) * 2
+                || s.width < 800 || s.height < 400)) {
+          this.pano = false;
+        }
+        if (this.pano) {
           this.visibleRect = new Rectangle(0, 0, s.width, s.height);
-          setSize(s);
           offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);
           double FOV = Math.toRadians(110);
           double cameraPlaneDistance = (s.width / 2) / Math.tan(FOV / 2);
@@ -435,32 +437,35 @@ public class MapillaryImageDisplay extends JComponent {
           (int) ((size.height - noImageSize.getHeight()) / 2));
     } else {
       Rectangle target;
-      if (this.is360) {
+      if (this.pano) {
         synchronized (this) {
           redrawOffscreenImage(image);
         }
         target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
-      } else {
-        target = calculateDrawImageRectangle(visibleRect);
-      }
-      g.drawImage(image, target.x, target.y, target.x + target.width, target.y
+        g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
             + target.height, visibleRect.x, visibleRect.y, visibleRect.x
             + visibleRect.width, visibleRect.y + visibleRect.height, null);
-      if (this.selectedRect != null) {
-        Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
-            this.selectedRect.y);
-        Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x
-            + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
-        g.setColor(new Color(128, 128, 128, 180));
-        g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);
-        g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);
-        g.fillRect(bottomRight.x, target.y, target.x + target.width
-            - bottomRight.x, target.height);
-        g.fillRect(target.x, bottomRight.y, target.width, target.y
-            + target.height - bottomRight.y);
-        g.setColor(Color.black);
-        g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,
-            bottomRight.y - topLeft.y);
+      } else {
+        target = calculateDrawImageRectangle(visibleRect);
+        g.drawImage(image, target.x, target.y, target.x + target.width, target.y
+            + target.height, visibleRect.x, visibleRect.y, visibleRect.x
+            + visibleRect.width, visibleRect.y + visibleRect.height, null);
+        if (this.selectedRect != null) {
+          Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
+              this.selectedRect.y);
+          Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x
+              + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
+          g.setColor(new Color(128, 128, 128, 180));
+          g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);
+          g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);
+          g.fillRect(bottomRight.x, target.y, target.x + target.width
+              - bottomRight.x, target.height);
+          g.fillRect(target.x, bottomRight.y, target.width, target.y
+              + target.height - bottomRight.y);
+          g.setColor(Color.black);
+          g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,
+              bottomRight.y - topLeft.y);
+        }
       }
 
       if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
