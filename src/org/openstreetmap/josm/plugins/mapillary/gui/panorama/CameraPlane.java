@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
 public class CameraPlane {
@@ -11,11 +12,8 @@ public class CameraPlane {
   private double sinPhi;
   private double cosPhi;
 
-  public CameraPlane() {
+  public CameraPlane(int width, int height, double d) {
     setRotation(0.0, 0.0);
-  }
-
-  public void setCameraPlane(int width, int height, double d) {
     vectors = new Vector3D[width][height];
     IntStream.range(0, height).forEach(y -> {
       IntStream.range(0, width).forEach(x -> {
@@ -50,32 +48,45 @@ public class CameraPlane {
     setRotation(theta, phi);
   }
 
-  public Vector3D getRotation() {
+  Vector3D getRotation() {
     return new Vector3D(sinTheta, sinPhi, cosPhi * cosTheta);
   }
 
-  public Point mapping(Vector3D vec, int width, int height) {
-    // https://en.wikipedia.org/wiki/UV_mapping
-    double u = 0.5 + (Math.atan2(vec.getX(), vec.getZ()) / (2 * Math.PI));
-    double v = 0.5 + (Math.asin(vec.getY()) / Math.PI);
-    int tx = (int) ((width - 1) * u);
-    int ty = (int) ((height - 1) * v);
-    return new Point(tx, ty);
+  public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
+    int height = targetImage.getHeight();
+    int width = targetImage.getWidth();
+    IntStream.range(0, height).parallel().forEach(y -> {
+      IntStream.range(0, width).forEach(x -> {
+        Vector3D vec = getVector3D(x, y);
+        Point p = mapping(vec, sourceImage.getWidth(),sourceImage.getHeight());
+        int color = sourceImage.getRGB(p.x, p.y);
+        targetImage.setRGB(x, y, color);
+      });
+   });
   }
 
-  private void setRotation(double theta, double phi) {
+  void setRotation(double theta, double phi) {
     this.sinTheta = Math.sin(theta);
     this.cosTheta = Math.cos(theta);
     this.sinPhi = Math.sin(phi);
     this.cosPhi = Math.cos(phi);
   };
 
-  private Vector3D rotate(Vector3D vec) {
+  Vector3D rotate(Vector3D vec) {
     double vecX, vecY, vecZ;
     vecZ = vec.getZ() * cosPhi - vec.getY() * sinPhi;
     vecY = vec.getZ() * sinPhi + vec.getY() * cosPhi;
     vecX = vecZ * sinTheta + vec.getX() * cosTheta;
     vecZ = vecZ * cosTheta - vec.getX() * sinTheta;
     return new Vector3D(vecX, vecY, vecZ);
+  }
+
+  Point mapping(Vector3D vec, int width, int height) {
+    // https://en.wikipedia.org/wiki/UV_mapping
+    double u = 0.5 + (Math.atan2(vec.getX(), vec.getZ()) / (2 * Math.PI));
+    double v = 0.5 + (Math.asin(vec.getY()) / Math.PI);
+    int tx = (int) ((width - 1) * u);
+    int ty = (int) ((height - 1) * v);
+    return new Point(tx, ty);
   }
 }

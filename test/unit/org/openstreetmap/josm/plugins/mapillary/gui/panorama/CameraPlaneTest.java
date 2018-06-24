@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.awt.Point;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -21,13 +20,9 @@ public class CameraPlaneTest {
   @Rule
   public JOSMTestRules rules = new MapillaryTestRules().platform();
 
-  @Before
-  public void setUp() {
-    cameraPlane = new CameraPlane();
-  }
-
   @Test
   public void testSetRotation() {
+    cameraPlane = new CameraPlane(800, 400, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
     Vector3D out = cameraPlane.getRotation();
@@ -38,7 +33,7 @@ public class CameraPlaneTest {
 
   @Test
   public void testGetVector3D() {
-    cameraPlane.setCameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
+    cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
     Vector3D out = cameraPlane.getVector3D(400, 300);
@@ -49,7 +44,7 @@ public class CameraPlaneTest {
 
   @Test
   public void testMapping() {
-    cameraPlane.setCameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
+    cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
     Vector3D out = cameraPlane.getVector3D(300, 200);

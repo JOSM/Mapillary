@@ -384,7 +384,6 @@ public class MapillaryImageDisplay extends JComponent {
     addMouseMotionListener(mouseListener);
 
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
-    cameraPlane = new CameraPlane();
   }
 
   /**
@@ -413,7 +412,7 @@ public class MapillaryImageDisplay extends JComponent {
           offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);
           double FOV = Math.toRadians(110);
           double cameraPlaneDistance = (s.width / 2) / Math.tan(FOV / 2);
-          cameraPlane.setCameraPlane(s.width, s.height, cameraPlaneDistance);
+          cameraPlane = new CameraPlane(s.width, s.height, cameraPlaneDistance);
         } else {
           this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
               image.getHeight(null));
@@ -455,9 +454,7 @@ public class MapillaryImageDisplay extends JComponent {
     } else {
       Rectangle target;
       if (this.pano) {
-        synchronized (this) {
-          redrawOffscreenImage(image);
-        }
+        cameraPlane.mapping(image, offscreenImage);
         target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
         g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
             + target.height, visibleRect.x, visibleRect.y, visibleRect.x
@@ -617,17 +614,4 @@ public class MapillaryImageDisplay extends JComponent {
       visibleRect.height = image.getHeight(null);
     }
   }
-
-  private void redrawOffscreenImage(BufferedImage image) {
-    int height = offscreenImage.getHeight();
-    int width = offscreenImage.getWidth();
-    IntStream.range(0, height).parallel().forEach(y -> {
-      IntStream.range(0, width).forEach(x -> {
-        Vector3D vec = cameraPlane.getVector3D(x, y);
-        Point p = cameraPlane.mapping(vec, image.getWidth(),image.getHeight());
-        int color = image.getRGB(p.x, p.y);
-        offscreenImage.setRGB(x, y, color);
-      });
-   });
- }
 }
