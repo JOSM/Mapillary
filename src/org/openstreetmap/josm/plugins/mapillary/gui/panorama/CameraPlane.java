@@ -7,8 +7,10 @@ import java.util.stream.IntStream;
 
 public class CameraPlane {
   private Vector3D[][] vectors;
+  private double theta;
   private double sinTheta;
   private double cosTheta;
+  private double phi;
   private double sinPhi;
   private double cosPhi;
 
@@ -26,7 +28,11 @@ public class CameraPlane {
     });
   }
 
-  public Vector3D getVector3D(int x, int y) {
+  public Vector3D getVector3D(final Point p) {
+    return getVector3D(p.x, p.y);
+  }
+
+  public Vector3D getVector3D(final int x, final int y) {
     Vector3D res;
     try {
       res = rotate(vectors[x][y]);
@@ -36,6 +42,33 @@ public class CameraPlane {
     return res;
   }
 
+  /**
+   * Set camera plane rotation by current plane position.
+   * @param p Point within current plane.
+   */
+  public void setRotation(final Point p) {
+    setRotation(getVector3D(p));
+  }
+
+  public void setRotation(final int x, final int y) {
+    setRotation(getVector3D(x, y));
+  }
+
+  public void setRotationFromDelta(final Point from, final Point to) {
+    Vector3D f1 = vectors[from.x][from.y];
+    Vector3D t1 = vectors[to.x][to.y];
+    double deltaTheta = Math.atan2(f1.getX(), f1.getZ()) - Math.atan2(t1.getX(), t1.getZ());
+    double deltaPhi = Math.atan2(f1.getY(), Math.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
+        - Math.atan2(t1.getY(), Math.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
+    double newTheta = theta + deltaTheta;
+    double newPhi = phi + deltaPhi;
+    setRotation(newTheta, newPhi);
+  }
+
+  /**
+   * Set camera plane rotation by spherical vector.
+   * @param vec vector pointing new view position.
+   */
   public void setRotation(Vector3D vec) {
     double theta, phi;
     try {
@@ -52,25 +85,14 @@ public class CameraPlane {
     return new Vector3D(sinTheta, sinPhi, cosPhi * cosTheta);
   }
 
-  public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
-    int height = targetImage.getHeight();
-    int width = targetImage.getWidth();
-    IntStream.range(0, height).parallel().forEach(y -> {
-      IntStream.range(0, width).forEach(x -> {
-        Vector3D vec = getVector3D(x, y);
-        Point p = mapping(vec, sourceImage.getWidth(),sourceImage.getHeight());
-        int color = sourceImage.getRGB(p.x, p.y);
-        targetImage.setRGB(x, y, color);
-      });
-   });
-  }
-
   void setRotation(double theta, double phi) {
+    this.theta = theta;
     this.sinTheta = Math.sin(theta);
     this.cosTheta = Math.cos(theta);
+    this.phi = phi;
     this.sinPhi = Math.sin(phi);
     this.cosPhi = Math.cos(phi);
-  };
+  }
 
   Vector3D rotate(Vector3D vec) {
     double vecX, vecY, vecZ;
@@ -79,6 +101,19 @@ public class CameraPlane {
     vecX = vecZ * sinTheta + vec.getX() * cosTheta;
     vecZ = vecZ * cosTheta - vec.getX() * sinTheta;
     return new Vector3D(vecX, vecY, vecZ);
+  }
+
+  public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
+    int height = targetImage.getHeight();
+    int width = targetImage.getWidth();
+    IntStream.range(0, height).parallel().forEach(y -> {
+      IntStream.range(0, width).forEach(x -> {
+        Vector3D vec = getVector3D(new Point(x, y));
+        Point p = mapping(vec, sourceImage.getWidth(), sourceImage.getHeight());
+        int color = sourceImage.getRGB(p.x, p.y);
+        targetImage.setRGB(x, y, color);
+      });
+    });
   }
 
   Point mapping(Vector3D vec, int width, int height) {
