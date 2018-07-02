@@ -6,6 +6,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -105,7 +106,7 @@ public final class PluginState {
   private static void finishedUploadDialog(int numImages) {
     JOptionPane.showMessageDialog(
       Main.parent,
-      tr("You have successfully uploaded {0} images to mapillary.com", numImages),
+      I18n.trn("You have successfully uploaded {0} image to mapillary.com", "You have successfully uploaded {0} images to mapillary.com", numImages, numImages),
       tr("Finished upload"),
       JOptionPane.INFORMATION_MESSAGE
     );

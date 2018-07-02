@@ -432,30 +432,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public Object getInfoComponent() {
     IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size()).summaryStatistics();
+    final long numImported = getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count();
+    final long numDownloaded = getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count();
+    final int numTotal = getData().getImages().size();
     return new StringBuilder(I18n.tr("Mapillary layer"))
       .append('\n')
-      .append(I18n.tr(
+      .append(I18n.trn(
+        "{0} sequence, containing between {1} and {2} images (ø {3})",
         "{0} sequences, each containing between {1} and {2} images (ø {3})",
+        getData().getSequences().size(),
         getData().getSequences().size(),
         seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
         seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(),
         seqSizeStats.getAverage()
       ))
       .append("\n\n")
-      .append(I18n.tr(
-        "{0} imported images",
-        getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count()
-      ))
+      .append(I18n.trn("{0} imported image", "{0} imported images", numImported, numImported))
       .append("\n+ ")
-      .append(I18n.tr(
-        "{0} downloaded images",
-        getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count()
-      ))
+      .append(I18n.trn("{0} downloaded image", "{0} downloaded images", numDownloaded, numDownloaded))
       .append("\n= ")
-      .append(I18n.tr(
-        "{0} images in total",
-        getData().getImages().size()
-      )).toString();
+      .append(I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal))
+      .toString();
   }
 
   @Override
