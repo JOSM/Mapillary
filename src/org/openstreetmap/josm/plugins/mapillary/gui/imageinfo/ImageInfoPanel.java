@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -19,11 +20,11 @@ import javax.swing.JTextPane;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.openstreetmap.josm.data.SelectionChangedListener;
-import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
@@ -35,7 +36,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
 
-public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, SelectionChangedListener {
+public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, DataSelectionListener {
   private static final long serialVersionUID = 1320443250226377651L;
   private static final Log L = LogFactory.getLog(ImageInfoPanel.class);
   private static ImageInfoPanel instance;
@@ -60,7 +61,16 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       null,
       150
     );
-    DataSet.addSelectionListener(this);
+    MainApplication.getLayerManager().addAndFireActiveLayerChangeListener(event -> {
+      try {
+        Optional.ofNullable(event.getPreviousDataSet())
+            .ifPresent(it -> it.removeSelectionListener(this));
+      } catch (IllegalArgumentException e) {
+        // The selection listener was not registered
+      }
+      Optional.ofNullable(MainApplication.getLayerManager().getActiveDataSet())
+          .ifPresent(it -> it.addSelectionListener(this));
+    });
 
     numDetectionsLabel = new JLabel();
     numDetectionsLabel.setFont(numDetectionsLabel.getFont().deriveFont(Font.PLAIN));
@@ -232,7 +242,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
-  public synchronized void selectionChanged(final Collection<? extends OsmPrimitive> sel) {
+  public synchronized void selectionChanged(final SelectionChangeEvent event) {
+    final Collection<OsmPrimitive> sel = event.getSelection();
     L.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
     addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
   }
