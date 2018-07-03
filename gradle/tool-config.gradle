@@ -6,15 +6,18 @@ def errorproneVersion = "2.3.1"
 // Set up ErrorProne
 dependencies.errorprone "com.google.errorprone:error_prone_core:$errorproneVersion"
 tasks.withType(JavaCompile) {
-options.compilerArgs += ['-Xep:DefaultCharset:ERROR',
-  '-Xep:ClassCanBeStatic:ERROR',
-  '-Xep:StringEquality:ERROR',
-  '-Xep:WildcardImport:ERROR',
-  '-Xep:MethodCanBeStatic:WARN',
-  '-Xep:RemoveUnusedImports:WARN',
-  '-Xep:PrivateConstructorForUtilityClass:WARN',
-  '-Xep:LambdaFunctionalInterface:WARN',
-  '-Xep:ConstantField:WARN']
+  options.compilerArgs += ['-Xep:DefaultCharset:ERROR',
+    '-Xep:ClassCanBeStatic:ERROR',
+    '-Xep:StringEquality:ERROR',
+    '-Xep:WildcardImport:ERROR',
+    '-Xep:MethodCanBeStatic:WARN',
+    '-Xep:RemoveUnusedImports:WARN',
+    '-Xep:PrivateConstructorForUtilityClass:WARN',
+    '-Xep:LambdaFunctionalInterface:WARN',
+    '-Xep:ConstantField:WARN',
+    '-Xlint:all',
+    '-Xlint:-serial',
+  ]
 }
 
 // Spotbugs config
