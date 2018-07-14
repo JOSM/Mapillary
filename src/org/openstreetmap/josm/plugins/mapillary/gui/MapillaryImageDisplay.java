@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,6 +13,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -22,14 +25,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.IntStream;
 
 import javax.swing.JComponent;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
-import org.openstreetmap.josm.plugins.mapillary.gui.panorama.Vector3D;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -46,6 +47,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 public class MapillaryImageDisplay extends JComponent {
 
   private static final long serialVersionUID = 3369727203329307716L;
+  private static final double PANORAMA_FOV = Math.toRadians(110);
 
   private final Collection<ImageDetection> detections = new ArrayList<>();
 
@@ -394,11 +396,12 @@ public class MapillaryImageDisplay extends JComponent {
   /**
    * Main constructor.
    */
-  public MapillaryImageDisplay() {
+  MapillaryImageDisplay() {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
+    addComponentListener(new ComponentSizeListener());
 
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
   }
@@ -409,7 +412,7 @@ public class MapillaryImageDisplay extends JComponent {
    * @param image The picture to be displayed.
    * @param detections image detections
    */
-  public void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
+  void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
     synchronized (this) {
       this.image = image;
       this.pano = pano;
@@ -419,17 +422,8 @@ public class MapillaryImageDisplay extends JComponent {
       }
       this.selectedRect = null;
       if (image != null) {
-        Dimension s = getSize();
-        if (pano && ( image.getWidth(null) < 2048 || image.getWidth(null) != image.getHeight(null) * 2
-                || s.width < 800 || s.height < 400)) {
-          this.pano = false;
-        }
         if (this.pano) {
-          this.visibleRect = new Rectangle(0, 0, s.width, s.height);
-          offscreenImage = new BufferedImage(s.width, s.height, BufferedImage.TYPE_3BYTE_BGR);
-          double FOV = Math.toRadians(110);
-          double cameraPlaneDistance = (s.width / 2) / Math.tan(FOV / 2);
-          cameraPlane = new CameraPlane(s.width, s.height, cameraPlaneDistance);
+          this.visibleRect = new Rectangle(0, 0, getSize().width, getSize().height);
         } else {
           this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
               image.getHeight(null));
@@ -629,6 +623,23 @@ public class MapillaryImageDisplay extends JComponent {
     }
     if (visibleRect.height > image.getHeight(null)) {
       visibleRect.height = image.getHeight(null);
+    }
+  }
+
+  private static class ComponentSizeListener extends ComponentAdapter {
+    @Override
+    public void componentResized(ComponentEvent e) {
+      final Component component = e.getComponent();
+      if (component instanceof MapillaryImageDisplay) {
+        final MapillaryImageDisplay imgDisplay = (MapillaryImageDisplay) component;
+        imgDisplay.offscreenImage = new BufferedImage(
+            e.getComponent().getWidth(),
+            e.getComponent().getHeight(),
+            BufferedImage.TYPE_3BYTE_BGR
+        );
+        final double cameraPlaneDistance = (e.getComponent().getWidth() / 2) / Math.tan(PANORAMA_FOV / 2);
+        imgDisplay.cameraPlane = new CameraPlane(e.getComponent().getWidth(), e.getComponent().getHeight(), cameraPlaneDistance);
+      }
     }
   }
 }

@@ -274,7 +274,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null, false);
+          this.mapillaryImageDisplay.setImage(
+            mapillaryImage.getImage(),
+            null,
+            mapillaryImage != null && mapillaryImage.isPanorama()
+          );
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -563,7 +567,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    * @param data    The content of the dialog
    * @param buttons The buttons where you can click
    */
-  public void createLayout(Component data, List<SideButton> buttons) {
+  private void createLayout(Component data, List<SideButton> buttons) {
     removeAll();
     createLayout(data, true, buttons);
     add(titleBar, BorderLayout.NORTH);
