@@ -35,8 +35,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @param latLon The latitude and longitude where it is positioned.
    * @param ca     The direction of the images in degrees, meaning 0 north.
    */
-  public MapillaryImage(final String key, final LatLon latLon, final double ca) {
-<span class="fc" id="L39">    super(latLon, ca);</span>
+  public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano) {
+<span class="fc" id="L39">    super(latLon, ca, pano);</span>
 <span class="fc" id="L40">    this.key = key;</span>
 <span class="fc" id="L41">  }</span>
 

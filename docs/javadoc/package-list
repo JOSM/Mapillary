@@ -6,6 +6,7 @@ org.openstreetmap.josm.plugins.mapillary.gui.boilerplate
 org.openstreetmap.josm.plugins.mapillary.gui.dialog
 org.openstreetmap.josm.plugins.mapillary.gui.imageinfo
 org.openstreetmap.josm.plugins.mapillary.gui.layer
+org.openstreetmap.josm.plugins.mapillary.gui.panorama
 org.openstreetmap.josm.plugins.mapillary.history
 org.openstreetmap.josm.plugins.mapillary.history.commands
 org.openstreetmap.josm.plugins.mapillary.io.download

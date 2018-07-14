@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UVMapping.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.panorama</a> &gt; <span class="el_source">UVMapping.java</span></div><h1>UVMapping.java</h1><pre class="source lang-java linenums">package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
+
+import java.awt.geom.Point2D;
+
+public final class UVMapping {
+  private UVMapping() {
+    // Private constructor to avoid instantiation
+  }
+  /**
+   * Returns the point of the texture image that is mapped to the given point in 3D space (given as {@link Vector3D})
+   * See &lt;a href=&quot;https://en.wikipedia.org/wiki/UV_mapping&quot;&gt;the Wikipedia article on UV mapping&lt;/a&gt;.
+   * @param vector the vector to which the texture point is mapped
+   * @return a point on the texture image somewhere in the rectangle between (0, 0) and (1, 1)
+   */
+  public static Point2D.Double getTextureCoordinate(final Vector3D vector) {
+<span class="fc" id="L16">    final double u = 0.5 + (Math.atan2(vector.getX(), vector.getZ()) / (2 * Math.PI));</span>
+<span class="fc" id="L17">    final double v = 0.5 + (Math.asin(vector.getY()) / Math.PI);</span>
+<span class="fc" id="L18">    return new Point2D.Double(u, v);</span>
+  }
+
+  /**
+   * For a given point of the texture (i.e. the image), return the point in 3D space where the point
+   * of the texture is mapped to (as {@link Vector3D}).
+   *
+   * @param u x-coordinate of the point on the texture (in the range between 0 and 1, from left to right)
+   * @param v y-coordinate of the point on the texture (in the range between 0 and 1, from top to bottom)
+   * @return the vector from the origin to where the point of the texture is mapped on the sphere
+   */
+  public static Vector3D getVector(final double u, final double v) {
+<span class="fc" id="L30">    final double vectorY = Math.cos(v * Math.PI);</span>
+<span class="fc" id="L31">    return new Vector3D(</span>
+<span class="fc" id="L32">        -Math.sin(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY),</span>
+        -vectorY,
+<span class="fc" id="L34">        -Math.cos(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY)</span>
+    );
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

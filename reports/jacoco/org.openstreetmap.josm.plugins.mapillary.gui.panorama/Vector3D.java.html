@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vector3D.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Mapillary</a> &gt; <a href="index.source.html" class="el_package">org.openstreetmap.josm.plugins.mapillary.gui.panorama</a> &gt; <span class="el_source">Vector3D.java</span></div><h1>Vector3D.java</h1><pre class="source lang-java linenums">// License: GPL. For details, see LICENSE file.
+package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
+
+final class Vector3D {
+
+    private double x;
+    private double y;
+    private double z;
+
+<span class="fc" id="L10">    Vector3D(double x, double y, double z) {</span>
+<span class="fc" id="L11">        this.x = x;</span>
+<span class="fc" id="L12">        this.y = y;</span>
+<span class="fc" id="L13">        this.z = z;</span>
+<span class="fc" id="L14">    }</span>
+
+    double getX() {
+<span class="fc" id="L17">        return x;</span>
+    }
+    double getY() {
+<span class="fc" id="L20">        return y;</span>
+    }
+    double getZ() {
+<span class="fc" id="L23">        return z;</span>
+    }
+
+    synchronized Vector3D normalize() {
+<span class="fc" id="L27">      final double length = Math.sqrt(x*x + y*y + z*z);</span>
+<span class="fc" id="L28">      x /= length;</span>
+<span class="fc" id="L29">      y /= length;</span>
+<span class="fc" id="L30">      z /= length;</span>
+<span class="fc" id="L31">      return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
