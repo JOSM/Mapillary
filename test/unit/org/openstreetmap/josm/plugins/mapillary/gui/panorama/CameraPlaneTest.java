@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class CameraPlaneTest {
     cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
-    Vector3D out = cameraPlane.getVector3D(400, 300);
+    Vector3D out = cameraPlane.getVector3D(new Point(400, 300));
     assertEquals(0.0, out.getX(), 1.0E-04);
     assertEquals(0.0, out.getY(), 1.0E-04);
     assertEquals(1.0, out.getZ(), 1.0E-04);
@@ -47,10 +48,10 @@ public class CameraPlaneTest {
     cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
-    Vector3D out = cameraPlane.getVector3D(300, 200);
-    Point map = cameraPlane.mapping(out, 2048, 1024);
-    assertEquals(911, map.getX(), 1);
-    assertEquals(405, map.getY(), 1);
+    Vector3D out = cameraPlane.getVector3D(new Point(300, 200));
+    Point2D map = UVMapping.getTextureCoordinate(out);
+    assertEquals(0.44542099, map.getX(), 1e-8);
+    assertEquals(0.39674936, map.getY(), 1e-8);
   }
 }
 

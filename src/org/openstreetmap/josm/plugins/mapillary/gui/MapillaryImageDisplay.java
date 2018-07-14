@@ -21,6 +21,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import javax.swing.JComponent;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
+import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -463,7 +465,7 @@ public class MapillaryImageDisplay extends JComponent {
           (int) ((size.width - noImageSize.getWidth()) / 2),
           (int) ((size.height - noImageSize.getHeight()) / 2));
     } else {
-      Rectangle target;
+      final Rectangle target;
       if (this.pano) {
         cameraPlane.mapping(image, offscreenImage);
         target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
@@ -494,26 +496,61 @@ public class MapillaryImageDisplay extends JComponent {
       }
 
       if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
-        Point upperLeft = img2compCoord(visibleRect, 0, 0);
-        Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+        if (g instanceof Graphics2D) {
+          final Graphics2D g2d = (Graphics2D) g;
+          g2d.setStroke(new BasicStroke(2));
+          if (pano) {
+            for (final ImageDetection d : detections) {
+              g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
+              final PathIterator pathIt = d.getShape().getPathIterator(null);
+              Point prevPoint = null;
+              int pointIndex;
+              while (!pathIt.isDone()) {
+                final double[] buffer = new double[6];
+                final int segmentType = pathIt.currentSegment(buffer);
 
-        // Transformation, which can convert you a Shape relative to the unit square to a Shape relative to the Component
-        AffineTransform unit2compTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
-        unit2compTransform.concatenate(AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+                if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO || segmentType == PathIterator.SEG_CUBICTO) {
+                  // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1, 2 and 3 points for each of these segment types
+                  final Point curPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
+                  if (prevPoint != null && curPoint != null) {
+                    g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
+                  }
+                  prevPoint = curPoint;
+                } else if (segmentType == PathIterator.SEG_MOVETO) {
+                  prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
+                } else {
+                  prevPoint = null;
+                }
+                pathIt.next();
+              }
+            }
+          } else {
+            final Point upperLeft = img2compCoord(visibleRect, 0, 0);
+            final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+            final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+            unit2CompTransform.concatenate(AffineTransform.getScaleInstance(
+                lowerRight.getX() - upperLeft.getX(),
+                lowerRight.getY() - upperLeft.getY()
+            ));
 
-        final Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(2));
-        for (ImageDetection d : detections) {
-          final Shape shape = d.getShape().createTransformedShape(unit2compTransform);
-          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
-          g2d.draw(shape);
-          if (d.isTrafficSign()) {
-            g2d.drawImage(
-              MapObject.getIcon(d.getValue()).getImage(),
-              shape.getBounds().x, shape.getBounds().y,
-              shape.getBounds().width, shape.getBounds().height,
-              null
-            );
+            for (final ImageDetection d : detections) {
+              final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+              g2d.setColor(
+                  d.isTrafficSign()
+                      ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN
+                      : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN
+              );
+              g2d.draw(shape);
+              if (d.isTrafficSign()) {
+                final Rectangle bounds = shape.getBounds();
+                g2d.drawImage(
+                    MapObject.getIcon(d.getValue()).getImage(),
+                    bounds.x, bounds.y,
+                    bounds.width, bounds.height,
+                    null
+                );
+              }
+            }
           }
         }
       }
