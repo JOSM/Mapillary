@@ -52,9 +52,9 @@ public class MapillaryRecordTest {
   @Before
   public void setUp() {
     record = new MapillaryRecord();
-    img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 0.1);
-    img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 0.2);
-    img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 0.3);
+    img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 0.1, false);
+    img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 0.2, false);
+    img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 0.3, false);
     if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getImages().size() >= 1) {
       MapillaryLayer.getInstance().getData().getImages().clear();
     }

@@ -21,11 +21,11 @@ import org.openstreetmap.josm.data.coor.LatLon;
  */
 public class MapillarySequenceTest {
 
-  private final MapillaryImage img1 = new MapillaryImage("key1", new LatLon(0.1, 0.1), 90);
-  private final MapillaryImage img2 = new MapillaryImage("key2", new LatLon(0.2, 0.2), 90);
-  private final MapillaryImage img3 = new MapillaryImage("key3", new LatLon(0.3, 0.3), 90);
-  private final MapillaryImage img4 = new MapillaryImage("key4", new LatLon(0.4, 0.4), 90);
-  private final MapillaryImage imgWithoutSeq = new MapillaryImage("key5", new LatLon(0.5, 0.5), 90);
+  private final MapillaryImage img1 = new MapillaryImage("key1", new LatLon(0.1, 0.1), 90, false);
+  private final MapillaryImage img2 = new MapillaryImage("key2", new LatLon(0.2, 0.2), 90, false);
+  private final MapillaryImage img3 = new MapillaryImage("key3", new LatLon(0.3, 0.3), 90, false);
+  private final MapillaryImage img4 = new MapillaryImage("key4", new LatLon(0.4, 0.4), 90, false);
+  private final MapillaryImage imgWithoutSeq = new MapillaryImage("key5", new LatLon(0.5, 0.5), 90, false);
   private final MapillarySequence seq = new MapillarySequence();
 
   /**

@@ -89,7 +89,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final long capturedAt) {
-    super(latLon, ca);
+    super(latLon, ca, false);
     this.file = file;
     this.capturedAt = capturedAt;
   }

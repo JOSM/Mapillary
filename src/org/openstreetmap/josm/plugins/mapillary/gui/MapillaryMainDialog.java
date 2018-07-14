@@ -40,7 +40,6 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
-
 /**
  * Toggle dialog that shows an image and some buttons.
  *
@@ -94,7 +93,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Object containing the shown image and that handles zoom and drag
    */
-  public final MapillaryImageDisplay mapillaryImageDisplay;
+  public MapillaryImageDisplay mapillaryImageDisplay;
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
@@ -211,7 +210,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
       if (this.image == null) {
-        this.mapillaryImageDisplay.setImage(null, null);
+        this.mapillaryImageDisplay.setImage(null, null, false);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -248,7 +247,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         // Downloads the thumbnail.
-        this.mapillaryImageDisplay.setImage(null, null);
+        this.mapillaryImageDisplay.setImage(null, null, false);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
@@ -275,7 +274,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       } else if (this.image instanceof MapillaryImportedImage) {
         MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null);
+          this.mapillaryImageDisplay.setImage(
+            mapillaryImage.getImage(),
+            null,
+            mapillaryImage != null && mapillaryImage.isPanorama()
+          );
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -544,11 +547,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         if (
           mapillaryImageDisplay.getImage() == null
           || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
-        ) {
+            ) {
           final MapillaryAbstractImage mai = getImage();
           this.mapillaryImageDisplay.setImage(
             img,
-            mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null
+            mai instanceof MapillaryImage? ((MapillaryImage) getImage()).getDetections() : null,
+            mai != null && mai.isPanorama()
           );
         }
       } catch (IOException e) {
@@ -563,7 +567,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    * @param data    The content of the dialog
    * @param buttons The buttons where you can click
    */
-  public void createLayout(Component data, List<SideButton> buttons) {
+  private void createLayout(Component data, List<SideButton> buttons) {
     removeAll();
     createLayout(data, true, buttons);
     add(titleBar, BorderLayout.NORTH);

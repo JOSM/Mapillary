@@ -33,6 +33,9 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   protected double ca;
   /** Temporal position of the picture until it is uploaded. */
   private LatLon tempLatLon;
+
+  private final boolean pano;
+
   /**
    * When the object is being dragged in the map, the temporal position is
    * stored here.
@@ -54,13 +57,14 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @param latLon  The latitude and longitude where the picture was taken.
    * @param ca  The direction of the picture (0 means north).
    */
-  protected MapillaryAbstractImage(final LatLon latLon, final double ca) {
+  protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
     this.latLon = latLon;
     this.tempLatLon = this.latLon;
     this.movingLatLon = this.latLon;
     this.ca = ca;
     this.tempCa = ca;
     this.movingCa = ca;
+    this.pano = pano;
     this.visible = true;
   }
 
@@ -80,6 +84,10 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    */
   public long getCapturedAt() {
     return this.capturedAt;
+  }
+
+  public boolean isPanorama() {
+    return this.pano;
   }
 
   /**

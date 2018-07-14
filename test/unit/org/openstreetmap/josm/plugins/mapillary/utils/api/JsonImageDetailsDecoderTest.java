@@ -39,9 +39,9 @@ public class JsonImageDetailsDecoderTest {
       JsonImageDetailsDecoderTest.class.getResourceAsStream("/api/v3/responses/searchImages.json")
     ).readObject();
     MapillaryData data = new MapillaryDataMock();
-    MapillaryImage img1 = new MapillaryImage("_yA5uXuSNugmsK5VucU6Bg", new LatLon(0, 0), 0);
-    MapillaryImage img2 = new MapillaryImage("nmF-Wq4EvVTgAUmBicSCCg", new LatLon(0, 0), 0);
-    MapillaryImage img3 = new MapillaryImage("arbitrary_key", new LatLon(0, 0), 0);
+    MapillaryImage img1 = new MapillaryImage("_yA5uXuSNugmsK5VucU6Bg", new LatLon(0, 0), 0, false);
+    MapillaryImage img2 = new MapillaryImage("nmF-Wq4EvVTgAUmBicSCCg", new LatLon(0, 0), 0, false);
+    MapillaryImage img3 = new MapillaryImage("arbitrary_key", new LatLon(0, 0), 0, false);
     MapillaryAbstractImage img4 = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
     img4.setCapturedAt(0);
     data.add(img1);
