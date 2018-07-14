@@ -34,7 +34,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   /** Temporal position of the picture until it is uploaded. */
   private LatLon tempLatLon;
 
-  protected boolean pano;
+  private final boolean pano;
 
   /**
    * When the object is being dragged in the map, the temporal position is
@@ -86,7 +86,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
     return this.capturedAt;
   }
 
-  public boolean getPano() {
+  public boolean isPanorama() {
     return this.pano;
   }
 

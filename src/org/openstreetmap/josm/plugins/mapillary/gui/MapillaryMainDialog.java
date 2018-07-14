@@ -548,7 +548,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           this.mapillaryImageDisplay.setImage(
             img,
             mai instanceof MapillaryImage? ((MapillaryImage) getImage()).getDetections() : null,
-            mai.getPano()
+            mai != null && mai.isPanorama()
           );
         }
       } catch (IOException e) {
