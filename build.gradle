@@ -1,10 +1,13 @@
+import com.github.spotbugs.SpotBugsTask
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.openstreetmap.josm.plugins.mapillary.build.ConvertMarkdown
+
 plugins {
   id "org.sonarqube" version "2.6.2"
-  id "org.kordamp.markdown.convert" version "1.1.0"
-  id 'org.openstreetmap.josm' version "0.5.0"
+  id "org.openstreetmap.josm" version "0.5.0"
   id "com.github.ben-manes.versions" version "0.20.0"
-  id 'com.github.spotbugs' version "1.6.2"
-  id "net.ltgt.errorprone" version "0.0.14"
+  id "com.github.spotbugs" version "1.6.2"
+  id "net.ltgt.errorprone" version "0.0.15"
 
   id 'eclipse'
   id 'jacoco'
@@ -13,7 +16,6 @@ plugins {
 }
 
 apply from: 'gradle/tool-config.gradle'
-apply from: 'gradle/markdown.gradle'
 
 sourceCompatibility = '1.8'
 
@@ -61,6 +63,13 @@ tasks.processResources {
     }
 }
 
+task md2html(type: ConvertMarkdown) {
+  srcDir = projectDir
+  destDir = new File("$buildDir/md2html")
+  setIncludes("README.md", "LICENSE.md")
+  tasks.processResources.from(it)
+}
+
 josm {
   debugPort = 7051
   manifest {
@@ -98,14 +107,12 @@ tasks.withType(JavaCompile) {
 tasks.withType(Javadoc) {
   failOnError false
 }
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+tasks.withType(SpotBugsTask) {
   reports {
     xml.enabled = false
     html.enabled = true
   }
 }
-
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 test {
   testLogging {
