@@ -31,7 +31,7 @@ public class UVMappingTest {
     assertVectorEquals(new Vector3D(.5, 1 / Math.sqrt(2), .5), UVMapping.getVector(.625, .75), DEFAULT_DELTA);
   }
 
-  private void assertVectorEquals(final Vector3D expected, final Vector3D actual, final double delta) {
+  private static void assertVectorEquals(final Vector3D expected, final Vector3D actual, final double delta) {
     final String message = String.format(
       "Expected (%f %f %f), but was (%f %f %f)",
       expected.getX(), expected.getY(), expected.getZ(),
@@ -42,7 +42,7 @@ public class UVMappingTest {
     assertEquals(message, expected.getZ(), actual.getZ(), delta);
   }
 
-  private void assertPointEquals(final Point2D expected, final Point2D actual, final double delta) {
+  private static void assertPointEquals(final Point2D expected, final Point2D actual, final double delta) {
     final String message = String.format(
       "Expected (%f, %f), but was (%f, %f)",
       expected.getX(), expected.getY(),
