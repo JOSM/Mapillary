@@ -1,0 +1,492 @@
+# Translations for the JOSM plugin 'Mapillary' (sv)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.14+post13733-17-g82f99b3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-14 23:30+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: Swedish (https://www.transifex.com/josm/teams/2544/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "2 images joined"
+msgstr "2 bilder kopplade"
+
+msgid "2 images unjoined"
+msgstr "2 bilder särkopplade"
+
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr "En tagg med nyckel <i>{0}</i> finns redan på markerat OSM-objekt."
+
+msgid "Add Mapillary tag"
+msgstr "Lägg till Mapillary-tagg"
+
+msgid "All images in a directory"
+msgstr "Alla bilder i en samling"
+
+msgid "All map objects loaded."
+msgstr "Alla kartobjekt laddade."
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"Det uppstod ett fel vid skapandet av ändringssetet. Överväga att raportera "
+"buggen via Hjälp-menyn om det uppstår flera gånger. Är det här första gången"
+" detta medelande visas testa helt enkelt igen, det är antagligen ett problem"
+" med internet-anslutningen."
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Choose signs"
+msgstr "Välj skylt"
+
+msgid "Copy key"
+msgstr "Kopiera nyckel"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr "Kunde inte importera en geotaggad bild in i Mapillary-lagret!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "Kunde inte importera mappen \"{0}\"!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "Kunde inte importera bilden \"{0}\"!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "Kunde inte öppna länken {0} i en webbläsare"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Kunde inte läsa länken {0}!"
+
+msgid "Current Mapillary changeset"
+msgstr "Nuvarande Mapillaryändringsset"
+
+msgid "Days"
+msgstr "Dagar"
+
+msgid "Delete after upload"
+msgstr "Ta bort efter uppladdning"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "Tog bort en bild"
+msgstr[1] "Tog bort {0} bilder"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Visa vilken timme bilden var tagen på"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr "Visar detaljerad information om den nuvarande valda Mapillarybilden"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr "Visar objekt som Mapillary upptäckte i deras gatuvybilder"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr "Visar lagret som visar kartobjekten som upptäckts av Mapillary"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr "Vill du verkligen ersätta nuvarande värde {0} med det nya värdet {1}?"
+
+msgid "Download Mapillary images in current view"
+msgstr "Ladda ner alla bilder från Mapillary i nuvarande vy"
+
+msgid "Download mode"
+msgstr "Nedladdningsläge"
+
+msgid "Downloaded images"
+msgstr "Nedladdade bilder"
+
+msgid "Downloading Mapillary images"
+msgstr "Laddar ner Mapillarybilder"
+
+msgid "Downloading map objects failed!"
+msgstr "Misslyckades att ladda ner kartobjekt!"
+
+msgid "Downloading map objects…"
+msgstr "Laddar ner kartobjekt..."
+
+msgid "Downloading…"
+msgstr "Laddar ner..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Slå på experimentella beta-funktioner (de kan vara instabila)"
+
+msgid "Explore"
+msgstr "Utforska"
+
+msgid "Export Mapillary images"
+msgstr "Exportera bilder till Mapillary"
+
+msgid "Export all images"
+msgstr "Exportera alla bilder"
+
+msgid "Export selected images"
+msgstr "Exportera valda bilder"
+
+msgid "Export selected sequence"
+msgstr "Exportera vald sekvens"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Exporterar bilder till Mapillary..."
+
+msgid "Finished upload"
+msgstr "Avslutade uppladdningen"
+
+msgid "Follow selected image"
+msgstr "Följ valda bilder"
+
+msgid "From existing image layer"
+msgstr "Från existerande bildlager"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Från vilken källa vill du importera bilder till Mapillarylagret?"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "Väjningsplikt"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr ""
+"Navigera till inställningarna och logga in i Mapillary innan du laddar upp "
+"bilder."
+
+msgid "I got it, close this."
+msgstr "Jag förstår, stäng detta."
+
+msgid "Image info"
+msgstr "Bildinformation"
+
+msgid "Image key"
+msgstr "Bildnyckel"
+
+msgid "Images from my file system"
+msgstr "Bilder från filsystemet"
+
+msgid "Import"
+msgstr "Importera"
+
+msgid "Import exception"
+msgstr "Importfel"
+
+msgid "Import local pictures"
+msgstr "Importera lokala bilder"
+
+msgid "Import pictures"
+msgstr "Importera bilder"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Importera bilder till Mapillary-lager"
+
+msgid "Imported images"
+msgstr "Importerade bilder"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "Importerade en bild"
+msgstr[1] "Importerade {0} bilder"
+
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+"Det kan aktiveras genom att högerklicka längst ner i detta medelande eller "
+"på knappen med samma ikon i verktygsfältet till vänster."
+
+msgid "Jump to blue"
+msgstr "Hoppa till blå"
+
+msgid "Jump to red"
+msgstr "Hoppa till röd"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "Hoppar till bilden på andra sidan den blå linjen"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "Hoppar till bilden på andra sidan den röda linjen"
+
+msgid "Login"
+msgstr "Logga in"
+
+msgid "Login successful, return to JOSM."
+msgstr "Lyckades att logg in och går nu tillbaka till JOSM."
+
+msgid "Logout"
+msgstr "Logga ut"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Mapillarybilder"
+
+msgid "Mapillary changeset"
+msgstr "Mapillaryändringsset"
+
+msgid "Mapillary filter"
+msgstr "Mapillaryfilter"
+
+msgid "Mapillary history"
+msgstr "Mapillaryhistorik"
+
+msgid "Mapillary image"
+msgstr "Mapillarybild"
+
+msgid "Mapillary layer"
+msgstr "Mapillarylager"
+
+msgid "Mapillary objects"
+msgstr "Mapillaryobjekt"
+
+msgid "Months"
+msgstr "Månader"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr "Flytta till bildens plats med nästa- och föregåendeknappen."
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "Flyttade en bild"
+msgstr[1] "Flyttade {0} bilder"
+
+msgid "Next picture"
+msgstr "Nästa bild"
+
+msgid "No image selected"
+msgstr "Ingen bild är vald"
+
+msgid "No images found"
+msgstr "Ingen bild funnen"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Omkörningsförbud"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Parkeringsförbud"
+
+msgid "Not Logged in to Mapillary"
+msgstr "Inte inloggad i Mapillary"
+
+msgid "Not older than: "
+msgstr "Inte äldre än:"
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr "Antal bilder som kommer bli hämtade i förhand (frammåt och bakåt)"
+
+msgid "Only images with signs"
+msgstr "Endast bilder med skyltar"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Öppna dialogrutan för Mapillaryändringsset"
+
+msgid "Pause"
+msgstr "Pausa"
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Övergångsställe"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "Tryck på \"{0}\" för att ladda ner bilder"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Förhandsgranska bilder genom att hovrar över dess ikon"
+
+msgid "Previous picture"
+msgstr "Föregående bild"
+
+msgid "Redo"
+msgstr "Återställ"
+
+msgid "Reset"
+msgstr "Återställ"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Cirkulationsplats"
+
+msgid "Select a directory"
+msgstr "Välj en mapp"
+
+msgid "Select directory to import images from"
+msgstr "Välj mapp att importera bilder från"
+
+msgid "Select mode"
+msgstr "Väljarläge"
+
+msgid "Select the images you want to import"
+msgstr "Välj bilderna du vill importera"
+
+msgid "Sequence key"
+msgstr "Sekvensnyckel"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Visar nästa bild i sekvensen"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Visar föregående bild i sekvensen"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Hastighetsbegränsning"
+
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Stopp"
+
+#. i18n: traffic sign
+msgctxt "name of the traffic sign"
+msgid "Stop"
+msgstr "Stopp"
+
+msgid "Submit the current changeset"
+msgstr "Spara det aktuella ändringssetet"
+
+msgid "Tag conflict"
+msgstr "Taggkonflikt"
+
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr ""
+"Mapillarylagret har slutat ladda ner bilder för att ytan som efterfrågats är"
+" för stor!"
+
+msgid "There are currently no layers with geotagged images!"
+msgstr "Det finns för tillfället inga lager med geotaggade bilder!"
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr ""
+"För att lösa det här problemet kan du byta till nedladdningsläge \"{0}\" och"
+" ladda Mapillarybilder för en mindre del av kartan."
+
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr ""
+"För att lösa det här problemet kan du zooma in och ladda en mindre del av "
+"kartan."
+
+msgid "Too many map objects, zoom in to see all."
+msgstr "För många kartobjekt, zooma in för att se alla."
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Toalt antal Mapillarybilder: {0}"
+
+msgid "Undo"
+msgstr "Ångra"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Ojämn väg"
+
+msgid "Update"
+msgstr "Uppdatera"
+
+msgid "Upload Mapillary images"
+msgstr "Ladda upp Mapillarybilder"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Laddar upp: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Använd 24-timmarsformat"
+
+msgid "User"
+msgstr "Användare"
+
+msgid "View in browser"
+msgstr "Visa i en webbläsare"
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "Vilka bildlager vill du importera till Mapillarylagret?"
+
+msgid "Years"
+msgstr "År"
+
+msgid "You are currently not logged in."
+msgstr "Du är för nuvarande inte inloggad."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Du är inloggad som \"{0}\"."
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr ""
+"Du är inte inloggad, var vänlig logga in i Mapillary via inställningarna"
+
+msgid "Zoom to selected image"
+msgstr "Zooma till vald bild"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Zooma till den för valda Mapillarybilden"
+
+msgid "approved"
+msgstr "godkänd"
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "ytor med nedladdad OSM-data"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "allt inom det synliga området"
+
+msgid "image has no key"
+msgstr "bilden har ingen nyckel"
+
+msgid "rejected"
+msgstr "avvisad"
+
+msgid "unknown user"
+msgstr "okänd användare"
+
+#, java-format
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"Kunde inte läsa kartobjekt från URL\n"
+"{1}!"
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr "Tillåter användaren att arbeta med bilder på mapillary.com"

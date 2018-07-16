@@ -1,0 +1,624 @@
+# Translations for the JOSM plugin 'Mapillary' (el)
+# Copyright (C) 2018 
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary v1.5.14+post13733-17-g82f99b3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-14 23:30+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "2 images joined"
+msgstr "2 εικόνες συνδέθηκαν"
+
+msgid "2 images unjoined"
+msgstr "2 εικόνες αποσυνδέθηκαν"
+
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr ""
+"Μια ετικέτα με το κλειδί <i>{0}</i> υπάρχει ήδη στο επιλεγμένο αντικείμενο "
+"OSM."
+
+msgid "Add Mapillary tag"
+msgstr "Προσθήκη ετικέτας Mapillary"
+
+msgid "All images in a directory"
+msgstr "Όλες οι εικόνες σε έναν κατάλογο"
+
+msgid "All map objects loaded."
+msgstr "Όλα τα αντικείμενα του χάρτη φορτώθηκαν."
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"Προέκυψε μία εξαίρεση κατά την προσπάθεια υποβολής ενός πακέτου αλλαγών. Εάν"
+" αυτό συμβαίνει επανειλημμένα, εξετάστε το ενδεχόμενο αναφοράς σφάλματος "
+"μέσω του μενού Βοήθειας. Αν αυτό το μήνυμα εμφανίζεται για πρώτη φορά, απλά "
+"δοκιμάστε ξανά. Αυτό μπορεί να ήταν ένα πρόβλημα με τη σύνδεση στο "
+"διαδίκτυο."
+
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "Η μεταφόρτωση του πακέτου αλλαγών απέτυχε με {0} σφάλμα ''{1} {2}''!"
+
+msgid "Choose signs"
+msgstr "Επιλέξτε σημάδια"
+
+msgid "Continues with the paused walk."
+msgstr "Συνέχεια με το σταματημένο περίπατο."
+
+msgid "Copy key"
+msgstr "Αντιγραφή κλειδιού"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr ""
+"Δεν ήταν δυνατή η εισαγωγή μιας γεωαναφερμένης εικόνας στο επίπεδο του "
+"Mapillary!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "Δεν ήταν δυνατή η εισαγωγή του καταλόγου ''{0}''!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "Δεν ήταν δυνατή η εισαγωγή της εικόνας ''{0}''!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr ""
+"Δεν είναι δυνατό να ανοίξει η διεύθυνση {0} σε ένα πρόγραμμα περιήγησης"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Δεν ήταν δυνατή η ανάγνωση από τη διεύθυνση {0}!"
+
+msgid "Current Mapillary changeset"
+msgstr "Τωρινό πακέτο αλλαγών Mapillary"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Αποκοπή διαδοχής στα όρια λήψης"
+
+msgid "Days"
+msgstr "Ημέρες"
+
+msgid "Delete after upload"
+msgstr "Διαγραφή μετά την μεταφόρτωση"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "Εμφάνιση ώρας κατά την λήψη της φωτογραφίας"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr ""
+"Εμφάνιση λεπτομερούς πληροφορίας στην τρέχουσα επιλεγμένη εικόνα του "
+"Mapillary"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr ""
+"Εμφανίζει αντικείμενα που ανιχνεύονται από το Mapillary από τις εικόνες "
+"προβολής δρόμου"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr ""
+"Εμφάνιση του επιπέδου που εμφανίζει τα αντικείμενα χάρτη που ανιχνεύονται "
+"από το Mapillary"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Θέλετε πραγματικά να αντικαταστήσετε την τρέχουσα τιμή <i> {0} </i> με τη "
+"νέα τιμή <i> {1} </i>;"
+
+msgid "Download Mapillary images in current view"
+msgstr "Λήψη εικόνων Mapillary στην τρέχουσα προβολή"
+
+msgid "Download mode"
+msgstr "Λειτουργία λήψης"
+
+msgid "Downloaded images"
+msgstr "Λήψη εικόνων"
+
+msgid "Downloading Mapillary images"
+msgstr "Λήψη εικόνων Mapillary"
+
+msgid "Downloading map objects failed!"
+msgstr "Η λήψη αντικειμένων χάρτη απέτυχε!"
+
+msgid "Downloading map objects…"
+msgstr "Λήψη αντικειμένων χάρτη..."
+
+msgid "Downloading…"
+msgstr "Λήψη..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr ""
+"Ενεργοποίηση πειραματικών χαρακτηριστικών beta (μπορεί να είναι ασταθής)"
+
+msgid "Explore"
+msgstr "Εξερεύνηση"
+
+msgid "Export Mapillary images"
+msgstr "Εξαγωγή εικόνων Mapillary"
+
+msgid "Export all images"
+msgstr "Εξαγωγή όλων των εικόνων"
+
+msgid "Export selected images"
+msgstr "Εξαγωγή των επιλεγμένων εικόνων"
+
+msgid "Export selected sequence"
+msgstr "Εξαγωγή της επιλεγμένης ακολουθίας"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Εξαγωγή εικόνων Mapillary"
+
+msgid "Finished upload"
+msgstr "Ολοκλήρωση της μεταφόρτωσης"
+
+msgid "Follow selected image"
+msgstr "Ακολουθήστε την επιλεγμένη εικόνα"
+
+msgid "From existing image layer"
+msgstr "Από το υπάρχον επίπεδο εικόνας"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Από ποια πηγή θέλετε να εισαγάγετε εικόνες στο επίπεδο Mapillary;"
+
+msgid "Go forward"
+msgstr "Πηγαίντε μπροστά"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr ""
+"Πηγαίνετε στη ρύθμιση και συνδεθείτε στο Mapillary πριν μεταφορτώσετε."
+
+msgid "I got it, close this."
+msgstr "Το κατάλαβα, κλείστε αυτό."
+
+msgid "Image actions"
+msgstr "Ενέργειες εικόνας"
+
+msgid "Image detections"
+msgstr "Ανιχνεύσεις εικόνας"
+
+msgid "Image info"
+msgstr "Πληροφορία εικόνας"
+
+msgid "Image key"
+msgstr "Κουμπί εικόνας"
+
+msgid "Images from my file system"
+msgstr "Εικόνες από το σύστημα αρχείων μου"
+
+msgid "Import"
+msgstr "Εισαγωγή"
+
+msgid "Import exception"
+msgstr "Εξαίρεση εισαγωγής"
+
+msgid "Import local pictures"
+msgstr "Εισαγωγή τοπικών εικόνων"
+
+msgid "Import pictures"
+msgstr "Εισαγωγή εικόνων"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "Εισαγωγή εικόνων στο επίπεδο Mapillary"
+
+msgid "Imported images"
+msgstr "Εισαγόμενες εικόνες"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr "Κίνδυνος διασταύρωσης"
+
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+"Μπορεί να ενεργοποιηθεί κάνοντας κλικ στο αριστερό κουμπί στο κάτω μέρος "
+"αυτού του μηνύματος ή στο κουμπί στη γραμμή εργαλείων στα αριστερά, το οποίο"
+" χρησιμοποιεί το ίδιο εικονίδιο."
+
+msgid "Join mode"
+msgstr "Λειτουργία σύνδεσης"
+
+msgid "Join/unjoin pictures"
+msgstr "Σύνδεση/αποσύνδεση εικόνων"
+
+msgid "Jump to blue"
+msgstr "Μετάβαση στο μπλε"
+
+msgid "Jump to red"
+msgstr "Μετάβαση στο κόκκινο"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "Μετάβαση στην εικόνα στην άλλη πλευρά της μπλε γραμμής"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "Μετάβαση στην εικόνα στην άλλη πλευρά της κόκκινης γραμμής"
+
+msgid "Key copied to clipboard…"
+msgstr "Το κλειδί αντιγράφηκε στο πρόχειρο..."
+
+msgid "Login"
+msgstr "Σύνδεση"
+
+msgid "Login successful, return to JOSM."
+msgstr "Επιτυχής σύνδεση, επιστρέψτε στο JOSM."
+
+msgid "Logout"
+msgstr "Αποσύνδεση"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr "Υποχρεωτική κατεύθυνση (οποιαδήποτε)"
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Εικόνες Mapillary"
+
+msgid "Mapillary changeset"
+msgstr "Πακέτο αλλαγών Mapillary"
+
+msgid "Mapillary filter"
+msgstr "Φίλτρο Mapillary"
+
+msgid "Mapillary history"
+msgstr "Ιστορικό Mapillary"
+
+msgid "Mapillary image"
+msgstr "Εικόνα Mapillary"
+
+msgid "Mapillary layer"
+msgstr "Επίπεδο Mapillary"
+
+msgid "Mapillary login"
+msgstr "Σύνδεση στο Mapillary"
+
+msgid "Mapillary object layer"
+msgstr "Επίπεδο αντικείμενου Mapillary"
+
+msgid "Mapillary objects"
+msgstr "Αντικείμενα Mapillary"
+
+msgid "Months"
+msgstr "Μήνες"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Move to picture''s location with next/previous buttons"
+msgstr "Μετακίνηση στη θέση της εικόνας με τα επόμενα/προηγούμενα κουμπιά"
+
+msgid "Next picture"
+msgstr "Επόμενη εικόνα"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "Απαγορεύεται η είσοδος"
+
+msgid "No image selected"
+msgstr "Δεν επιλέχθηκε εικόνα"
+
+msgid "No images found"
+msgstr "Δεν βρέθηκαν εικόνες"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "Απαγορεύεται η προσπέραση"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "Απαγορεύεται η στάθμευση"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "Απαγορεύεται η στροφή"
+
+msgid "Not Logged in to Mapillary"
+msgstr "Δεν έχετε συνδεθεί στο Mapillary"
+
+msgid "Not older than: "
+msgstr "Δεν είναι παλαιότερο από:"
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr ""
+"Αριθμός εικόνων που πρέπει να προωθηθούν (προς τα εμπρός και προς τα πίσω)"
+
+msgid "Only images with signs"
+msgstr "Μόνο εικόνες με πινακίδες"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Άνοιγμα διαλόγου πακέτου αλλαγών Mapillary"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Άνοιγμα διαλόγου φίλτρου Mapillary"
+
+msgid "Open Mapillary history dialog"
+msgstr "Άνοιγμα διαλόγου ιστορικού Mapillary"
+
+msgid "Open Mapillary layer"
+msgstr "Άνοιγμα επιπέδου Mapillary"
+
+msgid "Open Mapillary window"
+msgstr "Άνοιγμα παραθύρου Mapillary"
+
+msgid "Pause"
+msgstr "Παύση"
+
+msgid "Pauses the walk."
+msgstr "Παύση του περίπατου."
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "Διάβαση πεζών"
+
+msgid "Play"
+msgstr "Παίξε"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "Πατήστε \"{0}\" για λήψη εικόνων"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "Προεπισκόπηση των εικόνων όταν εμφανίζεται το εικονίδιό τους"
+
+msgid "Previous picture"
+msgstr "Προηγούμενη εικόνα"
+
+msgid "Redo"
+msgstr "Επαναφορά"
+
+msgid "Reset"
+msgstr "Μηδενισμός"
+
+msgid "Rewrite imported images"
+msgstr "Ξαναγράψτε τις εισαγόμενες εικόνες"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "Κυκλικός κόμβος"
+
+msgid "Select a directory"
+msgstr "Επιλέξτε έναν κατάλογο"
+
+msgid "Select directory to import images from"
+msgstr "Επιλέξτε κατάλογο για να εισάγετε εικόνες από"
+
+msgid "Select mode"
+msgstr "Επιλέξτε λειτουργία"
+
+msgid "Select the images you want to import"
+msgstr "Επιλέξτε τις εικόνες που θέλετε να εισαγάγετε"
+
+msgid "Sequence key"
+msgstr "Κουμπί αλληλουχίας"
+
+msgid "Show detections on top of image"
+msgstr "Εμφάνιση ανιχνεύσεων στην κορυφή της εικόνας"
+
+msgid "Shows the next picture in the sequence"
+msgstr "Εμφάνιση της επόμενης εικόνας στην σειρά"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "Εμφάνιση της προηγούμενης εικόνας στην σειρά"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "Οριο ταχύτητας"
+
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "Stop"
+
+#. i18n: traffic sign
+msgctxt "name of the traffic sign"
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Stops the walk."
+msgstr "Σταμάτημα του περίπατου."
+
+msgid "Submit changeset"
+msgstr "Υποβολή πακέτου αλλαγών"
+
+msgid "Submit the current changeset"
+msgstr "Υποβολή του τρέχοντος πακέτου αλλαγών"
+
+#. CHECKSTYLE.OFF: LineLength
+msgid "Submit the current changeset to Mapillary"
+msgstr "Υποβολή του τρέχοντος πακέτου αλλαγών στο Mapillary"
+
+msgid "Submitting Mapillary Changeset"
+msgstr "Υποβολή πακέτου αλλαγών στο Mapillary"
+
+msgid "Submitting changeset to server…"
+msgstr "Υποβολή πακέτου αλλαγών στον διακομιστή..."
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "Υποστηριζόμενες μορφές εικόνας (JPG και PNG)"
+
+msgid "Tag conflict"
+msgstr "Σύγκρουση ετικέτας"
+
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr ""
+"Το επίπεδο Mapillary σταμάτησε τη λήψη εικόνων, επειδή η ζητούμενη περιοχή "
+"είναι πολύ μεγάλη!"
+
+msgid ""
+"The Mapillary plugin now uses a separate panel to display extra information "
+"(like the image key) and actions for the currently selected Mapillary image "
+"(like viewing it in a browser)."
+msgstr ""
+"Το πρόσθετο Mapillary χρησιμοποιεί τώρα ένα ξεχωριστό πλαίσιο για να "
+"εμφανίσει επιπλέον πληροφορίες (όπως το κλειδί εικόνας) και ενέργειες για "
+"την τρέχουσα επιλεγμένη εικόνα του Mapillary (όπως την προβολή σε ένα "
+"πρόγραμμα περιήγησης)."
+
+msgid "There are currently no layers with geotagged images!"
+msgstr "Αυτήν τη στιγμή δεν υπάρχουν επίπεδα με γεωαναφερμένες εικόνες!"
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr ""
+"Για να επιλύσετε αυτό το πρόβλημα, μπορείτε να μεταβείτε στη λειτουργία "
+"λήψης '' {0} '' και να φορτώσετε εικόνες Mapillary για ένα μικρότερο τμήμα "
+"του χάρτη."
+
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr ""
+"Για να επιλύσετε αυτό το πρόβλημα, μπορείτε να κάνετε μεγέθυνση και να "
+"φορτώσετε μια μικρότερη περιοχή του χάρτη."
+
+msgid "Too many map objects, zoom in to see all."
+msgstr "Πάρα πολλά αντικείμενα χάρτη, μεγεθύνετε για να τα δείτε όλα."
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "Σύνολο εικόνων Mapillary: {0}"
+
+msgid "Undo"
+msgstr "Αναίρεση"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr "Ανώμαλος δρόμος"
+
+msgid "Update"
+msgstr "Ενημέρωση"
+
+msgid "Upload Mapillary images"
+msgstr "Μεταφόρτωση εικόνων Mapillary"
+
+msgid "Upload selected sequence"
+msgstr "Μεταφόρτωση επιλεγμένης σειράς"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "Μεταφόρτωση: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "Χρησιμοποιήστε τη μορφή 24 ωρών"
+
+msgid "User"
+msgstr "Χρήστης"
+
+msgid "View in browser"
+msgstr "Προβολή στο πρόγραμμα περιήγησης"
+
+msgid "Wait for full quality pictures"
+msgstr "Αναμονή για φωτογραφίες πλήρους ποιότητας"
+
+msgid "Walk mode"
+msgstr "Λειτουργία περπατήματος"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Λειτουργία περπατήματος: Η αναμονή για την επόμενη εικόνα διαρκεί πάρα πολύ!"
+" Έξοδος από την λειτουργία περπατήματος..."
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "Ποια επίπεδα εικόνων θέλετε να εισαγάγετε στο επίπεδο Mapillary;"
+
+msgid "Years"
+msgstr "Έτος"
+
+msgid "You are currently not logged in."
+msgstr "Αυτή την στιγμή δεν έχετε συνδεθεί."
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "Έχετε συνδεθεί ως ''{0}''."
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr ""
+"Δεν έχετε συνδεθεί, παρακαλούμε συνδεθείτε στο Mapillary στις προτιμήσεις"
+
+msgid "Zoom to selected image"
+msgstr "Μεγέθυνση σε επιλεγμένη εικόνα"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "Μεγέθυνση στη τρέχουσα επιλεγμένη εικόνα του Mapillary"
+
+msgid "approved"
+msgstr "Εγκρίνεται"
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "περιοχές με ληφθέντα δεδομένα OSM"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "όλα στην ορατή περιοχή"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "μόνο όταν ζητηθεί χειροκίνητα"
+
+msgid "pending"
+msgstr "εκκρεμεί"
+
+msgid "rejected"
+msgstr "Απορρίπτεται"
+
+msgid "unknown user"
+msgstr "Αγνωστος χρήστης"
+
+#, java-format
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"Αδυύατη η ανάγνωση αντικειμένων χάρτη από τη διεύθυνση\n"
+"{1}!"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} ανακαλύψεις"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{0} εικόνες σε {1} ακολουθίες"
+
+#, java-format
+msgid "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr ""
+"{0} εικόνες που υποβλήθηκαν, κλειδί πακέτου αλλαγών: {1}, Κατάσταση: {2}"
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr ""
+"Επιτρέπεται στον χρήστη να δουλεύει με εικόνες που φιλοξενούνται στο "
+"mapillary.com"

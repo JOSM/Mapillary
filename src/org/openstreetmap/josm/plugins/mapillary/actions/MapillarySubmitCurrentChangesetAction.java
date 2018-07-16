@@ -84,7 +84,11 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
             I18n.marktr("rejected");
             I18n.marktr("pending");
             I18n.marktr("approved");
-            final String message = I18n.tr("{0} images submitted, Changeset key: {1}, State: {2}", locationChangeset.size(), key, state);
+            final String message = I18n.trn(
+              "{0} image submitted, Changeset key: {1}, State: {2}",
+              "{0} images submitted, Changeset key: {1}, State: {2}",
+              locationChangeset.size(), key, state
+            );
             Logging.debug(message);
             new Notification(message)
               .setDuration(Notification.TIME_LONG)
