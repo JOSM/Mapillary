@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.8.0" timestamp="2018-07-14T23:27:13.422">
+<pmd version="5.8.0" timestamp="2018-07-17T13:20:16.272">
 <file name="/home/travis/build/JOSM/Mapillary/src/org/openstreetmap/josm/plugins/mapillary/MapillaryData.java">
 <violation beginline="2" endline="417" begincolumn="1" endcolumn="2" rule="GodClass" ruleset="Design" package="org.openstreetmap.josm.plugins.mapillary" class="MapillaryData" externalInfoUrl="https://pmd.github.io/pmd-5.8.0/pmd-java/rules/java/design.html#GodClass" priority="3">
 Possible God class (WMC=55, ATFD=9, TCC=0.0)

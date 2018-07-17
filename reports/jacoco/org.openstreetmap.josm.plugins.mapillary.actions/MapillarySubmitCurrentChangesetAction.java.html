@@ -84,40 +84,44 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 <span class="nc" id="L84">            I18n.marktr(&quot;rejected&quot;);</span>
 <span class="nc" id="L85">            I18n.marktr(&quot;pending&quot;);</span>
 <span class="nc" id="L86">            I18n.marktr(&quot;approved&quot;);</span>
-<span class="nc" id="L87">            final String message = I18n.tr(&quot;{0} images submitted, Changeset key: {1}, State: {2}&quot;, locationChangeset.size(), key, state);</span>
-<span class="nc" id="L88">            Logging.debug(message);</span>
-<span class="nc" id="L89">            new Notification(message)</span>
-<span class="nc" id="L90">              .setDuration(Notification.TIME_LONG)</span>
-<span class="nc bnc" id="L91" title="All 2 branches missed.">              .setIcon(&quot;rejected&quot;.equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)</span>
-<span class="nc" id="L92">              .show();</span>
-<span class="nc" id="L93">            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.</span>
-<span class="nc" id="L94">          } else {</span>
-<span class="nc" id="L95">            new Notification(</span>
-<span class="nc" id="L96">              I18n.tr(&quot;Changeset upload failed with {0} error ''{1} {2}''!&quot;,</span>
-<span class="nc" id="L97">                response.getStatusLine().getProtocolVersion(),</span>
-<span class="nc" id="L98">                response.getStatusLine().getStatusCode(),</span>
-<span class="nc" id="L99">                response.getStatusLine().getReasonPhrase()</span>
+<span class="nc" id="L87">            final String message = I18n.trn(</span>
+              &quot;{0} image submitted, Changeset key: {1}, State: {2}&quot;,
+              &quot;{0} images submitted, Changeset key: {1}, State: {2}&quot;,
+<span class="nc" id="L90">              locationChangeset.size(), key, state</span>
+            );
+<span class="nc" id="L92">            Logging.debug(message);</span>
+<span class="nc" id="L93">            new Notification(message)</span>
+<span class="nc" id="L94">              .setDuration(Notification.TIME_LONG)</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">              .setIcon(&quot;rejected&quot;.equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)</span>
+<span class="nc" id="L96">              .show();</span>
+<span class="nc" id="L97">            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.</span>
+<span class="nc" id="L98">          } else {</span>
+<span class="nc" id="L99">            new Notification(</span>
+<span class="nc" id="L100">              I18n.tr(&quot;Changeset upload failed with {0} error ''{1} {2}''!&quot;,</span>
+<span class="nc" id="L101">                response.getStatusLine().getProtocolVersion(),</span>
+<span class="nc" id="L102">                response.getStatusLine().getStatusCode(),</span>
+<span class="nc" id="L103">                response.getStatusLine().getReasonPhrase()</span>
               )
-<span class="nc" id="L101">            ).setIcon(JOptionPane.ERROR_MESSAGE)</span>
-<span class="nc" id="L102">              .setDuration(Notification.TIME_LONG)</span>
-<span class="nc" id="L103">              .show();</span>
-<span class="nc" id="L104">            Logging.error(&quot;Failed response &quot; + EntityUtils.toString(response.getEntity()));</span>
+<span class="nc" id="L105">            ).setIcon(JOptionPane.ERROR_MESSAGE)</span>
+<span class="nc" id="L106">              .setDuration(Notification.TIME_LONG)</span>
+<span class="nc" id="L107">              .show();</span>
+<span class="nc" id="L108">            Logging.error(&quot;Failed response &quot; + EntityUtils.toString(response.getEntity()));</span>
           }
-<span class="nc" id="L106">        } catch (IOException e) {</span>
-<span class="nc" id="L107">          Logging.log(Logging.LEVEL_ERROR, &quot;Exception while trying to submit a changeset to mapillary.com&quot;, e);</span>
-<span class="nc" id="L108">          new Notification(</span>
-<span class="nc" id="L109">            I18n.tr(&quot;An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.&quot;)</span>
-<span class="nc" id="L110">          ).setDuration(Notification.TIME_LONG)</span>
-<span class="nc" id="L111">            .setIcon(JOptionPane.ERROR_MESSAGE)</span>
-<span class="nc" id="L112">            .show();</span>
+<span class="nc" id="L110">        } catch (IOException e) {</span>
+<span class="nc" id="L111">          Logging.log(Logging.LEVEL_ERROR, &quot;Exception while trying to submit a changeset to mapillary.com&quot;, e);</span>
+<span class="nc" id="L112">          new Notification(</span>
+<span class="nc" id="L113">            I18n.tr(&quot;An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.&quot;)</span>
+<span class="nc" id="L114">          ).setDuration(Notification.TIME_LONG)</span>
+<span class="nc" id="L115">            .setIcon(JOptionPane.ERROR_MESSAGE)</span>
+<span class="nc" id="L116">            .show();</span>
         } finally {
-<span class="nc" id="L114">          PluginState.setSubmittingChangeset(false);</span>
+<span class="nc" id="L118">          PluginState.setSubmittingChangeset(false);</span>
         }
-<span class="nc" id="L116">      } else {</span>
-<span class="nc" id="L117">        PluginState.notLoggedInToMapillaryDialog();</span>
+<span class="nc" id="L120">      } else {</span>
+<span class="nc" id="L121">        PluginState.notLoggedInToMapillaryDialog();</span>
       }
-<span class="nc" id="L119">      changesetDialog.setUploadPending(false);</span>
-<span class="nc" id="L120">    }, &quot;Mapillary changeset upload&quot;).start();</span>
-<span class="nc" id="L121">  }</span>
+<span class="nc" id="L123">      changesetDialog.setUploadPending(false);</span>
+<span class="nc" id="L124">    }, &quot;Mapillary changeset upload&quot;).start();</span>
+<span class="nc" id="L125">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
