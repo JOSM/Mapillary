@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="Mapillary" default="dist" basedir=".">
+  <property name="plugin.src.dir" value="src/main/java"/>
 
   <!-- edit the properties of this plugin in the file `gradle.properties` -->
   <property file="${basedir}/gradle.properties"/>
@@ -9,6 +10,19 @@
 
   <!-- ** include targets that all plugins have in common ** -->
   <import file="../build-common.xml"/>
+
+  <!-- Override the `setup-dist-default` task from build-common.xml -->
+  <target name="setup-dist-default">
+    <copy todir="${plugin.build.dir}" failonerror="no" includeemptydirs="no">
+      <fileset dir="src/main/resources"/>
+    </copy>
+    <copy todir="${plugin.build.dir}">
+      <fileset dir=".">
+        <include name="LICENSE*"/>
+        <include name="README.md"/>
+      </fileset>
+    </copy>
+  </target>
 
   <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
     <include name="apache-commons.jar"/>

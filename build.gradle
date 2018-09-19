@@ -58,17 +58,6 @@ dependencies {
 }
 
 sourceSets {
-  main {
-    java {
-      srcDirs = ['src']
-    }
-    po {
-      srcDirs = ['poSrc']
-    }
-    resources {
-      srcDirs = []
-    }
-  }
   test {
     java {
       srcDirs = ['test/unit']
@@ -80,7 +69,6 @@ sourceSets {
 }
 tasks.processResources {
     from(project.projectDir) {
-        include "images/**"
         include "LICENSE"
         include "LICENSE_*"
     }
