@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -20,13 +20,13 @@ public class AddTagToPrimitiveAction extends AbstractAction {
   private AbstractPrimitive target;
 
   public AddTagToPrimitiveAction(final String name) {
-<span class="fc" id="L23">    super(name, ImageProvider.get(&quot;dialogs/add&quot;, ImageSizes.SMALLICON));</span>
-<span class="fc" id="L24">  }</span>
+<span class="nc" id="L23">    super(name, ImageProvider.get(&quot;dialogs/add&quot;, ImageSizes.SMALLICON));</span>
+<span class="nc" id="L24">  }</span>
 
   public void setTag(Tag tag) {
-<span class="fc" id="L27">    this.tag = tag;</span>
-<span class="fc" id="L28">    updateEnabled();</span>
-<span class="fc" id="L29">  }</span>
+<span class="nc" id="L27">    this.tag = tag;</span>
+<span class="nc" id="L28">    updateEnabled();</span>
+<span class="nc" id="L29">  }</span>
 
   public void setTarget(AbstractPrimitive target) {
 <span class="nc" id="L32">    this.target = target;</span>
@@ -34,8 +34,8 @@ public class AddTagToPrimitiveAction extends AbstractAction {
 <span class="nc" id="L34">  }</span>
 
   private void updateEnabled() {
-<span class="pc bpc" id="L37" title="3 of 4 branches missed.">    setEnabled(tag != null &amp;&amp; target != null);</span>
-<span class="fc" id="L38">  }</span>
+<span class="nc bnc" id="L37" title="All 4 branches missed.">    setEnabled(tag != null &amp;&amp; target != null);</span>
+<span class="nc" id="L38">  }</span>
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -43,7 +43,7 @@ public class AddTagToPrimitiveAction extends AbstractAction {
 <span class="nc" id="L43">      int conflictResolution = JOptionPane.YES_OPTION;</span>
 <span class="nc bnc" id="L44" title="All 4 branches missed.">      if (target.hasKey(tag.getKey()) &amp;&amp; !target.hasTag(tag.getKey(), tag.getValue())) {</span>
 <span class="nc" id="L45">        conflictResolution = JOptionPane.showConfirmDialog(</span>
-          Main.parent,
+<span class="nc" id="L46">          MainApplication.getMainFrame(),</span>
           &quot;&lt;html&gt;&quot; +
 <span class="nc" id="L48">            I18n.tr(&quot;A tag with key &lt;i&gt;{0}&lt;/i&gt; is already present on the selected OSM object.&quot;, tag.getKey()) + &quot;&lt;br&gt;&quot; +</span>
 <span class="nc" id="L49">            I18n.tr(</span>

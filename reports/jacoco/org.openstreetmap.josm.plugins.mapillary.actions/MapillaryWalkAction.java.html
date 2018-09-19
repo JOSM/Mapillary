@@ -11,8 +11,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -46,7 +46,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
 <span class="nc" id="L46">    MapillaryWalkDialog dialog = new MapillaryWalkDialog();</span>
 <span class="nc" id="L47">    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,</span>
         JOptionPane.OK_CANCEL_OPTION);
-<span class="nc" id="L49">    JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Walk mode&quot;));</span>
+<span class="nc" id="L49">    JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr(&quot;Walk mode&quot;));</span>
 <span class="nc" id="L50">    dlg.setMinimumSize(new Dimension(400, 150));</span>
 <span class="nc" id="L51">    dlg.setVisible(true);</span>
 <span class="nc bnc" id="L52" title="All 2 branches missed.">    if (pane.getValue() != null</span>
@@ -72,8 +72,8 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
    *          The listener to be added.
    */
   public void addListener(WalkListener lis) {
-<span class="fc" id="L75">    this.listeners.add(lis);</span>
-<span class="fc" id="L76">  }</span>
+<span class="nc" id="L75">    this.listeners.add(lis);</span>
+<span class="nc" id="L76">  }</span>
 
   /**
    * Removes a listener.

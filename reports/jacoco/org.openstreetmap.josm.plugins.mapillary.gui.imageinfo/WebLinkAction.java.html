@@ -21,17 +21,17 @@ public class WebLinkAction extends AbstractAction {
   private URL url;
 
   public WebLinkAction(final String name, final URL url) {
-<span class="fc" id="L24">    super(name, ImageProvider.get(&quot;link&quot;, ImageSizes.SMALLICON));</span>
-<span class="fc" id="L25">    setURL(url);</span>
-<span class="fc" id="L26">  }</span>
+<span class="nc" id="L24">    super(name, ImageProvider.get(&quot;link&quot;, ImageSizes.SMALLICON));</span>
+<span class="nc" id="L25">    setURL(url);</span>
+<span class="nc" id="L26">  }</span>
 
   /**
    * @param url the url to set
    */
   public final void setURL(URL url) {
-<span class="fc" id="L32">    this.url = url;</span>
-<span class="pc bpc" id="L33" title="1 of 2 branches missed.">    setEnabled(url != null);</span>
-<span class="fc" id="L34">  }</span>
+<span class="nc" id="L32">    this.url = url;</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">    setEnabled(url != null);</span>
+<span class="nc" id="L34">  }</span>
 
   /* (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)

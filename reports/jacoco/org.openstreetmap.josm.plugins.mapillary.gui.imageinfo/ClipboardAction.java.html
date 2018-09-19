@@ -43,33 +43,33 @@ public class ClipboardAction extends AbstractAction {
   private Transferable contents;
 
   public ClipboardAction(final String name, final Transferable contents) {
-<span class="fc" id="L46">    super(name, ImageProvider.get(&quot;copy&quot;, ImageSizes.SMALLICON));</span>
-<span class="fc" id="L47">    this.contents = contents;</span>
+<span class="nc" id="L46">    super(name, ImageProvider.get(&quot;copy&quot;, ImageSizes.SMALLICON));</span>
+<span class="nc" id="L47">    this.contents = contents;</span>
 
     // Init popup
-<span class="fc" id="L50">    popup = new JPopupMenu();</span>
-<span class="fc" id="L51">    JLabel label = new JLabel(I18n.tr(&quot;Key copied to clipboard…&quot;));</span>
-<span class="fc" id="L52">    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));</span>
-<span class="fc" id="L53">    popup.add(label);</span>
-<span class="fc" id="L54">    popup.setBackground(new Color(0f, 0f, 0f, .5f));</span>
-<span class="fc" id="L55">    label.setForeground(Color.WHITE);</span>
-<span class="fc" id="L56">  }</span>
+<span class="nc" id="L50">    popup = new JPopupMenu();</span>
+<span class="nc" id="L51">    JLabel label = new JLabel(I18n.tr(&quot;Key copied to clipboard…&quot;));</span>
+<span class="nc" id="L52">    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));</span>
+<span class="nc" id="L53">    popup.add(label);</span>
+<span class="nc" id="L54">    popup.setBackground(new Color(0f, 0f, 0f, .5f));</span>
+<span class="nc" id="L55">    label.setForeground(Color.WHITE);</span>
+<span class="nc" id="L56">  }</span>
 
   /**
    * @param contents the contents, which should be copied to the clipboard when the {@link Action} is executed
    */
   public void setContents(Transferable contents) {
-<span class="fc" id="L62">    this.contents = contents;</span>
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">    setEnabled(contents != null);</span>
-<span class="fc" id="L64">  }</span>
+<span class="nc" id="L62">    this.contents = contents;</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    setEnabled(contents != null);</span>
+<span class="nc" id="L64">  }</span>
 
   /**
    * Sets the component, under which the popup will be shown, which indicates that the key was copied to the clipboard.
    * @param popupParent the component to set as parent of the popup
    */
   public void setPopupParent(Component popupParent) {
-<span class="fc" id="L71">    this.popupParent = popupParent;</span>
-<span class="fc" id="L72">  }</span>
+<span class="nc" id="L71">    this.popupParent = popupParent;</span>
+<span class="nc" id="L72">  }</span>
 
   /* (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)

@@ -24,7 +24,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
@@ -333,7 +333,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION
       );
-<span class="nc" id="L336">      JDialog dlg = pane.createDialog(Main.parent, tr(&quot;Choose signs&quot;));</span>
+<span class="nc" id="L336">      JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr(&quot;Choose signs&quot;));</span>
 <span class="nc" id="L337">      dlg.setVisible(true);</span>
 <span class="nc bnc" id="L338" title="All 2 branches missed.">      if ((int) pane.getValue() == JOptionPane.OK_OPTION)</span>
 <span class="nc" id="L339">        MapillaryFilterDialog.getInstance().refresh();</span>
