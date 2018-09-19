@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
@@ -44,7 +43,7 @@ public class MapillaryPlugin extends Plugin {
   private static final MapillaryUploadAction UPLOAD_ACTION = new MapillaryUploadAction();
 
   static {
-    if (Main.main != null) {
+    if (MainApplication.getMainFrame() != null) {
       MainMenu.add(MainApplication.getMenu().fileMenu, new MapillaryExportAction(), false, 14);
       MainMenu.add(MainApplication.getMenu().imagerySubMenu, new MapillaryDownloadAction(), false);
       MainMenu.add(MainApplication.getMenu().fileMenu, new MapillaryImportAction(), false, 14);

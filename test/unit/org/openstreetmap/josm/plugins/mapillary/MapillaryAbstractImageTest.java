@@ -18,7 +18,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class MapillaryAbstractImageTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   /**
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.

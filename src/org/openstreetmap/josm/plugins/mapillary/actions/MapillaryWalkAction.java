@@ -11,8 +11,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -46,7 +46,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
     MapillaryWalkDialog dialog = new MapillaryWalkDialog();
     JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
-    JDialog dlg = pane.createDialog(Main.parent, tr("Walk mode"));
+    JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Walk mode"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
     if (pane.getValue() != null

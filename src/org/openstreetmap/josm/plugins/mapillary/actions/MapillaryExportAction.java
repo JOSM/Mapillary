@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -66,7 +65,7 @@ public class MapillaryExportAction extends JosmAction {
     pane.setMessage(this.dialog);
     pane.setOptions(new JButton[] {ok, cancel});
 
-    JDialog dlg = pane.createDialog(Main.parent, tr("Export Mapillary images"));
+    JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Export Mapillary images"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 

@@ -28,7 +28,7 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapObjectLayerTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   private static Field urlGen;
   private static Object urlGenValue;

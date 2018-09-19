@@ -1,18 +1,35 @@
 import com.github.spotbugs.SpotBugsTask
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.openstreetmap.josm.plugins.mapillary.build.ConvertMarkdown
+import net.ltgt.gradle.errorprone.CheckSeverity
 
 plugins {
   id "org.sonarqube" version "2.6.2"
   id "org.openstreetmap.josm" version "0.5.0"
   id "com.github.ben-manes.versions" version "0.20.0"
-  id "com.github.spotbugs" version "1.6.2"
-  id "net.ltgt.errorprone" version "0.0.15"
+  id "com.github.spotbugs" version "1.6.3"
+  id "net.ltgt.errorprone" version "0.6"
 
   id 'eclipse'
   id 'jacoco'
   id 'java'
   id 'pmd'
+}
+
+// Set up ErrorProne
+dependencies.errorprone("com.google.errorprone:error_prone_core:2.3.1")
+tasks.withType(JavaCompile).configureEach {
+  options.compilerArgs << "-Xlint:all" << "-Xlint:-serial"
+  options.errorprone {
+    check("ClassCanBeStatic", CheckSeverity.ERROR)
+    check("StringEquality", CheckSeverity.ERROR)
+    check("WildcardImport", CheckSeverity.ERROR)
+    check("MethodCanBeStatic", CheckSeverity.WARN)
+    check("RemoveUnusedImports", CheckSeverity.WARN)
+    check("PrivateConstructorForUtilityClass", CheckSeverity.WARN)
+    check("LambdaFunctionalInterface", CheckSeverity.WARN)
+    check("ConstantField", CheckSeverity.WARN)
+  }
 }
 
 apply from: 'gradle/tool-config.gradle'
@@ -26,12 +43,18 @@ repositories {
 }
 
 dependencies {
+  if (!JavaVersion.current().isJava9Compatible()) {
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+  }
+
   testImplementation ('org.openstreetmap.josm:josm-unittest:SNAPSHOT'){changing=true}
   testImplementation 'com.github.tomakehurst:wiremock:2.18.0'
-  def junitVersion = "5.2.0"
+  def junitVersion = "5.3.1"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
+  testImplementation("org.awaitility:awaitility:3.1.2")
+  testImplementation("org.jmockit:jmockit:1.42")
 }
 
 sourceSets {
@@ -115,6 +138,10 @@ tasks.withType(SpotBugsTask) {
 }
 
 test {
+  project.afterEvaluate {
+    // See https://jmockit.github.io/tutorial/Introduction.html#gradle
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+  }
   testLogging {
     exceptionFormat "full"
     events TestLogEvent.FAILED, TestLogEvent.SKIPPED

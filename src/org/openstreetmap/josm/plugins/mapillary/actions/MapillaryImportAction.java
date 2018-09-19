@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.ImportMethodDialog;
@@ -52,6 +52,6 @@ public class MapillaryImportAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    new ImportMethodDialog(Main.parent).setVisible(true);
+    new ImportMethodDialog(MainApplication.getMainFrame()).setVisible(true);
   }
 }

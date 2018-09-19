@@ -19,7 +19,7 @@ public class CameraPlaneTest {
   private static final double CAMERA_PLANE_DISTANCE = (800 / 2) / Math.tan(FOV / 2);
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   @Test
   public void testSetRotation() {

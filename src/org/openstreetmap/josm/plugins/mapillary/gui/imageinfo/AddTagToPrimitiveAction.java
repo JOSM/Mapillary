@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.osm.AbstractPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -43,7 +43,7 @@ public class AddTagToPrimitiveAction extends AbstractAction {
       int conflictResolution = JOptionPane.YES_OPTION;
       if (target.hasKey(tag.getKey()) && !target.hasTag(tag.getKey(), tag.getValue())) {
         conflictResolution = JOptionPane.showConfirmDialog(
-          Main.parent,
+          MainApplication.getMainFrame(),
           "<html>" +
             I18n.tr("A tag with key <i>{0}</i> is already present on the selected OSM object.", tag.getKey()) + "<br>" +
             I18n.tr(

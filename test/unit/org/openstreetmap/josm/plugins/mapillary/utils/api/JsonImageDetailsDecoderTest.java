@@ -26,7 +26,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class JsonImageDetailsDecoderTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform().preferences();
+  public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   @Test
   public void testUtilityClass() {

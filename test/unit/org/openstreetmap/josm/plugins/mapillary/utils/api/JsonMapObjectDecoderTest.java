@@ -23,7 +23,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class JsonMapObjectDecoderTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   @Test
   public void testDecodeMapObjects() {

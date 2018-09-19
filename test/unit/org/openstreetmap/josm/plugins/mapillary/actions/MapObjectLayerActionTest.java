@@ -14,7 +14,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class MapObjectLayerActionTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   @Before
   public void resetLayers() {

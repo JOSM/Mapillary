@@ -25,7 +25,6 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
@@ -128,7 +127,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
     }
     // Does not execute when in headless mode
-    if (Main.main != null && !MapillaryMainDialog.getInstance().isShowing()) {
+    if (MainApplication.getMainFrame() != null && !MapillaryMainDialog.getInstance().isShowing()) {
       MapillaryMainDialog.getInstance().showDialog();
     }
     if (MapillaryPlugin.getMapView() != null) {

@@ -12,7 +12,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -67,13 +66,12 @@ public class OAuthPortListener extends Thread {
       Logging.info("Successful login with Mapillary, the access token is: {0}", accessToken);
       // Saves the access token in preferences.
       MapillaryUser.setTokenValid(true);
-      if (Main.main != null) {
-        MapillaryProperties.ACCESS_TOKEN.put(accessToken);
-        String username = MapillaryUser.getUsername();
-        Logging.info("The username is: {0}", username);
-        if (callback != null) {
-          callback.onLogin(username);
-        }
+
+      MapillaryProperties.ACCESS_TOKEN.put(accessToken);
+      String username = MapillaryUser.getUsername();
+      Logging.info("The username is: {0}", username);
+      if (callback != null) {
+        callback.onLogin(username);
       }
     } catch (BindException e) {
       Logging.warn(e);

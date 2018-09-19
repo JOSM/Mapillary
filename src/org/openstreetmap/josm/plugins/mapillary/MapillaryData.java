@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.jcs.access.CacheAccess;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -62,7 +61,7 @@ public class MapillaryData {
 
     // Adds the basic set of listeners.
     Arrays.stream(MapillaryPlugin.getMapillaryDataListeners()).forEach(this::addListener);
-    if (Main.main != null) {
+    if (MainApplication.getMainFrame() != null) {
       addListener(MapillaryMainDialog.getInstance());
       addListener(ImageInfoPanel.getInstance());
     }

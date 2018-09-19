@@ -24,7 +24,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class MapObjectTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   private static MapObject mo1;
   private static MapObject mo2;

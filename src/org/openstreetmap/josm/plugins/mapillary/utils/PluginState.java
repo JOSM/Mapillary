@@ -5,7 +5,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MainFrame;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -98,14 +99,14 @@ public final class PluginState {
    */
   public static void imageUploaded() {
     imagesUploaded++;
-    if (imagesToUpload == imagesUploaded && Main.main != null) {
+    if (imagesToUpload == imagesUploaded && MainApplication.getMainFrame() != null) {
         finishedUploadDialog(imagesUploaded);
     }
   }
 
   private static void finishedUploadDialog(int numImages) {
     JOptionPane.showMessageDialog(
-      Main.parent,
+      MainApplication.getMainFrame(),
       I18n.trn("You have successfully uploaded {0} image to mapillary.com", "You have successfully uploaded {0} images to mapillary.com", numImages, numImages),
       tr("Finished upload"),
       JOptionPane.INFORMATION_MESSAGE
@@ -113,15 +114,15 @@ public final class PluginState {
   }
 
   public static void notLoggedInToMapillaryDialog() {
-    if (Main.main == null) {
-      return;
-    }
-    JOptionPane.showMessageDialog(
-        Main.parent,
+    final MainFrame mainFrame = MainApplication.getMainFrame();
+    if (mainFrame != null) {
+      JOptionPane.showMessageDialog(
+        mainFrame,
         tr("You are not logged in, please log in to Mapillary in the preferences"),
-        tr("Not Logged in to Mapillary"),
+        tr("Not logged in to Mapillary"),
         JOptionPane.WARNING_MESSAGE
-    );
+      );
+    }
   }
 
 

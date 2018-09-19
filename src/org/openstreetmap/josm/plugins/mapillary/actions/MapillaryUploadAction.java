@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -45,7 +45,7 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     MapillaryUploadDialog dialog = new MapillaryUploadDialog();
     JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
         JOptionPane.OK_CANCEL_OPTION);
-    JDialog dlg = pane.createDialog(Main.parent, TITLE);
+    JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), TITLE);
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 

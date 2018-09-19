@@ -24,7 +24,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class MapillaryDataTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().platform();
+  public JOSMTestRules rules = new MapillaryTestRules();
 
   private MapillaryData data;
   private MapillaryImage img1;
