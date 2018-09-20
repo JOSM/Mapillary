@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "brfs": "1.4.3",
-    "browserify": "13.1.1"
+    "browserify": "13.1.1",
+    "xml2js": "^0.4.19"
   }
 }
