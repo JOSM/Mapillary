@@ -1,6 +1,6 @@
 {
   "name": "mapillary_sprite_source",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Source repository of `svg` files to generate sprites for mapillary.com",
   "main": "dist/index.js",
   "scripts": {
