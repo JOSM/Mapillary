@@ -94,7 +94,7 @@ josm {
     oldVersionDownloadLink 10824, 'v1.5.3', new URL('https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar')
   }
   i18n {
-    pathTransformer = getPathTransformer("github.com/JOSM/Mapillary/blob")
+    pathTransformer = getPathTransformer("gitlab.com/JOSM/Mapillary/blob")
   }
 }
 
