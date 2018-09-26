@@ -40,10 +40,11 @@ ul li {
   margin:.5em;
   display:inline-block;
   box-shadow: 0 0 0 #36af6d;
-  transition:.25s ease box-shadow, .5s ease border-color, .5s ease color;
+  transition:.25s ease box-shadow, .5s ease border-color, .5s ease color, 1.5s ease background;
 }
 a:hover {
   color:#fff;
   border-color: #36af6d;
   box-shadow: 0 0 8px #36af6d;
+  background: rgba(54,175,109,.2)
 }
