@@ -5,9 +5,9 @@ import net.ltgt.gradle.errorprone.CheckSeverity
 
 plugins {
   id "org.sonarqube" version "2.6.2"
-  id "org.openstreetmap.josm" version "0.5.0"
+  id "org.openstreetmap.josm" version "0.5.1"
   id "com.github.ben-manes.versions" version "0.20.0"
-  id "com.github.spotbugs" version "1.6.3"
+  id "com.github.spotbugs" version "1.6.4"
   id "net.ltgt.errorprone" version "0.6"
 
   id 'eclipse'
@@ -48,7 +48,7 @@ dependencies {
   }
 
   testImplementation ('org.openstreetmap.josm:josm-unittest:SNAPSHOT'){changing=true}
-  testImplementation 'com.github.tomakehurst:wiremock:2.18.0'
+  testImplementation "com.github.tomakehurst:wiremock:2.19.0"
   def junitVersion = "5.3.1"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
