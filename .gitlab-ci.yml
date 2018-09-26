@@ -88,6 +88,39 @@ upload to transifex:
     variables:
     - $TRANSIFEX_TOKEN
 
+codecov.io:
+  image: alpine:3.8
+  stage: deploy
+  environment:
+    name: codecov.io
+    url: https://codecov.io/gh/JOSM/Mapillary
+  before_script:
+  - apk add --update curl bash
+  script:
+  - curl -s https://codecov.io/bash | bash
+  - curl -s https://codecov.io/bash | bash /dev/stdin -c -F model_and_api
+  dependencies:
+  - build
+  only:
+    refs:
+    - master@JOSM/Mapillary
+
+sonarqube:
+  image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
+  stage: deploy
+  environment:
+    name: SonarQube
+    url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
+  script:
+  - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
+  dependencies:
+  - build
+  only:
+    refs:
+    - master@JOSM/Mapillary
+    variables:
+    - $SONAR_TOKEN
+
 release:
   stage: deploy
   environment:
