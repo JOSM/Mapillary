@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.14+post13733-17-g82f99b3\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-14 23:30+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
 "MIME-Version: 1.0\n"
@@ -336,9 +336,6 @@ msgstr "Απαγορεύεται η στάθμευση"
 msgid "No turn"
 msgstr "Απαγορεύεται η στροφή"
 
-msgid "Not Logged in to Mapillary"
-msgstr "Δεν έχετε συνδεθεί στο Mapillary"
-
 msgid "Not older than: "
 msgstr "Δεν είναι παλαιότερο από:"
 
@@ -611,11 +608,6 @@ msgstr "{0} ανακαλύψεις"
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} εικόνες σε {1} ακολουθίες"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr ""
-"{0} εικόνες που υποβλήθηκαν, κλειδί πακέτου αλλαγών: {1}, Κατάσταση: {2}"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

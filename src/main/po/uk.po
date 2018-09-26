@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
 msgid "2 images joined"
 msgstr "2 зображення з’єднано"
@@ -102,6 +102,7 @@ msgid_plural "Deleted {0} images"
 msgstr[0] "Вилучений {0} знімок"
 msgstr[1] "Вилучено {0} знімки"
 msgstr[2] "Вилучено {0} знімків"
+msgstr[3] "Вилучено {0} знімків"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
@@ -140,6 +141,9 @@ msgstr "Збій завантаження обʼєктів мапи!"
 
 msgid "Downloading map objects…"
 msgstr "Завантаження обʼєктів мапи…"
+
+msgid "Downloading…"
+msgstr "Завантаження…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -222,6 +226,7 @@ msgid_plural "Imported {0} images"
 msgstr[0] "Імпортований {0} знімок"
 msgstr[1] "Імпортовано {0} знімки"
 msgstr[2] "Імпортовано {0} знімків"
+msgstr[3] "Імпортовано {0} знімків"
 
 #. i18n: traffic sign
 msgid "Intersection danger"
@@ -306,6 +311,7 @@ msgid_plural "Moved {0} images"
 msgstr[0] "Переміщено {0} зображення"
 msgstr[1] "Переміщено {0} зображення"
 msgstr[2] "Переміщено {0} зображень"
+msgstr[3] "Переміщено {0} зображень"
 
 msgid "Next picture"
 msgstr "Наступний знімок"
@@ -331,9 +337,6 @@ msgstr "Стоянка заборонена"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "Поворот заборонений"
-
-msgid "Not Logged in to Mapillary"
-msgstr "Не увішли до Mapillary"
 
 msgid "Not older than: "
 msgstr "Не старіше ніж: "
@@ -505,6 +508,7 @@ msgid_plural "Turned {0} images"
 msgstr[0] "Обернуто {0} зображення"
 msgstr[1] "Обернуто {0} зображення"
 msgstr[2] "Обернуто {0} зображень"
+msgstr[3] "Обернуто {0} зображень"
 
 msgid "Undo"
 msgstr "Скасувати"
@@ -566,10 +570,6 @@ msgstr "Ви увійшли як  ''{0}''."
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Ви не увійшли, будь ласка, здійсніть вхід в налаштуваннях  Mapillary"
 
-#, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Ви завантажили {0} знімок(ів) до mapillary.com"
-
 msgid "Zoom to selected image"
 msgstr "Масштабувати до виділеного знімка"
 
@@ -616,38 +616,13 @@ msgstr ""
 "Не вийшло отримати обʼєкти мапи за посиланням URL\n"
 "{1}!"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
-#, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} знімків)"
-
 #, java-format
 msgid "{0} detections"
 msgstr "{0} образів"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} завантежених знімків"
-
-#, java-format
-msgid "{0} images in total"
-msgstr "{0} знімків всього"
-
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} знімків в {1} послідовностях"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} знімків надіслано, ключ набору змін: {1}, стан: {2}"
-
-#, java-format
-msgid "{0} imported images"
-msgstr "{0} імпортованих знімків"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} послідовностей, кожна містить від {1} до {2} знімків (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

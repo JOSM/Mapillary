@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -264,6 +264,9 @@ msgstr "Przeskakuje do zdjęcia po drugiej stronie niebieskiej linii"
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Przeskakuje do zdjęcia po drugiej stronie czerwonej linii"
 
+msgid "Key copied to clipboard…"
+msgstr "Klucz skopiowany do schowka..."
+
 msgid "Login"
 msgstr "Zaloguj"
 
@@ -275,7 +278,7 @@ msgstr "Wyloguj"
 
 #. i18n: traffic sign
 msgid "Mandatory direction (any)"
-msgstr "Nakaz skrętu"
+msgstr "Obowiązkowy kierunek (dowolny)"
 
 msgid "Mapillary"
 msgstr "Mapillary"
@@ -315,6 +318,14 @@ msgid "Move to picture''s location with next/previous buttons"
 msgstr ""
 "Przesuwaj do lokalizacji zdjęć za pomocą przycisków następny/poprzedni."
 
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "Przesunięto {0} obraz"
+msgstr[1] "Przesunięto {0} obrazy"
+msgstr[2] "Przesunięto {0} obrazów"
+msgstr[3] "Przesunięto {0} obrazów"
+
 msgid "Next picture"
 msgstr "Następne zdjęcie"
 
@@ -339,9 +350,6 @@ msgstr "Zakaz postoju"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "Zakaz zawracania"
-
-msgid "Not Logged in to Mapillary"
-msgstr "Nie zalogowany do Mapillary"
 
 msgid "Not older than: "
 msgstr "Nie starsze niż: "
@@ -507,6 +515,14 @@ msgstr "Za dużo elementów mapy, przybliż żeby zobaczyć wszystko."
 msgid "Total Mapillary images: {0}"
 msgstr "Łącznie obrazów Mapillary: {0}"
 
+#, java-format
+msgid "Turned {0} image"
+msgid_plural "Turned {0} images"
+msgstr[0] "Obrócono {0} obraz"
+msgstr[1] "Obrócono {0} obrazy"
+msgstr[2] "Obrócono {0} obrazów"
+msgstr[3] "Obrócono {0} obrazów"
+
 msgid "Undo"
 msgstr "Cofnij"
 
@@ -573,8 +589,12 @@ msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Nie jesteś zalogowany, proszę to zrobić w ustawieniach Mapillary"
 
 #, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Pomyślnie wysłano {0} obrazów do mapillary.com"
+msgid "You have successfully uploaded {0} image to mapillary.com"
+msgid_plural "You have successfully uploaded {0} images to mapillary.com"
+msgstr[0] "Poprawnie przesłano {0} obraz do mapillary.com"
+msgstr[1] "Poprawnie przesłano {0} obrazy do mapillary.com"
+msgstr[2] "Poprawnie przesłano {0} obrazów do mapillary.com"
+msgstr[3] "Poprawnie przesłano {0} obrazów do mapillary.com"
 
 msgid "Zoom to selected image"
 msgstr "Powiększ do wybranego obrazu"
@@ -624,36 +644,64 @@ msgstr ""
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 #, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} zdjęć)"
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} obraz)"
+msgstr[1] "{0} ({1} obrazy)"
+msgstr[2] "{0} ({1} obrazów)"
+msgstr[3] "{0} ({1} obrazów)"
 
 #, java-format
 msgid "{0} detections"
 msgstr "{0} wykryć"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} pobranych obrazów"
+msgid "{0} downloaded image"
+msgid_plural "{0} downloaded images"
+msgstr[0] "{0} pobrany obraz"
+msgstr[1] "{0} pobrane obrazy"
+msgstr[2] "{0} pobranych obrazów"
+msgstr[3] "{0} pobranych obrazów"
 
 #, java-format
-msgid "{0} images in total"
-msgstr "{0} łącznie obrazów"
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] "{0} obraz łącznie"
+msgstr[1] "{0} obrazy łącznie"
+msgstr[2] "{0} obrazów łącznie"
+msgstr[3] "{0} obrazów łącznie"
+
+#, java-format
+msgid "{0} image submitted, Changeset key: {1}, State: {2}"
+msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr[0] "{0} obraz przesłany, Zestaw zmian: {1}, Stan: {2}"
+msgstr[1] "{0} obrazy przesłane, Zestaw zmian: {1}, Stan: {2}"
+msgstr[2] "{0} obrazów przesłanych, Zestaw zmian: {1}, Stan: {2}"
+msgstr[3] "{0} obrazów przesłanych, Zestaw zmian: {1}, Stan: {2}"
 
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} obrazów w {1} sekwencjach"
 
 #, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} zdjęć zatwierdzonych, Klucz zestawu zmian: {1}, stan: {2}"
+msgid "{0} imported image"
+msgid_plural "{0} imported images"
+msgstr[0] "{0} zaimportowany obraz"
+msgstr[1] "{0} zaimportowane obrazy"
+msgstr[2] "{0} zaimportowanych obrazów"
+msgstr[3] "{0} zaimportowanych obrazów"
 
 #, java-format
-msgid "{0} imported images"
-msgstr "{0} zaimportowanych obrazów"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} sekwencje, każda zawiera pomiędzy {1} a {2} obrazami (ø {3})"
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] "{0} sekwencja, zawierająca pomiędzy {1} a {2} obrazów (ø {3})"
+msgstr[1] ""
+"{0} sekwencje, każda zawierająca pomiędzy {1} a {2} obrazów (ø {3})"
+msgstr[2] ""
+"{0} sekwencji, każda zawierająca pomiędzy {1} a {2} obrazów (ø {3})"
+msgstr[3] ""
+"{0} sekwencji, każda zawierająca pomiędzy {1} a {2} obrazów (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

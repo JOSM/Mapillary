@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Portuguese (https://www.transifex.com/josm/teams/2544/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -346,7 +346,7 @@ msgstr "Estacionamento proibido"
 msgid "No turn"
 msgstr "Proibido virar"
 
-msgid "Not Logged in to Mapillary"
+msgid "Not logged in to Mapillary"
 msgstr "Não autenticado no Mapillary"
 
 msgid "Not older than: "
@@ -587,8 +587,10 @@ msgstr ""
 "preferências"
 
 #, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Enviou com sucesso {0} imagens para mapillary.com"
+msgid "You have successfully uploaded {0} image to mapillary.com"
+msgid_plural "You have successfully uploaded {0} images to mapillary.com"
+msgstr[0] "Enviou com sucesso {0} imagem para mapillary.com"
+msgstr[1] "Enviou com sucesso {0} imagens para mapillary.com"
 
 msgid "Zoom to selected image"
 msgstr "Aproximar a imagem selecionada"
@@ -638,37 +640,51 @@ msgstr ""
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 #, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} imagens)"
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} imagem)"
+msgstr[1] "{0} ({1} imagens)"
 
 #, java-format
 msgid "{0} detections"
 msgstr "{0} deteções"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} imagens descarregadas"
+msgid "{0} downloaded image"
+msgid_plural "{0} downloaded images"
+msgstr[0] "{0} imagem descarregada"
+msgstr[1] "{0} imagens descarregadas"
 
 #, java-format
-msgid "{0} images in total"
-msgstr "{0} de imagens no total"
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] "{0} imagem no total"
+msgstr[1] "{0} imagens no total"
+
+#, java-format
+msgid "{0} image submitted, Changeset key: {1}, State: {2}"
+msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr[0] ""
+"{0} imagem enviada; Chave do conjunto de alterações: {1}; Estado: {2}"
+msgstr[1] ""
+"{0} imagens enviadas; Chave do conjunto de alterações: {1}, Estado: {2}"
 
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} imagens em {1} sequências"
 
 #, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr ""
-"{0} imagens submetidas, Chave do Conjunto de Alterações: {1}, Estado: {2}"
+msgid "{0} imported image"
+msgid_plural "{0} imported images"
+msgstr[0] "{0} imagem importada"
+msgstr[1] "{0} imagens importadas"
 
 #, java-format
-msgid "{0} imported images"
-msgstr "{0} imagens importadas"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} sequências, cada uma contendo entre {1} e {2} imagens (ø {3})"
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] "{0} sequência, contendo entre {1} e {2} imagens (ø {3})"
+msgstr[1] "{0} sequências, cada uma contendo entre {1} e {2} imagens (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

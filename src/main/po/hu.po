@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Hungarian (https://www.transifex.com/josm/teams/2544/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,12 @@ msgstr "2 két összekapcsolva"
 msgid "2 images unjoined"
 msgstr "2 kép szétválasztva"
 
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr ""
+"A(z) <i>{0}</i> kulcsú címke már szerepel a kiválasztott OSM objektumon."
+
 msgid "Add Mapillary tag"
 msgstr "Mapillary címke hozzáadása"
 
@@ -31,6 +37,17 @@ msgstr "Egy könyvtár összes képe"
 
 msgid "All map objects loaded."
 msgstr "Az összes térképobjektum betöltve."
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"Kivétel történt a módosításcsomag beküldésekor. Ha ez ismételten előfordul, "
+"akkor jelentse be hibaként a Súgó menüben. Ha az üzenet először jelenik meg,"
+" akkor egyszerűen próbálja újra. Lehet hogy az internetkapcsolattal volt "
+"probléma."
 
 msgid "Cancel"
 msgstr "Mégse"
@@ -101,6 +118,13 @@ msgstr "Megjeleníti a Mapillary által az utcaképekről felismert objektumokat
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Megjeleníti a Mapillary által észlelt térképobjektumokat"
 
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Biztos lecseréli a jelenlegi <i>{0}</i> értéket az új <i>{1}</i> értékre?"
+
 msgid "Download Mapillary images in current view"
 msgstr "Mapillary képek letöltése a jelenlegi nézetben"
 
@@ -118,6 +142,9 @@ msgstr "A térképobjektumok letöltése sikertelen."
 
 msgid "Downloading map objects…"
 msgstr "Összes térképobjektum letöltése…"
+
+msgid "Downloading…"
+msgstr "Letöltés…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
@@ -137,6 +164,9 @@ msgstr "Kijelölt képek exportálása"
 
 msgid "Export selected sequence"
 msgstr "Kijelölt sorozat exportálása"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Mapillary képek exportálása…"
 
 msgid "Finished upload"
 msgstr "Feltöltés befejeződött"
@@ -208,6 +238,13 @@ msgstr[1] "{0} kép importálva"
 msgid "Intersection danger"
 msgstr "Veszélyes útkereszteződés"
 
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+"Aktiválható az üzenet alján lévő bal gomb megnyomásával, vagy a bal oldali "
+"eszköztáron lévő gombbal, amely ugyanazt az ikont használja."
+
 msgid "Join mode"
 msgstr "Összekapcsolási mód"
 
@@ -225,6 +262,9 @@ msgstr "A kék vonal végén lévő képhez ugrik"
 
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "A piros vonal végén lévő képhez ugrik"
+
+msgid "Key copied to clipboard…"
+msgstr "Kulcs a vágólapra másolva…"
 
 msgid "Login"
 msgstr "Belépés"
@@ -306,9 +346,6 @@ msgstr "Várakozni tilos"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "Bekanyarodni tilos"
-
-msgid "Not Logged in to Mapillary"
-msgstr "Nem vagy bejelentkezve Mapillary-be"
 
 msgid "Not older than: "
 msgstr "Nem régebbi mint: "
@@ -461,6 +498,12 @@ msgstr ""
 "A probléma megoldásához a letöltési módot állítsd ''{0}'' módba és csak a "
 "térképnek egy kisebb területéről próbálj betölteni Mapillary képeket."
 
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr ""
+"A probléma megoldásához belenagyíthat, és letöltheti a térkép egy kisebb "
+"részét."
+
 msgid "Too many map objects, zoom in to see all."
 msgstr "Túl sok térképobjektum, nagyíts hogy lásd mindet."
 
@@ -508,7 +551,12 @@ msgid "Wait for full quality pictures"
 msgstr "Várj a teljes minőségű képekre"
 
 msgid "Walk mode"
-msgstr "Gyalogos mód"
+msgstr "Séta mód"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Séta mód: A következő képre várakozás túl sokáig tart! Kilépés a séta "
+"módból…"
 
 #. i18n: Checkbox label in JOSM settings
 msgid ""
@@ -534,10 +582,6 @@ msgstr "Be vagy jelentkezve „{0}” néven."
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr ""
 "Nem vagy bejelentkezve. Kérlek jelentkezz be Mapillary-be a beállításokban"
-
-#, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Sikeresen feltöltöttél {0} képet a mapillary.com-ra"
 
 msgid "Zoom to selected image"
 msgstr "Nagyítás a kijelölt képre"
@@ -569,41 +613,29 @@ msgstr "függőben"
 msgid "rejected"
 msgstr "elutasítva"
 
+msgid "sequence has no key"
+msgstr "a sorozatnak nincs kulcsa"
+
 msgid "unknown user"
 msgstr "ismeretlen felhasználó"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
 #, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} kép)"
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"A térképobjektumok nem olvashatóak az URL-ről\n"
+"{1}!"
 
 #, java-format
 msgid "{0} detections"
 msgstr "{0} észlelés"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} letöltött kép"
-
-#, java-format
-msgid "{0} images in total"
-msgstr "{0} kép összesen"
-
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} kép {1} sorozatban"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} kép beküldve, Módosításcsomag kulcsa: {1}, Állapot: {2}"
-
-#, java-format
-msgid "{0} imported images"
-msgstr "{0} importált kép"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} sorozat, egyenként {1} és {2} közti képpel (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

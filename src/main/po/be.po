@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Belarusian (https://www.transifex.com/josm/teams/2544/be/)\n"
 "MIME-Version: 1.0\n"
@@ -209,9 +209,6 @@ msgstr "Стаянка забаронена"
 msgid "No turn"
 msgstr "Паварот забаронены"
 
-msgid "Not Logged in to Mapillary"
-msgstr "Не выкананы ўваход у Mapillary"
-
 msgid "Not older than: "
 msgstr "Не старэйшыя за: "
 
@@ -359,10 +356,6 @@ msgstr "Вы ўвайшлі як ''{0}''."
 
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Не выкананы ўваход, увайдзіце ў Mapillary у Наладах"
-
-#, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Вы паспяхова загрузілі {0} выяў на mapillary.com"
 
 msgid "Zoom to selected image"
 msgstr "Маштабаваць да вылучанага здымка"

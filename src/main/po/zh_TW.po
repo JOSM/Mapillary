@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -134,6 +134,9 @@ msgstr "下載地圖物件物敗！"
 msgid "Downloading map objects…"
 msgstr "下載地圖物件..."
 
+msgid "Downloading…"
+msgstr "正在下載..."
+
 #. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "啟用實驗性質的 beta 功能 (可能不穩定)"
@@ -152,6 +155,9 @@ msgstr "匯出選取圖片"
 
 msgid "Export selected sequence"
 msgstr "匯出選取片段"
+
+msgid "Exporting Mapillary Images…"
+msgstr "匯出 Mapillary 圖片..."
 
 msgid "Finished upload"
 msgstr "上傳完畢"
@@ -243,6 +249,9 @@ msgstr "跳到藍線另一邊的圖片"
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "跳到紅線另一邊的圖片"
 
+msgid "Key copied to clipboard…"
+msgstr "鍵複製到剪貼簿..."
+
 msgid "Login"
 msgstr "登入"
 
@@ -322,9 +331,6 @@ msgstr "禁止停車"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "禁止轉彎"
-
-msgid "Not Logged in to Mapillary"
-msgstr "沒有登入 Mapillary"
 
 msgid "Not older than: "
 msgstr "不早於： "
@@ -523,6 +529,9 @@ msgstr "等待全品質的圖片"
 msgid "Walk mode"
 msgstr "行走模式"
 
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr "行走模式：等待下個影像太久了！離開行走模式..."
+
 #. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
@@ -546,8 +555,9 @@ msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "你並沒有登入，請在偏好設定登入 Mapillary"
 
 #, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "你成功上傳 {0} 圖片到 mapillary.com"
+msgid "You have successfully uploaded {0} image to mapillary.com"
+msgid_plural "You have successfully uploaded {0} images to mapillary.com"
+msgstr[0] "你成功上傳 {0} 圖片到 mapillary.com"
 
 msgid "Zoom to selected image"
 msgstr "縮放到選取的圖片"
@@ -596,36 +606,43 @@ msgstr ""
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 #, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} 圖片)"
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} 圖片)"
 
 #, java-format
 msgid "{0} detections"
 msgstr "方向 {0} "
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "下載 {0} 張圖片"
+msgid "{0} downloaded image"
+msgid_plural "{0} downloaded images"
+msgstr[0] "下載 {0} 張圖片"
 
 #, java-format
-msgid "{0} images in total"
-msgstr "總共 {0} 張圖片"
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] "總共 {0} 張圖片"
+
+#, java-format
+msgid "{0} image submitted, Changeset key: {1}, State: {2}"
+msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr[0] "{0} 圖片提交，變更組合鍵：{1}，狀態： {2}"
 
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{1} 片段有 {0} 張圖片"
 
 #, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} 圖片提交，變更組合鍵：{1}，狀態： {2}"
+msgid "{0} imported image"
+msgid_plural "{0} imported images"
+msgstr[0] "匯入 {0} 張圖片"
 
 #, java-format
-msgid "{0} imported images"
-msgstr "匯入 {0} 張圖片"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} 片段，每個片段含有 {1} 到 {2} 張圖片 (ø {3})"
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] "{0} 片段，每個片段含有 {1} 到 {2} 張圖片 (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

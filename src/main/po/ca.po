@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Catalan (https://www.transifex.com/josm/teams/2544/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +23,39 @@ msgstr "2 imatges afegides"
 msgid "2 images unjoined"
 msgstr "2 imatges tretes"
 
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr ""
+"Una etiqueta amb la clau <i>{0}</i> ja està present a l'objecte OSM "
+"seleccionat."
+
+msgid "Add Mapillary tag"
+msgstr "Afegir etiqueta Mapillary"
+
+msgid "All images in a directory"
+msgstr "Totes les imatges en un directori"
+
 msgid "All map objects loaded."
 msgstr "Tots els objectes del mapa carregats."
 
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"S'ha produït una excepció a l'intentar enviar un conjunt de canvis. Si això "
+"ocurreix repetidament, considereu reportar un error a través del menú Ajuda."
+" Si aquest missatge apareix per primera vegada, simplement torneu-ho a "
+"intentar. Això podria ser un problema amb la connexió d'Internet."
+
 msgid "Cancel"
 msgstr "Cancel·la"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "El conjunt de canvis pujat ha fallat amb {0} errors ''{1} {2}''!"
 
 msgid "Choose signs"
 msgstr "Selecciona un senyal"
@@ -37,6 +65,32 @@ msgstr "Continua amb la cminada pausada."
 
 msgid "Copy key"
 msgstr "Copiar clau"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr "No s'ha pogut importar una imatge geoetiquetada a la capa Mapillary!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "No s'`ha pogut importar el directori ''{0}''!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "No s'ha pogut importar la imatge ''{0}''!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "No s'ha pogut obrir la URL {0} en un navegador"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "No s'ha pogut llegir des de la URL {0}!"
+
+msgid "Current Mapillary changeset"
+msgstr "Conjunt de canvis del Mapillary actual"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Talla les seqüències als límits de descàrrega"
 
 msgid "Days"
 msgstr "Dies"
@@ -54,6 +108,27 @@ msgstr[1] "Suprimides {0} imatges"
 msgid "Display hour when the picture was taken"
 msgstr "Mostra l''hora a la qual es van fer les fotografies"
 
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr ""
+"Mostra la informació detallada sobre la imatge de Mapillary seleccionada"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr ""
+"Mostra els objectes detectats per Mapillary a partir de les seves imatges a "
+"peu de carrer"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr ""
+"Mostra la capa on es mostren els objectes de mapa detectats per Mapillary"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Vol realment reemplaçar el valor actual<i>{0}</i> amb el nou valor "
+"<i>{1}</i>?"
+
 msgid "Download Mapillary images in current view"
 msgstr "Descarrega imatges de Mapillary a la vista actual"
 
@@ -66,8 +141,24 @@ msgstr "Imatges descarregades"
 msgid "Downloading Mapillary images"
 msgstr "Descarregant imatges de Mapillary"
 
+msgid "Downloading map objects failed!"
+msgstr "La descàrrega d'objectes de mapa ha fallat!"
+
+msgid "Downloading map objects…"
+msgstr "Descarregant objectes de mapa..."
+
+msgid "Downloading…"
+msgstr "Descarregant..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "Habilitar funcions beta experimentals (podria ser inestable)"
+
 msgid "Explore"
 msgstr "Explora"
+
+msgid "Export Mapillary images"
+msgstr "Exportar imatges Mapillary"
 
 msgid "Export all images"
 msgstr "Exporta totes les imatges"
@@ -78,11 +169,20 @@ msgstr "Exporta les imatges seleccionades"
 msgid "Export selected sequence"
 msgstr "Exporta la seqüència seleccionada"
 
+msgid "Exporting Mapillary Images…"
+msgstr "Exportant imatges Mapillary..."
+
 msgid "Finished upload"
 msgstr "La pujada ha finalitzat"
 
 msgid "Follow selected image"
 msgstr "Segueix la imatge seleccionada"
+
+msgid "From existing image layer"
+msgstr "Des d'una capa d'imatges existent"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "Des de quin origen vol importar les imatges a la capa Mapillary?"
 
 #. i18n: traffic sign
 msgid "Give way"
@@ -99,8 +199,26 @@ msgstr ""
 msgid "I got it, close this."
 msgstr "Ho tinc, tanca això."
 
+msgid "Image actions"
+msgstr "accions d'imatge"
+
+msgid "Image detections"
+msgstr "Deteccions d'imatges"
+
+msgid "Image info"
+msgstr "Informació de la imatge"
+
+msgid "Image key"
+msgstr "clau d'imatge"
+
+msgid "Images from my file system"
+msgstr "Imatges del meu sistema d'arxius"
+
 msgid "Import"
 msgstr "Importa"
+
+msgid "Import exception"
+msgstr "Excepció d'importació"
 
 msgid "Import local pictures"
 msgstr "Importa imatges locals"
@@ -285,6 +403,9 @@ msgstr "Atura la caminada."
 
 msgid "Supported image formats (JPG and PNG)"
 msgstr "Els formats de fitxer suportats  són JPG i PNG"
+
+msgid "Tag conflict"
+msgstr "Conflicte d'etiquetes"
 
 #, java-format
 msgid "Total Mapillary images: {0}"

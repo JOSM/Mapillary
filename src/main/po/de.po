@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: German (https://www.transifex.com/josm/teams/2544/de/)\n"
 "MIME-Version: 1.0\n"
@@ -355,8 +355,8 @@ msgstr "Parkverbot"
 msgid "No turn"
 msgstr "Abbiegen verboten"
 
-msgid "Not Logged in to Mapillary"
-msgstr "Nicht bei Mapillary angemeldet"
+msgid "Not logged in to Mapillary"
+msgstr "Nicht in Mapillary eingeloggt"
 
 msgid "Not older than: "
 msgstr "Nicht älter als: "
@@ -596,10 +596,6 @@ msgstr ""
 "Sie sind nicht angemeldet, bitte melden Sie sich in den Einstellungen bei "
 "Mapillary an"
 
-#, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Sie haben {0} Bilder erfolgreich zu mapillary.com hochgeladen"
-
 msgid "Zoom to selected image"
 msgstr "Auf ausgewähltes Bild zoomen"
 
@@ -647,38 +643,13 @@ msgstr ""
 "{1}\n"
 "gelesen werden!"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
-#, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} Bilder)"
-
 #, java-format
 msgid "{0} detections"
 msgstr "{0} Erkennungen"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} heruntergeladene Bilder"
-
-#, java-format
-msgid "{0} images in total"
-msgstr "{0} Bilder insgesamt"
-
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} Bilder in {1} Sequenzen"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} Bilder eingereicht, Änderungssatzschlüssel: {1}, Status: {2}"
-
-#, java-format
-msgid "{0} imported images"
-msgstr "{0} importierte Bilder"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} Sequenzen, jede enthält zwischen {1} und {2} Bilder (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

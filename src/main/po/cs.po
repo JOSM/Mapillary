@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Czech (https://www.transifex.com/josm/teams/2544/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 msgid "2 images joined"
 msgstr "2 obrázky sloučeny"
@@ -103,6 +103,7 @@ msgid_plural "Deleted {0} images"
 msgstr[0] "Smazán {0} obrázek"
 msgstr[1] "Smazány {0} obrázky"
 msgstr[2] "Smazáno {0} obrázků"
+msgstr[3] "Smazáno {0} obrázků"
 
 #. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
@@ -226,6 +227,7 @@ msgid_plural "Imported {0} images"
 msgstr[0] "Importován {0} obrázek"
 msgstr[1] "Importovány {0} obrázky"
 msgstr[2] "Importováno {0} obrázků"
+msgstr[3] "Importováno {0} obrázků"
 
 #. i18n: traffic sign
 msgid "Intersection danger"
@@ -312,6 +314,7 @@ msgid_plural "Moved {0} images"
 msgstr[0] "Posunut {0} obrázek"
 msgstr[1] "Posunuty {0} obrázky"
 msgstr[2] "Posunuto {0} obrázků"
+msgstr[3] "Posunuto {0} obrázků"
 
 msgid "Next picture"
 msgstr "Další obrázek"
@@ -337,9 +340,6 @@ msgstr "Zákaz parkování"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "Zákaz odbočení"
-
-msgid "Not Logged in to Mapillary"
-msgstr "Nepřihlášeno k Mapillary"
 
 msgid "Not older than: "
 msgstr "Ne starší než: "
@@ -513,6 +513,7 @@ msgid_plural "Turned {0} images"
 msgstr[0] "Otočen {0} obrázek"
 msgstr[1] "Otočeny {0} obrázky"
 msgstr[2] "Otočeno {0} obrázků"
+msgstr[3] "Otočeno {0} obrázků"
 
 msgid "Undo"
 msgstr "Zpět"
@@ -574,10 +575,6 @@ msgstr "Jste přihlášen jako ''{0}''."
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Nejste přihlášeni, prosím, přihlaste se k Mapillary v předvolbách"
 
-#, java-format
-msgid "You have successfully uploaded {0} images to mapillary.com"
-msgstr "Úspěšně jste nahrál {0} obrázky na mapillary.com"
-
 msgid "Zoom to selected image"
 msgstr "Zvětšit na zvolený obrázek"
 
@@ -624,38 +621,13 @@ msgstr ""
 "Nelze načíst objekty mapy z URL\n"
 "{1}!"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
-#, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1} obrázků)"
-
 #, java-format
 msgid "{0} detections"
 msgstr "{0} detekcí"
 
 #, java-format
-msgid "{0} downloaded images"
-msgstr "{0} stažených obrázků"
-
-#, java-format
-msgid "{0} images in total"
-msgstr "{0} obrázků celkem"
-
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} obrázků ve {1} sekvencích"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0} obrázků předáno, klíč sady změn: {1}, stav: {2}"
-
-#, java-format
-msgid "{0} imported images"
-msgstr "{0} importovaných obrázků"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0} sekvencí, každá obsahuje mezi {1} a {2} obrázky (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"

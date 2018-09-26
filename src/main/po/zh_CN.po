@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.12+post13643-4-gad86f89\n"
+"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-14 10:03+0000\n"
+"POT-Creation-Date: 2018-09-26 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/josm/teams/2544/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -422,34 +422,9 @@ msgstr "挂起中"
 msgid "rejected"
 msgstr "已退回"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
-#, java-format
-msgid "{0} ({1} images)"
-msgstr "{0} ({1}份图像)"
-
-#, java-format
-msgid "{0} downloaded images"
-msgstr "{0}下载的图像"
-
-#, java-format
-msgid "{0} images in total"
-msgstr "总共{0}份图像"
-
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0}图像在{1}序列中"
-
-#, java-format
-msgid "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr "{0}图像已提交，修改集合编号：{1}，状态：{2}"
-
-#, java-format
-msgid "{0} imported images"
-msgstr "{0}导入的图像"
-
-#, java-format
-msgid "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr "{0}序列，都包含在{1}和{2}间的图像 (ø {3})"
 
 #. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
