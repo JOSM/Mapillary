@@ -223,7 +223,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * The "n-nearest image" is picked from the list of one image from every sequence that is nearest to the currently
    * selected image, excluding the sequence to which the selected image belongs.
    * @param n the index for picking from the list of "nearest images", beginning from 1
-   * @return the n-nearest image to the currently selected image
+   * @return the n-nearest image to the currently selected image, or null if no such image can be found
    */
   public synchronized MapillaryImage getNNearestImage(final int n) {
     return n >= 1 && n <= nearestImages.length ? nearestImages[n - 1] : null;

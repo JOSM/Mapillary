@@ -107,36 +107,6 @@ public class MapillaryDataTest {
   }
 
   /**
-   * Tests the {@link MapillaryData#selectNext()} and
-   * {@link MapillaryData#selectPrevious()} methods.
-   */
-  @Test
-  public void nextAndPreviousTest() {
-    this.data.setSelectedImage(this.img1);
-
-    this.data.selectNext();
-    assertEquals(this.img2, this.data.getSelectedImage());
-    this.data.selectNext();
-    assertEquals(this.img3, this.data.getSelectedImage());
-    this.data.selectPrevious();
-    assertEquals(this.img2, this.data.getSelectedImage());
-
-    this.data.setSelectedImage(null);
-  }
-
-  @Test(expected=IllegalStateException.class)
-  public void nextOfNullImgTest() {
-    data.setSelectedImage(null);
-    data.selectNext();
-  }
-
-  @Test(expected=IllegalStateException.class)
-  public void previousOfNullImgTest() {
-    data.setSelectedImage(null);
-    data.selectPrevious();
-  }
-
-  /**
    * Test the multiselection of images. When a new image is selected, the
    * multiselected List should reset.
    */

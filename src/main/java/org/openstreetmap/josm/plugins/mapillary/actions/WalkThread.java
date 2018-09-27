@@ -86,10 +86,12 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           while (this.paused) {
             Thread.sleep(100);
           }
-          if (this.goForward) {
-            this.data.selectNext(this.followSelected);
-          } else {
-            this.data.selectPrevious(this.followSelected);
+          final MapillaryAbstractImage selectedImage = this.data.getSelectedImage();
+          if (selectedImage != null) {
+            final MapillaryAbstractImage nextSelectedImg = this.goForward ? selectedImage.next() : selectedImage.previous();
+            if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
+              this.data.setSelectedImage(nextSelectedImg, followSelected);
+            }
           }
         } catch (InterruptedException e) {
           end();

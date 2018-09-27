@@ -32,6 +32,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
@@ -57,16 +58,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 
   private volatile MapillaryAbstractImage image;
 
-  private final SideButton nextButton = new SideButton(new NextPictureAction());
-  private final SideButton previousButton = new SideButton(new PreviousPictureAction());
+  private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
+  private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);
   /**
    * Button used to jump to the image following the red line
    */
-  public final SideButton redButton = new SideButton(new RedAction());
+  public final SideButton redButton = new SideButton(SelectNextImageAction.RED_ACTION);
   /**
    * Button used to jump to the image following the blue line
    */
-  public final SideButton blueButton = new SideButton(new BlueAction());
+  public final SideButton blueButton = new SideButton(SelectNextImageAction.BLUE_ACTION);
 
   private final SideButton playButton = new SideButton(new PlayAction());
   private final SideButton pauseButton = new SideButton(new PauseAction());
@@ -116,17 +117,17 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private void addShortcuts() {
     this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
             KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
-    this.nextButton.getActionMap().put("next", new NextPictureAction());
+    this.nextButton.getActionMap().put("next", SelectNextImageAction.NEXT_ACTION);
     this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
             KeyStroke.getKeyStroke("PAGE_UP"), "previous");
     this.previousButton.getActionMap().put("previous",
-            new PreviousPictureAction());
+            SelectNextImageAction.PREVIOUS_ACTION);
     this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
             KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
-    this.blueButton.getActionMap().put("blue", new BlueAction());
+    this.blueButton.getActionMap().put("blue", SelectNextImageAction.BLUE_ACTION);
     this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
             KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
-    this.redButton.getActionMap().put("red", new RedAction());
+    this.redButton.getActionMap().put("red", SelectNextImageAction.RED_ACTION);
   }
 
   /**
@@ -341,110 +342,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized MapillaryAbstractImage getImage() {
     return this.image;
-  }
-
-  /**
-   * Action class form the next image button.
-   *
-   * @author nokutu
-   */
-  private static class NextPictureAction extends AbstractAction {
-
-    private static final long serialVersionUID = 3023827221453154340L;
-
-    /**
-     * Constructs a normal NextPictureAction
-     */
-    NextPictureAction() {
-      super(tr("Next picture"));
-      putValue(SHORT_DESCRIPTION, tr("Shows the next picture in the sequence"));
-      new ImageProvider("dialogs", "next").getResource().attachImageIcon(this, true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      MapillaryLayer.getInstance().getData().selectNext();
-    }
-  }
-
-  /**
-   * Action class for the previous image button.
-   *
-   * @author nokutu
-   */
-  private static class PreviousPictureAction extends AbstractAction {
-
-    private static final long serialVersionUID = -6420511632957956012L;
-
-    /**
-     * Constructs a normal PreviousPictureAction
-     */
-    PreviousPictureAction() {
-      super(tr("Previous picture"));
-      putValue(SHORT_DESCRIPTION, tr("Shows the previous picture in the sequence"));
-      new ImageProvider("dialogs", "previous").getResource().attachImageIcon(this, true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      MapillaryLayer.getInstance().getData().selectPrevious();
-    }
-  }
-
-  /**
-   * Action class to jump to the image following the red line.
-   *
-   * @author nokutu
-   */
-  private static class RedAction extends AbstractAction {
-
-    private static final long serialVersionUID = -6480229431481386376L;
-
-    /**
-     * Constructs a normal RedAction
-     */
-    RedAction() {
-      putValue(NAME, tr("Jump to red"));
-      putValue(SHORT_DESCRIPTION,
-              tr("Jumps to the picture at the other side of the red line"));
-      new ImageProvider("dialogs", "red").getResource().attachImageIcon(this, true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryLayer.getInstance().getData()
-                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(1), true);
-      }
-    }
-  }
-
-  /**
-   * Action class to jump to the image following the blue line.
-   *
-   * @author nokutu
-   */
-  private static class BlueAction extends AbstractAction {
-
-    private static final long serialVersionUID = 6250690644594703314L;
-
-    /**
-     * Constructs a normal BlueAction
-     */
-    BlueAction() {
-      putValue(NAME, tr("Jump to blue"));
-      putValue(SHORT_DESCRIPTION,
-              tr("Jumps to the picture at the other side of the blue line"));
-      new ImageProvider("dialogs", "blue").getResource().attachImageIcon(this, true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryLayer.getInstance().getData()
-                .setSelectedImage(MapillaryLayer.getInstance().getNNearestImage(2), true);
-      }
-    }
   }
 
   private static class StopAction extends AbstractAction implements WalkListener {

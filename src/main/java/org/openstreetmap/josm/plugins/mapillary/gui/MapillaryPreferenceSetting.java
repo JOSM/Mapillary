@@ -64,7 +64,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     new JCheckBox(I18n.tr("Use 24 hour format"), MapillaryProperties.TIME_FORMAT_24.get());
   private final JCheckBox moveTo =
     // i18n: Checkbox label in JOSM settings
-    new JCheckBox(I18n.tr("Move to picture''s location with next/previous buttons"), MapillaryProperties.MOVE_TO_IMG.get());
+    new JCheckBox(I18n.tr("Center view on new image when using the buttons to jump to another image"), MapillaryProperties.MOVE_TO_IMG.get());
   private final JCheckBox hoverEnabled =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
