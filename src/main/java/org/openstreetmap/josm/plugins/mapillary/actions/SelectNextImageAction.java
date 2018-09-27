@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.function.Supplier;
 
 import javax.swing.AbstractAction;
@@ -61,13 +62,13 @@ public class SelectNextImageAction extends AbstractAction {
     () -> MapillaryLayer.getInstance().getNNearestImage(2)
   );
 
-  private final Supplier<MapillaryAbstractImage> destinationImgSupplier;
+  private final SerializableSupplier<MapillaryAbstractImage> destinationImgSupplier;
 
   private SelectNextImageAction(
     final String name,
     final String description,
     final ImageProvider icon,
-    final Supplier<MapillaryAbstractImage> destinationImgSupplier
+    final SerializableSupplier<MapillaryAbstractImage> destinationImgSupplier
   ) {
     super(name);
     putValue(SHORT_DESCRIPTION, description);
@@ -82,4 +83,7 @@ public class SelectNextImageAction extends AbstractAction {
       MapillaryLayer.getInstance().getData().setSelectedImage(newSelectedImage, MapillaryProperties.MOVE_TO_IMG.get());
     }
   }
+
+  @FunctionalInterface
+  private interface SerializableSupplier<T> extends Supplier<T>, Serializable { }
 }

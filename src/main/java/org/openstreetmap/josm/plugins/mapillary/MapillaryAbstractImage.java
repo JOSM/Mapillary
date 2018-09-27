@@ -211,11 +211,11 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   /**
    * Moves the image temporally to another position
    *
-   * @param x The movement of the image in longitude units.
-   * @param y The movement of the image in latitude units.
+   * @param lonDelta The movement of the image in longitude units.
+   * @param latDelta The movement of the image in latitude units.
    */
-  public void move(final double x, final double y) {
-    this.movingLatLon = new LatLon(this.tempLatLon.getY() + y, this.tempLatLon.getX() + x);
+  public void move(final double lonDelta, final double latDelta) {
+    this.movingLatLon = new LatLon(this.tempLatLon.getY() + latDelta, this.tempLatLon.getX() + lonDelta);
   }
 
   /**
