@@ -72,11 +72,11 @@ build with java 10:
 # Deploy stage #
 ################
 
-upload to transifex:
+transifex.com:
   image: registry.gitlab.com/josm/docker-library/python-transifex:latest
   stage: deploy
   environment:
-    name: transifex
+    name: transifex.com
     url: https://www.transifex.com/josm/josm/josm-plugin_Mapillary/
   script:
   - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
@@ -105,11 +105,11 @@ codecov.io:
     refs:
     - master@JOSM/Mapillary
 
-sonarqube:
+sonarcloud.io:
   image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
   stage: deploy
   environment:
-    name: SonarQube
+    name: sonarcloud.io
     url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
   script:
   - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
