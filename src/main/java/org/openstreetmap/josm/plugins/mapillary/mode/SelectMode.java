@@ -52,46 +52,39 @@ public class SelectMode extends AbstractMode {
     if (e.getButton() != MouseEvent.BUTTON1) {
       return;
     }
-    MapillaryAbstractImage closest = getClosest(e.getPoint());
-    if (!(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer)
-            && closest != null && MainApplication.getMap().mapMode == MainApplication.getMap().mapModeSelect) {
-      this.lastClicked = this.closest;
-      MapillaryLayer.getInstance().getData().setSelectedImage(closest);
-      return;
-    } else if (MainApplication.getLayerManager().getActiveLayer() != MapillaryLayer.getInstance()) {
+    final MapillaryAbstractImage closest = getClosest(e.getPoint());
+    if (closest == null) {
       return;
     }
-    // Double click
-    if (e.getClickCount() == 2 && MapillaryLayer.getInstance().getData().getSelectedImage() != null && closest != null) {
-      closest.getSequence().getImages().forEach(MapillaryLayer.getInstance().getData()::addMultiSelectedImage);
+
+    if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
+      if (e.getClickCount() == 2) { // Double click
+        if (e.getButton() == MouseEvent.BUTTON1 && MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
+          MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
+        }
+      } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) { // ctrl + click
+        MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest);
+      } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)) { // shift + click
+        if (lastClicked != null && closest.getSequence() == lastClicked.getSequence()) {
+          final int i = closest.getSequence().getImages().indexOf(closest);
+          final int j = lastClicked.getSequence().getImages().indexOf(lastClicked);
+          MapillaryLayer.getInstance().getData().addMultiSelectedImage(
+            new ConcurrentSkipListSet<>(closest.getSequence().getImages().subList(
+              i < j ? i : j,
+              i < j ? j + 1 : i + 1
+            ))
+          );
+        }
+      } else { // click
+        MapillaryLayer.getInstance().getData().setSelectedImage(closest);
+      }
+    } else { // If the MapillaryLayer is NOT selected
+      if (MainApplication.getMap().mapMode == MainApplication.getMap().mapModeSelect) {
+        MapillaryLayer.getInstance().getData().setSelectedImage(closest);
+      }
     }
     this.lastClicked = this.closest;
     this.closest = closest;
-    if (closest != null && MapillaryLayer.getInstance().getData().getMultiSelectedImages().contains(closest)) {
-      return;
-    }
-    // ctrl+click
-    if (e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.CTRL_MASK) && closest != null) {
-      MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest);
-      // shift + click
-    } else if (
-            e.getModifiers() == (InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK)
-                    && this.lastClicked instanceof MapillaryImage
-            ) {
-      if (this.closest != null
-              && this.closest.getSequence() == (this.lastClicked).getSequence()) {
-        int i = this.closest.getSequence().getImages().indexOf(this.closest);
-        int j = this.lastClicked.getSequence().getImages().indexOf(this.lastClicked);
-        MapillaryLayer.getInstance().getData().addMultiSelectedImage(
-                i < j
-                        ? new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(i, j + 1))
-                        : new ConcurrentSkipListSet<>(this.closest.getSequence().getImages().subList(j, i + 1))
-        );
-      }
-      // click
-    } else {
-      MapillaryLayer.getInstance().getData().setSelectedImage(closest);
-    }
   }
 
   @Override
