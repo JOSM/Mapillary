@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.junit.runners.model.InitializationError;
@@ -28,30 +29,31 @@ public final class TestUtil {
     // Prevent instantiation
   }
 
-  public static Field getAccessibleField(Class<?> clazz, String fieldName) {
-    try {
-      Field result = clazz.getDeclaredField(fieldName);
-      result.setAccessible(true);
-      Field modifiers = Field.class.getDeclaredField("modifiers");
-      modifiers.setAccessible(true);
-      modifiers.setInt(result, modifiers.getInt(result) & ~Modifier.FINAL);
-      return result;
-    } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-      fail(e.getLocalizedMessage());
-    }
-    return null;
+  /**
+   * @param object the object for which you want the private field, not null
+   * @param name the name of the private field
+   * @param <T> the type of the object
+   * @return the value of the private field
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> Object getPrivateFieldValue(T object, String name) {
+    return getPrivateFieldValue((Class<T>) Objects.requireNonNull(object).getClass(), object, name);
   }
 
   /**
    * Helper method for obtaining the value of a private field
+   * @param clazz the class of the object
    * @param object the object of which you want the private field
    * @param name the name of the private field
    * @return the current value that field has
    */
-  public static Object getPrivateFieldValue(Object object, String name) {
+  public static <T> Object getPrivateFieldValue(Class<T> clazz, T object, String name) {
     try {
-      return getAccessibleField(object.getClass(), name).get(object);
-    } catch (IllegalAccessException | SecurityException e) {
+      final Field field = clazz.getDeclaredField(name);
+      field.setAccessible(true);
+      return field.get(object);
+    } catch (IllegalAccessException | SecurityException | NoSuchFieldException e) {
+      Logging.error(e);
       fail(e.getLocalizedMessage());
     }
     return null;
@@ -71,10 +73,13 @@ public final class TestUtil {
       assertEquals(1, c.getDeclaredConstructors().length);
       final Constructor<?> constructor = c.getDeclaredConstructors()[0];
       // constructor has to be private
-      assertTrue(!constructor.isAccessible() && Modifier.isPrivate(constructor.getModifiers()));
-      constructor.setAccessible(true);
+      assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+
       // Call private constructor for code coverage
+      constructor.setAccessible(true);
       constructor.newInstance();
+      constructor.setAccessible(false);
+
       for (Method m : c.getMethods()) {
         // Check if all methods are static
         assertTrue(m.getDeclaringClass() != c || Modifier.isStatic(m.getModifiers()));
@@ -93,5 +98,22 @@ public final class TestUtil {
       super.before();
       System.setProperty("java.awt.headless", isHeadless);
     }
+  }
+
+  public static String getApiV3BaseUrl() {
+    return MapillaryURL.APIv3.baseUrl;
+  }
+
+  public static void setAPIv3BaseUrl(final String baseUrl) {
+    MapillaryURL.APIv3.baseUrl = baseUrl;
+  }
+
+
+  public static String getMainWebsiteBaseUrl() {
+    return MapillaryURL.MainWebsite.baseUrl;
+  }
+
+  public static void setMainWebsiteBaseUrl(final String baseUrl) {
+    MapillaryURL.MainWebsite.baseUrl = baseUrl;
   }
 }

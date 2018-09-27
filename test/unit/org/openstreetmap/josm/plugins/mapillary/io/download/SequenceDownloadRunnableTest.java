@@ -1,14 +1,26 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.noContent;
+import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.Function;
 
-import org.junit.AfterClass;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,59 +36,77 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 public class SequenceDownloadRunnableTest {
 
   @Rule
+  public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
+
+  @Rule
   public JOSMTestRules rules = new MapillaryTestRules();
 
   private static final Function<Bounds, URL> SEARCH_SEQUENCES_URL_GEN = b ->
     SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json");
 
-  private Field urlGenField;
+  private String oldBaseUrl;
 
   @Before
   public void setUp() {
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 
-    urlGenField = TestUtil.getAccessibleField(SequenceDownloadRunnable.class, "URL_GEN");
+    oldBaseUrl = TestUtil.getApiV3BaseUrl();
+    TestUtil.setAPIv3BaseUrl("http://localhost:" + wmRule.port() + "/");
   }
 
-  @AfterClass
-  public static void tearDown() {
+  @After
+  public void tearDown() {
     MainApplication.getLayerManager().resetState();
+    TestUtil.setAPIv3BaseUrl(oldBaseUrl);
   }
 
   @Test
-  public void testRun1() throws IllegalArgumentException, IllegalAccessException {
-    testNumberOfDecodedImages(4, SEARCH_SEQUENCES_URL_GEN, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
+  public void testRun1() {
+    testNumberOfDecodedImages(4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
   }
 
   @Test
-  public void testRun2() throws IllegalArgumentException, IllegalAccessException {
-    testNumberOfDecodedImages(0, SEARCH_SEQUENCES_URL_GEN, new Bounds(0, 0, 0, 0));
+  public void testRun2() {
+    testNumberOfDecodedImages(0, new Bounds(0, 0, 0, 0));
   }
 
   @Test
-  public void testRun3() throws IllegalArgumentException, IllegalAccessException {
-    testNumberOfDecodedImages(0, b -> {
-      try { return new URL("https://example.org/nonexistentURL"); } catch (MalformedURLException e) { return null; }
-    }, new Bounds(0, 0, 0, 0));
+  public void testRun3() {
+    stubFor(get(anyUrl()).willReturn(notFound()));
+    final SequenceDownloadRunnable sdr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), new Bounds(0, 0, 0, 0));
+    sdr.run();
+    assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
+    stubFor(get(anyUrl()).willReturn(noContent()));
+    sdr.run();
+    assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
   }
 
   @Test
-  public void testRun4() throws IllegalArgumentException, IllegalAccessException {
+  public void testRun4() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
-    testNumberOfDecodedImages(4, SEARCH_SEQUENCES_URL_GEN, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
+    testNumberOfDecodedImages(4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
   }
 
   @Test
-  public void testRun5() throws IllegalArgumentException, IllegalAccessException {
+  public void testRun5() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
-    testNumberOfDecodedImages(0, SEARCH_SEQUENCES_URL_GEN, new Bounds(0, 0, 0, 0));
+    testNumberOfDecodedImages(0, new Bounds(0, 0, 0, 0));
   }
 
-  private void testNumberOfDecodedImages(int expectedNumImgs, Function<Bounds, URL> urlGen, Bounds bounds)
-      throws IllegalArgumentException, IllegalAccessException {
+  private static void testNumberOfDecodedImages(int expectedNumImgs, Bounds bounds) {
+    try {
+      stubFor(
+        get(urlMatching("/sequences\\?.+"))
+          .willReturn(aResponse().withStatus(200).withBody(
+            Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json").toURI()))
+          ))
+      );
+    } catch (IOException | URISyntaxException e) {
+      fail(e.getMessage());
+    }
+
     SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds);
-    urlGenField.set(null, urlGen);
     r.run();
     assertEquals(expectedNumImgs, MapillaryLayer.getInstance().getData().getImages().size());
   }

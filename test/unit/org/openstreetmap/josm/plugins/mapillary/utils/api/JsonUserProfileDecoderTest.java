@@ -32,7 +32,7 @@ public class JsonUserProfileDecoderTest {
   public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private static Object getFakeAvatar() throws IllegalAccessException {
-    return TestUtil.getAccessibleField(JsonUserProfileDecoder.class, "FAKE_AVATAR").get(null);
+    return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");
   }
 
   @Test

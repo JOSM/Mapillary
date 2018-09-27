@@ -19,37 +19,37 @@ public final class MapillaryURL {
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
 
   public static final class APIv3 {
-    private static final String BASE_URL = "https://a.mapillary.com/v3/";
+    static String baseUrl = "https://a.mapillary.com/v3/";
 
     private APIv3() {
       // Private constructor to avoid instantiation
     }
 
     public static URL getUser(String key) {
-      return string2URL(BASE_URL, "users/", key, MapillaryURL.queryString(null));
+      return string2URL(baseUrl, "users/", key, MapillaryURL.queryString(null));
     }
 
     /**
      * @return the URL where you can create, get and approve changesets
      */
     public static URL submitChangeset() {
-      return string2URL(BASE_URL, "changesets", queryString(null));
+      return string2URL(baseUrl, "changesets", queryString(null));
     }
 
     public static URL searchDetections(Bounds bounds) {
-      return string2URL(BASE_URL, "detections", queryString(bounds));
+      return string2URL(baseUrl, "detections", queryString(bounds));
     }
 
     public static URL searchImages(Bounds bounds) {
-      return string2URL(BASE_URL, "images", queryString(bounds));
+      return string2URL(baseUrl, "images", queryString(bounds));
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(BASE_URL, "objects", queryString(bounds));
+      return string2URL(baseUrl, "objects", queryString(bounds));
     }
 
     public static URL searchSequences(final Bounds bounds) {
-      return string2URL(BASE_URL, "sequences", queryString(bounds));
+      return string2URL(baseUrl, "sequences", queryString(bounds));
     }
 
     /**
@@ -99,7 +99,7 @@ public final class MapillaryURL {
      * @return the URL where you'll find information about the user account as JSON
      */
     public static URL userURL() {
-      return string2URL(BASE_URL, "me", MapillaryURL.queryString(null));
+      return string2URL(baseUrl, "me", MapillaryURL.queryString(null));
     }
   }
 
@@ -116,7 +116,7 @@ public final class MapillaryURL {
   }
 
   public static final class MainWebsite {
-    private static final String BASE_URL = "https://www.mapillary.com/";
+    static String baseUrl = "https://www.mapillary.com/";
 
     private MainWebsite() {
       // Private constructor to avoid instantiation
@@ -132,7 +132,7 @@ public final class MapillaryURL {
       if (key == null) {
         throw new IllegalArgumentException("The image key must not be null!");
       }
-      return string2URL(BASE_URL, "map/im/", key);
+      return string2URL(baseUrl, "map/im/", key);
     }
 
     /**
@@ -152,7 +152,7 @@ public final class MapillaryURL {
         Logging.log(Logging.LEVEL_ERROR, "Unsupported encoding when URL encoding", e);
         urlEncodedKey = key;
       }
-      return string2URL(BASE_URL, "app/blur?focus=photo&pKey=", urlEncodedKey);
+      return string2URL(baseUrl, "app/blur?focus=photo&pKey=", urlEncodedKey);
     }
 
     /**
@@ -168,11 +168,11 @@ public final class MapillaryURL {
       }
       parts.put("response_type", "token");
       parts.put("scope", "user:read public:upload public:write");
-      return string2URL(BASE_URL, "connect", queryString(parts));
+      return string2URL(baseUrl, "connect", queryString(parts));
     }
 
     public static URL mapObjectIcon(String key) {
-      return string2URL(BASE_URL, "developer/api-documentation/images/traffic_sign/" + key + ".png");
+      return string2URL(baseUrl, "developer/api-documentation/images/traffic_sign/" + key + ".png");
     }
   }
 

@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.Map.Entry;
 
@@ -17,26 +16,26 @@ import javax.json.JsonValue;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
 public class JsonLocationChangesetEncoderTest {
   @Test
-  public void test() throws IllegalArgumentException, IllegalAccessException {
-    Field tempLatLonField = TestUtil.getAccessibleField(MapillaryAbstractImage.class, "tempLatLon");
-    Field tempCaField = TestUtil.getAccessibleField(MapillaryAbstractImage.class, "tempCa");
-
+  public void test() throws IllegalArgumentException {
     MapillaryImage img1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(0, 0), 0, false);
-    tempLatLonField.set(img1, new LatLon(50.44612, 13.3323));
-    tempCaField.set(img1, 273.3);
+    img1.move(13.3323, 50.44612);
+    img1.turn(273.3);
+    img1.stopMoving();
     MapillaryImage img2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0, false);
-    tempLatLonField.set(img2, new LatLon(50.44619, 13.3328));
+    img2.move(13.3328, 50.44619);
+    img2.stopMoving();
     MapillaryImage img3 = new MapillaryImage("31KDbCOzla0fJBtIeoBr1A", new LatLon(0, 0), 0, false);
-    tempCaField.set(img3, 13.4);
+    img3.turn(13.4);
+    img3.stopMoving();
     MapillaryImage img4 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0, false);
-    tempCaField.set(img4, 13.4);
+    img4.turn(13.4);
+    img4.stopMoving();
 
     MapillaryLocationChangeset cs = new MapillaryLocationChangeset();
     cs.add(img1);

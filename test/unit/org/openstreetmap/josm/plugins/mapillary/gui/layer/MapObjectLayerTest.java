@@ -1,25 +1,32 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.function.Function;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.Icon;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapObjectDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -28,24 +35,22 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 public class MapObjectLayerTest {
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules();
+  public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
 
-  private static Field urlGen;
-  private static Object urlGenValue;
+  @Rule
+  public JOSMTestRules rules = new MapillaryTestRules().timeout(20000);
 
-  @BeforeClass
-  public static void setUp() throws IllegalAccessException {
-    urlGen = TestUtil.getAccessibleField(MapObjectDownloadRunnable.class, "URL_GEN");
+  private static String oldBaseUrl;
 
-    urlGenValue = urlGen.get(null);
-    urlGen.set(null,
-      (Function<Bounds, URL>) str -> MapObjectLayer.class.getResource("/api/v3/responses/searchMapObjects.json")
-    );
+  @Before
+  public void setUp() {
+    oldBaseUrl = TestUtil.getApiV3BaseUrl();
+    TestUtil.setAPIv3BaseUrl("http://localhost:" + wmRule.port() + "/");
   }
 
-  @AfterClass
-  public static void cleanUp() throws IllegalArgumentException, IllegalAccessException {
-    urlGen.set(null, urlGenValue);
+  @After
+  public void cleanUp() throws IllegalArgumentException {
+    TestUtil.setAPIv3BaseUrl(oldBaseUrl);
   }
 
   @Test
@@ -55,10 +60,23 @@ public class MapObjectLayerTest {
   }
 
   @Test
-  public void testScheduleDownload() throws InterruptedException {
+  public void testScheduleDownload() throws InterruptedException, URISyntaxException, IOException {
+    stubFor(
+      get(urlMatching("/objects\\?.+"))
+        .withQueryParam("client_id", new EqualToPattern("T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
+        .withQueryParam("bbox", new EqualToPattern("1.0,1.0,1.0,1.0"))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withBody(Files.readAllBytes(
+              Paths.get(MapObjectLayerTest.class.getResource("/api/v3/responses/searchMapObjects.json").toURI())
+            ))
+        )
+    );
+
     MapObjectLayer.getInstance().scheduleDownload(new Bounds(1,1,1,1));
-    // Wait for a maximum of 10 sec for a result
-    for (int i = 0; MapObjectLayer.getInstance().getObjectCount() <= 0 && i < 100; i++) {
+    // Wait for a maximum of 5 sec for a result
+    for (int i = 0; MapObjectLayer.getInstance().getObjectCount() <= 0 && i < 50; i++) {
       Thread.sleep(100);
     }
     assertEquals(1, MapObjectLayer.getInstance().getObjectCount());
