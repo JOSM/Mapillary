@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="Mapillary" default="dist" basedir=".">
   <property name="plugin.src.dir" value="src/main/java"/>
+  <property name="plugin.resources.dir" value="src/main/resources"/>
 
   <!-- edit the properties of this plugin in the file `gradle.properties` -->
   <property file="${basedir}/gradle.properties"/>
@@ -14,7 +15,7 @@
   <!-- Override the `setup-dist-default` task from build-common.xml -->
   <target name="setup-dist-default">
     <copy todir="${plugin.build.dir}" failonerror="no" includeemptydirs="no">
-      <fileset dir="src/main/resources"/>
+      <fileset dir="${plugin.resources.dir}"/>
     </copy>
     <copy todir="${plugin.build.dir}">
       <fileset dir=".">
