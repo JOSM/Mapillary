@@ -49,7 +49,7 @@ tasks.withType<JavaCompile>().configureEach {
 apply(from = "gradle/tool-config.gradle")
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-convention.getPlugin(BasePluginConvention::class.java).archivesBaseName = "Mapillary"
+base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
@@ -148,6 +148,51 @@ tasks {
       info {
         events = setOf(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
         showStandardStreams = true
+      }
+    }
+  }
+}
+
+// Configuration for publishing to Maven repository at gitlab.com/JOSM/plugins
+val PROJECT_ID = 8611940 // repository JOSM/plugins
+val PERSONAL_ACCESS_TOKEN = System.getenv("PERSONAL_ACCESS_TOKEN")
+
+publishing {
+  repositories {
+    maven("https://gitlab.com/api/v4/projects/$PROJECT_ID/packages/maven") {
+      if (PERSONAL_ACCESS_TOKEN != null) {
+        credentials(HttpHeaderCredentials::class) {
+          name = "Private-Token"
+          value = PERSONAL_ACCESS_TOKEN
+        }
+        authentication {
+          removeAll { a -> true }
+          create("auth", HttpHeaderAuthentication::class)
+        }
+      }
+    }
+  }
+  publications {
+    create("plugins", MavenPublication::class) {
+      artifactId = base.archivesBaseName
+      groupId = "org.openstreetmap.josm.plugins"
+      version = project.version.toString()
+      from(components["java"])
+      pom {
+        name.set("JOSM-${base.archivesBaseName}")
+        description.set("The Mapillary plugin for JOSM")
+        url.set("https://gitlab.com/JOSM/Mapillary")
+        licenses {
+          license {
+            name.set("GNU General Public License Version 2")
+            url.set("https://www.gnu.org/licenses/old-licenses/gpl-2.0")
+          }
+        }
+        scm {
+          connection.set("scm:git:git://gitlab.com/JOSM/Mapillary.git")
+          developerConnection.set("scm:git:ssh://gitlab.com/JOSM/Mapillary.git")
+          url.set("https://gitlab.com/JOSM/Mapillary")
+        }
       }
     }
   }

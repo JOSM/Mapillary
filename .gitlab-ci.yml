@@ -1,14 +1,5 @@
 image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 
-before_script:
-- export GRADLE_USER_HOME=`pwd`/.gradle
-
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
-
 ###############
 # Build stage #
 ###############
@@ -104,6 +95,8 @@ codecov.io:
   only:
     refs:
     - master@JOSM/Mapillary
+    variables:
+    - $CODECOV_TOKEN
 
 sonarcloud.io:
   image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
@@ -120,6 +113,21 @@ sonarcloud.io:
     - master@JOSM/Mapillary
     variables:
     - $SONAR_TOKEN
+
+GitLab Maven repo:
+  stage: deploy
+  environment:
+    name: GitLab Maven Repository for JOSM plugins
+    url: https://gitlab.com/JOSM/plugins/-/packages
+  script:
+  - ./gradlew publish
+  dependencies:
+  - build
+  only:
+    refs:
+    - tags@JOSM/Mapillary
+    variables:
+    - $PERSONAL_ACCESS_TOKEN
 
 release:
   stage: deploy
