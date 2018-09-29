@@ -102,11 +102,17 @@ public class SequenceDownloadRunnableTest {
             Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json").toURI()))
           ))
       );
+      stubFor(
+        get(urlMatching("/users/[A-Za-z0-9-]+\\?.+"))
+          .willReturn(aResponse().withStatus(200).withBody(
+            Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/userProfile.json").toURI()))
+          ))
+      );
     } catch (IOException | URISyntaxException e) {
       fail(e.getMessage());
     }
 
-    SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds);
+    final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds);
     r.run();
     assertEquals(expectedNumImgs, MapillaryLayer.getInstance().getData().getImages().size());
   }
