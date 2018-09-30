@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 09:46+0000\n"
+"POT-Creation-Date: 2018-09-30 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -46,6 +46,11 @@ msgstr "嘗試送出變更組合時發生例外狀況發生了。如果重覆發
 
 msgid "Cancel"
 msgstr "取消"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr "使用按鈕跳到其他影像時，置中新的影像"
 
 #, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
@@ -298,10 +303,6 @@ msgstr "Mapillary 物件"
 msgid "Months"
 msgstr "月"
 
-#. i18n: Checkbox label in JOSM settings
-msgid "Move to picture''s location with next/previous buttons"
-msgstr "用下一張/前一張按鈕移動到圖片位置"
-
 #, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
@@ -331,6 +332,9 @@ msgstr "禁止停車"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "禁止轉彎"
+
+msgid "Not logged in to Mapillary"
+msgstr "沒有登入 Mapillary"
 
 msgid "Not older than: "
 msgstr "不早於： "

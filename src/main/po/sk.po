@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 09:46+0000\n"
+"POT-Creation-Date: 2018-09-30 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Slovak (https://www.transifex.com/josm/teams/2544/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -297,10 +297,6 @@ msgstr "Objekty Mapillary"
 
 msgid "Months"
 msgstr "Mesiacov"
-
-#. i18n: Checkbox label in JOSM settings
-msgid "Move to picture''s location with next/previous buttons"
-msgstr "Tlačidlom nasledujúci/predchádzajúci sa presunúť na pozíciu obrázka"
 
 #, java-format
 msgid "Moved {0} image"

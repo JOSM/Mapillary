@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 09:46+0000\n"
+"POT-Creation-Date: 2018-09-30 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Latvian (https://www.transifex.com/josm/teams/2544/lv/)\n"
 "MIME-Version: 1.0\n"
@@ -52,6 +52,9 @@ msgstr "Izmaiņu augšupielāde neizdevās ar {0} kļūdu ''{1} {2}''!"
 msgid "Choose signs"
 msgstr "Izvēlies zīmes"
 
+msgid "Continues with the paused walk."
+msgstr "Turpina pauzēto gājienu."
+
 msgid "Copy key"
 msgstr "Kopēt atslēgu"
 
@@ -70,8 +73,16 @@ msgstr "Nevarēja importēt attēlu ''{0}''!"
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nevarēja atvērt URL {0} pārlūkprogrammā"
 
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "Nevarēja nolasīt no URL {0}!"
+
 msgid "Current Mapillary changeset"
 msgstr "Pašreizējais Mapillary izmaiņu klāsts "
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "Nogriezt sekvences pie lejupielādes robežām"
 
 msgid "Days"
 msgstr "Dienas"
@@ -98,6 +109,14 @@ msgstr "Parāda objektus, kurus Mapillary atrada savos ielu attēlos "
 
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Parāda slāni, kurā redzami Mapillary atrastie kartes objekti"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr ""
+"Vai tu tiešām gribi nomainīt pašreizējo vērtību <i>{0}</i> ar jauno vērtību "
+"<i>{1}</i>?"
 
 msgid "Download Mapillary images in current view"
 msgstr "Lejupielādēt Mapillary attēlus pašreizējā skatā"
@@ -150,6 +169,9 @@ msgstr "No esošā attēlu slāņa"
 
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "No kura avota jūs gribat importēt attēlus Mapillary slānī?"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr "Ieej iestatījumos un ieej Mapillary pirms augšupielādes."
 
 msgid "I got it, close this."
 msgstr "Es saprotu, aizver šo."
@@ -247,6 +269,13 @@ msgstr "Mapillary objekti"
 msgid "Months"
 msgstr "Mēneši"
 
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "Pārvietoja {0} attēlus"
+msgstr[1] "Pārvietoja {0} attēlu"
+msgstr[2] "Pārvietoja {0} attēlus"
+
 msgid "Next picture"
 msgstr "Nākamais attēls"
 
@@ -287,6 +316,9 @@ msgstr "Gājēju pāreja"
 msgid "Play"
 msgstr "Atskaņot"
 
+msgid "Previous picture"
+msgstr "Iepriekšējais attēls"
+
 msgid "Redo"
 msgstr "Atcelt atsaukšanu"
 
@@ -298,6 +330,9 @@ msgstr "Izvēles režīms"
 
 msgid "Select the images you want to import"
 msgstr "Izvēlies attēlus, kurus tu gribi importēt"
+
+msgid "Show detections on top of image"
+msgstr "Rādīt atrastos objektus virs attēlus"
 
 #. i18n: traffic sign
 msgid "Speed limit"
@@ -435,6 +470,9 @@ msgstr "Pietuvināt pie pašlaik izvēlētā Mapillary attēla"
 msgid "approved"
 msgstr "pieņemts"
 
+msgid "image has no key"
+msgstr "attēlam nav atslēgas"
+
 msgid "pending"
 msgstr "pārbauda"
 
@@ -453,6 +491,14 @@ msgstr ""
 "{0}\n"
 "Nevarēja nolasīt kartes objektus no URL\n"
 "{1}!"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} attēli)"
+msgstr[1] "{0} ({1} attēls)"
+msgstr[2] "{0} ({1} attēli)"
 
 #, java-format
 msgid "{0} detections"

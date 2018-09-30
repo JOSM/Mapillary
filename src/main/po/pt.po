@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 09:46+0000\n"
+"POT-Creation-Date: 2018-09-30 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Portuguese (https://www.transifex.com/josm/teams/2544/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,13 @@ msgstr ""
 
 msgid "Cancel"
 msgstr "Cancelar"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr ""
+"Centrar a visualização na nova imagem ao usar os botões para saltar para "
+"outra imagem"
 
 #, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
@@ -310,10 +317,6 @@ msgstr "Objetos Mapillary"
 
 msgid "Months"
 msgstr "Meses"
-
-#. i18n: Checkbox label in JOSM settings
-msgid "Move to picture''s location with next/previous buttons"
-msgstr "Ver a localização da imagem seguinte com os botões seguinte/anterior"
 
 #, java-format
 msgid "Moved {0} image"

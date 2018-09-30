@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary e72ac2d\n"
+"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 09:46+0000\n"
+"POT-Creation-Date: 2018-09-30 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Polish (https://www.transifex.com/josm/teams/2544/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -313,11 +313,6 @@ msgstr "Obiekty Mapillary"
 msgid "Months"
 msgstr "Miesiące"
 
-#. i18n: Checkbox label in JOSM settings
-msgid "Move to picture''s location with next/previous buttons"
-msgstr ""
-"Przesuwaj do lokalizacji zdjęć za pomocą przycisków następny/poprzedni."
-
 #, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
@@ -350,6 +345,9 @@ msgstr "Zakaz postoju"
 #. i18n: traffic sign
 msgid "No turn"
 msgstr "Zakaz zawracania"
+
+msgid "Not logged in to Mapillary"
+msgstr "Niezalogowany do Mapillary"
 
 msgid "Not older than: "
 msgstr "Nie starsze niż: "
