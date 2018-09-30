@@ -1,0 +1,16 @@
+image: alpine:3.8
+
+pages:
+  stage: deploy
+  environment:
+    name: pages site
+    url: "https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - pages@JOSM/Mapillary
