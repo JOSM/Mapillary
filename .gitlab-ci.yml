@@ -21,6 +21,24 @@ assemble with java 10:
     paths:
     - build/
 
+assemble with java 11:
+  stage: build
+  image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
+  script:
+  - ./gradlew assemble --stacktrace
+  artifacts:
+    paths:
+    - build/
+
+assemble with java 12:
+  stage: build
+  image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
+  script:
+  - ./gradlew assemble --stacktrace
+  artifacts:
+    paths:
+    - build/
+
 
 ##############
 # Test stage #
@@ -57,6 +75,22 @@ build with java 10:
   - ./gradlew build --stacktrace
   dependencies:
   - assemble with java 10
+
+build with java 11:
+  stage: test
+  image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
+  script:
+  - ./gradlew build --stacktrace
+  dependencies:
+  - assemble with java 11
+
+build with java 12:
+  stage: test
+  image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
+  script:
+  - ./gradlew build --stacktrace
+  dependencies:
+  - assemble with java 12
 
 
 ################

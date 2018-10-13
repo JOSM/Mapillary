@@ -4,12 +4,12 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.openstreetmap.josm.gradle.plugin.config.I18nConfig
 import org.openstreetmap.josm.gradle.plugin.config.JosmManifest
-import org.openstreetmap.josm.plugins.mapillary.build.ConvertMarkdown
+import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
   id("org.sonarqube") version "2.6.2"
-  id("org.openstreetmap.josm") version "0.5.1"
+  id("org.openstreetmap.josm") version "0.5.3"
   id("com.github.ben-manes.versions") version "0.20.0"
   id("com.github.spotbugs") version "1.6.4"
   id("net.ltgt.errorprone") version "0.6"
@@ -27,12 +27,12 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.3.1")
+  errorprone("com.google.errorprone:error_prone_core:2.3.2")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
 }
-tasks.withType<JavaCompile>().configureEach {
+tasks.withType(JavaCompile::class).configureEach {
   options.compilerArgs.addAll(listOf("-Xlint:all", "-Xlint:-serial"))
   options.errorprone {
     check("ClassCanBeStatic", CheckSeverity.ERROR)
@@ -83,16 +83,16 @@ tasks {
   }
 }
 
-tasks.create("md2html", ConvertMarkdown::class) {
-  srcDir = projectDir
+tasks.create("md2html", MarkdownToHtml::class) {
   destDir = File(buildDir, "md2html")
-  includes = arrayOf("README.md", "LICENSE.md")
+  source(projectDir)
+  include("README.md", "LICENSE.md")
   tasks.withType(ProcessResources::class)["processResources"].from(this)
 }
 
 josm {
   debugPort = 7051
-  manifest.closureOf<JosmManifest> {
+  manifest {
     // See https://floscher.github.io/gradle-josm-plugin/kdoc/current/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
     oldVersionDownloadLink(13733, "v1.5.15", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.15/Mapillary.jar"))
     oldVersionDownloadLink(13643, "v1.5.14", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.14/Mapillary.jar"))
@@ -102,7 +102,7 @@ josm {
     oldVersionDownloadLink(12128, "v1.5.5", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.5/Mapillary.jar"))
     oldVersionDownloadLink(10824, "v1.5.3", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar"))
   }
-  i18n.closureOf<I18nConfig> {
+  i18n {
     pathTransformer = getPathTransformer("gitlab.com/JOSM/Mapillary/blob")
   }
 }

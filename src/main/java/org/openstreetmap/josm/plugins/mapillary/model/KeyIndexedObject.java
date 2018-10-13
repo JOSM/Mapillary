@@ -41,14 +41,11 @@ public class KeyIndexedObject {
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (!(obj instanceof KeyIndexedObject)) {
       return false;
     }
     KeyIndexedObject other = (KeyIndexedObject) obj;
-    if (!key.equals(other.key)) {
-      return false;
-    }
-    return true;
+    return key.equals(other.key);
   }
 
 }

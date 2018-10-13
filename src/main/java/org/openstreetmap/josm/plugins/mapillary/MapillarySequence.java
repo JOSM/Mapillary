@@ -174,7 +174,7 @@ public class MapillarySequence {
   }
 
   private void setUser(String userKey) {
-    (new Thread(() -> {
+    new Thread(() -> {
       UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
       if (cachedProfile == null) {
         try {
@@ -190,6 +190,6 @@ public class MapillarySequence {
       }
 
       this.user = Caches.UserProfileCache.getInstance().get(userKey);
-    }, "userProfileDownload_" + userKey)).start();
+    }, "userProfileDownload_" + userKey).start();
  }
 }
