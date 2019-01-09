@@ -27,11 +27,11 @@ public final class JsonMapObjectDecoder {
     final JsonValue geometry = json.get("geometry");
     if (properties instanceof JsonObject && geometry instanceof JsonObject) {
       final String key = ((JsonObject) properties).getString("key", null);
-      final String packg = ((JsonObject) properties).getString("package", null);
+      final String layer = ((JsonObject) properties).getString("layer", null);
       final String value = ((JsonObject) properties).getString("value", null);
       final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("first_seen_at", null));
       final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("last_seen_at", null));
-      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("updated_at", null));
+      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("last_seen_at", null));
 
       final JsonValue coordVal = "Point".equals(((JsonObject) geometry).getString("type", null))
         ? ((JsonObject) geometry).get("coordinates")
@@ -40,19 +40,18 @@ public final class JsonMapObjectDecoder {
 
       if (
         key != null &&
-        packg != null &&
+        layer != null &&
         value != null &&
         firstSeenTime != null &&
         lastSeenTime != null &&
-        updatedTime != null &&
         coordinate != null
       ) {
         return new MapObject(
           coordinate,
           key,
-          packg,
+          layer,
           value,
-          firstSeenTime, lastSeenTime, updatedTime
+          firstSeenTime, lastSeenTime
         );
       }
     }

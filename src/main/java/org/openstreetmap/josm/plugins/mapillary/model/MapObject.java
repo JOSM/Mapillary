@@ -19,26 +19,24 @@ public class MapObject extends KeyIndexedObject {
   private static final Function<String, URL> iconUrlGen = MainWebsite::mapObjectIcon;
 
   private final LatLon coordinate;
-  private final String objPackage;
+  private final String layer;
   private final String value;
   private final long firstSeenTime;
   private final long lastSeenTime;
-  private final long updatedTime;
 
   public MapObject(
-    final LatLon coordinate, final String key, final String objPackage, final String value,
-    long firstSeenTime, long lastSeenTime, long updatedTime
+    final LatLon coordinate, final String key, final String layer, final String value,
+    long firstSeenTime, long lastSeenTime
   ) {
     super(key);
-    if (objPackage == null || value == null || coordinate == null) {
+    if (layer == null || value == null || coordinate == null) {
       throw new IllegalArgumentException("The fields of a MapObject must not be null!");
     }
     this.coordinate = coordinate;
-    this.objPackage = objPackage;
+    this.layer = layer;
     this.value = value;
     this.firstSeenTime = firstSeenTime;
     this.lastSeenTime = lastSeenTime;
-    this.updatedTime = updatedTime;
   }
 
   public LatLon getCoordinate() {
@@ -67,8 +65,8 @@ public class MapObject extends KeyIndexedObject {
     return cachedIcon;
   }
 
-  public String getPackage() {
-    return objPackage;
+  public String getLayer() {
+    return layer;
   }
 
   public long getFirstSeenTime() {
@@ -77,10 +75,6 @@ public class MapObject extends KeyIndexedObject {
 
   public long getLastSeenTime() {
     return lastSeenTime;
-  }
-
-  public long getUpdatedTime() {
-    return updatedTime;
   }
 
   public String getValue() {
