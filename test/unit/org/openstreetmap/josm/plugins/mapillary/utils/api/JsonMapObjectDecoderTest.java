@@ -37,8 +37,7 @@ public class JsonMapObjectDecoderTest {
 
     assertEquals(1_476_610_976_060L, exampleMapObject.getFirstSeenTime()); // 2016-10-16T09:42:56.060 UTC
     assertEquals(1_476_610_976_060L, exampleMapObject.getLastSeenTime()); // 2016-10-16T09:42:56.060 UTC
-    assertEquals(1_480_422_082_275L, exampleMapObject.getUpdatedTime()); // 2016-11-29T12:21:22.275 UTC
-    assertEquals("trafficsign", exampleMapObject.getPackage());
+    assertEquals("trafficsign", exampleMapObject.getLayer());
     assertEquals("regulatory--no-parking--g1", exampleMapObject.getValue());
     assertEquals("qpku21qv8rjn7fll1v671732th", exampleMapObject.getKey());
     assertEquals(new LatLon(55.608367919921875, 13.005650520324707), exampleMapObject.getCoordinate());
@@ -51,11 +50,10 @@ public class JsonMapObjectDecoderTest {
     );
     assertNotNull(exampleMapObject);
     assertEquals("9f3tl0z2xanom2inyyks65negx", exampleMapObject.getKey());
-    assertEquals("trafficsign", exampleMapObject.getPackage());
+    assertEquals("trafficsign", exampleMapObject.getLayer());
     assertEquals("regulatory--no-entry--g1", exampleMapObject.getValue());
     assertEquals(1_467_377_348_553L, exampleMapObject.getLastSeenTime()); // 2016-07-01T12:49:08.553 UTC
     assertEquals(1_467_377_348_553L, exampleMapObject.getFirstSeenTime()); // 2016-07-01T12:49:08.553 UTC
-    assertEquals(1_486_566_123_778L, exampleMapObject.getUpdatedTime()); // 2017-02-08T15:02:03.778 UTC
   }
 
   @Test

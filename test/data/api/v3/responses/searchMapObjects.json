@@ -9,8 +9,7 @@
         "first_seen_at": "2016-10-16T09:42:56.060Z",
         "key": "qpku21qv8rjn7fll1v671732th",
         "last_seen_at": "2016-10-16T09:42:56.060Z",
-        "package": "trafficsign",
-        "updated_at": "2016-11-29T12:21:22.275Z",
+        "layer": "trafficsign",
         "value": "regulatory--no-parking--g1",
         "detections": [
           {
