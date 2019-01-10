@@ -1,0 +1,38 @@
+{
+  "description": "Mapillary JSOM plugin",
+  "frameworks": [
+    "swing"
+  ],
+  "language": "java",
+  "maintainers": [
+    "jpietri"
+  ],
+  "providers": [
+    {
+      "dependencies": [
+        {
+          "name": "api_v2"
+        },
+        {
+          "name": "api_v3"
+        }
+      ],
+      "extDependencies": [
+        {
+          "documentation": "https://josm.openstreetmap.de/",
+          "name": "JOSM"
+        }
+      ],
+      "description": "Mapillary JSOM plugin",
+      "name": "josm_mapillary_plugin_provider",
+      "services": [
+        {
+          "description": "Mapillary JSOM plugin",
+          "name": "josm_mapillary_plugin"
+        }
+      ],
+      "type": "app_desktop"
+    }
+  ],
+  "repo": "josm-mapillary-plugin"
+}
