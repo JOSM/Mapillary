@@ -17,6 +17,8 @@ public final class MapillaryURL {
   /** Base URL of the Mapillary API. */
   private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
+  private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
+
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
@@ -37,7 +39,7 @@ public final class MapillaryURL {
     }
 
     public static URL searchDetections(Bounds bounds) {
-      return string2URL(baseUrl, "detections", queryString(bounds));
+      return string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER));
     }
 
     public static URL searchImages(Bounds bounds) {
@@ -45,7 +47,7 @@ public final class MapillaryURL {
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "objects", queryString(bounds));
+      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER));
     }
 
     public static URL searchSequences(final Bounds bounds) {
@@ -93,6 +95,19 @@ public final class MapillaryURL {
         return MapillaryURL.queryString(parts);
       }
       return MapillaryURL.queryString(null);
+    }
+
+    public static String queryString(final Bounds bounds, final String layer) {
+      if (layer == null) {
+        throw new IllegalArgumentException("layer cannot be null");
+      }
+      final Map<String, String> parts = new HashMap<>();
+      if (bounds != null) {
+        parts.put("bbox", bounds.toBBox().toStringCSV(","));
+      }
+      parts.put("layers", layer);
+      return MapillaryURL.queryString(parts);
+
     }
 
     /**

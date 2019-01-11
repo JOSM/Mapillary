@@ -43,9 +43,9 @@ public class MapObjectTest {
   private Object iconUnknownType;
 
   private static void initMapObjects() {
-    mo1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
-    mo2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0, 0);
-    mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0, 0);
+    mo1 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0);
+    mo2 = new MapObject(new LatLon(0, 0), "key2", "", "", 0, 0);
+    mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0);
   }
 
   @Before
@@ -66,25 +66,25 @@ public class MapObjectTest {
   @SuppressWarnings({ "unused", "PMD.AvoidDuplicateLiterals" })
   @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx1() {
-    new MapObject(new LatLon(0, 0), null, "", "", 0, 0, 0);
+    new MapObject(new LatLon(0, 0), null, "", "", 0, 0);
   }
 
   @SuppressWarnings("unused")
   @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx2() {
-    new MapObject(new LatLon(0, 0), "", null, "", 0, 0, 0);
+    new MapObject(new LatLon(0, 0), "", null, "", 0, 0);
   }
 
   @SuppressWarnings("unused")
   @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx3() {
-    new MapObject(new LatLon(0, 0), "", "", null, 0, 0, 0);
+    new MapObject(new LatLon(0, 0), "", "", null, 0, 0);
   }
 
   @SuppressWarnings("unused")
   @Test(expected = IllegalArgumentException.class)
   public void testIllArgEx4() {
-    new MapObject(null, "", "", "", 0, 0, 0);
+    new MapObject(null, "", "", "", 0, 0);
   }
 
   @Test
