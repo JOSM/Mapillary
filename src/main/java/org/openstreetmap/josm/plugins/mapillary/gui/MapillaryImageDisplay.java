@@ -402,7 +402,7 @@ public class MapillaryImageDisplay extends JComponent {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
     setOpaque(true);
-    setBackground(Color.BLACK);
+    setBackground(MapillaryProperties.BLACK_BACKGROUND.get() ? Color.BLACK : Color.WHITE);
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
     addComponentListener(new ComponentSizeListener());
