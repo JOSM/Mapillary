@@ -68,9 +68,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox hoverEnabled =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
-  private final JCheckBox blackBackground =
+  private final JCheckBox darkMode =
     // i18n: Checkbox label in JOSM settings
-    new JCheckBox(I18n.tr("Image panel black background"), MapillaryProperties.BLACK_BACKGROUND.get());
+    new JCheckBox(I18n.tr("Dark mode for image display"), MapillaryProperties.DARK_MODE.get());
   private final JCheckBox cutOffSeq =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Cut off sequences at download bounds"), MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get());
@@ -140,7 +140,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(format24, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
-    mainPanel.add(blackBackground, GBC.eol());
+    mainPanel.add(darkMode, GBC.eol());
     mainPanel.add(cutOffSeq, GBC.eol());
     mainPanel.add(imageLinkToBlurEditor, GBC.eol());
 
@@ -158,7 +158,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       mainPanel.add(developer, GBC.eol());
     }
     MapillaryColorScheme.styleAsDefaultPanel(
-      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, blackBackground, cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel
+      mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, darkMode, cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel
     );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -203,7 +203,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
-    MapillaryProperties.BLACK_BACKGROUND.put(blackBackground.isSelected());
+    MapillaryProperties.DARK_MODE.put(darkMode.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());

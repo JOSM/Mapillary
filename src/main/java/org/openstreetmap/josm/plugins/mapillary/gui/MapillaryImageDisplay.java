@@ -26,9 +26,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-import javax.swing.JComponent;
+import javax.swing.JPanel;
 
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
@@ -46,7 +49,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillaryImageDisplay
  * @see MapillaryMainDialog
  */
-public class MapillaryImageDisplay extends JComponent {
+public class MapillaryImageDisplay extends JPanel {
 
   private static final long serialVersionUID = 3369727203329307716L;
   private static final double PANORAMA_FOV = Math.toRadians(110);
@@ -402,12 +405,33 @@ public class MapillaryImageDisplay extends JComponent {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
     setOpaque(true);
-    setBackground(MapillaryProperties.BLACK_BACKGROUND.get() ? Color.BLACK : Color.WHITE);
+    setDarkMode(MapillaryProperties.DARK_MODE.get());
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
     addComponentListener(new ComponentSizeListener());
 
-    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
+    MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
+      @Override
+      public void layerAdded(LayerManager.LayerAddEvent e) { }
+
+      @Override
+      public void layerRemoving(LayerManager.LayerRemoveEvent e) {
+        if (e.getRemovedLayer() instanceof MapillaryLayer) {
+          setImage(null, Collections.emptyList(), false);
+        }
+      }
+
+      @Override
+      public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) { }
+    });
+
+    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
+    MapillaryProperties.DARK_MODE.addListener(it -> setDarkMode(it.getProperty().get()));
+  }
+
+  private void setDarkMode(final boolean darkMode) {
+    setBackground(darkMode ? MapillaryColorScheme.TOOLBAR_DARK_GREY : Color.WHITE);
+    setForeground(darkMode ? Color.LIGHT_GRAY : Color.DARK_GRAY);
   }
 
   /**
@@ -451,8 +475,9 @@ public class MapillaryImageDisplay extends JComponent {
    */
   @Override
   public void paintComponent(Graphics g) {
-    BufferedImage image;
-    Rectangle visibleRect;
+    super.paintComponent(g);
+    final BufferedImage image;
+    final Rectangle visibleRect;
     synchronized (this) {
       image = this.image;
       visibleRect = this.visibleRect;
@@ -469,11 +494,11 @@ public class MapillaryImageDisplay extends JComponent {
   }
 
   private void paintNoImage(Graphics g) {
-    g.setColor(Color.black);
-    String noImageStr = MapillaryLayer.hasInstance() ? null : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
+    final String noImageStr = MapillaryLayer.hasInstance() ? tr("no image selected") : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
     if (noImageStr != null) {
       Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(noImageStr, g);
       Dimension size = getSize();
+      g.setColor(getForeground());
       g.drawString(noImageStr,
         (int) ((size.width - noImageSize.getWidth()) / 2),
         (int) ((size.height - noImageSize.getHeight()) / 2));
@@ -521,7 +546,6 @@ public class MapillaryImageDisplay extends JComponent {
           g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
           final PathIterator pathIt = d.getShape().getPathIterator(null);
           Point prevPoint = null;
-          int pointIndex;
           while (!pathIt.isDone()) {
             final double[] buffer = new double[6];
             final int segmentType = pathIt.currentSegment(buffer);
