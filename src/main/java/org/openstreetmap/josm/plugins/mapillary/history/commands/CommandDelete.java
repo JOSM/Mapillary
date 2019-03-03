@@ -26,7 +26,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
    * @param images
    *          The set of images that are going to be deleted.
    */
-  public CommandDelete(Set<MapillaryAbstractImage> images) {
+  public CommandDelete(final Set<? extends MapillaryAbstractImage> images) {
     super(images);
   }
 

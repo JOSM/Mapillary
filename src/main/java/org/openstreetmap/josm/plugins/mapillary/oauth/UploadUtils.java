@@ -11,12 +11,14 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -44,13 +46,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -93,30 +98,25 @@ public final class UploadUtils {
 
     @Override
     public void run() {
-      PluginState.addImagesToUpload(this.images.size());
-      MapillaryUtils.updateHelpText();
-      for (MapillaryAbstractImage img : this.images) {
-        if (!(img instanceof MapillaryImportedImage)) {
-          throw new IllegalArgumentException("The sequence contains downloaded images.");
-        }
-        this.ex.execute(() -> upload((MapillaryImportedImage) img, this.uuid));
-        while (this.ex.getQueue().remainingCapacity() == 0) {
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            Logging.error(e);
+      final Set<MapillaryImportedImage> uploadImages = this.images.stream().map(it -> it instanceof MapillaryImportedImage ? (MapillaryImportedImage) it : null).collect(Collectors.toSet());
+      if (uploadImages.stream().anyMatch(Objects::isNull)) {
+        new Notification(I18n.tr("You are trying to upload a sequence to mapillary.com that you previously downloaded from there. That is not possible."))
+          .setIcon(MapillaryPlugin.LOGO.get())
+          .show();
+      } else {
+        PluginState.addImagesToUpload(uploadImages.size());
+        MapillaryUtils.updateHelpText();
+        uploadImages.forEach(img -> ex.execute(() -> upload(img, uuid)));
+        try {
+          ex.awaitTermination(5L * uploadImages.size(), TimeUnit.MINUTES);
+          uploadDoneFile(this.uuid);
+          if (this.delete) {
+            MapillaryRecord.getInstance().addCommand(new CommandDelete(uploadImages));
           }
+        } catch (final InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
         }
-        uploadDoneFile(this.uuid);
-      }
-      this.ex.shutdown();
-      try {
-        this.ex.awaitTermination(15, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        Logging.error(e);
-      }
-      if (this.delete) {
-        MapillaryRecord.getInstance().addCommand(new CommandDelete(images));
       }
     }
   }
