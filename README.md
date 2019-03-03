@@ -1,10 +1,9 @@
-# [Mapillary](https://www.mapillary.com)-plugin for [JOSM](https://josm.openstreetmap.de)
+# [Mapillary](https://mapillary.com)-plugin for [JOSM](https://josm.openstreetmap.de)
 
-[![build status](https://img.shields.io/travis/JOSM/Mapillary/master.svg?style=flat-square&maxAge=7200)](https://travis-ci.org/JOSM/Mapillary)
-[![code coverage](https://img.shields.io/codecov/c/github/JOSM/Mapillary/master.svg?style=flat-square&maxAge=7200)](https://codecov.io/github/JOSM/Mapillary?branch=master)
-[![latest release](https://img.shields.io/github/release/JOSM/Mapillary.svg?style=flat-square&maxAge=7200)](https://github.com/JOSM/Mapillary/releases/latest)
-![download count for latest release](https://img.shields.io/github/downloads/JOSM/Mapillary/latest/Mapillary.jar.svg?style=flat-square&maxAge=7200)
-![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2_or_later-blue.svg?style=flat-square&maxAge=7200)
+[![build status](https://gitlab.com/JOSM/Mapillary/badges/master/pipeline.svg)](https://gitlab.com/JOSM/Mapillary/pipelines)
+[![code coverage](https://gitlab.com/JOSM/Mapillary/badges/master/coverage.svg)](https://codecov.io/github/JOSM/Mapillary?branch=master)
+[![latest release](https://img.shields.io/github/release/JOSM/Mapillary.svg?style=flat-square&maxAge=7200)](https://gitlab.com/JOSM/Mapillary/releases)
+[![license: GPLv2 or later](https://img.shields.io/badge/license-GPLv2_or_later-blue.svg?style=flat-square&maxAge=7200)](https://gitlab.com/JOSM/Mapillary/blob/master/LICENSE.md)
 
 A plugin for showing Mapillary images inside the OpenStreetMap-Editor JOSM.
 

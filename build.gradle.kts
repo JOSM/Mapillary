@@ -151,17 +151,19 @@ tasks.withType(Test::class).getByName("test") {
   }
 }
 
-// Configuration for publishing to Maven repository at gitlab.com/JOSM/plugins
-val PROJECT_ID = 8611940 // repository JOSM/plugins
+// Configuration for publishing to Maven repository at https://gitlab.com/JOSM/Mapillary/-/packages
+val PROJECT_ID = 8564565 // repository JOSM/Mapillary
 val PERSONAL_ACCESS_TOKEN = System.getenv("PERSONAL_ACCESS_TOKEN")
+val JOB_TOKEN = System.getenv("CI_JOB_TOKEN")
 
 publishing {
   repositories {
-    maven("https://gitlab.com/api/v4/projects/$PROJECT_ID/packages/maven") {
-      if (PERSONAL_ACCESS_TOKEN != null) {
+    if ((PERSONAL_ACCESS_TOKEN ?: JOB_TOKEN) != null) {
+      maven("https://gitlab.com/api/v4/projects/$PROJECT_ID/packages/maven") {
+        name = "gitlab"
         credentials(HttpHeaderCredentials::class) {
-          name = "Private-Token"
-          value = PERSONAL_ACCESS_TOKEN
+          name = PERSONAL_ACCESS_TOKEN?.let { "Private-Token" } ?: "Job-Token"
+          value = PERSONAL_ACCESS_TOKEN ?: JOB_TOKEN
         }
         authentication {
           removeAll { a -> true }
@@ -169,9 +171,12 @@ publishing {
         }
       }
     }
+    maven("$buildDir/maven") {
+      name = "buildDir"
+    }
   }
   publications {
-    create("plugins", MavenPublication::class) {
+    create(base.archivesBaseName, MavenPublication::class) {
       artifactId = base.archivesBaseName
       groupId = "org.openstreetmap.josm.plugins"
       version = project.version.toString()
@@ -190,6 +195,10 @@ publishing {
           connection.set("scm:git:git://gitlab.com/JOSM/Mapillary.git")
           developerConnection.set("scm:git:ssh://gitlab.com/JOSM/Mapillary.git")
           url.set("https://gitlab.com/JOSM/Mapillary")
+        }
+        issueManagement {
+          system.set("Trac")
+          url.set("https://josm.openstreetmap.de/query?component=Plugin+mapillary&status=assigned&status=needinfo&status=new&status=reopened")
         }
       }
     }

@@ -173,16 +173,16 @@ GitLab Maven repo:
   stage: deploy
   environment:
     name: GitLab Maven Repository for JOSM plugins
-    url: https://gitlab.com/JOSM/plugins/-/packages
+    url: https://gitlab.com/JOSM/Mapillary/-/packages
   script:
-  - ./gradlew publish
+  - ./gradlew publishMapillaryPublicationToGitlabRepository
   dependencies:
   - build
   only:
     refs:
     - tags@JOSM/Mapillary
     variables:
-    - $PERSONAL_ACCESS_TOKEN
+    - $CI_JOB_TOKEN
 
 release:
   stage: deploy
