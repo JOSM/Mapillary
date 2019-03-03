@@ -8,11 +8,11 @@ import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
-  id("org.sonarqube") version "2.6.2"
-  id("org.openstreetmap.josm") version "0.5.3"
-  id("com.github.ben-manes.versions") version "0.20.0"
-  id("com.github.spotbugs") version "1.6.4"
-  id("net.ltgt.errorprone") version "0.6"
+  id("org.sonarqube") version "2.7"
+  id("org.openstreetmap.josm") version "0.6.1"
+  id("com.github.ben-manes.versions") version "0.21.0"
+  id("com.github.spotbugs") version "1.6.10"
+  id("net.ltgt.errorprone") version "0.7.1"
 
   eclipse
   jacoco
@@ -27,7 +27,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.3.2")
+  errorprone("com.google.errorprone:error_prone_core:2.3.3")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -53,14 +53,14 @@ base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.19.0")
-  val junitVersion = "5.3.1"
+  testImplementation("com.github.tomakehurst:wiremock:2.21.0")
+  val junitVersion = "5.4.0"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:3.1.2")
-  testImplementation("org.jmockit:jmockit:1.42")
-  testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.7")
+  testImplementation("org.awaitility:awaitility:3.1.6")
+  testImplementation("org.jmockit:jmockit:1.45")
+  testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.12")
 }
 
 sourceSets {
@@ -135,20 +135,18 @@ tasks.withType(SpotBugsTask::class) {
   }
 }
 
-tasks {
-  "test"(Test::class) {
-    project.afterEvaluate {
-      jvmArgs("-javaagent:${classpath.find { it.name.contains("jmockit") }!!.absolutePath}")
-    }
-    testLogging {
-      exceptionFormat = TestExceptionFormat.FULL
-      events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
-      showCauses = true
+tasks.withType(Test::class).getByName("test") {
+  project.afterEvaluate {
+    jvmArgs("-javaagent:${classpath.find { it.name.contains("jmockit") }!!.absolutePath}")
+  }
+  testLogging {
+    exceptionFormat = TestExceptionFormat.FULL
+    events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+    showCauses = true
 
-      info {
-        events = setOf(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
-        showStandardStreams = true
-      }
+    info {
+      events = setOf(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
+      showStandardStreams = true
     }
   }
 }

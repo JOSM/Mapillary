@@ -38,6 +38,17 @@ assemble with java 12:
   artifacts:
     paths:
     - build/
+  allow_failure: true
+
+assemble with java 13:
+  stage: build
+  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
+  script:
+  - ./gradlew assemble --stacktrace
+  artifacts:
+    paths:
+    - build/
+  allow_failure: true
 
 
 ##############
@@ -91,6 +102,16 @@ build with java 12:
   - ./gradlew build --stacktrace
   dependencies:
   - assemble with java 12
+  allow_failure: true
+
+build with java 13:
+  stage: test
+  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
+  script:
+  - ./gradlew build --stacktrace
+  dependencies:
+  - assemble with java 13
+  allow_failure: true
 
 
 ################
