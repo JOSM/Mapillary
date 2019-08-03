@@ -27,7 +27,7 @@ public class MapillaryAbstractImageTest {
   public void testGetDate() {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0745"));
 
-    MapillaryAbstractImage mai = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
+    MapillaryAbstractImage mai = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
     mai.setCapturedAt(1_044_087_606_000L); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
 
 

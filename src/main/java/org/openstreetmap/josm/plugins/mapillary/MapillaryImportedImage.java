@@ -35,8 +35,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param ca  Direction of the picture (0 means north).
    * @param file  The file containing the picture.
    */
-  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file) {
-    this(latLon, ca, file, Calendar.getInstance().getTimeInMillis());
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano) {
+    this(latLon, ca, file, pano, Calendar.getInstance().getTimeInMillis());
   }
 
   /**
@@ -47,8 +47,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param file  The file containing the picture.
    * @param datetimeOriginal  The date the picture was taken.
    */
-  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final String datetimeOriginal) {
-    this(latLon, ca, file, parseTimestampElseCurrentTime(datetimeOriginal));
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final String datetimeOriginal) {
+    this(latLon, ca, file, pano, parseTimestampElseCurrentTime(datetimeOriginal));
   }
 
   /**
@@ -73,7 +73,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     final long time = geoImage.hasGpsTime()
       ? geoImage.getGpsTime().getTime()
       : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
-    return new MapillaryImportedImage(coord, ca, geoImage.getFile(), time);
+    final double width = geoImage.getWidth();
+    final double height = geoImage.getHeight();
+    final boolean pano = (width >= 4096) && (width == height * 2);
+    return new MapillaryImportedImage(coord, ca, geoImage.getFile(), pano, time);
   }
 
   private static long parseTimestampElseCurrentTime(final String timestamp) {
@@ -88,8 +91,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     }
   }
 
-  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final long capturedAt) {
-    super(latLon, ca, false);
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final long capturedAt) {
+    super(latLon, ca, pano);
     this.file = file;
     this.capturedAt = capturedAt;
   }

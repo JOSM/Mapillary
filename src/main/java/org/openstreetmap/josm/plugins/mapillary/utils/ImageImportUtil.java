@@ -81,6 +81,8 @@ public final class ImageImportUtil {
     Object lon = null;
     Object gpsDir = null;
     Object dateTime = null;
+    Object width = null;
+    Object height = null;
     final ImageMetadata meta;
     try {
       meta = Imaging.getMetadata(is, null);
@@ -92,11 +94,12 @@ public final class ImageImportUtil {
         lon = getTiffFieldValue(jpegMeta, GpsTagConstants.GPS_TAG_GPS_LONGITUDE);
         gpsDir = getTiffFieldValue(jpegMeta, GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
         dateTime = getTiffFieldValue(jpegMeta, ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+        width = getTiffFieldValue(jpegMeta, ExifTagConstants.EXIF_TAG_EXIF_IMAGE_WIDTH);
+        height = getTiffFieldValue(jpegMeta, ExifTagConstants.EXIF_TAG_EXIF_IMAGE_LENGTH);
       }
     } catch (ImageReadException e) {
       // Can't read metadata from image, use defaults instead
     }
-
 
     final LatLon latLon;
     if (lat instanceof RationalNumber[] && latRef != null && lon instanceof RationalNumber[] && lonRef != null) {
@@ -113,10 +116,16 @@ public final class ImageImportUtil {
     } else {
       ca = 0;
     }
-    if (dateTime == null) {
-      return new MapillaryImportedImage(latLon, ca, f);
+    final boolean pano;
+    if (height instanceof Integer && width instanceof Integer) {
+      pano = ((Integer)width >= 4096) && ((Integer)width == (Integer)height * 2);
+    } else {
+      pano = false;
     }
-    return new MapillaryImportedImage(latLon, ca, f, dateTime.toString());
+    if (dateTime == null) {
+      return new MapillaryImportedImage(latLon, ca, f, pano);
+    }
+    return new MapillaryImportedImage(latLon, ca, f, pano, dateTime.toString());
   }
 
   private static Object getTiffFieldValue(JpegImageMetadata meta, TagInfo tag) {
