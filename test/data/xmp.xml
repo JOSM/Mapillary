@@ -1,0 +1,15 @@
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.1.0-jc003">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+        xmlns:GPano="http://ns.google.com/photos/1.0/panorama/"
+      GPano:UsePanoramaViewer="True"
+      GPano:ProjectionType="equirectangular"
+      GPano:CroppedAreaImageWidthPixels="5660"
+      GPano:CroppedAreaImageHeightPixels="2830"
+      GPano:FullPanoWidthPixels="5660"
+      GPano:FullPanoHeightPixels="2830"
+      GPano:CroppedAreaLeftPixels="0"
+      GPano:CroppedAreaTopPixels="0"
+      GPano:PoseHeadingDegrees="0"/>
+  </rdf:RDF>
+</x:xmpmeta>
