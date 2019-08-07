@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -14,7 +15,9 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * A MapillaryImoprtedImage object represents a picture imported locally.
@@ -73,9 +76,12 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     final long time = geoImage.hasGpsTime()
       ? geoImage.getGpsTime().getTime()
       : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
-    final double width = geoImage.getWidth();
-    final double height = geoImage.getHeight();
-    final boolean pano = (width >= 4096) && (width == height * 2);
+    boolean pano = false;
+    try {
+      pano = ImageMetaDataUtil.getPanorama(new FileInputStream(geoImage.getFile()));
+    } catch(IOException ex) {
+      Logging.trace(ex);
+    }
     return new MapillaryImportedImage(coord, ca, geoImage.getFile(), pano, time);
   }
 

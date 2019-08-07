@@ -114,6 +114,7 @@ public final class ImageImportUtil {
     }
     FileInputStream nis = new FileInputStream(f);
     boolean pano = ImageMetaDataUtil.getPanorama(nis);
+    nis.close();
     if (dateTime == null) {
       return new MapillaryImportedImage(latLon, ca, f, pano);
     }

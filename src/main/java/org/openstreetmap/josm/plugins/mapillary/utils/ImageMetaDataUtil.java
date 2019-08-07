@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.imaging.ImageReadException;
@@ -17,6 +16,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.XmlUtils;
 
 
 public class ImageMetaDataUtil {
@@ -30,7 +32,7 @@ public class ImageMetaDataUtil {
     try {
       xmpxml = Imaging.getXmpXml(is, null);
     } catch (ImageReadException | IOException ex) {
-      // Can't read XML metadata. use default instead.
+      Logging.trace(ex);
       return false;
     }
     boolean pano;
@@ -45,9 +47,7 @@ public class ImageMetaDataUtil {
   public static boolean getPanorama(final Reader sr) {
     boolean pano = false;
     try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = XmlUtils.newSafeDOMBuilder();
       Document document = builder.parse(new InputSource(sr));
       Element root = document.getDocumentElement();
       NodeList xmpMetaNodeList = root.getChildNodes();
@@ -61,7 +61,7 @@ public class ImageMetaDataUtil {
             if (rdfChildNode.getNodeType() == Node.ELEMENT_NODE) {
               Element rdfChildElement = (Element) rdfChildNode;
               String projection = rdfChildElement.getAttributeNS("http://ns.google.com/photos/1.0/panorama/", "ProjectionType");
-              if (projection != null && projection.equals("equirectangular")) {
+              if ("equirectangular".equals(projection)) {
                 pano = true;
                 break;
               }
@@ -70,9 +70,8 @@ public class ImageMetaDataUtil {
         }
       }
     } catch (ParserConfigurationException | SAXException | IOException ex) {
-      // Can't read XML metadata. use default instead.
+      Logging.trace(ex);
     }
     return pano;
   }
-
 }
