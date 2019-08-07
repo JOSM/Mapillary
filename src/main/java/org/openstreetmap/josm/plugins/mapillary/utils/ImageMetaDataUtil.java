@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,8 +29,18 @@ public class ImageMetaDataUtil {
     // private util.
   }
 
-  public static boolean getPanorama(final InputStream is) {
-    String xmpxml = null;
+  public static boolean isPanorama(final File f) {
+    boolean pano = false;
+    try (FileInputStream nis = new FileInputStream(f)) {
+      pano = isPanorama(nis);
+    } catch (IOException ex) {
+      Logging.trace(ex);
+    }
+    return pano;
+  }
+
+  public static boolean isPanorama(final InputStream is) {
+    String xmpxml;
     try {
       xmpxml = Imaging.getXmpXml(is, null);
     } catch (ImageReadException | IOException ex) {
@@ -37,14 +49,14 @@ public class ImageMetaDataUtil {
     }
     boolean pano;
     if (xmpxml != null) {
-      pano= getPanorama(new StringReader(xmpxml));
+      pano= isPanorama(new StringReader(xmpxml));
     } else {
       pano = false;
     }
     return pano;
   }
 
-  public static boolean getPanorama(final Reader sr) {
+  public static boolean isPanorama(final Reader sr) {
     boolean pano = false;
     try {
       DocumentBuilder builder = XmlUtils.newSafeDOMBuilder();

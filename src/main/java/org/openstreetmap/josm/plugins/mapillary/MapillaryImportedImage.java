@@ -78,7 +78,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
       : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
     boolean pano = false;
     try {
-      pano = ImageMetaDataUtil.getPanorama(new FileInputStream(geoImage.getFile()));
+      pano = ImageMetaDataUtil.isPanorama(new FileInputStream(geoImage.getFile()));
     } catch(IOException ex) {
       Logging.trace(ex);
     }

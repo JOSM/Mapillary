@@ -15,7 +15,7 @@ public class ImageMetaDataUtilTest {
   @Test
   public void testXmpXmlParse() throws FileNotFoundException, URISyntaxException {
     final File xmpXmlFile = new File(ImageImportUtil.class.getResource("/xmp.xml").toURI());
-    boolean pano = ImageMetaDataUtil.getPanorama(new FileReader(xmpXmlFile));
+    boolean pano = ImageMetaDataUtil.isPanorama(new FileReader(xmpXmlFile));
     assertTrue(pano);
   }
 }
