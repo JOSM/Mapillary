@@ -38,8 +38,10 @@ import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -450,6 +452,13 @@ public class MapillaryImageDisplay extends JPanel {
       }
       this.selectedRect = null;
       if (image != null) {
+        if (!this.pano) {
+          Logging.debug("double check whether panorama, workaround for issue #88.");
+          this.pano = ImageMetaDataUtil.isPanorama(image);
+          if (this.pano) {
+            Logging.debug("Panorama photo is detected!!");
+          }
+        }
         if (this.pano) {
           this.visibleRect = new Rectangle(0, 0, getSize().width, getSize().height);
         } else {
