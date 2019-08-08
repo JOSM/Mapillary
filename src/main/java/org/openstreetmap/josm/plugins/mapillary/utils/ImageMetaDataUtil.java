@@ -1,12 +1,15 @@
+// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringReader;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -29,38 +32,81 @@ public class ImageMetaDataUtil {
     // private util.
   }
 
+  /**
+   * check whether image file is a panorama photo or not.
+   * @param f an image file to check.
+   * @return true if image is panorama photo.
+   */
   public static boolean isPanorama(final File f) {
     boolean pano = false;
-    try (FileInputStream nis = new FileInputStream(f)) {
-      pano = isPanorama(nis);
+    try (FileInputStream fis = new FileInputStream(f)) {
+      pano = isPanorama(fis);
     } catch (IOException ex) {
       Logging.trace(ex);
     }
     return pano;
   }
 
-  public static boolean isPanorama(final InputStream is) {
-    String xmpxml;
-    try {
-      xmpxml = Imaging.getXmpXml(is, null);
-    } catch (ImageReadException | IOException ex) {
+  /**
+   * check whether image file is a panorama photo or not.
+   * @param image a BufferedImage to check.
+   * @return true if image is a panorama.
+   */
+  public static boolean isPanorama(final BufferedImage image) {
+    boolean pano = false;
+    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+      ImageIO.write(image, "jpg", os);
+      pano = isPanorama(os.toByteArray());
+    } catch (IOException ex) {
       Logging.trace(ex);
-      return false;
-    }
-    boolean pano;
-    if (xmpxml != null) {
-      pano= isPanorama(new StringReader(xmpxml));
-    } else {
-      pano = false;
     }
     return pano;
   }
 
-  public static boolean isPanorama(final Reader sr) {
+  /**
+   * check whether image file is a panorama photo or not.
+   * @param is image InputStream to check.
+   * @return true if image is a panorama.
+   */
+  public static boolean isPanorama(final InputStream is) {
     boolean pano = false;
     try {
+      pano = checkXmpProjectionType(Imaging.getXmpXml(is, null), "equirectangular");
+    } catch (ImageReadException | IOException ex) {
+      Logging.trace(ex);
+    }
+    return pano;
+  }
+
+  /**
+   * check whether image file is a panorama photo or not.
+   * @param ba  image byte[] to check.
+   * @return true if image is a panorama.
+   */
+  public static boolean isPanorama(final byte[] ba) {
+    boolean pano = false;
+    try {
+      pano = checkXmpProjectionType(Imaging.getXmpXml(ba), "equirectangular");
+    } catch (IOException | ImageReadException ex) {
+      Logging.trace(ex);
+    }
+    return pano;
+  }
+
+  /**
+   * check XMP XML record whether projection type is equirectangle or not.
+   * @param xml_string XMP XML string to input.
+   * @param target_type expected projection type.
+   * @return true is projection type is as same as target_type.
+   */
+  public static boolean checkXmpProjectionType(final String xml_string, final String target_type) {
+    if (xml_string == null || target_type == null) {
+      return false;
+    }
+    boolean res = false;
+    try {
       DocumentBuilder builder = XmlUtils.newSafeDOMBuilder();
-      Document document = builder.parse(new InputSource(sr));
+      Document document = builder.parse(new InputSource(new StringReader(xml_string)));
       Element root = document.getDocumentElement();
       NodeList xmpMetaNodeList = root.getChildNodes();
       for (int i = 0; i < xmpMetaNodeList.getLength(); i++) {
@@ -73,8 +119,8 @@ public class ImageMetaDataUtil {
             if (rdfChildNode.getNodeType() == Node.ELEMENT_NODE) {
               Element rdfChildElement = (Element) rdfChildNode;
               String projection = rdfChildElement.getAttributeNS("http://ns.google.com/photos/1.0/panorama/", "ProjectionType");
-              if ("equirectangular".equals(projection)) {
-                pano = true;
+              if (target_type.equals(projection)) {
+                res = true;
                 break;
               }
             }
@@ -84,6 +130,6 @@ public class ImageMetaDataUtil {
     } catch (ParserConfigurationException | SAXException | IOException ex) {
       Logging.trace(ex);
     }
-    return pano;
+    return res;
   }
 }
