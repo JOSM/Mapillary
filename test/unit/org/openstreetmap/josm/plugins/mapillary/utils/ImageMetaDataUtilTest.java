@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -18,7 +19,7 @@ public class ImageMetaDataUtilTest {
   @Test
   public void testXmpXmlParse() throws IOException, URISyntaxException {
     boolean pano = ImageMetaDataUtil.checkXmpProjectionType(new String(Files.readAllBytes(Paths.get(ImageMetaDataUtil.class.getResource(
-      "/xmpTestImages/xmpProjectionOnly.xml").toURI()))), "equirectangular");
+      "/xmpTestImages/xmpProjectionOnly.xml").toURI())), StandardCharsets.UTF_8), "equirectangular");
     assertTrue(pano);
   }
 
