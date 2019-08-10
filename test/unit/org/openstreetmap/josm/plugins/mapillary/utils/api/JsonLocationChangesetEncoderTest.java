@@ -23,17 +23,17 @@ import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 public class JsonLocationChangesetEncoderTest {
   @Test
   public void test() throws IllegalArgumentException {
-    MapillaryImage img1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(0, 0), 0, false);
+    MapillaryImage img1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(0, 0), 0);
     img1.move(13.3323, 50.44612);
     img1.turn(273.3);
     img1.stopMoving();
-    MapillaryImage img2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0, false);
+    MapillaryImage img2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0);
     img2.move(13.3328, 50.44619);
     img2.stopMoving();
-    MapillaryImage img3 = new MapillaryImage("31KDbCOzla0fJBtIeoBr1A", new LatLon(0, 0), 0, false);
+    MapillaryImage img3 = new MapillaryImage("31KDbCOzla0fJBtIeoBr1A", new LatLon(0, 0), 0);
     img3.turn(13.4);
     img3.stopMoving();
-    MapillaryImage img4 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0, false);
+    MapillaryImage img4 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0);
     img4.turn(13.4);
     img4.stopMoving();
 

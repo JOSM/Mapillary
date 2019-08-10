@@ -55,10 +55,9 @@ public final class JsonSequencesDecoder {
       );
       final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
       final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
-      boolean pano = properties.getBoolean("pano", false);
       for (int i = 0; i < sequenceLength; i++) {
         if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i], pano);
+          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i]);
           result.add(img);
         }
       }

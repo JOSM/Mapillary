@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -34,7 +35,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   /** Temporal position of the picture until it is uploaded. */
   private LatLon tempLatLon;
   /** Picture is panorama/360degree VR photo or not */
-  private boolean pano;
+  private Optional<Boolean> pano;
 
   /**
    * When the object is being dragged in the map, the temporal position is
@@ -57,14 +58,13 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @param latLon  The latitude and longitude where the picture was taken.
    * @param ca  The direction of the picture (0 means north).
    */
-  protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
+  protected MapillaryAbstractImage(final LatLon latLon, final double ca) {
     this.latLon = latLon;
     this.tempLatLon = this.latLon;
     this.movingLatLon = this.latLon;
     this.ca = ca;
     this.tempCa = ca;
     this.movingCa = ca;
-    this.pano = pano;
     this.visible = true;
   }
 
@@ -87,7 +87,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   }
 
   public boolean isPanorama() {
-    return this.pano;
+    return this.pano.orElse(false);
   }
 
   /**
@@ -262,7 +262,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   }
 
   public void setPanorama(final boolean pano) {
-    this.pano = pano;
+    this.pano = Optional.of(pano);
   }
 
   /**

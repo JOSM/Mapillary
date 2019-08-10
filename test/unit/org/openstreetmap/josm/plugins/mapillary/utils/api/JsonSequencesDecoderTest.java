@@ -104,11 +104,11 @@ public class JsonSequencesDecoderTest {
     assertEquals(2, exampleSequence.getImages().size());
 
     assertEquals(
-      new MapillaryImage("76P0YUrlDD_lF6J7Od3yoA", new LatLon(16.43279, 7.246085), 96.71454, false),
+      new MapillaryImage("76P0YUrlDD_lF6J7Od3yoA", new LatLon(16.43279, 7.246085), 96.71454),
       exampleSequence.getImages().get(0)
     );
     assertEquals(
-      new MapillaryImage("Ap_8E0BwoAqqewhJaEbFyQ", new LatLon(16.432799, 7.246082), 96.47705000000002, false),
+      new MapillaryImage("Ap_8E0BwoAqqewhJaEbFyQ", new LatLon(16.432799, 7.246082), 96.47705000000002),
       exampleSequence.getImages().get(1)
     );
   }

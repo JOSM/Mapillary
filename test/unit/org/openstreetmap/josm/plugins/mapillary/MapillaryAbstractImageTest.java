@@ -56,7 +56,7 @@ public class MapillaryAbstractImageTest {
 
   @Test
   public void testIsModified() {
-    MapillaryImage img = new MapillaryImage("key___________________", new LatLon(0, 0), 0, false);
+    MapillaryImage img = new MapillaryImage("key___________________", new LatLon(0, 0), 0);
     assertFalse(img.isModified());
     img.turn(1e-4);
     img.stopMoving();
