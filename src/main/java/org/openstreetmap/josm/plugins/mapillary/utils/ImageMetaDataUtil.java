@@ -49,22 +49,6 @@ public class ImageMetaDataUtil {
 
   /**
    * check whether image file is a panorama photo or not.
-   * @param image a BufferedImage to check.
-   * @return true if image is a panorama.
-   */
-  public static boolean isPanorama(final BufferedImage image) {
-    boolean pano = false;
-    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-      ImageIO.write(image, "jpg", os);
-      pano = isPanorama(os.toByteArray());
-    } catch (IOException ex) {
-      Logging.trace(ex);
-    }
-    return pano;
-  }
-
-  /**
-   * check whether image file is a panorama photo or not.
    * @param is image InputStream to check.
    * @return true if image is a panorama.
    */
