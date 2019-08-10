@@ -33,8 +33,8 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   protected double ca;
   /** Temporal position of the picture until it is uploaded. */
   private LatLon tempLatLon;
-
-  private final boolean pano;
+  /** Picture is panorama/360degree VR photo or not */
+  private boolean pano;
 
   /**
    * When the object is being dragged in the map, the temporal position is
@@ -259,6 +259,10 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
     if (latLon != null) {
       this.latLon = latLon;
     }
+  }
+
+  public void setPanorama(final boolean pano) {
+    this.pano = pano;
   }
 
   /**

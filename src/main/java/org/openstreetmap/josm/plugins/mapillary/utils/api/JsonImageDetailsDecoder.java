@@ -31,11 +31,15 @@ public final class JsonImageDetailsDecoder {
       JsonValue properties = json.get("properties");
       if (properties instanceof JsonObject) {
         String key = ((JsonObject) properties).getString("key", null);
-        Long capturedAt = JsonDecoder.decodeTimestamp(((JsonObject)properties).getString("captured_at", null));
+        Long capturedAt = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("captured_at", null));
+        boolean pano = ((JsonObject) properties).getBoolean("pano", false);
         if (key != null && capturedAt != null) {
           data.getImages().stream().filter(
             img -> img instanceof MapillaryImage && key.equals(((MapillaryImage) img).getKey())
-          ).forEach(img -> img.setCapturedAt(capturedAt));
+          ).forEach(img -> {
+            img.setCapturedAt(capturedAt);
+            img.setPanorama(pano);
+          });
         }
       }
     }

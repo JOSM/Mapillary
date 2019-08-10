@@ -53,6 +53,8 @@ public class JsonImageDetailsDecoderTest {
     assertEquals(1_491_803_486_853L, img2.getCapturedAt()); // 2017-04-10T05:51:26.853Z
     assertEquals(0L, img3.getCapturedAt());
     assertEquals(0L, img4.getCapturedAt());
+    assertEquals(false, img1.isPanorama());
+    assertEquals(true, img2.isPanorama());
   }
 
   @Test

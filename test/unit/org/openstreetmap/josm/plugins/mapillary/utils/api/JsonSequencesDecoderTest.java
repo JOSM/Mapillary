@@ -55,6 +55,11 @@ public class JsonSequencesDecoderTest {
     assertEquals(new LatLon(7.248372, 16.432971),  seq.getImages().get(2).getLatLon());
     assertEquals(new LatLon(7.249027, 16.432976),  seq.getImages().get(3).getLatLon());
 
+    assertEquals(false, seq.getImages().get(0).isPanorama());
+    assertEquals(false, seq.getImages().get(1).isPanorama());
+    assertEquals(false, seq.getImages().get(2).isPanorama());
+    assertEquals(false, seq.getImages().get(3).isPanorama());
+
     assertEquals(1_457_963_093_860L, seq.getCapturedAt()); // 2016-03-14T13:44:53.860 UTC
   }
 
