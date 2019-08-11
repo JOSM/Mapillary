@@ -1,0 +1,670 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the josm-plugin_Mapillary package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+# Translators:
+# Florian Schäfer, 2018
+# Simon Legner <simon.legner@gmail.com>, 2018
+# Hiroshi Miura <miurahr@northside.tokyo>, 2019
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: josm-plugin_Mapillary 1.5.18-1-gf52835b\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-05 19:52+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
+"Last-Translator: Hiroshi Miura <miurahr@northside.tokyo>, 2019\n"
+"Language-Team: Japanese (https://www.transifex.com/josm/teams/2544/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "2 images joined"
+msgstr ""
+
+msgid "2 images unjoined"
+msgstr ""
+
+#, java-format
+msgid ""
+"A tag with key <i>{0}</i> is already present on the selected OSM object."
+msgstr "キー<i>{0}</i>が付いたタグが、選択したOSMオブジェクトにすでに存在しています。"
+
+msgid "Add Mapillary tag"
+msgstr "Mapillary タグを追加"
+
+msgid "All images in a directory"
+msgstr "ディレクトリ中の全画像"
+
+msgid "All map objects loaded."
+msgstr "読みこんだ全マップオブジェクト"
+
+msgid ""
+"An exception occured while trying to submit a changeset. If this happens "
+"repeatedly, consider reporting a bug via the Help menu. If this message "
+"appears for the first time, simply try it again. This might have been an "
+"issue with the internet connection."
+msgstr ""
+"変更セットを送信時に例外が発生しました。繰り返し発生する場合は、ヘルプメニューからバグ報告することを検討ください。このメッセージを初めて見た場合は、再実施してみてください。インターネット接続に問題があるようです。"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr "他の画像へボタンでジャンプしたときに、新しい画像は中央表示する。"
+
+#, java-format
+msgid "Changeset upload failed with {0} error ''{1} {2}''!"
+msgstr "変更セットのアップロードに、{0} エラー \"{1} {2}\"で失敗しました!"
+
+msgid "Choose signs"
+msgstr "標識を選択"
+
+msgid "Continues with the paused walk."
+msgstr ""
+
+msgid "Copy key"
+msgstr "キーをコピー"
+
+msgid "Could not import a geotagged image to the Mapillary layer!"
+msgstr "Mapillaryレイヤに、ジオタグされた画像のインポートができませんでした!"
+
+#, java-format
+msgid "Could not import the directory ''{0}''!"
+msgstr "ディレクトリ \"{0}\"をインポートできませんでした!"
+
+#, java-format
+msgid "Could not import the image ''{0}''!"
+msgstr "画像\"{0}\"をインポートできませんでした!"
+
+#, java-format
+msgid "Could not open the URL {0} in a browser"
+msgstr "URL {0} をブラウザで開けませんでした。"
+
+#, java-format
+msgid "Could not read from URL {0}!"
+msgstr "URL {0}をよみこめません!"
+
+msgid "Current Mapillary changeset"
+msgstr "現在のMapillary変更セット"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Cut off sequences at download bounds"
+msgstr "ダウンロードした境界でシーケンスを分断する"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Dark mode for image display"
+msgstr "画像ウインドウでダークモードを使用する"
+
+msgid "Days"
+msgstr "日"
+
+msgid "Delete after upload"
+msgstr "アップロード後削除"
+
+#, java-format
+msgid "Deleted {0} image"
+msgid_plural "Deleted {0} images"
+msgstr[0] "{0} この画像を削除"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Display hour when the picture was taken"
+msgstr "写真のとられた時刻を表示"
+
+msgid "Displays detail information on the currently selected Mapillary image"
+msgstr "現在選択されているMapillary画像の詳細情報を表示"
+
+msgid "Displays objects detected by Mapillary from their street view imagery"
+msgstr "ストリートビュー画像からMapillaryが検出したオブジェクトを表示"
+
+msgid "Displays the layer displaying the map objects detected by Mapillary"
+msgstr "Mapillaryが検出したマップオブジェクトのレイヤーを表示"
+
+#, java-format
+msgid ""
+"Do you really want to replace the current value <i>{0}</i> with the new "
+"value <i>{1}</i>?"
+msgstr "本当に現在の値 <i>{0}</i>を新しい<i>{1}</i>に変更しますか？"
+
+msgid "Download Mapillary images in current view"
+msgstr "現在のビューにMapillary画像をダウンロード"
+
+msgid "Download mode"
+msgstr "ダウンロードモード"
+
+msgid "Downloaded images"
+msgstr "ダウンロードした画像"
+
+msgid "Downloading Mapillary images"
+msgstr "Mapillary画像をダウンロード中"
+
+msgid "Downloading map objects failed!"
+msgstr "マップオブジェクトのダウンロードに失敗!"
+
+msgid "Downloading map objects…"
+msgstr "マップオブジェクトのダウンロード中..."
+
+msgid "Downloading…"
+msgstr "ダウンロード中..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Enable experimental beta-features (might be unstable)"
+msgstr "実験的ベータ機能を有効化(不安定です)"
+
+msgid "Explore"
+msgstr ""
+
+msgid "Export Mapillary images"
+msgstr "Mapillary画像をエクスポート"
+
+msgid "Export all images"
+msgstr "すべての画像をエクスポート"
+
+msgid "Export selected images"
+msgstr "選択した画像をエクスポート"
+
+msgid "Export selected sequence"
+msgstr "選択したシーケンスをエクスポート"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Mapillary画像のエクスポート中..."
+
+msgid "Finished upload"
+msgstr "アップロード完了"
+
+msgid "Follow selected image"
+msgstr "選択した画像をフォロー"
+
+msgid "From existing image layer"
+msgstr "画像レイヤーから出る"
+
+msgid "From which source do you want to import images to the Mapillary layer?"
+msgstr "どの情報源からMapillaryレイヤへ画像をインポートしますか？"
+
+#. i18n: traffic sign
+msgid "Give way"
+msgstr "徐行"
+
+msgid "Go forward"
+msgstr "次にすすむ"
+
+msgid "Go to setting and log in to Mapillary before uploading."
+msgstr "アップロードの前に、設定に行ってMapillaryにログインしてください。"
+
+msgid "I got it, close this."
+msgstr ""
+
+msgid "Image actions"
+msgstr ""
+
+msgid "Image detections"
+msgstr "画像検出物"
+
+msgid "Image info"
+msgstr "画像情報"
+
+msgid "Image key"
+msgstr "画像キー"
+
+msgid "Images from my file system"
+msgstr "ファイルシステムからの画像"
+
+msgid "Import"
+msgstr "インポート"
+
+msgid "Import exception"
+msgstr ""
+
+msgid "Import local pictures"
+msgstr "ローカルの写真をインポート"
+
+msgid "Import pictures"
+msgstr "写真をインポート"
+
+msgid "Import pictures into Mapillary layer"
+msgstr "写真をMapillaryレイヤにインポート"
+
+msgid "Imported images"
+msgstr "インポートした画像"
+
+#, java-format
+msgid "Imported {0} image"
+msgid_plural "Imported {0} images"
+msgstr[0] "インポートした {0}この画像"
+
+#. i18n: traffic sign
+msgid "Intersection danger"
+msgstr ""
+
+msgid ""
+"It can be activated by clicking the left button at the bottom of this "
+"message or the button in the toolbar on the left, which uses the same icon."
+msgstr ""
+
+msgid "Join mode"
+msgstr ""
+
+msgid "Join/unjoin pictures"
+msgstr ""
+
+msgid "Jump to blue"
+msgstr "青へとぶ"
+
+msgid "Jump to red"
+msgstr "赤へとぶ"
+
+msgid "Jumps to the picture at the other side of the blue line"
+msgstr "青い線のむこう側の写真にジャンプします"
+
+msgid "Jumps to the picture at the other side of the red line"
+msgstr "赤い線のむこう側の写真にジャンプします"
+
+msgid "Key copied to clipboard…"
+msgstr "キーをクリップボードにコピー..."
+
+msgid "Login"
+msgstr "ログイン"
+
+msgid "Login successful, return to JOSM."
+msgstr "ログインに成功しました。JOSMにもどります。"
+
+msgid "Logout"
+msgstr "ログアウト"
+
+#. i18n: traffic sign
+msgid "Mandatory direction (any)"
+msgstr ""
+
+msgid "Mapillary"
+msgstr "Mapillary"
+
+msgid "Mapillary Images"
+msgstr "Mapillary 画像"
+
+msgid "Mapillary changeset"
+msgstr "Mapillaryの変更セット"
+
+msgid "Mapillary filter"
+msgstr "Mapillaryフィルタ"
+
+msgid "Mapillary history"
+msgstr "Mapillaryヒストリ"
+
+msgid "Mapillary image"
+msgstr "Mapillary画像"
+
+msgid "Mapillary layer"
+msgstr "Mapillary レイヤ"
+
+msgid "Mapillary login"
+msgstr "Mapillaryログイン"
+
+msgid "Mapillary object layer"
+msgstr "Mapillaryオブジェクトレイヤ"
+
+msgid "Mapillary objects"
+msgstr "Mapillaryオブジェクト"
+
+msgid "Months"
+msgstr "ヶ月"
+
+#, java-format
+msgid "Moved {0} image"
+msgid_plural "Moved {0} images"
+msgstr[0] "{0}この画像を移動"
+
+msgid "Next picture"
+msgstr "次の画像"
+
+#. i18n: traffic sign
+msgid "No entry"
+msgstr "エントリー無し"
+
+msgid "No images found"
+msgstr "画像がみつかりません"
+
+#. i18n: traffic sign
+msgid "No overtaking"
+msgstr "追い越し禁止"
+
+#. i18n: traffic sign
+msgid "No parking"
+msgstr "駐車禁止"
+
+#. i18n: traffic sign
+msgid "No turn"
+msgstr "転回禁止"
+
+msgid "Not logged in to Mapillary"
+msgstr "Mapillaryにログインしていません"
+
+msgid "Not older than: "
+msgstr ""
+
+#. i18n: Spinner label in JOSM settings
+msgid "Number of images to be pre-fetched (forwards and backwards)"
+msgstr "先行して取得する画像数(前向きと後ろ向き)"
+
+msgid "Only images with signs"
+msgstr "標識のある画像のみ"
+
+msgid "Open Mapillary changeset dialog"
+msgstr "Mapillary変更セットダイアログを開く"
+
+msgid "Open Mapillary filter dialog"
+msgstr "Mapillaryフィルタダイアログを開く"
+
+msgid "Open Mapillary history dialog"
+msgstr "Mapillaryヒストリダイアログを開く"
+
+msgid "Open Mapillary layer"
+msgstr "Mapillaryレイヤを開く"
+
+msgid "Open Mapillary window"
+msgstr "Mapillaryウインドウを開く"
+
+msgid "Pause"
+msgstr "一時停止"
+
+msgid "Pauses the walk."
+msgstr "自動再生を一時停止"
+
+#. i18n: traffic sign
+msgid "Pedestrian crossing"
+msgstr "横断歩道"
+
+msgid "Play"
+msgstr "再生"
+
+#, java-format
+msgid "Press \"{0}\" to download images"
+msgstr "画像をダウンロードするには\"{0}\"を押下"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Preview images when hovering its icon"
+msgstr "アイコンの上に移動したとき画像をプレビュー"
+
+msgid "Previous picture"
+msgstr "前の画像"
+
+msgid "Redo"
+msgstr "やり直し"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Rewrite imported images"
+msgstr "インポートした画像を再書き込み"
+
+#. i18n: traffic sign
+msgid "Roundabout"
+msgstr "環状交差点"
+
+msgid "Select a directory"
+msgstr "ディレクトリを選択"
+
+msgid "Select directory to import images from"
+msgstr "画像をインポートするディレクトリを選択"
+
+msgid "Select mode"
+msgstr "選択モード"
+
+msgid "Select the images you want to import"
+msgstr "インポートしたい画像を選択"
+
+msgid "Sequence key"
+msgstr "シーケンスキー"
+
+msgid "Show detections on top of image"
+msgstr "イメージ上に検出物を表示"
+
+msgid "Shows the next picture in the sequence"
+msgstr "シーケンスの次の写真を表示"
+
+msgid "Shows the previous picture in the sequence"
+msgstr "シーケンスの前の写真を表示"
+
+#. i18n: traffic sign
+msgid "Speed limit"
+msgstr "最高速度"
+
+msgctxt "as synonym to halt or stand still"
+msgid "Stop"
+msgstr "停止"
+
+#. i18n: traffic sign
+msgctxt "name of the traffic sign"
+msgid "Stop"
+msgstr "停止"
+
+msgid "Stops the walk."
+msgstr "自動再生を停止。"
+
+msgid "Submit changeset"
+msgstr "変更セット送信"
+
+msgid "Submit the current changeset"
+msgstr "現在の変更セットの送信"
+
+#. CHECKSTYLE.OFF: LineLength
+msgid "Submit the current changeset to Mapillary"
+msgstr "Mapillaryへ現在の変更セットを送信する"
+
+msgid "Submitting Mapillary Changeset"
+msgstr "Mapillary変更セット送信"
+
+msgid "Submitting changeset to server…"
+msgstr "変更セットをサーバへ送信中..."
+
+msgid "Supported image formats (JPG and PNG)"
+msgstr "サポートされる画像フォーマット(JPGとPNG)"
+
+msgid "Tag conflict"
+msgstr "タグの衝突"
+
+msgid ""
+"The Mapillary layer has stopped downloading images, because the requested "
+"area is too big!"
+msgstr "要求された領域が広すぎるため、Mapillaryレイヤは画像ダウンロードを停止しました。"
+
+msgid ""
+"The Mapillary plugin now uses a separate panel to display extra information "
+"(like the image key) and actions for the currently selected Mapillary image "
+"(like viewing it in a browser)."
+msgstr ""
+"Mapillaryプラグインは現在、(画像キー等の)追加情報を表示するパネルや、現在選択されているMapillary画像への(ブラウザ上への表示等の)処理のパネルが分割されています。"
+
+msgid "There are currently no layers with geotagged images!"
+msgstr "ジオタグされた画像があるレイヤーは、現在ありません。"
+
+#, java-format
+msgid ""
+"To solve this problem, you could switch to download mode ''{0}'' and load "
+"Mapillary images for a smaller portion of the map."
+msgstr "この問題を解決するには、ダウンロードモード\"{0}\"に切りかえ、地図の小さな領域でMapillary画像を読みこんでみてください。"
+
+msgid ""
+"To solve this problem, you could zoom in and load a smaller area of the map."
+msgstr "この問題を解決するには、ズームインして地図上のより小さな領域を読みこんでみてください。"
+
+msgid "Too many map objects, zoom in to see all."
+msgstr "マップオブジェクトが多すぎます。全てをみるにはズームインしてください。"
+
+#, java-format
+msgid "Total Mapillary images: {0}"
+msgstr "総Mapillaryイメージ数: {0}"
+
+#, java-format
+msgid "Turned {0} image"
+msgid_plural "Turned {0} images"
+msgstr[0] ""
+
+msgid "Undo"
+msgstr "元に戻す"
+
+#. i18n: traffic sign
+msgid "Uneven road"
+msgstr ""
+
+msgid "Update"
+msgstr "アップデート"
+
+msgid "Upload Mapillary images"
+msgstr "Mapillary画像のアップロード"
+
+msgid "Upload selected sequence"
+msgstr "選択したシーケンスのアップロード"
+
+#, java-format
+msgid "Uploading: {0}"
+msgstr "アップロード中: {0}"
+
+#. i18n: Checkbox label in JOSM settings
+msgid "Use 24 hour format"
+msgstr "24時間表記を使用"
+
+msgid "User"
+msgstr "ユーザー"
+
+msgid "View in browser"
+msgstr "ブラウザで表示"
+
+msgid "Wait for full quality pictures"
+msgstr "フル品質の写真を待つ"
+
+msgid "Walk mode"
+msgstr "自動再生モード"
+
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr "自動再生モード： 次画像の表示に時間が掛りすぎます。自動再生モードの中止..."
+
+#. i18n: Checkbox label in JOSM settings
+msgid ""
+"When opening Mapillary image in web browser, show the blur editor instead of"
+" the image viewer"
+msgstr "Mapillary画像をWebブラウザで開くときに、画像ビューアの代わりにブラー編集画面を開きます。"
+
+msgid "Which image layers do you want to import into the Mapillary layer?"
+msgstr "どの画像レイヤをMapillaryレイヤにインポートしますか？"
+
+msgid "Years"
+msgstr "年"
+
+msgid "You are currently not logged in."
+msgstr "ログインしていません"
+
+#, java-format
+msgid "You are logged in as ''{0}''."
+msgstr "''{0}'' としてログイン中です。"
+
+msgid "You are not logged in, please log in to Mapillary in the preferences"
+msgstr "まだログインしていません。Mapillaryに設定からログインしてください。"
+
+msgid ""
+"You are trying to upload a sequence to mapillary.com that you previously "
+"downloaded from there. That is not possible."
+msgstr "以前ダウンロードしたシーケンスをMapillary.comへアップロードしようとしています。その処理はできません。"
+
+#, java-format
+msgid "You have successfully uploaded {0} image to mapillary.com"
+msgid_plural "You have successfully uploaded {0} images to mapillary.com"
+msgstr[0] "{0}この画像をmapillary.comへアップロード完了しました。"
+
+msgid "Zoom to selected image"
+msgstr "選択した画像へズーム"
+
+msgid "Zoom to the currently selected Mapillary image"
+msgstr "現在選択しているMapillary画像へズームします。"
+
+msgid "approved"
+msgstr ""
+
+#. i18n: download mode for Mapillary images
+msgid "areas with downloaded OSM-data"
+msgstr "OSMデータをダウンロードした領域"
+
+#. i18n: download mode for Mapillary images
+msgid "everything in the visible area"
+msgstr "みえている領域全部"
+
+msgid "image has no key"
+msgstr "画像にはキーがない"
+
+msgid "no image selected"
+msgstr "画像が選択されていない"
+
+#. i18n: download mode for Mapillary images
+msgid "only when manually requested"
+msgstr "手動で要求されたときのみ"
+
+msgid "pending"
+msgstr "保留"
+
+msgid "rejected"
+msgstr "却下"
+
+msgid "sequence has no key"
+msgstr "シーケンスにキーがない"
+
+msgid "unknown user"
+msgstr "ユーザ不明"
+
+#, java-format
+msgid ""
+"{0}\n"
+"Could not read map objects from URL\n"
+"{1}!"
+msgstr ""
+"{0}\n"
+"URL {1}\n"
+"からマップオブジェクトを読みこめません!"
+
+#. i18n: {0} is the layer name, {1} the number of images in it
+#, java-format
+msgid "{0} ({1} image)"
+msgid_plural "{0} ({1} images)"
+msgstr[0] "{0} ({1} 画像)"
+
+#, java-format
+msgid "{0} detections"
+msgstr "{0} 検出物"
+
+#, java-format
+msgid "{0} downloaded image"
+msgid_plural "{0} downloaded images"
+msgstr[0] "{0} ダウンロードした画像"
+
+#, java-format
+msgid "{0} image in total"
+msgid_plural "{0} images in total"
+msgstr[0] "全 {0} 画像"
+
+#, java-format
+msgid "{0} image submitted, Changeset key: {1}, State: {2}"
+msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
+msgstr[0] "変更セットキー: {1}, 状態: {2}で、{0} この画像が送信されました。"
+
+#, java-format
+msgid "{0} images in {1} sequences"
+msgstr "{1}シーケンス中に画像が{0}こ"
+
+#, java-format
+msgid "{0} imported image"
+msgid_plural "{0} imported images"
+msgstr[0] "{0}このインポートした画像"
+
+#, java-format
+msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
+msgid_plural ""
+"{0} sequences, each containing between {1} and {2} images (ø {3})"
+msgstr[0] ""
+
+#. Plugin description for Mapillary
+msgid "Allows the user to work with pictures hosted at mapillary.com"
+msgstr "ユーザがmapillary.comで保持している写真で作業できるようにする"
