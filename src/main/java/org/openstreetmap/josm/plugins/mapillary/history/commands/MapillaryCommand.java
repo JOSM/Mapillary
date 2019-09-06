@@ -22,7 +22,7 @@ public abstract class MapillaryCommand {
    * @param images
    *          The images that are affected by the command.
    */
-  public MapillaryCommand(Set<MapillaryAbstractImage> images) {
+  public MapillaryCommand(final Set<? extends MapillaryAbstractImage> images) {
     this.images = new ConcurrentSkipListSet<>(images);
   }
 

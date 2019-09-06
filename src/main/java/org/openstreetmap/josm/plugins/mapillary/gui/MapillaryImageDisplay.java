@@ -26,9 +26,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-import javax.swing.JComponent;
+import javax.swing.JPanel;
 
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
@@ -46,7 +49,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillaryImageDisplay
  * @see MapillaryMainDialog
  */
-public class MapillaryImageDisplay extends JComponent {
+public class MapillaryImageDisplay extends JPanel {
 
   private static final long serialVersionUID = 3369727203329307716L;
   private static final double PANORAMA_FOV = Math.toRadians(110);
@@ -401,11 +404,34 @@ public class MapillaryImageDisplay extends JComponent {
   MapillaryImageDisplay() {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
+    setOpaque(true);
+    setDarkMode(MapillaryProperties.DARK_MODE.get());
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
     addComponentListener(new ComponentSizeListener());
 
-    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(valChanged -> repaint());
+    MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
+      @Override
+      public void layerAdded(LayerManager.LayerAddEvent e) { }
+
+      @Override
+      public void layerRemoving(LayerManager.LayerRemoveEvent e) {
+        if (e.getRemovedLayer() instanceof MapillaryLayer) {
+          setImage(null, Collections.emptyList(), false);
+        }
+      }
+
+      @Override
+      public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) { }
+    });
+
+    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
+    MapillaryProperties.DARK_MODE.addListener(it -> setDarkMode(it.getProperty().get()));
+  }
+
+  private void setDarkMode(final boolean darkMode) {
+    setBackground(darkMode ? MapillaryColorScheme.TOOLBAR_DARK_GREY : Color.WHITE);
+    setForeground(darkMode ? Color.LIGHT_GRAY : Color.DARK_GRAY);
   }
 
   /**
@@ -449,108 +475,121 @@ public class MapillaryImageDisplay extends JComponent {
    */
   @Override
   public void paintComponent(Graphics g) {
-    BufferedImage image;
-    Rectangle visibleRect;
+    super.paintComponent(g);
+    final BufferedImage image;
+    final Rectangle visibleRect;
     synchronized (this) {
       image = this.image;
       visibleRect = this.visibleRect;
     }
     if (image == null) {
-      g.setColor(Color.black);
-      String noImageStr = MapillaryLayer.hasInstance() ? tr("No image selected") : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
-      Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(
-          noImageStr, g);
-      Dimension size = getSize();
-      g.drawString(noImageStr,
-          (int) ((size.width - noImageSize.getWidth()) / 2),
-          (int) ((size.height - noImageSize.getHeight()) / 2));
+      paintNoImage(g);
     } else {
-      final Rectangle target;
-      if (this.pano) {
-        cameraPlane.mapping(image, offscreenImage);
-        target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
-        g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
-            + target.height, visibleRect.x, visibleRect.y, visibleRect.x
-            + visibleRect.width, visibleRect.y + visibleRect.height, null);
-      } else {
-        target = calculateDrawImageRectangle(visibleRect);
-        g.drawImage(image, target.x, target.y, target.x + target.width, target.y
-            + target.height, visibleRect.x, visibleRect.y, visibleRect.x
-            + visibleRect.width, visibleRect.y + visibleRect.height, null);
-        if (this.selectedRect != null) {
-          Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
-              this.selectedRect.y);
-          Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x
-              + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
-          g.setColor(new Color(128, 128, 128, 180));
-          g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);
-          g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);
-          g.fillRect(bottomRight.x, target.y, target.x + target.width
-              - bottomRight.x, target.height);
-          g.fillRect(target.x, bottomRight.y, target.width, target.y
-              + target.height - bottomRight.y);
-          g.setColor(Color.black);
-          g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,
-              bottomRight.y - topLeft.y);
-        }
-      }
+      paintImage(g, image, visibleRect);
 
       if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
-        if (g instanceof Graphics2D) {
-          final Graphics2D g2d = (Graphics2D) g;
-          g2d.setStroke(new BasicStroke(2));
-          if (pano) {
-            for (final ImageDetection d : detections) {
-              g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
-              final PathIterator pathIt = d.getShape().getPathIterator(null);
-              Point prevPoint = null;
-              int pointIndex;
-              while (!pathIt.isDone()) {
-                final double[] buffer = new double[6];
-                final int segmentType = pathIt.currentSegment(buffer);
+        paintDetectedSigns(g, visibleRect);
+      }
+    }
+  }
 
-                if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO || segmentType == PathIterator.SEG_CUBICTO) {
-                  // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1, 2 and 3 points for each of these segment types
-                  final Point curPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
-                  if (prevPoint != null && curPoint != null) {
-                    g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
-                  }
-                  prevPoint = curPoint;
-                } else if (segmentType == PathIterator.SEG_MOVETO) {
-                  prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
-                } else {
-                  prevPoint = null;
-                }
-                pathIt.next();
-              }
-            }
-          } else {
-            final Point upperLeft = img2compCoord(visibleRect, 0, 0);
-            final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
-            final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
-            unit2CompTransform.concatenate(AffineTransform.getScaleInstance(
-                lowerRight.getX() - upperLeft.getX(),
-                lowerRight.getY() - upperLeft.getY()
-            ));
+  private void paintNoImage(Graphics g) {
+    final String noImageStr = MapillaryLayer.hasInstance() ? tr("no image selected") : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
+    if (noImageStr != null) {
+      Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(noImageStr, g);
+      Dimension size = getSize();
+      g.setColor(getForeground());
+      g.drawString(noImageStr,
+        (int) ((size.width - noImageSize.getWidth()) / 2),
+        (int) ((size.height - noImageSize.getHeight()) / 2));
+    }
+  }
 
-            for (final ImageDetection d : detections) {
-              final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
-              g2d.setColor(
-                  d.isTrafficSign()
-                      ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN
-                      : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN
-              );
-              g2d.draw(shape);
-              if (d.isTrafficSign()) {
-                final Rectangle bounds = shape.getBounds();
-                g2d.drawImage(
-                    MapObject.getIcon(d.getValue()).getImage(),
-                    bounds.x, bounds.y,
-                    bounds.width, bounds.height,
-                    null
-                );
+  private void paintImage(Graphics g, BufferedImage image, Rectangle visibleRect) {
+    final Rectangle target;
+    if (this.pano) {
+      cameraPlane.mapping(image, offscreenImage);
+      target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
+      g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
+          + target.height, visibleRect.x, visibleRect.y, visibleRect.x
+          + visibleRect.width, visibleRect.y + visibleRect.height, null);
+    } else {
+      target = calculateDrawImageRectangle(visibleRect);
+      g.drawImage(image, target.x, target.y, target.x + target.width, target.y
+          + target.height, visibleRect.x, visibleRect.y, visibleRect.x
+          + visibleRect.width, visibleRect.y + visibleRect.height, null);
+      if (this.selectedRect != null) {
+        Point topLeft = img2compCoord(visibleRect, this.selectedRect.x,
+            this.selectedRect.y);
+        Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x
+            + this.selectedRect.width, this.selectedRect.y + this.selectedRect.height);
+        g.setColor(new Color(128, 128, 128, 180));
+        g.fillRect(target.x, target.y, target.width, topLeft.y - target.y);
+        g.fillRect(target.x, target.y, topLeft.x - target.x, target.height);
+        g.fillRect(bottomRight.x, target.y, target.x + target.width
+            - bottomRight.x, target.height);
+        g.fillRect(target.x, bottomRight.y, target.width, target.y
+            + target.height - bottomRight.y);
+        g.setColor(Color.black);
+        g.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x,
+            bottomRight.y - topLeft.y);
+      }
+    }
+  }
+
+  private void paintDetectedSigns(Graphics g, Rectangle visibleRect) {
+    if (g instanceof Graphics2D) {
+      final Graphics2D g2d = (Graphics2D) g;
+      g2d.setStroke(new BasicStroke(2));
+      if (pano) {
+        for (final ImageDetection d : detections) {
+          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
+          final PathIterator pathIt = d.getShape().getPathIterator(null);
+          Point prevPoint = null;
+          while (!pathIt.isDone()) {
+            final double[] buffer = new double[6];
+            final int segmentType = pathIt.currentSegment(buffer);
+
+            if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO || segmentType == PathIterator.SEG_CUBICTO) {
+              // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1, 2 and 3 points for each of these segment types
+              final Point curPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
+              if (prevPoint != null && curPoint != null) {
+                g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
               }
+              prevPoint = curPoint;
+            } else if (segmentType == PathIterator.SEG_MOVETO) {
+              prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
+            } else {
+              prevPoint = null;
             }
+            pathIt.next();
+          }
+        }
+      } else {
+        final Point upperLeft = img2compCoord(visibleRect, 0, 0);
+        final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+        final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+        unit2CompTransform.concatenate(AffineTransform.getScaleInstance(
+          lowerRight.getX() - upperLeft.getX(),
+          lowerRight.getY() - upperLeft.getY()
+        ));
+
+        for (final ImageDetection d : detections) {
+          final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+          g2d.setColor(
+            d.isTrafficSign()
+              ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN
+              : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN
+          );
+          g2d.draw(shape);
+          if (d.isTrafficSign()) {
+            final Rectangle bounds = shape.getBounds();
+            g2d.drawImage(
+              MapObject.getIcon(d.getValue()).getImage(),
+              bounds.x, bounds.y,
+              bounds.width, bounds.height,
+              null
+            );
           }
         }
       }

@@ -19,7 +19,7 @@ public abstract class MapillaryExecutableCommand extends MapillaryCommand {
    * @param images
    *          The set of images affected by the command.
    */
-  public MapillaryExecutableCommand(Set<MapillaryAbstractImage> images) {
+  public MapillaryExecutableCommand(final Set<? extends MapillaryAbstractImage> images) {
     super(images);
   }
 
