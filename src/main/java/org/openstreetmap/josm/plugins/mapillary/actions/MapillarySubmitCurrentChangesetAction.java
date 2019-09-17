@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.swing.JOptionPane;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -79,8 +80,9 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
           CloseableHttpResponse response = httpClient.execute(httpPost);
           Logging.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
           if (response.getStatusLine().getStatusCode() == 201) {
-            final String key = Json.createReader(response.getEntity().getContent()).readObject().getString("key");
-            final String state = Json.createReader(response.getEntity().getContent()).readObject().getString("state");
+            final JsonObject jsonObject = Json.createReader(response.getEntity().getContent()).readObject();
+            final String key = jsonObject.getString("key");
+            final String state = jsonObject.getString("state");
             I18n.marktr("rejected");
             I18n.marktr("pending");
             I18n.marktr("approved");
