@@ -7,10 +7,17 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 
+/**
+ * Encodes in JSON a location changeset.
+ * Former location and compass angle (CA) are systematically provided,
+ * even if not changed.
+ */
 public final class JsonLocationChangesetEncoder {
+
   private JsonLocationChangesetEncoder() {
     // Private constructor to avoid instantiation
   }
@@ -27,29 +34,28 @@ public final class JsonLocationChangesetEncoder {
       .add("request_comment", "JOSM-created");
   }
 
-  private static JsonObjectBuilder encodeImageChanges(MapillaryImage img) {
+  protected static JsonObjectBuilder encodeImageChanges(MapillaryImage img) {
     Objects.requireNonNull(img);
 
-    final JsonObjectBuilder to = Json.createObjectBuilder();
-    if (!img.getTempLatLon().equalsEpsilon(img.getLatLon())) {
-      to.add("geometry", Json.createObjectBuilder()
-        .add("coordinates", Json.createArrayBuilder()
-          .add(img.getTempLatLon().getX())
-          .add(img.getTempLatLon().getY())
-        ).add("type", "Point")
-      );
-    }
-    if (Math.abs(img.getCa() - img.getTempCa()) > 1e-9) {
-      to.add("properties", Json.createObjectBuilder().add("ca", img.getTempCa()));
-    } else {
-      to.add("properties", Json.createObjectBuilder());
-    }
-    if (!img.getTempLatLon().equalsEpsilon(img.getLatLon())) {
-      to.add("type", "Feature");
-    }
+    final JsonObjectBuilder from = getChangeJsonBuilder(img.getLatLon(), img.getCa());
+    final JsonObjectBuilder to = getChangeJsonBuilder(img.getTempLatLon(), img.getTempCa());
 
     return Json.createObjectBuilder()
       .add("image_key", img.getKey())
+      .add("from", from)
       .add("to", to);
+  }
+
+  private static JsonObjectBuilder getChangeJsonBuilder(LatLon tempLatLon, double tempCa) {
+    final JsonObjectBuilder to = Json.createObjectBuilder();
+    to.add("type", "Feature");
+    to.add("geometry", Json.createObjectBuilder()
+      .add("coordinates", Json.createArrayBuilder()
+        .add(tempLatLon.getX())
+        .add(tempLatLon.getY())
+      ).add("type", "Point")
+    );
+    to.add("properties", Json.createObjectBuilder().add("ca", tempCa));
+    return to;
   }
 }
