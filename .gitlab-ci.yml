@@ -12,16 +12,7 @@ assemble:
     paths:
     - build/
 
-assemble with java 10:
-  stage: build
-  image: registry.gitlab.com/josm/docker-library/openjdk-10-josmplugin:latest
-  script:
-  - ./gradlew assemble --stacktrace
-  artifacts:
-    paths:
-    - build/
-
-assemble with java 11:
+java 11 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
@@ -30,7 +21,7 @@ assemble with java 11:
     paths:
     - build/
 
-assemble with java 12:
+java 12 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
   script:
@@ -40,7 +31,7 @@ assemble with java 12:
     - build/
   allow_failure: true
 
-assemble with java 13:
+java 13 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
   script:
@@ -65,52 +56,44 @@ build:
   dependencies:
   - assemble
 
-compile against min JOSM:
+min JOSM compile:
   stage: test
   script:
   - ./gradlew compileJava_minJosm --stacktrace
   dependencies:
   - assemble
 
-compile against latest JOSM:
+latest JOSM compile:
   stage: test
   script:
   - ./gradlew compileJava_latestJosm --stacktrace
   dependencies:
   - assemble
 
-build with java 10:
-  stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-10-josmplugin:latest
-  script:
-  - ./gradlew build --stacktrace
-  dependencies:
-  - assemble with java 10
-
-build with java 11:
+java 11 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
   - ./gradlew build --stacktrace
   dependencies:
-  - assemble with java 11
+  - java 11 assemble
 
-build with java 12:
+java 12 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
   script:
   - ./gradlew build --stacktrace
   dependencies:
-  - assemble with java 12
+  - java 12 assemble
   allow_failure: true
 
-build with java 13:
+java 13 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
   script:
   - ./gradlew build --stacktrace
   dependencies:
-  - assemble with java 13
+  - java 13 assemble
   allow_failure: true
 
 
@@ -175,14 +158,13 @@ GitLab Maven repo:
     name: GitLab Maven Repository for JOSM plugins
     url: https://gitlab.com/JOSM/Mapillary/-/packages
   script:
-  - ./gradlew publishMapillaryPublicationToGitlabRepository
+  - ./gradlew publishAllPublicationsToGitlabRepository
+  - ./gradlew releaseToGitlab
   dependencies:
   - build
   only:
     refs:
     - tags@JOSM/Mapillary
-    variables:
-    - $CI_JOB_TOKEN
 
 release:
   stage: deploy

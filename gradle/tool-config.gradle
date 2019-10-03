@@ -36,9 +36,9 @@ pmd {
 sonarqube {
   properties {
     property 'sonar.forceAuthentication', 'true'
-    property 'sonar.host.url', 'https://sonarqube.com'
-    property 'sonar.projectKey', 'org.openstreetmap.josm.plugins:Mapillary'
-    property 'sonar.projectName', 'josm-mapillary-plugin'
+    property 'sonar.host.url', 'https://sonarcloud.io'
+    property 'sonar.projectKey', 'Mapillary'
+    property 'sonar.organization', 'josm'
     property 'sonar.projectVersion', project.version
     property 'sonar.projectDescription', property('plugin.description')
     property 'sonar.sources', ['src']

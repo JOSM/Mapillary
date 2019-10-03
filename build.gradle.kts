@@ -2,17 +2,18 @@ import com.github.spotbugs.SpotBugsTask
 import net.ltgt.gradle.errorprone.*
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.openstreetmap.josm.gradle.plugin.config.GitlabConfig
 import org.openstreetmap.josm.gradle.plugin.config.I18nConfig
 import org.openstreetmap.josm.gradle.plugin.config.JosmManifest
 import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
-  id("org.sonarqube") version "2.7"
-  id("org.openstreetmap.josm") version "0.6.1"
-  id("com.github.ben-manes.versions") version "0.21.0"
-  id("com.github.spotbugs") version "1.6.10"
-  id("net.ltgt.errorprone") version "0.7.1"
+  id("org.sonarqube") version "2.8"
+  id("org.openstreetmap.josm") version "0.6.4"
+  id("com.github.ben-manes.versions") version "0.25.0"
+  id("com.github.spotbugs") version "2.0.0"
+  id("net.ltgt.errorprone") version "0.8.1"
 
   eclipse
   jacoco
@@ -53,12 +54,12 @@ base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.21.0")
-  val junitVersion = "5.4.0"
+  testImplementation("com.github.tomakehurst:wiremock:2.25.0")
+  val junitVersion = "5.5.2"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:3.1.6")
+  testImplementation("org.awaitility:awaitility:4.0.1")
   testImplementation("org.jmockit:jmockit:1.45")
   testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.12")
 }
@@ -93,7 +94,8 @@ tasks.create("md2html", MarkdownToHtml::class) {
 josm {
   debugPort = 7051
   manifest {
-    // See https://floscher.github.io/gradle-josm-plugin/kdoc/current/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
+    // See https://floscher.gitlab.io/gradle-josm-plugin/kdoc/latest/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
+    oldVersionDownloadLink(14149, "v1.5.16", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.16/Mapillary.jar"))
     oldVersionDownloadLink(13733, "v1.5.15", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.15/Mapillary.jar"))
     oldVersionDownloadLink(13643, "v1.5.14", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.14/Mapillary.jar"))
     oldVersionDownloadLink(13558, "v1.5.12+pre13643", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.12%2Bpre13643/Mapillary.jar"))
@@ -151,55 +153,26 @@ tasks.withType(Test::class).getByName("test") {
   }
 }
 
-// Configuration for publishing to Maven repository at https://gitlab.com/JOSM/Mapillary/-/packages
-val PROJECT_ID = 8564565 // repository JOSM/Mapillary
-val PERSONAL_ACCESS_TOKEN = System.getenv("PERSONAL_ACCESS_TOKEN")
-val JOB_TOKEN = System.getenv("CI_JOB_TOKEN")
-
-publishing {
-  repositories {
-    if ((PERSONAL_ACCESS_TOKEN ?: JOB_TOKEN) != null) {
-      maven("https://gitlab.com/api/v4/projects/$PROJECT_ID/packages/maven") {
-        name = "gitlab"
-        credentials(HttpHeaderCredentials::class) {
-          name = PERSONAL_ACCESS_TOKEN?.let { "Private-Token" } ?: "Job-Token"
-          value = PERSONAL_ACCESS_TOKEN ?: JOB_TOKEN
-        }
-        authentication {
-          removeAll { a -> true }
-          create("auth", HttpHeaderAuthentication::class)
+project.afterEvaluate {
+  publishing.publications.getByName("josmPlugin", MavenPublication::class) {
+    pom {
+      name.set("JOSM-${base.archivesBaseName}")
+      description.set("The Mapillary plugin for JOSM")
+      url.set("https://gitlab.com/JOSM/Mapillary")
+      licenses {
+        license {
+          name.set("GNU General Public License Version 2")
+          url.set("https://www.gnu.org/licenses/old-licenses/gpl-2.0")
         }
       }
-    }
-    maven("$buildDir/maven") {
-      name = "buildDir"
-    }
-  }
-  publications {
-    create(base.archivesBaseName, MavenPublication::class) {
-      artifactId = base.archivesBaseName
-      groupId = "org.openstreetmap.josm.plugins"
-      version = project.version.toString()
-      from(components["java"])
-      pom {
-        name.set("JOSM-${base.archivesBaseName}")
-        description.set("The Mapillary plugin for JOSM")
+      scm {
+        connection.set("scm:git:git://gitlab.com/JOSM/Mapillary.git")
+        developerConnection.set("scm:git:ssh://gitlab.com/JOSM/Mapillary.git")
         url.set("https://gitlab.com/JOSM/Mapillary")
-        licenses {
-          license {
-            name.set("GNU General Public License Version 2")
-            url.set("https://www.gnu.org/licenses/old-licenses/gpl-2.0")
-          }
-        }
-        scm {
-          connection.set("scm:git:git://gitlab.com/JOSM/Mapillary.git")
-          developerConnection.set("scm:git:ssh://gitlab.com/JOSM/Mapillary.git")
-          url.set("https://gitlab.com/JOSM/Mapillary")
-        }
-        issueManagement {
-          system.set("Trac")
-          url.set("https://josm.openstreetmap.de/query?component=Plugin+mapillary&status=assigned&status=needinfo&status=new&status=reopened")
-        }
+      }
+      issueManagement {
+        system.set("Trac")
+        url.set("https://josm.openstreetmap.de/query?component=Plugin+mapillary&status=assigned&status=needinfo&status=new&status=reopened")
       }
     }
   }
