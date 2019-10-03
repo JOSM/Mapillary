@@ -2,35 +2,6 @@
   "type": "location",
   "changes": [
     {
-      "image_key": "wMAqAFr3xE9072G8Al6WLQ",
-      "from": {
-        "type": "Feature",
-        "properties": {
-          "ca": 10.0
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [
-            13.3323,
-            50.44612
-          ]
-        }
-      },
-      "to": {
-        "geometry": {
-          "coordinates": [
-            13.4434,
-            50.66834
-          ],
-          "type": "Point"
-        },
-        "properties": {
-          "ca": 283.3
-        },
-        "type": "Feature"
-      }
-    },
-    {
       "image_key": "7erPn382xDMtmfdh0xtvUw",
       "from": {
         "type": "Feature",
@@ -53,7 +24,9 @@
           ],
           "type": "Point"
         },
-        "properties": {},
+        "properties": {
+          "ca": 0.0
+        },
         "type": "Feature"
       }
     },
@@ -73,8 +46,45 @@
         }
       },
       "to": {
+        "geometry": {
+          "coordinates": [
+            0.0,
+            0.0
+          ],
+          "type": "Point"
+        },
         "properties": {
           "ca": 13.4
+        },
+        "type": "Feature"
+      }
+    },
+    {
+      "image_key": "wMAqAFr3xE9072G8Al6WLQ",
+      "from": {
+        "type": "Feature",
+        "properties": {
+          "ca": 10.0
+        },
+        "geometry": {
+          "coordinates": [
+            13.3323,
+            50.44612
+          ],
+          "type": "Point"
+        }
+      },
+      "to": {
+        "type": "Feature",
+        "geometry": {
+          "coordinates": [
+            13.4434,
+            50.66834
+          ],
+          "type": "Point"
+        },
+        "properties": {
+          "ca": 283.3
         }
       }
     }

@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 import javax.json.Json;
@@ -25,9 +26,10 @@ public final class JsonLocationChangesetEncoder {
   public static JsonObjectBuilder encodeLocationChangeset(MapillaryLocationChangeset changeset) {
     Objects.requireNonNull(changeset);
     final JsonArrayBuilder imgChanges = Json.createArrayBuilder();
-    for (MapillaryImage img : changeset) {
-      imgChanges.add(encodeImageChanges(img));
-    }
+
+    changeset.stream()
+      .sorted(Comparator.comparing(MapillaryImage::getKey)) // sort for easier testing
+      .forEach(it -> imgChanges.add(encodeImageChanges(it)));
     return Json.createObjectBuilder()
       .add("type", "location")
       .add("changes", imgChanges)

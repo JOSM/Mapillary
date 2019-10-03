@@ -61,7 +61,6 @@ dependencies {
   testImplementation("org.awaitility:awaitility:3.1.6")
   testImplementation("org.jmockit:jmockit:1.45")
   testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.12")
-  testImplementation("org.skyscreamer:jsonassert:1.5.0")
 }
 
 sourceSets {
