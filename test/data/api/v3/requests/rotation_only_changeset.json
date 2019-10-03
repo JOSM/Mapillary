@@ -1,0 +1,29 @@
+{
+  "image_key": "rotationOnlyChangesetImageKey",
+  "from": {
+    "type": "Feature",
+    "properties": {
+      "ca": 10.0
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.3323,
+        50.44612
+      ]
+    }
+  },
+  "to": {
+    "geometry": {
+      "coordinates": [
+        13.3323,
+        50.44612
+      ],
+      "type": "Point"
+    },
+    "properties": {
+      "ca": -70.3
+    },
+    "type": "Feature"
+  }
+}

@@ -14,10 +14,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.function.Function;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.After;
