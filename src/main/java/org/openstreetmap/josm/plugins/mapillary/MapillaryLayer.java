@@ -413,6 +413,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   @Override
+  public String getChangesetSourceTag() {
+    return "mapillary";
+  }
+
+  @Override
   public boolean isMergable(Layer other) {
     return false;
   }
