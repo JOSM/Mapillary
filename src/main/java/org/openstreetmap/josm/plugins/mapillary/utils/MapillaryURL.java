@@ -19,6 +19,9 @@ public final class MapillaryURL {
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
 
+  /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly  */
+  private static final String SORT_BY_KEY = "&sort_by=key";
+
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
@@ -39,7 +42,7 @@ public final class MapillaryURL {
     }
 
     public static URL searchDetections(Bounds bounds) {
-      return string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER));
+      return string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
     }
 
     public static URL searchImages(Bounds bounds) {
@@ -47,7 +50,7 @@ public final class MapillaryURL {
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER));
+      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
     }
 
     public static URL searchSequences(final Bounds bounds) {
@@ -88,7 +91,7 @@ public final class MapillaryURL {
       return null;
     }
 
-    public static String queryString(final Bounds bounds) {
+    static String queryString(final Bounds bounds) {
       if (bounds != null) {
         final Map<String, String> parts = new HashMap<>();
         parts.put("bbox", bounds.toBBox().toStringCSV(","));
@@ -97,7 +100,7 @@ public final class MapillaryURL {
       return MapillaryURL.queryString(null);
     }
 
-    public static String queryString(final Bounds bounds, final String layer) {
+    static String queryString(final Bounds bounds, final String layer) {
       if (layer == null) {
         throw new IllegalArgumentException("layer cannot be null");
       }
