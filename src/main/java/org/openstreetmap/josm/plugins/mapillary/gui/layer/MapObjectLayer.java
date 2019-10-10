@@ -118,10 +118,13 @@ public final class MapObjectLayer extends Layer implements ZoomChangeListener {
       synchronized (objects) {
         for (MapObject object : objects) {
           if (!scaledIcons.containsKey(object.getValue())) {
-            scaledIcons.put(
-              object.getValue(),
-              ImageUtil.scaleImageIcon(MapObject.getIcon(object.getValue()), MapillaryProperties.MAPOBJECT_ICON_SIZE.get())
-            );
+            ImageIcon icon = MapObject.getIcon(object.getValue());
+            if (icon != null) {
+              scaledIcons.put(
+                object.getValue(),
+                ImageUtil.scaleImageIcon(icon, MapillaryProperties.MAPOBJECT_ICON_SIZE.get())
+              );
+            }
           }
         }
       }
