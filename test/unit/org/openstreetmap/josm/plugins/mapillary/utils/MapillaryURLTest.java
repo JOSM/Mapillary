@@ -20,13 +20,14 @@ import org.openstreetmap.josm.data.coor.LatLon;
 
 public class MapillaryURLTest {
   private static final String CLIENT_ID_QUERY_PART = "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
+  private static final String SORT_BY_KEY = "sort_by=key";
 
   public static class APIv3 {
 
     @Test
     public void testSearchDetections() {
       final String expectedLayerParameter = "layers=trafficsigns";
-      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter);
+      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
     }
 
     @Test
@@ -55,10 +56,11 @@ public class MapillaryURLTest {
         expectedBaseUrl,
         CLIENT_ID_QUERY_PART,
         expectedLayerParameter,
+        SORT_BY_KEY,
         "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name())
       );
 
-      assertUrlEquals(MapillaryURL.APIv3.searchMapObjects(null), expectedBaseUrl, CLIENT_ID_QUERY_PART, expectedLayerParameter);
+      assertUrlEquals(MapillaryURL.APIv3.searchMapObjects(null), expectedBaseUrl, CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
     }
 
     @Test

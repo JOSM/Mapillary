@@ -31,7 +31,6 @@ public final class JsonMapObjectDecoder {
       final String value = ((JsonObject) properties).getString("value", null);
       final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("first_seen_at", null));
       final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("last_seen_at", null));
-      final Long updatedTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("last_seen_at", null));
 
       final JsonValue coordVal = "Point".equals(((JsonObject) geometry).getString("type", null))
         ? ((JsonObject) geometry).get("coordinates")
