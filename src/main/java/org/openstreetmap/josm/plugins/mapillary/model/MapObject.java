@@ -58,8 +58,9 @@ public class MapObject extends KeyIndexedObject {
         MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
         return downloadedIcon;
       } catch (IOException e) {
-        Logging.log(Logging.LEVEL_WARN, "Failed to download icon " + objectTypeID, e);
-        return ICON_UNKNOWN_TYPE;
+        Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
+        // In order to not display the objects without known icons:
+        return null;
       }
     }
     return cachedIcon;
