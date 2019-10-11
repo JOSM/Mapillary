@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -66,6 +67,12 @@ public class MapillaryLayerTest {
     Object comp = MapillaryLayer.getInstance().getInfoComponent();
     assertTrue(comp instanceof String);
     assertTrue(((String) comp).length() >= 9);
+  }
+
+  @Test
+  public void testGetChangesetSourceTag() {
+    String actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
+    assertEquals("OpenStreetmap changeset source for Mapillary layer should be 'mapillary'", "mapillary", actualChangesetSourceTag);
   }
 
   @Test
