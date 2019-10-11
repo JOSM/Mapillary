@@ -41,11 +41,11 @@ public class ImportTest {
    */
   @Test(expected = IIOException.class)
   public void testInvalidFiles() throws IOException {
-    MapillaryImportedImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
+    MapillaryImportedImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
     assertNull(img.getImage());
     assertNull(img.getFile());
 
-    img = new MapillaryImportedImage(new LatLon(0, 0), 0, new File(""));
+    img = new MapillaryImportedImage(new LatLon(0, 0), 0, new File(""), false);
     assertEquals(new File(""), img.getFile());
     img.getImage();
   }

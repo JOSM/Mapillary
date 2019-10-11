@@ -43,9 +43,9 @@ public class MapillaryLayerTest {
 
   @Test
   public void testSetVisible() {
-    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File("")));
-    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File("")));
-    MapillaryImportedImage invisibleImage = new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""));
+    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false));
+    MapillaryLayer.getInstance().getData().add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false));
+    MapillaryImportedImage invisibleImage = new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false);
     invisibleImage.setVisible(false);
     MapillaryLayer.getInstance().getData().add(invisibleImage);
 

@@ -56,6 +56,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    *
    * @param latLon  The latitude and longitude where the picture was taken.
    * @param ca  The direction of the picture (0 means north).
+   * @param pano   The property to indicate whether image is panorama or not.
    */
   protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
     this.latLon = latLon;

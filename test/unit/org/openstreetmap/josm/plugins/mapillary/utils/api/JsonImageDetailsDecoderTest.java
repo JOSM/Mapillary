@@ -42,7 +42,7 @@ public class JsonImageDetailsDecoderTest {
     MapillaryImage img1 = new MapillaryImage("_yA5uXuSNugmsK5VucU6Bg", new LatLon(0, 0), 0, false);
     MapillaryImage img2 = new MapillaryImage("nmF-Wq4EvVTgAUmBicSCCg", new LatLon(0, 0), 0, false);
     MapillaryImage img3 = new MapillaryImage("arbitrary_key", new LatLon(0, 0), 0, false);
-    MapillaryAbstractImage img4 = new MapillaryImportedImage(new LatLon(0, 0), 0, null);
+    MapillaryAbstractImage img4 = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
     img4.setCapturedAt(0);
     data.add(img1);
     data.add(img2);

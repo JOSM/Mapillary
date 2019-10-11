@@ -97,7 +97,6 @@ public final class ImageImportUtil {
       // Can't read metadata from image, use defaults instead
     }
 
-
     final LatLon latLon;
     if (lat instanceof RationalNumber[] && latRef != null && lon instanceof RationalNumber[] && lonRef != null) {
       latLon = new LatLon(
@@ -113,10 +112,11 @@ public final class ImageImportUtil {
     } else {
       ca = 0;
     }
+    boolean pano = ImageMetaDataUtil.isPanorama(f);
     if (dateTime == null) {
-      return new MapillaryImportedImage(latLon, ca, f);
+      return new MapillaryImportedImage(latLon, ca, f, pano);
     }
-    return new MapillaryImportedImage(latLon, ca, f, dateTime.toString());
+    return new MapillaryImportedImage(latLon, ca, f, pano, dateTime.toString());
   }
 
   private static Object getTiffFieldValue(JpegImageMetadata meta, TagInfo tag) {

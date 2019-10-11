@@ -34,6 +34,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @param key    The unique identifier of the image.
    * @param latLon The latitude and longitude where it is positioned.
    * @param ca     The direction of the images in degrees, meaning 0 north.
+   * @param pano   The property to indicate whether image is panorama or not.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano) {
     super(latLon, ca, pano);
