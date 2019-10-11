@@ -1,15 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,6 +31,7 @@ public class ImageMetaDataUtil {
 
   /**
    * check whether image file is a panorama photo or not.
+   *
    * @param f an image file to check.
    * @return true if image is panorama photo.
    */
@@ -49,6 +47,7 @@ public class ImageMetaDataUtil {
 
   /**
    * check whether image file is a panorama photo or not.
+   *
    * @param is image InputStream to check.
    * @return true if image is a panorama.
    */
@@ -64,7 +63,8 @@ public class ImageMetaDataUtil {
 
   /**
    * check whether image file is a panorama photo or not.
-   * @param ba  image byte[] to check.
+   *
+   * @param ba image byte[] to check.
    * @return true if image is a panorama.
    */
   public static boolean isPanorama(final byte[] ba) {
@@ -79,7 +79,8 @@ public class ImageMetaDataUtil {
 
   /**
    * check XMP XML record whether projection type is equirectangle or not.
-   * @param xml_string XMP XML string to input.
+   *
+   * @param xml_string  XMP XML string to input.
    * @param target_type expected projection type.
    * @return true is projection type is as same as target_type.
    */
@@ -102,8 +103,7 @@ public class ImageMetaDataUtil {
             Node rdfChildNode = rdfChildNodeList.item(j);
             if (rdfChildNode.getNodeType() == Node.ELEMENT_NODE) {
               Element rdfChildElement = (Element) rdfChildNode;
-              String projection = rdfChildElement.getAttributeNS("http://ns.google.com/photos/1.0/panorama/", "ProjectionType");
-              if (target_type.equals(projection)) {
+              if (attributeProjectionTypeIsTargetType(rdfChildElement, target_type) || hasOneProjectionTypeChildWithTargetType(rdfChildElement, target_type)) {
                 res = true;
                 break;
               }
@@ -115,5 +115,31 @@ public class ImageMetaDataUtil {
       Logging.trace(ex);
     }
     return res;
+  }
+
+  private static boolean attributeProjectionTypeIsTargetType(final Element element, final String targetType) {
+    String projectionAsAttribute = element.getAttributeNS("http://ns.google.com/photos/1.0/panorama/", "ProjectionType");
+    return targetType.equals(projectionAsAttribute);
+  }
+
+  private static boolean hasOneProjectionTypeChildWithTargetType(final Element element, final String targetType) {
+    NodeList descriptionChildNodes = element.getChildNodes();
+    for (int k = 0; k < descriptionChildNodes.getLength(); k++) {
+      Node descriptionChildNode = descriptionChildNodes.item(k);
+      if (elementProjectionTypeIsTargetType(descriptionChildNode, targetType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static boolean elementProjectionTypeIsTargetType(final Node node, final String targetType) {
+    if (node.getNodeType() == Node.ELEMENT_NODE) {
+      String projectionType = node.getFirstChild().getNodeValue();
+      if (targetType.equals(projectionType)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
