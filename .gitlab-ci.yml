@@ -1,5 +1,11 @@
 image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 
+stages:
+  - build
+  - test
+  - deploy
+  - release
+
 ###############
 # Build stage #
 ###############
@@ -7,39 +13,47 @@ image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 assemble:
   stage: build
   script:
-  - ./gradlew assemble --stacktrace
+    - ./gradlew assemble --stacktrace
   artifacts:
     paths:
-    - build/
+      - build/
+  except:
+    - schedules
 
 java 11 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
-  - ./gradlew assemble --stacktrace
+    - ./gradlew assemble --stacktrace
   artifacts:
     paths:
-    - build/
+      - build/
+  except:
+    - schedules
 
 java 12 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
   script:
-  - ./gradlew assemble --stacktrace
+    - ./gradlew assemble --stacktrace
   artifacts:
     paths:
-    - build/
+      - build/
   allow_failure: true
+  except:
+    - schedules
 
 java 13 assemble:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
   script:
-  - ./gradlew assemble --stacktrace
+    - ./gradlew assemble --stacktrace
   artifacts:
     paths:
-    - build/
+      - build/
   allow_failure: true
+  except:
+    - schedules
 
 
 ##############
@@ -49,52 +63,64 @@ java 13 assemble:
 build:
   stage: test
   script:
-  - ./gradlew build generatePot --stacktrace
+    - ./gradlew build generatePot --stacktrace
   artifacts:
     paths:
     - build
   dependencies:
-  - assemble
+    - assemble
+  except:
+    - schedules
 
 min JOSM compile:
   stage: test
   script:
-  - ./gradlew compileJava_minJosm --stacktrace
+    - ./gradlew compileJava_minJosm --stacktrace
   dependencies:
-  - assemble
+    - assemble
+  except:
+    - schedules
 
 latest JOSM compile:
   stage: test
   script:
-  - ./gradlew compileJava_latestJosm --stacktrace
+    - ./gradlew compileJava_latestJosm --stacktrace
   dependencies:
-  - assemble
+    - assemble
+  only:
+    - schedules@JOSM/plugin/Mapillary
 
 java 11 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
-  - ./gradlew build --stacktrace
+    - ./gradlew build --stacktrace
   dependencies:
-  - java 11 assemble
+    - java 11 assemble
+  except:
+    - schedules
 
 java 12 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
   script:
-  - ./gradlew build --stacktrace
+    - ./gradlew build --stacktrace
   dependencies:
-  - java 12 assemble
+    - java 12 assemble
   allow_failure: true
+  except:
+    - schedules
 
 java 13 build:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
   script:
-  - ./gradlew build --stacktrace
+    - ./gradlew build --stacktrace
   dependencies:
-  - java 13 assemble
+    - java 13 assemble
   allow_failure: true
+  except:
+    - schedules
 
 
 ################
@@ -108,33 +134,37 @@ transifex.com:
     name: transifex.com
     url: https://www.transifex.com/josm/josm/josm-plugin_Mapillary/
   script:
-  - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
+    - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
   dependencies:
-  - build
+    - build
   only:
     refs:
-    - master@JOSM/Mapillary
+      - master@JOSM/plugin/Mapillary
     variables:
-    - $TRANSIFEX_TOKEN
+      - $TRANSIFEX_TOKEN
+  except:
+    - schedules
 
 codecov.io:
-  image: alpine:3.8
+  image: alpine:3.10
   stage: deploy
   environment:
     name: codecov.io
     url: https://codecov.io/gh/JOSM/Mapillary
   before_script:
-  - apk add --update curl bash
+    - apk add --update curl bash
   script:
-  - curl -s https://codecov.io/bash | bash
-  - curl -s https://codecov.io/bash | bash /dev/stdin -c -F model_and_api
+    - curl -s https://codecov.io/bash | bash
+    - curl -s https://codecov.io/bash | bash /dev/stdin -c -F model_and_api
   dependencies:
-  - build
+    - build
   only:
     refs:
-    - master@JOSM/Mapillary
+      - master@JOSM/plugin/Mapillary
     variables:
-    - $CODECOV_TOKEN
+      - $CODECOV_TOKEN
+  except:
+    - schedules
 
 sonarcloud.io:
   image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
@@ -143,39 +173,41 @@ sonarcloud.io:
     name: sonarcloud.io
     url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
   script:
-  - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
+    - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
   dependencies:
-  - build
+    - build
   only:
     refs:
-    - master@JOSM/Mapillary
+      - master@JOSM/plugin/Mapillary
     variables:
-    - $SONAR_TOKEN
+      - $SONAR_TOKEN
+  except:
+    - schedules
 
 GitLab Maven repo:
   stage: deploy
   environment:
-    name: GitLab Maven Repository for JOSM plugins
-    url: https://gitlab.com/JOSM/Mapillary/-/packages
+    name: GitLab.com / Maven packages
+    url: https://gitlab.com/JOSM/plugin/Mapillary/-/packages
   script:
-  - ./gradlew publishAllPublicationsToGitlabRepository
-  - ./gradlew releaseToGitlab
+    - ./gradlew publishAllPublicationsToGitlabRepository
   dependencies:
-  - build
+    - build
   only:
-    refs:
-    - tags@JOSM/Mapillary
+    - tags@JOSM/plugin/Mapillary
+  except:
+    - schedules
 
 release:
   stage: deploy
   environment:
-    name: pages branch / dist directory
-    url: https://gitlab.com/JOSM/Mapillary/tree/pages/dist
+    name: GitLab.com / pages branch
+    url: https://gitlab.com/JOSM/plugin/Mapillary/tree/pages/dist
   script:
   - |
-    echo "$SSH_PRIVATE_DEPLOY_KEY" > ~/.ssh/id_rsa
+    base64 --decode "$SSH_PRIVATE_DEPLOY_KEY" > ~/.ssh/id_rsa
     chmod 600 ~/.ssh/id_rsa
-    git clone --depth 1 --branch pages git@gitlab.com:JOSM/Mapillary.git pages
+    git clone --depth 1 --branch pages git@gitlab.com:JOSM/plugin/Mapillary.git pages
   - |
     version=`git describe --always --dirty`
     longVersion=`git describe --always --long --dirty`
@@ -187,15 +219,33 @@ release:
     ln -s "./$version" "pages/dist/latest"
   - |
     cd pages/
-    git config user.name "GitLab CI for JOSM/Mapillary"
-    git config user.email "incoming+JOSM/Mapillary@incoming.gitlab.com"
+    git config user.name "GitLab CI for JOSM/plugin/Mapillary"
+    git config user.email "incoming+josm-plugin-mapillary-8564565-issue-@incoming.gitlab.com"
     git stage .
     git commit -a -m "$commitMessage"
     git push origin pages
   dependencies:
   - build
   only:
-    refs:
-    - tags@JOSM/Mapillary
-    variables:
-    - $SSH_PRIVATE_DEPLOY_KEY
+    - tags@JOSM/plugin/Mapillary
+  except:
+    - schedules
+
+
+#################
+# Release stage #
+#################
+
+release to Gitlab.com:
+  stage: release
+  environment:
+    name: GitLab.com / Releases
+    url: https://gitlab.com/JOSM/plugin/Mapillary/-/releases
+  script:
+    - ./gradlew releaseToGitlab
+  dependencies:
+    - GitLab Maven repo
+  only:
+    - tags@JOSM/plugin/Mapillary
+  except:
+    - schedules
