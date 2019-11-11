@@ -1,10 +1,14 @@
 image: alpine:3.8
 
+stages:
+  - deploy
+  - trigger
+
 pages:
   stage: deploy
   environment:
     name: pages site
-    url: "https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"
+    url: "https://josm.gitlab.io/plugin/Mapillary"
   script:
   - mkdir .public
   - cp -r * .public
@@ -13,4 +17,10 @@ pages:
     paths:
     - public
   only:
-  - pages@JOSM/Mapillary
+  - pages@JOSM/plugin/Mapillary
+
++trigger update site:
+  stage: trigger
+  trigger: JOSM/josm.gitlab.io
+  only:
+    - pages@JOSM/plugin/Mapillary
