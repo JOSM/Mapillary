@@ -414,7 +414,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public String getChangesetSourceTag() {
-    return "mapillary";
+    return "Mapillary";
   }
 
   @Override
