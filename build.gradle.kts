@@ -12,7 +12,7 @@ plugins {
   id("org.sonarqube") version "2.8"
   id("org.openstreetmap.josm") version "0.6.5"
   id("com.github.ben-manes.versions") version "0.27.0"
-  id("com.github.spotbugs") version "2.0.1"
+  id("com.github.spotbugs") version "3.0.0"
   id("net.ltgt.errorprone") version "1.1.1"
 
   eclipse
@@ -28,7 +28,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.3.3")
+  errorprone("com.google.errorprone:error_prone_core:2.3.4")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -54,14 +54,14 @@ base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.25.1")
-  val junitVersion = "5.5.2"
+  testImplementation("com.github.tomakehurst:wiremock:2.26.0")
+  val junitVersion = "5.6.0"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:4.0.1")
+  testImplementation("org.awaitility:awaitility:4.0.2")
   testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
-  testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.12")
+  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.0")
 }
 
 sourceSets {

@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (el)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Greek (https://www.transifex.com/josm/teams/2544/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,6 @@ msgstr "2 εικόνες συνδέθηκαν"
 msgid "2 images unjoined"
 msgstr "2 εικόνες αποσυνδέθηκαν"
 
-#, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr ""
@@ -54,7 +53,12 @@ msgstr ""
 msgid "Cancel"
 msgstr "Ακύρωση"
 
-#, java-format
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr ""
+"Κεντράρισμα προβολής σε νέα εικόνα όταν χρησιμοποιείτε τα κουμπιά για να "
+"μεταβείτε σε άλλη εικόνα"
+
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Η μεταφόρτωση του πακέτου αλλαγών απέτυχε με {0} σφάλμα ''{1} {2}''!"
 
@@ -72,27 +76,22 @@ msgstr ""
 "Δεν ήταν δυνατή η εισαγωγή μιας γεωαναφερμένης εικόνας στο επίπεδο του "
 "Mapillary!"
 
-#, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "Δεν ήταν δυνατή η εισαγωγή του καταλόγου ''{0}''!"
 
-#, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "Δεν ήταν δυνατή η εισαγωγή της εικόνας ''{0}''!"
 
-#, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr ""
 "Δεν είναι δυνατό να ανοίξει η διεύθυνση {0} σε ένα πρόγραμμα περιήγησης"
 
-#, java-format
 msgid "Could not read from URL {0}!"
 msgstr "Δεν ήταν δυνατή η ανάγνωση από τη διεύθυνση {0}!"
 
 msgid "Current Mapillary changeset"
 msgstr "Τωρινό πακέτο αλλαγών Mapillary"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "Αποκοπή διαδοχής στα όρια λήψης"
 
@@ -102,7 +101,6 @@ msgstr "Ημέρες"
 msgid "Delete after upload"
 msgstr "Διαγραφή μετά την μεταφόρτωση"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Εμφάνιση ώρας κατά την λήψη της φωτογραφίας"
 
@@ -121,7 +119,6 @@ msgstr ""
 "Εμφάνιση του επιπέδου που εμφανίζει τα αντικείμενα χάρτη που ανιχνεύονται "
 "από το Mapillary"
 
-#, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
@@ -150,7 +147,6 @@ msgstr "Λήψη αντικειμένων χάρτη..."
 msgid "Downloading…"
 msgstr "Λήψη..."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr ""
 "Ενεργοποίηση πειραματικών χαρακτηριστικών beta (μπορεί να είναι ασταθής)"
@@ -228,7 +224,6 @@ msgstr "Εισαγωγή εικόνων στο επίπεδο Mapillary"
 msgid "Imported images"
 msgstr "Εισαγόμενες εικόνες"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Κίνδυνος διασταύρωσης"
 
@@ -270,7 +265,6 @@ msgstr "Επιτυχής σύνδεση, επιστρέψτε στο JOSM."
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Υποχρεωτική κατεύθυνση (οποιαδήποτε)"
 
@@ -310,32 +304,27 @@ msgstr "Μήνες"
 msgid "Next picture"
 msgstr "Επόμενη εικόνα"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "Απαγορεύεται η είσοδος"
-
-msgid "No image selected"
-msgstr "Δεν επιλέχθηκε εικόνα"
 
 msgid "No images found"
 msgstr "Δεν βρέθηκαν εικόνες"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Απαγορεύεται η προσπέραση"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Απαγορεύεται η στάθμευση"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Απαγορεύεται η στροφή"
+
+msgid "Not logged in to Mapillary"
+msgstr "Δεν έχετε συνδεθεί στο Mapillary"
 
 msgid "Not older than: "
 msgstr "Δεν είναι παλαιότερο από:"
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr ""
 "Αριθμός εικόνων που πρέπει να προωθηθούν (προς τα εμπρός και προς τα πίσω)"
@@ -364,18 +353,15 @@ msgstr "Παύση"
 msgid "Pauses the walk."
 msgstr "Παύση του περίπατου."
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Διάβαση πεζών"
 
 msgid "Play"
 msgstr "Παίξε"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Πατήστε \"{0}\" για λήψη εικόνων"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Προεπισκόπηση των εικόνων όταν εμφανίζεται το εικονίδιό τους"
 
@@ -391,7 +377,6 @@ msgstr "Μηδενισμός"
 msgid "Rewrite imported images"
 msgstr "Ξαναγράψτε τις εισαγόμενες εικόνες"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Κυκλικός κόμβος"
 
@@ -419,7 +404,6 @@ msgstr "Εμφάνιση της επόμενης εικόνας στην σει�
 msgid "Shows the previous picture in the sequence"
 msgstr "Εμφάνιση της προηγούμενης εικόνας στην σειρά"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Οριο ταχύτητας"
 
@@ -427,7 +411,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Stop"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
@@ -441,7 +424,6 @@ msgstr "Υποβολή πακέτου αλλαγών"
 msgid "Submit the current changeset"
 msgstr "Υποβολή του τρέχοντος πακέτου αλλαγών"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Υποβολή του τρέχοντος πακέτου αλλαγών στο Mapillary"
 
@@ -477,7 +459,6 @@ msgstr ""
 msgid "There are currently no layers with geotagged images!"
 msgstr "Αυτήν τη στιγμή δεν υπάρχουν επίπεδα με γεωαναφερμένες εικόνες!"
 
-#, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
@@ -495,14 +476,12 @@ msgstr ""
 msgid "Too many map objects, zoom in to see all."
 msgstr "Πάρα πολλά αντικείμενα χάρτη, μεγεθύνετε για να τα δείτε όλα."
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Σύνολο εικόνων Mapillary: {0}"
 
 msgid "Undo"
 msgstr "Αναίρεση"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Ανώμαλος δρόμος"
 
@@ -515,11 +494,9 @@ msgstr "Μεταφόρτωση εικόνων Mapillary"
 msgid "Upload selected sequence"
 msgstr "Μεταφόρτωση επιλεγμένης σειράς"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Μεταφόρτωση: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Χρησιμοποιήστε τη μορφή 24 ωρών"
 
@@ -549,7 +526,6 @@ msgstr "Έτος"
 msgid "You are currently not logged in."
 msgstr "Αυτή την στιγμή δεν έχετε συνδεθεί."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Έχετε συνδεθεί ως ''{0}''."
 
@@ -566,15 +542,15 @@ msgstr "Μεγέθυνση στη τρέχουσα επιλεγμένη εικό
 msgid "approved"
 msgstr "Εγκρίνεται"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "περιοχές με ληφθέντα δεδομένα OSM"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "όλα στην ορατή περιοχή"
 
-#. i18n: download mode for Mapillary images
+msgid "image has no key"
+msgstr "η εικόνα δεν έχει κανένα κλειδί"
+
 msgid "only when manually requested"
 msgstr "μόνο όταν ζητηθεί χειροκίνητα"
 
@@ -584,10 +560,12 @@ msgstr "εκκρεμεί"
 msgid "rejected"
 msgstr "Απορρίπτεται"
 
+msgid "sequence has no key"
+msgstr "η ακολουθία δεν έχει κανένα κλειδί"
+
 msgid "unknown user"
 msgstr "Αγνωστος χρήστης"
 
-#, java-format
 msgid ""
 "{0}\n"
 "Could not read map objects from URL\n"
@@ -597,15 +575,12 @@ msgstr ""
 "Αδυύατη η ανάγνωση αντικειμένων χάρτη από τη διεύθυνση\n"
 "{1}!"
 
-#, java-format
 msgid "{0} detections"
 msgstr "{0} ανακαλύψεις"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} εικόνες σε {1} ακολουθίες"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Επιτρέπεται στον χρήστη να δουλεύει με εικόνες που φιλοξενούνται στο "

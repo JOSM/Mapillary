@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (sk)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Slovak (https://www.transifex.com/josm/teams/2544/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,6 @@ msgstr "2 obrázky spojené"
 msgid "2 images unjoined"
 msgstr "2 obrázky rozpojené"
 
-#, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr "Značka s kľúčom <i>{0}</i> už na zvolenom OSM objekte existuje."
@@ -51,7 +50,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Odoslanie sady zmien zlyhalo s {0} chybou \"{1} {2}\"!"
 
@@ -68,26 +66,21 @@ msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr ""
 "Nepodarilo sa importovať obrázok s geografickou polohou do vrstvy Mapillary!"
 
-#, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "Nepodarilo sa importovať priečinok \"{0}\"!"
 
-#, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "Nepodarilo sa importovať obrázok \"{0}\"!"
 
-#, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr "Nepodarilo sa otvoriť adresu {0} v prehliadači"
 
-#, java-format
 msgid "Could not read from URL {0}!"
 msgstr "Nepodarilo sa čítať z adresy {0}!"
 
 msgid "Current Mapillary changeset"
 msgstr "Aktuálna sada zmien Mapillary"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "Odseknúť postupnosť na hranici stiahnutej oblasti"
 
@@ -97,15 +90,13 @@ msgstr "Dní"
 msgid "Delete after upload"
 msgstr "Vymazať po odoslaní"
 
-#, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
-msgstr[0] "{0} obrázkov vymazaných"
-msgstr[1] "{0} obrázok vymazaný"
-msgstr[2] "{0} obrázky vymazané"
-msgstr[3] "{0} obrázky vymazané"
+msgstr[0] "{0} obrázok vymazaný"
+msgstr[1] "{0} obrázky vymazané"
+msgstr[2] "{0} obrázkov vymazaných"
+msgstr[3] "{0} obrázkov vymazaných"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Zobraziť hodinu kedy bol obrázok zaznamenaný"
 
@@ -118,7 +109,6 @@ msgstr "Zobrazí objekty detegované Mapillary z obrázkov ulíc"
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Zobrazí vrstvu s mapovými objektami, ktoré identifikoval Mapillary"
 
-#, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
@@ -144,7 +134,6 @@ msgstr "Sťahovanie mapových objektov zlyhalo!"
 msgid "Downloading map objects…"
 msgstr "Sťahujú sa mapové objekty…"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Zapnúť experimentálne vyvíjané funkcie (môžu byť nestabilné)"
 
@@ -172,7 +161,6 @@ msgstr "Z existujúcej vrstvy obrázkov"
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "Z akého zdroja chcete importovať obrázky do vrstvy Mapillary?"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "Daj prednosť v jazde"
 
@@ -218,15 +206,13 @@ msgstr "Importovať obrázky do vrstvy Mapillary"
 msgid "Imported images"
 msgstr "Importované obrázky"
 
-#, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
-msgstr[0] "{0} obrázkov importovaných"
-msgstr[1] "{0} obrázok importovaný"
-msgstr[2] "{0} obrázky importované"
-msgstr[3] "{0} obrázky importované"
+msgstr[0] "{0} obrázok importovaný"
+msgstr[1] "{0} obrázky importované"
+msgstr[2] "{0} obrázkov importovaných"
+msgstr[3] "{0} obrázkov importovaných"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Pozor, križovatka"
 
@@ -264,7 +250,6 @@ msgstr "Prihlásenie úspešné, vráťte sa do JOSM."
 msgid "Logout"
 msgstr "Odhlásiť sa"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Prikázaný smer jazdy"
 
@@ -298,43 +283,34 @@ msgstr "Objekty Mapillary"
 msgid "Months"
 msgstr "Mesiacov"
 
-#, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
-msgstr[0] "{0} obrázkov presunutých"
-msgstr[1] "{0} obrázok presunutý"
-msgstr[2] "{0} obrázky presunuté"
-msgstr[3] "{0} obrázky presunuté"
+msgstr[0] "{0} obrázok presunutý"
+msgstr[1] "{0} obrázky presunuté"
+msgstr[2] "{0} obrázkov presunutých"
+msgstr[3] "{0} obrázkov presunutých"
 
 msgid "Next picture"
 msgstr "Nasledujúci obrázok"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "Zákaz vstupu"
-
-msgid "No image selected"
-msgstr "Nie je vybratý žiadny obrázok"
 
 msgid "No images found"
 msgstr "Nenašli sa žiadne obrázky"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Zákaz predbiehania"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Zákaz parkovania"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Zákaz odbočenia"
 
 msgid "Not older than: "
 msgstr "Nie staršie ako: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Počet obrázkov načítaných vopred (dopredu a dozadu)"
 
@@ -362,18 +338,15 @@ msgstr "Pozastaviť"
 msgid "Pauses the walk."
 msgstr "Pozastaví chôdzu."
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Priechod pre chodcov"
 
 msgid "Play"
 msgstr "Prehrať"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Stlačte \"{0}\" pre stiahnutie obrázkov"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Zobraziť náhľady obrázkov pri prejdení nad ich ikonou"
 
@@ -389,7 +362,6 @@ msgstr "Vynulovať (Reset)"
 msgid "Rewrite imported images"
 msgstr "Prepísať importované obrázky"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Kruhový objazd"
 
@@ -417,7 +389,6 @@ msgstr "Zobrazí nasledujúci obrázok v postupnosti"
 msgid "Shows the previous picture in the sequence"
 msgstr "Zobrazí predchádzajúci obrázok v postupnosti"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Rýchlostné obmedzenie"
 
@@ -425,7 +396,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Značka \"Zastaviť (stop)\""
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Značka \"Zastaviť (stop)\""
@@ -439,7 +409,6 @@ msgstr "Odoslať sadu zmien"
 msgid "Submit the current changeset"
 msgstr "Odoslať aktuálnu sadu zmien"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Odoslať aktuálnu sadu zmien do Mapillary"
 
@@ -474,7 +443,6 @@ msgstr ""
 msgid "There are currently no layers with geotagged images!"
 msgstr "Nemáte žiadne vrstvy s obrázkami s geografickou polohou!"
 
-#, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
@@ -492,22 +460,19 @@ msgid "Too many map objects, zoom in to see all."
 msgstr ""
 "Príliš veľa mapových objektov. Priblížte oblasť, aby ste videli všetky."
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Spolu obrázkov Mapillary: {0}"
 
-#, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
-msgstr[0] "{0} obrázkov otočených"
-msgstr[1] "{0} obrázok otočený"
-msgstr[2] "{0} obrázky otočené"
-msgstr[3] "{0} obrázky otočené"
+msgstr[0] "{0} obrázok otočený"
+msgstr[1] "{0} obrázky otočené"
+msgstr[2] "{0} obrázkov otočených"
+msgstr[3] "{0} obrázkov otočených"
 
 msgid "Undo"
 msgstr "Späť"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Nerovná cesta"
 
@@ -520,11 +485,9 @@ msgstr "Odoslať obrázky Mapillary"
 msgid "Upload selected sequence"
 msgstr "Odoslať vybranú postupnosť"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Odosiela sa: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Použiť 24-hodinový formát"
 
@@ -540,7 +503,6 @@ msgstr "Čakať na obrázky v plnej kvalite"
 msgid "Walk mode"
 msgstr "Režim chôdze"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -557,7 +519,6 @@ msgstr "Rokov"
 msgid "You are currently not logged in."
 msgstr "Nie ste prihlásený."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Ste prihlásený ako \"{0}\"."
 
@@ -573,18 +534,15 @@ msgstr "Priblížiť na zvolený obrázok z Mapillary"
 msgid "approved"
 msgstr "schválená"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "oblasti s už stiahnutými údajmi OSM"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "všetko vo viditeľnej oblasti"
 
 msgid "image has no key"
 msgstr "obrázok nemá kľúč"
 
-#. i18n: download mode for Mapillary images
 msgid "only when manually requested"
 msgstr "len keď je požadované"
 
@@ -600,7 +558,6 @@ msgstr "postupnosť nemá kľúč"
 msgid "unknown user"
 msgstr "neznámy používateľ"
 
-#, java-format
 msgid ""
 "{0}\n"
 "Could not read map objects from URL\n"
@@ -610,14 +567,11 @@ msgstr ""
 "Nepodarilo sa čítať mapové objekty z adresy\n"
 "{1}!"
 
-#, java-format
 msgid "{0} detections"
 msgstr "{0} detekovaných objektov"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} obrázkov v {1} postupnostiach"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Umožňuje používateľovi pracovať s obrázkami na mapillary.com"

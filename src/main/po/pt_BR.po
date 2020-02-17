@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (pt_BR)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/josm/teams/2544/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +37,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "O envio do Conjunto de Alterações falhou com {0} erro ''{1} {2}''!"
 
@@ -50,7 +49,6 @@ msgstr "Continua com a caminhada pausada."
 msgid "Current Mapillary changeset"
 msgstr "Conjunto de Alterações Mapillary atual"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "Cortar as sequências de acordo com os limites de download"
 
@@ -60,13 +58,11 @@ msgstr "Dias"
 msgid "Delete after upload"
 msgstr "Excluir após o upload"
 
-#, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
 msgstr[0] "Apagar {0} imagem"
 msgstr[1] "Apagar {0} imagens"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Mostra hora quando a foto foi tirada"
 
@@ -85,7 +81,6 @@ msgstr "Imagens baixadas"
 msgid "Downloading Mapillary images"
 msgstr "Baixar imagens do Mapillary"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Ativar funcionalidades beta e experimentais (pode ser instável)"
 
@@ -110,7 +105,6 @@ msgstr "Upload terminado"
 msgid "Follow selected image"
 msgstr "Seguir imagem selecionada"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "Dê a preferência"
 
@@ -136,13 +130,11 @@ msgstr "Importar imagens na camada do Mapillary"
 msgid "Imported images"
 msgstr "Imagens importadas"
 
-#, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
 msgstr[0] "Importar {0} imagem"
 msgstr[1] "Importar {0} imagens"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Cruzamento perigoso"
 
@@ -173,7 +165,6 @@ msgstr "Login bem sucedido, retornar ao JOSM."
 msgid "Logout"
 msgstr "Logout"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Sentido obrigatório (qualquer)"
 
@@ -207,7 +198,6 @@ msgstr "Camada de objetos do Mapillary"
 msgid "Months"
 msgstr "Meses"
 
-#, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
 msgstr[0] "Movida {0} imagem"
@@ -216,25 +206,18 @@ msgstr[1] "Movidas {0} imagens"
 msgid "Next picture"
 msgstr "Próxima foto"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "Entrada proibida"
-
-msgid "No image selected"
-msgstr "Nenhuma imagem selecionada"
 
 msgid "No images found"
 msgstr "Nenhuma imagem encontrada"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Proibido ultrapassar"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Proibido estacionar"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Proibido virar"
 
@@ -265,18 +248,15 @@ msgstr "Pausar"
 msgid "Pauses the walk."
 msgstr "Pausa a caminhada."
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Travessia de pedestres"
 
 msgid "Play"
 msgstr "Tocar"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Pressione \"{0}\" para baixar as imagens"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Pré-visualizar imagens ao passar o mouse sobre o ícone"
 
@@ -292,7 +272,6 @@ msgstr "Reiniciar"
 msgid "Rewrite imported images"
 msgstr "Reescreve imagens importadas"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Rotatória"
 
@@ -308,7 +287,6 @@ msgstr "Mostra a próxima foto na sequência"
 msgid "Shows the previous picture in the sequence"
 msgstr "Mostra a foto anterior na sequência"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Limite de velocidade"
 
@@ -316,7 +294,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Pare"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Pare"
@@ -330,7 +307,6 @@ msgstr "Enviar o conjunto de alterações"
 msgid "Submit the current changeset"
 msgstr "Enviar o conjunto de alterações atual"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Enviar o conjunto de alterações atual para a Mapillary"
 
@@ -340,11 +316,9 @@ msgstr "Enviando conjunto de alterações para o servidor..."
 msgid "Supported image formats (JPG and PNG)"
 msgstr "Formatos de imagens suportado (JPG e PNG)"
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Total de imagens Mapillary: {0}"
 
-#, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
 msgstr[0] "Virada {0} imagem"
@@ -353,7 +327,6 @@ msgstr[1] "Viradas {0} imagens"
 msgid "Undo"
 msgstr "Desfazer"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Estrada irregular"
 
@@ -366,11 +339,9 @@ msgstr "Enviar imagens Mapillary"
 msgid "Upload selected sequence"
 msgstr "Enviar sequência selecionada"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Enviando: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Usar formato de 24 horas"
 
@@ -383,7 +354,6 @@ msgstr "Espere por imagens de qualidade total"
 msgid "Walk mode"
 msgstr "Modo caminhada"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -397,7 +367,6 @@ msgstr "Anos"
 msgid "You are currently not logged in."
 msgstr "No momento você não está logado."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Você está logado como ''{0}''."
 
@@ -416,10 +385,8 @@ msgstr "pendente"
 msgid "rejected"
 msgstr "rejeitado"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} imagens em {1} sequências"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Permite o usuário trabalhar com imagens hospedadas em mapillary.com"

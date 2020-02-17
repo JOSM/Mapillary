@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (da)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,6 @@ msgstr "2 billeder lagt sammen"
 msgid "2 images unjoined"
 msgstr "2 billeder adskilt"
 
-#, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr ""
@@ -52,7 +51,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "Annuller"
 
-#, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Rettesæt upload mislykkedes med {0} fejl ''{1} {2}''!"
 
@@ -68,26 +66,21 @@ msgstr "Kopier nøgle"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Kunne ikke importere et geotagget billede til Mapillary laget!"
 
-#, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "Kunne ikke importere mappen ''{0}''!"
 
-#, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "Kunne ikke importere billedet ''{0}''!"
 
-#, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr "Kunne ikke åbne URL {0} i en browser"
 
-#, java-format
 msgid "Could not read from URL {0}!"
 msgstr "Kunne ikke læse fra URL {0}!"
 
 msgid "Current Mapillary changeset"
 msgstr "Aktuelt Mapillary rettesæt"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "Afskær sekvenser ved download grænse"
 
@@ -97,13 +90,11 @@ msgstr "Dage"
 msgid "Delete after upload"
 msgstr "Slet efter upload"
 
-#, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
 msgstr[0] "Slettede {0} billede"
 msgstr[1] "Slettede {0} billeder"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Vis hvornår billedet blev taget"
 
@@ -118,7 +109,6 @@ msgstr ""
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Viser laget der viser de kortobjekter, der er fundet af Mapillary"
 
-#, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
@@ -144,7 +134,6 @@ msgstr "Downloading af kortobjekter mislykkedes!"
 msgid "Downloading map objects…"
 msgstr "Downloader kortobjekter…"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Aktiver eksperimentelle beta-funktioner (muligvis ustabil)"
 
@@ -175,7 +164,6 @@ msgstr "Fra eksisterende billedlag"
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "Fra hvilken kilde vil du importere billeder til Mapillary laget?"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "Ubetinget vigepligt"
 
@@ -221,13 +209,11 @@ msgstr "Importer billeder til Mapillary lag"
 msgid "Imported images"
 msgstr "Importerede billeder"
 
-#, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
 msgstr[0] "Importerede {0} billede"
 msgstr[1] "Importerede {0} billeder"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Farligt vejkryds"
 
@@ -266,7 +252,6 @@ msgstr "Login lykkes, vend tilbage til JOSM."
 msgid "Logout"
 msgstr "Log ud"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Påbudt kørselsretning (enhver)"
 
@@ -303,7 +288,6 @@ msgstr "Mapillary objekter"
 msgid "Months"
 msgstr "Måneder"
 
-#, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
 msgstr[0] "Flyttede {0} billede"
@@ -312,32 +296,24 @@ msgstr[1] "Flyttede {0} billeder"
 msgid "Next picture"
 msgstr "Næste billede"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "Indkørsel forbudt"
-
-msgid "No image selected"
-msgstr "Intet billede valgt"
 
 msgid "No images found"
 msgstr "Ingen billeder fundet"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Overhaling forbudt"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Parking forbudt"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Sving forbudt"
 
 msgid "Not older than: "
 msgstr "Ikke ældre end: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Antal billeder der skal hentes (frem og tilbage)"
 
@@ -365,18 +341,15 @@ msgstr "Pause"
 msgid "Pauses the walk."
 msgstr "Sætter gåturen på pause."
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Fodgængerfelt"
 
 msgid "Play"
 msgstr "Afspil"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Tryk \"{0}\" for at downloade billeder"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Forhåndsvis billeder når markør er over dets ikon"
 
@@ -392,7 +365,6 @@ msgstr "Nulstil"
 msgid "Rewrite imported images"
 msgstr "Genskriv importerede billeder"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Rundkørsel"
 
@@ -420,7 +392,6 @@ msgstr "Viser det næste billede i sekvensen"
 msgid "Shows the previous picture in the sequence"
 msgstr "Viser det forrige billede i sekvensen"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Hastighedsbegrænsning"
 
@@ -428,7 +399,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Stop"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Stop"
@@ -442,7 +412,6 @@ msgstr "Indsend rettesæt"
 msgid "Submit the current changeset"
 msgstr "Indsend det aktuelle rettesæt"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Indsend det aktuelle rettesæt til Mapillary"
 
@@ -477,7 +446,6 @@ msgstr ""
 msgid "There are currently no layers with geotagged images!"
 msgstr "Der er i øjeblikket ingen lag med geotagged billeder!"
 
-#, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
@@ -494,11 +462,9 @@ msgstr ""
 msgid "Too many map objects, zoom in to see all."
 msgstr "For mange kortobjekter, zoom ind for at se alle."
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Total antal Mapillary billeder: {0}"
 
-#, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
 msgstr[0] "Drejede {0} billede"
@@ -507,7 +473,6 @@ msgstr[1] "Drejede {0} billeder"
 msgid "Undo"
 msgstr "Fortryd"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Ujævn vej"
 
@@ -520,11 +485,9 @@ msgstr "Upload Mapillary billeder"
 msgid "Upload selected sequence"
 msgstr "Upload valgt rækkefølge"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Uploader: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Brug 24-timers format"
 
@@ -540,7 +503,6 @@ msgstr "Vent på fuld kvalitets billeder"
 msgid "Walk mode"
 msgstr "Gå tilstand"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -557,7 +519,6 @@ msgstr "År"
 msgid "You are currently not logged in."
 msgstr "Du er i øjeblikket ikke logget ind."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Du er logget ind som ''{0}''."
 
@@ -574,18 +535,15 @@ msgstr "Zoom til det aktuelt valgt Mapillary billede"
 msgid "approved"
 msgstr "godkendt"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "områder med downloadet OSM-data"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "alt i det synlige område"
 
 msgid "image has no key"
 msgstr "Billedet har ingen nøgle"
 
-#. i18n: download mode for Mapillary images
 msgid "only when manually requested"
 msgstr "kun ved manuel anmodet"
 
@@ -601,7 +559,6 @@ msgstr "sekvens har ingen nøgle"
 msgid "unknown user"
 msgstr "ukendt bruger"
 
-#, java-format
 msgid ""
 "{0}\n"
 "Could not read map objects from URL\n"
@@ -611,14 +568,11 @@ msgstr ""
 "Kunne ikke læse kortobjekter fra URL\n"
 "{1}!"
 
-#, java-format
 msgid "{0} detections"
 msgstr "{0} detekteringer"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} billeder i {1} sekvenser"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Tillader brugeren at arbejde med billeder gemt på mapillary.com"
