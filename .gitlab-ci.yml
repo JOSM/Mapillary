@@ -1,5 +1,9 @@
 image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
+
 stages:
   - build
   - test
