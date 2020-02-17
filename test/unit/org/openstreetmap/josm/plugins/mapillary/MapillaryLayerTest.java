@@ -72,7 +72,7 @@ public class MapillaryLayerTest {
   @Test
   public void testGetChangesetSourceTag() {
     String actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();
-    assertEquals("OpenStreetmap changeset source for Mapillary layer should be 'mapillary'", "mapillary", actualChangesetSourceTag);
+    assertEquals("OpenStreetmap changeset source for Mapillary layer should be 'Mapillary'", "Mapillary", actualChangesetSourceTag);
   }
 
   @Test
