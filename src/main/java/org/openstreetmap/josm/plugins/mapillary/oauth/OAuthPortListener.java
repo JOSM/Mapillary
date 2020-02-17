@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,10 +41,10 @@ public class OAuthPortListener extends Thread {
   @Override
   public void run() {
     try (
-        ServerSocket serverSocket = new ServerSocket(PORT);
-        Socket clientSocket = serverSocket.accept();
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
-        Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"))
+      ServerSocket serverSocket = new ServerSocket(PORT);
+      Socket clientSocket = serverSocket.accept();
+      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8), true);
+      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8))
     ) {
       String s;
       String accessToken = null;

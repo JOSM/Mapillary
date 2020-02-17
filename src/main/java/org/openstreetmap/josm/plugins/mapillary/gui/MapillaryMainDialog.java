@@ -273,12 +273,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           }
         }
       } else if (this.image instanceof MapillaryImportedImage) {
-        MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
+        final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           this.mapillaryImageDisplay.setImage(
             mapillaryImage.getImage(),
             null,
-            mapillaryImage != null && mapillaryImage.isPanorama()
+            mapillaryImage.isPanorama()
           );
         } catch (IOException e) {
           Logging.error(e);

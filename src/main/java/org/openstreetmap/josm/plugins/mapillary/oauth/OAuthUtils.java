@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import javax.json.Json;
 import javax.json.JsonException;
@@ -42,7 +43,7 @@ public final class OAuthUtils {
     con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
 
     try (
-      JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8")))
+      JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)))
     ) {
       return reader.readObject();
     } catch (JsonException e) {

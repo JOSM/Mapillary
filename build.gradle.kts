@@ -1,10 +1,8 @@
 import com.github.spotbugs.SpotBugsTask
-import net.ltgt.gradle.errorprone.*
+import net.ltgt.gradle.errorprone.CheckSeverity
+import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.openstreetmap.josm.gradle.plugin.config.GitlabConfig
-import org.openstreetmap.josm.gradle.plugin.config.I18nConfig
-import org.openstreetmap.josm.gradle.plugin.config.JosmManifest
 import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 

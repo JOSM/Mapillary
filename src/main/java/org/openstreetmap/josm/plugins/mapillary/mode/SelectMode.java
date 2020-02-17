@@ -70,8 +70,8 @@ public class SelectMode extends AbstractMode {
           final int j = lastClicked.getSequence().getImages().indexOf(lastClicked);
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(
             new ConcurrentSkipListSet<>(closest.getSequence().getImages().subList(
-              i < j ? i : j,
-              i < j ? j + 1 : i + 1
+              Math.min(i, j),
+              Math.max(i, j) + 1
             ))
           );
         }

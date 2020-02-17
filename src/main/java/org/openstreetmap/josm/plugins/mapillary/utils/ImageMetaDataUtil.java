@@ -1,15 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -26,7 +23,7 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.XmlUtils;
 
 
-public class ImageMetaDataUtil {
+public final class ImageMetaDataUtil {
 
   private ImageMetaDataUtil() {
     // private util.

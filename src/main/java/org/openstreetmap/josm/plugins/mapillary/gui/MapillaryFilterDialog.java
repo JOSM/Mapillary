@@ -207,7 +207,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   }
 
   private boolean checkValidTime(MapillaryAbstractImage img) {
-    Long currentTime = currentTime();
+    final long currentTime = currentTime();
     for (int i = 0; i < 3; i++) {
       if (TIME_LIST[i].equals(time.getSelectedItem()) &&
         img.getCapturedAt() < currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {
