@@ -27,24 +27,27 @@ public class MapillaryURLTest {
     @Test
     public void testSearchDetections() {
       final String expectedLayerParameter = "layers=trafficsigns";
-      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
+      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null).iterator().next(),
+          "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
     }
 
     @Test
     public void testSearchImages() {
-      assertUrlEquals(MapillaryURL.APIv3.searchImages(null), "https://a.mapillary.com/v3/images", CLIENT_ID_QUERY_PART);
+      assertUrlEquals(MapillaryURL.APIv3.searchImages(null).iterator().next(), "https://a.mapillary.com/v3/images",
+          CLIENT_ID_QUERY_PART);
     }
 
     @Test
     public void testSearchSequences() throws UnsupportedEncodingException {
       assertUrlEquals(
-        MapillaryURL.APIv3.searchSequences(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
+          MapillaryURL.APIv3.searchSequences(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)).iterator().next(),
         "https://a.mapillary.com/v3/sequences",
         CLIENT_ID_QUERY_PART,
         "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name())
       );
 
-      assertUrlEquals(MapillaryURL.APIv3.searchSequences(null), "https://a.mapillary.com/v3/sequences", CLIENT_ID_QUERY_PART);
+      assertUrlEquals(MapillaryURL.APIv3.searchSequences(null).iterator().next(),
+          "https://a.mapillary.com/v3/sequences", CLIENT_ID_QUERY_PART);
     }
 
     @Test

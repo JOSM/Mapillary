@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.function.Function;
 
 import org.openstreetmap.josm.data.Bounds;
@@ -19,7 +20,8 @@ import org.openstreetmap.josm.tools.Logging;
 public abstract class BoundsDownloadRunnable implements Runnable {
 
   protected final Bounds bounds;
-  protected abstract Function<Bounds, URL> getUrlGenerator();
+
+  protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
 
   public BoundsDownloadRunnable(final Bounds bounds) {
     this.bounds = bounds;
@@ -27,7 +29,13 @@ public abstract class BoundsDownloadRunnable implements Runnable {
 
   @Override
   public void run() {
-    URL nextURL = getUrlGenerator().apply(bounds);
+    Collection<URL> urls = getUrlGenerator().apply(bounds);
+    for (URL url : urls) {
+      realRun(url);
+    }
+  }
+
+  private void realRun(URL nextURL) {
     try {
       while (nextURL != null) {
         if (Thread.interrupted()) {

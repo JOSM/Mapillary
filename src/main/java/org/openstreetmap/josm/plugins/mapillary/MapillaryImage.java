@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -27,6 +29,10 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Set of traffic signs in the image.
    */
   private final List<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  /**
+   * If {@code true}, the image is private. If {@code false}, then it is public.
+   */
+  private boolean privateImage;
 
   /**
    * Main constructor of the class MapillaryImage
@@ -36,9 +42,11 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * @param ca     The direction of the images in degrees, meaning 0 north.
    * @param pano   The property to indicate whether image is panorama or not.
    */
-  public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano) {
+  public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano,
+      final boolean privateImage) {
     super(latLon, ca, pano);
     this.key = key;
+    this.privateImage = privateImage;
   }
 
   /**
@@ -112,5 +120,35 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public void turn(double ca) {
     super.turn(ca);
     checkModified();
+  }
+
+  @Override
+  public Color paintHighlightedColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_HIGHLIGHTED : MapillaryColorScheme.SEQ_HIGHLIGHTED;
+  }
+
+  @Override
+  public Color paintHighlightedAngleColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_HIGHLIGHTED_CA : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+  }
+
+  @Override
+  public Color paintSelectedColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_SELECTED : MapillaryColorScheme.SEQ_SELECTED;
+  }
+
+  @Override
+  public Color paintSelectedAngleColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_SELECTED_CA : MapillaryColorScheme.SEQ_SELECTED_CA;
+  }
+
+  @Override
+  public Color paintUnselectedColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED;
+  }
+
+  @Override
+  public Color paintUnselectedAngleColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_UNSELECTED_CA : MapillaryColorScheme.SEQ_UNSELECTED_CA;
   }
 }

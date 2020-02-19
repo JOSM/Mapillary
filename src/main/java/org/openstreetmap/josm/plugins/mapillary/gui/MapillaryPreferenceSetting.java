@@ -80,6 +80,9 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       I18n.tr("When opening Mapillary image in web browser, show the blur editor instead of the image viewer"),
       MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
     );
+  private final JPanel requiresLogin = new JPanel();
+  private final JComboBox<String> privateImages = new JComboBox<>(
+      new String[] { I18n.tr("All Images"), I18n.tr("Private Images Only"), I18n.tr("Public Images Only") });
   private final JCheckBox developer =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"), MapillaryProperties.DEVELOPER.get());
@@ -154,6 +157,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     preFetchPanel.add(spinner);
     mainPanel.add(preFetchPanel, GBC.eol());
 
+    requiresLogin.setLayout(new BoxLayout(requiresLogin, BoxLayout.PAGE_AXIS));
+    requiresLogin.add(new JLabel(I18n.tr("Image selection")), GBC.eop());
+    requiresLogin.add(privateImages, GBC.eol());
+    mainPanel.add(requiresLogin, GBC.eol());
+
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       mainPanel.add(developer, GBC.eol());
     }
@@ -179,6 +187,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void onLogin(final String username) {
+    requiresLogin.setVisible(true);
     loginPanel.remove(loginButton);
     loginPanel.add(logoutButton, 3);
     loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
@@ -188,6 +197,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void onLogout() {
+    requiresLogin.setVisible(false);
     loginPanel.remove(logoutButton);
     loginPanel.add(loginButton, 3);
     loginLabel.setText(I18n.tr("You are currently not logged in."));
@@ -208,6 +218,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.DEVELOPER.put(developer.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
+    MapillaryProperties.IMAGE_MODE.put(privateImages.getSelectedIndex());
 
     //Restart is never required
     return false;

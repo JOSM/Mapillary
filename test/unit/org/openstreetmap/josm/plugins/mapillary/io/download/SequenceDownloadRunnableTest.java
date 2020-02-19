@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
@@ -43,6 +44,7 @@ public class SequenceDownloadRunnableTest {
 
   @Before
   public void setUp() {
+    MapillaryUser.setTokenValid(false);
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
 

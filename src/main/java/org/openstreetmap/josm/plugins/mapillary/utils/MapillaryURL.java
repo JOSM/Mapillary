@@ -6,11 +6,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
@@ -41,20 +46,27 @@ public final class MapillaryURL {
       return string2URL(baseUrl, "changesets", queryString(null));
     }
 
-    public static URL searchDetections(Bounds bounds) {
-      return string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
+    public static Collection<URL> searchDetections(Bounds bounds) {
+      return Collections
+          .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
     }
 
-    public static URL searchImages(Bounds bounds) {
-      return string2URL(baseUrl, "images", queryString(bounds));
+    public static Collection<URL> searchImages(Bounds bounds) {
+      return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
       return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
     }
 
-    public static URL searchSequences(final Bounds bounds) {
-      return string2URL(baseUrl, "sequences", queryString(bounds));
+    public static Collection<URL> searchSequences(final Bounds bounds) {
+      List<URL> urls = new ArrayList<>();
+      int imageMode = MapillaryProperties.IMAGE_MODE.get();
+      if (imageMode == 0 || imageMode == 2)
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds)));
+      if (MapillaryUser.getUsername() != null && (imageMode == 0 || imageMode == 1))
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=true"));
+      return urls;
     }
 
     /**

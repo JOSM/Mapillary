@@ -396,26 +396,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     final Color markerC;
     final Color directionC;
     if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+      markerC = img.paintHighlightedColour();
+      directionC = img.paintHighlightedAngleColour();
     } else if (selectedImg != null && selectedImg.getSequence() != null && selectedImg.getSequence().equals(img.getSequence())) {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
-        : MapillaryColorScheme.SEQ_SELECTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA
-        : MapillaryColorScheme.SEQ_SELECTED_CA;
+      markerC = img.paintSelectedColour();
+      directionC = img.paintSelectedAngleColour();
     } else {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
-        : MapillaryColorScheme.SEQ_UNSELECTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA
-        : MapillaryColorScheme.SEQ_UNSELECTED_CA;
+      markerC = img.paintUnselectedColour();
+      directionC = img.paintUnselectedAngleColour();
     }
 
     // Paint direction indicator

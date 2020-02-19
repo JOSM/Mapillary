@@ -31,6 +31,13 @@ public final class MapillaryColorScheme {
    */
   public static final Color SEQ_HIGHLIGHTED_CA = new Color(0xf5b81a);
 
+  public static final Color SEQ_PRIVATE_SELECTED = new Color(0xdd9aff);
+  public static final Color SEQ_PRIVATE_SELECTED_CA = new Color(0xe4aeff);
+  public static final Color SEQ_PRIVATE_UNSELECTED = new Color(0xa900ff);
+  public static final Color SEQ_PRIVATE_UNSELECTED_CA = new Color(0xba33ff);
+  public static final Color SEQ_PRIVATE_HIGHLIGHTED = SEQ_HIGHLIGHTED;
+  public static final Color SEQ_PRIVATE_HIGHLIGHTED_CA = SEQ_HIGHLIGHTED_CA;
+
   public static final Color SEQ_IMPORTED_SELECTED = new Color(0xdddddd);
   public static final Color SEQ_IMPORTED_SELECTED_CA = SEQ_IMPORTED_SELECTED.brighter();
   public static final Color SEQ_IMPORTED_UNSELECTED = new Color(0x999999);

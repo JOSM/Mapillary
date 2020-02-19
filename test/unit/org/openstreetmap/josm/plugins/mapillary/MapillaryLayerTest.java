@@ -76,7 +76,7 @@ public class MapillaryLayerTest {
 
   @Test
   public void testSetImageViewed() {
-    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false);
+    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false, false);
     assertFalse("An image should not be set as viewed if there is no image or dataset",
         MapillaryLayer.getInstance().setImageViewed(null));
     assertFalse("An image should not be set as viewed if there is no dataset to edit",
@@ -97,7 +97,7 @@ public class MapillaryLayerTest {
     Node node = new Node(LatLon.ZERO);
     ds.addPrimitive(node);
     node.setModified(true);
-    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false);
+    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false, false);
     MainApplication.getLayerManager().addLayer(new OsmDataLayer(ds, "Test Layer", null));
     MapillaryLayer.getInstance().setImageViewed(image);
     actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();

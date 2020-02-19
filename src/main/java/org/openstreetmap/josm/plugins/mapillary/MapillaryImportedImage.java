@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -162,4 +164,35 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     }
     return true;
   }
+
+  @Override
+  public Color paintHighlightedColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED;
+  }
+
+  @Override
+  public Color paintHighlightedAngleColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA;
+  }
+
+  @Override
+  public Color paintSelectedColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_SELECTED;
+  }
+
+  @Override
+  public Color paintSelectedAngleColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA;
+  }
+
+  @Override
+  public Color paintUnselectedColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
+  }
+
+  @Override
+  public Color paintUnselectedAngleColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA;
+  }
+
 }
