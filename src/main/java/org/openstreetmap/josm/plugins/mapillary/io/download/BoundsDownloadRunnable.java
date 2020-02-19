@@ -12,6 +12,8 @@ import java.util.function.Function;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -43,6 +45,8 @@ public abstract class BoundsDownloadRunnable implements Runnable {
           return;
         }
         final URLConnection con = nextURL.openConnection();
+        if (MapillaryUser.getUsername() != null)
+          OAuthUtils.addAuthenticationHeader(con);
         run(con);
         nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
       }
