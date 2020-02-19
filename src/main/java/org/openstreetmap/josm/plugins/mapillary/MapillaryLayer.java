@@ -15,9 +15,19 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -25,8 +35,13 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import org.openstreetmap.josm.actions.UploadAction;
+import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
@@ -37,8 +52,13 @@ import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
@@ -54,6 +74,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.spi.preferences.Config;
+import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
@@ -65,7 +87,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  */
 public final class MapillaryLayer extends AbstractModifiableLayer implements
-  ActiveLayerChangeListener, MapillaryDataListener {
+  ActiveLayerChangeListener, LayerChangeListener, MapillaryDataListener, UploadHook {
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -96,6 +118,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
+  /** The images that have been viewed since the last upload */
+  private final ConcurrentHashMap<DataSet, Set<MapillaryAbstractImage>> imageViewedMap = new ConcurrentHashMap<>();
+
   /** Mode of the layer. */
   public AbstractMode mode;
 
@@ -106,6 +131,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     super(I18n.tr("Mapillary Images"));
     this.data = new MapillaryData();
     data.addListener(this);
+    UploadAction.registerUploadHook(this, true);
   }
 
   /**
@@ -229,6 +255,23 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     return n >= 1 && n <= nearestImages.length ? nearestImages[n - 1] : null;
   }
 
+  /**
+   * Set an image as viewed
+   *
+   * @param image The image that has been viewed
+   * @return {@code true} if the image wasn't viewed before in the current editing session.
+   */
+  public boolean setImageViewed(MapillaryAbstractImage image) {
+    DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
+    if (image != null && ds != null) {
+      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap
+        .getOrDefault(ds, Collections.synchronizedSet(new HashSet<MapillaryAbstractImage>()));
+      imageViewedMap.putIfAbsent(ds, imageViewedList);
+      return imageViewedList.add(image);
+    }
+    return false;
+  }
+
   @Override
   public synchronized void destroy() {
     clearInstance();
@@ -253,6 +296,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     } catch (IllegalArgumentException e) {
       // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has already been removed.
     }
+    UploadAction.unregisterUploadHook(this);
     super.destroy();
   }
 
@@ -412,9 +456,42 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     return MapillaryPlugin.LOGO.setSize(ImageSizes.LAYER).get();
   }
 
+  /**
+   * Check if the Mapillary layer has been used for editing.
+   *
+   * @return {@code true} if the Mapillary source tag should be added.
+   */
+  private boolean isApplicable() {
+    boolean isApplicable = false;
+    DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
+    if (ds != null) {
+      Collection<OsmPrimitive> primitives = ds.allModifiedPrimitives();
+      final double maxDistance = Config.getPref().getDouble("mapillary.source.maxdistance", 30.0);
+      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.emptySet());
+      synchronized (imageViewedList) {
+        for (MapillaryAbstractImage image : imageViewedList) {
+          BBox bbox = new BBox();
+          bbox.addLatLon(image.getLatLon(), 0.005); // 96m-556m, depending upon N/S location (low at 80 degrees, high at
+                                                    // 0)
+          // TODO use {@link DataSet#searchPrimitives} which requires #18731
+          List<OsmPrimitive> searchPrimitives = new ArrayList<>(ds.searchNodes(bbox));
+          searchPrimitives.addAll(ds.searchWays(bbox));
+          searchPrimitives.addAll(ds.searchRelations(bbox));
+          if (primitives.parallelStream().filter(searchPrimitives::contains)
+              .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
+              .anyMatch(d -> d < maxDistance)) {
+            isApplicable = true;
+            break;
+          }
+        }
+      }
+    }
+    return isApplicable;
+  }
+
   @Override
   public String getChangesetSourceTag() {
-    return "Mapillary";
+    return isApplicable() ? "Mapillary" : null;
   }
 
   @Override
@@ -482,6 +559,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         e.getPreviousDataLayer().getDataSet().removeDataSetListener(DATASET_LISTENER);
       }
     }
+  }
+
+  @Override
+  public void layerAdded(LayerAddEvent e) {
+    // Don't care about this
+  }
+
+  @Override
+  public void layerRemoving(LayerRemoveEvent e) {
+    List<DataSet> currentDataSets = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
+      .map(OsmDataLayer::getDataSet).collect(Collectors.toList());
+    for (Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
+      if (!currentDataSets.contains(entry.getKey())) {
+        imageViewedMap.remove(entry.getKey());
+      }
+    }
+  }
+
+  @Override
+  public void layerOrderChanged(LayerOrderChangeEvent e) {
+    // Don't care about this
   }
 
   @Override
@@ -583,5 +681,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
       );
     }
+  }
+
+  @Override
+  public void modifyChangesetTags(Map<String, String> tags) {
+    // This is used to clear the viewed image list
+    Set<MapillaryAbstractImage> imageViewedList = imageViewedMap
+      .get(MainApplication.getLayerManager().getActiveDataSet());
+    if (imageViewedList != null)
+      imageViewedList.clear();
   }
 }
