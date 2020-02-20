@@ -24,7 +24,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -54,7 +53,6 @@ public class SequenceDownloadRunnableTest {
 
   @After
   public void tearDown() {
-    MainApplication.getLayerManager().resetState();
     TestUtil.setAPIv3BaseUrl(oldBaseUrl);
   }
 
