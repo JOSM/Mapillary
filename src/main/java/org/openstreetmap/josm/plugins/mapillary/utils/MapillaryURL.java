@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -61,11 +62,16 @@ public final class MapillaryURL {
 
     public static Collection<URL> searchSequences(final Bounds bounds) {
       List<URL> urls = new ArrayList<>();
-      int imageMode = MapillaryProperties.IMAGE_MODE.get();
-      if (imageMode == 0 || imageMode == 2)
-        urls.add(string2URL(baseUrl, "sequences", queryString(bounds)));
-      if (MapillaryUser.getUsername() != null && (imageMode == 0 || imageMode == 1))
+      PRIVATE_IMAGE_DOWNLOAD_MODE imageMode = PRIVATE_IMAGE_DOWNLOAD_MODE
+          .getFromId(MapillaryProperties.IMAGE_MODE.get());
+      // If the private=true|false is left out, all images are obtained (as of
+      // 2020-02-20).
+      if (imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PUBLIC_ONLY)
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=false"));
+      else if (MapillaryUser.getUsername() != null && imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PRIVATE_ONLY)
         urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=true"));
+      else
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds)));
       return urls;
     }
 

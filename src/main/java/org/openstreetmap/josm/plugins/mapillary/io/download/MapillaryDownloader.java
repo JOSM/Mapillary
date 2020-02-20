@@ -23,6 +23,39 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  */
 public final class MapillaryDownloader {
+  /** Possible public/private download options */
+  public enum PRIVATE_IMAGE_DOWNLOAD_MODE {
+    PUBLIC_ONLY("publicOnly", I18n.marktr("Only download public images")),
+    PRIVATE_ONLY("privateOnly", I18n.marktr("Only download private images")),
+    ALL("all", I18n.marktr("Download all available images"));
+
+    public final static PRIVATE_IMAGE_DOWNLOAD_MODE DEFAULT = ALL;
+
+    private final String prefId;
+    private final String label;
+
+    PRIVATE_IMAGE_DOWNLOAD_MODE(String prefId, String label) {
+      this.prefId = prefId;
+      this.label = label;
+    }
+
+    @Override
+    public String toString() {
+      return I18n.tr(label);
+    }
+
+    public String getPrefId() {
+      return prefId;
+    }
+
+    public static PRIVATE_IMAGE_DOWNLOAD_MODE getFromId(String prefId) {
+      for (PRIVATE_IMAGE_DOWNLOAD_MODE val : PRIVATE_IMAGE_DOWNLOAD_MODE.values()) {
+        if (val.prefId.equals(prefId))
+          return val;
+      }
+      return ALL;
+    }
+  }
 
   /** Possible download modes. */
   public enum DOWNLOAD_MODE {

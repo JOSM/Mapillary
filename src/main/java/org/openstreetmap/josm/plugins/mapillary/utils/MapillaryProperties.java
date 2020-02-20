@@ -73,7 +73,7 @@ public final class MapillaryProperties {
    *
    * @see MapillaryPreferenceSetting#privateImages
    */
-  public static final IntegerProperty IMAGE_MODE = new IntegerProperty("mapillary.imageMode", 0);
+  public static final StringProperty IMAGE_MODE = new StringProperty("mapillary.imageMode", "all");
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
