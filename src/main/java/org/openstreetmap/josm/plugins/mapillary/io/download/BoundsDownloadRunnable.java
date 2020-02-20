@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.util.Collection;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -54,12 +56,18 @@ public abstract class BoundsDownloadRunnable implements Runnable {
       String message = I18n.tr("Could not read from URL {0}!", nextURL.toString());
       Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
-        new Notification(message)
-          .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
-          .setDuration(Notification.TIME_LONG)
-          .show();
+        if (SwingUtilities.isEventDispatchThread()) {
+          showNotification(message);
+        } else {
+          SwingUtilities.invokeLater(() -> showNotification(message));
+        }
       }
     }
+  }
+
+  private static void showNotification(String message) {
+    new Notification(message).setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
+        .setDuration(Notification.TIME_LONG).show();
   }
 
   /**

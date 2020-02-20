@@ -34,6 +34,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
@@ -625,8 +626,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       nearestImages = new MapillaryImage[0];
     }
     if (MainApplication.isDisplayingMapView()) {
-      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
-      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
+      if (SwingUtilities.isEventDispatchThread()) {
+        updateRedBlueButtons();
+      } else {
+        SwingUtilities.invokeLater(() -> updateRedBlueButtons());
+      }
     }
     if (nearestImages.length >= 1) {
       CacheUtils.downloadPicture(nearestImages[0]);
@@ -634,6 +638,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         CacheUtils.downloadPicture(nearestImages[1]);
       }
     }
+  }
+
+  private void updateRedBlueButtons() {
+    MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
+    MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
   }
 
   /**
