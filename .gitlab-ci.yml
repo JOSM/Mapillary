@@ -1,4 +1,4 @@
-image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
+image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
