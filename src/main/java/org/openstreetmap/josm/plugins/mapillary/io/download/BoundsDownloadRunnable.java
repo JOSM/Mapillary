@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.function.Function;
+
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -19,7 +24,8 @@ import org.openstreetmap.josm.tools.Logging;
 public abstract class BoundsDownloadRunnable implements Runnable {
 
   protected final Bounds bounds;
-  protected abstract Function<Bounds, URL> getUrlGenerator();
+
+  protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
 
   public BoundsDownloadRunnable(final Bounds bounds) {
     this.bounds = bounds;
@@ -27,7 +33,13 @@ public abstract class BoundsDownloadRunnable implements Runnable {
 
   @Override
   public void run() {
-    URL nextURL = getUrlGenerator().apply(bounds);
+    Collection<URL> urls = getUrlGenerator().apply(bounds);
+    for (URL url : urls) {
+      realRun(url);
+    }
+  }
+
+  private void realRun(URL nextURL) {
     try {
       while (nextURL != null) {
         if (Thread.interrupted()) {
@@ -35,6 +47,8 @@ public abstract class BoundsDownloadRunnable implements Runnable {
           return;
         }
         final URLConnection con = nextURL.openConnection();
+        if (MapillaryUser.getUsername() != null)
+          OAuthUtils.addAuthenticationHeader(con);
         run(con);
         nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
       }
@@ -42,12 +56,18 @@ public abstract class BoundsDownloadRunnable implements Runnable {
       String message = I18n.tr("Could not read from URL {0}!", nextURL.toString());
       Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
-        new Notification(message)
-          .setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
-          .setDuration(Notification.TIME_LONG)
-          .show();
+        if (SwingUtilities.isEventDispatchThread()) {
+          showNotification(message);
+        } else {
+          SwingUtilities.invokeLater(() -> showNotification(message));
+        }
       }
     }
+  }
+
+  private static void showNotification(String message) {
+    new Notification(message).setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
+        .setDuration(Notification.TIME_LONG).show();
   }
 
   /**

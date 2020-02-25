@@ -6,11 +6,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
@@ -41,20 +47,32 @@ public final class MapillaryURL {
       return string2URL(baseUrl, "changesets", queryString(null));
     }
 
-    public static URL searchDetections(Bounds bounds) {
-      return string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
+    public static Collection<URL> searchDetections(Bounds bounds) {
+      return Collections
+          .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
     }
 
-    public static URL searchImages(Bounds bounds) {
-      return string2URL(baseUrl, "images", queryString(bounds));
+    public static Collection<URL> searchImages(Bounds bounds) {
+      return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
     }
 
     public static URL searchMapObjects(final Bounds bounds) {
       return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
     }
 
-    public static URL searchSequences(final Bounds bounds) {
-      return string2URL(baseUrl, "sequences", queryString(bounds));
+    public static Collection<URL> searchSequences(final Bounds bounds) {
+      List<URL> urls = new ArrayList<>();
+      PRIVATE_IMAGE_DOWNLOAD_MODE imageMode = PRIVATE_IMAGE_DOWNLOAD_MODE
+          .getFromId(MapillaryProperties.IMAGE_MODE.get());
+      // If the private=true|false is left out, all images are obtained (as of
+      // 2020-02-20).
+      if (imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PUBLIC_ONLY)
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=false"));
+      else if (MapillaryUser.getUsername() != null && imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PRIVATE_ONLY)
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=true"));
+      else
+        urls.add(string2URL(baseUrl, "sequences", queryString(bounds)));
+      return urls;
     }
 
     /**
@@ -185,7 +203,7 @@ public final class MapillaryURL {
         parts.put("redirect_uri", redirectURI);
       }
       parts.put("response_type", "token");
-      parts.put("scope", "user:read public:upload public:write");
+      parts.put("scope", "user:read org:read public:upload public:write private:read");
       return string2URL(baseUrl, "connect", queryString(parts));
     }
 

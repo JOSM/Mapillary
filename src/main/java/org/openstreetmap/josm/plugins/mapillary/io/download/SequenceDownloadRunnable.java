@@ -23,7 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 
 public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
   private final MapillaryData data;
-  private static final Function<Bounds, URL> URL_GEN = APIv3::searchSequences;
+  private static final Function<Bounds, Collection<URL>> URL_GEN = APIv3::searchSequences;
 
   public SequenceDownloadRunnable(final MapillaryData data, final Bounds bounds) {
     super(bounds);
@@ -71,7 +71,7 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
   }
 
   @Override
-  protected Function<Bounds, URL> getUrlGenerator() {
+  protected Function<Bounds, Collection<URL>> getUrlGenerator() {
     return URL_GEN;
   }
 }

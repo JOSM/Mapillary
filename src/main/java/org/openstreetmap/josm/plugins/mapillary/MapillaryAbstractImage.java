@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -304,4 +305,16 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   public void turn(final double ca) {
     this.movingCa = this.tempCa + ca;
   }
+
+  public abstract Color paintHighlightedColour();
+
+  public abstract Color paintHighlightedAngleColour();
+
+  public abstract Color paintSelectedColour();
+
+  public abstract Color paintSelectedAngleColour();
+
+  public abstract Color paintUnselectedColour();
+
+  public abstract Color paintUnselectedAngleColour();
 }

@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +33,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
@@ -396,26 +396,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     final Color markerC;
     final Color directionC;
     if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA
-        : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+      markerC = img.paintHighlightedColour();
+      directionC = img.paintHighlightedAngleColour();
     } else if (selectedImg != null && selectedImg.getSequence() != null && selectedImg.getSequence().equals(img.getSequence())) {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
-        : MapillaryColorScheme.SEQ_SELECTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED_CA
-        : MapillaryColorScheme.SEQ_SELECTED_CA;
+      markerC = img.paintSelectedColour();
+      directionC = img.paintSelectedAngleColour();
     } else {
-      markerC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
-        : MapillaryColorScheme.SEQ_UNSELECTED;
-      directionC = img instanceof MapillaryImportedImage
-        ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA
-        : MapillaryColorScheme.SEQ_UNSELECTED_CA;
+      markerC = img.paintUnselectedColour();
+      directionC = img.paintUnselectedAngleColour();
     }
 
     // Paint direction indicator
@@ -473,10 +461,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
           BBox bbox = new BBox();
           bbox.addLatLon(image.getLatLon(), 0.005); // 96m-556m, depending upon N/S location (low at 80 degrees, high at
                                                     // 0)
-          // TODO use {@link DataSet#searchPrimitives} which requires #18731
-          List<OsmPrimitive> searchPrimitives = new ArrayList<>(ds.searchNodes(bbox));
-          searchPrimitives.addAll(ds.searchWays(bbox));
-          searchPrimitives.addAll(ds.searchRelations(bbox));
+          List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
           if (primitives.parallelStream().filter(searchPrimitives::contains)
               .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
               .anyMatch(d -> d < maxDistance)) {
@@ -637,8 +622,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       nearestImages = new MapillaryImage[0];
     }
     if (MainApplication.isDisplayingMapView()) {
-      MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
-      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
+      if (SwingUtilities.isEventDispatchThread()) {
+        updateRedBlueButtons();
+      } else {
+        SwingUtilities.invokeLater(() -> updateRedBlueButtons());
+      }
     }
     if (nearestImages.length >= 1) {
       CacheUtils.downloadPicture(nearestImages[0]);
@@ -646,6 +634,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         CacheUtils.downloadPicture(nearestImages[1]);
       }
     }
+  }
+
+  private void updateRedBlueButtons() {
+    MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
+    MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
   }
 
   /**

@@ -23,6 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.OpenBrowser;
 
 /**
  * Set of utilities.
@@ -42,7 +43,9 @@ public final class MapillaryUtils {
    *
    * @param url The (not-null) URL that is going to be opened.
    * @throws IOException when the URL could not be opened
+   * @deprecated Use {@link OpenBrowser#displayUrl} instead
    */
+  @Deprecated
   public static void browse(URL url) throws IOException {
     if (url == null) {
       throw new IllegalArgumentException();

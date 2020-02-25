@@ -27,24 +27,27 @@ public class MapillaryURLTest {
     @Test
     public void testSearchDetections() {
       final String expectedLayerParameter = "layers=trafficsigns";
-      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
+      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null).iterator().next(),
+          "https://a.mapillary.com/v3/image_detections", CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
     }
 
     @Test
     public void testSearchImages() {
-      assertUrlEquals(MapillaryURL.APIv3.searchImages(null), "https://a.mapillary.com/v3/images", CLIENT_ID_QUERY_PART);
+      assertUrlEquals(MapillaryURL.APIv3.searchImages(null).iterator().next(), "https://a.mapillary.com/v3/images",
+          CLIENT_ID_QUERY_PART);
     }
 
     @Test
     public void testSearchSequences() throws UnsupportedEncodingException {
       assertUrlEquals(
-        MapillaryURL.APIv3.searchSequences(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
+          MapillaryURL.APIv3.searchSequences(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)).iterator().next(),
         "https://a.mapillary.com/v3/sequences",
         CLIENT_ID_QUERY_PART,
         "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name())
       );
 
-      assertUrlEquals(MapillaryURL.APIv3.searchSequences(null), "https://a.mapillary.com/v3/sequences", CLIENT_ID_QUERY_PART);
+      assertUrlEquals(MapillaryURL.APIv3.searchSequences(null).iterator().next(),
+          "https://a.mapillary.com/v3/sequences", CLIENT_ID_QUERY_PART);
     }
 
     @Test
@@ -127,11 +130,12 @@ public class MapillaryURLTest {
 
   @Test
   public void testConnectURL() {
+    String expectedScope = "scope=user%3Aread+org%3Aread+public%3Aupload+public%3Awrite+private%3Aread";
     assertUrlEquals(
         MapillaryURL.MainWebsite.connect("http://redirect-host/ä"),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        "scope=user%3Aread+public%3Aupload+public%3Awrite",
+        expectedScope,
         "response_type=token",
         "redirect_uri=http%3A%2F%2Fredirect-host%2F%C3%A4"
     );
@@ -140,7 +144,7 @@ public class MapillaryURLTest {
         MapillaryURL.MainWebsite.connect(null),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        "scope=user%3Aread+public%3Aupload+public%3Awrite",
+        expectedScope,
         "response_type=token"
     );
 
@@ -148,7 +152,7 @@ public class MapillaryURLTest {
         MapillaryURL.MainWebsite.connect(""),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        "scope=user%3Aread+public%3Aupload+public%3Awrite",
+        expectedScope,
         "response_type=token"
     );
   }
