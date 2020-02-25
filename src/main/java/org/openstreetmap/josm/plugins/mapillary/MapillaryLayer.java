@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -462,10 +461,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
           BBox bbox = new BBox();
           bbox.addLatLon(image.getLatLon(), 0.005); // 96m-556m, depending upon N/S location (low at 80 degrees, high at
                                                     // 0)
-          // TODO use {@link DataSet#searchPrimitives} which requires #18731
-          List<OsmPrimitive> searchPrimitives = new ArrayList<>(ds.searchNodes(bbox));
-          searchPrimitives.addAll(ds.searchWays(bbox));
-          searchPrimitives.addAll(ds.searchRelations(bbox));
+          List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
           if (primitives.parallelStream().filter(searchPrimitives::contains)
               .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
               .anyMatch(d -> d < maxDistance)) {
