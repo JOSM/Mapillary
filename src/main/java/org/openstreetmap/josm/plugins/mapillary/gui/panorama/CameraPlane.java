@@ -25,11 +25,11 @@ public class CameraPlane {
     this.distance = distance;
     setRotation(0.0, 0.0);
     vectors = new Vector3D[width][height];
-    IntStream.range(0, height).parallel().forEach(y -> {
-      IntStream.range(0, width).parallel().forEach(x -> {
-        vectors[x][y] = new Vector3D(x - width / 2d, y - height / 2d, distance).normalize();
-      });
-    });
+    IntStream.range(0, height).parallel().forEach(
+      y -> IntStream.range(0, width).parallel().forEach(
+        x -> vectors[x][y] = new Vector3D(x - width / 2d, y - height / 2d, distance).normalize()
+      )
+    );
   }
 
   /**
@@ -123,14 +123,16 @@ public class CameraPlane {
   }
 
   public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
-    IntStream.range(0, targetImage.getHeight()).parallel().forEach(y -> {
-      IntStream.range(0, targetImage.getWidth()).forEach(x -> {
-        final Vector3D vec = getVector3D(new Point(x, y));
-        final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
-        targetImage.setRGB(x, y,
-            sourceImage.getRGB((int) (p.x * (sourceImage.getWidth() - 1)), (int) (p.y * (sourceImage.getHeight() - 1)))
-        );
-      });
-    });
+    IntStream.range(0, targetImage.getHeight()).parallel().forEach(
+      y -> IntStream.range(0, targetImage.getWidth()).forEach(
+        x -> {
+          final Vector3D vec = getVector3D(new Point(x, y));
+          final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
+          targetImage.setRGB(x, y,
+              sourceImage.getRGB((int) (p.x * (sourceImage.getWidth() - 1)), (int) (p.y * (sourceImage.getHeight() - 1)))
+          );
+        }
+      )
+    );
   }
 }

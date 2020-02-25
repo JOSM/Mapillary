@@ -18,7 +18,6 @@
   <rule ref="category/java/bestpractices.xml/ConstantsInInterface" />
   <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
   <rule ref="category/java/bestpractices.xml/LooseCoupling" />
-  <rule ref="category/java/bestpractices.xml/LooseCoupling" />
   <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
   <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInCaseInsensitiveComparisons" />
   <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" />
@@ -111,7 +110,6 @@
     <exclude name="DoNotCallSystemExit" />
     <exclude name="DoNotExtendJavaLangThrowable" />
     <exclude name="DoNotHardCodeSDCard" />
-    <exclude name="InvalidSlf4jMessageFormat" />
     <exclude name="JUnitSpelling" />
     <exclude name="JUnitStaticSuite" />
     <exclude name="LoggerIsNotStaticFinal" />

@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (zh_TW)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/josm/teams/2544/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,6 @@ msgstr "加入了 2 個影像"
 msgid "2 images unjoined"
 msgstr "退出了 2 個影像"
 
-#, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr "有鍵 <i>{0}</i>已經存在選取的 OSM 物件上面了。"
@@ -47,12 +46,10 @@ msgstr "嘗試送出變更組合時發生例外狀況發生了。如果重覆發
 msgid "Cancel"
 msgstr "取消"
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr "使用按鈕跳到其他影像時，置中新的影像"
 
-#, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "上傳變更組合因 {0} error ''{1} {2}'' 失敗！"
 
@@ -68,28 +65,26 @@ msgstr "複製鍵值"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "無法匯入有地理標記圖片到 Mapillary 圖層！"
 
-#, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "無法匯入目錄 ''{0}''！"
 
-#, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "無法匯入圖片 ''{0}''！"
 
-#, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr "無法用瀏覽器打開網址 {0}"
 
-#, java-format
 msgid "Could not read from URL {0}!"
 msgstr "無法讀取網址 {0}！"
 
 msgid "Current Mapillary changeset"
 msgstr "目前的 Mapillary 變更組合"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "在下載邊界切斷片段"
+
+msgid "Dark mode for image display"
+msgstr "照片顯示的黑暗模式"
 
 msgid "Days"
 msgstr "日"
@@ -97,12 +92,10 @@ msgstr "日"
 msgid "Delete after upload"
 msgstr "上傳後刪除"
 
-#, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
 msgstr[0] "刪除了 {0} 個影像"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "顯示圖片拍攝時的小時時間"
 
@@ -115,7 +108,6 @@ msgstr "顯示 Mapillary 從街景偵測到的物件"
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "顯示 Mapillary 偵測出來的地圖物件的圖層"
 
-#, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
@@ -142,7 +134,6 @@ msgstr "下載地圖物件..."
 msgid "Downloading…"
 msgstr "正在下載..."
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "啟用實驗性質的 beta 功能 (可能不穩定)"
 
@@ -176,7 +167,6 @@ msgstr "跟隨既有圖片圖層"
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "你要從那個來源匯入圖片到 Mapillary 圖層？"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "禮讓路口"
 
@@ -222,12 +212,10 @@ msgstr "匯入圖片到 Mapillary 圖層"
 msgid "Imported images"
 msgstr "匯入的圖片"
 
-#, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
 msgstr[0] "匯入了 {0} 個影像"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "路口危險"
 
@@ -266,7 +254,6 @@ msgstr "登入成功，回去 JOSM。"
 msgid "Logout"
 msgstr "登出"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "強制性方向 (任何方向)"
 
@@ -303,7 +290,6 @@ msgstr "Mapillary 物件"
 msgid "Months"
 msgstr "月"
 
-#, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
 msgstr[0] "移動了 {0} 個影像"
@@ -311,25 +297,18 @@ msgstr[0] "移動了 {0} 個影像"
 msgid "Next picture"
 msgstr "下一張圖片"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "沒有輸入"
-
-msgid "No image selected"
-msgstr "沒有選取圖片"
 
 msgid "No images found"
 msgstr "找不到影像"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "禁止超車"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "禁止停車"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "禁止轉彎"
 
@@ -339,7 +318,6 @@ msgstr "沒有登入 Mapillary"
 msgid "Not older than: "
 msgstr "不早於： "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "要預載的圖片數目 (向前和向後)"
 
@@ -367,18 +345,15 @@ msgstr "暫停"
 msgid "Pauses the walk."
 msgstr "暫停走動"
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "行人穿越"
 
 msgid "Play"
 msgstr "播放"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "按 \"{0}\" 下載影像"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "滑動圖示過去時預纜圖片"
 
@@ -394,7 +369,6 @@ msgstr "重新設定"
 msgid "Rewrite imported images"
 msgstr "重新寫入匯入圖片"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "圓環"
 
@@ -422,7 +396,6 @@ msgstr "從片段顯示下一張"
 msgid "Shows the previous picture in the sequence"
 msgstr "從片段顯示上一張圖片"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "速限"
 
@@ -430,7 +403,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "禁止通行"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "禁止通行"
@@ -444,7 +416,6 @@ msgstr "提出變更組合"
 msgid "Submit the current changeset"
 msgstr "提出目前的變更組合"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "提出目前的變更組合到 Mapillary"
 
@@ -475,7 +446,6 @@ msgstr ""
 msgid "There are currently no layers with geotagged images!"
 msgstr "目前圖層中並無地理標記的圖片！"
 
-#, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
@@ -488,11 +458,9 @@ msgstr "要解決這項問題，你可以放大然後載入地圖比較小的部
 msgid "Too many map objects, zoom in to see all."
 msgstr "太多地圖物件，放大後來看所有物件。"
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "所有 Mapillary 圖片： {0}"
 
-#, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
 msgstr[0] "旋轉了 {0} 個影像"
@@ -500,7 +468,6 @@ msgstr[0] "旋轉了 {0} 個影像"
 msgid "Undo"
 msgstr "復原"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "坎坷的道路"
 
@@ -513,11 +480,9 @@ msgstr "上傳 Mapillary 圖片"
 msgid "Upload selected sequence"
 msgstr "上傳選取片段"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "上傳中：{0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "使用 24 小時格式"
 
@@ -536,7 +501,6 @@ msgstr "行走模式"
 msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
 msgstr "行走模式：等待下個影像太久了！離開行走模式..."
 
-#. i18n: Checkbox label in JOSM settings
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -551,14 +515,17 @@ msgstr "年"
 msgid "You are currently not logged in."
 msgstr "你目前沒登入。"
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "你已經登入為 ''{0}''。"
 
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "你並沒有登入，請在偏好設定登入 Mapillary"
 
-#, java-format
+msgid ""
+"You are trying to upload a sequence to mapillary.com that you previously "
+"downloaded from there. That is not possible."
+msgstr "你嘗試上傳片段到 mapillary.com，但先前已經從這裡下載了，這並不可能。"
+
 msgid "You have successfully uploaded {0} image to mapillary.com"
 msgid_plural "You have successfully uploaded {0} images to mapillary.com"
 msgstr[0] "你成功上傳 {0} 圖片到 mapillary.com"
@@ -572,18 +539,18 @@ msgstr "縮放到目前選取的 Mapiilary 影像"
 msgid "approved"
 msgstr "批准"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "區域已經有下載下來的 OSM 資料"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "所有東西都在可視範圍"
 
 msgid "image has no key"
 msgstr "圖片沒有鍵"
 
-#. i18n: download mode for Mapillary images
+msgid "no image selected"
+msgstr "沒有選擇照片"
+
 msgid "only when manually requested"
 msgstr "只有當手動要求時"
 
@@ -599,7 +566,6 @@ msgstr "片段沒有鍵"
 msgid "unknown user"
 msgstr "未知的使用者"
 
-#, java-format
 msgid ""
 "{0}\n"
 "Could not read map objects from URL\n"
@@ -608,46 +574,36 @@ msgstr ""
 "{0}\n"
 "無法從網址 {1} 讀取地圖物件！"
 
-#. i18n: {0} is the layer name, {1} the number of images in it
-#, java-format
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
 msgstr[0] "{0} ({1} 圖片)"
 
-#, java-format
 msgid "{0} detections"
 msgstr "方向 {0} "
 
-#, java-format
 msgid "{0} downloaded image"
 msgid_plural "{0} downloaded images"
 msgstr[0] "下載 {0} 張圖片"
 
-#, java-format
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
 msgstr[0] "總共 {0} 張圖片"
 
-#, java-format
 msgid "{0} image submitted, Changeset key: {1}, State: {2}"
 msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
 msgstr[0] "{0} 圖片提交，變更組合鍵：{1}，狀態： {2}"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{1} 片段有 {0} 張圖片"
 
-#, java-format
 msgid "{0} imported image"
 msgid_plural "{0} imported images"
 msgstr[0] "匯入 {0} 張圖片"
 
-#, java-format
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
 "{0} sequences, each containing between {1} and {2} images (ø {3})"
 msgstr[0] "{0} 片段，每個片段含有 {1} 到 {2} 張圖片 (ø {3})"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Mapillary外掛"

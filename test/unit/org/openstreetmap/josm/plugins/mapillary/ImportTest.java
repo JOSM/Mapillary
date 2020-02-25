@@ -36,8 +36,6 @@ public class ImportTest {
 
   /**
    * Test if provided an invalid file, the proper exception is thrown.
-   *
-   * @throws IOException
    */
   @Test(expected = IIOException.class)
   public void testInvalidFiles() throws IOException {

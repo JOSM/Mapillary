@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (uk)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,6 @@ msgstr "2 зображення з’єднано"
 msgid "2 images unjoined"
 msgstr "2 зображення роз’єднано"
 
-#, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr "Теґ з ключем <i>{0}</i> вже присутній у виділеного обʼєкта OSM."
@@ -51,7 +50,12 @@ msgstr ""
 msgid "Cancel"
 msgstr "Скасувати"
 
-#, java-format
+msgid ""
+"Center view on new image when using the buttons to jump to another image"
+msgstr ""
+"Перегляд у центрі на новому зображенні застосовуйте клавіші для переходу до "
+"іншого зображення"
+
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Невдалось надісати набір змін, помилка  {0} ''{1} {2}''!"
 
@@ -67,28 +71,26 @@ msgstr "Копіювати ключ"
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Неможливо імпортувати геотеговані знімки до шару Mapillary’!"
 
-#, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "Неможливо імпортувати теку ''{0}''!"
 
-#, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "Неможливо імпортувати зображення ''{0}''!"
 
-#, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr "Не можливо відкрити URL {0} в оглядачі"
 
-#, java-format
 msgid "Could not read from URL {0}!"
 msgstr "Неможливо зчитати за посиланням URL {0}!"
 
 msgid "Current Mapillary changeset"
 msgstr "Поточний набір змін Mapillary"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Cut off sequences at download bounds"
 msgstr "Обмежити послідовність межами завантаженої ділянки"
+
+msgid "Dark mode for image display"
+msgstr "Нічний режим показу зображень"
 
 msgid "Days"
 msgstr "Дні"
@@ -96,7 +98,6 @@ msgstr "Дні"
 msgid "Delete after upload"
 msgstr "Вилучити післа надсиланання"
 
-#, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
 msgstr[0] "Вилучений {0} знімок"
@@ -104,7 +105,6 @@ msgstr[1] "Вилучено {0} знімки"
 msgstr[2] "Вилучено {0} знімків"
 msgstr[3] "Вилучено {0} знімків"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Показувати час, коли було зроблено знімок"
 
@@ -117,7 +117,6 @@ msgstr "Показує обʼєкти, які були виявлені Mapillar
 msgid "Displays the layer displaying the map objects detected by Mapillary"
 msgstr "Показує шар з обʼєктами, що були виявлені Mapillary"
 
-#, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
@@ -145,12 +144,14 @@ msgstr "Завантаження обʼєктів мапи…"
 msgid "Downloading…"
 msgstr "Завантаження…"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Увімкнути експериментальні бета-функції (можуть бути нестабільними)"
 
 msgid "Explore"
 msgstr "Оглянути"
+
+msgid "Export Mapillary images"
+msgstr "Експорт зображень Mapillary"
 
 msgid "Export all images"
 msgstr "Експортувати всі знімки"
@@ -160,6 +161,9 @@ msgstr "Експортувати виділені знімки"
 
 msgid "Export selected sequence"
 msgstr "Експортувати обрану послідовність"
+
+msgid "Exporting Mapillary Images…"
+msgstr "Експортування зображень Mapillary..."
 
 msgid "Finished upload"
 msgstr "Надсилання закінчене"
@@ -173,7 +177,6 @@ msgstr "З поточного шару зображень"
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "З яких джерел ви бажаєте імпортувати зображення до шару Mapillary?"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "Дати дорогу"
 
@@ -220,7 +223,6 @@ msgstr "Імпортувати знімки до шару Mapillary"
 msgid "Imported images"
 msgstr "Імпортовані знімки"
 
-#, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
 msgstr[0] "Імпортований {0} знімок"
@@ -228,7 +230,6 @@ msgstr[1] "Імпортовано {0} знімки"
 msgstr[2] "Імпортовано {0} знімків"
 msgstr[3] "Імпортовано {0} знімків"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Перехрещення з другорядною дорогою"
 
@@ -257,6 +258,9 @@ msgstr "Перейти до зображення з іншого боку від
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Перейти до знімку з іншого боку від червоної лінії"
 
+msgid "Key copied to clipboard…"
+msgstr "Ключ скопійовано до буферу обміну..."
+
 msgid "Login"
 msgstr "Увійти"
 
@@ -266,7 +270,6 @@ msgstr "Вдалий вхід, повертаємось в JOSM."
 msgid "Logout"
 msgstr "Вихід"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Напрямок руху"
 
@@ -285,6 +288,9 @@ msgstr "Фільтр Mapillary"
 msgid "Mapillary history"
 msgstr "Історія Mapillary"
 
+msgid "Mapillary image"
+msgstr "Зображення Mapillary"
+
 msgid "Mapillary layer"
 msgstr "Mapillary"
 
@@ -300,7 +306,6 @@ msgstr "Обʼєкти Mapillary"
 msgid "Months"
 msgstr "Місяці"
 
-#, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
 msgstr[0] "Переміщено {0} зображення"
@@ -311,32 +316,27 @@ msgstr[3] "Переміщено {0} зображень"
 msgid "Next picture"
 msgstr "Наступний знімок"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "В’їзд заборонено"
-
-msgid "No image selected"
-msgstr "Не обрано жодного зображення"
 
 msgid "No images found"
 msgstr "Знімків не знайдено"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Обгін заборонений"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Стоянка заборонена"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Поворот заборонений"
+
+msgid "Not logged in to Mapillary"
+msgstr "Не залоґінився до Mapillary"
 
 msgid "Not older than: "
 msgstr "Не старіше ніж: "
 
-#. i18n: Spinner label in JOSM settings
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Кількість знімків для попереднього завантаження (вперед та назад)"
 
@@ -364,18 +364,15 @@ msgstr "Пауза"
 msgid "Pauses the walk."
 msgstr "Призупиняє перегляд"
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Пішохідний перехід"
 
 msgid "Play"
 msgstr "Пуск"
 
-#, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Натисніть \"{0}\" для завантаження зображень"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Попередній перегляд зображень при наведенні курсору на їх значок"
 
@@ -391,7 +388,6 @@ msgstr "Скинути"
 msgid "Rewrite imported images"
 msgstr "Перезаписати імпортовані зображення"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Круг"
 
@@ -419,7 +415,6 @@ msgstr "Показує наступний знімок послідовност�
 msgid "Shows the previous picture in the sequence"
 msgstr "Показує попередній знімок послідовності"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Обмеження швидкості"
 
@@ -427,7 +422,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Стоп"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
@@ -441,7 +435,6 @@ msgstr "Надіслати набір змін"
 msgid "Submit the current changeset"
 msgstr "Надіслати поточний набір змін"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Надіслати поточний набір змін до Mapillary"
 
@@ -476,7 +469,6 @@ msgstr ""
 msgid "There are currently no layers with geotagged images!"
 msgstr "Шар зображень з геопривʼязкою відсутній!"
 
-#, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
@@ -493,11 +485,9 @@ msgstr ""
 msgid "Too many map objects, zoom in to see all."
 msgstr "Забагато обʼєктів, треба наблизитись, щоб побачити їх всі."
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Всього знімків Mapillary: {0}"
 
-#, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
 msgstr[0] "Обернуто {0} зображення"
@@ -508,7 +498,6 @@ msgstr[3] "Обернуто {0} зображень"
 msgid "Undo"
 msgstr "Скасувати"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Нерівна дорога"
 
@@ -521,11 +510,9 @@ msgstr "Надіслати знімки Mapillary"
 msgid "Upload selected sequence"
 msgstr "Надіслати виділену послідовність"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Надсилання: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Використовувати 24-годинний формат"
 
@@ -541,7 +528,11 @@ msgstr "Чекати якісних фотографій"
 msgid "Walk mode"
 msgstr "Пішохідний режим"
 
-#. i18n: Checkbox label in JOSM settings
+msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
+msgstr ""
+"Режим ходьби: очікування наступного зображення триває довго! Вихід із режиму"
+" ходьби…"
+
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -558,12 +549,18 @@ msgstr "Роки"
 msgid "You are currently not logged in."
 msgstr "Ви ще не ввійшли."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Ви увійшли як  ''{0}''."
 
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Ви не увійшли, будь ласка, здійсніть вхід в налаштуваннях  Mapillary"
+
+msgid ""
+"You are trying to upload a sequence to mapillary.com that you previously "
+"downloaded from there. That is not possible."
+msgstr ""
+"Ви намагаєтеся завантажити послідовність до mapillary.com, яку ви раніше "
+"скачали звідти. Це неможливо."
 
 msgid "Zoom to selected image"
 msgstr "Масштабувати до виділеного знімка"
@@ -574,18 +571,18 @@ msgstr "Масштабувати до поточного виділеного з
 msgid "approved"
 msgstr "затверджено"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "області із завантаженими даними OSM"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "все, що є у видимій області"
 
 msgid "image has no key"
 msgstr "знімок не має ключа"
 
-#. i18n: download mode for Mapillary images
+msgid "no image selected"
+msgstr "не обрано зображень"
+
 msgid "only when manually requested"
 msgstr "тільки під час отримання запиту вручну"
 
@@ -601,7 +598,6 @@ msgstr "послідовність не має ключа"
 msgid "unknown user"
 msgstr "невідомий користувач"
 
-#, java-format
 msgid ""
 "{0}\n"
 "Could not read map objects from URL\n"
@@ -611,14 +607,11 @@ msgstr ""
 "Не вийшло отримати обʼєкти мапи за посиланням URL\n"
 "{1}!"
 
-#, java-format
 msgid "{0} detections"
 msgstr "{0} образів"
 
-#, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} знімків в {1} послідовностях"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr "Дозволяє користувачам використовувати знімки з mapillary.com"

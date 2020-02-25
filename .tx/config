@@ -5,6 +5,6 @@ host = https://www.transifex.com
 file_filter = src/main/po/<lang>.po
 lang_map = ca@valencia: ca-valencia
 minimum_perc = 50
-source_file = build/i18n/josm-plugin_Mapillary.pot
+source_file = build/i18n/pot/josm-plugin_Mapillary.pot
 source_lang = en
 type = PO

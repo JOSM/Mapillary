@@ -279,9 +279,7 @@ public class MapillaryImageDisplay extends JPanel {
         return;
       }
       if (this.mouseIsDragging) {
-        if (MapillaryImageDisplay.this.pano) {
-          // do nothing.
-        } else {
+        if (!MapillaryImageDisplay.this.pano) {
           Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
           visibleRect.x += this.mousePointInImg.x - p.x;
           visibleRect.y += this.mousePointInImg.y - p.y;
@@ -292,14 +290,14 @@ public class MapillaryImageDisplay extends JPanel {
           MapillaryImageDisplay.this.repaint();
         }
       } else if (MapillaryImageDisplay.this.selectedRect != null) {
-        Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        final Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
         checkPointInVisibleRect(p, visibleRect);
-        Rectangle rect = new Rectangle(p.x < this.mousePointInImg.x ? p.x
-            : this.mousePointInImg.x, p.y < this.mousePointInImg.y ? p.y
-            : this.mousePointInImg.y, p.x < this.mousePointInImg.x ? this.mousePointInImg.x
-            - p.x : p.x - this.mousePointInImg.x,
-            p.y < this.mousePointInImg.y ? this.mousePointInImg.y - p.y : p.y
-                - this.mousePointInImg.y);
+        Rectangle rect = new Rectangle(
+          Math.min(p.x, this.mousePointInImg.x),
+          Math.min(p.y, this.mousePointInImg.y),
+          Math.abs(p.x - this.mousePointInImg.x),
+          Math.abs(p.y - this.mousePointInImg.y)
+        );
         checkVisibleRectSize(image, rect);
         checkVisibleRectPos(image, rect);
         MapillaryImageDisplay.this.selectedRect = rect;

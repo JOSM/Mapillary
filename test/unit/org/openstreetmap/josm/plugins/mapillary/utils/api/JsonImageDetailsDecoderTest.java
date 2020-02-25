@@ -83,8 +83,7 @@ public class JsonImageDetailsDecoderTest {
     private int imageRetrievals;
 
     /**
-     * Returns how often the method {@link #getImages()} has been accessed for this instance.
-     * @return
+     * @return how often the method {@link #getImages()} has been accessed for this instance.
      */
     public int getNumImageRerievals() {
       return imageRetrievals;

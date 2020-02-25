@@ -1,15 +1,15 @@
 # Translations for the JOSM plugin 'Mapillary' (be)
-# Copyright (C) 2018 
+# Copyright (C) 2020
 # This file is distributed under the same license as the josm-plugin_Mapillary package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+#
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary v1.5.16-14-g82b2768\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.20-3-ge40f8de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 10:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2020-02-17 00:25+0000\n"
+"PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Language-Team: Belarusian (https://www.transifex.com/josm/teams/2544/be/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +37,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "Скасаваць"
 
-#, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr ""
 "Не атрымалася адправіць пакет правак па версіі пратакола {0} з абмылай: "
@@ -58,7 +57,6 @@ msgstr "Дні"
 msgid "Delete after upload"
 msgstr "Выдаліць пасля адпраўкі"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Display hour when the picture was taken"
 msgstr "Паказваць час, калі быў зроблены здымак"
 
@@ -92,7 +90,6 @@ msgstr "Адсылка скончана"
 msgid "Follow selected image"
 msgstr "Прытрымлівацца вылучанага здымка"
 
-#. i18n: traffic sign
 msgid "Give way"
 msgstr "Даць дарогу"
 
@@ -120,7 +117,6 @@ msgstr "Імпартаваць выявы на пласт Mapillary"
 msgid "Imported images"
 msgstr "Імпартаваныя выявы"
 
-#. i18n: traffic sign
 msgid "Intersection danger"
 msgstr "Перакрыжаванне з другаснай"
 
@@ -151,7 +147,6 @@ msgstr "Уваход паспяхова выкананы, зварот у JOSM."
 msgid "Logout"
 msgstr "Выйсці"
 
-#. i18n: traffic sign
 msgid "Mandatory direction (any)"
 msgstr "Кірунак руху"
 
@@ -182,25 +177,18 @@ msgstr "Месяцы"
 msgid "Next picture"
 msgstr "Наступны здымак"
 
-#. i18n: traffic sign
 msgid "No entry"
 msgstr "Заезд забаронены"
-
-msgid "No image selected"
-msgstr "Выява не абрана"
 
 msgid "No images found"
 msgstr "Выявы не знойдзеныя"
 
-#. i18n: traffic sign
 msgid "No overtaking"
 msgstr "Абгон забаронены"
 
-#. i18n: traffic sign
 msgid "No parking"
 msgstr "Стаянка забаронена"
 
-#. i18n: traffic sign
 msgid "No turn"
 msgstr "Паварот забаронены"
 
@@ -228,14 +216,12 @@ msgstr "Прыпыніць"
 msgid "Pauses the walk."
 msgstr "Прыпыніць шпацыр."
 
-#. i18n: traffic sign
 msgid "Pedestrian crossing"
 msgstr "Пешаходны пераход"
 
 msgid "Play"
 msgstr "Прайграць"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Preview images when hovering its icon"
 msgstr "Перадпрагляд выявы пры навядзенні на яго значок"
 
@@ -251,7 +237,6 @@ msgstr "Скід"
 msgid "Rewrite imported images"
 msgstr "Перазапісаць імпартаваныя выявы"
 
-#. i18n: traffic sign
 msgid "Roundabout"
 msgstr "Круг"
 
@@ -267,7 +252,6 @@ msgstr "Паказвае наступны здымак паслядоўнасц�
 msgid "Shows the previous picture in the sequence"
 msgstr "Паказвае папярэдні здымак паслядоўнасці"
 
-#. i18n: traffic sign
 msgid "Speed limit"
 msgstr "Абмежаванне хуткасці"
 
@@ -275,7 +259,6 @@ msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Стоп"
 
-#. i18n: traffic sign
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
@@ -289,7 +272,6 @@ msgstr "Перадаць пакет правак"
 msgid "Submit the current changeset"
 msgstr "Перадаць бягучы пакет правак"
 
-#. CHECKSTYLE.OFF: LineLength
 msgid "Submit the current changeset to Mapillary"
 msgstr "Перадаць бягучы пакет правак у Mapillary"
 
@@ -305,14 +287,12 @@ msgstr "Падтрымоўваныя фарматы малюнкаў (JPG і PNG
 msgid "Tag conflict"
 msgstr "Канфлікт у тэгах"
 
-#, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Усяго здымкаў Mapillary: {0}"
 
 msgid "Undo"
 msgstr "Вярнуць"
 
-#. i18n: traffic sign
 msgid "Uneven road"
 msgstr "Няроўная дарога"
 
@@ -322,11 +302,9 @@ msgstr "Абнавіць"
 msgid "Upload selected sequence"
 msgstr "Адаслаць вылучаную паслядоўнасць"
 
-#, java-format
 msgid "Uploading: {0}"
 msgstr "Адсылаецца: {0}"
 
-#. i18n: Checkbox label in JOSM settings
 msgid "Use 24 hour format"
 msgstr "Выкарыстоўваць 24-гадзінны фармат"
 
@@ -345,7 +323,6 @@ msgstr "Гады"
 msgid "You are currently not logged in."
 msgstr "Вы не выканалі ўваход."
 
-#, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Вы ўвайшлі як ''{0}''."
 
@@ -358,22 +335,18 @@ msgstr "Маштабаваць да вылучанага здымка"
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Наблізіцца да бягучага вылучанага здымка Mapillary"
 
-#. i18n: download mode for Mapillary images
 msgid "areas with downloaded OSM-data"
 msgstr "вобласці са спампаванымі дадзенымі OSM"
 
-#. i18n: download mode for Mapillary images
 msgid "everything in the visible area"
 msgstr "усё ў бачнай вобласці"
 
-#. i18n: download mode for Mapillary images
 msgid "only when manually requested"
 msgstr "толькі пры запыце ўручную"
 
 msgid "pending"
 msgstr "у чаканні"
 
-#. Plugin description for Mapillary
 msgid "Allows the user to work with pictures hosted at mapillary.com"
 msgstr ""
 "Дазваляе карыстальнікам працаваць з выявамі, размешчанымі на mapillary.com"

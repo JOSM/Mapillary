@@ -1,19 +1,17 @@
 import com.github.spotbugs.SpotBugsTask
-import net.ltgt.gradle.errorprone.*
+import net.ltgt.gradle.errorprone.CheckSeverity
+import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.openstreetmap.josm.gradle.plugin.config.GitlabConfig
-import org.openstreetmap.josm.gradle.plugin.config.I18nConfig
-import org.openstreetmap.josm.gradle.plugin.config.JosmManifest
 import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
   id("org.sonarqube") version "2.8"
-  id("org.openstreetmap.josm") version "0.6.4"
-  id("com.github.ben-manes.versions") version "0.25.0"
-  id("com.github.spotbugs") version "2.0.0"
-  id("net.ltgt.errorprone") version "0.8.1"
+  id("org.openstreetmap.josm") version "0.6.5"
+  id("com.github.ben-manes.versions") version "0.27.0"
+  id("com.github.spotbugs") version "3.0.0"
+  id("net.ltgt.errorprone") version "1.1.1"
 
   eclipse
   jacoco
@@ -28,7 +26,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.3.3")
+  errorprone("com.google.errorprone:error_prone_core:2.3.4")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -54,14 +52,14 @@ base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.25.0")
-  val junitVersion = "5.5.2"
+  testImplementation("com.github.tomakehurst:wiremock:2.26.0")
+  val junitVersion = "5.6.0"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:4.0.1")
-  testImplementation("org.jmockit:jmockit:1.45")
-  testImplementation("com.github.spotbugs:spotbugs-annotations:3.1.12")
+  testImplementation("org.awaitility:awaitility:4.0.2")
+  testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
+  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.0")
 }
 
 sourceSets {
@@ -105,7 +103,7 @@ josm {
     oldVersionDownloadLink(10824, "v1.5.3", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar"))
   }
   i18n {
-    pathTransformer = getPathTransformer("gitlab.com/JOSM/Mapillary/blob")
+    pathTransformer = getPathTransformer("gitlab.com/JOSM/plugin/Mapillary/blob")
   }
 }
 
@@ -158,7 +156,7 @@ project.afterEvaluate {
     pom {
       name.set("JOSM-${base.archivesBaseName}")
       description.set("The Mapillary plugin for JOSM")
-      url.set("https://gitlab.com/JOSM/Mapillary")
+      url.set("https://gitlab.com/JOSM/plugin/Mapillary")
       licenses {
         license {
           name.set("GNU General Public License Version 2")
@@ -166,9 +164,9 @@ project.afterEvaluate {
         }
       }
       scm {
-        connection.set("scm:git:git://gitlab.com/JOSM/Mapillary.git")
-        developerConnection.set("scm:git:ssh://gitlab.com/JOSM/Mapillary.git")
-        url.set("https://gitlab.com/JOSM/Mapillary")
+        connection.set("scm:git:git://gitlab.com/JOSM/plugin/Mapillary.git")
+        developerConnection.set("scm:git:ssh://gitlab.com/JOSM/plugin/Mapillary.git")
+        url.set("https://gitlab.com/JOSM/plugin/Mapillary")
       }
       issueManagement {
         system.set("Trac")

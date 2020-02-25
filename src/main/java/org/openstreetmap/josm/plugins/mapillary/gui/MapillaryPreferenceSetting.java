@@ -198,7 +198,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @SuppressWarnings("PMD.ShortMethodName")
   @Override
   public boolean ok() {
-    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getSelectedItem().toString()).getPrefId());
+    MapillaryProperties.DOWNLOAD_MODE.put(DOWNLOAD_MODE.fromLabel(downloadModeComboBox.getItemAt(downloadModeComboBox.getSelectedIndex())).getPrefId());
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
     MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());

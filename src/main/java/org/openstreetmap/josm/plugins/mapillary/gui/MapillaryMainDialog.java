@@ -273,12 +273,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements
           }
         }
       } else if (this.image instanceof MapillaryImportedImage) {
-        MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
+        final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
           this.mapillaryImageDisplay.setImage(
             mapillaryImage.getImage(),
             null,
-            mapillaryImage != null && mapillaryImage.isPanorama()
+            mapillaryImage.isPanorama()
           );
         } catch (IOException e) {
           Logging.error(e);
@@ -306,6 +306,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   public synchronized void setImage(MapillaryAbstractImage image) {
     this.image = image;
+    if (this.isVisible() && MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().setImageViewed(this.image);
+    }
   }
 
   /**
@@ -479,5 +482,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   @Override
   public void imagesAdded() {
     // This method is enforced by MapillaryDataListener, but only selectedImageChanged() is needed
+  }
+
+  @Override
+  public void showDialog() {
+    super.showDialog();
+    if (this.image != null)
+      MapillaryLayer.getInstance().setImageViewed(this.image);
   }
 }

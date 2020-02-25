@@ -5,7 +5,7 @@ But if you want to explore the sourcecode and maybe even improve it, first of al
 ## Setting up your local git-repo
 
 ```shell
-git clone git@github.com:JOSM/Mapillary.git
+git clone git@gitlab.com:JOSM/plugin/Mapillary.git
 cd Mapillary
 ```
 
