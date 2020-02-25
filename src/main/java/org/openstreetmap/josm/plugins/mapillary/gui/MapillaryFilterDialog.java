@@ -28,6 +28,7 @@ import javax.swing.SpinnerNumberModel;
 
 import javafx.event.EventType;
 import javafx.scene.control.DatePicker;
+import javafx.util.StringConverter;
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -42,6 +43,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -118,6 +120,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
     startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
     endDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(endDate));
+    endDate.getNode().setConverter(new LocalDateConverter());
+    startDate.getNode().setConverter(endDate.getNode().getConverter());
     ExpertToggleAction.addVisibilitySwitcher(timePanel);
 
     filterByDateCheckbox.addItemListener(itemE -> {
@@ -221,6 +225,12 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         if (timeFilter && checkValidTime(img)) {
           return true;
         }
+        if (endDate != null && checkEndDate(img)) {
+          return true;
+        }
+        if (startDate != null && checkStartDate(img)) {
+          return true;
+        }
         if (!imported && img instanceof MapillaryImportedImage) {
           return true;
         }
@@ -257,12 +267,20 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     return false;
   }
 
+  /**
+   * @param img The image to check
+   * @return {@code true} if the start date is after the image date
+   */
   private boolean checkStartDate(MapillaryAbstractImage img) {
     LocalDate start = this.startDate.getNode().getValue();
     LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
     return start.isAfter(imgDate);
   }
 
+  /**
+   * @param img The image to check
+   * @return {@code true} if the end date is before the image date
+   */
   private boolean checkEndDate(MapillaryAbstractImage img) {
     LocalDate end = this.endDate.getNode().getValue();
     LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
