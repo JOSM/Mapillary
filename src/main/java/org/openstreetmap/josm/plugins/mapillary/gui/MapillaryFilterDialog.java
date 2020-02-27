@@ -3,10 +3,12 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.function.Predicate;
@@ -24,6 +26,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import javafx.event.EventType;
+import javafx.scene.control.DatePicker;
+import javafx.util.StringConverter;
+
+import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -33,8 +40,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
+import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -71,6 +81,9 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   private final JButton signChooser = new JButton(new SignChooserAction());
 
+  private final JavaFxWrapper<DatePicker> startDate;
+  private final JavaFxWrapper<DatePicker> endDate;
+
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
         false, MapillaryPreferenceSetting.class);
@@ -92,6 +105,25 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     time.setEnabled(false);
     fromPanel.add(this.time);
 
+    // TODO Replace if #18747 is taken
+    startDate = new JavaFxWrapper<>(DatePicker.class);
+    endDate = new JavaFxWrapper<>(DatePicker.class);
+    JPanel timePanel = new JPanel(new GridBagLayout());
+    timePanel.add(new JLabel(tr("Start")), GBC.std());
+    timePanel.add(new JLabel(tr("End")), GBC.eol());
+    timePanel.add(startDate, GBC.std());
+    timePanel.add(endDate, GBC.eol());
+    Dimension d = timePanel.getMinimumSize();
+    d.width = Double.valueOf(Math.ceil(d.width * 1.15)).intValue();
+    d.height = Double.valueOf(Math.ceil(d.height * 1.15)).intValue(); // TODO check
+    timePanel.setMinimumSize(d);
+
+    startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
+    endDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(endDate));
+    endDate.getNode().setConverter(new LocalDateConverter());
+    startDate.getNode().setConverter(endDate.getNode().getConverter());
+    ExpertToggleAction.addVisibilitySwitcher(timePanel);
+
     filterByDateCheckbox.addItemListener(itemE -> {
       spinner.setEnabled(filterByDateCheckbox.isSelected());
       time.setEnabled(filterByDateCheckbox.isSelected());
@@ -107,26 +139,36 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
 
-    JPanel panel = new JPanel();
-    panel.setLayout(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
-    c.anchor = GridBagConstraints.LINE_START;
-    panel.add(this.downloaded, c);
-    c.gridx = 1;
-    panel.add(this.imported, c);
-    c.gridx = 0;
-    c.gridy = 1;
-    c.gridwidth = 2;
-    panel.add(fromPanel, c);
-    c.gridy = 2;
-    panel.add(userSearchPanel, c);
-    c.gridwidth = 1;
-    c.gridy = 3;
-    panel.add(this.onlySigns, c);
-    c.gridx = 1;
-    panel.add(signChooserPanel, c);
+    JPanel panel = new JPanel(new GridBagLayout());
+    JPanel imageLine = new JPanel();
+    imageLine.add(this.downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
+    imageLine.add(this.imported, GBC.eol());
+    panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(timePanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    JPanel signs = new JPanel();
+    signs.add(this.onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
+    signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
+  }
+
+  private void updateDates(JavaFxWrapper<?> modified) {
+    LocalDate start = startDate.getNode().getValue();
+    LocalDate end = endDate.getNode().getValue();
+    if (start == null || end == null)
+      return;
+    if (modified == startDate) {
+      if (start.compareTo(end) > 0) {
+        endDate.getNode().setValue(start);
+      }
+    } else if (modified == endDate) {
+      if (start.compareTo(end) > 0) {
+        startDate.getNode().setValue(end);
+      }
+    }
   }
 
   /**
@@ -171,6 +213,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     final boolean downloaded = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
     final boolean onlySigns = this.onlySigns.isSelected();
+    final LocalDate endDate = this.endDate.getNode().getValue();
+    final LocalDate startDate = this.startDate.getNode().getValue();
 
     // This predicate returns true is the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
@@ -179,6 +223,12 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
           return true;
         }
         if (timeFilter && checkValidTime(img)) {
+          return true;
+        }
+        if (endDate != null && checkEndDate(img)) {
+          return true;
+        }
+        if (startDate != null && checkStartDate(img)) {
           return true;
         }
         if (!imported && img instanceof MapillaryImportedImage) {
@@ -215,6 +265,26 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       }
     }
     return false;
+  }
+
+  /**
+   * @param img The image to check
+   * @return {@code true} if the start date is after the image date
+   */
+  private boolean checkStartDate(MapillaryAbstractImage img) {
+    LocalDate start = this.startDate.getNode().getValue();
+    LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+    return start.isAfter(imgDate);
+  }
+
+  /**
+   * @param img The image to check
+   * @return {@code true} if the end date is before the image date
+   */
+  private boolean checkEndDate(MapillaryAbstractImage img) {
+    LocalDate end = this.endDate.getNode().getValue();
+    LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+    return end.isBefore(imgDate);
   }
 
   /**
