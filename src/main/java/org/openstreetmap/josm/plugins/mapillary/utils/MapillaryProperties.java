@@ -75,6 +75,11 @@ public final class MapillaryProperties {
    */
   public static final StringProperty IMAGE_MODE = new StringProperty("mapillary.imageMode", "all");
 
+  /**
+   * Download point features (fire hydrants, trees, and so on)
+   */
+  public static final BooleanProperty POINT_FEATURES = new BooleanProperty("mapillary.pointfeatures", false);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

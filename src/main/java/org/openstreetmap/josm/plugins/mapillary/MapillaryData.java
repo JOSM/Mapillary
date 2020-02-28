@@ -1,8 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.jcs.access.CacheAccess;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.Data;
+import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -29,7 +33,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillaryAbstractImage
  * @see MapillarySequence
  */
-public class MapillaryData {
+public class MapillaryData implements Data {
   private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.newKeySet();
   /**
    * The image currently selected, this is the one being shown.
@@ -50,14 +54,14 @@ public class MapillaryData {
   /**
    * The bounds of the areas for which the pictures have been downloaded.
    */
-  private final List<Bounds> bounds;
+  private final List<DataSource> dataSources;
 
   /**
    * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
     this.selectedImage = null;
-    this.bounds = new CopyOnWriteArrayList<>();
+    this.dataSources = new ArrayList<>();
 
     // Adds the basic set of listeners.
     Arrays.stream(MapillaryPlugin.getMapillaryDataListeners()).forEach(this::addListener);
@@ -159,7 +163,7 @@ public class MapillaryData {
   }
 
   public List<Bounds> getBounds() {
-    return bounds;
+    return dataSources.stream().map(b -> b.bounds).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
   }
 
   /**
@@ -339,5 +343,10 @@ public class MapillaryData {
       images.clear();
       images.addAll(newImages);
     }
+  }
+
+  @Override
+  public Collection<DataSource> getDataSources() {
+    return Collections.unmodifiableCollection(dataSources);
   }
 }

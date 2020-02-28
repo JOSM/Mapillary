@@ -230,6 +230,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
+  //@Override Depends upon #18801 for the override
   public MapillaryData getData() {
     return this.data;
   }

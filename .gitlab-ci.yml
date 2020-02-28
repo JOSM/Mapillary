@@ -1,5 +1,8 @@
 image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 include:
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: License-Scanning.gitlab-ci.yml

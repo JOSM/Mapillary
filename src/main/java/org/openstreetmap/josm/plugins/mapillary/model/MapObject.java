@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.function.Function;
 
 import javax.imageio.ImageIO;
@@ -25,8 +26,8 @@ public class MapObject extends KeyIndexedObject {
   private final long lastSeenTime;
 
   public MapObject(
-    final LatLon coordinate, final String key, final String layer, final String value,
-    long firstSeenTime, long lastSeenTime
+    final LatLon coordinate, final String key, final String layer, final String value, long firstSeenTime,
+    long lastSeenTime
   ) {
     super(key);
     if (layer == null || value == null || coordinate == null) {
@@ -44,8 +45,9 @@ public class MapObject extends KeyIndexedObject {
   }
 
   /**
-   * @param objectTypeID the {@link String} representing the type of map object. This ID can be retrieved via
-   *   {@link #getValue()} for any given {@link MapObject}.
+   * @param objectTypeID
+   *          the {@link String} representing the type of map object. This ID can be retrieved via {@link #getValue()}
+   *          for any given {@link MapObject}.
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {
@@ -53,15 +55,31 @@ public class MapObject extends KeyIndexedObject {
     if ("not-in-set".equals(objectTypeID)) {
       return ICON_UNKNOWN_TYPE;
     } else if (cachedIcon == null) {
-      try {
-        final ImageIcon downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));
-        MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
-        return downloadedIcon;
-      } catch (IOException e) {
-        Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
-        // In order to not display the objects without known icons:
-        return null;
+      // Null means that no image is displayed
+      ImageIcon downloadedIcon = null;
+      for (String directory : Arrays.asList("package_objects", "package_signs")) {
+        try {
+          downloadedIcon = ImageProvider.get("mapillary_sprite_source/" + directory, objectTypeID);
+        } catch (RuntimeException e) {
+          Logging.trace(e);
+        }
+        if (downloadedIcon != null)
+          break;
       }
+      if (downloadedIcon == null) {
+        try {
+          downloadedIcon = new ImageIcon(ImageIO.read(iconUrlGen.apply(objectTypeID)));
+        } catch (IOException e) {
+          Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
+        }
+      }
+      if (downloadedIcon != null) {
+        MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
+      } else {
+        MapObjectIconCache.getInstance().put(objectTypeID, ICON_UNKNOWN_TYPE);
+        downloadedIcon = ICON_UNKNOWN_TYPE;
+      }
+      return downloadedIcon;
     }
     return cachedIcon;
   }

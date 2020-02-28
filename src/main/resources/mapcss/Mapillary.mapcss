@@ -1,0 +1,53 @@
+meta
+{
+  title: "Mapillary Point Objects";
+  description: "Paint style for Mapillary point objects to indicate distance and accuracy";
+  author: "Taylor Smock";
+  version: "1_2020-02-27";
+}
+/*----------------------------------------------------------------------------*/
+/* Pixel per metre (on average)                                               */
+/* Copied from Lane_and_Road_Attributes                                       */
+/*----------------------------------------------------------------------------*/
+*|z16  { pixel_per_metre: 0.625; }
+*|z17  { pixel_per_metre: 1.25; }
+*|z18  { pixel_per_metre: 2.5; }
+*|z19  { pixel_per_metre: 5; }
+*|z20  { pixel_per_metre: 10; }
+*|z21  { pixel_per_metre: 20; }
+*|z22  { pixel_per_metre: 40; }
+*|z23  { pixel_per_metre: 80; }
+*|z24  { pixel_per_metre: 160; }
+*|z25  { pixel_per_metre: 320; }
+*|z26- { pixel_per_metre: 640; }
+
+node|z20-[accuracy > 10]::mapillary_object_layer {
+    symbol-shape: circle;
+    symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
+    symbol-fill-opacity: 0.2;
+    symbol-fill-color: orange;
+    symbol-stroke-color: orange;
+}
+node|z20-[accuracy <= 10][accuracy > 5]::mapillary_object_layer {
+    symbol-shape: circle;
+    symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
+    symbol-fill-opacity: 0.2;
+    symbol-fill-color: yellow;
+    symbol-stroke-color: yellow;
+}
+node|z20-[accuracy <= 5]::mapillary_object_layer {
+    symbol-shape: circle;
+    symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
+    symbol-fill-opacity: 0.2;
+    symbol-fill-color: green;
+    symbol-stroke-color: green;
+}
+node[layer=trafficsigns] {
+    imagepath: "package_signs";
+}
+node[layer=points] {
+    imagepath: "package_objects";
+}
+node|z18-[value][is_prop_set(imagepath)] {
+    icon-image: concat("mapillary_sprite_source/", prop(imagepath), "/", tag("value"));
+}

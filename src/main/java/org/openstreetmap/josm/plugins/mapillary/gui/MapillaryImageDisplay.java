@@ -541,7 +541,7 @@ public class MapillaryImageDisplay extends JPanel {
       g2d.setStroke(new BasicStroke(2));
       if (pano) {
         for (final ImageDetection d : detections) {
-          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
+          g2d.setColor(d.getColor());
           final PathIterator pathIt = d.getShape().getPathIterator(null);
           Point prevPoint = null;
           while (!pathIt.isDone()) {
@@ -574,11 +574,7 @@ public class MapillaryImageDisplay extends JPanel {
 
         for (final ImageDetection d : detections) {
           final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
-          g2d.setColor(
-            d.isTrafficSign()
-              ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN
-              : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN
-          );
+          g2d.setColor(d.getColor());
           g2d.draw(shape);
           if (d.isTrafficSign()) {
             final Rectangle bounds = shape.getBounds();
