@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 import java.awt.geom.Path2D;
 
 public class ImageDetection extends SpecialImageArea {
-  private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
+  private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsigns";
 
   private final String packag;
   private final double score;

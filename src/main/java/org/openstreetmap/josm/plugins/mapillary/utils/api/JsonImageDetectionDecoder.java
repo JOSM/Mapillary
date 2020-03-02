@@ -32,7 +32,7 @@ public final class JsonImageDetectionDecoder {
     final JsonValue properties = json.get("properties");
     if (properties instanceof JsonObject) {
       final String key = ((JsonObject) properties).getString("key", null);
-      final String packag = ((JsonObject) properties).getString("package", null);
+      final String packag = ((JsonObject) properties).getString("layer", null);
       final String imageKey = ((JsonObject) properties).getString("image_key", null);
       final String value = ((JsonObject) properties).getString("value", null);
       final JsonValue scoreVal = ((JsonObject) properties).get("score");
