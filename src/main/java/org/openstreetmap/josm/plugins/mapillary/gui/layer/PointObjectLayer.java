@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -61,7 +60,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -134,12 +135,13 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
   private static DataSet realGetData(Bounds bound) throws IllegalDataException, IOException {
     URL url = MapillaryURL.APIv3.searchMapPointObjects(bound);
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.connect();
-    try (InputStream stream = con.getInputStream()) {
+    HttpClient client = HttpClient.create(url);
+    OAuthUtils.addAuthenticationHeader(client);
+    client.connect();
+    try (InputStream stream = client.getResponse().getContent()) {
       return GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
     } finally {
-      con.disconnect();
+      client.disconnect();
     }
   }
 
@@ -227,19 +229,22 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       }
       MapillaryData data = MapillaryLayer.getInstance().getData();
       MapillaryImage selectedImage = data.getSelectedImage() instanceof MapillaryImage
-        ? (MapillaryImage) data.getSelectedImage()
-        : null;
-      String toSelect = detections.stream().map(m -> m.get("image_key")).filter(Objects::nonNull).findFirst()
-        .orElse(null);
-      boolean inDetections = selectedImage != null && detections.stream().map(m -> m.get("image_key"))
-        .filter(Objects::nonNull).anyMatch(str -> str.equals(selectedImage.getKey()));
+          ? (MapillaryImage) data.getSelectedImage()
+              : null;
+      List<MapillaryImage> images = getImagesForDetections(data, detections);
+      SwingUtilities.invokeLater(() -> data.getAllDetections(images));
+      MapillaryImage toSelect = images.isEmpty() ? null : images.get(0);
+      boolean inDetections = selectedImage != null && images.contains(selectedImage);
 
-      if (!inDetections && (selectedImage == null || !toSelect.equals(selectedImage.getKey()))) {
-        MapillaryImage image = data.getImages().parallelStream().filter(MapillaryImage.class::isInstance)
-          .map(MapillaryImage.class::cast).filter(m -> m.getKey().equals(toSelect)).findAny().orElse(null);
-        data.setSelectedImage(image);
+      if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
+        data.setSelectedImage(toSelect);
       }
     }
     SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint());
+  }
+
+  private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
+    return detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key")).map(data::getImage)
+        .collect(Collectors.toList());
   }
 }

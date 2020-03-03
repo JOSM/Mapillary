@@ -53,7 +53,16 @@ public final class MapillaryURL {
 
     public static Collection<URL> searchDetections(Bounds bounds) {
       return Collections
-          .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, getDetectionLayers()) + SORT_BY_KEY));
+          .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
+    }
+
+    public static URL retrieveDetections(String imageKey) {
+      return retrieveDetections(Collections.singleton(imageKey));
+    }
+
+    public static URL retrieveDetections(Collection<String> imageKeys) {
+      return string2URL(baseUrl, "image_detections/",
+          queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
     }
 
     public static Collection<URL> searchImages(Bounds bounds) {
@@ -67,7 +76,7 @@ public final class MapillaryURL {
      * @return A URL to use to get traffic sign map features
      */
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
+      return string2URL(baseUrl, "map_features", queryString(bounds, getDetectionLayers()) + SORT_BY_KEY);
     }
 
     /**

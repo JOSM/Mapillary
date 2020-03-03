@@ -1,16 +1,25 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonReader;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs.access.CacheAccess;
 
@@ -24,7 +33,15 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -55,6 +72,11 @@ public class MapillaryData implements Data {
    * The bounds of the areas for which the pictures have been downloaded.
    */
   private final List<DataSource> dataSources;
+
+  /**
+   * Keeps track of images where detections have been fully downloaded
+   */
+  private final Set<MapillaryAbstractImage> fullyDownloadedDetections = ConcurrentHashMap.newKeySet();
 
   /**
    * Creates a new object and adds the initial set of listeners.
@@ -225,8 +247,19 @@ public class MapillaryData implements Data {
    *
    * @return A Set object containing all images.
    */
-  public Set<MapillaryAbstractImage> getImages() {
+  public synchronized Set<MapillaryAbstractImage> getImages() {
     return images;
+  }
+
+  /**
+   * Get a specific MapillaryImage
+   *
+   * @param key The key for the MapillaryImage
+   * @return The MapillaryImage or {@code null}
+   */
+  public MapillaryImage getImage(String key) {
+    return getImages().parallelStream().filter(MapillaryImage.class::isInstance)
+        .map(MapillaryImage.class::cast).filter(m -> m.getKey().equals(key)).findAny().orElse(null);
   }
 
   /**
@@ -348,5 +381,57 @@ public class MapillaryData implements Data {
   @Override
   public Collection<DataSource> getDataSources() {
     return Collections.unmodifiableCollection(dataSources);
+  }
+
+  /**
+   * Get all the detections for an image
+   *
+   * @param imagesToGet The images to get detections for
+   */
+  public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      MainApplication.worker.submit(() -> getDetections(imagesToGet));
+    } else {
+      getDetections(imagesToGet);
+    }
+  }
+
+  private void getDetections(Collection<MapillaryImage> imagesToGetDetections) {
+    Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
+        .filter(i -> !fullyDownloadedDetections.contains(i))
+        .collect(Collectors.toList());
+    URL nextUrl = MapillaryURL.APIv3
+        .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
+    Map<String, List<ImageDetection>> detections = new HashMap<>();
+    while (nextUrl != null) {
+      HttpClient client = HttpClient.create(nextUrl);
+      if (MapillaryUser.getUsername() != null)
+        OAuthUtils.addAuthenticationHeader(client);
+      try (JsonReader reader = createJsonReader(client)) {
+        Map<String, List<ImageDetection>> tMap = JsonDecoder
+            .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
+            .collect(Collectors.groupingBy(ImageDetection::getImageKey));
+        tMap.forEach((key, detection) -> {
+          List<ImageDetection> detectionList = detections.getOrDefault(key, new ArrayList<>());
+          detections.putIfAbsent(key, detectionList);
+          detectionList.addAll(detection);
+        });
+        nextUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+      } catch (IOException | JsonException | NumberFormatException e) {
+        Logging.error(e);
+        nextUrl = null; // Ensure we don't keep looping if there is an error.
+      }
+    }
+    imagesToGet.forEach(i -> {
+      i.setAllDetections(detections.get(i.getKey()));
+      fullyDownloadedDetections.add(i);
+    });
+    if (imagesToGet.contains(getSelectedImage()))
+      MapillaryMainDialog.getInstance().repaint();
+  }
+
+  private static JsonReader createJsonReader(HttpClient client) throws IOException {
+    client.connect();
+    return Json.createReader(client.getResponse().getContent());
   }
 }
