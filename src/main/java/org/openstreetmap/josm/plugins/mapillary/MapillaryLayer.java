@@ -533,7 +533,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSourceListener(DATASET_LISTENER);
       }
       if (e.getPreviousDataLayer() != null) {
-        e.getPreviousDataLayer().getDataSet().removeDataSourceListener(DATASET_LISTENER);
+        try {
+          e.getPreviousDataSet().removeDataSourceListener(DATASET_LISTENER);
+        } catch (IllegalArgumentException exception) {
+          // Do nothing -- there wasn't a data source listener
+          Logging.trace(exception);
+        }
       }
     }
   }

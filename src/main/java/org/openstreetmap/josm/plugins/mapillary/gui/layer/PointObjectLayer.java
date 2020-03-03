@@ -42,6 +42,7 @@ import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
+import org.openstreetmap.josm.data.osm.DownloadPolicy;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
@@ -102,6 +103,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public PointObjectLayer() {
     super(new DataSet(), tr(NAME), null);
     data.setUploadPolicy(UploadPolicy.BLOCKED);
+    data.setDownloadPolicy(DownloadPolicy.BLOCKED);
+    data.lock();
     followDataSet = MainApplication.getLayerManager().getActiveDataSet();
     followDataSet.addDataSourceListener(this);
     this.setName(NAME + ": " + MainApplication.getLayerManager().getActiveDataLayer().getName());
@@ -122,12 +125,15 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       try {
         DataSet ds = realGetData(dataSource.bounds);
         synchronized (this) {
+          data.unlock();
           data.mergeFrom(ds);
           data.addDataSource(dataSource);
         }
       } catch (IllegalDataException | IOException e) {
         Logging.error(e);
         dataSources.remove(dataSource);
+      } finally {
+        data.lock();
       }
     }
   }

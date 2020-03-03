@@ -90,7 +90,7 @@ public class JsonImageDetailsDecoderTest {
     }
 
     @Override
-    public Set<MapillaryAbstractImage> getImages() {
+    public synchronized Set<MapillaryAbstractImage> getImages() {
       imageRetrievals++;
       return super.getImages();
     }

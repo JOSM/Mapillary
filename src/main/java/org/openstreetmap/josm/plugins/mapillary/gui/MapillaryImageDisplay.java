@@ -63,7 +63,7 @@ public class MapillaryImageDisplay extends JPanel {
   /** The image currently displayed */
   private volatile BufferedImage image;
 
-  private boolean pano = false;
+  private boolean pano;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
@@ -427,6 +427,7 @@ public class MapillaryImageDisplay extends JPanel {
       public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) { }
     });
 
+    MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(it -> repaint());
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
     MapillaryProperties.DARK_MODE.addListener(it -> setDarkMode(it.getProperty().get()));
   }
@@ -489,10 +490,7 @@ public class MapillaryImageDisplay extends JPanel {
       paintNoImage(g);
     } else {
       paintImage(g, image, visibleRect);
-
-      if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
-        paintDetectedSigns(g, visibleRect);
-      }
+      paintDetections(g, visibleRect);
     }
   }
 
@@ -540,7 +538,7 @@ public class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private void paintDetectedSigns(Graphics g, Rectangle visibleRect) {
+  private void paintDetections(Graphics g, Rectangle visibleRect) {
     if (g instanceof Graphics2D) {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.setStroke(new BasicStroke(2));
@@ -602,6 +600,11 @@ public class MapillaryImageDisplay extends JPanel {
   }
 
   private static boolean checkIfDetectionIsFiltered(List<PointObjectLayer> detectionLayers, ImageDetection d) {
+    if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
+        && !"trafficsigns".contains(d.getPackage()))
+        || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
+            && "trafficsigns".contains(d.getPackage())))
+      return true;
     OsmPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(data -> data.allPrimitives().parallelStream()).filter(p -> p.hasKey("detections") && p.get("detections").contains(d.getKey())).findAny().orElse(null);
     return prim != null && prim.isDisabled();
   }

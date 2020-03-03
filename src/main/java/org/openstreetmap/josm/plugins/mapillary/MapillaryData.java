@@ -389,45 +389,60 @@ public class MapillaryData implements Data {
    * @param imagesToGet The images to get detections for
    */
   public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
+    List<MapillaryImage> list = new ArrayList<>(imagesToGet);
+    int index = list.indexOf(getSelectedImage());
+    MapillaryImage current = index >= 0 ? list.get(index) : null;
+    if (current != null) {
+      list.remove(current);
+    }
     if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.submit(() -> getDetections(imagesToGet));
+      MainApplication.worker.execute(() -> {
+        getDetections(Collections.singleton(current));
+        getDetections(list);
+      });
     } else {
-      getDetections(imagesToGet);
+      getDetections(Collections.singleton(current));
+      getDetections(list);
     }
   }
 
   private void getDetections(Collection<MapillaryImage> imagesToGetDetections) {
-    Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
-        .filter(i -> !fullyDownloadedDetections.contains(i))
-        .collect(Collectors.toList());
-    URL nextUrl = MapillaryURL.APIv3
-        .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
-    Map<String, List<ImageDetection>> detections = new HashMap<>();
-    while (nextUrl != null) {
-      HttpClient client = HttpClient.create(nextUrl);
-      if (MapillaryUser.getUsername() != null)
-        OAuthUtils.addAuthenticationHeader(client);
-      try (JsonReader reader = createJsonReader(client)) {
-        Map<String, List<ImageDetection>> tMap = JsonDecoder
-            .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
-            .collect(Collectors.groupingBy(ImageDetection::getImageKey));
-        tMap.forEach((key, detection) -> {
-          List<ImageDetection> detectionList = detections.getOrDefault(key, new ArrayList<>());
-          detections.putIfAbsent(key, detectionList);
-          detectionList.addAll(detection);
-        });
-        nextUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
-      } catch (IOException | JsonException | NumberFormatException e) {
-        Logging.error(e);
-        nextUrl = null; // Ensure we don't keep looping if there is an error.
+    if (imagesToGetDetections == null) {
+      return;
+    }
+    synchronized (fullyDownloadedDetections) {
+      Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
+          .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
+      URL nextUrl = MapillaryURL.APIv3
+          .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
+      Map<String, List<ImageDetection>> detections = new HashMap<>();
+      while (nextUrl != null) {
+        HttpClient client = HttpClient.create(nextUrl);
+        if (MapillaryUser.getUsername() != null)
+          OAuthUtils.addAuthenticationHeader(client);
+        try (JsonReader reader = createJsonReader(client)) {
+          Map<String, List<ImageDetection>> tMap = JsonDecoder
+              .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
+              .collect(Collectors.groupingBy(ImageDetection::getImageKey));
+          tMap.forEach((key, detection) -> {
+            List<ImageDetection> detectionList = detections.getOrDefault(key, new ArrayList<>());
+            detections.putIfAbsent(key, detectionList);
+            detectionList.addAll(detection);
+          });
+          nextUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+        } catch (IOException | JsonException | NumberFormatException e) {
+          Logging.error(e);
+          nextUrl = null; // Ensure we don't keep looping if there is an error.
+        }
+      }
+      imagesToGet.forEach(i -> {
+        i.setAllDetections(detections.get(i.getKey()));
+        fullyDownloadedDetections.add(i);
+      });
+      if (imagesToGet.contains(getSelectedImage())) {
+        MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
       }
     }
-    imagesToGet.forEach(i -> {
-      i.setAllDetections(detections.get(i.getKey()));
-      fullyDownloadedDetections.add(i);
-    });
-    if (imagesToGet.contains(getSelectedImage()))
-      MapillaryMainDialog.getInstance().repaint();
   }
 
   private static JsonReader createJsonReader(HttpClient client) throws IOException {
