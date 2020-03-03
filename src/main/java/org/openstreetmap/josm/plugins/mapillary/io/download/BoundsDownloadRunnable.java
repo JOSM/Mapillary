@@ -6,7 +6,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
 import javax.swing.SwingUtilities;
@@ -17,43 +22,54 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
-public abstract class BoundsDownloadRunnable implements Runnable {
-
+public abstract class BoundsDownloadRunnable extends RecursiveAction {
+  private static final long serialVersionUID = -3097850570397160069L;
   protected final Bounds bounds;
+  protected final Collection<URL> urls;
+  protected final int maximumUrls = 50;
 
   protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
 
   public BoundsDownloadRunnable(final Bounds bounds) {
-    this.bounds = bounds;
+    this(bounds, null);
   }
 
-  @Override
+  public BoundsDownloadRunnable(final Bounds bounds, Collection<URL> urls) {
+    this.bounds = bounds;
+    this.urls = urls == null ? getUrlGenerator().apply(bounds) : urls;
+  }
+
   public void run() {
-    Collection<URL> urls = getUrlGenerator().apply(bounds);
     for (URL url : urls) {
       realRun(url);
     }
   }
 
-  private void realRun(URL nextURL) {
+  private void realRun(URL currentUrl) {
+    HttpClient client = null;
     try {
-      while (nextURL != null) {
-        if (Thread.interrupted()) {
-          Logging.debug("{} for {} interrupted!", getClass().getSimpleName(), bounds.toString());
-          return;
-        }
-        final URLConnection con = nextURL.openConnection();
-        if (MapillaryUser.getUsername() != null)
-          OAuthUtils.addAuthenticationHeader(con);
-        run(con);
-        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
+      if (Thread.interrupted()) {
+        Logging.debug("{} for {} interrupted!", getClass().getSimpleName(), bounds.toString());
+        return;
       }
+      client = HttpClient.create(currentUrl);
+      client.setHeader("Accept-Encoding", null); // compression is broken as of 2020-03-03
+      if (MapillaryUser.getUsername() != null)
+        OAuthUtils.addAuthenticationHeader(client);
+      client.connect();
+      URL nextURL = APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+      if (nextURL != null)
+        ForkJoinTask.getPool().execute(getNextUrl(nextURL));
+      run(client);
     } catch (IOException e) {
-      String message = I18n.tr("Could not read from URL {0}!", nextURL.toString());
+      if (client != null)
+        client.disconnect();
+      String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
       Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
         if (SwingUtilities.isEventDispatchThread()) {
@@ -78,20 +94,36 @@ public abstract class BoundsDownloadRunnable implements Runnable {
    * @param info an additional info text, which is appended to the output in braces
    * @throws IOException if {@link HttpURLConnection#getResponseCode()} throws an {@link IOException}
    */
-  public static void logConnectionInfo(final URLConnection con, final String info) throws IOException {
-    final StringBuilder message;
-    if (con instanceof HttpURLConnection) {
-      message = new StringBuilder(((HttpURLConnection) con).getRequestMethod())
-        .append(' ').append(con.getURL())
-        .append(" → ").append(((HttpURLConnection) con).getResponseCode());
-    } else {
-      message = new StringBuilder("Download from ").append(con.getURL());
-    }
+  public static void logConnectionInfo(final HttpClient client, final String info) throws IOException {
+    final StringBuilder message = new StringBuilder(client.getRequestMethod()).append(' ').append(client.getURL())
+      .append(" → ").append(client.getResponse().getResponseCode());
+
     if (info != null && info.length() >= 1) {
       message.append(" (").append(info).append(')');
     }
     Logging.info(message.toString());
   }
 
-  public abstract void run(final URLConnection connection) throws IOException;
+  public abstract void run(final HttpClient client) throws IOException;
+
+  public abstract BoundsDownloadRunnable getNextUrl(final URL nextUrl);
+
+  /**
+   * Split the collection of URLs into reasonably sized chunks
+   *
+   * @return The URLs split into chunks for fork/join tasks.
+   */
+  protected List<Collection<URL>> splitUrls() {
+    List<Collection<URL>> toExecute = new ArrayList<>();
+    Collection<URL> collection = new HashSet<>();
+    toExecute.add(collection);
+    for (URL url : urls) {
+      if (!collection.isEmpty() && collection.size() % maximumUrls == 0) {
+        collection = new HashSet<>();
+        toExecute.add(collection);
+      }
+      collection.add(url);
+    }
+    return toExecute;
+  }
 }

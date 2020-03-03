@@ -40,6 +40,8 @@ import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
+import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
@@ -102,14 +104,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
   ) / 3;
 
-  private static final DataSetListenerAdapter DATASET_LISTENER =
-    new DataSetListenerAdapter(e -> {
-      if (e instanceof DataChangedEvent && MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
-        // When more data is downloaded, a delayed update is thrown, in order to
-        // wait for the data bounds to be set.
-        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);
-      }
-    });
+  private static final DataSourceListener DATASET_LISTENER = (event) -> SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
@@ -140,7 +135,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private void init() {
     final DataSet ds = MainApplication.getLayerManager().getEditDataSet();
     if (ds != null) {
-      ds.addDataSetListener(DATASET_LISTENER);
+      ds.addDataSourceListener(DATASET_LISTENER);
     }
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
     if (!GraphicsEnvironment.isHeadless()) {
@@ -292,7 +287,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     try {
       MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
       if (MainApplication.getLayerManager().getEditDataSet() != null) {
-        MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
+        MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
       }
     } catch (IllegalArgumentException e) {
       // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has already been removed.
@@ -539,10 +534,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousDataLayer()) {
       if (MainApplication.getLayerManager().getEditLayer() != null) {
-        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSetListener(DATASET_LISTENER);
+        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSourceListener(DATASET_LISTENER);
       }
       if (e.getPreviousDataLayer() != null) {
-        e.getPreviousDataLayer().getDataSet().removeDataSetListener(DATASET_LISTENER);
+        e.getPreviousDataLayer().getDataSet().removeDataSourceListener(DATASET_LISTENER);
       }
     }
   }
