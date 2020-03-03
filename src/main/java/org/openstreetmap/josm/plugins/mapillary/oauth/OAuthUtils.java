@@ -8,12 +8,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 /**
@@ -62,5 +64,16 @@ public final class OAuthUtils {
   public static URLConnection addAuthenticationHeader(URLConnection con) {
     con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
     return con;
+  }
+
+  /**
+   * Returns a URLConnection with an authorization header for use when making user
+   * specific API calls
+   *
+   * @param con The CachedFile to add authentication headers to
+   * @return The CachedFile for easy chaining
+   */
+  public static void addAuthenticationHeader(CachedFile file) {
+    file.setHttpHeaders(Collections.singletonMap("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get()));
   }
 }
