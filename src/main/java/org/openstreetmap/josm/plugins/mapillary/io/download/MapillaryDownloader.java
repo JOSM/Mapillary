@@ -227,9 +227,12 @@ public final class MapillaryDownloader {
   }
 
   /**
-   * Checks if the area for which Mapillary images should be downloaded is too big. This means that probably
-   * lots of Mapillary images are going to be downloaded, slowing down the
-   * program too much. A notification is shown when the download has stopped or continued.
+   * Checks if the area for which Mapillary images should be downloaded is too big. This means that probably lots of
+   * Mapillary images are going to be downloaded, slowing down the program too much. A notification is shown when the
+   * download has stopped or continued.
+   *
+   * @param area The size of the area in LatLon space
+   * @return {@code true} if the area is too large
    */
   private static boolean isAreaTooBig(final double area) {
     final boolean tooBig = area > MAX_AREA;

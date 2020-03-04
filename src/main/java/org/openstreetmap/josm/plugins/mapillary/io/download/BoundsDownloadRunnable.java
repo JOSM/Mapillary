@@ -8,7 +8,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
@@ -90,7 +89,8 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    * Logs information about the given connection via {@link Logging#info(String)}.
    * If it's a {@link HttpURLConnection}, the request method, the response code and the URL itself are logged.
    * Otherwise only the URL is logged.
-   * @param con the {@link URLConnection} for which information is logged
+   *
+   * @param client the {@link URLConnection} for which information is logged
    * @param info an additional info text, which is appended to the output in braces
    * @throws IOException if {@link HttpURLConnection#getResponseCode()} throws an {@link IOException}
    */
@@ -115,11 +115,11 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    */
   protected List<Collection<URL>> splitUrls() {
     List<Collection<URL>> toExecute = new ArrayList<>();
-    Collection<URL> collection = new HashSet<>();
+    Collection<URL> collection = new ArrayList<>();
     toExecute.add(collection);
     for (URL url : urls) {
       if (!collection.isEmpty() && collection.size() % maximumUrls == 0) {
-        collection = new HashSet<>();
+        collection = new ArrayList<>();
         toExecute.add(collection);
       }
       collection.add(url);

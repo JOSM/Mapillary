@@ -49,11 +49,12 @@ public final class JsonUtil {
 
   public static void assertJsonEquals(final Class<?> resourcesBaseClass, final String expectedResourceFilePath, final JsonObjectBuilder actualJson) {
     System.out.println("Expected JSON is loaded from file: " + resourcesBaseClass.getResource(expectedResourceFilePath).toString());
-    final JsonParser parser = Json.createParser(resourcesBaseClass.getResourceAsStream(expectedResourceFilePath));
-    assertEquals(JsonParser.Event.START_OBJECT, parser.next());
-    final JsonObject expected = parser.getObject();
-    final JsonObject actual = actualJson.build();
-    assertJsonObjectEquals(expected, actual);
+    try (final JsonParser parser = Json.createParser(resourcesBaseClass.getResourceAsStream(expectedResourceFilePath))) {
+      assertEquals(JsonParser.Event.START_OBJECT, parser.next());
+      final JsonObject expected = parser.getObject();
+      final JsonObject actual = actualJson.build();
+      assertJsonObjectEquals(expected, actual);
+    }
   }
 
   private static void assertJsonObjectEquals(final JsonObject expected, final JsonObject actual) {
@@ -84,9 +85,10 @@ public final class JsonUtil {
 
   public static String prettify(final JsonValue jsonObject) {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    final JsonWriter writer = prettyJsonWriterFactory.createWriter(baos);
-    writer.write(jsonObject);
-    return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    try (final JsonWriter writer = prettyJsonWriterFactory.createWriter(baos)) {
+      writer.write(jsonObject);
+      return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    }
   }
 
   public static JsonObject string2jsonObject(String s) {

@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.dialogs.FilterTableModel;
 import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
@@ -441,8 +439,9 @@ public class MapillaryImageDisplay extends JPanel {
   /**
    * Sets a new picture to be displayed.
    *
-   * @param image The picture to be displayed.
+   * @param image      The picture to be displayed.
    * @param detections image detections
+   * @param pano       The property to indicate whether image is panorama or not.
    */
   void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
     synchronized (this) {
@@ -601,7 +600,7 @@ public class MapillaryImageDisplay extends JPanel {
       }
     }
   }
-  
+
   private static boolean checkIfDetectionIsFiltered(List<PointObjectLayer> detectionLayers, ImageDetection d) {
     OsmPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(data -> data.allPrimitives().parallelStream()).filter(p -> p.hasKey("detections") && p.get("detections").contains(d.getKey())).findAny().orElse(null);
     return prim != null && prim.isDisabled();

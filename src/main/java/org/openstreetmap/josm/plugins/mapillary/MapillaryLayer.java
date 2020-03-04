@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -548,7 +547,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public void layerRemoving(LayerRemoveEvent e) {
     List<DataSet> currentDataSets = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
       .map(OsmDataLayer::getDataSet).collect(Collectors.toList());
-    for (Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
+    for (Map.Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
       if (!currentDataSets.contains(entry.getKey())) {
         imageViewedMap.remove(entry.getKey());
       }

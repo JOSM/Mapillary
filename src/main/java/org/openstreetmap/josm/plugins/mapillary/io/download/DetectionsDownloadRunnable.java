@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,7 +61,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));
       logConnectionInfo(client, String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
-      for (Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
+      for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
         data.getImages().parallelStream()
           .filter(img -> img instanceof MapillaryImage && ((MapillaryImage) img).getKey().equals(entry.getKey()))
           .forEach(img -> ((MapillaryImage) img).setAllDetections(entry.getValue()));

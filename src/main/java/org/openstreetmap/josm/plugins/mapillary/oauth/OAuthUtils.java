@@ -71,7 +71,7 @@ public final class OAuthUtils {
    * Returns a CachedFile with an authorization header for use when making user
    * specific API calls
    *
-   * @param con The CachedFile to add authentication headers to
+   * @param file The CachedFile to add authentication headers to
    * @return The CachedFile for easy chaining
    */
   public static CachedFile addAuthenticationHeader(CachedFile file) {
@@ -82,7 +82,7 @@ public final class OAuthUtils {
    * Returns a HttpClient with an authorization header for use when making user
    * specific API calls
    *
-   * @param con The HttpClient to add authentication headers to
+   * @param client The HttpClient to add authentication headers to
    * @return The HttpClient for easy chaining
    */
   public static HttpClient addAuthenticationHeader(HttpClient client) {

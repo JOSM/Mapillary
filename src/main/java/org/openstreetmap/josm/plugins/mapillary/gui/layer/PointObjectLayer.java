@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -214,7 +213,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
           JsonArray array = parser.getArray();
           for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
             Map<String, String> detection = new HashMap<>();
-            for (Entry<String, JsonValue> entry : obj.entrySet()) {
+            for (Map.Entry<String, JsonValue> entry : obj.entrySet()) {
               if (entry.getValue().getValueType().equals(JsonValue.ValueType.STRING)) {
                 detection.putIfAbsent(entry.getKey(), ((JsonString) entry.getValue()).getString());
               } else {

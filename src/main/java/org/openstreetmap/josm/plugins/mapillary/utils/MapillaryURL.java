@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
@@ -27,7 +26,6 @@ public final class MapillaryURL {
   private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
   private static final String POINT_FEATURES_LAYER = "points";
   private static final String LINE_FEATURES_LAYER = "lines";
-  private static final String LIGHT_FEATURES_LAYER = "light";
 
   /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly  */
   private static final String SORT_BY_KEY = "&sort_by=key";
@@ -90,7 +88,7 @@ public final class MapillaryURL {
     }
 
     private static String getEnabledLayers() {
-      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER, LINE_FEATURES_LAYER /*, LIGHT_FEATURES_LAYER */));
+      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER, LINE_FEATURES_LAYER));
     }
 
     private static String getDetectionLayers() {
@@ -268,7 +266,7 @@ public final class MapillaryURL {
   static String queryString(Map<String, String> parts) {
     StringBuilder ret = new StringBuilder("?client_id=").append(CLIENT_ID);
     if (parts != null) {
-      for (Entry<String, String> entry : parts.entrySet()) {
+      for (Map.Entry<String, String> entry : parts.entrySet()) {
         try {
           ret.append('&')
             .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))
