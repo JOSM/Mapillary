@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final JLabel usernameLabel;
   private final JTextPane imgKeyValue;
   private final WebLinkAction imgLinkAction;
+  private final ClipboardAction copyImgUrlAction;
   private final ClipboardAction copyImgKeyAction;
   private final AddTagToPrimitiveAction addMapillaryTagAction;
   private final JTextPane seqKeyValue;
@@ -91,17 +93,22 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     imgLinkAction = new WebLinkAction(I18n.tr("View in browser"), null);
 
+    copyImgUrlAction = new ClipboardAction(I18n.tr("Copy URL"), null);
+    final MapillaryButton copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
+    copyImgUrlAction.setPopupParent(copyUrlButton);
+
     copyImgKeyAction = new ClipboardAction(I18n.tr("Copy key"), null);
-    MapillaryButton copyButton = new MapillaryButton(copyImgKeyAction, true);
-    copyImgKeyAction.setPopupParent(copyButton);
+    final MapillaryButton copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
+    copyImgKeyAction.setPopupParent(copyKeyButton);
 
     addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr("Add Mapillary tag"));
 
     JPanel imgKey = new JPanel();
     imgKey.add(imgKeyValue);
-    imgKey.add(copyButton);
+    imgKey.add(copyKeyButton);
     JPanel imgButtons = new JPanel();
     imgButtons.add(new MapillaryButton(imgLinkAction, true));
+    imgButtons.add(copyUrlButton);
     imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));
     seqKeyValue = new SelectableLabel();
 
@@ -197,13 +204,14 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
-      imageLinkChangeListener = b -> imgLinkAction.setURL(
-        MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
+      final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
         ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
-        : MapillaryURL.MainWebsite.browseImage(newImageKey)
-      );
+        : MapillaryURL.MainWebsite.browseImage(newImageKey);
+
+      imageLinkChangeListener = b -> imgLinkAction.setURL(newImageUrl);
       imageLinkChangeListener.valueChanged(null);
       MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.addListener(imageLinkChangeListener);
+      copyImgUrlAction.setContents(new StringSelection(newImageUrl.toString()));
 
       imgKeyValue.setText(newImageKey);
       copyImgKeyAction.setContents(new StringSelection(newImageKey));
@@ -214,6 +222,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
         imageLinkChangeListener = null;
       }
       imgLinkAction.setURL(null);
+      copyImgUrlAction.setContents(null);
 
       imgKeyValue.setText('‹' + I18n.tr("image has no key") + '›');
       copyImgKeyAction.setContents(null);
