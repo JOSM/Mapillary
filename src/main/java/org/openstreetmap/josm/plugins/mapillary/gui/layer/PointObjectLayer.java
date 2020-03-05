@@ -69,6 +69,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -152,12 +153,9 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public void getData(DataSource dataSource) {
     if (dataSources.add(dataSource)) {
       try {
-        DataSet ds = realGetData(dataSource.bounds);
-        synchronized (this) {
-          data.unlock();
-          data.mergeFrom(ds);
-          data.addDataSource(dataSource);
-        }
+        data.unlock();
+        realGetData(dataSource.bounds, data);
+        data.addDataSource(dataSource);
       } catch (IllegalDataException | IOException e) {
         Logging.error(e);
         dataSources.remove(dataSource);
@@ -167,16 +165,23 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     }
   }
 
-  private static DataSet realGetData(Bounds bound) throws IllegalDataException, IOException {
+  private static void realGetData(Bounds bound, DataSet data) throws IllegalDataException, IOException {
     URL url = MapillaryURL.APIv3.searchMapPointObjects(bound);
-    HttpClient client = HttpClient.create(url);
-    OAuthUtils.addAuthenticationHeader(client);
-    client.connect();
-    try (InputStream stream = client.getResponse().getContent()) {
-      return GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
-    } finally {
-      client.disconnect();
-    }
+    do {
+      HttpClient client = HttpClient.create(url);
+      if (MapillaryUser.getUsername() != null)
+        OAuthUtils.addAuthenticationHeader(client);
+      client.connect();
+      try (InputStream stream = client.getResponse().getContent()) {
+        DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
+        synchronized (data) {
+          data.mergeFrom(ds);
+        }
+        url = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+      } finally {
+        client.disconnect();
+      }
+    } while (url != null);
   }
 
   @Override
