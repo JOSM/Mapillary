@@ -407,7 +407,7 @@ public class MapillaryData implements Data {
   }
 
   private void getDetections(Collection<MapillaryImage> imagesToGetDetections) {
-    if (imagesToGetDetections == null) {
+    if (imagesToGetDetections == null || imagesToGetDetections.isEmpty()) {
       return;
     }
     synchronized (fullyDownloadedDetections) {
