@@ -10,7 +10,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 
 public class ImageDetection extends SpecialImageArea {
-  private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsigns";
+  private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
   private final String packag;
   private final double score;
@@ -39,7 +39,8 @@ public class ImageDetection extends SpecialImageArea {
   }
 
   public boolean isTrafficSign() {
-    return PACKAGE_TRAFFIC_SIGNS.equals(packag) || (value != null && value.contains("traffic-sign"));
+    return (packag != null && packag.contains(PACKAGE_TRAFFIC_SIGNS))
+      || (value != null && value.contains("traffic-sign"));
   }
 
   /**
