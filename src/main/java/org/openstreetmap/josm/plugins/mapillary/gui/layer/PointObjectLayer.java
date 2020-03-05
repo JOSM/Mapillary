@@ -9,6 +9,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -19,6 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,9 +35,12 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.coor.EastNorth;
@@ -50,6 +55,7 @@ import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
+import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.preferences.display.DrawingPreference;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
@@ -65,6 +71,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.OpenBrowser;
 
 /**
  * Mapillary Point Object layer
@@ -251,5 +258,36 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
     return detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key")).map(data::getImage)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Action[] getMenuEntries() {
+      List<Action> actions = new ArrayList<>();
+      actions.addAll(Arrays.asList(
+        LayerListDialog.getInstance().createActivateLayerAction(this),
+        LayerListDialog.getInstance().createShowHideLayerAction(),
+        LayerListDialog.getInstance().createDeleteLayerAction(),
+        SeparatorLayerAction.INSTANCE,
+        LayerListDialog.getInstance().createMergeLayerAction(this)));
+      actions.addAll(Arrays.asList(
+        SeparatorLayerAction.INSTANCE,
+        new RenameLayerAction(getAssociatedFile(), this),
+        SeparatorLayerAction.INSTANCE,
+        new RequestDataAction()));
+      return actions.toArray(new Action[0]);
+  }
+
+  static class RequestDataAction extends AbstractAction {
+    private static final long serialVersionUID = 8823333297547249069L;
+
+    public RequestDataAction() {
+      super(tr("Request Data"));
+      MapillaryPlugin.LOGO.getResource().attachImageIcon(this, true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request/");
+    }
   }
 }
