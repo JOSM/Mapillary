@@ -62,9 +62,10 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       logConnectionInfo(client, String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
       for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
-        data.getImages().parallelStream()
-          .filter(img -> img instanceof MapillaryImage && ((MapillaryImage) img).getKey().equals(entry.getKey()))
-          .forEach(img -> ((MapillaryImage) img).setAllDetections(entry.getValue()));
+        data.getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
+            .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
+                .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))
+            .forEach(img -> img.setAllDetections(entry.getValue()));
       }
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
