@@ -389,7 +389,8 @@ public class MapillaryData implements Data {
    * @param imagesToGet The images to get detections for
    */
   public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
-    List<MapillaryImage> list = new ArrayList<>(imagesToGet);
+    List<MapillaryImage> list = imagesToGet.stream().filter(Objects::nonNull)
+        .collect(Collectors.toCollection(ArrayList::new));
     int index = list.indexOf(getSelectedImage());
     MapillaryImage current = index >= 0 ? list.get(index) : null;
     if (current != null) {
@@ -412,6 +413,7 @@ public class MapillaryData implements Data {
     }
     synchronized (fullyDownloadedDetections) {
       Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
+          .filter(Objects::nonNull)
           .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
       URL nextUrl = MapillaryURL.APIv3
           .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
