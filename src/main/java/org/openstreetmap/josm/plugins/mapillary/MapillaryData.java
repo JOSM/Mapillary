@@ -440,7 +440,8 @@ public class MapillaryData implements Data {
         fullyDownloadedDetections.add(i);
       });
       if (imagesToGet.contains(getSelectedImage())) {
-        MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
+        MapillaryMainDialog.getInstance().mapillaryImageDisplay
+          .setAllDetections(((MapillaryImage) getSelectedImage()).getDetections());
       }
     }
   }

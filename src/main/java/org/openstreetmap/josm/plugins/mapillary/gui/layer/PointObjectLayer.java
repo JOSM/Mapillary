@@ -238,7 +238,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
     super.selectionChanged(event);
-    if (event.getSelection().size() == 1 && MapillaryLayer.hasInstance()) {
+    if (!event.getSelection().isEmpty() && MapillaryLayer.hasInstance()) {
       // I don't want to deal with multiple objects right now. TODO?
       OsmPrimitive prim = event.getSelection().iterator().next();
       List<Map<String, String>> detections = new ArrayList<>();

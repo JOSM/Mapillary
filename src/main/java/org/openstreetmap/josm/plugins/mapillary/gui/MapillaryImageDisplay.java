@@ -731,4 +731,15 @@ public class MapillaryImageDisplay extends JPanel {
       }
     }
   }
+
+  /**
+   * @param detections The detections to set. Triggers a repaint.
+   */
+  public void setAllDetections(List<ImageDetection> detections) {
+    this.detections.clear();
+    if (detections != null) {
+      this.detections.addAll(detections);
+    }
+    repaint();
+  }
 }
