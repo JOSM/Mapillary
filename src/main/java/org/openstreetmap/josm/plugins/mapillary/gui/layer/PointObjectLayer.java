@@ -57,6 +57,9 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
+import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
+import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
 import org.openstreetmap.josm.gui.preferences.display.DrawingPreference;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.io.GeoJSONReader;
@@ -81,6 +84,18 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   private static final String NAME = marktr("Mapillary Point Objects");
   private static final int HATCHED_SIZE = 15;
   private final DataSet followDataSet;
+  private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
+  private static MapCSSStyleSource mapcss;
+
+  private static MapCSSStyleSource getMapCSSStyle() {
+    List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream().filter(
+      MapCSSStyleSource.class::isInstance
+    ).map(MapCSSStyleSource.class::cast).filter(s -> PAINT_STYLE_SOURCE.equals(s.url))
+      .collect(Collectors.toList());
+    mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
+      : styles.get(0);
+    return mapcss;
+  }
 
   /**
    * a texture for non-downloaded area Copied from OsmDataLayer
@@ -116,6 +131,13 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     followDataSet.addDataSourceListener(this);
     this.setName(NAME + ": " + MainApplication.getLayerManager().getActiveDataLayer().getName());
     MainApplication.worker.execute(() -> followDataSet.getDataSources().forEach(this::getData));
+    getMapCSSStyle();
+    if (!MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
+      MapPaintStyles.addStyle(mapcss);
+      mapcss.active = true;
+      MapPaintStyleLoader.reloadStyle(mapcss);
+      MapPaintStyles.fireMapPaintStyleEntryUpdated(MapPaintStyles.getStyles().getStyleSources().indexOf(mapcss));
+    }
   }
 
   @Override
@@ -289,5 +311,14 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     public void actionPerformed(ActionEvent e) {
       OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request/");
     }
+  }
+
+  @Override
+  public synchronized void destroy() {
+    super.destroy();
+    followDataSet.removeDataSourceListener(this);
+    List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
+    if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
+      MapPaintStyles.removeStyle(mapcss);
   }
 }

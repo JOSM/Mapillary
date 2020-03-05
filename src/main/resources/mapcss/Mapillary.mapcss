@@ -4,6 +4,7 @@ meta
   description: "Paint style for Mapillary point objects to indicate distance and accuracy";
   author: "Taylor Smock";
   version: "1_2020-02-27";
+  icon: "mapillary-logo.svg";
 }
 /*----------------------------------------------------------------------------*/
 /* Pixel per metre (on average)                                               */
@@ -21,21 +22,27 @@ meta
 *|z25  { pixel_per_metre: 320; }
 *|z26- { pixel_per_metre: 640; }
 
-node|z20-[accuracy > 10]::mapillary_object_layer {
+setting::show_accuracy_circles {
+    type: boolean;
+    label: tr("Toggle accuracy circles");
+    default: false;
+}
+
+node|z20-[setting("show_accuracy_circles")][accuracy > 10]::mapillary_object_layer {
     symbol-shape: circle;
     symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
     symbol-fill-opacity: 0.2;
     symbol-fill-color: orange;
     symbol-stroke-color: orange;
 }
-node|z20-[accuracy <= 10][accuracy > 5]::mapillary_object_layer {
+node|z20-[setting("show_accuracy_circles")][accuracy <= 10][accuracy > 5]::mapillary_object_layer {
     symbol-shape: circle;
     symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
     symbol-fill-opacity: 0.2;
     symbol-fill-color: yellow;
     symbol-stroke-color: yellow;
 }
-node|z20-[accuracy <= 5]::mapillary_object_layer {
+node|z20-[setting("show_accuracy_circles")][accuracy <= 5]::mapillary_object_layer {
     symbol-shape: circle;
     symbol-size: 2 * tag("accuracy") * prop(pixel_per_metre, "default" );
     symbol-fill-opacity: 0.2;
