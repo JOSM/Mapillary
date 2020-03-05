@@ -39,7 +39,11 @@ public class WebLinkAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     try {
-      OpenBrowser.displayUrl(url.toURI());
+      if (url != null) {
+        OpenBrowser.displayUrl(url.toURI());
+      } else {
+        throw new URISyntaxException("‹null›", "The URL is null");
+      }
     } catch (URISyntaxException e1) {
       String msg = I18n.tr("Could not open the URL {0} in a browser", url == null ? "‹null›" : url);
       Logging.log(Logging.LEVEL_WARN, msg, e1);

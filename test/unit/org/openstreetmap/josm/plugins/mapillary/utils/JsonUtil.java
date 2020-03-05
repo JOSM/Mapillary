@@ -49,7 +49,7 @@ public final class JsonUtil {
 
   public static void assertJsonEquals(final Class<?> resourcesBaseClass, final String expectedResourceFilePath, final JsonObjectBuilder actualJson) {
     System.out.println("Expected JSON is loaded from file: " + resourcesBaseClass.getResource(expectedResourceFilePath).toString());
-    try (final JsonParser parser = Json.createParser(resourcesBaseClass.getResourceAsStream(expectedResourceFilePath))) {
+    try (JsonParser parser = Json.createParser(resourcesBaseClass.getResourceAsStream(expectedResourceFilePath))) {
       assertEquals(JsonParser.Event.START_OBJECT, parser.next());
       final JsonObject expected = parser.getObject();
       final JsonObject actual = actualJson.build();
@@ -85,7 +85,7 @@ public final class JsonUtil {
 
   public static String prettify(final JsonValue jsonObject) {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try (final JsonWriter writer = prettyJsonWriterFactory.createWriter(baos)) {
+    try (JsonWriter writer = prettyJsonWriterFactory.createWriter(baos)) {
       writer.write(jsonObject);
       return new String(baos.toByteArray(), StandardCharsets.UTF_8);
     }

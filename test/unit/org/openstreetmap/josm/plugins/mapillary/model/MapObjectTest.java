@@ -49,7 +49,7 @@ public class MapObjectTest {
   }
 
   @Before
-  public void setUp() throws IllegalArgumentException, IllegalAccessException {
+  public void setUp() throws IllegalArgumentException {
     initMapObjects();
 
     oldBaseUrl = TestUtil.getMainWebsiteBaseUrl();
@@ -59,7 +59,7 @@ public class MapObjectTest {
   }
 
   @After
-  public void cleanUp() throws IllegalArgumentException, IllegalAccessException {
+  public void cleanUp() throws IllegalArgumentException {
     TestUtil.setMainWebsiteBaseUrl(oldBaseUrl);
   }
 

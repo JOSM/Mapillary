@@ -73,12 +73,12 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   private final SpinnerNumberModel spinnerModel;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
-  private final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
-  private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
   private final JComboBox<String> time;
   private final JTextField user;
 
-  private final JButton signChooser = new JButton(new SignChooserAction());
+  final JButton signChooser = new JButton(new SignChooserAction());
+  final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
+  final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
 
   private final JavaFxWrapper<DatePicker> startDate;
   private final JavaFxWrapper<DatePicker> endDate;
@@ -208,10 +208,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
    */
   public synchronized void refresh() {
     final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
-    final boolean imported = this.imported.isSelected();
-    final boolean downloaded = this.downloaded.isSelected();
+    final boolean importedIsSelected = this.imported.isSelected();
+    final boolean downloadedIsSelected = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
-    final boolean onlySigns = this.onlySigns.isSelected();
+    final boolean onlySignsIsSelected = this.onlySigns.isSelected();
     final LocalDate endDate = this.endDate.getNode().getValue();
     final LocalDate startDate = this.startDate.getNode().getValue();
 
@@ -230,14 +230,14 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         if (startDate != null && checkStartDate(img)) {
           return true;
         }
-        if (!imported && img instanceof MapillaryImportedImage) {
+        if (!importedIsSelected && img instanceof MapillaryImportedImage) {
           return true;
         }
         if (img instanceof MapillaryImage) {
-          if (!downloaded) {
+          if (!downloadedIsSelected) {
             return true;
           }
-          if (onlySigns && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+          if (onlySignsIsSelected && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
             return true;
           }
           UserProfile userProfile = ((MapillaryImage) img).getUser();

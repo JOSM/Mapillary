@@ -79,7 +79,7 @@ public class JsonImageDetailsDecoderTest {
     assertEquals(0, data.getNumImageRerievals());
   }
 
-  private static class MapillaryDataMock extends MapillaryData {
+  static class MapillaryDataMock extends MapillaryData {
     private int imageRetrievals;
 
     /**

@@ -22,6 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
 
 public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
+  private static final long serialVersionUID = -2975246177315340212L;
   private final MapillaryData data;
   private static final Function<Bounds, Collection<URL>> URL_GEN = APIv3::searchSequences;
 
@@ -62,7 +63,7 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
         return;
       }
       for (MapillarySequence seq : sequences) {
-        if (MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get()) {
+        if (Boolean.TRUE.equals(MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get())) {
           for (MapillaryAbstractImage img : seq.getImages()) {
             if (bounds.contains(img.getLatLon())) {
               data.add(img);

@@ -17,7 +17,7 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public final class CacheUtils {
 
-  private final static IgnoreDownload ignoreDownload = new IgnoreDownload();
+  private static final IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
 
   /** Picture quality */
   public enum PICTURE {
@@ -58,16 +58,16 @@ public final class CacheUtils {
     switch (pic) {
       case BOTH:
         if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)
-          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, ignoreDownload);
+          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
         if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).get() == null)
-          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, ignoreDownload);
+          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
         break;
       case THUMBNAIL:
-        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, ignoreDownload);
+        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
         break;
       case FULL_IMAGE:
       default:
-        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, ignoreDownload);
+        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
         break;
     }
   }
@@ -92,7 +92,7 @@ public final class CacheUtils {
     }
   }
 
-  private static class IgnoreDownload implements ICachedLoaderListener {
+  static class IgnoreDownload implements ICachedLoaderListener {
 
     @Override
     public void loadingFinished(CacheEntry arg0, CacheEntryAttributes arg1, LoadResult arg2) {

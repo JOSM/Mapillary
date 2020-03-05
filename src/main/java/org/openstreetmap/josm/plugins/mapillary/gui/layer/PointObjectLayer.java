@@ -88,6 +88,15 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
 
+  /**
+   * a texture for non-downloaded area Copied from OsmDataLayer
+   */
+  private static volatile BufferedImage hatched;
+
+  static {
+    createHatchTexture();
+  }
+
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream().filter(
       MapCSSStyleSource.class::isInstance
@@ -96,15 +105,6 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
       : styles.get(0);
     return mapcss;
-  }
-
-  /**
-   * a texture for non-downloaded area Copied from OsmDataLayer
-   */
-  private static volatile BufferedImage hatched;
-
-  static {
-    createHatchTexture();
   }
 
   /**
@@ -174,7 +174,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       client.connect();
       try (InputStream stream = client.getResponse().getContent()) {
         DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
-        synchronized (data) {
+        synchronized (PointObjectLayer.class) {
           data.mergeFrom(ds);
         }
         url = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
@@ -193,11 +193,11 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public void paint(final Graphics2D g, final MapView mv, Bounds box) {
     boolean active = mv.getLayerManager().getActiveLayer() == this;
     boolean inactive = false;
-    boolean virtual = !inactive && mv.isVirtualNodesEnabled();
+    boolean virtual = mv.isVirtualNodesEnabled();
 
     // draw the hatched area for non-downloaded region. only draw if we're the active
     // and bounds are defined; don't draw for inactive layers or loaded GPX files etc
-    if (active && DrawingPreference.SOURCE_BOUNDS_PROP.get() && !data.getDataSources().isEmpty()) {
+    if (active && Boolean.TRUE.equals(DrawingPreference.SOURCE_BOUNDS_PROP.get()) && !data.getDataSources().isEmpty()) {
       // initialize area with current viewport
       Rectangle b = mv.getBounds();
       // on some platforms viewport bounds seem to be offset from the left,
@@ -244,7 +244,6 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public void selectionChanged(SelectionChangeEvent event) {
     super.selectionChanged(event);
     if (!event.getSelection().isEmpty() && MapillaryLayer.hasInstance()) {
-      // I don't want to deal with multiple objects right now. TODO?
       OsmPrimitive prim = event.getSelection().iterator().next();
       List<Map<String, String>> detections = new ArrayList<>();
       try (JsonParser parser = Json

@@ -30,7 +30,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
   private static final long serialVersionUID = -3097850570397160069L;
   protected final Bounds bounds;
   protected final Collection<URL> urls;
-  protected final int maximumUrls = 50;
+  protected static final int MAXIMUM_URLS = 50;
 
   protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
 
@@ -66,8 +66,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         ForkJoinTask.getPool().execute(getNextUrl(nextURL));
       run(client);
     } catch (IOException e) {
-      if (client != null)
-        client.disconnect();
+      client.disconnect();
       String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
       Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
@@ -92,9 +91,8 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    *
    * @param client the {@link URLConnection} for which information is logged
    * @param info an additional info text, which is appended to the output in braces
-   * @throws IOException if {@link HttpURLConnection#getResponseCode()} throws an {@link IOException}
    */
-  public static void logConnectionInfo(final HttpClient client, final String info) throws IOException {
+  public static void logConnectionInfo(final HttpClient client, final String info) {
     final StringBuilder message = new StringBuilder(client.getRequestMethod()).append(' ').append(client.getURL())
       .append(" → ").append(client.getResponse().getResponseCode());
 
@@ -118,7 +116,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
     Collection<URL> collection = new ArrayList<>();
     toExecute.add(collection);
     for (URL url : urls) {
-      if (!collection.isEmpty() && collection.size() % maximumUrls == 0) {
+      if (!collection.isEmpty() && collection.size() % MAXIMUM_URLS == 0) {
         collection = new ArrayList<>();
         toExecute.add(collection);
       }

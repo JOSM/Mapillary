@@ -100,7 +100,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
   ) / 3;
 
-  private static final DataSourceListener DATASET_LISTENER = (event) -> SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
+  private static final DataSourceListener DATASET_LISTENER = event -> SwingUtilities
+      .invokeLater(MapillaryDownloader::downloadOSMArea);
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
@@ -566,6 +567,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
+    // Don't care about this
   }
 
   /* (non-Javadoc)
@@ -622,7 +624,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (SwingUtilities.isEventDispatchThread()) {
         updateRedBlueButtons();
       } else {
-        SwingUtilities.invokeLater(() -> updateRedBlueButtons());
+        SwingUtilities.invokeLater(this::updateRedBlueButtons);
       }
     }
     if (nearestImages.length >= 1) {
@@ -643,13 +645,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @author nokutu
    */
-  private class DeleteImageAction extends AbstractAction {
+  class DeleteImageAction extends AbstractAction {
 
     private static final long serialVersionUID = -982809854631863962L;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (instance != null)
+      if (hasInstance())
         MapillaryRecord.getInstance().addCommand(
           new CommandDelete(getData().getMultiSelectedImages()));
     }
