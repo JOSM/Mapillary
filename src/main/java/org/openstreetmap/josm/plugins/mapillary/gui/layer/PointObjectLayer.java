@@ -243,8 +243,9 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
     super.selectionChanged(event);
-    if (!event.getSelection().isEmpty() && MapillaryLayer.hasInstance()) {
-      OsmPrimitive prim = event.getSelection().iterator().next();
+    OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey("detections")).findFirst()
+        .orElse(null);
+    if (prim != null && MapillaryLayer.hasInstance()) {
       List<Map<String, String>> detections = new ArrayList<>();
       try (JsonParser parser = Json
         .createParser(new ByteArrayInputStream(prim.get("detections").getBytes(StandardCharsets.UTF_8)))) {
