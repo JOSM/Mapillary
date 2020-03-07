@@ -63,13 +63,24 @@ dependencies {
   testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.0")
 }
 
-sourceSets {
-  main {
-    val openjfxClasspath = System.getenv("OPENJFX_CLASSPATH")
-    if (openjfxClasspath != null) {
-      compileClasspath += files(openjfxClasspath)
+val openjfxClasspath = System.getenv("OPENJFX_CLASSPATH")
+
+if (openjfxClasspath != null) {
+  sourceSets.forEach {
+    it.compileClasspath += files(openjfxClasspath)
+    it.runtimeClasspath += files(openjfxClasspath)
+  }
+  // This is currently needed for the `compileJava_*Josm` tasks, should eventually be handled by the gradle-josm-plugin
+  tasks.withType(JavaCompile::class) {
+    if (classpath == null) {
+      classpath = files(openjfxClasspath)
+    } else {
+      classpath += files(openjfxClasspath)
     }
   }
+}
+
+sourceSets {
   test {
     java {
       setSrcDirs(listOf("test/unit"))

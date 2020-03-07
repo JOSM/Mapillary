@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -10,7 +9,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.gui.Notification;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
