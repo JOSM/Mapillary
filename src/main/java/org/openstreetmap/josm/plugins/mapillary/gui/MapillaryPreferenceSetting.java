@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -40,10 +41,10 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.OpenBrowser;
 
 /**
  * Creates the preferences panel for the plugin.
@@ -256,8 +257,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       OAuthPortListener portListener = new OAuthPortListener(callback);
       portListener.start();
       try {
-        MapillaryUtils.browse(MapillaryURL.MainWebsite.connect("http://localhost:"+OAuthPortListener.PORT+'/'));
-      } catch (IOException e) {
+        OpenBrowser.displayUrl(MapillaryURL.MainWebsite.connect("http://localhost:"+OAuthPortListener.PORT+'/').toURI());
+      } catch (URISyntaxException e) {
         Logging.error(e);
       }
     }

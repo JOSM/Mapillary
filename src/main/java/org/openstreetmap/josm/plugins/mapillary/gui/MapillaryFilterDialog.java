@@ -28,7 +28,6 @@ import javax.swing.SpinnerNumberModel;
 
 import javafx.event.EventType;
 import javafx.scene.control.DatePicker;
-import javafx.util.StringConverter;
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
