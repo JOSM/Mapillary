@@ -1,4 +1,6 @@
-import com.github.spotbugs.SpotBugsTask
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+import com.github.spotbugs.snom.SpotBugsTask
 import net.ltgt.gradle.errorprone.CheckSeverity
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
@@ -9,8 +11,8 @@ import java.net.URL
 plugins {
   id("org.sonarqube") version "2.8"
   id("org.openstreetmap.josm") version "0.6.5"
-  id("com.github.ben-manes.versions") version "0.27.0"
-  id("com.github.spotbugs") version "3.0.0"
+  id("com.github.ben-manes.versions") version "0.28.0"
+  id("com.github.spotbugs") version "4.0.1"
   id("net.ltgt.errorprone") version "1.1.1"
 
   eclipse
@@ -45,8 +47,6 @@ tasks.withType(JavaCompile::class).configureEach {
   }
 }
 
-apply(from = "gradle/tool-config.gradle")
-
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 base.archivesBaseName = "Mapillary"
 
@@ -79,20 +79,20 @@ sourceSets {
   }
 }
 
+val md2html by tasks.creating(MarkdownToHtml::class) {
+  destDir = File(buildDir, "md2html")
+  source(projectDir)
+  include("README.md", "LICENSE.md")
+}
+
 tasks {
-  "processResources"(ProcessResources::class) {
+  processResources {
     from(project.projectDir) {
       include("LICENSE")
       include("LICENSE_*")
     }
+    from(md2html)
   }
-}
-
-tasks.create("md2html", MarkdownToHtml::class) {
-  destDir = File(buildDir, "md2html")
-  source(projectDir)
-  include("README.md", "LICENSE.md")
-  tasks.withType(ProcessResources::class)["processResources"].from(this)
 }
 
 josm {
@@ -134,12 +134,6 @@ tasks.withType(JavaCompile::class) {
 tasks.withType(Javadoc::class) {
   isFailOnError = false
 }
-tasks.withType(SpotBugsTask::class) {
-  reports {
-    xml.isEnabled = false
-    html.isEnabled = true
-  }
-}
 
 tasks.withType(Test::class).getByName("test") {
   project.afterEvaluate {
@@ -179,5 +173,54 @@ project.afterEvaluate {
         url.set("https://josm.openstreetmap.de/query?component=Plugin+mapillary&status=assigned&status=needinfo&status=new&status=reopened")
       }
     }
+  }
+}
+
+// Spotbugs config
+spotbugs {
+  toolVersion.set("4.0.0")
+  ignoreFailures.set(true)
+  effort.set(Effort.MAX)
+  reportLevel.set(Confidence.LOW)
+  reportsDir.set(File(buildDir, "reports/spotbugs"))
+}
+tasks.withType(SpotBugsTask::class) {
+  reports.create("html") {
+    outputLocation.set(File(spotbugs.reportsDir.get().asFile, "$baseName.html"))
+    setStylesheet("color.xsl")
+  }
+}
+
+// JaCoCo config
+jacoco {
+  toolVersion = "0.8.5"
+}
+val jacocoTestReport by tasks.getting(JacocoReport::class) {
+  reports {
+    xml.isEnabled = true
+    html.destination = file("$buildDir/reports/jacoco")
+  }
+}
+tasks.build.get().dependsOn(jacocoTestReport)
+
+// PMD config
+pmd {
+  toolVersion = "6.21.0"
+  isIgnoreFailures = true
+  ruleSetConfig = resources.text.fromFile("$projectDir/config/pmd/ruleset.xml")
+  ruleSets = listOf()
+  sourceSets = listOf(project.sourceSets.main.get(), project.sourceSets.test.get())
+}
+
+// SonarQube config
+sonarqube {
+  properties {
+    property("sonar.forceAuthentication", "true")
+    property("sonar.host.url", "https://sonarcloud.io")
+    property("sonar.projectKey", "Mapillary")
+    property("sonar.organization", "josm")
+    property("sonar.projectVersion", project.version)
+    property("sonar.projectDescription", properties.get("plugin.description")!!)
+    property("sonar.sources", listOf("src"))
   }
 }
