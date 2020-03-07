@@ -93,11 +93,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     imgLinkAction = new WebLinkAction(I18n.tr("View in browser"), null);
 
-    copyImgUrlAction = new ClipboardAction(I18n.tr("Copy URL"), null);
+    copyImgUrlAction = new ClipboardAction(I18n.tr("Copy URL"), I18n.tr("Copied URL to clipboard …"), null);
     final MapillaryButton copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
     copyImgUrlAction.setPopupParent(copyUrlButton);
 
-    copyImgKeyAction = new ClipboardAction(I18n.tr("Copy key"), null);
+    copyImgKeyAction = new ClipboardAction(I18n.tr("Copy key"), I18n.tr("Copied key to clipboard …"), null);
     final MapillaryButton copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
     copyImgKeyAction.setPopupParent(copyKeyButton);
 
