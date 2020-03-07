@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
 import javax.json.Json;
@@ -40,7 +41,7 @@ public final class OAuthUtils {
   public static JsonObject getWithHeader(URL url) throws IOException {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
-    con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
+    addAuthenticationHeader(con);
 
     try (
       JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)))
@@ -49,5 +50,17 @@ public final class OAuthUtils {
     } catch (JsonException e) {
       throw new IOException(e);
     }
+  }
+
+  /**
+   * Returns a URLConnection with an authorization header for use when making user
+   * specific API calls
+   *
+   * @param con The connection to add authentication headers to
+   * @return The URLConnection for easy chaining
+   */
+  public static URLConnection addAuthenticationHeader(URLConnection con) {
+    con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
+    return con;
   }
 }

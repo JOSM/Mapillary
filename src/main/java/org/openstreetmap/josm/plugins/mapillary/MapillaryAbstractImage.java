@@ -1,14 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
  * Abstract superclass for all image objects. At the moment there are just 2,
@@ -97,12 +98,17 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @return A String object containing the date when the picture was taken.
    */
   public String getDate() {
+    return getDate(getDateFormat());
+  }
+
+  /**
+   * Returns the date format used for display
+   *
+   * @return The date format (see {@link SimpleDateFormat}).
+   */
+  public String getDateFormat() {
     final StringBuilder format = new StringBuilder(26);
-    if (DateUtils.PROP_ISO_DATES.get()) {
-      format.append("yyyy-MM-dd");
-    } else {
-      format.append("dd/MM/yyyy");
-    }
+    format.append(LocalDateConverter.getDateFormat());
     if (MapillaryProperties.DISPLAY_HOUR.get()) {
       if (MapillaryProperties.TIME_FORMAT_24.get()) {
         format.append(" - HH:mm:ss (z)");
@@ -110,7 +116,7 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
         format.append(" - h:mm:ss a (z)");
       }
     }
-    return getDate(format.toString());
+    return format.toString();
   }
 
   /**
@@ -304,4 +310,16 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   public void turn(final double ca) {
     this.movingCa = this.tempCa + ca;
   }
+
+  public abstract Color paintHighlightedColour();
+
+  public abstract Color paintHighlightedAngleColour();
+
+  public abstract Color paintSelectedColour();
+
+  public abstract Color paintSelectedAngleColour();
+
+  public abstract Color paintUnselectedColour();
+
+  public abstract Color paintUnselectedAngleColour();
 }

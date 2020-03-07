@@ -14,7 +14,8 @@ public class JsonLocationChangesetEncoderTest {
 
   @Test
   public void testSingleImageChangeset() {
-    MapillaryImage image = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false);
+    MapillaryImage image = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false,
+        false);
     image.move(0.1111, 0.22222);
     image.turn(273.3);
     image.stopMoving();
@@ -24,7 +25,8 @@ public class JsonLocationChangesetEncoderTest {
 
   @Test
   public void testTranslationOnlyChangeset() {
-    MapillaryImage image = new MapillaryImage("translationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0, false);
+    MapillaryImage image = new MapillaryImage("translationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0,
+        false, false);
     image.move(0.1111, 0.22222);
     image.stopMoving();
 
@@ -33,7 +35,8 @@ public class JsonLocationChangesetEncoderTest {
 
   @Test
   public void testRotationOnlyChangeset() {
-    MapillaryImage image = new MapillaryImage("rotationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0, false);
+    MapillaryImage image = new MapillaryImage("rotationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0,
+        false, false);
     image.turn(-80.3);
     image.stopMoving();
 
@@ -42,14 +45,15 @@ public class JsonLocationChangesetEncoderTest {
 
   @Test
   public void testMultipleImagesChangeset() throws IllegalArgumentException {
-    MapillaryImage image1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false);
+    MapillaryImage image1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false,
+        false);
     image1.move(0.1111, 0.22222);
     image1.turn(273.3);
     image1.stopMoving();
-    MapillaryImage image2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0, false);
+    MapillaryImage image2 = new MapillaryImage("7erPn382xDMtmfdh0xtvUw", new LatLon(0, 0), 0, false, false);
     image2.move(13.3328, 50.44619);
     image2.stopMoving();
-    MapillaryImage image3 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0, false);
+    MapillaryImage image3 = new MapillaryImage("invalid image key will be ignored", new LatLon(0, 0), 0, false, false);
     image3.turn(13.4);
     image3.stopMoving();
 

@@ -23,6 +23,7 @@ import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.I18n;
@@ -80,15 +81,17 @@ public class MapillaryPreferenceSettingTest {
   @Test
   public void testOk() {
     MapillaryPreferenceSetting settings = new MapillaryPreferenceSetting();
+    String arbitrary = "arbitrary";
 
     // Initialize the properties with some arbitrary value to make sure they are not unset
-    new StringProperty("mapillary.display-hour", "default").put("arbitrary");
-    new StringProperty("mapillary.format-24", "default").put("arbitrary");
-    new StringProperty("mapillary.move-to-picture", "default").put("arbitrary");
-    new StringProperty("mapillary.hover-enabled", "default").put("arbitrary");
-    new StringProperty("mapillary.dark-mode", "default").put("arbitrary");
-    new StringProperty("mapillary.download-mode", "default").put("arbitrary");
-    new StringProperty("mapillary.prefetch-image-count", "default").put("arbitrary");
+    new StringProperty("mapillary.display-hour", "default").put(arbitrary);
+    new StringProperty("mapillary.format-24", "default").put(arbitrary);
+    new StringProperty("mapillary.move-to-picture", "default").put(arbitrary);
+    new StringProperty("mapillary.hover-enabled", "default").put(arbitrary);
+    new StringProperty("mapillary.dark-mode", "default").put(arbitrary);
+    new StringProperty("mapillary.download-mode", "default").put(arbitrary);
+    new StringProperty("mapillary.prefetch-image-count", "default").put(arbitrary);
+    new StringProperty("mapillary.imageMode", "default").put(arbitrary);
 
     // Test checkboxes
     settings.ok();
@@ -124,8 +127,16 @@ public class MapillaryPreferenceSettingTest {
         new StringProperty("mapillary.download-mode", "default").get(),
         DOWNLOAD_MODE.fromLabel(
           ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getSelectedItem().toString()
-        ).getPrefId()
-      );
+          ).getPrefId()
+        );
+    }
+    for (int i = 0; i < ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages"))
+      .getItemCount(); i++) {
+      ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).setSelectedIndex(i);
+      settings.ok();
+      assertEquals(
+        new StringProperty("mapillary.imageMode", "default").get(), ((PRIVATE_IMAGE_DOWNLOAD_MODE) ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).getSelectedItem()).getPrefId()
+        );
     }
   }
 

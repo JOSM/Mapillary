@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,7 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDeco
 
 public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
-  private static final Function<Bounds, URL> URL_GEN = APIv3::searchDetections;
+  private static final Function<Bounds, Collection<URL>> URL_GEN = APIv3::searchDetections;
 
   private final MapillaryData data;
 
@@ -57,7 +58,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
   }
 
   @Override
-  protected Function<Bounds, URL> getUrlGenerator() {
+  protected Function<Bounds, Collection<URL>> getUrlGenerator() {
     return URL_GEN;
   }
 }

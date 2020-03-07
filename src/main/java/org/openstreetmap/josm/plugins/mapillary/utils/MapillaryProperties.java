@@ -9,6 +9,7 @@ import org.openstreetmap.josm.data.preferences.IntegerProperty;
 import org.openstreetmap.josm.data.preferences.NamedColorProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
@@ -66,6 +67,13 @@ public final class MapillaryProperties {
    * The number of images to be prefetched when a mapillary image is selected
    */
   public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty("mapillary.prefetch-image-count", 2);
+
+  /**
+   * Download all images, private images, or public images
+   *
+   * @see MapillaryPreferenceSetting#privateImages
+   */
+  public static final StringProperty IMAGE_MODE = new StringProperty("mapillary.imageMode", "all");
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation

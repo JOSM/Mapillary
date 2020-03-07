@@ -48,6 +48,7 @@ tasks.withType(JavaCompile::class).configureEach {
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
 base.archivesBaseName = "Mapillary"
 
 dependencies {
