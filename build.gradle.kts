@@ -63,7 +63,13 @@ dependencies {
 }
 
 sourceSets {
-  getByName("test") {
+  main {
+    val openjfxClasspath = System.getenv("OPENJFX_CLASSPATH")
+    if (openjfxClasspath != null) {
+      compileClasspath += files(openjfxClasspath)
+    }
+  }
+  test {
     java {
       setSrcDirs(listOf("test/unit"))
     }
