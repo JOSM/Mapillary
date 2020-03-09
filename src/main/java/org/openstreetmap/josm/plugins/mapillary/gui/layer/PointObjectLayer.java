@@ -194,6 +194,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       client.connect();
       try (InputStream stream = client.getResponse().getContent()) {
         DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
+        ds.allPrimitives().parallelStream().filter(p -> p.hasKey("detections"))
+            .forEach(p -> p.put("detections_num", Integer.toString(p.get("detections").split("detection_key").length)));
         ds.allPrimitives().forEach(p -> p.setModified(false));
         synchronized (PointObjectLayer.class) {
           data.mergeFrom(ds);
