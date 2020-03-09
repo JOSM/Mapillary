@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -453,16 +454,22 @@ public final class MapillaryImageDisplay extends JPanel {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
-      if (image != null) {
-        if (this.pano) {
-          this.visibleRect = new Rectangle(0, 0, getSize().width, getSize().height);
-        } else {
-          this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
-              image.getHeight(null));
-        }
-      }
+      this.visibleRect = getDefaultVisibleRect();
     }
     repaint();
+  }
+
+  public Rectangle getDefaultVisibleRect() {
+    if (image != null) {
+      Rectangle visibleRectangle = null;
+      if (this.pano) {
+        visibleRectangle = new Rectangle(0, 0, getSize().width, getSize().height);
+      } else {
+        visibleRectangle = new Rectangle(0, 0, image.getWidth(null), image.getHeight(null));
+      }
+      return visibleRectangle;
+    }
+    return visibleRect;
   }
 
   /**
@@ -554,9 +561,9 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   private void paintPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
-    for (final ImageDetection d : detections) {
-      if (checkIfDetectionIsFiltered(detectionLayers, d))
-        continue;
+    List<ImageDetection> paintDetections = detections.parallelStream()
+        .filter(d -> !checkIfDetectionIsFiltered(detectionLayers, d)).collect(Collectors.toList());
+    for (final ImageDetection d : paintDetections) {
       g2d.setColor(d.getColor());
       final PathIterator pathIt = d.getShape().getPathIterator(null);
       Point prevPoint = null;
