@@ -81,6 +81,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -100,6 +101,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   private static final String NAME = marktr("Mapillary Point Objects");
   private static final int HATCHED_SIZE = 15;
   private final DataSet followDataSet;
+  private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
 
@@ -154,6 +156,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       MapPaintStyleLoader.reloadStyle(mapcss);
       MapPaintStyles.fireMapPaintStyleEntryUpdated(MapPaintStyles.getStyles().getStyleSources().indexOf(mapcss));
     }
+    tableModelListener = new FilterEventListener(data);
+    MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
   }
 
   @Override
@@ -176,6 +180,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
         dataSources.remove(dataSource);
       } finally {
         data.lock();
+        this.tableModelListener.updateAndRunFilters();
       }
     }
   }
@@ -356,6 +361,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public synchronized void destroy() {
     super.destroy();
     followDataSet.removeDataSourceListener(this);
+    MainApplication.getMap().filterDialog.getFilterModel().removeTableModelListener(tableModelListener);
     MainApplication.getMap().mapView.removeMouseListener(this);
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
@@ -445,7 +451,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     double minDistance = Double.MAX_VALUE;
     final int iconHeight = ImageProvider.ImageSizes.SMALLICON.getAdjustedHeight();
     Node closestNode = null;
-    for (Node node : data.getNodes()) {
+    for (Node node : data.getNodes().parallelStream().filter(n -> !n.isDisabled()).collect(Collectors.toList())) {
       Point notePoint = MainApplication.getMap().mapView.getPoint(node.getCoor());
       // move the note point to the center of the icon where users are most likely to click when selecting
       notePoint.setLocation(notePoint.getX(), notePoint.getY() - iconHeight / 2d);
