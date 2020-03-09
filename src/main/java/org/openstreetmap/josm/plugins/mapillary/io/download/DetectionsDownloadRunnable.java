@@ -18,6 +18,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -66,6 +67,14 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
             .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
                 .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))
             .forEach(img -> img.setAllDetections(entry.getValue()));
+      }
+      // Repaint if we set the detections for the current selected image
+      Object image = MapillaryLayer.getInstance().getData().getSelectedImage();
+      if (image instanceof MapillaryImage) {
+        MapillaryImage mapillaryImage = (MapillaryImage) image;
+        if (detections.containsKey(mapillaryImage.getKey())) {
+          MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
+        }
       }
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
