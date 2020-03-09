@@ -104,7 +104,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     time.setEnabled(false);
     fromPanel.add(this.time);
 
-    // TODO Replace if #18747 is taken
+    // TODO Replace if #18747 is taken and after Java 11 migration
     startDate = new JavaFxWrapper<>(DatePicker.class);
     endDate = new JavaFxWrapper<>(DatePicker.class);
     JPanel timePanel = new JPanel(new GridBagLayout());
@@ -113,8 +113,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     timePanel.add(startDate, GBC.std());
     timePanel.add(endDate, GBC.eol());
     Dimension d = timePanel.getMinimumSize();
-    d.width = Double.valueOf(Math.ceil(d.width * 1.15)).intValue();
-    d.height = Double.valueOf(Math.ceil(d.height * 1.15)).intValue(); // TODO check
+    d.width = (int) (Math.ceil(d.width * 1.15));
+    d.height = (int) (Math.ceil(d.height * 1.15)); // TODO check
     timePanel.setMinimumSize(d);
 
     startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
@@ -159,14 +159,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     LocalDate end = endDate.getNode().getValue();
     if (start == null || end == null)
       return;
-    if (modified == startDate) {
-      if (start.compareTo(end) > 0) {
-        endDate.getNode().setValue(start);
-      }
-    } else if (modified == endDate) {
-      if (start.compareTo(end) > 0) {
-        startDate.getNode().setValue(end);
-      }
+    if (startDate.equals(modified) && start.compareTo(end) > 0) {
+      endDate.getNode().setValue(start);
+    } else if (endDate.equals(modified) && start.compareTo(end) > 0) {
+      startDate.getNode().setValue(end);
     }
   }
 
@@ -212,8 +208,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     final boolean downloadedIsSelected = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
     final boolean onlySignsIsSelected = this.onlySigns.isSelected();
-    final LocalDate endDate = this.endDate.getNode().getValue();
-    final LocalDate startDate = this.startDate.getNode().getValue();
+    final LocalDate endDateRefresh = this.endDate.getNode().getValue();
+    final LocalDate startDateRefresh = this.startDate.getNode().getValue();
 
     // This predicate returns true is the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
@@ -224,10 +220,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         if (timeFilter && checkValidTime(img)) {
           return true;
         }
-        if (endDate != null && checkEndDate(img)) {
+        if (endDateRefresh != null && checkEndDate(img)) {
           return true;
         }
-        if (startDate != null && checkStartDate(img)) {
+        if (startDateRefresh != null && checkStartDate(img)) {
           return true;
         }
         if (!importedIsSelected && img instanceof MapillaryImportedImage) {
