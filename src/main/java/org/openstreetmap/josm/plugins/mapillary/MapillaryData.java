@@ -33,6 +33,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -301,6 +302,9 @@ public class MapillaryData implements Data {
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = this.selectedImage;
+    if (image instanceof MapillaryImage && inCurrentlySelectedDetection((MapillaryImage) image)) {
+      getAllDetections(Collections.singleton((MapillaryImage) image));
+    }
     this.selectedImage = image;
     this.multiSelectedImages.clear();
     final MapView mv = MapillaryPlugin.getMapView();
@@ -318,6 +322,20 @@ public class MapillaryData implements Data {
     }
     fireSelectedImageChanged(oldImage, this.selectedImage);
     MapillaryLayer.invalidateInstance();
+  }
+
+  /**
+   * Check if the image has a selected point object
+   *
+   * @param image The image to check
+   * @return {@code true} if any point object layer has a selected object with the image key.
+   */
+  public static boolean inCurrentlySelectedDetection(MapillaryImage image) {
+    return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
+        .map(PointObjectLayer::getDataSet).flatMap(d -> d.getSelected().parallelStream())
+        .filter(p -> p.hasTag("detections"))
+        .flatMap(p -> PointObjectLayer.parseDetections(p.get("detections")).parallelStream())
+        .anyMatch(p -> image.getKey().equals(p.getOrDefault("image_key", null)));
   }
 
   /**

@@ -58,7 +58,7 @@ public final class MapillaryImageDisplay extends JPanel {
   private static final long serialVersionUID = 3369727203329307716L;
   static final double PANORAMA_FOV = Math.toRadians(110);
 
-  private final transient Collection<ImageDetection> detections = new ArrayList<>();
+  private final transient Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
 
   /** The image currently displayed */
   transient volatile BufferedImage image;
@@ -543,58 +543,65 @@ public final class MapillaryImageDisplay extends JPanel {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.setStroke(new BasicStroke(2));
       List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
-      if (pano) {
-        for (final ImageDetection d : detections) {
-          if (checkIfDetectionIsFiltered(detectionLayers, d))
-            continue;
-          g2d.setColor(d.getColor());
-          final PathIterator pathIt = d.getShape().getPathIterator(null);
-          Point prevPoint = null;
-          while (!pathIt.isDone()) {
-            final double[] buffer = new double[6];
-            final int segmentType = pathIt.currentSegment(buffer);
-
-            if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO || segmentType == PathIterator.SEG_CUBICTO) {
-              // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1, 2 and 3 points for each of these segment types
-              final Point curPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
-              if (prevPoint != null && curPoint != null) {
-                g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
-              }
-              prevPoint = curPoint;
-            } else if (segmentType == PathIterator.SEG_MOVETO) {
-              prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
-            } else {
-              prevPoint = null;
-            }
-            pathIt.next();
-          }
+      synchronized (detections) {
+        if (pano) {
+          paintPano(g2d, visibleRect, detectionLayers);
+        } else {
+          paintNonPano(g2d, visibleRect, detectionLayers);
         }
-      } else {
-        final Point upperLeft = img2compCoord(visibleRect, 0, 0);
-        final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
-        final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
-        unit2CompTransform.concatenate(AffineTransform.getScaleInstance(
-          lowerRight.getX() - upperLeft.getX(),
-          lowerRight.getY() - upperLeft.getY()
-        ));
+      }
+    }
+  }
 
-        for (final ImageDetection d : detections) {
-          if (checkIfDetectionIsFiltered(detectionLayers, d))
-            continue;
-          final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
-          g2d.setColor(d.getColor());
-          g2d.draw(shape);
-          ImageIcon icon = MapObject.getIcon(d.getValue());
-          if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
-            final Rectangle bounds = shape.getBounds();
-            g2d.drawImage(
-              MapObject.getIcon(d.getValue()).getImage(),
-              bounds.x, bounds.y,
-              bounds.width, bounds.height,
-              null
-            );
+  private void paintPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    for (final ImageDetection d : detections) {
+      if (checkIfDetectionIsFiltered(detectionLayers, d) || !visibleRect.contains(d.getShape().getBounds2D()))
+        continue;
+      g2d.setColor(d.getColor());
+      final PathIterator pathIt = d.getShape().getPathIterator(null);
+      Point prevPoint = null;
+      while (!pathIt.isDone()) {
+        final double[] buffer = new double[6];
+        final int segmentType = pathIt.currentSegment(buffer);
+
+        if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO
+            || segmentType == PathIterator.SEG_CUBICTO) {
+          // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1,
+          // 2 and 3 points for each of these segment types
+          final Point curPoint = cameraPlane
+              .getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
+          if (prevPoint != null && curPoint != null) {
+            g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
           }
+          prevPoint = curPoint;
+        } else if (segmentType == PathIterator.SEG_MOVETO) {
+          prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
+        } else {
+          prevPoint = null;
         }
+        pathIt.next();
+      }
+    }
+  }
+
+  private void paintNonPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    final Point upperLeft = img2compCoord(visibleRect, 0, 0);
+    final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+    final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+    unit2CompTransform.concatenate(
+        AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+
+    for (final ImageDetection d : detections) {
+      if (checkIfDetectionIsFiltered(detectionLayers, d) || !visibleRect.contains(d.getShape().getBounds2D()))
+        continue;
+      final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+      g2d.setColor(d.getColor());
+      g2d.draw(shape);
+      ImageIcon icon = MapObject.getIcon(d.getValue());
+      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
+        final Rectangle bounds = shape.getBounds();
+        g2d.drawImage(MapObject.getIcon(d.getValue()).getImage(), bounds.x, bounds.y, bounds.width, bounds.height,
+            null);
       }
     }
   }

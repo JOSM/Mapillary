@@ -3,10 +3,12 @@ package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
@@ -15,6 +17,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -38,10 +41,14 @@ import javax.json.stream.JsonParser;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.Data;
 import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -56,12 +63,14 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
 import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
 import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
 import org.openstreetmap.josm.gui.preferences.display.DrawingPreference;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.GeoJSONReader;
 import org.openstreetmap.josm.io.IllegalDataException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
@@ -72,7 +81,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.OpenBrowser;
@@ -113,11 +124,11 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public static void createHatchTexture() {
     BufferedImage bi = new BufferedImage(HATCHED_SIZE, HATCHED_SIZE, BufferedImage.TYPE_INT_ARGB);
     Graphics2D big = bi.createGraphics();
-    big.setColor(getBackgroundColor());
+    big.setColor(OsmDataLayer.getBackgroundColor());
     Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
     big.setComposite(comp);
     big.fillRect(0, 0, HATCHED_SIZE, HATCHED_SIZE);
-    big.setColor(getOutsideColor());
+    big.setColor(OsmDataLayer.getOutsideColor());
     big.drawLine(-1, 6, 6, -1);
     big.drawLine(4, 16, 16, 4);
     hatched = bi;
@@ -174,6 +185,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       client.connect();
       try (InputStream stream = client.getResponse().getContent()) {
         DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
+        ds.allPrimitives().forEach(p -> p.setModified(false));
         synchronized (PointObjectLayer.class) {
           data.mergeFrom(ds);
         }
@@ -234,7 +246,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
     AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, inactive);
     painter.enableSlowOperations(
-      mv.getMapMover() == null || !mv.getMapMover().movementInProgress() || !PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get()
+        mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
+            || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get()
     );
     painter.render(data, virtual, box);
     MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
@@ -246,9 +259,33 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey("detections")).findFirst()
         .orElse(null);
     if (prim != null && MapillaryLayer.hasInstance()) {
-      List<Map<String, String>> detections = new ArrayList<>();
-      try (JsonParser parser = Json
-        .createParser(new ByteArrayInputStream(prim.get("detections").getBytes(StandardCharsets.UTF_8)))) {
+      List<Map<String, String>> detections = parseDetections(prim.get("detections"));
+
+      MapillaryData mapillaryData = MapillaryLayer.getInstance().getData();
+      MapillaryImage selectedImage = mapillaryData.getSelectedImage() instanceof MapillaryImage
+          ? (MapillaryImage) mapillaryData.getSelectedImage()
+          : null;
+      List<MapillaryImage> images = getImagesForDetections(mapillaryData, detections);
+      MapillaryImage toSelect = images.isEmpty() ? null : images.get(0);
+      boolean inDetections = selectedImage != null && images.contains(selectedImage);
+
+      if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
+        mapillaryData.setSelectedImage(toSelect);
+      }
+    }
+    SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint());
+  }
+
+  /**
+   * Parse detections
+   *
+   * @param detectionsValue The value from the detections key
+   * @return A list of Map<String, String> of detections. Keys usually include detection_key, image_key, and user_key.
+   */
+  public static List<Map<String, String>> parseDetections(String detectionsValue) {
+    List<Map<String, String>> detections = new ArrayList<>();
+    try (JsonParser parser = Json
+        .createParser(new ByteArrayInputStream(detectionsValue.getBytes(StandardCharsets.UTF_8)))) {
         while (parser.hasNext() && JsonParser.Event.START_ARRAY == parser.next()) {
           JsonArray array = parser.getArray();
           for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
@@ -266,20 +303,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       } catch (JsonException e) {
         Logging.error(e);
       }
-      MapillaryData data = MapillaryLayer.getInstance().getData();
-      MapillaryImage selectedImage = data.getSelectedImage() instanceof MapillaryImage
-          ? (MapillaryImage) data.getSelectedImage()
-              : null;
-      List<MapillaryImage> images = getImagesForDetections(data, detections);
-      SwingUtilities.invokeLater(() -> data.getAllDetections(images));
-      MapillaryImage toSelect = images.isEmpty() ? null : images.get(0);
-      boolean inDetections = selectedImage != null && images.contains(selectedImage);
-
-      if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
-        data.setSelectedImage(toSelect);
-      }
-    }
-    SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint());
+    return detections;
   }
 
   private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
@@ -325,5 +349,78 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
       MapPaintStyles.removeStyle(mapcss);
+  }
+
+  @Override
+  public DataSet getDataSet() {
+    return data;
+  }
+
+  @Override
+  public Data getData() {
+    return getDataSet();
+  }
+
+  @Override
+  public String getToolTipText() {
+    DataCountVisitor counter = new DataCountVisitor();
+    for (final OsmPrimitive osm : data.allPrimitives()) {
+      osm.accept(counter);
+    }
+    int nodes = counter.nodes - counter.deletedNodes;
+    int ways = counter.ways - counter.deletedWays;
+    int rels = counter.relations - counter.deletedRelations;
+
+    StringBuilder tooltip = new StringBuilder("<html>").append(trn("{0} node", "{0} nodes", nodes, nodes))
+        .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
+        .append(trn("{0} relation", "{0} relations", rels, rels));
+
+    File f = getAssociatedFile();
+    if (f != null) {
+      tooltip.append("<br>").append(f.getPath());
+    }
+    tooltip.append("</html>");
+    return tooltip.toString();
+  }
+
+  @Override
+  public void mergeFrom(Layer from) {
+    if (isMergable(from)) {
+      DataSet fromData = ((PointObjectLayer) from).getDataSet();
+      final PleaseWaitProgressMonitor monitor = new PleaseWaitProgressMonitor(tr("Merging layers"));
+      monitor.setCancelable(false);
+      fromData.unlock();
+      data.mergeFrom(fromData, monitor);
+      fromData.lock();
+      monitor.close();
+    }
+  }
+
+  @Override
+  public boolean isMergable(Layer other) {
+    return other instanceof PointObjectLayer;
+  }
+
+  @Override
+  public Object getInfoComponent() {
+    final DataCountVisitor counter = new DataCountVisitor();
+    for (final OsmPrimitive osm : data.allPrimitives()) {
+      osm.accept(counter);
+    }
+    final JPanel p = new JPanel(new GridBagLayout());
+
+    String nodeText = trn("{0} node", "{0} nodes", counter.nodes, counter.nodes);
+    String wayText = trn("{0} way", "{0} ways", counter.ways, counter.ways);
+    String relationText = trn("{0} relation", "{0} relations", counter.relations, counter.relations);
+
+    p.add(new JLabel(tr("{0} consists of:", getName())), GBC.eol());
+    p.add(new JLabel(nodeText, ImageProvider.get("data", "node"), SwingConstants.HORIZONTAL),
+        GBC.eop().insets(15, 0, 0, 0));
+    p.add(new JLabel(wayText, ImageProvider.get("data", "way"), SwingConstants.HORIZONTAL),
+        GBC.eop().insets(15, 0, 0, 0));
+    p.add(new JLabel(relationText, ImageProvider.get("data", "relation"), SwingConstants.HORIZONTAL),
+        GBC.eop().insets(15, 0, 0, 0));
+
+    return p;
   }
 }

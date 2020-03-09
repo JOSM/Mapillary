@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
@@ -38,7 +39,11 @@ public class MapPointObjectLayerAction extends JosmAction {
         // Synchronization lock must be held by EDT thread
         // See {@link LayerManager#addLayer(org.openstreetmap.josm.gui.layer.Layer, boolean)}.
         synchronized (MainApplication.getLayerManager()) {
+          Layer layer = MainApplication.getLayerManager().getActiveLayer();
           MainApplication.getLayerManager().addLayer(new PointObjectLayer(), false);
+          if (layer != null) {
+            MainApplication.getLayerManager().setActiveLayer(layer);
+          }
         }
       }
     );
