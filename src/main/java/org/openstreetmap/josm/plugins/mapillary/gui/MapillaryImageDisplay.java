@@ -555,7 +555,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
   private void paintPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
     for (final ImageDetection d : detections) {
-      if (checkIfDetectionIsFiltered(detectionLayers, d) || !visibleRect.contains(d.getShape().getBounds2D()))
+      if (checkIfDetectionIsFiltered(detectionLayers, d))
         continue;
       g2d.setColor(d.getColor());
       final PathIterator pathIt = d.getShape().getPathIterator(null);
@@ -592,7 +592,7 @@ public final class MapillaryImageDisplay extends JPanel {
         AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
     for (final ImageDetection d : detections) {
-      if (checkIfDetectionIsFiltered(detectionLayers, d) || !visibleRect.contains(d.getShape().getBounds2D()))
+      if (checkIfDetectionIsFiltered(detectionLayers, d))
         continue;
       final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
       g2d.setColor(d.getColor());

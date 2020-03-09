@@ -9,9 +9,12 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -55,6 +58,7 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.DownloadPolicy;
+import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
@@ -91,7 +95,7 @@ import org.openstreetmap.josm.tools.OpenBrowser;
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends OsmDataLayer implements DataSourceListener {
+public class PointObjectLayer extends OsmDataLayer implements DataSourceListener, MouseListener {
   private final Collection<DataSource> dataSources = new HashSet<>();
   private static final String NAME = marktr("Mapillary Point Objects");
   private static final int HATCHED_SIZE = 15;
@@ -276,6 +280,12 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint());
   }
 
+  @Override
+  public void hookUpMapView() {
+    super.hookUpMapView();
+    MainApplication.getMap().mapView.addMouseListener(this);
+  }
+
   /**
    * Parse detections
    *
@@ -346,6 +356,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   public synchronized void destroy() {
     super.destroy();
     followDataSet.removeDataSourceListener(this);
+    MainApplication.getMap().mapView.removeMouseListener(this);
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
       MapPaintStyles.removeStyle(mapcss);
@@ -356,7 +367,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     return data;
   }
 
-  @Override
+  // @Override Depends upon #18801
   public Data getData() {
     return getDataSet();
   }
@@ -423,4 +434,48 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
     return p;
   }
+
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    if (!SwingUtilities.isLeftMouseButton(e) || this.equals(MainApplication.getLayerManager().getActiveLayer())) {
+      return;
+    }
+    Point clickPoint = e.getPoint();
+    double snapDistance = 20;
+    double minDistance = Double.MAX_VALUE;
+    final int iconHeight = ImageProvider.ImageSizes.SMALLICON.getAdjustedHeight();
+    Node closestNode = null;
+    for (Node node : data.getNodes()) {
+      Point notePoint = MainApplication.getMap().mapView.getPoint(node.getCoor());
+      // move the note point to the center of the icon where users are most likely to click when selecting
+      notePoint.setLocation(notePoint.getX(), notePoint.getY() - iconHeight / 2d);
+      double dist = clickPoint.distanceSq(notePoint);
+      if (minDistance > dist && clickPoint.distance(notePoint) < snapDistance) {
+        minDistance = dist;
+        closestNode = node;
+      }
+    }
+    data.setSelected(closestNode);
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+    // Do nothing
+  }
+
 }
