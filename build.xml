@@ -28,6 +28,7 @@
   <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
     <include name="apache-commons.jar"/>
     <include name="apache-http.jar"/>
+    <include name="apache-commons-math.jar"/>
     <include name="javafx-windows.jar" if:set="isWindows"/>
     <include name="javafx-unixoid.jar" if:set="isUnix"/>
     <include name="javafx-osx.jar" if:set="isMac"/>

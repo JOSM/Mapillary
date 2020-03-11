@@ -6,6 +6,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.util.FastMath;
+
+import org.openstreetmap.josm.tools.Logging;
+
 public class CameraPlane {
   private final int width;
   private final int height;
@@ -20,6 +24,7 @@ public class CameraPlane {
   private double cosPhi;
 
   public static double HALF_PI = Math.PI / 2;
+  public static double TWO_PI = 2 * Math.PI;
 
   public CameraPlane(int width, int height, double distance) {
     this.width = width;
@@ -45,10 +50,11 @@ public class CameraPlane {
     }
     // This is a slightly faster than just doing the (brute force) method of Math.max(Math.min)). Reduces if statements
     // by 1 per call.
-    Long x = Math.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
-    Long y = Math.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
+    final long x = Math.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
+    long y = Math.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
+
     try {
-      return new Point(x.intValue(), y.intValue());
+      return new Point(Math.toIntExact(x), Math.toIntExact(y));
     } catch (ArithmeticException e) {
       return new Point((int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, x)),
           (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, y)));
@@ -74,15 +80,19 @@ public class CameraPlane {
   }
 
   public void setRotationFromDelta(final Point from, final Point to) {
-    Vector3D f1 = vectors[from.x][from.y];
-    Vector3D t1 = vectors[to.x][to.y];
-    double deltaTheta = Math.atan2(f1.getX(), f1.getZ()) - Math.atan2(t1.getX(), t1.getZ());
-    double deltaPhi = Math.atan2(f1.getY(), Math.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
-        - Math.atan2(t1.getY(), Math.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
-    double newTheta = theta + deltaTheta;
-    // Prevent flipping the 360 viewer accidentally
-    double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
-    setRotation(newTheta, newPhi);
+    try {
+      Vector3D f1 = vectors[from.x][from.y];
+      Vector3D t1 = vectors[to.x][to.y];
+      double deltaTheta = FastMath.atan2(f1.getX(), f1.getZ()) - FastMath.atan2(t1.getX(), t1.getZ());
+      double deltaPhi = FastMath.atan2(f1.getY(), FastMath.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
+          - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
+      double newTheta = theta + deltaTheta;
+      // Prevent flipping the 360 viewer accidentally
+      double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
+      setRotation(newTheta, newPhi);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      Logging.error(e);
+    }
   }
 
   /**
@@ -106,12 +116,18 @@ public class CameraPlane {
   }
 
   synchronized void setRotation(double theta, double phi) {
-    this.theta = theta;
-    this.sinTheta = Math.sin(theta);
-    this.cosTheta = Math.cos(theta);
+    if (theta < 0) {
+      this.theta = theta + TWO_PI;
+    } else if (theta > TWO_PI) {
+      this.theta = theta - TWO_PI;
+    } else {
+      this.theta = theta;
+    }
+    this.sinTheta = Math.sin(this.theta);
+    this.cosTheta = Math.cos(this.theta);
     this.phi = phi;
-    this.sinPhi = Math.sin(phi);
-    this.cosPhi = Math.cos(phi);
+    this.sinPhi = Math.sin(this.phi);
+    this.cosPhi = Math.cos(this.phi);
   }
 
   private Vector3D rotate(final Vector3D vec) {

@@ -166,9 +166,9 @@ public final class MapillaryImageDisplay extends JPanel {
           // The position is also limited by the image size
           checkVisibleRectPos(mouseImage, mouseVisibleRect);
         }
-          synchronized (MapillaryImageDisplay.this) {
+        synchronized (MapillaryImageDisplay.this) {
           MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
-          }
+        }
         MapillaryImageDisplay.this.repaint();
       }
     }
