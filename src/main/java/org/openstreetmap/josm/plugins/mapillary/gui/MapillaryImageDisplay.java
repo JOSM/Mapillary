@@ -284,16 +284,20 @@ public final class MapillaryImageDisplay extends JPanel {
         return;
       }
       if (this.mouseIsDragging) {
-        if (!MapillaryImageDisplay.this.pano) {
-          Point p = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        Point p = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        if (!pano) {
           mouseVisibleRect.x += this.mousePointInImg.x - p.x;
           mouseVisibleRect.y += this.mousePointInImg.y - p.y;
           checkVisibleRectPos(mouseImage, mouseVisibleRect);
           synchronized (MapillaryImageDisplay.this) {
             MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
           }
-          MapillaryImageDisplay.this.repaint();
+        } else {
+          cameraPlane.setRotationFromDelta(mousePointInImg, p);
+          // Set the current mouse point to where the pointer is now.
+          mousePointInImg = p;
         }
+        MapillaryImageDisplay.this.repaint();
       } else if (MapillaryImageDisplay.this.selectedRect != null) {
         final Point p = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
         checkPointInVisibleRect(p, mouseVisibleRect);
@@ -327,14 +331,7 @@ public final class MapillaryImageDisplay extends JPanel {
        * When dragging panorama photo, re-calcurate rotation when release.
        * For normal photo, just stop dragging flag because redraw during dragging.
        */
-      if (this.mouseIsDragging) {
-        this.mouseIsDragging = false;
-        if (MapillaryImageDisplay.this.pano) {
-          Point current = comp2imgCoord(visibleRect, e.getX(), e.getY());
-          cameraPlane.setRotationFromDelta(mousePointInImg, current);
-          MapillaryImageDisplay.this.repaint();
-        }
-      } else if (MapillaryImageDisplay.this.selectedRect != null) {
+      if (MapillaryImageDisplay.this.selectedRect != null) {
         int oldWidth = MapillaryImageDisplay.this.selectedRect.width;
         int oldHeight = MapillaryImageDisplay.this.selectedRect.height;
         // Check that the zoom doesn't exceed 2:1

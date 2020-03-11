@@ -19,6 +19,8 @@ public class CameraPlane {
   private double sinPhi;
   private double cosPhi;
 
+  public static double HALF_PI = Math.PI / 2;
+
   public CameraPlane(int width, int height, double distance) {
     this.width = width;
     this.height = height;
@@ -41,14 +43,16 @@ public class CameraPlane {
     if (rotatedVector.getZ() < 0) {
       return null; // Ignores any points "behind the back", so they don't get painted a second time on the other side of the sphere
     }
-    return new Point(
-      (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, Math.round(
-        rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d
-      ))),
-      (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, Math.round(
-        rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d
-      )))
-    );
+    // This is a slightly faster than just doing the (brute force) method of Math.max(Math.min)). Reduces if statements
+    // by 1 per call.
+    Long x = Math.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
+    Long y = Math.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
+    try {
+      return new Point(x.intValue(), y.intValue());
+    } catch (ArithmeticException e) {
+      return new Point((int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, x)),
+          (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, y)));
+    }
   }
 
   Vector3D getVector3D(final Point p) {
@@ -76,7 +80,8 @@ public class CameraPlane {
     double deltaPhi = Math.atan2(f1.getY(), Math.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
         - Math.atan2(t1.getY(), Math.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
     double newTheta = theta + deltaTheta;
-    double newPhi = phi + deltaPhi;
+    // Prevent flipping the 360 viewer accidentally
+    double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
     setRotation(newTheta, newPhi);
   }
 
