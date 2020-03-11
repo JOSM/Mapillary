@@ -50,14 +50,14 @@ public class CameraPlane {
     }
     // This is a slightly faster than just doing the (brute force) method of Math.max(Math.min)). Reduces if statements
     // by 1 per call.
-    final long x = Math.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
-    long y = Math.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
+    final long x = FastMath.round(rotatedVector.getX() / rotatedVector.getZ() * distance + width / 2d);
+    long y = FastMath.round(rotatedVector.getY() / rotatedVector.getZ() * distance + height / 2d);
 
     try {
-      return new Point(Math.toIntExact(x), Math.toIntExact(y));
+      return new Point(FastMath.toIntExact(x), FastMath.toIntExact(y));
     } catch (ArithmeticException e) {
-      return new Point((int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, x)),
-          (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, y)));
+      return new Point((int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, x)),
+          (int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, y)));
     }
   }
 
@@ -102,8 +102,8 @@ public class CameraPlane {
   public void setRotation(Vector3D vec) {
     double theta, phi;
     try {
-      theta = Math.atan2(vec.getX(), vec.getZ());
-      phi = Math.atan2(vec.getY(), Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ()));
+      theta = FastMath.atan2(vec.getX(), vec.getZ());
+      phi = FastMath.atan2(vec.getY(), FastMath.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ()));
     } catch (Exception e) {
       theta = 0;
       phi = 0;
@@ -123,11 +123,11 @@ public class CameraPlane {
     } else {
       this.theta = theta;
     }
-    this.sinTheta = Math.sin(this.theta);
-    this.cosTheta = Math.cos(this.theta);
+    this.sinTheta = FastMath.sin(this.theta);
+    this.cosTheta = FastMath.cos(this.theta);
     this.phi = phi;
-    this.sinPhi = Math.sin(this.phi);
-    this.cosPhi = Math.cos(this.phi);
+    this.sinPhi = FastMath.sin(this.phi);
+    this.cosPhi = FastMath.cos(this.phi);
   }
 
   private Vector3D rotate(final Vector3D vec) {
@@ -145,7 +145,7 @@ public class CameraPlane {
 
   public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
     IntStream.range(0, targetImage.getHeight()).parallel().forEach(
-      y -> IntStream.range(0, targetImage.getWidth()).forEach(
+        y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(
         x -> {
           final Vector3D vec = getVector3D(new Point(x, y));
           final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
