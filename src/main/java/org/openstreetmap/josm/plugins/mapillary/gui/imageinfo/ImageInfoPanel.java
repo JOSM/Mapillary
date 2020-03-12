@@ -51,6 +51,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final JTextPane seqKeyValue;
 
   private ValueChangeListener<Boolean> imageLinkChangeListener;
+  private boolean destroyed;
 
   private ImageInfoPanel() {
     super(
@@ -252,5 +253,15 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     final Collection<OsmPrimitive> sel = event.getSelection();
     Logging.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
     addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
+    destroyInstance();
   }
 }

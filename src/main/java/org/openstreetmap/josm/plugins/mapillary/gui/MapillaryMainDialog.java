@@ -31,6 +31,7 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -64,6 +65,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private static final String MESSAGE_SEPARATOR = " — ";
 
   private static MapillaryMainDialog instance;
+
+  private boolean destroyed;
 
   private volatile MapillaryAbstractImage image;
 
@@ -599,12 +602,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 
   @Override
   public void destroy() {
-    super.destroy();
-    showDetectionOutlinesAction.destroy();
-    showSignDetectionsAction.destroy();
-    playButton.destroy();
-    pauseButton.destroy();
-    stopButton.destroy();
+    if (!destroyed) {
+      super.destroy();
+      showDetectionOutlinesAction.destroy();
+      showSignDetectionsAction.destroy();
+      playButton.destroy();
+      pauseButton.destroy();
+      stopButton.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
     destroyInstance();
   }
 }

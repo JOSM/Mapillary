@@ -28,6 +28,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -68,6 +69,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   private final SideButton redoButton;
 
   private final ConcurrentHashMap<Object, MapillaryCommand> map;
+
+  private boolean destroyed;
 
   private MapillaryHistoryDialog() {
     super(tr("Mapillary history"), "mapillary-history", tr("Open Mapillary history dialog"), null, 200,
@@ -286,5 +289,15 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
         getUndoTree().getSelectionModel().addTreeSelectionListener(getUndoSelectionListener());
       }
     }
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
+    destroyInstance();
   }
 }

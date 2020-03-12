@@ -83,6 +83,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   private final JavaFxWrapper<DatePicker> startDate;
   private final JavaFxWrapper<DatePicker> endDate;
 
+  private boolean destroyed;
+
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
         false, MapillaryPreferenceSetting.class);
@@ -404,5 +406,15 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         MapillaryFilterDialog.getInstance().refresh();
       dlg.dispose();
     }
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
+    destroyInstance();
   }
 }
