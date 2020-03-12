@@ -44,6 +44,11 @@ tasks.withType(JavaCompile::class).configureEach {
     check("PrivateConstructorForUtilityClass", CheckSeverity.WARN)
     check("LambdaFunctionalInterface", CheckSeverity.WARN)
     check("ConstantField", CheckSeverity.WARN)
+    // TODO remove this on errorprone update
+    if ((JavaVersion.current().majorVersion.toInt()) > 11) {
+      check("Finally", CheckSeverity.OFF)
+      check("UnnecessaryLambda", CheckSeverity.OFF)
+    }
   }
 }
 
