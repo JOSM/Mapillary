@@ -574,6 +574,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    */
   private void createLayout(Component data, List<SideButton> buttons) {
     removeAll();
+    clearButtonActions(); // Fixes JOSM-18912
     createLayout(data, true, buttons);
     add(titleBar, BorderLayout.NORTH);
   }
