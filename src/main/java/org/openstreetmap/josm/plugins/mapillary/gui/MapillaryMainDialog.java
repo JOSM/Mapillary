@@ -468,6 +468,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    * @param buttons The buttons where you can click
    */
   private void createLayout(Component data, List<SideButton> buttons) {
+    clearButtonActions();
     removeAll();
     createLayout(data, true, buttons);
     add(titleBar, BorderLayout.NORTH);
