@@ -34,12 +34,12 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
+import org.openstreetmap.josm.plugins.javafx.gui.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
@@ -106,7 +106,6 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     time.setEnabled(false);
     fromPanel.add(this.time);
 
-    // TODO Replace if #18747 is taken and after Java 11 migration
     startDate = new JavaFxWrapper<>(DatePicker.class);
     endDate = new JavaFxWrapper<>(DatePicker.class);
     JPanel timePanel = new JPanel(new GridBagLayout());
