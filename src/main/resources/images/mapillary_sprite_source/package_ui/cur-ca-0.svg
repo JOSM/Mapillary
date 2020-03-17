@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>cur-ca-0</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cur-ca">
+            <circle id="ghost" fill-opacity="0" fill="#FCC24C" cx="24" cy="24" r="24"></circle>
+            <path d="M36.4751482,3.49442715 C32.8393365,1.2773211 28.5676543,0 23.9976377,0 C19.4275679,0 15.1558393,1.27735091 11.52,3.49450475 L23.9974707,24.56 L36.4751482,3.49442715 L36.4751482,3.49442715 Z" id="ca" fill="#FFC01B"></path>
+            <circle id="white-base" fill="#FFFFFF" cx="24" cy="24" r="9"></circle>
+            <circle id="orange" fill="#FF861B" cx="24" cy="24" r="7"></circle>
+        </g>
+    </g>
+</svg>

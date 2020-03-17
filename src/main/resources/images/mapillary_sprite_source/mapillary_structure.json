@@ -1,0 +1,23 @@
+{
+    "description": "Traffic sign sources and sprites for mapillary.com",
+    "maintainers": [
+        "knikel",
+        "ybkuang"
+    ],
+    "providers": [
+        {
+            "dependencies": [],
+            "description": "Provider for the trafficsign library",
+            "extDependencies": [],
+            "name": "mapillary_sprite_source_library_provider",
+            "services": [
+                {
+                    "description": "Traffic sign sources and sprites for mapillary.com",
+                    "name": "sprite_source_library"
+                }
+            ],
+            "type": "library"
+        }
+    ],
+    "repo": "mapillary_sprite_source"
+}
