@@ -170,14 +170,13 @@ public final class UploadUtils {
     outputSet.setGPSInDegrees(image.getMovingLatLon().lon(), image.getMovingLatLon().lat());
     File tempFile = File.createTempFile("imagetoupload_" + c, ".tmp");
     c++;
-    OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile));
-
-    // Transforms the image into a byte array.
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    ImageIO.write(image.getImage(), "jpg", outputStream);
-    byte[] imageBytes = outputStream.toByteArray();
-    new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
-    os.close();
+    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(tempFile))) {
+      // Transforms the image into a byte array.
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      ImageIO.write(image.getImage(), "jpg", outputStream);
+      byte[] imageBytes = outputStream.toByteArray();
+      new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+    }
     return tempFile;
   }
 
@@ -263,6 +262,7 @@ public final class UploadUtils {
    * @param file File that is going to be uploaded
    * @param hash Information attached to the upload
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
+   * @throws IOException              if an HTTP connection cannot be opened
    */
   private static void uploadFile(File file, Map<String, String> hash) throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();

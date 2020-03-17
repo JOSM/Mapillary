@@ -228,7 +228,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     }
   }
 
-  private class MouseEventHandler implements MouseListener {
+  class MouseEventHandler implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {

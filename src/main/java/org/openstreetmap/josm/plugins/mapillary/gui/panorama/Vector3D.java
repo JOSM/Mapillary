@@ -1,7 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
-final class Vector3D {
+public final class Vector3D {
+    public static final Vector3D DEFAULT_VECTOR_3D = new Vector3D(0, 0, 1);
 
     private double x;
     private double y;

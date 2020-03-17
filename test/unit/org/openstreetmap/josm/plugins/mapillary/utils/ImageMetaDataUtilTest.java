@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -31,9 +30,11 @@ public class ImageMetaDataUtilTest {
   }
 
   @Test
-  public void testImageStreamingXMP() throws URISyntaxException, FileNotFoundException {
-    final FileInputStream xmpImageStream = new FileInputStream(new File(ImageMetaDataUtil.class.getResource("/xmpTestImages/xmpProjectionOnly.jpg").toURI()));
-    boolean pano = ImageMetaDataUtil.isPanorama(xmpImageStream);
-    assertTrue(pano);
+  public void testImageStreamingXMP() throws URISyntaxException, IOException {
+    try (FileInputStream xmpImageStream = new FileInputStream(
+        new File(ImageMetaDataUtil.class.getResource("/xmpTestImages/xmpProjectionOnly.jpg").toURI()))) {
+      boolean pano = ImageMetaDataUtil.isPanorama(xmpImageStream);
+      assertTrue(pano);
+    }
   }
 }

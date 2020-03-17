@@ -62,19 +62,22 @@ public class MapillaryPreferenceSettingTest {
     MapillaryPreferenceSetting setting = new MapillaryPreferenceSetting();
     setting.addGui(tabs);
     setting.onLogout();
+    
+    final String loginPanel = "loginPanel";
+    final String loginButton = "loginButton";
 
-    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, "loginButton")).getText());
+    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, loginButton)).getText());
     assertEquals(I18n.tr("You are currently not logged in."), ((JLabel) getPrivateFieldValue(setting, "loginLabel")).getText());
-    assertFalse(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "logoutButton"))));
-    assertTrue(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "loginButton"))));
+    assertFalse(((JPanel) getPrivateFieldValue(setting, loginPanel)).isAncestorOf((JButton) getPrivateFieldValue(setting, "logoutButton")));
+    assertTrue(((JPanel) getPrivateFieldValue(setting, loginPanel)).isAncestorOf((JButton) getPrivateFieldValue(setting, loginButton)));
 
     String username = "TheMapillaryUsername";
     setting.onLogin(username);
 
-    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, "loginButton")).getText());
+    assertEquals(I18n.tr("Login"), ((JButton) getPrivateFieldValue(setting, loginButton)).getText());
     assertEquals(I18n.tr("You are logged in as ''{0}''.", username), ((JLabel) getPrivateFieldValue(setting, "loginLabel")).getText());
-    assertTrue(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "logoutButton"))));
-    assertFalse(((JPanel) getPrivateFieldValue(setting, "loginPanel")).isAncestorOf(((JButton) getPrivateFieldValue(setting, "loginButton"))));
+    assertTrue(((JPanel) getPrivateFieldValue(setting, loginPanel)).isAncestorOf((JButton) getPrivateFieldValue(setting, "logoutButton")));
+    assertFalse(((JPanel) getPrivateFieldValue(setting, loginPanel)).isAncestorOf((JButton) getPrivateFieldValue(setting, loginButton)));
   }
 
   @SuppressWarnings("unchecked")
@@ -84,14 +87,15 @@ public class MapillaryPreferenceSettingTest {
     String arbitrary = "arbitrary";
 
     // Initialize the properties with some arbitrary value to make sure they are not unset
-    new StringProperty("mapillary.display-hour", "default").put(arbitrary);
-    new StringProperty("mapillary.format-24", "default").put(arbitrary);
-    new StringProperty("mapillary.move-to-picture", "default").put(arbitrary);
-    new StringProperty("mapillary.hover-enabled", "default").put(arbitrary);
-    new StringProperty("mapillary.dark-mode", "default").put(arbitrary);
-    new StringProperty("mapillary.download-mode", "default").put(arbitrary);
-    new StringProperty("mapillary.prefetch-image-count", "default").put(arbitrary);
-    new StringProperty("mapillary.imageMode", "default").put(arbitrary);
+    final String defaultValue = "default";
+    new StringProperty("mapillary.display-hour", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.format-24", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.move-to-picture", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.hover-enabled", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.dark-mode", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.download-mode", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.prefetch-image-count", defaultValue).put(arbitrary);
+    new StringProperty("mapillary.imageMode", defaultValue).put(arbitrary);
 
     // Test checkboxes
     settings.ok();
@@ -117,14 +121,14 @@ public class MapillaryPreferenceSettingTest {
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"), "mapillary.move-to-picture");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"), "mapillary.hover-enabled");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "darkMode"), "mapillary.dark-mode");
-    assertEquals(String.valueOf(((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).getNumber().intValue()), new StringProperty("mapillary.prefetch-image-count", "default").get());
+    assertEquals(String.valueOf(((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).getNumber().intValue()), new StringProperty("mapillary.prefetch-image-count", defaultValue).get());
 
     // Test combobox
     for (int i = 0; i < ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getItemCount(); i++) {
       ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).setSelectedIndex(i);
       settings.ok();
       assertEquals(
-        new StringProperty("mapillary.download-mode", "default").get(),
+        new StringProperty("mapillary.download-mode", defaultValue).get(),
         DOWNLOAD_MODE.fromLabel(
           ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getSelectedItem().toString()
           ).getPrefId()
@@ -135,7 +139,7 @@ public class MapillaryPreferenceSettingTest {
       ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).setSelectedIndex(i);
       settings.ok();
       assertEquals(
-        new StringProperty("mapillary.imageMode", "default").get(), ((PRIVATE_IMAGE_DOWNLOAD_MODE) ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).getSelectedItem()).getPrefId()
+        new StringProperty("mapillary.imageMode", defaultValue).get(), ((PRIVATE_IMAGE_DOWNLOAD_MODE) ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).getSelectedItem()).getPrefId()
         );
     }
   }

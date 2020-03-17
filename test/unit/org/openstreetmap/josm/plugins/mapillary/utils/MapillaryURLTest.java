@@ -53,7 +53,7 @@ public class MapillaryURLTest {
     @Test
     public void testSearchMapObjects() throws UnsupportedEncodingException {
       final String expectedBaseUrl = "https://a.mapillary.com/v3/map_features";
-      final String expectedLayerParameter = "layers=trafficsigns";
+      final String expectedLayerParameter = "layers=" + URLEncoder.encode("trafficsigns,points", "UTF-8");
       assertUrlEquals(
         MapillaryURL.APIv3.searchMapObjects(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
         expectedBaseUrl,
@@ -190,7 +190,7 @@ public class MapillaryURLTest {
     TestUtil.testUtilityClass(MapillaryURL.MainWebsite.class);
   }
 
-  private static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
+  protected static void assertUrlEquals(URL actualUrl, String expectedBaseUrl, String... expectedParams) {
     final String actualUrlString = actualUrl.toString();
     assertEquals(expectedBaseUrl, actualUrlString.contains("?") ? actualUrlString.substring(0, actualUrlString.indexOf('?')) : actualUrlString);
     String[] actualParams = actualUrl.getQuery() == null ? new String[0] : actualUrl.getQuery().split("&");

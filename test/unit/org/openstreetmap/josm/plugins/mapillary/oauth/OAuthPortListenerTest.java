@@ -31,8 +31,9 @@ public class OAuthPortListenerTest {
     Thread.sleep(500);
     URL url = new URL("http://localhost:"+OAuthPortListener.PORT+"?access_token=access_token");
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-    in.readLine();
-    assertEquals(OAuthPortListener.RESPONSE, in.readLine());
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+      in.readLine();
+      assertEquals(OAuthPortListener.RESPONSE, in.readLine());
+    }
   }
 }

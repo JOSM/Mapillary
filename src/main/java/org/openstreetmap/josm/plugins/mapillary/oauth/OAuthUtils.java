@@ -8,13 +8,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.HttpClient;
 
 /**
  * A set of utilities related to OAuth.
@@ -62,5 +65,27 @@ public final class OAuthUtils {
   public static URLConnection addAuthenticationHeader(URLConnection con) {
     con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
     return con;
+  }
+
+  /**
+   * Returns a CachedFile with an authorization header for use when making user
+   * specific API calls
+   *
+   * @param file The CachedFile to add authentication headers to
+   * @return The CachedFile for easy chaining
+   */
+  public static CachedFile addAuthenticationHeader(CachedFile file) {
+    return file.setHttpHeaders(Collections.singletonMap("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get()));
+  }
+
+  /**
+   * Returns a HttpClient with an authorization header for use when making user
+   * specific API calls
+   *
+   * @param client The HttpClient to add authentication headers to
+   * @return The HttpClient for easy chaining
+   */
+  public static HttpClient addAuthenticationHeader(HttpClient client) {
+    return client.setHeader("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
   }
 }

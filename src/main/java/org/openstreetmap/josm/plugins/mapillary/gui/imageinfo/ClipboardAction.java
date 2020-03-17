@@ -3,17 +3,20 @@ package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
+import javax.swing.JPanel;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 
-import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
@@ -26,7 +29,7 @@ public class ClipboardAction extends AbstractAction {
   /**
    * A small popup that shows up when the key has been moved to the clipboard
    */
-  private final JPopupMenu popup;
+  private final JComponent popupContent;
   /**
    * The component which is used as parent of the shown popup.
    * If this is <code>null</code>, no popup will be shown.
@@ -35,24 +38,24 @@ public class ClipboardAction extends AbstractAction {
   /**
    * The UNIX epoch time when the popup for this action was shown the last time
    */
-  private long lastPopupShowTime;
+  private long lastCopyTime;
   /**
    * The contents that are transfered into the clipboard when the action is executed.
    * If this is <code>null</code>, the clipboard won't be changed.
    */
   private Transferable contents;
 
-  public ClipboardAction(final String name, final Transferable contents) {
+  public ClipboardAction(final String name, final String successMessage, final Transferable contents) {
     super(name, ImageProvider.get("copy", ImageSizes.SMALLICON));
     this.contents = contents;
 
     // Init popup
-    popup = new JPopupMenu();
-    JLabel label = new JLabel(I18n.tr("Key copied to clipboard…"));
-    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    popup.add(label);
-    popup.setBackground(new Color(0f, 0f, 0f, .5f));
+    this.popupContent = new JPanel();
+    popupContent.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+    popupContent.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);
+    final JLabel label = new JLabel(successMessage);
     label.setForeground(Color.WHITE);
+    popupContent.add(label);
   }
 
   /**
@@ -78,23 +81,23 @@ public class ClipboardAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
-      if (popupParent != null) {
-        popup.show(popupParent, 0, popupParent.getHeight() + 2);
+      if (popupParent != null && lastCopyTime + POPUP_DURATION < System.currentTimeMillis()) {
+        final PopupFactory popupFactory = new PopupFactory();
+        final Popup popup = popupFactory.getPopup(popupParent, popupContent, popupParent.getLocationOnScreen().x, popupParent.getLocationOnScreen().y + popupParent.getHeight() + 2);
+        popup.show();
         new Thread(() -> {
-          long threadStart = System.currentTimeMillis();
-          lastPopupShowTime = threadStart;
           try {
-            Thread.sleep(POPUP_DURATION);
-          } catch (InterruptedException e1) {
-            if (threadStart == lastPopupShowTime) {
-              popup.setVisible(false);
+            while (lastCopyTime + POPUP_DURATION >= System.currentTimeMillis()) {
+              Thread.sleep(1000);
             }
-          }
-          if (System.currentTimeMillis() >= lastPopupShowTime + POPUP_DURATION) {
-            popup.setVisible(false);
+          } catch (InterruptedException e1) {
+            // Ignore interruptions, continue with closing the popup
+          } finally {
+            popup.hide();
           }
         }).start();
       }
+      lastCopyTime = System.currentTimeMillis();
     }
   }
 

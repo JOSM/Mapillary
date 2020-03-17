@@ -109,8 +109,8 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   public String getDateFormat() {
     final StringBuilder format = new StringBuilder(26);
     format.append(LocalDateConverter.getDateFormat());
-    if (MapillaryProperties.DISPLAY_HOUR.get()) {
-      if (MapillaryProperties.TIME_FORMAT_24.get()) {
+    if (Boolean.TRUE.equals(MapillaryProperties.DISPLAY_HOUR.get())) {
+      if (Boolean.TRUE.equals(MapillaryProperties.TIME_FORMAT_24.get())) {
         format.append(" - HH:mm:ss (z)");
       } else {
         format.append(" - h:mm:ss a (z)");

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Mapillary" default="dist" basedir=".">
+<project name="Mapillary" default="dist" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
   <property name="plugin.src.dir" value="src/main/java"/>
   <property name="plugin.resources.dir" value="src/main/resources"/>
 

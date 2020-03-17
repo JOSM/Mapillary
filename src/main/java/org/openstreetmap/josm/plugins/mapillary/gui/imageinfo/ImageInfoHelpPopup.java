@@ -25,6 +25,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  */
 public class ImageInfoHelpPopup extends JPopupMenu {
+  private static final long serialVersionUID = 2621884806390964135L;
   private final Component invokerComp;
   private boolean alreadyDisplayed;
 
@@ -56,6 +57,8 @@ public class ImageInfoHelpPopup extends JPopupMenu {
     infoButton.addActionListener(e -> setVisible(false));
     bottomBar.add(infoButton);
     MapillaryButton closeBtn = new MapillaryButton(new AbstractAction() {
+      private static final long serialVersionUID = 6591072128092344746L;
+
       @Override
       public void actionPerformed(ActionEvent e) {
         setVisible(false);

@@ -14,6 +14,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public class SelectNextImageAction extends AbstractAction {
+  private static final long serialVersionUID = -2106549590908822237L;
+
   private static final String DIALOGS_SUBDIR = "dialogs";
 
   public static final SelectNextImageAction NEXT_ACTION = new SelectNextImageAction(

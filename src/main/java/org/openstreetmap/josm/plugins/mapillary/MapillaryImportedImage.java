@@ -37,8 +37,9 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * Using when the EXIF tags doesn't contain that info.
    *
    * @param latLon  The latitude and longitude where the picture was taken.
-   * @param ca  Direction of the picture (0 means north).
-   * @param file  The file containing the picture.
+   * @param ca      Direction of the picture (0 means north).
+   * @param file    The file containing the picture.
+   * @param pano    The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano) {
     this(latLon, ca, file, pano, Calendar.getInstance().getTimeInMillis());
@@ -47,10 +48,11 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class.
    *
-   * @param latLon  Latitude and Longitude where the picture was taken.
-   * @param ca  Direction of the picture (0 means north),
-   * @param file  The file containing the picture.
-   * @param datetimeOriginal  The date the picture was taken.
+   * @param latLon           Latitude and Longitude where the picture was taken.
+   * @param ca               Direction of the picture (0 means north),
+   * @param file             The file containing the picture.
+   * @param datetimeOriginal The date the picture was taken.
+   * @param pano             The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final String datetimeOriginal) {
     this(latLon, ca, file, pano, parseTimestampElseCurrentTime(datetimeOriginal));

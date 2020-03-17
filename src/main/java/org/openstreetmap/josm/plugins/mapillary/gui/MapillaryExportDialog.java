@@ -44,8 +44,8 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   public final JRadioButton rewrite;
   /** Group of button containing all the options. */
   public final ButtonGroup group;
-  private final JButton choose;
-  private final JLabel path;
+  final JButton choose;
+  final JLabel path;
   /** File chooser. */
   public JFileChooser chooser;
   private final JButton ok;

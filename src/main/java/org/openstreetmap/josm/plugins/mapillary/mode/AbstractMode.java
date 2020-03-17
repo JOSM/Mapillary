@@ -75,7 +75,7 @@ public abstract class AbstractMode extends MouseAdapter implements
     semiautomaticThread = new SemiautomaticThread();
   }
 
-  private static class SemiautomaticThread extends Thread {
+  static class SemiautomaticThread extends Thread {
 
     /** If in semiautomatic mode, the last Epoch time when there was a download */
     private long lastDownload;
@@ -94,6 +94,7 @@ public abstract class AbstractMode extends MouseAdapter implements
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
           return;
         }
       }

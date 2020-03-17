@@ -8,7 +8,9 @@ import static org.openstreetmap.josm.tools.I18n.trc;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,13 +19,18 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -37,10 +44,12 @@ import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
+import org.openstreetmap.josm.plugins.mapillary.gui.panorama.Vector3D;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Shortcut;
 /**
  * Toggle dialog that shows an image and some buttons.
  *
@@ -72,6 +81,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private final SideButton playButton = new SideButton(new PlayAction());
   private final SideButton pauseButton = new SideButton(new PauseAction());
   private final SideButton stopButton = new SideButton(new StopAction());
+  private final JPanel panel = new JPanel();
 
   private ImageInfoHelpPopup imageInfoHelp;
 
@@ -99,16 +109,110 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
 
+  private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
+  private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
+
   private MapillaryMainDialog() {
-    super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"), null, 200,
-        true, MapillaryPreferenceSetting.class);
+    super(
+      tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"), null, 200, true, MapillaryPreferenceSetting.class
+    );
     addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
     this.blueButton.setForeground(Color.BLUE);
     this.redButton.setForeground(Color.RED);
 
+    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+    panel.add(mapillaryImageDisplay);
+    JPanel buttons = new JPanel();
+    buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
+    Dimension buttonDim = new Dimension(52, 26);
+    JButton toggleSigns = new JButton(showSignDetectionsAction);
+    JButton toggleDetections = new JButton(showDetectionOutlinesAction);
+    showDetectionOutlinesAction.setButton(toggleDetections);
+    showSignDetectionsAction.setButton(toggleSigns);
+    toggleDetections.setPreferredSize(buttonDim);
+    toggleSigns.setPreferredSize(buttonDim);
+    // Mac OS X won't show background colors if buttons aren't opaque.
+    toggleSigns.setOpaque(true);
+    toggleDetections.setOpaque(true);
+    buttons.add(toggleSigns);
+    buttons.add(toggleDetections);
+    panel.add(buttons);
+
     setMode(MODE.NORMAL);
+  }
+
+  private static abstract class JosmButtonAction extends JosmAction {
+    private static final long serialVersionUID = -4009253801009731575L;
+    JButton pbutton;
+    public JosmButtonAction(String name, ImageProvider icon, String tooltip, Shortcut shortcut, boolean registerInToolbar,
+        String toolbarId, boolean installAdapters) {
+      super(name, icon, tooltip, shortcut, registerInToolbar, toolbarId, installAdapters);
+    }
+    void setButton(JButton button) {
+      this.pbutton = button;
+      setBackground();
+    }
+
+    protected void setBackground() {
+      if (pbutton == null) return;
+      if (Boolean.TRUE.equals(getProperty().get())) {
+        this.pbutton.setForeground(Color.GREEN);
+        this.pbutton.setBackground(Color.GREEN);
+      } else {
+        this.pbutton.setForeground(Color.RED);
+        this.pbutton.setBackground(Color.RED);
+      }
+      this.pbutton.repaint();
+    }
+
+    protected abstract BooleanProperty getProperty();
+  }
+
+  private static class ShowDetectionOutlinesAction extends JosmButtonAction {
+    private static final long serialVersionUID = 1943388917595255950L;
+    ShowDetectionOutlinesAction() {
+      super(null, new ImageProvider("mapillary_sprite_source/package_objects", "object--sign--information"),
+          tr("Toggle detection outlines"),
+          Shortcut.registerShortcut("mapillary:showdetections", tr("Mapillary: toggle detections"),
+              KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+          false, null, false);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      MapillaryProperties.SHOW_DETECTION_OUTLINES.put(!MapillaryProperties.SHOW_DETECTION_OUTLINES.get());
+      this.setBackground();
+    }
+
+    @Override
+    protected BooleanProperty getProperty() {
+      return MapillaryProperties.SHOW_DETECTION_OUTLINES;
+    }
+  }
+
+  private static class ShowSignDetectionsAction extends JosmButtonAction {
+    private static final long serialVersionUID = -3743322064323002656L;
+
+    ShowSignDetectionsAction() {
+      super(null, new ImageProvider("mapillary_sprite_source/package_signs", "complementary--both-directions--g2"),
+          tr("Toggle sign detection outlines"),
+          Shortcut.registerShortcut("mapillary:showsigndetections", tr("Mapillary: toggle sign detections"),
+              KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+          false, null, false);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      MapillaryProperties.SHOW_DETECTED_SIGNS.put(!MapillaryProperties.SHOW_DETECTED_SIGNS.get());
+      this.setBackground();
+    }
+
+    @Override
+    protected BooleanProperty getProperty() {
+      return MapillaryProperties.SHOW_DETECTED_SIGNS;
+    }
   }
 
   /**
@@ -161,14 +265,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     switch (mode) {
       case WALK:
         createLayout(
-          this.mapillaryImageDisplay,
+          this.panel,
           Arrays.asList(playButton, pauseButton, stopButton)
         );
         break;
       case NORMAL:
       default:
         createLayout(
-          this.mapillaryImageDisplay,
+          this.panel,
           Arrays.asList(blueButton, previousButton, nextButton, redButton)
         );
         break;
@@ -183,6 +287,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 
   /**
    * Destroys the unique instance of the class.
+   * You should prefer to call the destroy method on the actual instance.
    */
   public static synchronized void destroyInstance() {
     instance = null;
@@ -489,5 +594,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     super.showDialog();
     if (this.image != null)
       MapillaryLayer.getInstance().setImageViewed(this.image);
+  }
+
+  @Override
+  public void destroy() {
+    super.destroy();
+    showDetectionOutlinesAction.destroy();
+    showSignDetectionsAction.destroy();
+    playButton.destroy();
+    pauseButton.destroy();
+    stopButton.destroy();
+    destroyInstance();
   }
 }

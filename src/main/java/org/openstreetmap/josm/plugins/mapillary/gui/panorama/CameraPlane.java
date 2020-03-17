@@ -56,7 +56,7 @@ public class CameraPlane {
     try {
       res = rotate(vectors[p.x][p.y]);
     } catch (Exception e) {
-      res = new Vector3D(0, 0, 1);
+      res = Vector3D.DEFAULT_VECTOR_3D;
     }
     return res;
   }

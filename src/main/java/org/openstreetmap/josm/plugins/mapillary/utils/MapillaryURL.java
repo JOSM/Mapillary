@@ -7,12 +7,12 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
@@ -24,6 +24,8 @@ public final class MapillaryURL {
   private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
   private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
   private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
+  private static final String POINT_FEATURES_LAYER = "points";
+  private static final String LINE_FEATURES_LAYER = "lines";
 
   /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly  */
   private static final String SORT_BY_KEY = "&sort_by=key";
@@ -52,12 +54,45 @@ public final class MapillaryURL {
           .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
     }
 
+    public static URL retrieveDetections(String imageKey) {
+      return retrieveDetections(Collections.singleton(imageKey));
+    }
+
+    public static URL retrieveDetections(Collection<String> imageKeys) {
+      return string2URL(baseUrl, "image_detections/",
+          queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
+    }
+
     public static Collection<URL> searchImages(Bounds bounds) {
       return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
     }
 
+    /**
+     * Get the URL for Traffic Sign map features
+     *
+     * @param bounds The bounds to search
+     * @return A URL to use to get traffic sign map features
+     */
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
+      return string2URL(baseUrl, "map_features", queryString(bounds, getDetectionLayers()) + SORT_BY_KEY);
+    }
+
+    /**
+     * Get the URL for point object map features
+     *
+     * @param bounds The bounds to search
+     * @return A URL to use to get point object map features
+     */
+    public static URL searchMapPointObjects(final Bounds bounds) {
+      return string2URL(baseUrl, "map_features", queryString(bounds, getEnabledLayers()) + SORT_BY_KEY);
+    }
+
+    private static String getEnabledLayers() {
+      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER, LINE_FEATURES_LAYER));
+    }
+
+    private static String getDetectionLayers() {
+      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER));
     }
 
     public static Collection<URL> searchSequences(final Bounds bounds) {
@@ -231,7 +266,7 @@ public final class MapillaryURL {
   static String queryString(Map<String, String> parts) {
     StringBuilder ret = new StringBuilder("?client_id=").append(CLIENT_ID);
     if (parts != null) {
-      for (Entry<String, String> entry : parts.entrySet()) {
+      for (Map.Entry<String, String> entry : parts.entrySet()) {
         try {
           ret.append('&')
             .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))

@@ -1,0 +1,3 @@
+[submodule "src/main/resources/images/mapillary_sprite_source"]
+	path = src/main/resources/images/mapillary_sprite_source
+	url = https://github.com/mapillary/mapillary_sprite_source.git

@@ -9,6 +9,7 @@ import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
@@ -53,6 +54,7 @@ public class MapillaryPlugin extends Plugin {
       MainMenu.add(MainApplication.getMenu().moreToolsMenu, WALK_ACTION, false);
       MainMenu.add(MainApplication.getMenu().fileMenu, UPLOAD_ACTION, false, 14);
       MainMenu.add(MainApplication.getMenu().imagerySubMenu, new MapObjectLayerAction(), false);
+      MainMenu.add(MainApplication.getMenu().imagerySubMenu, new MapPointObjectLayerAction(), false);
     }
   }
 

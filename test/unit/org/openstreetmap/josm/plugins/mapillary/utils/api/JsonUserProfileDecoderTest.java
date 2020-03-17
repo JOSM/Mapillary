@@ -31,7 +31,7 @@ public class JsonUserProfileDecoderTest {
   @Rule
   public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
-  private static Object getFakeAvatar() throws IllegalAccessException {
+  private static Object getFakeAvatar() {
     return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");
   }
 
@@ -57,7 +57,7 @@ public class JsonUserProfileDecoderTest {
   }
 
   @Test
-  public void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException, IllegalAccessException {
+  public void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile.json")).readObject());
     assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
     assertEquals("gyllen", profile.getUsername());
@@ -66,7 +66,7 @@ public class JsonUserProfileDecoderTest {
   }
 
   @Test
-  public void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException, IllegalAccessException {
+  public void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
     UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile2.json")).readObject());
     assertEquals("abcdefg1", profile.getKey());
     assertEquals("mapillary_userÄ2!", profile.getUsername());
@@ -74,7 +74,7 @@ public class JsonUserProfileDecoderTest {
   }
 
   @Test
-  public void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException, IllegalAccessException {
+  public void testDecodeInvalidUserProfile() throws IllegalArgumentException, SecurityException {
     assertNull(JsonUserProfileDecoder.decodeUserProfile(null));
     assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{}")));
     assertNull(JsonUserProfileDecoder.decodeUserProfile(JsonUtil.string2jsonObject("{\"key\":\"arbitrary_key\"}")));
