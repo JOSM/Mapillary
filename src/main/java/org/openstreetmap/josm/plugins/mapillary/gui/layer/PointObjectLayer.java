@@ -82,6 +82,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -115,12 +116,11 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   }
 
   private static MapCSSStyleSource getMapCSSStyle() {
-    List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream().filter(
-      MapCSSStyleSource.class::isInstance
-    ).map(MapCSSStyleSource.class::cast).filter(s -> PAINT_STYLE_SOURCE.equals(s.url))
-      .collect(Collectors.toList());
+    List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
+        .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
+        .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
     mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
-      : styles.get(0);
+        : styles.get(0);
     return mapcss;
   }
 
@@ -156,8 +156,10 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       MapPaintStyleLoader.reloadStyle(mapcss);
       MapPaintStyles.fireMapPaintStyleEntryUpdated(MapPaintStyles.getStyles().getStyleSources().indexOf(mapcss));
     }
-    tableModelListener = new FilterEventListener(data);
+    tableModelListener = new FilterEventListener(this, data);
+    ImageCheckBoxButton.FILTER_TABLE_MODEL.addTableModelListener(tableModelListener);
     MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
+    tableModelListener.tableChanged(null);
   }
 
   @Override
@@ -241,9 +243,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
       // paint remainder
       MapViewPoint anchor = mv.getState().getPointFor(new EastNorth(0, 0));
-      Rectangle2D anchorRect = new Rectangle2D.Double(
-        anchor.getInView().getX() % HATCHED_SIZE, anchor.getInView().getY() % HATCHED_SIZE, HATCHED_SIZE, HATCHED_SIZE
-      );
+      Rectangle2D anchorRect = new Rectangle2D.Double(anchor.getInView().getX() % HATCHED_SIZE,
+          anchor.getInView().getY() % HATCHED_SIZE, HATCHED_SIZE, HATCHED_SIZE);
       if (hatched != null) {
         g.setPaint(new TexturePaint(hatched, anchorRect));
       }
@@ -256,10 +257,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     }
 
     AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, inactive);
-    painter.enableSlowOperations(
-        mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
-            || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get()
-    );
+    painter.enableSlowOperations(mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
+        || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get());
     painter.render(data, virtual, box);
     MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
   }
@@ -303,23 +302,23 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     List<Map<String, String>> detections = new ArrayList<>();
     try (JsonParser parser = Json
         .createParser(new ByteArrayInputStream(detectionsValue.getBytes(StandardCharsets.UTF_8)))) {
-        while (parser.hasNext() && JsonParser.Event.START_ARRAY == parser.next()) {
-          JsonArray array = parser.getArray();
-          for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
-            Map<String, String> detection = new HashMap<>();
-            for (Map.Entry<String, JsonValue> entry : obj.entrySet()) {
-              if (entry.getValue().getValueType().equals(JsonValue.ValueType.STRING)) {
-                detection.putIfAbsent(entry.getKey(), ((JsonString) entry.getValue()).getString());
-              } else {
-                detection.putIfAbsent(entry.getKey(), entry.getValue().toString());
-              }
+      while (parser.hasNext() && JsonParser.Event.START_ARRAY == parser.next()) {
+        JsonArray array = parser.getArray();
+        for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
+          Map<String, String> detection = new HashMap<>();
+          for (Map.Entry<String, JsonValue> entry : obj.entrySet()) {
+            if (entry.getValue().getValueType().equals(JsonValue.ValueType.STRING)) {
+              detection.putIfAbsent(entry.getKey(), ((JsonString) entry.getValue()).getString());
+            } else {
+              detection.putIfAbsent(entry.getKey(), entry.getValue().toString());
             }
-            detections.add(detection);
           }
+          detections.add(detection);
         }
-      } catch (JsonException e) {
-        Logging.error(e);
       }
+    } catch (JsonException e) {
+      Logging.error(e);
+    }
     return detections;
   }
 
@@ -330,19 +329,14 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
   @Override
   public Action[] getMenuEntries() {
-      List<Action> actions = new ArrayList<>();
-      actions.addAll(Arrays.asList(
-        LayerListDialog.getInstance().createActivateLayerAction(this),
+    List<Action> actions = new ArrayList<>();
+    actions.addAll(Arrays.asList(LayerListDialog.getInstance().createActivateLayerAction(this),
         LayerListDialog.getInstance().createShowHideLayerAction(),
-        LayerListDialog.getInstance().createDeleteLayerAction(),
-        SeparatorLayerAction.INSTANCE,
+        LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
         LayerListDialog.getInstance().createMergeLayerAction(this)));
-      actions.addAll(Arrays.asList(
-        SeparatorLayerAction.INSTANCE,
-        new RenameLayerAction(getAssociatedFile(), this),
-        SeparatorLayerAction.INSTANCE,
-        new RequestDataAction()));
-      return actions.toArray(new Action[0]);
+    actions.addAll(Arrays.asList(SeparatorLayerAction.INSTANCE, new RenameLayerAction(getAssociatedFile(), this),
+        SeparatorLayerAction.INSTANCE, new RequestDataAction()));
+    return actions.toArray(new Action[0]);
   }
 
   static class RequestDataAction extends AbstractAction {

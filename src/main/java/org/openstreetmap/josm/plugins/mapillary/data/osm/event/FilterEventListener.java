@@ -1,6 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.osm.event;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -10,6 +14,8 @@ import org.openstreetmap.josm.data.osm.FilterMatcher;
 import org.openstreetmap.josm.data.osm.FilterWorker;
 import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -19,9 +25,12 @@ import org.openstreetmap.josm.tools.Logging;
  * @author Taylor Smock
  */
 public class FilterEventListener implements TableModelListener {
+  private final Layer layer;
   private final DataSet data;
   public final FilterMatcher matcher;
-  public FilterEventListener(DataSet data) {
+
+  public FilterEventListener(Layer layer, DataSet data) {
+    this.layer = layer;
     this.data = data;
     matcher = new FilterMatcher();
   }
@@ -31,15 +40,19 @@ public class FilterEventListener implements TableModelListener {
     updateAndRunFilters();
   }
 
-  public void updateAndRunFilters() {
+  public synchronized void updateAndRunFilters() {
     matcher.reset();
-    for (Filter filter : MainApplication.getMap().filterDialog.getFilterModel().getFilters()) {
-      try {
-        matcher.add(filter);
-      } catch (SearchParseError e1) {
-        Logging.error(e1);
+    for (List<Filter> filters : Arrays.asList(ImageCheckBoxButton.FILTER_TABLE_MODEL.getFilters(),
+        MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
+      for (Filter filter : filters) {
+        try {
+          matcher.add(filter);
+        } catch (SearchParseError e1) {
+          Logging.error(e1);
+        }
       }
     }
     FilterWorker.executeFilters(data.allNonDeletedPrimitives(), matcher);
+    SwingUtilities.invokeLater(layer::invalidate);
   }
 }
