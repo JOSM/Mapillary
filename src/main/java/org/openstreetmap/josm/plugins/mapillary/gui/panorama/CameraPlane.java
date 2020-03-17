@@ -6,6 +6,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
 
 import org.openstreetmap.josm.tools.Logging;
@@ -16,6 +20,7 @@ public class CameraPlane {
   private final double distance;
 
   private Vector3D[][] vectors;
+  private Rotation rotation;
   private double theta;
   private double sinTheta;
   private double cosTheta;
@@ -30,6 +35,7 @@ public class CameraPlane {
     this.width = width;
     this.height = height;
     this.distance = distance;
+    rotation = new Rotation(RotationOrder.XYX, RotationConvention.VECTOR_OPERATOR, 0, 0, 0);
     setRotation(0.0, 0.0);
     vectors = new Vector3D[width][height];
     IntStream.range(0, height).parallel().forEach(
@@ -66,7 +72,7 @@ public class CameraPlane {
     try {
       res = rotate(vectors[p.x][p.y]);
     } catch (Exception e) {
-      res = Vector3D.DEFAULT_VECTOR_3D;
+      res = new Vector3D(0, 0);
     }
     return res;
   }
