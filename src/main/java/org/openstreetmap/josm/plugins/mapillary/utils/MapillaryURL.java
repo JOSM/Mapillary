@@ -67,6 +67,14 @@ public final class MapillaryURL {
       return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
     }
 
+    public static URL retrieveGroups(String user) {
+      return string2URL(baseUrl, "users/" + user + "/organizations", queryString(null));
+    }
+    
+    public static URL retrieveGroup(String group) {
+      return string2URL(baseUrl, "organizations/" + group, queryString(null));
+    }
+
     /**
      * Get the URL for Traffic Sign map features
      *

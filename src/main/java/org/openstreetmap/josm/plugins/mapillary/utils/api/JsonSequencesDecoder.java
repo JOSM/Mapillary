@@ -39,7 +39,9 @@ public final class JsonSequencesDecoder {
     final JsonObject properties = json.getJsonObject("properties");
     final Long capturedAt = properties == null ? null : JsonDecoder.decodeTimestamp(properties.getString("captured_at", null));
     if (properties != null && properties.getString("key", null) != null && properties.getString("user_key", null) != null && capturedAt != null) {
-      result = new MapillarySequence(properties.getString("key", null), properties.getString("user_key", null), capturedAt);
+      result = new MapillarySequence(
+        properties.getString("key", null), properties.getString("user_key", null), properties.getString("organization_key", null), capturedAt
+      );
 
       final Double[] cas = decodeCoordinateProperty(
         properties,

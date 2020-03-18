@@ -152,7 +152,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
       toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
-
+      // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert filter
+      // dialog is added.
+      newFrame.conflictDialog.getToggleAction().actionPerformed(null);
+      newFrame.conflictDialog.getToggleAction().actionPerformed(null);
     } else if (oldFrame != null && newFrame == null) { // map frame removed
       toggleDialog.forEach(ToggleDialog::destroy);
       toggleDialog.clear();

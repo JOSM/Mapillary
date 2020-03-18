@@ -195,6 +195,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void onLogin(final String username) {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(() -> onLogin(username));
+      return;
+    }
     requiresLogin.setVisible(true);
     loginPanel.remove(loginButton);
     loginPanel.add(logoutButton, 3);
@@ -205,6 +209,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
   @Override
   public void onLogout() {
+    if (!SwingUtilities.isEventDispatchThread()) {
+      SwingUtilities.invokeLater(this::onLogout);
+      return;
+    }
     requiresLogin.setVisible(false);
     loginPanel.remove(logoutButton);
     loginPanel.add(loginButton, 3);

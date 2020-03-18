@@ -33,8 +33,6 @@ import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent.DatasetEventType;
 import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListener;
-import org.openstreetmap.josm.data.osm.event.DatasetEventManager;
-import org.openstreetmap.josm.data.osm.event.DatasetEventManager.FireMode;
 import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
 import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
 import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
@@ -42,8 +40,6 @@ import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
 import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
 import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
 import org.openstreetmap.josm.data.osm.search.SearchSetting;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.MapFrame.MapModeChangeListener;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.IEnabledStateUpdating;
@@ -102,21 +98,6 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
       instance = new MapillaryExpertFilterDialog();
     }
     return instance;
-  }
-
-  @Override
-  public void showNotify() {
-    DatasetEventManager.getInstance().addDatasetListener(this, FireMode.IN_EDT_CONSOLIDATED);
-    MapFrame.addMapModeChangeListener(this);
-    filterModel.executeFilters(true);
-  }
-
-  @Override
-  public void hideNotify() {
-    DatasetEventManager.getInstance().removeDatasetListener(this);
-    MapFrame.removeMapModeChangeListener(this);
-    filterModel.model.clearFilterFlags();
-    MainApplication.getLayerManager().invalidateEditLayer();
   }
 
   private static final Shortcut ENABLE_FILTER_SHORTCUT = Shortcut.registerShortcut(

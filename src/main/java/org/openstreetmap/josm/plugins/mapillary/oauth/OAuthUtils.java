@@ -75,7 +75,10 @@ public final class OAuthUtils {
    * @return The CachedFile for easy chaining
    */
   public static CachedFile addAuthenticationHeader(CachedFile file) {
-    return file.setHttpHeaders(Collections.singletonMap("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get()));
+    if (MapillaryProperties.ACCESS_TOKEN.get() != null) {
+      return file.setHttpHeaders(Collections.singletonMap("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get()));
+    }
+    return file;
   }
 
   /**
