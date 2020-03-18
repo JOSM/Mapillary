@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -100,11 +101,8 @@ public class TrafficSignFilter extends ToggleDialog {
 
   private void addButtons() {
     VerticallyScrollablePanel scrollPane = new VerticallyScrollablePanel(new GridBagLayout());
-    buttons.addAll(getIcons(scrollPane, "signs"));
-    scrollPane.getScrollableTracksViewportWidth();
-    scrollPane.add(new JSeparator(), GBC.eol());
-    scrollPane.getScrollableTracksViewportWidth();
-    buttons.addAll(getIcons(scrollPane, "objects"));
+    getIcons(scrollPane, "signs");
+    getIcons(scrollPane, "objects");
     panel.add(scrollPane.getVerticalScrollPane(), GBC.eol().fill().anchor(GridBagConstraints.WEST));
   }
 
@@ -114,22 +112,34 @@ public class TrafficSignFilter extends ToggleDialog {
     );
   }
 
-  public static List<ImageCheckBoxButton> getIcons(JComponent panel, String type) {
+  public void getIcons(JComponent panel, String type) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      MainApplication.worker.submit(() -> getIcons(panel, type));
+      return;
+    }
     String directory = "mapillary_sprite_source/package_" + type;
-    List<ImageCheckBoxButton> buttons = new ArrayList<>();
     try {
       List<String> files = IOUtils.readLines(ResourceProvider.getResourceAsStream("/images/" + directory),
           Charsets.UTF_8);
       Collections.sort(files);
       for (String file : files) {
-        ImageCheckBoxButton button = new ImageCheckBoxButton(directory, file);
-        buttons.add(button);
-        panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
+        try {
+          SwingUtilities.invokeAndWait(() -> {
+            ImageCheckBoxButton button = new ImageCheckBoxButton(directory, file);
+            buttons.add(button);
+            panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
+          });
+        } catch (InvocationTargetException e) {
+          Logging.error(e);
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
+        }
       }
+      SwingUtilities.invokeLater(() -> panel.add(new JSeparator(), GBC.eol()));
     } catch (IOException e) {
       Logging.error(e);
     }
-    return buttons;
   }
 
   @Override

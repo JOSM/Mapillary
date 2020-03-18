@@ -51,8 +51,6 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
       name = splitName[splitName.length - 2];
     }
 
-    setToolTipText(imageName.replace(".svg", ""));
-
     name = name.replace("-", " ");
     String filterText = "value=\"" + imageName.replace(".svg", "") + "\"";
     filter = FILTER_TABLE_MODEL.getFilters().parallelStream().filter(f -> f.text.equals(filterText)).findAny()
@@ -63,6 +61,10 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     add(jcheckbox, GBC.eol().fill());
     image.addActionListener(l -> updateCheckBox(jcheckbox, filter));
     jcheckbox.addActionListener(l -> updateFilters(jcheckbox, filter));
+
+    image.setToolTipText(imageName.replace(".svg", ""));
+    jcheckbox.setToolTipText(image.getToolTipText());
+
     tableChanged(null);
   }
 
