@@ -99,6 +99,9 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
 
   @Override
   public void tableChanged(TableModelEvent e) {
+    if (filter == null) {
+      return;
+    }
     final int index = FILTER_TABLE_MODEL.getFilters().indexOf(filter);
     if (index < 0) {
       filter.enable = false;
@@ -158,6 +161,13 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
       updateFilters(jcheckbox, filter);
     }
     return null;
+  }
+
+  /**
+   * @return {@code true} if selected (see {@link JCheckBox#isSelected}).
+   */
+  public boolean isSelected() {
+    return jcheckbox.isSelected();
   }
 
   /**

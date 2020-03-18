@@ -37,7 +37,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
@@ -151,9 +150,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       toggleDialog.add(MapillaryFilterDialog.getInstance());
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
 
-      TrafficSignFilter trafficSignFilter = new TrafficSignFilter();
-      toggleDialog.add(trafficSignFilter);
-      newFrame.addToggleDialog(trafficSignFilter, false);
     } else if (oldFrame != null && newFrame == null) { // map frame removed
       toggleDialog.forEach(ToggleDialog::destroy);
       toggleDialog.clear();

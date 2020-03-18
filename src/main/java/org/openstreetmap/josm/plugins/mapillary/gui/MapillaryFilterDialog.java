@@ -22,6 +22,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -40,6 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
@@ -84,6 +86,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   private final JavaFxWrapper<DatePicker> endDate;
 
   private boolean destroyed;
+
+  private TrafficSignFilter objectFilter;
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
@@ -152,6 +156,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
+    panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    objectFilter = new TrafficSignFilter();
+    panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
+
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
   }
 
@@ -197,6 +205,9 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
     this.spinnerModel.setValue(1);
+    this.objectFilter.reset();
+    this.endDate.getNode().setValue(null);
+    this.startDate.getNode().setValue(null);
     refresh();
   }
 
@@ -411,6 +422,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   public void destroy() {
     if (!destroyed) {
       super.destroy();
+      objectFilter.destroy();
       MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;
     }
