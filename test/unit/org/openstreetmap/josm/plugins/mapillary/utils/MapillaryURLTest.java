@@ -130,12 +130,11 @@ public class MapillaryURLTest {
 
   @Test
   public void testConnectURL() {
-    String expectedScope = "scope=user%3Aread+org%3Aread+public%3Aupload+public%3Awrite+private%3Aread";
     assertUrlEquals(
         MapillaryURL.MainWebsite.connect("http://redirect-host/ä"),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        expectedScope,
+        "scope=user%3Aread+public%3Aupload+public%3Awrite+private%3Aread",
         "response_type=token",
         "redirect_uri=http%3A%2F%2Fredirect-host%2F%C3%A4"
     );
@@ -144,7 +143,7 @@ public class MapillaryURLTest {
         MapillaryURL.MainWebsite.connect(null),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        expectedScope,
+        "scope=user%3Aread+public%3Aupload+public%3Awrite+private%3Aread",
         "response_type=token"
     );
 
@@ -152,7 +151,7 @@ public class MapillaryURLTest {
         MapillaryURL.MainWebsite.connect(""),
         "https://www.mapillary.com/connect",
         CLIENT_ID_QUERY_PART,
-        expectedScope,
+        "scope=user%3Aread+public%3Aupload+public%3Awrite+private%3Aread",
         "response_type=token"
     );
   }

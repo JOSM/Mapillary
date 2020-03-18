@@ -238,7 +238,7 @@ public final class MapillaryURL {
         parts.put("redirect_uri", redirectURI);
       }
       parts.put("response_type", "token");
-      parts.put("scope", "user:read org:read public:upload public:write private:read");
+      parts.put("scope", "user:read public:upload public:write private:read");
       return string2URL(baseUrl, "connect", queryString(parts));
     }
 
