@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
@@ -18,6 +19,7 @@ import javax.swing.event.TableModelListener;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterTableModel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -154,5 +156,15 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
       updateFilters(jcheckbox, filter);
     }
     return null;
+  }
+
+  /**
+   * @return {@code true} if a point object layer has it. Or if there are no point object layers.
+   */
+  public boolean isRelevant() {
+    List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+    return layers.isEmpty() || layers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(
+      ds -> ds.allPrimitives().parallelStream()
+    ).filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(imageName::contains);
   }
 }

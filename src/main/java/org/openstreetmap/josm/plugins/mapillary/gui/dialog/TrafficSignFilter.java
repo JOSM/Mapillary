@@ -47,6 +47,8 @@ public class TrafficSignFilter extends ToggleDialog {
   private boolean destroyed;
   private final JPanel panel;
   private final List<ImageCheckBoxButton> buttons;
+  private boolean showRelevant;
+  private FilterField filterField;
 
   public TrafficSignFilter() {
     super(DIALOG_NAME, "mapillary-filter", DIALOG_NAME,
@@ -54,16 +56,24 @@ public class TrafficSignFilter extends ToggleDialog {
 
     panel = new JPanel(new GridBagLayout());
 
-    FilterField filterField = new FilterField().filter(this::filterButtons);
+    filterField = new FilterField().filter(this::filterButtons);
     filterField.setToolTipText(I18n.tr("Filter Mapillary Detections"));
-    panel.add(filterField, GBC.std().fill(GridBagConstraints.HORIZONTAL));
+    panel.add(filterField, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     JCheckBox toggleVisible = new JCheckBox(I18n.tr("Select Visible"));
+    JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
+    showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
     toggleVisible.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
+    panel.add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.EAST));
     panel.add(toggleVisible, GBC.eol().anchor(GridBagConstraints.EAST));
 
     buttons = new ArrayList<>();
     addButtons();
     super.createLayout(panel, false, Collections.emptyList());
+  }
+
+  private void showRelevantObjects(boolean showRelevant) {
+    this.showRelevant = showRelevant;
+    filterButtons(filterField.getText());
   }
 
   private void toggleVisible(boolean check) {
@@ -99,7 +109,9 @@ public class TrafficSignFilter extends ToggleDialog {
   }
 
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(() -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr))));
+    SwingUtilities.invokeLater(
+      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant())))
+    );
   }
 
   public static List<ImageCheckBoxButton> getIcons(JComponent panel, String type) {
