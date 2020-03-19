@@ -119,7 +119,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     timePanel.add(endDate, GBC.eol());
     Dimension d = timePanel.getMinimumSize();
     d.width = (int) (Math.ceil(d.width * 1.15));
-    d.height = (int) (Math.ceil(d.height * 1.15)); // TODO check
+    d.height = (int) (Math.ceil(d.height * 1.15));
     timePanel.setMinimumSize(d);
 
     startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
@@ -132,6 +132,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       spinner.setEnabled(filterByDateCheckbox.isSelected());
       time.setEnabled(filterByDateCheckbox.isSelected());
     });
+
+    spinner.addChangeListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
+    time.addActionListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
+    filterByDateCheckbox.addChangeListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
 
     JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -161,6 +165,26 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
 
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
+  }
+
+  private static void updateStartDate(DatePicker startDate, SpinnerNumberModel spinner, JComboBox<String> timeStep) {
+    if (timeStep.isEnabled()) {
+      LocalDate current = LocalDate.now();
+      String type = (String) timeStep.getSelectedItem();
+      int start = spinner.getNumber().intValue();
+      if (TIME_LIST[0].equals(type)) {
+        // Year
+        startDate.setValue(current.minusYears(start));
+      } else if (TIME_LIST[1].equals(type)) {
+        // Month
+        startDate.setValue(current.minusMonths(start));
+      } else if (TIME_LIST[2].contentEquals(type)) {
+        // Day
+        startDate.setValue(current.minusDays(start));
+      }
+    } else {
+      startDate.setValue(null);
+    }
   }
 
   private void updateDates(JavaFxWrapper<?> modified) {

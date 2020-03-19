@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import org.openstreetmap.josm.data.osm.Filter;
@@ -334,6 +335,6 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
     manyChanges = false;
     savePrefs();
     updateFilters();
-    fireTableDataChanged();
+    SwingUtilities.invokeLater(this::fireTableDataChanged);
   }
 }

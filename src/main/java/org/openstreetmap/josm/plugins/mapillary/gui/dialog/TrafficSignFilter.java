@@ -60,9 +60,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   private final List<ImageCheckBoxButton> buttons;
   private boolean showRelevant;
   private final FilterField filterField;
-  private SpinnerNumberModel showMaxModel;
+  private final SpinnerNumberModel showMaxNumberModel;
   private int detectionPage;
-  private JCheckBox toggleVisible;
+  private final JCheckBox toggleVisibleCheckbox;
 
   public TrafficSignFilter() {
     setLayout(new GridBagLayout());
@@ -93,7 +93,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     filterField = new FilterField().filter(this::filterButtons);
     filterField.setToolTipText(I18n.tr("Filter Mapillary Detections"));
     add(filterField, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    toggleVisible = new JCheckBox(I18n.tr("Select Visible"));
+    toggleVisibleCheckbox = new JCheckBox(I18n.tr("Select Visible"));
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
@@ -103,16 +103,16 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     pagination.add(previousButtonPagination, GBC.std().anchor(GridBagConstraints.EAST));
     JSpinner showMax = new JSpinner();
     showMax.setMaximumSize(new Dimension(60, showMax.getMaximumSize().height));
-    showMaxModel = new SpinnerNumberModel(100, 10, Integer.MAX_VALUE, 10);
-    showMax.setModel(showMaxModel);
-    showMaxModel.addChangeListener(l -> updateShown(showMaxModel));
-    showMax.addChangeListener(l -> updateShown(showMaxModel));
+    showMaxNumberModel = new SpinnerNumberModel(100, 10, Integer.MAX_VALUE, 10);
+    showMax.setModel(showMaxNumberModel);
+    showMaxNumberModel.addChangeListener(l -> updateShown(showMaxNumberModel));
+    showMax.addChangeListener(l -> updateShown(showMaxNumberModel));
     pagination.add(showMax, GBC.std().anchor(GridBagConstraints.CENTER));
     pagination.add(nextButtonPagination, GBC.std().anchor(GridBagConstraints.WEST));
     showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
-    toggleVisible.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
+    toggleVisibleCheckbox.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
     add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.WEST));
-    add(toggleVisible, GBC.std().anchor(GridBagConstraints.CENTER));
+    add(toggleVisibleCheckbox, GBC.std().anchor(GridBagConstraints.CENTER));
     add(pagination, GBC.eol().anchor(GridBagConstraints.EAST));
 
     buttons = new ArrayList<>();
@@ -126,10 +126,10 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       detectionPage = 0;
     }
     long visible = buttons.parallelStream().filter(b -> b.isFiltered(filterField.getText())).count();
-    while (detectionPage * showMaxModel.getNumber().intValue() > visible) {
+    while (detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
       detectionPage--;
     }
-    updateShown(showMaxModel);
+    updateShown(showMaxNumberModel);
   }
 
   private void updateShown(SpinnerNumberModel model) {
@@ -141,8 +141,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     long notSelected = buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
     long selected = buttons.parallelStream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
       .count();
-    toggleVisible.setSelected(notSelected < selected);
-    toggleVisible.invalidate();
+    toggleVisibleCheckbox.setSelected(notSelected < selected);
+    toggleVisibleCheckbox.invalidate();
   }
 
   private static void createFirstLastSeen(JPanel panel, String firstLast) {
@@ -245,7 +245,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   private void showRelevantObjects(boolean showRelevant) {
     this.showRelevant = showRelevant;
     filterButtons(filterField.getText());
-    updateShown(showMaxModel);
+    updateShown(showMaxNumberModel);
   }
 
   private void toggleVisible(boolean check) {
@@ -254,7 +254,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       return;
     }
     MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-    List<Future<?>> futures = buttons.parallelStream().filter(ImageCheckBoxButton::isVisible)
+    List<Future<?>> futures = buttons.stream().filter(ImageCheckBoxButton::isVisible)
         .map(b -> b.setSelected(check)).filter(Objects::nonNull).collect(Collectors.toList());
 
     for (Future<?> future : futures) {
@@ -308,7 +308,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
         }
       }
       SwingUtilities.invokeLater(() -> panel.add(new JSeparator(), GBC.eol()));
-      Stream.of(showMaxModel.getListeners(ChangeListener.class))
+      Stream.of(showMaxNumberModel.getListeners(ChangeListener.class))
         .forEach(i -> SwingUtilities.invokeLater(() -> i.stateChanged(new ChangeEvent(this))));
     } catch (IOException e) {
       Logging.error(e);
@@ -329,7 +329,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   public void reset() {
     buttons.forEach(b -> b.setSelected(false));
     filterField.setText("");
-    showMaxModel.setValue(100);
+    showMaxNumberModel.setValue(100);
     while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
       MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
     }
@@ -340,7 +340,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     if (component instanceof JavaFxWrapper && ((JavaFxWrapper<?>) component).getNode() instanceof DatePicker) {
       ((DatePicker) ((JavaFxWrapper<?>) component).getNode()).setValue(null);
     } else if (component instanceof JSpinner && ((JSpinner) component).getModel() instanceof SpinnerNumberModel
-      && !((JSpinner) component).getModel().equals(showMaxModel)) {
+      && !((JSpinner) component).getModel().equals(showMaxNumberModel)) {
       ((SpinnerNumberModel) ((JSpinner) component).getModel()).setValue(0);
     }
     if (component instanceof JComponent) {
