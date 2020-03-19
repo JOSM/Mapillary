@@ -56,7 +56,6 @@ import org.openstreetmap.josm.tools.ResourceProvider;
  */
 public class TrafficSignFilter extends JPanel implements Destroyable {
   private static final long serialVersionUID = 1177890183422385423L;
-  public static final MapillaryFilterTableModel FILTER_TABLE_MODEL = ImageCheckBoxButton.FILTER_TABLE_MODEL;
   private boolean destroyed;
   private final List<ImageCheckBoxButton> buttons;
   private boolean showRelevant;
@@ -78,10 +77,13 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     JSpinner minDetections = new JSpinner();
     minDetections.setModel(new SpinnerNumberModel(0, 0, 100, 1));
     add(minDetections, GBC.eol());
-    Filter minDetectionFilter = FILTER_TABLE_MODEL.getFilters().parallelStream()
+    Filter minDetectionFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
       .filter(p -> p.text.contains("min_detections")).findFirst().orElseGet(() -> {
         Filter filter = new Filter();
-        FILTER_TABLE_MODEL.addFilter(filter);
+        filter.enable = false;
+        filter.hiding = true;
+        filter.text = "min_detections < 0";
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
         return filter;
       });
     minDetections.addChangeListener(l -> updateMinDetectionFilter(minDetections, minDetectionFilter));
@@ -192,7 +194,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
         lastSeen.setValue(end);
       }
     }
-    Filter dateFilter = FILTER_TABLE_MODEL.getFilters().parallelStream()
+    Filter dateFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
       .filter(p -> p.text.contains(position + "_seen_at")).findFirst().orElseGet(Filter::new);
     StringBuilder filterText = new StringBuilder();
     if (start != null) {
@@ -208,11 +210,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     dateFilter.inverted = true;
     dateFilter.enable = !dateFilter.text.isEmpty();
     doFilterAddRemoveWork(dateFilter);
-    List<Filter> toRemove = FILTER_TABLE_MODEL.getFilters().parallelStream().filter(f -> f.text.isEmpty())
+    List<Filter> toRemove = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
+      .filter(f -> f.text.isEmpty())
       .collect(Collectors.toList());
     for (Filter f : toRemove) {
-      int index = FILTER_TABLE_MODEL.getFilters().indexOf(f);
-      FILTER_TABLE_MODEL.removeFilter(index);
+      int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(f);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
     }
   }
 
@@ -228,13 +231,13 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   }
 
   private static void doFilterAddRemoveWork(Filter filter) {
-    int index = FILTER_TABLE_MODEL.getFilters().indexOf(filter);
+    int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
     if (index < 0 && filter.enable && !filter.text.isEmpty()) {
-      FILTER_TABLE_MODEL.addFilter(filter);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
     } else if (filter.enable) {
-      FILTER_TABLE_MODEL.fireTableRowsUpdated(index, index);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().fireTableRowsUpdated(index, index);
     } else {
-      FILTER_TABLE_MODEL.removeFilter(index);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
     }
 
   }
@@ -250,7 +253,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       MainApplication.worker.execute(() -> toggleVisible(check));
       return;
     }
-    FILTER_TABLE_MODEL.pauseUpdates();
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
     List<Future<?>> futures = buttons.parallelStream().filter(ImageCheckBoxButton::isVisible)
         .map(b -> b.setSelected(check)).filter(Objects::nonNull).collect(Collectors.toList());
 
@@ -264,7 +267,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
         Logging.error(e);
       }
     }
-    FILTER_TABLE_MODEL.resumeUpdates();
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
   }
 
   private void addButtons() {
@@ -327,8 +330,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     buttons.forEach(b -> b.setSelected(false));
     filterField.setText("");
     showMaxModel.setValue(100);
-    while (!FILTER_TABLE_MODEL.getFilters().isEmpty()) {
-      FILTER_TABLE_MODEL.removeFilter(0);
+    while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
     }
     Stream.of(getComponents()).forEach(this::resetSubPanels);
   }

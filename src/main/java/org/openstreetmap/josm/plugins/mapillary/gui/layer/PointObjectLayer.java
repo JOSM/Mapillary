@@ -82,8 +82,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -157,7 +157,7 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
       MapPaintStyles.fireMapPaintStyleEntryUpdated(MapPaintStyles.getStyles().getStyleSources().indexOf(mapcss));
     }
     tableModelListener = new FilterEventListener(this, data);
-    ImageCheckBoxButton.FILTER_TABLE_MODEL.addTableModelListener(tableModelListener);
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(tableModelListener);
     MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
     tableModelListener.tableChanged(null);
   }

@@ -15,7 +15,7 @@ import org.openstreetmap.josm.data.osm.FilterWorker;
 import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -42,7 +42,8 @@ public class FilterEventListener implements TableModelListener {
 
   public synchronized void updateAndRunFilters() {
     matcher.reset();
-    for (List<Filter> filters : Arrays.asList(ImageCheckBoxButton.FILTER_TABLE_MODEL.getFilters(),
+    for (List<Filter> filters : Arrays.asList(
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
         MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
       for (Filter filter : filters) {
         try {

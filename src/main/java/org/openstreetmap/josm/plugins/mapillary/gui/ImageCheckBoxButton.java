@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -18,7 +17,7 @@ import javax.swing.event.TableModelListener;
 
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterTableModel;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
@@ -29,9 +28,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author Taylor Smock
  */
 public class ImageCheckBoxButton extends JPanel implements Destroyable, TableModelListener {
-  // TODO make a filter dialog just for Mapillary
-  public static final MapillaryFilterTableModel FILTER_TABLE_MODEL = new MapillaryFilterTableModel(
-      new DefaultListSelectionModel());
+  private static final long serialVersionUID = 3659377445718790107L;
   private final transient Filter filter;
   private final JCheckBox jcheckbox;
   private final String imageName;
@@ -40,7 +37,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   public ImageCheckBoxButton(String directory, String imageName) {
     super(new GridBagLayout());
     this.imageName = imageName;
-    FILTER_TABLE_MODEL.addTableModelListener(this);
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
     ImageProvider provider = new ImageProvider(directory, imageName);
     splitName = imageName.split("--", -1);
     JButton image = new JButton();
@@ -53,7 +50,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
 
     name = name.replace("-", " ");
     String filterText = "value=\"" + imageName.replace(".svg", "") + "\"";
-    filter = FILTER_TABLE_MODEL.getFilters().parallelStream().filter(f -> f.text.equals(filterText)).findAny()
+    filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
+      .filter(f -> f.text.equals(filterText)).findAny()
         .orElse(makeNewFilter());
     filter.text = filterText;
 
@@ -80,21 +78,21 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   }
 
   private static void updateFilters(JCheckBox jcheckbox, Filter filter) {
-    int index = FILTER_TABLE_MODEL.getFilters().indexOf(filter);
+    int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
     if (jcheckbox.isSelected()) {
       filter.enable = true;
     } else if (!jcheckbox.isSelected()) {
       filter.enable = false;
-      FILTER_TABLE_MODEL.removeFilter(index);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
     }
     if (index < 0 && filter.enable) {
-      FILTER_TABLE_MODEL.addFilter(filter);
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
     }
   }
 
   @Override
   public void destroy() {
-    FILTER_TABLE_MODEL.removeTableModelListener(this);
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().removeTableModelListener(this);
   }
 
   @Override
@@ -102,11 +100,11 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     if (filter == null) {
       return;
     }
-    final int index = FILTER_TABLE_MODEL.getFilters().indexOf(filter);
+    final int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
     if (index < 0) {
       filter.enable = false;
     }
-    if (e != null && (e.getFirstRow() > index || e.getLastRow() < index)) {
+    if (e != null && (e.getFirstRow() > index || e.getLastRow() < index) && e.getType() != TableModelEvent.DELETE) {
       return;
     }
     if (SwingUtilities.isEventDispatchThread()) {

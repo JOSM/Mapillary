@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
@@ -111,10 +112,18 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
 
   private void loadPrefs() {
     model.loadPrefs("mapillary.filters.entries");
+    cleanup();
   }
 
   private void savePrefs() {
     model.savePrefs("mapillary.filters.entries");
+  }
+
+  private void cleanup() {
+    List<Filter> toRemove = getFilters().parallelStream().filter(f -> f.text.isEmpty()).collect(Collectors.toList());
+    for (Filter f : toRemove) {
+      removeFilter(getFilters().indexOf(f));
+    }
   }
 
   /**
