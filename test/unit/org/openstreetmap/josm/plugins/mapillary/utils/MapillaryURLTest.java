@@ -19,7 +19,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 
 public class MapillaryURLTest {
-  private static final String CLIENT_ID_QUERY_PART = "client_id=T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
+  private static final String CLIENT_ID_QUERY_PART = "client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
   private static final String SORT_BY_KEY = "sort_by=key";
 
   public static class APIv3 {
@@ -77,11 +77,11 @@ public class MapillaryURLTest {
     @Test
     public void testParseNextFromHeaderValue() throws MalformedURLException {
       String headerVal =
-        "<https://a.mapillary.com/v3/sequences?page=1&per_page=200&client_id=TG1sUUxGQlBiYWx2V05NM0pQNUVMQTo2NTU3NTBiNTk1NzM1Y2U2>; rel=\"first\", " +
-        "<https://a.mapillary.com/v3/sequences?page=2&per_page=200&client_id=TG1sUUxGQlBiYWx2V05NM0pQNUVMQTo2NTU3NTBiNTk1NzM1Y2U2>; rel=\"prev\", " +
-        "<https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=TG1sUUxGQlBiYWx2V05NM0pQNUVMQTo2NTU3NTBiNTk1NzM1Y2U2>; rel=\"next\"";
+        "<https://a.mapillary.com/v3/sequences?page=1&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"first\", " +
+        "<https://a.mapillary.com/v3/sequences?page=2&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"prev\", " +
+        "<https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"next\"";
       assertEquals(
-        new URL("https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=TG1sUUxGQlBiYWx2V05NM0pQNUVMQTo2NTU3NTBiNTk1NzM1Y2U2"),
+        new URL("https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"),
         MapillaryURL.APIv3.parseNextFromLinkHeaderValue(headerVal)
       );
     }

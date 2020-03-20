@@ -22,7 +22,7 @@ import org.openstreetmap.josm.tools.Logging;
 public final class MapillaryURL {
   /** Base URL of the Mapillary API. */
   private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
-  private static final String CLIENT_ID = "T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz";
+  private static final String CLIENT_ID = "UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
   private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
   private static final String POINT_FEATURES_LAYER = "points";
   private static final String LINE_FEATURES_LAYER = "lines";
