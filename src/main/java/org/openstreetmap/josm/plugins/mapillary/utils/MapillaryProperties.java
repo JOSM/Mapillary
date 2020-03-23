@@ -82,6 +82,11 @@ public final class MapillaryProperties {
    */
   public static final BooleanProperty POINT_FEATURES = new BooleanProperty("mapillary.pointfeatures", false);
 
+  /**
+   * The opacity for unselected images when an image is selected
+   */
+  public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.25);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

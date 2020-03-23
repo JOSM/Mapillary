@@ -79,6 +79,9 @@ public class MapillaryData implements Data {
    */
   private final Set<MapillaryAbstractImage> fullyDownloadedDetections = ConcurrentHashMap.newKeySet();
 
+  /** Keeps track of highlighted images */
+  private final Set<MapillaryAbstractImage> highlightedImages = ConcurrentHashMap.newKeySet();
+
   /**
    * Creates a new object and adds the initial set of listeners.
    */
@@ -241,6 +244,23 @@ public class MapillaryData implements Data {
    */
   public MapillaryAbstractImage getHighlightedImage() {
     return this.highlightedImage;
+  }
+
+  /**
+   * @return The highlighted images (not including the image under the mouse cursor).
+   */
+  public Collection<MapillaryAbstractImage> getHighlightedImages() {
+    return Collections.unmodifiableCollection(highlightedImages);
+  }
+
+  /**
+   * Set the highlighted images
+   *
+   * @param images The images to highlight (not including the one hovered over by the mouse)
+   */
+  public void setHighlightedImages(Collection<MapillaryAbstractImage> images) {
+    highlightedImages.clear();
+    highlightedImages.addAll(images);
   }
 
   /**

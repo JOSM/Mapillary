@@ -354,13 +354,21 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (seq.getImages().contains(selectedImage)) {
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED
-        );
+          );
+      } else if (selectedImage == null) {
+        g.setColor(
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
+          );
       } else {
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
-        );
+          );
+        g.setComposite(
+          AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue())
+          );
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
       if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
@@ -384,7 +392,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
     final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
-
+    Composite composite = g.getComposite();
+    if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
+      g.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue())
+        );
+    }
     // Determine colors
     final Color markerC;
     final Color directionC;
@@ -411,12 +424,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
 
     // Paint highlight for selected or highlighted images
-    if (img.equals(getData().getHighlightedImage()) || getData().getMultiSelectedImages().contains(img)) {
+    if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
+      || getData().getMultiSelectedImages().contains(img)) {
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
     }
-
 
     if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
       Path2D trafficSign = new Path2D.Double();
@@ -430,6 +443,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setColor(Color.RED);
       g.draw(trafficSign);
     }
+    g.setComposite(composite);
   }
 
   @Override
