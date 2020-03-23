@@ -54,21 +54,30 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;
 import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.coor.EastNorth;
+import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.DownloadPolicy;
+import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
+import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
+import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
 import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
+import org.openstreetmap.josm.data.osm.visitor.paint.relations.MultipolygonCache;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer.DataCountVisitor;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
 import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
 import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
@@ -97,7 +106,8 @@ import org.openstreetmap.josm.tools.OpenBrowser;
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends OsmDataLayer implements DataSourceListener, MouseListener {
+public class PointObjectLayer extends AbstractOsmDataLayer
+implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener, DataSelectionListener {
   private final Collection<DataSource> dataSources = new HashSet<>();
   private static final String NAME = marktr("Mapillary Point Objects");
   private static final int HATCHED_SIZE = 15;
@@ -105,6 +115,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
+  private final DataSet data;
+  private DataSetListenerAdapter dataSetListenerAdapter;
 
   /**
    * a texture for non-downloaded area Copied from OsmDataLayer
@@ -141,7 +153,8 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   }
 
   public PointObjectLayer() {
-    super(new DataSet(), tr(NAME), null);
+    super(NAME);
+    data = new DataSet();
     data.setUploadPolicy(UploadPolicy.BLOCKED);
     data.setDownloadPolicy(DownloadPolicy.BLOCKED);
     data.lock();
@@ -160,6 +173,13 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(tableModelListener);
     MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
     tableModelListener.tableChanged(null);
+
+    this.data.setName(NAME);
+    this.dataSetListenerAdapter = new DataSetListenerAdapter(this);
+    data.addDataSetListener(dataSetListenerAdapter);
+    data.addDataSetListener(MultipolygonCache.getInstance());
+    data.addHighlightUpdateListener(this);
+    data.addSelectionListener(this);
   }
 
   @Override
@@ -265,7 +285,6 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
 
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
-    super.selectionChanged(event);
     OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey("detections")).findFirst()
         .orElse(null);
     if (prim != null && MapillaryLayer.hasInstance()) {
@@ -362,6 +381,10 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
       MapPaintStyles.removeStyle(mapcss);
+    data.removeDataSetListener(dataSetListenerAdapter);
+    data.removeDataSetListener(MultipolygonCache.getInstance());
+    data.removeHighlightUpdateListener(this);
+    data.removeSelectionListener(this);
   }
 
   @Override
@@ -478,6 +501,30 @@ public class PointObjectLayer extends OsmDataLayer implements DataSourceListener
   @Override
   public void mouseExited(MouseEvent e) {
     // Do nothing
+  }
+
+  @Override
+  public boolean isModified() {
+    return false;
+  }
+
+  @Override
+  public void visitBoundingBox(BoundingXYVisitor v) {
+    for (final Node n : data.getNodes()) {
+      if (n.isUsable()) {
+        v.visit(n);
+      }
+    }
+  }
+
+  @Override
+  public void highlightUpdated(HighlightUpdateEvent e) {
+    invalidate();
+  }
+
+  @Override
+  public void processDatasetEvent(AbstractDatasetChangedEvent event) {
+    invalidate();
   }
 
 }
