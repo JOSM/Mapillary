@@ -55,14 +55,15 @@ public final class GroupRecord {
   private static ImageIcon createAvatarIcon(String avatar, String organizationKey) {
     if (avatar != null && !avatar.isEmpty()) {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
-    }
-    try (CachedFile possibleAvatar = new CachedFile(
-      MapillaryURL.APIv3.retrieveGroupAvatar(organizationKey).toExternalForm()
-    )) {
-      OAuthUtils.addAuthenticationHeader(possibleAvatar);
-      return ImageProvider.get(possibleAvatar.getFile().getAbsolutePath(), ImageProvider.ImageSizes.DEFAULT);
-    } catch (IOException e) {
-      Logging.error(e);
+    } else if (organizationKey != null && !organizationKey.isEmpty()) {
+      try (CachedFile possibleAvatar = new CachedFile(
+        MapillaryURL.APIv3.retrieveGroupAvatar(organizationKey).toExternalForm()
+      )) {
+        OAuthUtils.addAuthenticationHeader(possibleAvatar);
+        return ImageProvider.get(possibleAvatar.getFile().getAbsolutePath(), ImageProvider.ImageSizes.DEFAULT);
+      } catch (IOException e) {
+        Logging.error(e);
+      }
     }
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
@@ -172,8 +173,8 @@ public final class GroupRecord {
     listeners.removeListener(listener);
   }
 
-  public static interface GroupRecordListener {
-    public void groupAdded(GroupRecord group);
+  public interface GroupRecordListener {
+    void groupAdded(GroupRecord group);
   }
 
   /**
