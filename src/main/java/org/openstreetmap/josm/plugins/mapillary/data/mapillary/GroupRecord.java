@@ -43,7 +43,7 @@ public final class GroupRecord {
     String avatar, String description, String key, String name, String niceName, boolean privateRepository,
     boolean publicRepository
   ) {
-    this.avatar = createAvatarIcon(avatar);
+    this.avatar = createAvatarIcon(avatar, key);
     this.description = description;
     this.key = key;
     this.name = name;
@@ -52,9 +52,17 @@ public final class GroupRecord {
     this.publicRepository = publicRepository;
   }
 
-  private static ImageIcon createAvatarIcon(String avatar) {
+  private static ImageIcon createAvatarIcon(String avatar, String organizationKey) {
     if (avatar != null && !avatar.isEmpty()) {
-      return new ImageProvider(avatar).get();
+      return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
+    }
+    try (CachedFile possibleAvatar = new CachedFile(
+      MapillaryURL.APIv3.retrieveGroupAvatar(organizationKey).toExternalForm()
+    )) {
+      OAuthUtils.addAuthenticationHeader(possibleAvatar);
+      return ImageProvider.get(possibleAvatar.getFile().getAbsolutePath(), ImageProvider.ImageSizes.DEFAULT);
+    } catch (IOException e) {
+      Logging.error(e);
     }
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
@@ -68,7 +76,7 @@ public final class GroupRecord {
       key, k -> new GroupRecord(avatar, description, key, name, niceName, privateRepository, publicRepository)
     );
     // TODO remove when getNewGroup is done, and make vars final again
-    record.avatar = createAvatarIcon(avatar);
+    record.avatar = createAvatarIcon(avatar, key);
     record.description = description;
     record.name = name;
     record.niceName = niceName;
@@ -155,15 +163,15 @@ public final class GroupRecord {
   public boolean hasPublicRepository() {
     return publicRepository;
   }
-  
+
   public static void addGroupListener(GroupRecordListener listener) {
     listeners.addListener(listener);
   }
-  
+
   public static void removeGroupListener(GroupRecordListener listener) {
     listeners.removeListener(listener);
   }
-  
+
   public static interface GroupRecordListener {
     public void groupAdded(GroupRecord group);
   }

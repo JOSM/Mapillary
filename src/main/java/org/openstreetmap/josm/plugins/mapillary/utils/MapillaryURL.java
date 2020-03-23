@@ -76,6 +76,16 @@ public final class MapillaryURL {
     }
 
     /**
+     * Attempt to get an organization URL for the avatar
+     *
+     * @param group The key to get the avatar from
+     * @return A URL to get data from
+     */
+    public static URL retrieveGroupAvatar(String group) {
+      return string2URL(baseUrl, "organizations/" + group + "/avatar", queryString(null));
+    }
+
+    /**
      * Get the URL for Traffic Sign map features
      *
      * @param bounds The bounds to search
