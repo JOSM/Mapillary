@@ -60,6 +60,7 @@ import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.DownloadPolicy;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
@@ -76,6 +77,10 @@ import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer.DataCountVisitor;
 import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
@@ -86,13 +91,16 @@ import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.io.GeoJSONReader;
 import org.openstreetmap.josm.io.IllegalDataException;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -107,7 +115,8 @@ import org.openstreetmap.josm.tools.OpenBrowser;
  * Mapillary Point Object layer
  */
 public class PointObjectLayer extends AbstractOsmDataLayer
-implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener, DataSelectionListener {
+  implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener, DataSelectionListener,
+  MapillaryDataListener, LayerChangeListener {
   private final Collection<DataSource> dataSources = new HashSet<>();
   private static final String NAME = marktr("Mapillary Point Objects");
   private static final int HATCHED_SIZE = 15;
@@ -116,7 +125,7 @@ implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener,
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
   private final DataSet data;
-  private DataSetListenerAdapter dataSetListenerAdapter;
+  private final DataSetListenerAdapter dataSetListenerAdapter;
 
   /**
    * a texture for non-downloaded area Copied from OsmDataLayer
@@ -180,6 +189,10 @@ implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener,
     data.addDataSetListener(MultipolygonCache.getInstance());
     data.addHighlightUpdateListener(this);
     data.addSelectionListener(this);
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().addListener(this);
+    }
+    MainApplication.getLayerManager().addLayerChangeListener(this);
   }
 
   @Override
@@ -385,6 +398,11 @@ implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener,
     data.removeDataSetListener(MultipolygonCache.getInstance());
     data.removeHighlightUpdateListener(this);
     data.removeSelectionListener(this);
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().removeListener(this);
+    }
+    MainApplication.getLayerManager().removeLayerChangeListener(this);
+
   }
 
   @Override
@@ -525,6 +543,42 @@ implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener,
   @Override
   public void processDatasetEvent(AbstractDatasetChangedEvent event) {
     invalidate();
+  }
+
+  @Override
+  public void layerAdded(LayerAddEvent e) {
+    if (e.getAddedLayer() instanceof MapillaryLayer) {
+      ((MapillaryLayer) e.getAddedLayer()).getData().addListener(this);
+    }
+  }
+
+  @Override
+  public void layerRemoving(LayerRemoveEvent e) {
+    if (e.getRemovedLayer() instanceof MapillaryLayer) {
+      ((MapillaryLayer) e.getRemovedLayer()).getData().removeListener(this);
+    }
+  }
+
+  @Override
+  public void layerOrderChanged(LayerOrderChangeEvent e) {
+    // Don't care
+  }
+
+  @Override
+  public void imagesAdded() {
+    // Don't care
+  }
+
+  @Override
+  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+    data.clearSelection();
+    if (newImage instanceof MapillaryImage) {
+      MapillaryImage image = (MapillaryImage) newImage;
+      Collection<INode> nodes = image.getDetections().parallelStream().map(ImageDetection::getKey).flatMap(
+        d -> data.getNodes().parallelStream().filter(n -> n.hasKey("detections") && n.get("detections").contains(d))
+      ).collect(Collectors.toList());
+      data.setSelected(nodes);
+    }
   }
 
 }
