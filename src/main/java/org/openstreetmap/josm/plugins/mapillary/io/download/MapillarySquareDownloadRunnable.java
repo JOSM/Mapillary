@@ -36,7 +36,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 
     // Download basic sequence data synchronously
     ForkJoinPool pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-downloader-%d", 4);
-    pool.execute(new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
+    pool.invoke(new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds));
     pool.awaitQuiescence(3600, TimeUnit.SECONDS);
 
     if (Thread.interrupted() || pool.isShutdown()) {

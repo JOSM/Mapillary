@@ -14,6 +14,7 @@ import javax.json.JsonReader;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
@@ -83,6 +84,8 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
       }
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
+    } finally {
+      MapillaryLayer.getInstance().invalidate();
     }
 
   }
