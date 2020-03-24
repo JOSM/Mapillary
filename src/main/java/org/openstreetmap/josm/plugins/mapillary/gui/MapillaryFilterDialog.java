@@ -100,11 +100,11 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   private final TrafficSignFilter objectFilter;
 
-  private List<GroupRecord> userGroups;
-
   private MapillaryFilterDialog() {
-    super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
-        false, MapillaryPreferenceSetting.class);
+    super(
+      tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200, false, MapillaryPreferenceSetting.class
+    );
+    MapillaryUser.addListener(this);
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
@@ -497,6 +497,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       objectFilter.destroy();
       MainApplication.getMap().removeToggleDialog(this);
       GroupRecord.removeGroupListener(this);
+      MapillaryUser.removeListener(this);
       destroyed = true;
     }
     destroyInstance();
@@ -504,7 +505,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   @Override
   public void onLogin(String username) {
-    userGroups = MapillaryUser.getGroups();
+    List<GroupRecord> userGroups = MapillaryUser.getGroups();
     userGroups.forEach(this::groupAdded);
   }
 
