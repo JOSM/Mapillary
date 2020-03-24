@@ -118,6 +118,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   private volatile TexturePaint hatched;
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
+  private static AlphaComposite fadeComposite = AlphaComposite
+    .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
   private MapillaryLayer() {
     super(I18n.tr("Mapillary Images"));
@@ -326,6 +328,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    fadeComposite = AlphaComposite
+      .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     if (MainApplication.getLayerManager().getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
@@ -363,12 +367,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
           );
-        g.setComposite(
-          AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue())
-          );
+        g.setComposite(fadeComposite);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
-      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+      g.setComposite(AlphaComposite.SrcOver);
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
       if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
@@ -394,9 +396,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
-      g.setComposite(
-        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue())
-        );
+      g.setComposite(fadeComposite);
     }
     // Determine colors
     final Color markerC;
