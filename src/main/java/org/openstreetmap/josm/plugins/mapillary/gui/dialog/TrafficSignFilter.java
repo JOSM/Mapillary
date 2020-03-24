@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
@@ -11,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +73,19 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     createFirstLastSeen(this, "first");
     createFirstLastSeen(this, "last");
     /* End first/last seen */
+    JPanel layers = new JPanel();
+    layers.setLayout(new FlowLayout(FlowLayout.LEFT));
+    layers.add(new JLabel(I18n.tr("Layer")));
+    for (String[] layer : Arrays.asList(
+      new String[] { "trafficsigns", I18n.marktr("Traffic Signs") }, new String[] { "points", I18n.marktr("Point Objects") }
+    )) {
+      JCheckBox lbox = new JCheckBox(I18n.tr(layer[1]));
+      layers.add(lbox);
+      lbox.addItemListener(TrafficSignFilter::updateLayers);
+      lbox.setSelected(true);
+      lbox.putClientProperty("layer", layer[0]);
+    }
+    add(layers);
 
     /* Filter minimum detections */
     add(new JLabel(I18n.tr("Minimum object detections")));
@@ -118,6 +133,28 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     buttons = new ArrayList<>();
     addButtons();
     /* End filter signs */
+  }
+
+  private static void updateLayers(ItemEvent itemEvent) {
+    if (itemEvent.getItem() instanceof JCheckBox) {
+      JCheckBox box = (JCheckBox) itemEvent.getItem();
+      String layerName = (String) box.getClientProperty("layer");
+      if (layerName != null) {
+        MapillaryFilterTableModel model = MapillaryExpertFilterDialog.getInstance().getFilterModel();
+        Filter layerFilter = model.getFilters().parallelStream().filter(p -> p.text.contains(layerName)).findFirst()
+          .orElseGet(() -> {
+            Filter filter = new Filter();
+            filter.enable = false;
+            filter.hiding = true;
+            filter.text = "layer=" + layerName;
+            model.addFilter(filter);
+            return filter;
+          });
+        layerFilter.enable = !box.isSelected();
+        int index = model.getFilters().indexOf(layerFilter);
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().fireTableRowsUpdated(index, index);
+      }
+    }
   }
 
   private void updateDetectionPage(int difference) {
