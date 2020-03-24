@@ -111,7 +111,7 @@ public final class MapillaryUser {
 
   public static synchronized List<GroupRecord> getGroups() {
     if (isTokenValid && groups == null) {
-      HttpClient client = HttpClient.create(APIv3.retrieveGroups(username));
+      HttpClient client = HttpClient.create(APIv3.retrieveGroups(getUserInformation().getOrDefault("key", username)));
       OAuthUtils.addAuthenticationHeader(client);
       try {
         client.connect();
