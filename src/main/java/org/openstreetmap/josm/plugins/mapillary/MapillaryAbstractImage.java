@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
@@ -18,7 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @author nokutu
  *
  */
-public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbstractImage> {
+public abstract class MapillaryAbstractImage extends GpxImageEntry {
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */
@@ -60,9 +61,11 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
    * @param pano   The property to indicate whether image is panorama or not.
    */
   protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
+    super.setExifCoor(latLon);
     this.latLon = latLon;
     this.tempLatLon = this.latLon;
     this.movingLatLon = this.latLon;
+    super.setExifImgDir(ca);
     this.ca = ca;
     this.tempCa = ca;
     this.movingCa = ca;
@@ -136,10 +139,10 @@ public abstract class MapillaryAbstractImage implements Comparable<MapillaryAbst
   }
 
   /**
-  * Returns a LatLon object containing the original coordinates of the object.
-  *
-  * @return The LatLon object with the position of the object.
-  */
+   * Returns a LatLon object containing the original coordinates of the object.
+   *
+   * @return The LatLon object with the position of the object.
+   */
   public LatLon getLatLon() {
     return latLon;
   }

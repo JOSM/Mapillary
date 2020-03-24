@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -89,7 +90,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public int compareTo(MapillaryAbstractImage image) {
+  public int compareTo(GpxImageEntry image) {
     if (image instanceof MapillaryImage) {
       return this.key.compareTo(((MapillaryImage) image).getKey());
     }
