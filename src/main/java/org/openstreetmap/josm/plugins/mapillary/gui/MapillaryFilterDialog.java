@@ -139,7 +139,6 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     endDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(endDate));
     endDate.getNode().setConverter(new LocalDateConverter());
     startDate.getNode().setConverter(endDate.getNode().getConverter());
-    ExpertToggleAction.addVisibilitySwitcher(timePanel);
 
     filterByDateCheckbox.addItemListener(itemE -> {
       spinner.setEnabled(filterByDateCheckbox.isSelected());
