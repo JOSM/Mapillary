@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateFieldValue;
 
@@ -35,9 +36,7 @@ public class MapillaryPreferenceSettingTest {
 
   @Test
   public void testAddGui() {
-    if (GraphicsEnvironment.isHeadless()) {
-      return;
-    }
+    assumeTrue(!GraphicsEnvironment.isHeadless());
     PreferenceTabbedPane tabs = new PreferenceTabbedPane();
     tabs.buildGui();
     int displayTabs = tabs.getDisplayPreference().getTabPane().getTabCount();
@@ -54,9 +53,7 @@ public class MapillaryPreferenceSettingTest {
 
   @Test
   public void testLoginLogout() {
-    if (GraphicsEnvironment.isHeadless()) {
-      return;
-    }
+    assumeTrue(!GraphicsEnvironment.isHeadless());
     PreferenceTabbedPane tabs = new PreferenceTabbedPane();
     tabs.buildGui();
     MapillaryPreferenceSetting setting = new MapillaryPreferenceSetting();

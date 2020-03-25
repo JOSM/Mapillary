@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.event.MouseEvent;
@@ -39,9 +40,7 @@ public class ImageDisplayTest {
    */
   @Test
   public void testMouseWheelMoved() {
-    if (GraphicsEnvironment.isHeadless()) {
-      return;
-    }
+    assumeTrue(!GraphicsEnvironment.isHeadless());
     MapillaryImageDisplay display = new MapillaryImageDisplay();
     final MouseWheelEvent dummyScroll = new MouseWheelEvent(display, 42, System.currentTimeMillis(), 0, 0, 0, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, 1, 3);
     display.getMouseWheelListeners()[0].mouseWheelMoved(dummyScroll);
@@ -65,9 +64,7 @@ public class ImageDisplayTest {
    */
   @Test
   public void testMouseClicked() {
-    if (GraphicsEnvironment.isHeadless()) {
-      return;
-    }
+    assumeTrue(!GraphicsEnvironment.isHeadless());
     for (int button = 1; button <= 3; button++) {
       MapillaryImageDisplay display = new MapillaryImageDisplay();
       final MouseEvent dummyClick = new MouseEvent(display, 42, System.currentTimeMillis(), 0, 0, 0, 1, false, button);
