@@ -214,17 +214,22 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     if (timeStep.isEnabled()) {
       LocalDate current = LocalDate.now();
       String type = (String) timeStep.getSelectedItem();
-      int start = spinner.getNumber().intValue();
+      Number start = spinner.getNumber();
+      int[] difference = new int[] { 0, 0, 0 }; // Year, Month, Day
       if (TIME_LIST[0].equals(type)) {
-        // Year
-        startDate.setValue(current.minusYears(start));
+        difference[0] = start.intValue();
+        difference[1] = (int) ((start.floatValue() - difference[0]) * 12);
+        difference[2] = (int) (((start.floatValue() - difference[0]) * 12 - difference[1]) * 30);
       } else if (TIME_LIST[1].equals(type)) {
-        // Month
-        startDate.setValue(current.minusMonths(start));
+        difference[1] = start.intValue();
+        difference[2] = (int) ((start.floatValue() - difference[1]) * 30);
       } else if (TIME_LIST[2].contentEquals(type)) {
-        // Day
-        startDate.setValue(current.minusDays(start));
+        difference[2] = start.intValue();
       }
+      LocalDate year = current.minusYears(difference[0]);
+      LocalDate month = year.minusMonths(difference[1]);
+      LocalDate day = month.minusDays(difference[2]);
+      startDate.setValue(day);
     } else {
       startDate.setValue(null);
     }
