@@ -178,13 +178,14 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         }
         return comp;
       }
-      
+
     });
     if (MapillaryUser.getUsername() != null) {
       onLogin(null);
     }
-    GroupRecord.addGroupListener(this);
-    GroupRecord.getGroups().forEach(this::groupAdded);
+
+    // OrganizationRecord.addOrganizationListener(this); // TODO uncomment when API for orgs is available
+    OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
@@ -496,7 +497,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       super.destroy();
       objectFilter.destroy();
       MainApplication.getMap().removeToggleDialog(this);
-      GroupRecord.removeGroupListener(this);
+      // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
       MapillaryUser.removeListener(this);
       destroyed = true;
     }
@@ -515,10 +516,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   }
 
   @Override
-  public void groupAdded(GroupRecord group) {
+  public void organizationAdded(OrganizationRecord organization) {
     boolean add = true;
-    for (int i = 0 ; i < groups.getItemCount(); i++) {
-      if (groups.getItemAt(i).equals(group)) {
+    for (int i = 0; i < organizations.getItemCount(); i++) {
+      if (organizations.getItemAt(i).equals(organization)) {
         add = false;
         break;
       }
