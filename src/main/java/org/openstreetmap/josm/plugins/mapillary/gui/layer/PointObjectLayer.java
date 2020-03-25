@@ -62,6 +62,7 @@ import org.openstreetmap.josm.data.osm.DownloadPolicy;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
@@ -367,21 +368,27 @@ public class PointObjectLayer extends AbstractOsmDataLayer
         LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
         LayerListDialog.getInstance().createMergeLayerAction(this)));
     actions.addAll(Arrays.asList(SeparatorLayerAction.INSTANCE, new RenameLayerAction(getAssociatedFile(), this),
-        SeparatorLayerAction.INSTANCE, new RequestDataAction()));
+        SeparatorLayerAction.INSTANCE, new RequestDataAction(followDataSet)));
     return actions.toArray(new Action[0]);
   }
 
   static class RequestDataAction extends AbstractAction {
     private static final long serialVersionUID = 8823333297547249069L;
+    private final OsmData<?, ?, ?, ?> data;
 
-    public RequestDataAction() {
+    public RequestDataAction(DataSet data) {
       super(tr("Request Data"));
+      this.data = data;
       MapillaryPlugin.LOGO.getResource().attachImageIcon(this, true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request/");
+      String bbox = "?bbox="
+        + String.join(";",
+          data.getDataSourceBounds().stream()
+          .map(Bounds::toBBox).map(b -> b.toStringCSV(",")).collect(Collectors.toList()));
+      OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request" + bbox);
     }
   }
 
