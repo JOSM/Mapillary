@@ -27,7 +27,7 @@ public class ClipboardAction extends AbstractAction {
    */
   private static final long POPUP_DURATION = 3000;
   /**
-   * A small popup that shows up when the key has been moved to the clipboard
+   * A small popup that shows up when the text has been moved to the clipboard
    */
   private final JComponent popupContent;
   /**
@@ -67,7 +67,7 @@ public class ClipboardAction extends AbstractAction {
   }
 
   /**
-   * Sets the component, under which the popup will be shown, which indicates that the key was copied to the clipboard.
+   * Sets the component, under which the popup will be shown, which indicates that the text was copied to the clipboard.
    * @param popupParent the component to set as parent of the popup
    */
   public void setPopupParent(Component popupParent) {

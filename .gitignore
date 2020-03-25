@@ -20,3 +20,4 @@
 /.gradle/
 
 /test/data/preferences/
+/.nb-gradle/

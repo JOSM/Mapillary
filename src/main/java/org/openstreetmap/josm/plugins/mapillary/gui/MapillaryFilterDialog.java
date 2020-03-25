@@ -193,13 +193,17 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
    * Resets the dialog to its default state.
    */
   public void reset() {
+    this.endDate.getNode().setValue(null);
     this.imported.setSelected(true);
+    this.filterByDateCheckbox.setSelected(false);
     this.downloaded.setSelected(true);
     this.onlySigns.setEnabled(true);
     this.onlySigns.setSelected(false);
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
+    this.signChooser.setEnabled(false);
     this.spinnerModel.setValue(1);
+    this.startDate.getNode().setValue(null);
     refresh();
   }
 
@@ -215,7 +219,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     final LocalDate endDate = this.endDate.getNode().getValue();
     final LocalDate startDate = this.startDate.getNode().getValue();
 
-    // This predicate returns true is the image should be made invisible
+    // This predicate returns true if the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
       img -> {
         if (!layerVisible) {
