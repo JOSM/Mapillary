@@ -367,9 +367,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     buttons.forEach(b -> b.setSelected(false));
     filterField.setText("");
     showMaxNumberModel.setValue(100);
-    while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
-    }
+    MainApplication.worker.submit(() -> {
+      while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
+      }
+    });
     Stream.of(getComponents()).forEach(this::resetSubPanels);
   }
 
