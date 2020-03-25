@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.json.Json;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.GroupRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
@@ -36,7 +36,7 @@ public class MapillarySequence {
    * Epoch time when the sequence was created
    */
   private final long capturedAt;
-  private GroupRecord group;
+  private OrganizationRecord organization;
 
   /**
    * Creates a sequence without key or timestamp. Used for
@@ -61,7 +61,7 @@ public class MapillarySequence {
     this.key = key;
     this.capturedAt = capturedAt;
     setUser(userKey);
-    setGroup(organizationKey);
+    setOrganization(organizationKey);
   }
 
   /**
@@ -200,14 +200,14 @@ public class MapillarySequence {
   /**
    * @param organizationKey
    */
-  private void setGroup(String organizationKey) {
-    group = GroupRecord.getGroup(organizationKey);
+  private void setOrganization(String organizationKey) {
+    organization = OrganizationRecord.getOrganization(organizationKey);
   }
 
   /**
-   * @return The group for this sequence
+   * @return The organization for this sequence
    */
-  public GroupRecord getGroup() {
-    return group;
+  public OrganizationRecord getOrganization() {
+    return organization;
   }
 }

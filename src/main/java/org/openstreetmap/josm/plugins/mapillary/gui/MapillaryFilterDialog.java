@@ -46,8 +46,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.GroupRecord;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.GroupRecord.GroupRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
@@ -63,7 +63,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener, MapillaryLoginListener, GroupRecordListener {
+public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener, MapillaryLoginListener, OrganizationRecordListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -91,7 +91,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
   final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
 
-  final JComboBox<GroupRecord> groups = new JComboBox<>();
+  final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
 
   private final JavaFxWrapper<DatePicker> startDate;
   private final JavaFxWrapper<DatePicker> endDate;
@@ -156,24 +156,24 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     this.user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel(tr("User")));
     userSearchPanel.add(this.user, GBC.eol());
-    userSearchPanel.add(new JLabel(tr("Group")));
-    userSearchPanel.add(this.groups);
-    groups.addItem(GroupRecord.NULL_RECORD);
-    groups.setRenderer(new DefaultListCellRenderer() {
+    userSearchPanel.add(new JLabel(tr("Org")));
+    userSearchPanel.add(this.organizations);
+    organizations.addItem(OrganizationRecord.NULL_RECORD);
+    organizations.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = -1650696801628131389L;
 
       @Override
       public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value instanceof GroupRecord) {
-          GroupRecord group = (GroupRecord) value;
-          if (group.getNiceName() != null && !group.getNiceName().isEmpty()) {
-            comp.setText(group.getNiceName());
+        if (value instanceof OrganizationRecord) {
+          OrganizationRecord organization = (OrganizationRecord) value;
+          if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()) {
+            comp.setText(organization.getNiceName());
           } else {
-            comp.setText(group.getKey());
+            comp.setText(organization.getKey());
           }
-          if (group.getAvatar() != null) {
-            comp.setIcon(group.getAvatar());
+          if (organization.getAvatar() != null) {
+            comp.setIcon(organization.getAvatar());
           }
         }
         return comp;
@@ -275,7 +275,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     this.objectFilter.reset();
     this.endDate.getNode().setValue(null);
     this.startDate.getNode().setValue(null);
-    groups.setSelectedItem(GroupRecord.NULL_RECORD);
+    organizations.setSelectedItem(OrganizationRecord.NULL_RECORD);
     refresh();
   }
 
@@ -290,7 +290,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     final boolean onlySignsIsSelected = this.onlySigns.isSelected();
     final LocalDate endDateRefresh = this.endDate.getNode().getValue();
     final LocalDate startDateRefresh = this.startDate.getNode().getValue();
-    final GroupRecord group = (GroupRecord) groups.getSelectedItem();
+    final OrganizationRecord organization = (OrganizationRecord) organizations.getSelectedItem();
 
     // This predicate returns true is the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
@@ -321,8 +321,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
           if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
             return true;
           }
-          if (!GroupRecord.NULL_RECORD.equals(group)
-            && !((MapillaryImage) img).getSequence().getGroup().getKey().equals(group.getKey())) {
+          if (!OrganizationRecord.NULL_RECORD.equals(organization)
+            && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
             return true;
           }
         }
@@ -506,8 +506,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   @Override
   public void onLogin(String username) {
-    List<GroupRecord> userGroups = MapillaryUser.getGroups();
-    userGroups.forEach(this::groupAdded);
+    List<OrganizationRecord> userOrganizations = MapillaryUser.getOrganizations();
+    userOrganizations.forEach(this::organizationAdded);
   }
 
   @Override
@@ -525,7 +525,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       }
     }
     if (add) {
-      SwingUtilities.invokeLater(() -> groups.addItem(group));
+      SwingUtilities.invokeLater(() -> organizations.addItem(organization));
     }
   }
 }

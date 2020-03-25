@@ -21,25 +21,25 @@ import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Record group information
+ * Record organization information
  *
  * @author Taylor Smock
  */
-public final class GroupRecord {
-  private static final ListenerList<GroupRecordListener> listeners = ListenerList.create();
+public final class OrganizationRecord {
+  private static final ListenerList<OrganizationRecordListener> LISTENERS = ListenerList.create();
   private String description;
-  private String key;
+  private final String key;
   private String name;
   private String niceName;
   private boolean privateRepository;
   private boolean publicRepository;
   private ImageIcon avatar;
 
-  private static final Map<String, GroupRecord> CACHE = new ConcurrentHashMap<>();
+  private static final Map<String, OrganizationRecord> CACHE = new ConcurrentHashMap<>();
 
-  public static final GroupRecord NULL_RECORD = new GroupRecord("", "", "", "", "", false, false);
+  public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "", "", false, false);
 
-  private GroupRecord(
+  private OrganizationRecord(
     String avatar, String description, String key, String name, String niceName, boolean privateRepository,
     boolean publicRepository
   ) {
@@ -57,7 +57,7 @@ public final class GroupRecord {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
     } else if (organizationKey != null && !organizationKey.isEmpty()) {
       try (CachedFile possibleAvatar = new CachedFile(
-        MapillaryURL.APIv3.retrieveGroupAvatar(organizationKey).toExternalForm()
+        MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey).toExternalForm()
       )) {
         OAuthUtils.addAuthenticationHeader(possibleAvatar);
         return ImageProvider.get(possibleAvatar.getFile().getAbsolutePath(), ImageProvider.ImageSizes.DEFAULT);
@@ -68,15 +68,15 @@ public final class GroupRecord {
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
 
-  public static GroupRecord getGroup(
+  public static OrganizationRecord getOrganization(
     String avatar, String description, String key, String name, String niceName, boolean privateRepository,
     boolean publicRepository
   ) {
     boolean newRecord = !CACHE.containsKey(key);
-    GroupRecord record = CACHE.computeIfAbsent(
-      key, k -> new GroupRecord(avatar, description, key, name, niceName, privateRepository, publicRepository)
+    OrganizationRecord record = CACHE.computeIfAbsent(
+      key, k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository)
     );
-    // TODO remove when getNewGroup is done, and make vars final again
+    // TODO remove when getNewOrganization is done, and make vars final again
     record.avatar = createAvatarIcon(avatar, key);
     record.description = description;
     record.name = name;
@@ -84,18 +84,18 @@ public final class GroupRecord {
     record.privateRepository = privateRepository;
     record.publicRepository = publicRepository;
     if (newRecord) {
-      listeners.fireEvent(l -> l.groupAdded(record));
+      LISTENERS.fireEvent(l -> l.organizationAdded(record));
     }
     return record;
   }
 
-  public static GroupRecord getGroup(String key) {
-    return key == null ? NULL_RECORD : CACHE.computeIfAbsent(key, GroupRecord::getNewGroup);
+  public static OrganizationRecord getOrganization(String key) {
+    return key == null ? NULL_RECORD : CACHE.computeIfAbsent(key, OrganizationRecord::getNewOrganization);
   }
 
-  private static GroupRecord getNewGroup(String key) {
+  private static OrganizationRecord getNewOrganization(String key) {
     // TODO Fix
-    CachedFile file = new CachedFile(MapillaryURL.APIv3.retrieveGroup(key).toString());
+    CachedFile file = new CachedFile(MapillaryURL.APIv3.retrieveOrganization(key).toString());
     Logging.error(file.getName());
     OAuthUtils.addAuthenticationHeader(file);
     try (BufferedReader br = file.getContentReader(); JsonReader reader = Json.createReader(br)) {
@@ -110,77 +110,77 @@ public final class GroupRecord {
     } finally {
       file.close();
     }
-    GroupRecord gr = new GroupRecord("", "", key, "", "", false, false);
-    listeners.fireEvent(l -> l.groupAdded(gr));
+    OrganizationRecord gr = new OrganizationRecord("", "", key, "", "", false, false);
+    LISTENERS.fireEvent(l -> l.organizationAdded(gr));
     return gr;
   }
 
   /**
-   * @return The avatar for the group
+   * @return The avatar for the organization
    */
   public ImageIcon getAvatar() {
     return avatar;
   }
 
   /**
-   * @return The group description
+   * @return The organization description
    */
   public String getDescription() {
     return description;
   }
 
   /**
-   * @return The group key
+   * @return The organization key
    */
   public String getKey() {
     return key;
   }
 
   /**
-   * @return The name of the group
-   * @see GroupRecord#getNiceName
+   * @return The name of the organization
+   * @see OrganizationRecord#getNiceName
    */
   public String getName() {
     return name;
   }
 
   /**
-   * @return The nice-looking name of the group
+   * @return The nice-looking name of the organization
    */
   public String getNiceName() {
     return niceName;
   }
 
   /**
-   * @return {@code true} if the group has a private repository
+   * @return {@code true} if the organization has a private repository
    */
   public boolean hasPrivateRepository() {
     return privateRepository;
   }
 
   /**
-   * @return {@code true} if the group has a public repository
+   * @return {@code true} if the organization has a public repository
    */
   public boolean hasPublicRepository() {
     return publicRepository;
   }
 
-  public static void addGroupListener(GroupRecordListener listener) {
-    listeners.addListener(listener);
+  public static void addOrganizationListener(OrganizationRecordListener listener) {
+    LISTENERS.addListener(listener);
   }
 
-  public static void removeGroupListener(GroupRecordListener listener) {
-    listeners.removeListener(listener);
+  public static void removeOrganizationListener(OrganizationRecordListener listener) {
+    LISTENERS.removeListener(listener);
   }
 
-  public interface GroupRecordListener {
-    void groupAdded(GroupRecord group);
+  public interface OrganizationRecordListener {
+    void organizationAdded(OrganizationRecord organization);
   }
 
   /**
-   * @return Get all the groups
+   * @return Get all the organizations
    */
-  public static Collection<GroupRecord> getGroups() {
+  public static Collection<OrganizationRecord> getOrganizations() {
     return Collections.unmodifiableCollection(CACHE.values());
   }
 }

@@ -67,22 +67,22 @@ public final class MapillaryURL {
       return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
     }
 
-    public static URL retrieveGroups(String user) {
+    public static URL retrieveOrganizationss(String user) {
       return string2URL(baseUrl, "users/" + user + "/organizations", queryString(null));
     }
     
-    public static URL retrieveGroup(String group) {
-      return string2URL(baseUrl, "organizations/" + group, queryString(null));
+    public static URL retrieveOrganization(String organization) {
+      return string2URL(baseUrl, "organizations/" + organization, queryString(null));
     }
 
     /**
      * Attempt to get an organization URL for the avatar
      *
-     * @param group The key to get the avatar from
+     * @param organization The key to get the avatar from
      * @return A URL to get data from
      */
-    public static URL retrieveGroupAvatar(String group) {
-      return string2URL(baseUrl, "organizations/" + group + "/avatar", queryString(null));
+    public static URL retrieveOrganizationAvatar(String organization) {
+      return string2URL(baseUrl, "organizations/" + organization + "/avatar", queryString(null));
     }
 
     /**

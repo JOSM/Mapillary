@@ -14,11 +14,11 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.GroupRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonGroupDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonOrganizationDecoderUtils;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
@@ -41,8 +41,8 @@ public final class MapillaryUser {
   /** Various user information */
   private static Map<String, String> userInformation;
 
-  /** User group information */
-  private static List<GroupRecord> groups;
+  /** User organization information */
+  private static List<OrganizationRecord> organizations;
 
   private MapillaryUser() {
     // Private constructor to avoid instantiation
@@ -109,14 +109,14 @@ public final class MapillaryUser {
     return hash;
   }
 
-  public static synchronized List<GroupRecord> getGroups() {
-    if (isTokenValid && groups == null) {
-      HttpClient client = HttpClient.create(APIv3.retrieveGroups(getUserInformation().getOrDefault("key", username)));
+  public static synchronized List<OrganizationRecord> getOrganizations() {
+    if (isTokenValid && organizations == null) {
+      HttpClient client = HttpClient.create(APIv3.retrieveOrganizationss(getUserInformation().getOrDefault("key", username)));
       OAuthUtils.addAuthenticationHeader(client);
       try {
         client.connect();
         try (JsonReader reader = Json.createReader(client.getResponse().getContentReader())) {
-          groups = JsonGroupDecoder.decodeGroups(reader.readValue());
+          organizations = JsonOrganizationDecoderUtils.decodeOrganizations(reader.readValue());
         }
       } catch (IOException e) {
         Logging.error(e);
@@ -124,7 +124,7 @@ public final class MapillaryUser {
         client.disconnect();
       }
     }
-    return groups == null ? Collections.emptyList() : Collections.unmodifiableList(groups);
+    return organizations == null ? Collections.emptyList() : Collections.unmodifiableList(organizations);
   }
 
   /**
@@ -133,7 +133,7 @@ public final class MapillaryUser {
   public static synchronized void reset() {
     username = null;
     userInformation = null;
-    groups = null;
+    organizations = null;
     imagesPolicy = null;
     imagesHash = null;
     isTokenValid = false;
