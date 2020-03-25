@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
@@ -41,7 +43,18 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     ImageProvider provider = new ImageProvider(directory, imageName);
     splitName = imageName.split("--", -1);
     JButton image = new JButton();
-    provider.getAsync(i -> SwingUtilities.invokeLater(() -> image.setIcon(i)));
+    CompletableFuture<Void> future = provider.getAsync(i -> SwingUtilities.invokeLater(() -> image.setIcon(i)));
+    MainApplication.worker.execute(() -> {
+      try {
+        future.get();
+      } catch (InterruptedException e) {
+        Logging.error(e);
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        Logging.error(e);
+        Logging.error(e.getCause());
+      }
+    });
     add(image, GBC.std().anchor(GridBagConstraints.WEST));
     String name = splitName[splitName.length - 1].replace(".svg", "");
     if (name.matches("g[0-9]+")) {

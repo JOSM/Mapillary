@@ -164,11 +164,12 @@ public class SelectMode extends AbstractMode {
       }
     }
 
-    if (MapillaryLayer.getInstance().getData().getHighlightedImage() != closestTemp && closestTemp != null) {
+    MapillaryAbstractImage highlightedImage = MapillaryLayer.getInstance().getData().getHighlightedImage();
+    if (closestTemp != null && !closestTemp.equals(highlightedImage)) {
       MapillaryLayer.getInstance().getData().setHighlightedImage(closestTemp);
       MapillaryMainDialog.getInstance().setImage(closestTemp);
       MapillaryMainDialog.getInstance().updateImage(false);
-    } else if (MapillaryLayer.getInstance().getData().getHighlightedImage() != closestTemp && closestTemp == null) {
+    } else if (closestTemp == null && highlightedImage != null) {
       MapillaryLayer.getInstance().getData().setHighlightedImage(null);
       MapillaryMainDialog.getInstance().setImage(MapillaryLayer.getInstance().getData().getSelectedImage());
       MapillaryMainDialog.getInstance().updateImage();

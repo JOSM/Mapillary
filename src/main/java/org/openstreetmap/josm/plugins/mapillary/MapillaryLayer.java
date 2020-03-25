@@ -39,6 +39,7 @@ import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -100,8 +101,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
   ) / 3;
 
-  private static final DataSourceListener DATASET_LISTENER = event -> SwingUtilities
-      .invokeLater(MapillaryDownloader::downloadOSMArea);
+  private static class DataSetSourceListener implements DataSourceListener {
+    @Override
+    public void dataSourceChange(DataSourceChangeEvent event) {
+      SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
+    }
+  }
+
+  private static final DataSourceListener DATASET_LISTENER = new DataSetSourceListener();
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;

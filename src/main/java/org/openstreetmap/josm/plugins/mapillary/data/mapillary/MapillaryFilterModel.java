@@ -86,7 +86,7 @@ public class MapillaryFilterModel extends FilterModel {
     try {
       for (int i = 0; i < 2; i++) {
         for (OsmPrimitive primitive : primitives) {
-          if (i == 0 && primitive instanceof Node || i == 1 && !(primitive instanceof Node)) {
+          if ((i == 0 && primitive instanceof Node) || (i == 1 && !(primitive instanceof Node))) {
             continue;
           }
 

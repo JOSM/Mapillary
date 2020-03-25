@@ -322,7 +322,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
 
   public void getIcons(JComponent panel, String type) {
     if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.submit(() -> getIcons(panel, type));
+      MainApplication.worker.execute(() -> getIcons(panel, type));
       return;
     }
     String directory = "mapillary_sprite_source/package_" + type;
@@ -364,15 +364,28 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
    * Reset everything
    */
   public void reset() {
-    buttons.forEach(b -> b.setSelected(false));
+    List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).collect(Collectors.toList());
     filterField.setText("");
     showMaxNumberModel.setValue(100);
-    MainApplication.worker.submit(() -> {
+    futures.add(MainApplication.worker.submit(() -> {
       while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
         MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
       }
-    });
+    }));
     Stream.of(getComponents()).forEach(this::resetSubPanels);
+    MainApplication.worker.execute(() -> {
+      for (Future<?> future : futures) {
+        try {
+          future.get();
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+          Logging.error(e);
+          Logging.error(e.getCause());
+        }
+      }
+    });
   }
 
   private void resetSubPanels(Component component) {

@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -35,7 +36,6 @@ import javax.swing.SwingUtilities;
 import javafx.event.EventType;
 import javafx.scene.control.DatePicker;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -131,8 +131,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     timePanel.add(startDate, GBC.std());
     timePanel.add(endDate, GBC.eol());
     Dimension d = timePanel.getMinimumSize();
-    d.width = (int) (Math.ceil(d.width * 1.15));
-    d.height = (int) (Math.ceil(d.height * 1.15));
+    d.width = (int) Math.ceil(d.width * 1.15);
+    d.height = (int) Math.ceil(d.height * 1.15);
     timePanel.setMinimumSize(d);
 
     startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
@@ -211,7 +211,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   private static void updateStartDate(DatePicker startDate, SpinnerNumberModel spinner, JComboBox<String> timeStep) {
     if (timeStep.isEnabled()) {
-      LocalDate current = LocalDate.now();
+      LocalDate current = LocalDate.now(ZoneId.systemDefault());
       String type = (String) timeStep.getSelectedItem();
       Number start = spinner.getNumber();
       int[] difference = new int[] { 0, 0, 0 }; // Year, Month, Day

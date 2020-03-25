@@ -28,8 +28,8 @@ public class CameraPlane {
   private double sinPhi;
   private double cosPhi;
 
-  public static double HALF_PI = Math.PI / 2;
-  public static double TWO_PI = 2 * Math.PI;
+  public static final double HALF_PI = Math.PI / 2;
+  public static final double TWO_PI = 2 * Math.PI;
 
   public CameraPlane(int width, int height, double distance) {
     this.width = width;
