@@ -13,16 +13,22 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 public class MapillaryURLTest {
+
   private static final String CLIENT_ID_QUERY_PART = "client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
   private static final String SORT_BY_KEY = "sort_by=key";
 
   public static class APIv3 {
+    @Rule
+    public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
     @Test
     public void testSearchDetections() {
