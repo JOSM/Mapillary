@@ -192,14 +192,19 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   /**
    * Resets the dialog to its default state.
    */
-  public void reset() {
+  public void reset() {    
+    this.endDate.getNode().setValue(null);
+    this.filterByDateCheckbox.setSelected(false);
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
     this.onlySigns.setEnabled(true);
     this.onlySigns.setSelected(false);
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
+    this.signChooser.setEnabled(false);
     this.spinnerModel.setValue(1);
+    this.startDate.getNode().setValue(null);
+    MapillaryFilterChooseSigns.getInstance().reset();
     refresh();
   }
 
@@ -215,7 +220,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     final LocalDate endDate = this.endDate.getNode().getValue();
     final LocalDate startDate = this.startDate.getNode().getValue();
 
-    // This predicate returns true is the image should be made invisible
+    // This predicate returns true if the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
       img -> {
         if (!layerVisible) {
@@ -404,8 +409,10 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       );
       JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Choose signs"));
       dlg.setVisible(true);
-      if ((int) pane.getValue() == JOptionPane.OK_OPTION)
+      Object value = pane.getValue();      
+      if (value != null && (int) value == JOptionPane.OK_OPTION) {
         MapillaryFilterDialog.getInstance().refresh();
+      }
       dlg.dispose();
     }
   }
