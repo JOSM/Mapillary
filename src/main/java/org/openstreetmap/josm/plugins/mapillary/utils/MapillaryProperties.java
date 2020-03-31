@@ -85,7 +85,7 @@ public final class MapillaryProperties {
   /**
    * The opacity for unselected images when an image is selected
    */
-  public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.25);
+  public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.50);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation

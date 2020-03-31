@@ -92,7 +92,7 @@ public final class MapillaryURL {
      * @return A URL to use to get traffic sign map features
      */
     public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, getDetectionLayers()) + SORT_BY_KEY);
+      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
     }
 
     /**
