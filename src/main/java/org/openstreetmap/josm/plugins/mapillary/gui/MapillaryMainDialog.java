@@ -50,13 +50,13 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
+
 /**
  * Toggle dialog that shows an image and some buttons.
  *
  * @author nokutu
  */
-public final class MapillaryMainDialog extends ToggleDialog implements
-        ICachedLoaderListener, MapillaryDataListener {
+public final class MapillaryMainDialog extends ToggleDialog implements ICachedLoaderListener, MapillaryDataListener {
 
   private static final long serialVersionUID = 6856496736429480600L;
 
@@ -128,7 +128,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     panel.add(mapillaryImageDisplay);
     JPanel buttons = new JPanel();
     buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
-    Dimension buttonDim = new Dimension(52, 26);
+    Dimension buttonDim = new Dimension(52, 34);
     JButton toggleSigns = new JButton(showSignDetectionsAction);
     JButton toggleDetections = new JButton(showDetectionOutlinesAction);
     showDetectionOutlinesAction.setButton(toggleDetections);
@@ -148,17 +148,22 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   private static abstract class JosmButtonAction extends JosmAction {
     private static final long serialVersionUID = -4009253801009731575L;
     JButton pbutton;
-    public JosmButtonAction(String name, ImageProvider icon, String tooltip, Shortcut shortcut, boolean registerInToolbar,
-        String toolbarId, boolean installAdapters) {
+
+    public JosmButtonAction(
+      String name, ImageProvider icon, String tooltip, Shortcut shortcut, boolean registerInToolbar, String toolbarId,
+      boolean installAdapters
+    ) {
       super(name, icon, tooltip, shortcut, registerInToolbar, toolbarId, installAdapters);
     }
+
     void setButton(JButton button) {
       this.pbutton = button;
       setBackground();
     }
 
     protected void setBackground() {
-      if (pbutton == null) return;
+      if (pbutton == null)
+        return;
       if (Boolean.TRUE.equals(getProperty().get())) {
         this.pbutton.setForeground(Color.GREEN);
         this.pbutton.setBackground(Color.GREEN);
@@ -174,12 +179,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements
 
   private static class ShowDetectionOutlinesAction extends JosmButtonAction {
     private static final long serialVersionUID = 1943388917595255950L;
+
     ShowDetectionOutlinesAction() {
-      super(null, new ImageProvider("mapillary_sprite_source/package_objects", "object--sign--information"),
-          tr("Toggle detection outlines"),
-          Shortcut.registerShortcut("mapillary:showdetections", tr("Mapillary: toggle detections"),
-              KeyEvent.VK_UNDEFINED, Shortcut.NONE),
-          false, null, false);
+      super(
+        null, new ImageProvider("mapillary_sprite_source/package_objects", "object--traffic-light--other"), tr("Toggle detection outlines"), Shortcut.registerShortcut("mapillary:showdetections", tr("Mapillary: toggle detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false
+      );
     }
 
     @Override
@@ -198,11 +202,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements
     private static final long serialVersionUID = -3743322064323002656L;
 
     ShowSignDetectionsAction() {
-      super(null, new ImageProvider("mapillary_sprite_source/package_signs", "complementary--both-directions--g2"),
-          tr("Toggle sign detection outlines"),
-          Shortcut.registerShortcut("mapillary:showsigndetections", tr("Mapillary: toggle sign detections"),
-              KeyEvent.VK_UNDEFINED, Shortcut.NONE),
-          false, null, false);
+      super(
+        null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"), tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections", tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false
+      );
     }
 
     @Override
@@ -221,18 +223,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements
    * Adds the shortcuts to the buttons.
    */
   private void addShortcuts() {
-    this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
+    this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
     this.nextButton.getActionMap().put("next", SelectNextImageAction.NEXT_ACTION);
-    this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke("PAGE_UP"), "previous");
-    this.previousButton.getActionMap().put("previous",
-            SelectNextImageAction.PREVIOUS_ACTION);
-    this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
+    this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke("PAGE_UP"), "previous");
+    this.previousButton.getActionMap().put("previous", SelectNextImageAction.PREVIOUS_ACTION);
+    this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
     this.blueButton.getActionMap().put("blue", SelectNextImageAction.BLUE_ACTION);
-    this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
+    this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put(KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
     this.redButton.getActionMap().put("red", SelectNextImageAction.RED_ACTION);
   }
 
@@ -261,23 +261,18 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Sets a new mode for the dialog.
    *
-   * @param mode The mode to be set. Must not be {@code null}.
+   * @param mode
+   *          The mode to be set. Must not be {@code null}.
    */
   public void setMode(MODE mode) {
     switch (mode) {
-      case WALK:
-        createLayout(
-          this.panel,
-          Arrays.asList(playButton, pauseButton, stopButton)
-        );
-        break;
-      case NORMAL:
-      default:
-        createLayout(
-          this.panel,
-          Arrays.asList(blueButton, previousButton, nextButton, redButton)
-        );
-        break;
+    case WALK:
+      createLayout(this.panel, Arrays.asList(playButton, pauseButton, stopButton));
+      break;
+    case NORMAL:
+    default:
+      createLayout(this.panel, Arrays.asList(blueButton, previousButton, nextButton, redButton));
+      break;
     }
     disableAllButtons();
     if (MODE.NORMAL.equals(mode)) {
@@ -288,27 +283,24 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   }
 
   /**
-   * Destroys the unique instance of the class.
-   * You should prefer to call the destroy method on the actual instance.
+   * Destroys the unique instance of the class. You should prefer to call the destroy method on the actual instance.
    */
   public static synchronized void destroyInstance() {
     instance = null;
   }
 
   /**
-   * Downloads the full quality picture of the selected MapillaryImage and sets
-   * in the MapillaryImageDisplay object.
+   * Downloads the full quality picture of the selected MapillaryImage and sets in the MapillaryImageDisplay object.
    */
   public synchronized void updateImage() {
     updateImage(true);
   }
 
   /**
-   * Downloads the picture of the selected MapillaryImage and sets in the
-   * MapillaryImageDisplay object.
+   * Downloads the picture of the selected MapillaryImage and sets in the MapillaryImageDisplay object.
    *
-   * @param fullQuality If the full quality picture must be downloaded or just the
-   *                    thumbnail.
+   * @param fullQuality
+   *          If the full quality picture must be downloaded or just the thumbnail.
    */
   public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
@@ -324,7 +316,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         return;
       }
 
-      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0 && imageInfoHelp.showPopup()) {
+      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0
+        && imageInfoHelp.showPopup()) {
         // Count down the number of times the popup will be displayed
         MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() - 1);
       }
@@ -358,8 +351,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         this.mapillaryImageDisplay.setImage(null, null, false);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
-        this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
-                MapillaryCache.Type.THUMBNAIL);
+        this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
         try {
           this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
@@ -367,12 +359,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         }
 
         // Downloads the full resolution image.
-        if (fullQuality || new MapillaryCache(mapillaryImage.getKey(),
-                MapillaryCache.Type.FULL_IMAGE).get() != null) {
+        if (fullQuality || new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE).get() != null) {
           if (this.imageCache != null)
             this.imageCache.cancelOutstandingTasks();
-          this.imageCache = new MapillaryCache(mapillaryImage.getKey(),
-                  MapillaryCache.Type.FULL_IMAGE);
+          this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
           try {
             this.imageCache.submit(this, false);
           } catch (IOException e) {
@@ -382,11 +372,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
       } else if (this.image instanceof MapillaryImportedImage) {
         final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(
-            mapillaryImage.getImage(),
-            null,
-            mapillaryImage.isPanorama()
-          );
+          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null, mapillaryImage.isPanorama());
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -409,7 +395,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Sets a new MapillaryImage to be shown.
    *
-   * @param image The image to be shown.
+   * @param image
+   *          The image to be shown.
    */
   public synchronized void setImage(MapillaryAbstractImage image) {
     this.image = image;
@@ -538,8 +525,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   }
 
   /**
-   * When the pictures are returned from the cache, they are set in the
-   * {@link MapillaryImageDisplay} object.
+   * When the pictures are returned from the cache, they are set in the {@link MapillaryImageDisplay} object.
    */
   @Override
   public void loadingFinished(final CacheEntry data, final CacheEntryAttributes attributes, final LoadResult result) {
@@ -551,14 +537,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements
         if (img == null) {
           return;
         }
-        if (
-          mapillaryImageDisplay.getImage() == null
-          || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()
-            ) {
+        if (mapillaryImageDisplay.getImage() == null
+          || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()) {
           final MapillaryAbstractImage mai = getImage();
           this.mapillaryImageDisplay.setImage(
-            img,
-            mai instanceof MapillaryImage? ((MapillaryImage) getImage()).getDetections() : null,
+            img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
             mai != null && mai.isPanorama()
           );
         }
@@ -571,8 +554,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements
   /**
    * Creates the layout of the dialog.
    *
-   * @param data    The content of the dialog
-   * @param buttons The buttons where you can click
+   * @param data
+   *          The content of the dialog
+   * @param buttons
+   *          The buttons where you can click
    */
   private void createLayout(Component data, List<SideButton> buttons) {
     removeAll();
