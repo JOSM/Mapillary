@@ -54,6 +54,9 @@ public class SelectMode extends AbstractMode {
     }
     final MapillaryAbstractImage closest = getClosest(e.getPoint());
     if (closest == null) {
+      if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2 && MapillaryLayer.hasInstance()) {
+        MapillaryLayer.getInstance().getData().setSelectedImage(null);
+      }
       return;
     }
 
