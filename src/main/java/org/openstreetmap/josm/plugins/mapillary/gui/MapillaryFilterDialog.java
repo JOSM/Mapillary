@@ -154,6 +154,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     userSearchPanel.add(new JLabel(tr("Org")));
     userSearchPanel.add(this.organizations);
     organizations.addItem(OrganizationRecord.NULL_RECORD);
+    organizations.setEnabled(false);
     organizations.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = -1650696801628131389L;
 
@@ -527,5 +528,6 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     if (add) {
       SwingUtilities.invokeLater(() -> organizations.addItem(organization));
     }
+    SwingUtilities.invokeLater(() -> organizations.setEnabled(organizations.getItemCount() > 0));
   }
 }
