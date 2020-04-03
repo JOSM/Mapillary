@@ -484,7 +484,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       );
       JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Choose signs"));
       dlg.setVisible(true);
-      Object value = pane.getValue();      
+      Object value = pane.getValue();
       if (value != null && (int) value == JOptionPane.OK_OPTION) {
         MapillaryFilterDialog.getInstance().refresh();
       }
