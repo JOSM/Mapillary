@@ -9,19 +9,19 @@ public final class MapillaryColorScheme {
   /**
    * Color for unselected images
    */
-  public static final Color SEQ_UNSELECTED = new Color(0x37a860);
+  public static final Color SEQ_UNSELECTED = Color.decode("#05CB63");
   /**
    * Color for the camera angle indicator of images in unselected sequences
    */
-  public static final Color SEQ_UNSELECTED_CA = new Color(0x177542);
+  public static final Color SEQ_UNSELECTED_CA = Color.decode("#187A45");
   /**
    * Color for the marker of images in a selected sequence
    */
-  public static final Color SEQ_SELECTED = new Color(0x00b5f5);
+  public static final Color SEQ_SELECTED = Color.decode("#00BCFF");
   /**
    * Color for the camera angle indicator of images in selected sequences
    */
-  public static final Color SEQ_SELECTED_CA = new Color(0x00769d);
+  public static final Color SEQ_SELECTED_CA = Color.decode("#356685");
   /**
    * Color for the marker of currently selected images
    */
