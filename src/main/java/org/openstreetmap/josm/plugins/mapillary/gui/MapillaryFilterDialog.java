@@ -192,7 +192,7 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   /**
    * Resets the dialog to its default state.
    */
-  public void reset() {    
+  public void reset() {
     this.endDate.getNode().setValue(null);
     this.filterByDateCheckbox.setSelected(false);
     this.imported.setSelected(true);

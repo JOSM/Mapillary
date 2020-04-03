@@ -101,7 +101,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     checkBoxPanel.add(checkBox);
     parentPanel.add(checkBoxPanel);
   }
-  
+
   public void reset() {
     for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
       MapillaryFilterChooseSigns.getInstance().signCheckboxes[i].setSelected(true);
