@@ -24,6 +24,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
@@ -53,6 +54,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
   private final Container rootComponent = new JPanel(new BorderLayout());
   private final SideButton submitButton = new SideButton(new MapillarySubmitCurrentChangesetAction(this));
   private final JProgressBar uploadPendingProgress = new JProgressBar();
+  private boolean destroyed;
 
   /**
    * Destroys the unique instance of the class.
@@ -139,5 +141,15 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
     } else {
       buildTree();
     }
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
+    destroyInstance();
   }
 }

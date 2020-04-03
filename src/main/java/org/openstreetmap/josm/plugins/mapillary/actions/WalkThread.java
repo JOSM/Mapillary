@@ -24,7 +24,7 @@ import org.openstreetmap.josm.tools.Logging;
 public class WalkThread extends Thread implements MapillaryDataListener {
   private final int interval;
   private final MapillaryData data;
-  private boolean end;
+  private boolean endWalk;
   private final boolean waitForFullQuality;
   private final boolean followSelected;
   private final boolean goForward;
@@ -55,7 +55,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
       MapillaryAbstractImage curSelection;
       MapillaryImage curImage;
       while (
-          !this.end &&
+          !this.endWalk &&
           (curSelection = this.data.getSelectedImage().next()) != null &&
           (curImage = curSelection instanceof MapillaryImage ? (MapillaryImage) curSelection : null) != null
       ) {
@@ -133,7 +133,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    if (newImage != oldImage.next()) {
+    if (newImage != null && !newImage.equals(oldImage.next())) {
       end();
       interrupt();
     }
@@ -170,7 +170,7 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    */
   private void end() {
     if (SwingUtilities.isEventDispatchThread()) {
-      this.end = true;
+      this.endWalk = true;
       this.data.removeListener(this);
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
     } else {

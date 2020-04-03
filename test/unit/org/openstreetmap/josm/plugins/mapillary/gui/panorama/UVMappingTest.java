@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.awt.geom.Point2D;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.Test;
 
 public class UVMappingTest {

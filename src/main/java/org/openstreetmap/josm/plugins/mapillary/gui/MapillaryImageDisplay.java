@@ -27,13 +27,18 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -49,41 +54,41 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillaryImageDisplay
  * @see MapillaryMainDialog
  */
-public class MapillaryImageDisplay extends JPanel {
+public final class MapillaryImageDisplay extends JPanel {
 
   private static final long serialVersionUID = 3369727203329307716L;
-  private static final double PANORAMA_FOV = Math.toRadians(110);
+  static final double PANORAMA_FOV = Math.toRadians(110);
 
-  private final Collection<ImageDetection> detections = new ArrayList<>();
+  private final transient Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
 
   /** The image currently displayed */
-  private volatile BufferedImage image;
+  transient volatile BufferedImage image;
 
-  private boolean pano = false;
+  boolean pano;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
    * rectangle is calculated each time the zoom is modified
    */
-  private volatile Rectangle visibleRect;
+  volatile Rectangle visibleRect;
 
   /**
    * When a selection is done, the rectangle of the selection (in image
    * coordinates)
    */
-  private Rectangle selectedRect;
+  Rectangle selectedRect;
 
   /**
    * When panorama 360-degree photo is downloaded, use offscreen buffer for display.
    */
-  private BufferedImage offscreenImage;
+  transient BufferedImage offscreenImage;
 
   /**
    * 360-degree panorama photo projection class.
    */
-  private CameraPlane cameraPlane;
+  transient CameraPlane cameraPlane;
 
-  private class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
+  protected class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
     private long lastTimeForMousePoint;
     private Point mousePointInImg;
@@ -94,15 +99,15 @@ public class MapillaryImageDisplay extends JPanel {
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-      Image image;
-      Rectangle visibleRect;
+      Image mouseImage;
+      Rectangle mouseVisibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = getImage();
-        visibleRect = MapillaryImageDisplay.this.visibleRect;
+        mouseImage = getImage();
+        mouseVisibleRect = MapillaryImageDisplay.this.visibleRect;
       }
       this.mouseIsDragging = false;
       MapillaryImageDisplay.this.selectedRect = null;
-      if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
+      if (mouseImage != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
         // Calculate the mouse cursor position in image coordinates, so that
         // we can center the zoom
         // on that mouse position.
@@ -111,59 +116,59 @@ public class MapillaryImageDisplay extends JPanel {
         // again if there was less than 1.5seconds since the last event.
         if (e.getWhen() - this.lastTimeForMousePoint > 1500 || this.mousePointInImg == null) {
           this.lastTimeForMousePoint = e.getWhen();
-          this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+          this.mousePointInImg = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
         }
         // Set the zoom to the visible rectangle in image coordinates
         if (e.getWheelRotation() > 0) {
-          visibleRect.width = visibleRect.width * 3 / 2;
-          visibleRect.height = visibleRect.height * 3 / 2;
+          mouseVisibleRect.width = mouseVisibleRect.width * 3 / 2;
+          mouseVisibleRect.height = mouseVisibleRect.height * 3 / 2;
         } else {
-          visibleRect.width = visibleRect.width * 2 / 3;
-          visibleRect.height = visibleRect.height * 2 / 3;
+          mouseVisibleRect.width = mouseVisibleRect.width * 2 / 3;
+          mouseVisibleRect.height = mouseVisibleRect.height * 2 / 3;
         }
         // Check that the zoom doesn't exceed 2:1
-        if (visibleRect.width < getSize().width / 2) {
-          visibleRect.width = getSize().width / 2;
+        if (mouseVisibleRect.width < getSize().width / 2) {
+          mouseVisibleRect.width = getSize().width / 2;
         }
-        if (visibleRect.height < getSize().height / 2) {
-          visibleRect.height = getSize().height / 2;
+        if (mouseVisibleRect.height < getSize().height / 2) {
+          mouseVisibleRect.height = getSize().height / 2;
         }
         // Set the same ratio for the visible rectangle and the display area
-        int hFact = visibleRect.height * getSize().width;
-        int wFact = visibleRect.width * getSize().height;
+        int hFact = mouseVisibleRect.height * getSize().width;
+        int wFact = mouseVisibleRect.width * getSize().height;
         if (hFact > wFact) {
-          visibleRect.width = hFact / getSize().height;
+          mouseVisibleRect.width = hFact / getSize().height;
         } else {
-          visibleRect.height = wFact / getSize().width;
+          mouseVisibleRect.height = wFact / getSize().width;
         }
         if (MapillaryImageDisplay.this.pano) {
            // The size of the visible rectangle is limited by the offscreenImage size.
-          checkVisibleRectSize(offscreenImage, visibleRect);
+          checkVisibleRectSize(offscreenImage, mouseVisibleRect);
           // Set the position of the visible rectangle, so that the mouse
           // cursor doesn't move on the image.
-          Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-          visibleRect.x = this.mousePointInImg.x
-              + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
-          visibleRect.y = this.mousePointInImg.y
-              + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
+          Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
+          mouseVisibleRect.x = this.mousePointInImg.x
+              + ((drawRect.x - e.getX()) * mouseVisibleRect.width) / drawRect.width;
+          mouseVisibleRect.y = this.mousePointInImg.y
+              + ((drawRect.y - e.getY()) * mouseVisibleRect.height) / drawRect.height;
           // The position is also limited by the image size
-          checkVisibleRectPos(offscreenImage, visibleRect);
+          checkVisibleRectPos(offscreenImage, mouseVisibleRect);
         } else {
           // The size of the visible rectangle is limited by the image size.
-          checkVisibleRectSize(image, visibleRect);
+          checkVisibleRectSize(mouseImage, mouseVisibleRect);
           // Set the position of the visible rectangle, so that the mouse
           // cursor doesn't move on the image.
-          Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-          visibleRect.x = this.mousePointInImg.x
-              + ((drawRect.x - e.getX()) * visibleRect.width) / drawRect.width;
-          visibleRect.y = this.mousePointInImg.y
-              + ((drawRect.y - e.getY()) * visibleRect.height) / drawRect.height;
+          Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
+          mouseVisibleRect.x = this.mousePointInImg.x
+              + ((drawRect.x - e.getX()) * mouseVisibleRect.width) / drawRect.width;
+          mouseVisibleRect.y = this.mousePointInImg.y
+              + ((drawRect.y - e.getY()) * mouseVisibleRect.height) / drawRect.height;
           // The position is also limited by the image size
-          checkVisibleRectPos(image, visibleRect);
+          checkVisibleRectPos(mouseImage, mouseVisibleRect);
         }
-          synchronized (MapillaryImageDisplay.this) {
-            MapillaryImageDisplay.this.visibleRect = visibleRect;
-          }
+        synchronized (MapillaryImageDisplay.this) {
+          MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
+        }
         MapillaryImageDisplay.this.repaint();
       }
     }
@@ -172,13 +177,13 @@ public class MapillaryImageDisplay extends JPanel {
     @Override
     public void mouseClicked(MouseEvent e) {
       // Move the center to the clicked point.
-      Image image;
-      Rectangle visibleRect;
+      Image mouseImage;
+      Rectangle mouseVisibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = getImage();
-        visibleRect = MapillaryImageDisplay.this.visibleRect;
+        mouseImage = getImage();
+        mouseVisibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      if (image != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
+      if (mouseImage != null && Math.min(getSize().getWidth(), getSize().getHeight()) > 0) {
         if (MapillaryImageDisplay.this.pano) {
           if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
             if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0,
@@ -189,23 +194,23 @@ public class MapillaryImageDisplay extends JPanel {
               MapillaryImageDisplay.this.repaint();
             }
           } else if (e.getButton() == MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
-            cameraPlane.setRotation(comp2imgCoord(visibleRect, e.getX(), e.getY()));
+            cameraPlane.setRotation(comp2imgCoord(mouseVisibleRect, e.getX(), e.getY()));
             MapillaryImageDisplay.this.repaint();
           }
           return;
         } else {
           if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
-            if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, image.getWidth(null), image.getHeight(null)))) {
+            if (!MapillaryImageDisplay.this.visibleRect.equals(new Rectangle(0, 0, mouseImage.getWidth(null), mouseImage.getHeight(null)))) {
               // Zooms to 1:1
               MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0,
-                  image.getWidth(null), image.getHeight(null));
+                  mouseImage.getWidth(null), mouseImage.getHeight(null));
             } else {
               // Zooms to best fit.
               MapillaryImageDisplay.this.visibleRect = new Rectangle(
                   0,
-                  (image.getHeight(null) - (image.getWidth(null) * getHeight()) / getWidth()) / 2,
-                  image.getWidth(null),
-                  (image.getWidth(null) * getHeight()) / getWidth()
+                  (mouseImage.getHeight(null) - (mouseImage.getWidth(null) * getHeight()) / getWidth()) / 2,
+                  mouseImage.getWidth(null),
+                  (mouseImage.getWidth(null) * getHeight()) / getWidth()
               );
             }
             MapillaryImageDisplay.this.repaint();
@@ -215,13 +220,13 @@ public class MapillaryImageDisplay extends JPanel {
           }
           // Calculate the translation to set the clicked point the center of
           // the view.
-          Point click = comp2imgCoord(visibleRect, e.getX(), e.getY());
-          Point center = getCenterImgCoord(visibleRect);
-          visibleRect.x += click.x - center.x;
-          visibleRect.y += click.y - center.y;
-          checkVisibleRectPos(image, visibleRect);
+          Point click = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+          Point center = getCenterImgCoord(mouseVisibleRect);
+          mouseVisibleRect.x += click.x - center.x;
+          mouseVisibleRect.y += click.y - center.y;
+          checkVisibleRectPos(mouseImage, mouseVisibleRect);
           synchronized (MapillaryImageDisplay.this) {
-            MapillaryImageDisplay.this.visibleRect = visibleRect;
+            MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
           }
         }
         MapillaryImageDisplay.this.repaint();
@@ -239,21 +244,21 @@ public class MapillaryImageDisplay extends JPanel {
         MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
-      Image image;
-      Rectangle visibleRect;
+      Image mousePressedImage;
+      Rectangle mouseVisibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = MapillaryImageDisplay.this.image;
-        visibleRect = MapillaryImageDisplay.this.visibleRect;
+        mousePressedImage = MapillaryImageDisplay.this.image;
+        mouseVisibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      if (image == null)
+      if (mousePressedImage == null)
         return;
       if (e.getButton() == MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
-        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
+        this.mousePointInImg = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
         this.mouseIsDragging = true;
         MapillaryImageDisplay.this.selectedRect = null;
       } else if (e.getButton() == MapillaryProperties.PICTURE_ZOOM_BUTTON.get()) {
-        this.mousePointInImg = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        checkPointInVisibleRect(this.mousePointInImg, visibleRect);
+        this.mousePointInImg = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        checkPointInVisibleRect(this.mousePointInImg, mouseVisibleRect);
         this.mouseIsDragging = false;
         MapillaryImageDisplay.this.selectedRect = new Rectangle(this.mousePointInImg.x, this.mousePointInImg.y, 0, 0);
         MapillaryImageDisplay.this.repaint();
@@ -267,39 +272,43 @@ public class MapillaryImageDisplay extends JPanel {
     public void mouseDragged(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
-      Image image;
-      Rectangle visibleRect;
+      Image mouseImage;
+      Rectangle mouseVisibleRect;
       synchronized (MapillaryImageDisplay.this) {
-        image = getImage();
-        visibleRect = MapillaryImageDisplay.this.visibleRect;
+        mouseImage = getImage();
+        mouseVisibleRect = MapillaryImageDisplay.this.visibleRect;
       }
-      if (image == null) {
+      if (mouseImage == null) {
         this.mouseIsDragging = false;
         MapillaryImageDisplay.this.selectedRect = null;
         return;
       }
       if (this.mouseIsDragging) {
-        if (!MapillaryImageDisplay.this.pano) {
-          Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
-          visibleRect.x += this.mousePointInImg.x - p.x;
-          visibleRect.y += this.mousePointInImg.y - p.y;
-          checkVisibleRectPos(image, visibleRect);
+        Point p = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        if (!pano) {
+          mouseVisibleRect.x += this.mousePointInImg.x - p.x;
+          mouseVisibleRect.y += this.mousePointInImg.y - p.y;
+          checkVisibleRectPos(mouseImage, mouseVisibleRect);
           synchronized (MapillaryImageDisplay.this) {
-            MapillaryImageDisplay.this.visibleRect = visibleRect;
+            MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
           }
-          MapillaryImageDisplay.this.repaint();
+        } else {
+          cameraPlane.setRotationFromDelta(mousePointInImg, p);
+          // Set the current mouse point to where the pointer is now.
+          mousePointInImg = p;
         }
+        MapillaryImageDisplay.this.repaint();
       } else if (MapillaryImageDisplay.this.selectedRect != null) {
-        final Point p = comp2imgCoord(visibleRect, e.getX(), e.getY());
-        checkPointInVisibleRect(p, visibleRect);
+        final Point p = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        checkPointInVisibleRect(p, mouseVisibleRect);
         Rectangle rect = new Rectangle(
           Math.min(p.x, this.mousePointInImg.x),
           Math.min(p.y, this.mousePointInImg.y),
           Math.abs(p.x - this.mousePointInImg.x),
           Math.abs(p.y - this.mousePointInImg.y)
         );
-        checkVisibleRectSize(image, rect);
-        checkVisibleRectPos(image, rect);
+        checkVisibleRectSize(mouseImage, rect);
+        checkVisibleRectPos(mouseImage, rect);
         MapillaryImageDisplay.this.selectedRect = rect;
         MapillaryImageDisplay.this.repaint();
       }
@@ -309,11 +318,11 @@ public class MapillaryImageDisplay extends JPanel {
     public void mouseReleased(MouseEvent e) {
       if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         return;
-      Image image;
+      Image mouseImage;
       synchronized (MapillaryImageDisplay.this) {
-        image = getImage();
+        mouseImage = getImage();
       }
-      if (image == null) {
+      if (mouseImage == null) {
         this.mouseIsDragging = false;
         MapillaryImageDisplay.this.selectedRect = null;
         return;
@@ -322,14 +331,7 @@ public class MapillaryImageDisplay extends JPanel {
        * When dragging panorama photo, re-calcurate rotation when release.
        * For normal photo, just stop dragging flag because redraw during dragging.
        */
-      if (this.mouseIsDragging) {
-        this.mouseIsDragging = false;
-        if (MapillaryImageDisplay.this.pano) {
-          Point current = comp2imgCoord(visibleRect, e.getX(), e.getY());
-          cameraPlane.setRotationFromDelta(mousePointInImg, current);
-          MapillaryImageDisplay.this.repaint();
-        }
-      } else if (MapillaryImageDisplay.this.selectedRect != null) {
+      if (MapillaryImageDisplay.this.selectedRect != null) {
         int oldWidth = MapillaryImageDisplay.this.selectedRect.width;
         int oldHeight = MapillaryImageDisplay.this.selectedRect.height;
         // Check that the zoom doesn't exceed 2:1
@@ -355,8 +357,8 @@ public class MapillaryImageDisplay extends JPanel {
         if (MapillaryImageDisplay.this.selectedRect.height != oldHeight) {
           MapillaryImageDisplay.this.selectedRect.y -= (MapillaryImageDisplay.this.selectedRect.height - oldHeight) / 2;
         }
-        checkVisibleRectSize(image, MapillaryImageDisplay.this.selectedRect);
-        checkVisibleRectPos(image, MapillaryImageDisplay.this.selectedRect);
+        checkVisibleRectSize(mouseImage, MapillaryImageDisplay.this.selectedRect);
+        checkVisibleRectPos(mouseImage, MapillaryImageDisplay.this.selectedRect);
         synchronized (MapillaryImageDisplay.this) {
           MapillaryImageDisplay.this.visibleRect = MapillaryImageDisplay.this.selectedRect;
         }
@@ -423,6 +425,7 @@ public class MapillaryImageDisplay extends JPanel {
       public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) { }
     });
 
+    MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(it -> repaint());
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
     MapillaryProperties.DARK_MODE.addListener(it -> setDarkMode(it.getProperty().get()));
   }
@@ -435,8 +438,9 @@ public class MapillaryImageDisplay extends JPanel {
   /**
    * Sets a new picture to be displayed.
    *
-   * @param image The picture to be displayed.
+   * @param image      The picture to be displayed.
    * @param detections image detections
+   * @param pano       The property to indicate whether image is panorama or not.
    */
   void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
     synchronized (this) {
@@ -447,16 +451,22 @@ public class MapillaryImageDisplay extends JPanel {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
-      if (image != null) {
-        if (this.pano) {
-          this.visibleRect = new Rectangle(0, 0, getSize().width, getSize().height);
-        } else {
-          this.visibleRect = new Rectangle(0, 0, image.getWidth(null),
-              image.getHeight(null));
-        }
-      }
+      this.visibleRect = getDefaultVisibleRect();
     }
     repaint();
+  }
+
+  public Rectangle getDefaultVisibleRect() {
+    if (image != null) {
+      Rectangle visibleRectangle = null;
+      if (this.pano) {
+        visibleRectangle = new Rectangle(0, 0, getSize().width, getSize().height);
+      } else {
+        visibleRectangle = new Rectangle(0, 0, image.getWidth(null), image.getHeight(null));
+      }
+      return visibleRectangle;
+    }
+    return visibleRect;
   }
 
   /**
@@ -474,20 +484,17 @@ public class MapillaryImageDisplay extends JPanel {
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
-    final BufferedImage image;
-    final Rectangle visibleRect;
+    final BufferedImage bufferedImage;
+    final Rectangle paintVisibleRect;
     synchronized (this) {
-      image = this.image;
-      visibleRect = this.visibleRect;
+      bufferedImage = this.image;
+      paintVisibleRect = this.visibleRect;
     }
-    if (image == null) {
+    if (bufferedImage == null) {
       paintNoImage(g);
     } else {
-      paintImage(g, image, visibleRect);
-
-      if (MapillaryProperties.SHOW_DETECTED_SIGNS.get()) {
-        paintDetectedSigns(g, visibleRect);
-      }
+      paintImage(g, bufferedImage, paintVisibleRect);
+      paintDetections(g, paintVisibleRect);
     }
   }
 
@@ -535,63 +542,82 @@ public class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private void paintDetectedSigns(Graphics g, Rectangle visibleRect) {
+  private void paintDetections(Graphics g, Rectangle visibleRect) {
     if (g instanceof Graphics2D) {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.setStroke(new BasicStroke(2));
-      if (pano) {
-        for (final ImageDetection d : detections) {
-          g2d.setColor(d.isTrafficSign() ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN);
-          final PathIterator pathIt = d.getShape().getPathIterator(null);
-          Point prevPoint = null;
-          while (!pathIt.isDone()) {
-            final double[] buffer = new double[6];
-            final int segmentType = pathIt.currentSegment(buffer);
-
-            if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO || segmentType == PathIterator.SEG_CUBICTO) {
-              // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1, 2 and 3 points for each of these segment types
-              final Point curPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
-              if (prevPoint != null && curPoint != null) {
-                g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
-              }
-              prevPoint = curPoint;
-            } else if (segmentType == PathIterator.SEG_MOVETO) {
-              prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
-            } else {
-              prevPoint = null;
-            }
-            pathIt.next();
-          }
-        }
-      } else {
-        final Point upperLeft = img2compCoord(visibleRect, 0, 0);
-        final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
-        final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
-        unit2CompTransform.concatenate(AffineTransform.getScaleInstance(
-          lowerRight.getX() - upperLeft.getX(),
-          lowerRight.getY() - upperLeft.getY()
-        ));
-
-        for (final ImageDetection d : detections) {
-          final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
-          g2d.setColor(
-            d.isTrafficSign()
-              ? MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN
-              : MapillaryColorScheme.IMAGEDETECTION_UNKNOWN
-          );
-          g2d.draw(shape);
-          if (d.isTrafficSign()) {
-            final Rectangle bounds = shape.getBounds();
-            g2d.drawImage(
-              MapObject.getIcon(d.getValue()).getImage(),
-              bounds.x, bounds.y,
-              bounds.width, bounds.height,
-              null
-            );
-          }
+      List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+      synchronized (detections) {
+        if (pano) {
+          paintPano(g2d, visibleRect, detectionLayers);
+        } else {
+          paintNonPano(g2d, visibleRect, detectionLayers);
         }
       }
     }
+  }
+
+  private void paintPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    List<ImageDetection> paintDetections = detections.parallelStream()
+        .filter(d -> !checkIfDetectionIsFiltered(detectionLayers, d)).collect(Collectors.toList());
+    for (final ImageDetection d : paintDetections) {
+      g2d.setColor(d.getColor());
+      final PathIterator pathIt = d.getShape().getPathIterator(null);
+      Point prevPoint = null;
+      while (!pathIt.isDone()) {
+        final double[] buffer = new double[6];
+        final int segmentType = pathIt.currentSegment(buffer);
+
+        if (segmentType == PathIterator.SEG_LINETO || segmentType == PathIterator.SEG_QUADTO
+            || segmentType == PathIterator.SEG_CUBICTO) {
+          // Takes advantage of the fact that SEG_LINETO=1, SEG_QUADTO=2, SEG_CUBICTO=3 and currentSegment() returns 1,
+          // 2 and 3 points for each of these segment types
+          final Point curPoint = cameraPlane
+              .getPoint(UVMapping.getVector(buffer[2 * (segmentType - 1)], buffer[2 * (segmentType - 1) + 1]));
+          if (prevPoint != null && curPoint != null) {
+            g2d.drawLine(prevPoint.x, prevPoint.y, curPoint.x, curPoint.y);
+          }
+          prevPoint = curPoint;
+        } else if (segmentType == PathIterator.SEG_MOVETO) {
+          prevPoint = cameraPlane.getPoint(UVMapping.getVector(buffer[0], buffer[1]));
+        } else {
+          prevPoint = null;
+        }
+        pathIt.next();
+      }
+    }
+  }
+
+  private void paintNonPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    final Point upperLeft = img2compCoord(visibleRect, 0, 0);
+    final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+    final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+    unit2CompTransform.concatenate(
+        AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+
+    for (final ImageDetection d : detections) {
+      if (checkIfDetectionIsFiltered(detectionLayers, d))
+        continue;
+      final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+      g2d.setColor(d.getColor());
+      g2d.draw(shape);
+      ImageIcon icon = MapObject.getIcon(d.getValue());
+      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
+        final Rectangle bounds = shape.getBounds();
+        g2d.drawImage(MapObject.getIcon(d.getValue()).getImage(), bounds.x, bounds.y, bounds.width, bounds.height,
+            null);
+      }
+    }
+  }
+
+  private static boolean checkIfDetectionIsFiltered(List<PointObjectLayer> detectionLayers, ImageDetection d) {
+    if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
+        && !"trafficsigns".contains(d.getPackage()))
+        || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
+            && "trafficsigns".contains(d.getPackage())))
+      return true;
+    OsmPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(data -> data.allPrimitives().parallelStream()).filter(p -> p.hasKey("detections") && p.get("detections").contains(d.getKey())).findAny().orElse(null);
+    return prim != null && prim.isDisabled();
   }
 
   private Point img2compCoord(Rectangle visibleRect, int xImg, int yImg) {
@@ -601,7 +627,7 @@ public class MapillaryImageDisplay extends JPanel {
         + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
   }
 
-  private Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
+  protected Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
     return new Point(
             visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
@@ -609,11 +635,11 @@ public class MapillaryImageDisplay extends JPanel {
     );
   }
 
-  private static Point getCenterImgCoord(Rectangle visibleRect) {
+  protected static Point getCenterImgCoord(Rectangle visibleRect) {
     return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);
   }
 
-  private Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
+  protected Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
     return calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0, getSize().width, getSize().height));
   }
 
@@ -650,33 +676,33 @@ public class MapillaryImageDisplay extends JPanel {
    * Zooms to 1:1 and, if it is already in 1:1, to best fit.
    */
   public void zoomBestFitOrOne() {
-    Image image;
-    Rectangle visibleRect;
+    Image zoomImage;
+    Rectangle zoomVisibleRect;
     synchronized (this) {
-      image = this.image;
-      visibleRect = this.visibleRect;
+      zoomImage = this.image;
+      zoomVisibleRect = this.visibleRect;
     }
-    if (image == null)
+    if (zoomImage == null)
       return;
-    if (visibleRect.width != image.getWidth(null)
-        || visibleRect.height != image.getHeight(null)) {
+    if (zoomVisibleRect.width != zoomImage.getWidth(null)
+        || zoomVisibleRect.height != zoomImage.getHeight(null)) {
       // The display is not at best fit. => Zoom to best fit
-      visibleRect = new Rectangle(0, 0, image.getWidth(null),
-          image.getHeight(null));
+      zoomVisibleRect = new Rectangle(0, 0, zoomImage.getWidth(null),
+          zoomImage.getHeight(null));
     } else {
       // The display is at best fit => zoom to 1:1
-      Point center = getCenterImgCoord(visibleRect);
-      visibleRect = new Rectangle(center.x - getWidth() / 2, center.y
+      Point center = getCenterImgCoord(zoomVisibleRect);
+      zoomVisibleRect = new Rectangle(center.x - getWidth() / 2, center.y
           - getHeight() / 2, getWidth(), getHeight());
-      checkVisibleRectPos(image, visibleRect);
+      checkVisibleRectPos(zoomImage, zoomVisibleRect);
     }
     synchronized (this) {
-      this.visibleRect = visibleRect;
+      this.visibleRect = zoomVisibleRect;
     }
     repaint();
   }
 
-  private static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
+  protected static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
     if (visibleRect.x < 0) {
       visibleRect.x = 0;
     }
@@ -691,7 +717,7 @@ public class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
+  protected static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
     if (visibleRect.width > image.getWidth(null)) {
       visibleRect.width = image.getWidth(null);
     }
@@ -700,7 +726,7 @@ public class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private static class ComponentSizeListener extends ComponentAdapter {
+  protected static class ComponentSizeListener extends ComponentAdapter {
     @Override
     public void componentResized(ComponentEvent e) {
       final Component component = e.getComponent();
@@ -711,9 +737,20 @@ public class MapillaryImageDisplay extends JPanel {
             e.getComponent().getHeight(),
             BufferedImage.TYPE_3BYTE_BGR
         );
-        final double cameraPlaneDistance = (e.getComponent().getWidth() / 2) / Math.tan(PANORAMA_FOV / 2);
+        final double cameraPlaneDistance = (e.getComponent().getWidth() / 2d) / Math.tan(PANORAMA_FOV / 2);
         imgDisplay.cameraPlane = new CameraPlane(e.getComponent().getWidth(), e.getComponent().getHeight(), cameraPlaneDistance);
       }
     }
+  }
+
+  /**
+   * @param detections The detections to set. Triggers a repaint.
+   */
+  public void setAllDetections(List<ImageDetection> detections) {
+    this.detections.clear();
+    if (detections != null) {
+      this.detections.addAll(detections);
+    }
+    repaint();
   }
 }

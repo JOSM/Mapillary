@@ -31,6 +31,8 @@ public final class MapillaryProperties {
   public static final IntegerProperty MAPOBJECT_ICON_SIZE = new IntegerProperty("mapillary.mapobjects.iconsize", 32);
   public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty("mapillary.mapobjects.maximum-number", 200);
   public static final BooleanProperty SHOW_DETECTED_SIGNS = new BooleanProperty("mapillary.show-detected-signs", true);
+  public static final BooleanProperty SHOW_DETECTION_OUTLINES = new BooleanProperty("mapillary.show-detection-outlines",
+      true);
 
   /**
    * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
@@ -74,6 +76,16 @@ public final class MapillaryProperties {
    * @see MapillaryPreferenceSetting#privateImages
    */
   public static final StringProperty IMAGE_MODE = new StringProperty("mapillary.imageMode", "all");
+
+  /**
+   * Download point features (fire hydrants, trees, and so on)
+   */
+  public static final BooleanProperty POINT_FEATURES = new BooleanProperty("mapillary.pointfeatures", false);
+
+  /**
+   * The opacity for unselected images when an image is selected
+   */
+  public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.50);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation

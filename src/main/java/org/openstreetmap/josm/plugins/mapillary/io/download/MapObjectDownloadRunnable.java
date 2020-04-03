@@ -1,10 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Function;
@@ -23,6 +21,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonMapObjectDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
@@ -51,20 +50,21 @@ public class MapObjectDownloadRunnable implements Runnable {
       while (nextURL != null && result.size() < MapillaryProperties.MAX_MAPOBJECTS.get() && !layer.isDownloadRunnableScheduled()) {
         final int prevResultSize = result.size();
         final long startTime = System.currentTimeMillis();
-        final URLConnection con = nextURL.openConnection();
-        try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+        final HttpClient client = HttpClient.create(nextURL);
+        client.connect();
+        try (JsonReader reader = Json.createReader(client.getResponse().getContentReader())) {
           result.addAll(JsonDecoder.decodeFeatureCollection(
             reader.readObject(),
             JsonMapObjectDecoder::decodeMapObject
           ));
         }
         layer.invalidate();
-        BoundsDownloadRunnable.logConnectionInfo(con, String.format(
+        BoundsDownloadRunnable.logConnectionInfo(client, String.format(
           "%d map objects in %.2f s",
           result.size() - prevResultSize,
           (System.currentTimeMillis() - startTime) / 1000f
         ));
-        nextURL = APIv3.parseNextFromLinkHeaderValue(con.getHeaderField("Link"));
+        nextURL = APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
       }
     } catch (IOException | JsonException e) {
       String message = I18n.tr("{0}\nCould not read map objects from URL\n{1}!", e.getLocalizedMessage(), nextURL.toString());

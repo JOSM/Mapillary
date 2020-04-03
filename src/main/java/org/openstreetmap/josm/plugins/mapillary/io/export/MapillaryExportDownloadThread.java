@@ -67,7 +67,10 @@ public class MapillaryExportDownloadThread extends Thread implements
             .put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
         this.queueImages.put(this.image);
       }
-    } catch (InterruptedException | IOException e) {
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      Logging.error(e);
+    } catch (IOException e) {
       Logging.error(e);
     }
   }

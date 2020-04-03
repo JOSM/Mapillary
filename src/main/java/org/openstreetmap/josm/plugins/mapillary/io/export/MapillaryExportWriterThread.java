@@ -81,8 +81,8 @@ public class MapillaryExportWriterThread extends Thread {
         img = this.queue.take();
         mimg = this.queueImages.take();
         if (this.path == null && mimg instanceof MapillaryImportedImage) {
-          String path = ((MapillaryImportedImage) mimg).getFile().getPath();
-          finalPath = path.substring(0, path.lastIndexOf('.'));
+          String runPath = ((MapillaryImportedImage) mimg).getFile().getPath();
+          finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
         } else if (mimg instanceof MapillaryImage) {
           finalPath = this.path + '/' + ((MapillaryImage) mimg).getKey();
         } else if (mimg instanceof MapillaryImportedImage) {
@@ -133,12 +133,12 @@ public class MapillaryExportWriterThread extends Thread {
               mimg.getDate("yyyy/MM/dd HH/mm/ss"));
         }
         outputSet.setGPSInDegrees(mimg.getMovingLatLon().lon(), mimg.getMovingLatLon().lat());
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"));
-        new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
-
-        os.close();
+        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"))) {
+          new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
+        }
       } catch (InterruptedException e) {
         Logging.info("Mapillary export cancelled");
+        Thread.currentThread().interrupt();
         return;
       } catch (IOException | ImageReadException | ImageWriteException e) {
         Logging.error(e);

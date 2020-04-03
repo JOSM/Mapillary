@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -32,15 +33,16 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * If {@code true}, the image is private. If {@code false}, then it is public.
    */
-  private boolean privateImage;
+  private final boolean privateImage;
 
   /**
    * Main constructor of the class MapillaryImage
    *
-   * @param key    The unique identifier of the image.
-   * @param latLon The latitude and longitude where it is positioned.
-   * @param ca     The direction of the images in degrees, meaning 0 north.
-   * @param pano   The property to indicate whether image is panorama or not.
+   * @param key          The unique identifier of the image.
+   * @param latLon       The latitude and longitude where it is positioned.
+   * @param ca           The direction of the images in degrees, meaning 0 north.
+   * @param pano         The property to indicate whether image is panorama or not.
+   * @param privateImage The property to indicate if the image is private or not.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano,
       final boolean privateImage) {
@@ -88,7 +90,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public int compareTo(MapillaryAbstractImage image) {
+  public int compareTo(GpxImageEntry image) {
     if (image instanceof MapillaryImage) {
       return this.key.compareTo(((MapillaryImage) image).getKey());
     }

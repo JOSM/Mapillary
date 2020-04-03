@@ -1,0 +1,9105 @@
+{
+    "complementary--accident-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--accident-area--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--accident-area--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--accident-area--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--advisory-exit-or-ramp-speed--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bicycles-and-pedestrians-detour--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bicycles-or-pedestrians-detour--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bicycles-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bike-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--bike-route--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--both-directions--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--both-directions--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--buses-and-trucks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--camera--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--camera--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--camera--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--camera--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--camera--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--caravan-trailers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--caravan-trailers--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--caravans--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-left--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--chevron-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-left--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--chevron-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--chevron-right--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--dangerous-or-pollutant-good--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--dead-end--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--detour--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--disabled-persons--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--distance--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--distance--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--distance--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--end-of-road-works--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-bicycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-motorcycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-polluting-level-green--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-polluting-level-green-yellow--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-polluting-level-green-yellow-red--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-tractors--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-trailers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-trains--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-trams--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-trucks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--except-vehicles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--go-straight-or-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--go-straight-or-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--height-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--height-limit--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--including-bicycles-and-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--including-buses-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--keep-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--keep-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--lane-control--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--lane-control--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--lane-control--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-10--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-15--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-20--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-25--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-30--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-35--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-40--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-45--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-50--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-55--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-60--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-65--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-85--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--maximum-speed-limit-95--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--motorcycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--motorcycles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--motorcycles--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--obstacle-delineator--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--obstacle-delineator--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--obstacle-delineator--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--one-direction-left--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--one-direction-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "complementary--pass-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--pass-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--pedestrians-and-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--pedestrians-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--pedestrians-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--photo-enforced--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--playground--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--priority-route-at-intersection--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--railroad--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--railroad--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--railroad--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--restriction-in-both-directions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--roundabout-go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--roundabout-go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--roundabout-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--slippery-for-caravan-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--snow--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--snow--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--snow--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--snowmobiles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--soft-shoulder--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--soft-shoulder--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--steep-ascent--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--steep-descent--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--time-restrictions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--time-restrictions--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--tow-away-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--tow-away-zone--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--traffic-queues--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trailers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trailers--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trailers--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trains--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trams--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trees--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-and-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-buses-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-go-left-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-go-right-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--trucks-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--turn-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--turn-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--two-way-traffic--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--two-way-traffic--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--two-way-traffic--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--two-way-traffic--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--two-way-traffic--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--vehicles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--vehicles-or-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--weekends-or-holidays--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--weight-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-foggy--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-rainy--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-rainy--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-rainy--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-snowy--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-snowy--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-snowy-or-rainy--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-snowy-or-rainy--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--when-wet--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--width-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "complementary--working-days--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--airport--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--airport--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bicycle-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bicycles-both-ways--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bicycles-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bicycles-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bicycles-crossing--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bike-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bike-route--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--built-up-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--built-up-area--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bus-lane-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--bus-stop--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--bus-stop--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--camera--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--camera--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--camera--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--camp--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--camp--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--car-pool-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--caravan-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--caravan-trailer-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--cargo-loading-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--central-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--charging-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--children--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--children--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--children-crossing--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--cycling-two-abreast-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--dead-end--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-except-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-except-bicycles-and-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-except-bicycles-and-pedestrians--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--dead-end-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--dead-end-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--dead-end-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--directions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--disabled-persons--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--disabled-persons--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--disabled-persons--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--emergency-facility--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-advisory-maximum-speed-limit-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-bicycle-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-built-up-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-built-up-area--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-built-up-area--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-built-up-area--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-car-pool-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-limited-access-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--end-of-living-street--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--end-of-living-street--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-100--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-110--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-120--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-130--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-minimum-speed-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-motorway--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--end-of-overtaking-permitted-heavy-good-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-road-works--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-tunnel--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-tunnel--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--end-of-two-way-traffic--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--equestrians-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--exit-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--exit-ahead--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--exit-ahead--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--flight-port--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--food--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--food--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--gas-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--gas-station--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--gas-station--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--general-speed-limit-at-city-border--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-straight-or-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-straight-or-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-straight-or-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--go-straight-or-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--hazardous-goods-vehicles-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--height-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--height-limit--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-directions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-exit--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "information--highway-interchange--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "information--highway-interstate-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-interstate-route--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-preferential-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-preferential-lane--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-reference-location--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--highway-reference-location--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--hiking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--hospital--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--hurricane-evacuation-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--interstate-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lane-control-intersections--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lane-control-left-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lane-control-multiple-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lane-control-multiple-lanes--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lane-control-right-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--limited-access-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--litter-container--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--living-street--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--living-street--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--living-street--g3": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--lodging--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--lodging--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-100--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-110--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-120--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-130--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--minimum-speed-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--motorway--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--motorway-exit-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--motorway-exit-ahead--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--motorway-exit-ahead--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--overtaking-allowed-heavy-good-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parallel-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--park-and-ride--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--park-and-ride--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--parking--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking--g3": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "information--parking--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--parking-with-restrictions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--pass-on-either-side--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--passenger-loading-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--pedestrians-crossing--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--pedestrians-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--pedestrians-crossing--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--pedestrians-only--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--pedestrians-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--perpendicular-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--picnic-site--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--playground--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--recreational-vehicle-sanitary-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--recycle-collection-center--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--rest-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--road-bump--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--road-skating--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--safety-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--safety-zone--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--safety-zone--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--shared-path-vehicles-and-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stairs--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stairs--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stairs--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stairs--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stop-line--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--stop-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--street-name-one-line--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--street-name-three-lines--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--street-name-two-lines--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--subway--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--telephone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--telephone--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--telephone-device-for-the-deaf--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--toll-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tourism-information--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tourist-attraction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--traffic-merges-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--traffic-merges-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trail-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trail-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trail-crossing--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trailer-camping--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--train-or-light-rail-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tram-bus-stop--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tram-bus-stop--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trams-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--truck-lane-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--truck-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--truck-trailer-lane-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--truck-trailer-lane-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trucks-both-ways--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--trucks-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tsunami-evacuation_route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tunnel--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "information--tunnel--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tunnel--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--tunnel-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--turn-left-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--turn-right-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--urban-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--vehicles-on-rails--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--water-protection-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--weight-and-height-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--weight-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "information--wireless-internet--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "object--logo--claro": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "object--logo--movistar": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "object--logo--pepsi": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "object--logo--tigo": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--advisory-maximum-speed-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--all-directions-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--all-way--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--atvs-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--axle-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--axle-limit--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycle-lane-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycle-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-and-buses-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-only--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--bicycles-only--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--bicycles-only--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-push-button--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-push-button--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-stop-on-red--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-wrong-way--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bicycles-yield-or-use-signal--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bike-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--building-direction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--bus-priority-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--buses-and-taxi-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--buses-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--buses-only--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--circular-intersection--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--circular-intersection--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--circular-intersection--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--circular-intersection--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--cross-only-on-green--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--cross-only-on-pedestrian-signal--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--crosswalk-stop-on-red--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--cycling-restriction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--cyclists-dismount-and-walk--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--detour-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--detour-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--divided-highway-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--divided-highway-ends--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--divided-highway-starts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--do-not-block-intersection--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--do-not-pass--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--do-not-stop-on-tracks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-all-directions-on-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-all-directions-on-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-bicyclists-and-pedestrians--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--dual-lanes-go-left-or-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-go-straight-on-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-go-straight-on-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-turn-left-no-u-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-lanes-turn-left-or-straight--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--dual-lanes-turn-right-or-straight--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--dual-path-bicycles-and-pedestrians--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-bicycles-and-pedestrians--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-bicycles-and-pedestrians--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-equestrians-and-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-equestrians-and-pedestrians-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-pedestrians-and-bicycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-pedestrians-and-bicycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-pedestrians-and-equestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-path-pedestrians-bicycles-and-equestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-speed-limits--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--dual-speed-limits--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-bicycles-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-bicycles-only--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-bus-and-taxi-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-buses-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-buses-only--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-cycling-restriction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-dual-path-bicycles-and-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-dual-path-pedestrians-and-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-equestrians-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-low-beam-headlights--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-10--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-100--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-100--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-110--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-110--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-120--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-120--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-130--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-130--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-20--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-25--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-30--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-35--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-40--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-50--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-60--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-65--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-65--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-70--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-75--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-80--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-maximum-speed-limit-90--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-mopeds-and-bicycles-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-heavy-goods-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-horn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking-by-heavy-goods-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking-by-heavy-goods-vehicles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-overtaking-by-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-parking--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-no-parking-or-stopping--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-one-way-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-parking-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-parking-zone--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-pedestrians-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-pedestrians-only--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-pedestrians-only--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-pedestrians-only--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-priority-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-prohibition--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-school-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-shared-path-bicycles-and-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-shared-path-pedestrians-and-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-snow-chains--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-snow-chains--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-snowmobiles-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-speed-limit-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-speed-limit-zone--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-speed-limit-zone--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-tractors-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-trams-and-buses-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-trams-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-trucks-and-buses-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-trucks-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--end-of-trucks-only--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--equestrians-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--except-railroad-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--fine-for-littering--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--give-way-to-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--give-way-to-oncoming-traffic--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--give-way-to-oncoming-traffic--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--go-left-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--go-right-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--go-straight-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-left--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-right--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--go-straight-or-turn-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--heavy-goods-vehicles-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--height-limit--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--high-beam-headlights--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--horn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--in-street-pedestrian-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-left--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--keep-left--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--keep-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-left--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-left--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-left--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--keep-right--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--keep-right--g4": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--keep-right--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--keep-right--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--lane-control--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--left-turn-yield-on-green--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--length-limit--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--length-limit--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--light-rail-divided-highway--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--light-rail-do-not-pass--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--light-rail-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--look--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--low-beam-headlights--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--low-beam-headlights--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--low-beam-headlights--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--low-speed-vehicle-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-10--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-10--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-100--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-100--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-110--g1": {
+        "regions": [
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-110--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-120--g1": {
+        "regions": [
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-120--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-130--g1": {
+        "regions": [
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-130--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-15--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-15--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-20--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-20--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-25--g1": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-25--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-30--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-30--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-35--g1": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-35--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-40--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-40--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-45--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-45--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-5--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-5--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-50--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-50--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-55--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-60--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-60--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-65--g1": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-65--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-70--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-70--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-75--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-80--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-80--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-85--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-90--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-90--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-10--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-10--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-100--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-110--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-120--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-130--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-15--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-15--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-20--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-20--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-25--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-25--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-30--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-30--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-35--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-35--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-40--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-40--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-45--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-45--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-5--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-5--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-50--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-50--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-55--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-55--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-60--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-60--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-65--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-65--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-70--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-70--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-75--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-75--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-80--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-80--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-85--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-85--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--maximum-speed-limit-led-90--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--minimum-safe-distance--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--minimum-safe-distance--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--mopeds-and-bicycles-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--motorcycles-and-bicycles-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--motorcycles-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--motorcycles-only--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-15--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-45--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-5--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-55--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-65--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--night-speed-limit-85--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-abnormal-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-atvs--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles--g2": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "regulatory--no-bicycles--g3": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--no-bicycles-carts-or-hand-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles-mopeds-or-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles-mopeds-or-motorcycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles-or-hand-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles-or-motorcycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-bicycles-tractors-or-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-buses--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-buses--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-buses--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-caravan-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-caravans--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-caravans-or-caravan-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-cargo-loading--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-carts--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-carts--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-carts-or-tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-construction-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-entry--g1": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-equestrians--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--no-go-straight-or-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-go-straight-or-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-good-trailers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-goods-vehicle-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-hand-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-hand-carts--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-hand-carts-or-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-hawkers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles-motorcycles-or-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles-motorcycles-or-bicycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles-or-buses--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles-or-tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-heavy-goods-vehicles-or-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-horizontal-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-horn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-horn--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-lane-change-to-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-lane-change-to-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-learner-drivers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-left-or-u-turn--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-left-turn--g1": {
+        "regions": [
+            "eu", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-left-turn--g2": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "us"
+        ]
+    }, 
+    "regulatory--no-left-turn--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-left-turn--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-left-turn--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-low-speed-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-mopeds-or-bicycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicle-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g4": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g5": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g6": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-except-motorcycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-except-motorcycles--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-except-motorcycles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-or-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-or-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motor-vehicles-or-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motorcycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-motorcycles--g2": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-overtaking--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking-atvs--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-overtaking-by-heavy-goods-vehicles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g2": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-parking--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g5": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--no-parking--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-bicycles-or-motorcycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-bus-stop--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-or-no-stopping--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-or-no-stopping--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-or-no-stopping--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-or-no-stopping--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-parking-or-no-stopping--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-passenger-loading--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g2": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians-bicycles-animals-or-hand-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians-or-bicycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians-or-bicycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-pedestrians-or-bicycles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-rickshaws--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-rickshaws--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-rickshaws--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-right-turn--g1": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-right-turn--g2": {
+        "regions": [
+            "eu", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "regulatory--no-right-turn--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-right-turn-on-red--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-skiing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-snowmobiles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-snowmobiles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-snowmobiles-or-atvs--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-stopping--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-stopping--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--no-stopping--g3": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "regulatory--no-stopping--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-stopping--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-stopping--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-stopping-on-pavement--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-straight-through--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-straight-through--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-studded-snow-chains--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-through-trucks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tour-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tractors--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tractors-mopeds-or-bicycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tractors-or-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-trailers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tricycles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-tricycles-or-hand-carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-turn-on-red--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--no-turn-on-red--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--no-turn-on-red--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-turns--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-turns--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-two-stage-right-turn-for-mopeds--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-u-turn--g1": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--no-u-turn--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-u-turn--g3": {
+        "regions": [
+            "au", 
+            "us"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-goods--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-goods--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-goods--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-goods--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-water-pollutants--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-dangerous-water-pollutants--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-explosives--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--no-vehicles-carrying-explosives-or-dangerous-water-pollutants--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--one-way-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--one-way-left--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--one-way-left--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--one-way-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--one-way-right--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--one-way-right--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--one-way-straight--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--one-way-straight--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--parking-fee-station--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--parking-restrictions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--parking-restrictions--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--parking-restrictions--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pass-on-either-side--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--pass-on-either-side--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pass-on-either-side--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pass-with-care--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--passing-lane-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-bicycles-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-keep-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-only--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-only--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-only--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-priority-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-push-button--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--pedestrians-push-button--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--priority-over-oncoming-vehicles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--priority-over-oncoming-vehicles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--priority-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--priority-road--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--radar-enforced--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--reserved-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--reversible-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--reversible-lanes--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--road-closed--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--road-closed--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--road-closed-to-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--road-closed-to-vehicles--g3": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--roundabout--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--roundabout--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--roundabout--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--shared-path-bicycles-and-pedestrians--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--shared-path-pedestrians-and-bicycles--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--sidewalk-closed--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--slanted-parking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--snow-chains--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--snow-chains--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--snow-chains--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--snowmobiles-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--snowmobiles-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--speed-limit-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--speeding-fines-increased--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--state-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stay-in-lane--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--stop--g1": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--stop--g10": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop-here-on-red-or-flashing-light--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop-here-on-red-or-flashing-light--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--stop-signals--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--stop-signals--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--tanks-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--taxi-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--text--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--text--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--toll-pass-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--tractors-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--traffic-signal-photo-enforced--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--trams-and-buses-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--trams-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--triple-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--triple-lanes-go-straight-center-lane--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--triple-lanes-turn-left-center-lane--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--triple-lanes-turn-right-center-lane--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--truck-route--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-10--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-15--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-20--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-25--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-30--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-35--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-40--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-45--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-5--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-50--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-55--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-60--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-65--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-70--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-75--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-80--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--truck-speed-limit-85--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--trucks-and-buses-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--trucks-on-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--trucks-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--turn-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-ahead--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-ahead--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-or-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-or-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-or-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-left-or-u-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-right--g2": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "regulatory--turn-right--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--turn-right-ahead--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--turn-right-ahead--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--turning-vehicles-yield-to-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--two-stage-right-turn-for-mopeds--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--two-way--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--u-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--u-turn--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--u-turn--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--use-crosswalk--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--vehicles-carrying-dangerous-goods-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--vehicles-carrying-dangerous-goods-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--vehicles-carrying-explosives-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--vehicles-carrying-hazardous-goods-permitted--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--vehicles-only--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--wear-seat-belt--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--wear-seat-belt--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--wear-seat-belt--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "regulatory--weight-limit--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit-per-axle--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit-per-tandem-axle--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--weight-limit-with-trucks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--width-limit--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "regulatory--wrong-way--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--yield--g1": {
+        "regions": [
+            "eu", 
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "regulatory--yield-or-stop-for-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "regulatory--your-speed--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--accident-area--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--added-lane-from-entering-roadway--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--added-lane-from-entering-roadway--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--added-lane-left--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--added-lane-right--g1": {
+        "regions": [
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--animal-drawn-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--arch-bridge--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--atv-and-snowmobiles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--atv-crossing--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--atv-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--axle-restriction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bear-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bear-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bicycles-and-others--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bicycles-caution-on-rail-tracks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bicycles-crossing--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--bicycles-crossing--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "warning--bicycles-crossing--g3": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "warning--bicycles-crossing--g4": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--bollard--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--bridge--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bridge--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bus-stop-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bus-stop-ahead--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--bus-stop-ahead--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--camel-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--camel-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--camera--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--camera--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--carts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--carts--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--checkpoint--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--children--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--children--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--children--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--children--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--children--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--cliff--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--cliff--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--closed-lane-in-triple-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--closed-lane-in-triple-lanes--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--construction-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--crossroads--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--crossroads--g2": {
+        "regions": [
+            "ca", 
+            "au"
+        ]
+    }, 
+    "warning--crossroads--g3": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--crossroads--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--crossroads--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--crossroads--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--crossroads-with-priority-to-the-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--curve-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--curve-left--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--curve-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--curve-left-with-junction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--curve-out-intersection-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--curve-out-intersection-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--curve-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--curve-right--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--curve-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--curve-right-with-junction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dangerous-crosswinds-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dead-end--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dead-end--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dead-end--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dead-end-go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dead-end-go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--descent-or-climbing-lanes-in-triple-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--detour-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--detour-or-construction-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dip--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dip--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--disabled-persons-crossing--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--disabled-persons-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--divided-highway--g2": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--divided-highway--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-ends--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--divided-highway-ends--g2": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--divided-highway-ends--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-ends--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-on-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-on-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-on-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-on-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-to-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--divided-highway-to-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--domestic-animals--g3": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--domestic-animals--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--domestic-animals--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-curve-first-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--double-curve-first-left--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--double-curve-first-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--double-curve-first-right--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--double-descent--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-reverse-curve-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-reverse-curve-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-reverse-curve-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-reverse-curve-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-side-roads-left--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--double-side-roads-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-side-roads-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--double-side-roads-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--double-turn-first-left--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--double-turn-first-right--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--dual-lanes-all-directions-on-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-all-directions-on-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-go-straight-or-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-go-straight-or-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-left-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-left-turn-or-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-right-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-right-turn-or-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-left-or-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-left-or-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-left-or-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-left-or-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-lanes-turn-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--dual-path-cyclists-and-pedestrians--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--electricity--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--electricity--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--elephant-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--emergency-vehicles--g1": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--emu-crossing--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--emu-crossing--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--entering-roadway-merge--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--entering-roadway-merge--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--equestrians-crossing--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--equestrians-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--expressway--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-left--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-right--g2": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-right--g3": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--falling-rocks-or-debris-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--ferry--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--flaggers-in-road--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--flaggers-in-road--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--foggy-road--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--foggy-road--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--ford--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--forest--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--fresh-oil--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--frog-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--gate--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--gate--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--gate-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--gate-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--go-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--go-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--golf-carts-crossing--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--gravel-road-surface--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--hairpin-curve-left--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--hairpin-curve-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--hairpin-curve-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--hairpin-curve-right--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--hairpin-curve-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--height-restriction--g2": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--height-restriction--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--height-restriction--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--height-restriction--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--horizontal-alignment-left--g1": {
+        "regions": [
+            "au", 
+            "us"
+        ]
+    }, 
+    "warning--horizontal-alignment-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--horizontal-alignment-right--g1": {
+        "regions": [
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--horizontal-alignment-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--horse-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--icy-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-acute-left--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-acute-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-acute-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-acute-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-left--g2": {
+        "regions": [
+            "ca", 
+            "au"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-left--g3": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-right--g2": {
+        "regions": [
+            "ca", 
+            "au"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-right--g3": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--junction-with-a-side-road-perpendicular-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-merge-from-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-merge-from-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--junction-with-side-roads--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--kangaloo-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--keep-distance--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--keep-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--keep-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--kiwi-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--kiwi-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--koala-crossing--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--koala-crossing--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--koala-crossing--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--koala-crossing--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--lane-closed-in-dual-lanes-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--lane-closed-in-dual-lanes-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--lane-closed-in-dual-lanes-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--lane-closed-in-dual-lanes-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--length-restriction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--length-restriction--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--light-rail-transit-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--limited-lighting-under-trees--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--logging-vehicles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--loop-270-degree--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--loop-pretzel--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--loose-road-surface--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--loose-road-surface--g2": {
+        "regions": [
+            "ca", 
+            "br"
+        ]
+    }, 
+    "warning--loose-road-surface--g3": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--loose-road-surface--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-flying-aircraft--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-ground-clearance--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--low-ground-clearance--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--low-ground-clearance--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--monkey-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--motorcycles-crossing--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--narrow-bridge--g1": {
+        "regions": [
+            "ca", 
+            "au"
+        ]
+    }, 
+    "warning--narrow-bridge--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--narrow-bridge--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--no-dogs--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--no-passing-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--no-passing-zone--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--no-smoking--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--no-smoking--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--occupied-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--offset-roads--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--offset-roads--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--offset-roads--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--offset-roads--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--opening-or-swing-bridge--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--opening-or-swing-bridge--g2": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--other-danger--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--other-danger--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--other-danger--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--panda-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pass-left-or-right--g1": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--pass-left-or-right--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--pass-left-or-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pavement-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pavement-ends--g1": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--pavement-ends--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pavement-ends--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pavement-ends--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pavement-ends--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g10": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g11": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g12": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g4": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g5": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--pedestrians-crossing--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--playground--g1": {
+        "regions": [
+            "br"
+        ]
+    }, 
+    "warning--playground--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--polar-bear-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--quay-or-river-bank--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--quay-or-river-bank--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--quay-or-river-bank--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--quay-or-river-bank--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--rabbit-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--raccoon-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-crossing--g2": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--railroad-crossing--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-with-barriers--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g3": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g4": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-crossing-without-barriers--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-intersection--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-intersection--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-intersection--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-intersection--g4": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-intersection--g5": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--railroad-intersection--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-intersection--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-intersection--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--railroad-intersection--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--ramp-closed--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--reduced-maximum-speed-limit--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--reserved-lane--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--restricted-zone--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--reversible-lanes--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--reversible-lanes--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--rickshaws-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-blocks--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-bump--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--road-bump--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "br"
+        ]
+    }, 
+    "warning--road-bump--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-bump-with-speed-limit--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-closed--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-narrows--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--road-narrows--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "br", 
+            "us"
+        ]
+    }, 
+    "warning--road-narrows-left--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--road-narrows-left--g2": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--road-narrows-left-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-narrows-right--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--road-narrows-right--g2": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--road-narrows-right-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-toll-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-widens--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-widens-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--road-widens-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g10": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g11": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g3": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g5": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--roadworks--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks--g9": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks-go-left-or-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roadworks-go-right-or-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--roundabout--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--roundabout--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--ruts--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--sand--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--sand-drift--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--school-zone--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--severe-weather--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--shared-lane-motorcycles-bicycles--g1": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--sharp-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--single-reverse-curve--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--skewed-t-roads-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skewed-t-roads-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skewed-t-roads-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skewed-t-roads-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skewed-t-roads-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skewed-t-roads-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skiers--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skiers--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--skiers--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--slippery-bicycles--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--slippery-motorcycles--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--slippery-motorcycles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--slippery-road-surface--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--slippery-road-surface--g2": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--slow--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--snow-tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--snowmobiles--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--snowmobiles--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--snowmobiles--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--snowmobiles-and-others--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--soft-road-surface--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--soft-road-surface--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--soft-shoulder--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--soft-shoulder--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--soft-shoulder--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--soft-shoulder--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--speed-camera--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--steep-ascent--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--steep-ascent--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--steep-ascent--g3": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--steep-ascent--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--steep-ascent-and-descent--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--steep-descent--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--steep-descent--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--steep-descent--g3": {
+        "regions": [
+            "ca", 
+            "us"
+        ]
+    }, 
+    "warning--steep-descent--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--steep-descent--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--steep-descent--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--stop-ahead--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "warning--stop-ahead--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--stop-ahead--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--stop-ahead--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--stop-ahead--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--t-roads--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--t-roads--g2": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--tanks-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tanks-crossing--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--texts--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "warning--texts--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--texts--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--towing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tractors--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tractors--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--tractors--g3": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--tractors--g4": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--tractors--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tractors--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tractors--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-at-signalized-intersections--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-left--g1": {
+        "regions": [
+            "ca", 
+            "au"
+        ]
+    }, 
+    "warning--traffic-merges-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-left--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-left-and-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-left-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-right--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--traffic-merges-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-merges-right-buses--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-queues-likely--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--traffic-queues-likely--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-queues-likely--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-queues-likely--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-queues-likely--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-signals--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--traffic-signals--g2": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--traffic-signals--g3": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--traffic-signals--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-signals--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-signals--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--traffic-slow--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trail-crossing--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--trail-crossing--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--trail-crossing--g3": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--trail-crossing--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trail-crossing--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trail-crossing--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trams-crossing--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--trams-crossing--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--triple-curve-left--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--triple-curve-right--g1": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--triple-lanes-left-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-lanes-left-turn-or-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-lanes-right-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-lanes-right-turn-or-go-straight--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-lanes-with-directions--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-reverse-curve-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--triple-reverse-curve-right--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--trucks-crossing--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--trucks-crossing--g2": {
+        "regions": [
+            "us"
+        ]
+    }, 
+    "warning--trucks-rollover--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--trucks-rollover--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trucks-rollover--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trucks-rollover--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--trucks-rollover--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g2": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--tunnel--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--tunnel--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--turn-left--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--turn-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--turn-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--turn-left-or-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--turn-right--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--turn-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--turn-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--two-way-traffic--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--two-way-traffic--g2": {
+        "regions": [
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--two-way-traffic--g3": {
+        "regions": [
+            "ca"
+        ]
+    }, 
+    "warning--two-way-traffic--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--two-way-traffic--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--two-way-traffic--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--u-turn--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--u-turn--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--uneven-road--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--uneven-road--g2": {
+        "regions": [
+            "ca", 
+            "br"
+        ]
+    }, 
+    "warning--uneven-roads-ahead--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--vehicles-and-others--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--vehicles-crossing--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--village--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--weight-limit--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--weight-limit-per-tandem-axle--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--width-restriction--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--width-restriction--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--width-restriction--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--width-restriction--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g1": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g2": {
+        "regions": [
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g3": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--wild-animals--g4": {
+        "regions": [
+            "ca", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--wild-animals--g5": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g6": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g7": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wild-animals--g8": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wind--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-first-left--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--winding-road-first-left--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-first-left--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-first-right--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--winding-road-first-right--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-first-right--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-first-right--g4": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-to-left--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--winding-road-to-right--g1": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--wombat-crossing--g1": {
+        "regions": [
+            "au"
+        ]
+    }, 
+    "warning--y-roads--g1": {
+        "regions": [
+            "us", 
+            "br"
+        ]
+    }, 
+    "warning--y-roads--g2": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }, 
+    "warning--yield-ahead--g1": {
+        "regions": [
+            "ca", 
+            "au", 
+            "us"
+        ]
+    }, 
+    "warning--yield-ahead--g3": {
+        "regions": [
+            "us", 
+            "eu"
+        ]
+    }
+}

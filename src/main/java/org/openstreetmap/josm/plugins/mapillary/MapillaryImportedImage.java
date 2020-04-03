@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
@@ -29,16 +30,14 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
-  /** The picture file. */
-  protected final File file;
-
   /**
    * Creates a new MapillaryImportedImage object using as date the current date.
    * Using when the EXIF tags doesn't contain that info.
    *
    * @param latLon  The latitude and longitude where the picture was taken.
-   * @param ca  Direction of the picture (0 means north).
-   * @param file  The file containing the picture.
+   * @param ca      Direction of the picture (0 means north).
+   * @param file    The file containing the picture.
+   * @param pano    The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano) {
     this(latLon, ca, file, pano, Calendar.getInstance().getTimeInMillis());
@@ -47,10 +46,11 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class.
    *
-   * @param latLon  Latitude and Longitude where the picture was taken.
-   * @param ca  Direction of the picture (0 means north),
-   * @param file  The file containing the picture.
-   * @param datetimeOriginal  The date the picture was taken.
+   * @param latLon           Latitude and Longitude where the picture was taken.
+   * @param ca               Direction of the picture (0 means north),
+   * @param file             The file containing the picture.
+   * @param datetimeOriginal The date the picture was taken.
+   * @param pano             The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final String datetimeOriginal) {
     this(latLon, ca, file, pano, parseTimestampElseCurrentTime(datetimeOriginal));
@@ -101,7 +101,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
 
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final long capturedAt) {
     super(latLon, ca, pano);
-    this.file = file;
+    super.setFile(file);
     this.capturedAt = capturedAt;
   }
 
@@ -114,24 +114,15 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    *           If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
-    if (this.file != null)
-      return ImageIO.read(this.file);
+    if (getFile() != null)
+      return ImageIO.read(getFile());
     return null;
   }
 
-  /**
-   * Returns the {@link File} object where the picture is located.
-   *
-   * @return The {@link File} object where the picture is located.
-   */
-  public File getFile() {
-    return this.file;
-  }
-
   @Override
-  public int compareTo(MapillaryAbstractImage image) {
+  public int compareTo(GpxImageEntry image) {
     if (image instanceof MapillaryImportedImage)
-      return this.file.compareTo(((MapillaryImportedImage) image).getFile());
+      return getFile().compareTo(((MapillaryImportedImage) image).getFile());
     return hashCode() - image.hashCode();
   }
 
@@ -139,7 +130,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((file == null) ? 0 : file.hashCode());
+    result = prime * result + ((getFile() == null) ? 0 : getFile().hashCode());
     return result;
   }
 
@@ -155,11 +146,11 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
       return false;
     }
     MapillaryImportedImage other = (MapillaryImportedImage) obj;
-    if (file == null) {
-      if (other.file != null) {
+    if (getFile() == null) {
+      if (other.getFile() != null) {
         return false;
       }
-    } else if (!file.equals(other.file)) {
+    } else if (!getFile().equals(other.getFile())) {
       return false;
     }
     return true;

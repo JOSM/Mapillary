@@ -77,37 +77,38 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         Logging.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
-          CloseableHttpResponse response = httpClient.execute(httpPost);
-          Logging.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
-          if (response.getStatusLine().getStatusCode() == 201) {
-            final JsonObject jsonObject = Json.createReader(response.getEntity().getContent()).readObject();
-            final String key = jsonObject.getString("key");
-            final String state = jsonObject.getString("state");
-            I18n.marktr("rejected");
-            I18n.marktr("pending");
-            I18n.marktr("approved");
-            final String message = I18n.trn(
-              "{0} image submitted, Changeset key: {1}, State: {2}",
-              "{0} images submitted, Changeset key: {1}, State: {2}",
-              locationChangeset.size(), key, state
-            );
-            Logging.debug(message);
-            new Notification(message)
-              .setDuration(Notification.TIME_LONG)
-              .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
-              .show();
-            locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
-          } else {
-            new Notification(
-              I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
-                response.getStatusLine().getProtocolVersion(),
-                response.getStatusLine().getStatusCode(),
-                response.getStatusLine().getReasonPhrase()
-              )
-            ).setIcon(JOptionPane.ERROR_MESSAGE)
-              .setDuration(Notification.TIME_LONG)
-              .show();
-            Logging.error("Failed response " + EntityUtils.toString(response.getEntity()));
+          try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+            Logging.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() == 201) {
+              final JsonObject jsonObject = Json.createReader(response.getEntity().getContent()).readObject();
+              final String key = jsonObject.getString("key");
+              final String state = jsonObject.getString("state");
+              I18n.marktr("rejected");
+              I18n.marktr("pending");
+              I18n.marktr("approved");
+              final String message = I18n.trn(
+                "{0} image submitted, Changeset key: {1}, State: {2}",
+                "{0} images submitted, Changeset key: {1}, State: {2}",
+                locationChangeset.size(), key, state
+              );
+              Logging.debug(message);
+              new Notification(message)
+                .setDuration(Notification.TIME_LONG)
+                .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
+                .show();
+              locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
+            } else {
+              new Notification(
+                I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
+                  response.getStatusLine().getProtocolVersion(),
+                  response.getStatusLine().getStatusCode(),
+                  response.getStatusLine().getReasonPhrase()
+                )
+              ).setIcon(JOptionPane.ERROR_MESSAGE)
+                .setDuration(Notification.TIME_LONG)
+                .show();
+              Logging.error("Failed response " + EntityUtils.toString(response.getEntity()));
+            }
           }
         } catch (IOException e) {
           Logging.log(Logging.LEVEL_ERROR, "Exception while trying to submit a changeset to mapillary.com", e);

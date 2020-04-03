@@ -18,9 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
@@ -36,10 +33,10 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
 
 public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, DataSelectionListener {
   private static final long serialVersionUID = 1320443250226377651L;
-  private static final Log L = LogFactory.getLog(ImageInfoPanel.class);
   private static ImageInfoPanel instance;
   private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
 
@@ -54,6 +51,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final JTextPane seqKeyValue;
 
   private ValueChangeListener<Boolean> imageLinkChangeListener;
+  private boolean destroyed;
 
   private ImageInfoPanel() {
     super(
@@ -194,7 +192,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    */
   @Override
   public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
-    L.debug(String.format(
+    Logging.debug(String.format(
       "Selected Mapillary image changed from %s to %s.",
       oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
       newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
@@ -253,7 +251,17 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   @Override
   public synchronized void selectionChanged(final SelectionChangeEvent event) {
     final Collection<OsmPrimitive> sel = event.getSelection();
-    L.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
+    Logging.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
     addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      destroyed = true;
+    }
+    destroyInstance();
   }
 }

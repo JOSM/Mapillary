@@ -21,4 +21,5 @@
   <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
   <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
   <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JOSM-Mapillary"/>
+  <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-javaagent:../../core/test/lib/jmockit.jar&#10;-Djava.awt.headless=true"/>
 </launchConfiguration>

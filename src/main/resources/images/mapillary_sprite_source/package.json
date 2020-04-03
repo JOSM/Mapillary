@@ -1,0 +1,32 @@
+{
+  "name": "mapillary_sprite_source",
+  "version": "1.8.0",
+  "description": "Source repository of `svg` files to generate sprites for mapillary.com",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf bundle .tmp sprites",
+    "flatten": "find .tmp -iname '*.svg' -exec cp \\{\\} bundle/ \\;",
+    "prepare": "mkdir -p bundle && mkdir -p .tmp && cp -r ./package_* .tmp && mkdir -p sprites && npm run flatten",
+    "generate:all": "cd sprites && spritezero sprites ../bundle && spritezero sprites@2x ../bundle --retina",
+    "build:all": "npm run clean && npm run prepare && npm run generate:all",
+    "prepublish": "rm -rf dist && mkdir dist && browserify -t brfs --standalone mapillary_sprite_source index.js > dist/index.js && cp index.d.ts dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapillary/sprite-source.git"
+  },
+  "author": "Kamil Nikel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mapillary/sprite-source/issues"
+  },
+  "homepage": "https://github.com/mapillary/sprite-source#readme",
+  "devDependencies": {
+    "spritezero-cli": "1.1.0"
+  },
+  "dependencies": {
+    "brfs": "1.4.3",
+    "browserify": "13.1.1",
+    "xml2js": "^0.4.19"
+  }
+}
