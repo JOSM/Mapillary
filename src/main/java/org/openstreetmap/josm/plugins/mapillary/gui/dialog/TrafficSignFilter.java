@@ -328,7 +328,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     String directory = "mapillary_sprite_source/package_" + type;
     try {
       List<String> files = IOUtils.readLines(ResourceProvider.getResourceAsStream("/images/" + directory),
-          Charsets.UTF_8);
+          Charsets.UTF_8.name());
       Collections.sort(files);
       for (String file : files) {
         try {
