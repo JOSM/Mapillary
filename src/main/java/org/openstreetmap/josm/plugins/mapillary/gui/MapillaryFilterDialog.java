@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 
 import javafx.event.EventType;
 import javafx.scene.control.DatePicker;
@@ -38,6 +37,7 @@ import javafx.scene.control.DatePicker;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.plugins.javafx.gui.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -96,6 +96,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   private boolean destroyed;
 
+  private JLabel organizationLabel;
+
   private MapillaryFilterDialog() {
     super(
       tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200, false, MapillaryPreferenceSetting.class
@@ -151,10 +153,15 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     this.user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel(tr("User")));
     userSearchPanel.add(this.user, GBC.eol());
-    userSearchPanel.add(new JLabel(tr("Org")));
+    organizationLabel = new JLabel(tr("Org"));
+    organizationLabel.setToolTipText(tr("Organizations"));
+    userSearchPanel.add(organizationLabel);
     userSearchPanel.add(this.organizations);
     organizations.addItem(OrganizationRecord.NULL_RECORD);
-    organizations.setEnabled(false);
+    for (Component comp : Arrays.asList(organizationLabel, organizations)) {
+      comp.setEnabled(false);
+      comp.setVisible(false);
+    }
     organizations.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = -1650696801628131389L;
 
@@ -513,7 +520,9 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   @Override
   public void onLogout() {
-    // Do nothing
+    // TODO Only remove user organizations, not all organizations
+    organizations.removeAllItems();
+    organizationAdded(OrganizationRecord.NULL_RECORD);
   }
 
   @Override
@@ -526,8 +535,11 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       }
     }
     if (add) {
-      SwingUtilities.invokeLater(() -> organizations.addItem(organization));
+      GuiHelper.runInEDTAndWait(() -> organizations.addItem(organization));
     }
-    SwingUtilities.invokeLater(() -> organizations.setEnabled(organizations.getItemCount() > 0));
+    for (Component comp : Arrays.asList(organizationLabel, organizations)) {
+      GuiHelper.runInEDT(() -> comp.setEnabled(organizations.getItemCount() > 1));
+      GuiHelper.runInEDT(() -> comp.setVisible(organizations.getItemCount() > 1));
+    }
   }
 }
