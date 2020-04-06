@@ -1,4 +1,4 @@
-image: registry.gitlab.com/gokaart/docker-library/openjdk-8-josmplugin-openjfx:latest
+image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
