@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
@@ -34,6 +35,7 @@ import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -348,12 +350,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         // Downloads the thumbnail.
-        this.mapillaryImageDisplay.setImage(null, null, false);
+        this.mapillaryImageDisplay.setImage(null, null, false, false);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
         try {
-          this.thumbnailCache.submit(this, false);
+          if (this.thumbnailCache.get() == null) {
+            this.thumbnailCache.submit(this, false);
+          }
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -364,10 +368,26 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
           try {
-            this.imageCache.submit(this, false);
+            if (this.imageCache.get() == null) {
+              this.imageCache.submit(this, false);
+            }
           } catch (IOException e) {
             Logging.error(e);
           }
+        }
+        try {
+          if (this.imageCache != null && this.imageCache.get() != null) {
+            this.mapillaryImageDisplay.setImage(
+              this.imageCache.get().getImage(), ((MapillaryImage) this.image).getDetections(), this.image.isPanorama()
+            );
+          } else if (this.thumbnailCache != null && this.thumbnailCache.get() != null) {
+            this.mapillaryImageDisplay.setImage(
+              this.thumbnailCache.get().getImage(), ((MapillaryImage) this.image).getDetections(),
+              this.image.isPanorama()
+            );
+          }
+        } catch (IOException e) {
+          Logging.error(e);
         }
       } else if (this.image instanceof MapillaryImportedImage) {
         final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
@@ -529,25 +549,30 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    */
   @Override
   public void loadingFinished(final CacheEntry data, final CacheEntryAttributes attributes, final LoadResult result) {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(() -> loadingFinished(data, attributes, result));
-    } else if (data != null && result == LoadResult.SUCCESS) {
-      try {
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(data.getContent()));
-        if (img == null) {
-          return;
-        }
-        if (mapillaryImageDisplay.getImage() == null
-          || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight()) {
-          final MapillaryAbstractImage mai = getImage();
-          this.mapillaryImageDisplay.setImage(
-            img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
-            mai != null && mai.isPanorama()
-          );
-        }
-      } catch (IOException e) {
-        Logging.error(e);
+    if (data != null && result == LoadResult.SUCCESS) {
+      GuiHelper.runInEDT(() -> realLoadingFinished(data));
+    }
+  }
+
+  private void realLoadingFinished(final CacheEntry data) {
+    try {
+      BufferedImage img = data instanceof BufferedImageCacheEntry ?
+        ((BufferedImageCacheEntry) data).getImage() :
+        ImageIO.read(new ByteArrayInputStream(data.getContent()));
+      if (img == null) {
+        return;
       }
+      if ((imageCache == null || data.equals(imageCache.get())) &&
+        (mapillaryImageDisplay.getImage() == null
+        || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight())) {
+        final MapillaryAbstractImage mai = getImage();
+        this.mapillaryImageDisplay.setImage(
+          img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
+          mai != null && mai.isPanorama()
+        );
+      }
+    } catch (IOException e) {
+      Logging.error(e);
     }
   }
 
