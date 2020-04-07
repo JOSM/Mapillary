@@ -4,7 +4,7 @@
     "area": 0.0015604496002197266,
     "image_key": "QhRcdlGS_Rn_a1_HTclefg",
     "key": "gn0llgitnnuqonecevbmf52ino",
-    "package": "trafficsign",
+    "layer": "trafficsign",
     "score": 0.710661225175,
     "shape": {
       "type": "Polygon",

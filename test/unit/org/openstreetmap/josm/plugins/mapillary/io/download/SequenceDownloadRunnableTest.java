@@ -37,7 +37,7 @@ public class SequenceDownloadRunnableTest {
   public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules();
+  public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private String oldBaseUrl;
 

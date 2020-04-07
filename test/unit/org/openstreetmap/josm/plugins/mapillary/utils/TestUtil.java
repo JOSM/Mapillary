@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -16,6 +17,8 @@ import java.util.logging.Level;
 
 import org.junit.runners.model.InitializationError;
 
+import org.openstreetmap.josm.data.preferences.AbstractProperty;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
@@ -90,6 +93,7 @@ public final class TestUtil {
   }
 
   public static class MapillaryTestRules extends JOSMTestRules {
+    private boolean usePreferences;
     @Override
     protected void before() throws InitializationError, ReflectiveOperationException {
       Logging.getLogger().setFilter(record -> record.getLevel().intValue() >= Level.WARNING.intValue() || record.getSourceClassName().startsWith("org.openstreetmap.josm.plugins.mapillary"));
@@ -97,6 +101,45 @@ public final class TestUtil {
       final String isHeadless = Boolean.toString(GraphicsEnvironment.isHeadless());
       super.before();
       System.setProperty("java.awt.headless", isHeadless);
+
+      if (usePreferences) {
+        assertNotNull(Config.getPref());
+        for (Field field : MapillaryProperties.class.getFields()) {
+          Object obj = field.get(MapillaryProperties.class);
+          if (obj instanceof AbstractProperty) {
+            doSetConfig((AbstractProperty<?>) obj);
+          }
+        }
+      }
+    }
+
+    /**
+     * Used since CLI tests are failing due to an NPE in a property
+     *
+     * @param property The property to fix (Config.getPref() is what the preference class is set to)
+     */
+    private static void doSetConfig(AbstractProperty<?> property) {
+      try {
+        Method getPreferences = AbstractProperty.class.getDeclaredMethod("getPreferences");
+        getPreferences.setAccessible(true);
+        if (!Config.getPref().equals(getPreferences.invoke(property))) {
+          Field configuration = AbstractProperty.class.getDeclaredField("preferences");
+          configuration.setAccessible(true);
+          configuration.set(property, Config.getPref());
+        }
+        assertNotNull(getPreferences.invoke(property));
+      } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+        | NoSuchFieldException | SecurityException e) {
+        Logging.error(e);
+        throw new AssertionError(e);
+      }
+    }
+
+    @Override
+    public JOSMTestRules preferences() {
+      super.preferences();
+      usePreferences = true;
+      return this;
     }
   }
 

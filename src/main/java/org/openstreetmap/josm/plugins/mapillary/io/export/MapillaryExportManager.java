@@ -96,6 +96,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
         this.writer.join();
       } catch (InterruptedException e) {
         Logging.error(e);
+        Thread.currentThread().interrupt();
       }
       return;
     }
@@ -115,6 +116,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
           this.queueImages.put(image);
         } catch (InterruptedException e) {
           Logging.error(e);
+          Thread.currentThread().interrupt();
         }
       }
       try {
@@ -131,6 +133,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       this.writer.join();
     } catch (InterruptedException e) {
       Logging.error(e);
+      Thread.currentThread().interrupt();
     }
   }
 

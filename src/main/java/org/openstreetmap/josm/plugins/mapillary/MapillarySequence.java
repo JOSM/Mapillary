@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.json.Json;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonUserProfileDecoder;
@@ -35,6 +36,7 @@ public class MapillarySequence {
    * Epoch time when the sequence was created
    */
   private final long capturedAt;
+  private OrganizationRecord organization;
 
   /**
    * Creates a sequence without key or timestamp. Used for
@@ -51,13 +53,15 @@ public class MapillarySequence {
    *
    * @param key The unique identifier of the sequence.
    * @param userKey The user key
+   * @param organizationKey The organization key
    * @param capturedAt The date the sequence was created.
    */
-  public MapillarySequence(final String key, final String userKey, final long capturedAt) {
+  public MapillarySequence(final String key, final String userKey, String organizationKey, final long capturedAt) {
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.capturedAt = capturedAt;
     setUser(userKey);
+    setOrganization(organizationKey);
   }
 
   /**
@@ -192,4 +196,18 @@ public class MapillarySequence {
       this.user = Caches.UserProfileCache.getInstance().get(userKey);
     }, "userProfileDownload_" + userKey).start();
  }
+
+  /**
+   * @param organizationKey
+   */
+  private void setOrganization(String organizationKey) {
+    organization = OrganizationRecord.getOrganization(organizationKey);
+  }
+
+  /**
+   * @return The organization for this sequence
+   */
+  public OrganizationRecord getOrganization() {
+    return organization;
+  }
 }

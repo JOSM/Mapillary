@@ -5,9 +5,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.dialogs.LayerListDialog.LayerListModel;
+import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -46,7 +50,17 @@ public class MapillaryDownloadAction extends JosmAction {
   @Override
   public void actionPerformed(ActionEvent ae) {
     if (!MapillaryLayer.hasInstance() || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
-      MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
+      LayerListModel model = LayerListDialog.getInstance().getModel();
+      model.getLayerManager().addLayer(MapillaryLayer.getInstance());
+      List<Layer> selected = model.getSelectedLayers();
+      int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
+      model.setSelectedLayer(MapillaryLayer.getInstance());
+      int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
+      while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
+        model.moveDown(mapillaryLayerIndex);
+        mapillaryLayerIndex++;
+      }
+      selected.forEach(model::setSelectedLayer);
       return;
     }
 

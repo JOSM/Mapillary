@@ -1,18 +1,31 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.JsonReader;
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.jcs.access.CacheAccess;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.Data;
+import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -20,7 +33,16 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Database class for all the {@link MapillaryAbstractImage} objects.
@@ -29,7 +51,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  * @see MapillaryAbstractImage
  * @see MapillarySequence
  */
-public class MapillaryData {
+public class MapillaryData implements Data {
   private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.newKeySet();
   /**
    * The image currently selected, this is the one being shown.
@@ -50,14 +72,22 @@ public class MapillaryData {
   /**
    * The bounds of the areas for which the pictures have been downloaded.
    */
-  private final List<Bounds> bounds;
+  private final List<DataSource> dataSources;
+
+  /**
+   * Keeps track of images where detections have been fully downloaded
+   */
+  private final Set<MapillaryAbstractImage> fullyDownloadedDetections = ConcurrentHashMap.newKeySet();
+
+  /** Keeps track of highlighted images */
+  private final Set<MapillaryAbstractImage> highlightedImages = ConcurrentHashMap.newKeySet();
 
   /**
    * Creates a new object and adds the initial set of listeners.
    */
   protected MapillaryData() {
     this.selectedImage = null;
-    this.bounds = new CopyOnWriteArrayList<>();
+    this.dataSources = new ArrayList<>();
 
     // Adds the basic set of listeners.
     Arrays.stream(MapillaryPlugin.getMapillaryDataListeners()).forEach(this::addListener);
@@ -159,7 +189,7 @@ public class MapillaryData {
   }
 
   public List<Bounds> getBounds() {
-    return bounds;
+    return dataSources.stream().map(b -> b.bounds).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
   }
 
   /**
@@ -217,12 +247,40 @@ public class MapillaryData {
   }
 
   /**
+   * @return The highlighted images (not including the image under the mouse cursor).
+   */
+  public Collection<MapillaryAbstractImage> getHighlightedImages() {
+    return Collections.unmodifiableCollection(highlightedImages);
+  }
+
+  /**
+   * Set the highlighted images
+   *
+   * @param images The images to highlight (not including the one hovered over by the mouse)
+   */
+  public void setHighlightedImages(Collection<MapillaryAbstractImage> images) {
+    highlightedImages.clear();
+    highlightedImages.addAll(images);
+  }
+
+  /**
    * Returns a Set containing all images.
    *
    * @return A Set object containing all images.
    */
-  public Set<MapillaryAbstractImage> getImages() {
+  public synchronized Set<MapillaryAbstractImage> getImages() {
     return images;
+  }
+
+  /**
+   * Get a specific MapillaryImage
+   *
+   * @param key The key for the MapillaryImage
+   * @return The MapillaryImage or {@code null}
+   */
+  public MapillaryImage getImage(String key) {
+    return getImages().parallelStream().filter(MapillaryImage.class::isInstance)
+        .map(MapillaryImage.class::cast).filter(m -> m.getKey().equals(key)).findAny().orElse(null);
   }
 
   /**
@@ -264,6 +322,9 @@ public class MapillaryData {
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = this.selectedImage;
+    if (image instanceof MapillaryImage && inCurrentlySelectedDetection((MapillaryImage) image)) {
+      getAllDetections(Collections.singleton((MapillaryImage) image));
+    }
     this.selectedImage = image;
     this.multiSelectedImages.clear();
     final MapView mv = MapillaryPlugin.getMapView();
@@ -281,6 +342,20 @@ public class MapillaryData {
     }
     fireSelectedImageChanged(oldImage, this.selectedImage);
     MapillaryLayer.invalidateInstance();
+  }
+
+  /**
+   * Check if the image has a selected point object
+   *
+   * @param image The image to check
+   * @return {@code true} if any point object layer has a selected object with the image key.
+   */
+  public static boolean inCurrentlySelectedDetection(MapillaryImage image) {
+    return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
+        .map(PointObjectLayer::getDataSet).flatMap(d -> d.getSelected().parallelStream())
+        .filter(p -> p.hasTag("detections"))
+        .flatMap(p -> PointObjectLayer.parseDetections(p.get("detections")).parallelStream())
+        .anyMatch(p -> image.getKey().equals(p.getOrDefault("image_key", null)));
   }
 
   /**
@@ -339,5 +414,80 @@ public class MapillaryData {
       images.clear();
       images.addAll(newImages);
     }
+  }
+
+  @Override
+  public Collection<DataSource> getDataSources() {
+    return Collections.unmodifiableCollection(dataSources);
+  }
+
+  /**
+   * Get all the detections for an image
+   *
+   * @param imagesToGet The images to get detections for
+   */
+  public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
+    List<MapillaryImage> list = imagesToGet.stream().filter(Objects::nonNull)
+        .collect(Collectors.toCollection(ArrayList::new));
+    int index = list.indexOf(getSelectedImage());
+    MapillaryImage current = index >= 0 ? list.get(index) : null;
+    if (current != null) {
+      list.remove(current);
+    }
+    if (SwingUtilities.isEventDispatchThread()) {
+      MainApplication.worker.execute(() -> {
+        getDetections(Collections.singleton(current));
+        getDetections(list);
+      });
+    } else {
+      getDetections(Collections.singleton(current));
+      getDetections(list);
+    }
+  }
+
+  private void getDetections(Collection<MapillaryImage> imagesToGetDetections) {
+    if (imagesToGetDetections == null || imagesToGetDetections.isEmpty()) {
+      return;
+    }
+    synchronized (fullyDownloadedDetections) {
+      Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
+          .filter(Objects::nonNull)
+          .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
+      URL nextUrl = MapillaryURL.APIv3
+          .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
+      Map<String, List<ImageDetection>> detections = new HashMap<>();
+      while (nextUrl != null) {
+        HttpClient client = HttpClient.create(nextUrl);
+        if (MapillaryUser.getUsername() != null)
+          OAuthUtils.addAuthenticationHeader(client);
+        try (JsonReader reader = createJsonReader(client)) {
+          Map<String, List<ImageDetection>> tMap = JsonDecoder
+              .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
+              .collect(Collectors.groupingBy(ImageDetection::getImageKey));
+          tMap.forEach((key, detection) -> {
+            List<ImageDetection> detectionList = detections.getOrDefault(key, new ArrayList<>());
+            detections.putIfAbsent(key, detectionList);
+            detectionList.addAll(detection);
+          });
+          nextUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+        } catch (IOException | JsonException | NumberFormatException e) {
+          Logging.error(e);
+          nextUrl = null; // Ensure we don't keep looping if there is an error.
+        }
+      }
+      imagesToGet.forEach(i -> {
+        i.setAllDetections(detections.get(i.getKey()));
+        fullyDownloadedDetections.add(i);
+      });
+      if (imagesToGet.contains(getSelectedImage())) {
+        MapillaryMainDialog.getInstance().mapillaryImageDisplay
+          .setAllDetections(((MapillaryImage) getSelectedImage()).getDetections());
+      }
+    }
+  }
+
+  private static JsonReader createJsonReader(HttpClient client) throws IOException {
+    client.connect();
+    return Json.createReader(client.getResponse().getContent());
   }
 }

@@ -3,23 +3,28 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -29,19 +34,23 @@ import javax.swing.SpinnerNumberModel;
 import javafx.event.EventType;
 import javafx.scene.control.DatePicker;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
+import org.openstreetmap.josm.plugins.javafx.gui.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.JavaFxWrapper;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -52,7 +61,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener {
+public final class MapillaryFilterDialog extends ToggleDialog implements MapillaryDataListener, MapillaryLoginListener, OrganizationRecordListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -73,19 +82,27 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
   private final SpinnerNumberModel spinnerModel;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
-  private final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
-  private final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
   private final JComboBox<String> time;
   private final JTextField user;
 
-  private final JButton signChooser = new JButton(new SignChooserAction());
+  final JButton signChooser = new JButton(new SignChooserAction());
+  final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
+  final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
+
+  final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
 
   private final JavaFxWrapper<DatePicker> startDate;
   private final JavaFxWrapper<DatePicker> endDate;
 
+  private boolean destroyed;
+
+  private JLabel organizationLabel;
+
   private MapillaryFilterDialog() {
-    super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200,
-        false, MapillaryPreferenceSetting.class);
+    super(
+      tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200, false, MapillaryPreferenceSetting.class
+    );
+    MapillaryUser.addListener(this);
 
     this.signChooser.setEnabled(false);
     JPanel signChooserPanel = new JPanel();
@@ -104,7 +121,6 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     time.setEnabled(false);
     fromPanel.add(this.time);
 
-    // TODO Replace if #18747 is taken
     startDate = new JavaFxWrapper<>(DatePicker.class);
     endDate = new JavaFxWrapper<>(DatePicker.class);
     JPanel timePanel = new JPanel(new GridBagLayout());
@@ -113,27 +129,66 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     timePanel.add(startDate, GBC.std());
     timePanel.add(endDate, GBC.eol());
     Dimension d = timePanel.getMinimumSize();
-    d.width = Double.valueOf(Math.ceil(d.width * 1.15)).intValue();
-    d.height = Double.valueOf(Math.ceil(d.height * 1.15)).intValue(); // TODO check
+    d.width = (int) Math.ceil(d.width * 1.15);
+    d.height = (int) Math.ceil(d.height * 1.15);
     timePanel.setMinimumSize(d);
 
     startDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(startDate));
     endDate.getNode().addEventHandler(EventType.ROOT, e -> updateDates(endDate));
     endDate.getNode().setConverter(new LocalDateConverter());
     startDate.getNode().setConverter(endDate.getNode().getConverter());
-    ExpertToggleAction.addVisibilitySwitcher(timePanel);
 
     filterByDateCheckbox.addItemListener(itemE -> {
       spinner.setEnabled(filterByDateCheckbox.isSelected());
       time.setEnabled(filterByDateCheckbox.isSelected());
     });
 
+    spinner.addChangeListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
+    time.addActionListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
+    filterByDateCheckbox.addChangeListener(l -> updateStartDate(startDate.getNode(), spinnerModel, time));
+
     JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     this.user = new DisableShortcutsOnFocusGainedTextField(10);
     this.user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel(tr("User")));
-    userSearchPanel.add(this.user);
+    userSearchPanel.add(this.user, GBC.eol());
+    organizationLabel = new JLabel(tr("Org"));
+    organizationLabel.setToolTipText(tr("Organizations"));
+    userSearchPanel.add(organizationLabel);
+    userSearchPanel.add(this.organizations);
+    organizations.addItem(OrganizationRecord.NULL_RECORD);
+    for (Component comp : Arrays.asList(organizationLabel, organizations)) {
+      comp.setEnabled(false);
+      comp.setVisible(false);
+    }
+    organizations.setRenderer(new DefaultListCellRenderer() {
+      private static final long serialVersionUID = -1650696801628131389L;
+
+      @Override
+      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (value instanceof OrganizationRecord) {
+          OrganizationRecord organization = (OrganizationRecord) value;
+          if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()) {
+            comp.setText(organization.getNiceName());
+          } else {
+            comp.setText(organization.getKey());
+          }
+          if (organization.getAvatar() != null) {
+            comp.setIcon(organization.getAvatar());
+          }
+        }
+        return comp;
+      }
+
+    });
+    if (MapillaryUser.getUsername() != null) {
+      onLogin(null);
+    }
+
+    // OrganizationRecord.addOrganizationListener(this); // TODO uncomment when API for orgs is available
+    OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
@@ -154,19 +209,40 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
   }
 
+  private static void updateStartDate(DatePicker startDate, SpinnerNumberModel spinner, JComboBox<String> timeStep) {
+    if (timeStep.isEnabled()) {
+      LocalDate current = LocalDate.now(ZoneId.systemDefault());
+      String type = (String) timeStep.getSelectedItem();
+      Number start = spinner.getNumber();
+      int[] difference = new int[] { 0, 0, 0 }; // Year, Month, Day
+      if (TIME_LIST[0].equals(type)) {
+        difference[0] = start.intValue();
+        difference[1] = (int) ((start.floatValue() - difference[0]) * 12);
+        difference[2] = (int) (((start.floatValue() - difference[0]) * 12 - difference[1]) * 30);
+      } else if (TIME_LIST[1].equals(type)) {
+        difference[1] = start.intValue();
+        difference[2] = (int) ((start.floatValue() - difference[1]) * 30);
+      } else if (TIME_LIST[2].contentEquals(type)) {
+        difference[2] = start.intValue();
+      }
+      LocalDate year = current.minusYears(difference[0]);
+      LocalDate month = year.minusMonths(difference[1]);
+      LocalDate day = month.minusDays(difference[2]);
+      startDate.setValue(day);
+    } else {
+      startDate.setValue(null);
+    }
+  }
+
   private void updateDates(JavaFxWrapper<?> modified) {
     LocalDate start = startDate.getNode().getValue();
     LocalDate end = endDate.getNode().getValue();
     if (start == null || end == null)
       return;
-    if (modified == startDate) {
-      if (start.compareTo(end) > 0) {
-        endDate.getNode().setValue(start);
-      }
-    } else if (modified == endDate) {
-      if (start.compareTo(end) > 0) {
-        startDate.getNode().setValue(end);
-      }
+    if (startDate.equals(modified) && start.compareTo(end) > 0) {
+      endDate.getNode().setValue(start);
+    } else if (endDate.equals(modified) && start.compareTo(end) > 0) {
+      startDate.getNode().setValue(end);
     }
   }
 
@@ -193,13 +269,20 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
    * Resets the dialog to its default state.
    */
   public void reset() {
+    this.endDate.getNode().setValue(null);
+    this.filterByDateCheckbox.setSelected(false);
     this.imported.setSelected(true);
     this.downloaded.setSelected(true);
     this.onlySigns.setEnabled(true);
     this.onlySigns.setSelected(false);
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
+    this.signChooser.setEnabled(false);
     this.spinnerModel.setValue(1);
+    this.endDate.getNode().setValue(null);
+    this.startDate.getNode().setValue(null);
+    MapillaryFilterChooseSigns.getInstance().reset();
+    organizations.setSelectedItem(OrganizationRecord.NULL_RECORD);
     refresh();
   }
 
@@ -208,14 +291,15 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
    */
   public synchronized void refresh() {
     final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
-    final boolean imported = this.imported.isSelected();
-    final boolean downloaded = this.downloaded.isSelected();
+    final boolean importedIsSelected = this.imported.isSelected();
+    final boolean downloadedIsSelected = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
-    final boolean onlySigns = this.onlySigns.isSelected();
-    final LocalDate endDate = this.endDate.getNode().getValue();
-    final LocalDate startDate = this.startDate.getNode().getValue();
+    final boolean onlySignsIsSelected = this.onlySigns.isSelected();
+    final LocalDate endDateRefresh = this.endDate.getNode().getValue();
+    final LocalDate startDateRefresh = this.startDate.getNode().getValue();
+    final OrganizationRecord organization = (OrganizationRecord) organizations.getSelectedItem();
 
-    // This predicate returns true is the image should be made invisible
+    // This predicate returns true if the image should be made invisible
     Predicate<MapillaryAbstractImage> shouldHide =
       img -> {
         if (!layerVisible) {
@@ -224,24 +308,28 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
         if (timeFilter && checkValidTime(img)) {
           return true;
         }
-        if (endDate != null && checkEndDate(img)) {
+        if (endDateRefresh != null && checkEndDate(img)) {
           return true;
         }
-        if (startDate != null && checkStartDate(img)) {
+        if (startDateRefresh != null && checkStartDate(img)) {
           return true;
         }
-        if (!imported && img instanceof MapillaryImportedImage) {
+        if (!importedIsSelected && img instanceof MapillaryImportedImage) {
           return true;
         }
         if (img instanceof MapillaryImage) {
-          if (!downloaded) {
+          if (!downloadedIsSelected) {
             return true;
           }
-          if (onlySigns && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+          if (onlySignsIsSelected && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
             return true;
           }
           UserProfile userProfile = ((MapillaryImage) img).getUser();
           if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
+            return true;
+          }
+          if (!OrganizationRecord.NULL_RECORD.equals(organization)
+            && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
             return true;
           }
         }
@@ -404,9 +492,54 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
       );
       JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Choose signs"));
       dlg.setVisible(true);
-      if ((int) pane.getValue() == JOptionPane.OK_OPTION)
+      Object value = pane.getValue();
+      if (value != null && (int) value == JOptionPane.OK_OPTION) {
         MapillaryFilterDialog.getInstance().refresh();
+      }
       dlg.dispose();
+    }
+  }
+
+  @Override
+  public void destroy() {
+    if (!destroyed) {
+      super.destroy();
+      MainApplication.getMap().removeToggleDialog(this);
+      // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
+      MapillaryUser.removeListener(this);
+      destroyed = true;
+    }
+    destroyInstance();
+  }
+
+  @Override
+  public void onLogin(String username) {
+    List<OrganizationRecord> userOrganizations = MapillaryUser.getOrganizations();
+    userOrganizations.forEach(this::organizationAdded);
+  }
+
+  @Override
+  public void onLogout() {
+    // TODO Only remove user organizations, not all organizations
+    organizations.removeAllItems();
+    organizationAdded(OrganizationRecord.NULL_RECORD);
+  }
+
+  @Override
+  public void organizationAdded(OrganizationRecord organization) {
+    boolean add = true;
+    for (int i = 0; i < organizations.getItemCount(); i++) {
+      if (organizations.getItemAt(i).equals(organization)) {
+        add = false;
+        break;
+      }
+    }
+    if (add) {
+      GuiHelper.runInEDTAndWait(() -> organizations.addItem(organization));
+    }
+    for (Component comp : Arrays.asList(organizationLabel, organizations)) {
+      GuiHelper.runInEDT(() -> comp.setEnabled(organizations.getItemCount() > 1));
+      GuiHelper.runInEDT(() -> comp.setVisible(organizations.getItemCount() > 1));
     }
   }
 }

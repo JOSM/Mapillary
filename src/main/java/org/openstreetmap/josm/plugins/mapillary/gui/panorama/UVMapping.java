@@ -2,6 +2,9 @@ package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
 import java.awt.geom.Point2D;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.util.FastMath;
+
 public final class UVMapping {
   private UVMapping() {
     // Private constructor to avoid instantiation
@@ -13,8 +16,8 @@ public final class UVMapping {
    * @return a point on the texture image somewhere in the rectangle between (0, 0) and (1, 1)
    */
   public static Point2D.Double getTextureCoordinate(final Vector3D vector) {
-    final double u = 0.5 + (Math.atan2(vector.getX(), vector.getZ()) / (2 * Math.PI));
-    final double v = 0.5 + (Math.asin(vector.getY()) / Math.PI);
+    final double u = 0.5 + (FastMath.atan2(vector.getX(), vector.getZ()) / (2 * Math.PI));
+    final double v = 0.5 + (FastMath.asin(vector.getY()) / Math.PI);
     return new Point2D.Double(u, v);
   }
 
@@ -27,11 +30,11 @@ public final class UVMapping {
    * @return the vector from the origin to where the point of the texture is mapped on the sphere
    */
   public static Vector3D getVector(final double u, final double v) {
-    final double vectorY = Math.cos(v * Math.PI);
+    final double vectorY = FastMath.cos(v * Math.PI);
     return new Vector3D(
-        -Math.sin(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY),
+        -FastMath.sin(2 * Math.PI * u) * FastMath.sqrt(1 - vectorY * vectorY),
         -vectorY,
-        -Math.cos(2 * Math.PI * u) * Math.sqrt(1 - vectorY * vectorY)
+        -FastMath.cos(2 * Math.PI * u) * FastMath.sqrt(1 - vectorY * vectorY)
     );
   }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="30px" height="26px" viewBox="0 0 30 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="ELVA" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="changesets-admin-2" transform="translate(-652.000000, -95.000000)">
+            <g id="changeset-marking" transform="translate(652.000000, 95.000000)">
+                <g id="Group-9">
+                    <rect id="Rectangle-5" fill-opacity="0.3" fill="#00BCFF" x="0" y="0" width="30" height="26"></rect>
+                    <g id="pencil" transform="translate(6.000000, 5.000000)" fill="#5D6671">
+                        <path d="M2.50440573,11.3422811 L7.784,6.06346618 L13.836,0.0114661786 C13.836,0.0114661786 14.919,-0.204533821 16.361,1.23846618 C17.805,2.68246618 17.588,3.76546618 17.589,3.76546618 L11.537,9.81746618 L6.13460912,15.2174645 L2.50440573,11.3422811 Z M1.03598742,12.8104826 L1.01,12.8364662 L0,17.5984662 L4.69644481,16.6025793 L1.03598742,12.8104826 Z" id="pencil_icon"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

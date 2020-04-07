@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,10 +39,10 @@ import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
+import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -102,14 +101,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
   ) / 3;
 
-  private static final DataSetListenerAdapter DATASET_LISTENER =
-    new DataSetListenerAdapter(e -> {
-      if (e instanceof DataChangedEvent && MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
-        // When more data is downloaded, a delayed update is thrown, in order to
-        // wait for the data bounds to be set.
-        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);
-      }
-    });
+  private static class DataSetSourceListener implements DataSourceListener {
+    @Override
+    public void dataSourceChange(DataSourceChangeEvent event) {
+      SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
+    }
+  }
+
+  private static final DataSourceListener DATASET_LISTENER = new DataSetSourceListener();
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
@@ -126,6 +125,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   private volatile TexturePaint hatched;
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
+  private static AlphaComposite fadeComposite = AlphaComposite
+    .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
   private MapillaryLayer() {
     super(I18n.tr("Mapillary Images"));
@@ -140,7 +141,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private void init() {
     final DataSet ds = MainApplication.getLayerManager().getEditDataSet();
     if (ds != null) {
-      ds.addDataSetListener(DATASET_LISTENER);
+      ds.addDataSourceListener(DATASET_LISTENER);
     }
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
     if (!GraphicsEnvironment.isHeadless()) {
@@ -230,6 +231,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
+  //@Override Depends upon #18801 for the override
   public MapillaryData getData() {
     return this.data;
   }
@@ -291,7 +293,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     try {
       MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
       if (MainApplication.getLayerManager().getEditDataSet() != null) {
-        MainApplication.getLayerManager().getEditDataSet().removeDataSetListener(DATASET_LISTENER);
+        MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
       }
     } catch (IllegalArgumentException e) {
       // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has already been removed.
@@ -333,6 +335,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    fadeComposite = AlphaComposite
+      .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     if (MainApplication.getLayerManager().getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
@@ -361,13 +365,19 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (seq.getImages().contains(selectedImage)) {
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED
-        );
+          );
+      } else if (selectedImage == null) {
+        g.setColor(
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
+          );
       } else {
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
-        );
+          );
+        g.setComposite(fadeComposite);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
+      g.setComposite(AlphaComposite.SrcOver);
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
       if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
@@ -391,7 +401,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
     final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
-
+    Composite composite = g.getComposite();
+    if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
+      g.setComposite(fadeComposite);
+    }
     // Determine colors
     final Color markerC;
     final Color directionC;
@@ -418,12 +431,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
 
     // Paint highlight for selected or highlighted images
-    if (img.equals(getData().getHighlightedImage()) || getData().getMultiSelectedImages().contains(img)) {
+    if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
+      || getData().getMultiSelectedImages().contains(img)) {
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
     }
-
 
     if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
       Path2D trafficSign = new Path2D.Double();
@@ -437,6 +450,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setColor(Color.RED);
       g.draw(trafficSign);
     }
+    g.setComposite(composite);
   }
 
   @Override
@@ -538,10 +552,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousDataLayer()) {
       if (MainApplication.getLayerManager().getEditLayer() != null) {
-        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSetListener(DATASET_LISTENER);
+        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSourceListener(DATASET_LISTENER);
       }
       if (e.getPreviousDataLayer() != null) {
-        e.getPreviousDataLayer().getDataSet().removeDataSetListener(DATASET_LISTENER);
+        try {
+          e.getPreviousDataSet().removeDataSourceListener(DATASET_LISTENER);
+        } catch (IllegalArgumentException exception) {
+          // Do nothing -- there wasn't a data source listener
+          Logging.trace(exception);
+        }
       }
     }
   }
@@ -555,7 +574,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public void layerRemoving(LayerRemoveEvent e) {
     List<DataSet> currentDataSets = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
       .map(OsmDataLayer::getDataSet).collect(Collectors.toList());
-    for (Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
+    for (Map.Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
       if (!currentDataSets.contains(entry.getKey())) {
         imageViewedMap.remove(entry.getKey());
       }
@@ -569,6 +588,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
+    // Don't care about this
   }
 
   /* (non-Javadoc)
@@ -625,7 +645,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (SwingUtilities.isEventDispatchThread()) {
         updateRedBlueButtons();
       } else {
-        SwingUtilities.invokeLater(() -> updateRedBlueButtons());
+        SwingUtilities.invokeLater(this::updateRedBlueButtons);
       }
     }
     if (nearestImages.length >= 1) {
@@ -646,13 +666,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @author nokutu
    */
-  private class DeleteImageAction extends AbstractAction {
+  class DeleteImageAction extends AbstractAction {
 
     private static final long serialVersionUID = -982809854631863962L;
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (instance != null)
+      if (hasInstance())
         MapillaryRecord.getInstance().addCommand(
           new CommandDelete(getData().getMultiSelectedImages()));
     }

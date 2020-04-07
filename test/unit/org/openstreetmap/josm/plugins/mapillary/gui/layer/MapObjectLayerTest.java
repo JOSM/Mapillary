@@ -63,7 +63,7 @@ public class MapObjectLayerTest {
   public void testScheduleDownload() throws InterruptedException, URISyntaxException, IOException {
     stubFor(
       get(urlMatching("/map_features\\?.+"))
-        .withQueryParam("client_id", new EqualToPattern("T1Fzd20xZjdtR0s1VDk5OFNIOXpYdzoxNDYyOGRkYzUyYTFiMzgz"))
+        .withQueryParam("client_id", new EqualToPattern("UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"))
         .withQueryParam("bbox", new EqualToPattern("1.0,1.0,1.0,1.0"))
         .willReturn(
           aResponse()

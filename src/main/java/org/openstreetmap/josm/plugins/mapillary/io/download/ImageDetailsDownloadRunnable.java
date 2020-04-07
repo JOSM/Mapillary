@@ -1,11 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 
 import javax.json.Json;
@@ -17,8 +16,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
 
 public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
+  private static final long serialVersionUID = -4669402516726758428L;
+
   private static final Function<Bounds, Collection<URL>> URL_GEN = APIv3::searchImages;
 
   private final MapillaryData data;
@@ -28,11 +30,26 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
     this.data = data;
   }
 
+  public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url) {
+    super(bounds, Collections.singleton(url));
+    this.data = data;
+  }
+
   @Override
-  public void run(final URLConnection con) throws IOException {
-    try (JsonReader reader = Json.createReader(new BufferedInputStream(con.getInputStream()))) {
+  public BoundsDownloadRunnable getNextUrl(URL nextUrl) {
+    return new ImageDetailsDownloadRunnable(data, bounds, nextUrl);
+  }
+
+  @Override
+  public void compute() {
+    super.run();
+  }
+
+  @Override
+  public void run(final HttpClient client) throws IOException {
+    try (JsonReader reader = Json.createReader(client.getResponse().getContent())) {
       JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);
-      logConnectionInfo(con, null);
+      logConnectionInfo(client, null);
       MapillaryMainDialog.getInstance().updateTitle();
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
