@@ -443,6 +443,18 @@ public final class MapillaryImageDisplay extends JPanel {
    * @param pano       The property to indicate whether image is panorama or not.
    */
   void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
+    setImage(image, detections, pano, true);
+  }
+
+  /**
+   * Sets a new picture to be displayed.
+   *
+   * @param image      The picture to be displayed.
+   * @param detections image detections
+   * @param pano       The property to indicate whether image is panorama or not.
+   * @param repaint    If {@code true}, repaint
+   */
+  void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano, boolean repaint) {
     synchronized (this) {
       this.image = image;
       this.pano = pano;
@@ -453,7 +465,8 @@ public final class MapillaryImageDisplay extends JPanel {
       this.selectedRect = null;
       this.visibleRect = getDefaultVisibleRect();
     }
-    repaint();
+    if (repaint)
+      repaint();
   }
 
   public Rectangle getDefaultVisibleRect() {
