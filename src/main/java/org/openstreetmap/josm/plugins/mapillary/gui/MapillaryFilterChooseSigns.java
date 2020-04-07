@@ -62,29 +62,29 @@ public final class MapillaryFilterChooseSigns extends JPanel {
 
   private MapillaryFilterChooseSigns() {
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, maxSpeed, true, "signs/speed.png", tr("Speed limit"));
+    addCheckBoxWithLabel(this, maxSpeed, true, "mapillary_sprite_source/package_signs/regulatory--maximum-speed-limit-60--g1", tr("Speed limit"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, stop, true, "signs/stop.png", trc("name of the traffic sign", "Stop"));
+    addCheckBoxWithLabel(this, stop, true, "mapillary_sprite_source/package_signs/regulatory--stop--g1", trc("name of the traffic sign", "Stop"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, giveWay, true, "signs/right_of_way.png", tr("Give way"));
+    addCheckBoxWithLabel(this, giveWay, true, "mapillary_sprite_source/package_signs/regulatory--yield--g1", tr("Give way"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, roundabout, true, "signs/roundabout_right.png", tr("Roundabout"));
+    addCheckBoxWithLabel(this, roundabout, true, "mapillary_sprite_source/package_signs/regulatory--roundabout--g1", tr("Roundabout"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, access, true, "signs/no_entry.png", tr("No entry"));
+    addCheckBoxWithLabel(this, access, true, "mapillary_sprite_source/package_signs/regulatory--no-entry--g1", tr("No entry"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, intersection, true, "signs/intersection_danger.png", tr("Intersection danger"));
+    addCheckBoxWithLabel(this, intersection, true, "mapillary_sprite_source/package_signs/warning--junction-with-side-roads--g1", tr("Intersection danger"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, direction, true, "signs/only_straight_on.png", tr("Mandatory direction (any)"));
+    addCheckBoxWithLabel(this, direction, true, "mapillary_sprite_source/package_signs/regulatory--go-straight--g1", tr("Mandatory direction (any)"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, uneven, true, "signs/uneven.png", tr("Uneven road"));
+    addCheckBoxWithLabel(this, uneven, true, "mapillary_sprite_source/package_signs/warning--uneven-road--g1", tr("Uneven road"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, noParking, true, "signs/no_parking.png", tr("No parking"));
+    addCheckBoxWithLabel(this, noParking, true, "mapillary_sprite_source/package_signs/regulatory--no-stopping--g1", tr("No parking"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, noOvertaking, true, "signs/no_overtaking.png", tr("No overtaking"));
+    addCheckBoxWithLabel(this, noOvertaking, true, "mapillary_sprite_source/package_signs/regulatory--no-overtaking--g1", tr("No overtaking"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, crossing, true, "signs/crossing.png", tr("Pedestrian crossing"));
+    addCheckBoxWithLabel(this, crossing, true, "mapillary_sprite_source/package_signs/information--pedestrians-crossing--g1", tr("Pedestrian crossing"));
     // i18n: traffic sign
-    addCheckBoxWithLabel(this, noTurn, true, "signs/no_turn.png", tr("No turn"));
+    addCheckBoxWithLabel(this, noTurn, true, "mapillary_sprite_source/package_signs/regulatory--no-right-turn--g1", tr("No turn"));
 
     setPreferredSize(new Dimension(600, 250));
   }
@@ -94,7 +94,7 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     final JPanel checkBoxPanel = new JPanel();
     final JLabel checkBoxLabel = new JLabel(labelText);
 
-    checkBoxLabel.setIcon(new ImageProvider(iconPath).get());
+    checkBoxLabel.setIcon(ImageProvider.get(iconPath, ImageProvider.ImageSizes.SMALLICON));
     checkBoxLabel.setLabelFor(checkBox);
     checkBoxPanel.add(checkBoxLabel);
     checkBox.setSelected(isSelected);
@@ -102,7 +102,10 @@ public final class MapillaryFilterChooseSigns extends JPanel {
     parentPanel.add(checkBoxPanel);
   }
 
-  public void reset() {
+  /**
+   * Reset the sign filters
+   */
+  public static void reset() {
     for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
       MapillaryFilterChooseSigns.getInstance().signCheckboxes[i].setSelected(true);
     }
