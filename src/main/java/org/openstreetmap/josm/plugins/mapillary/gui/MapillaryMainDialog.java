@@ -111,6 +111,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
 
+  private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
   private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
 
   private MapillaryMainDialog() {
@@ -129,11 +130,16 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
     Dimension buttonDim = new Dimension(52, 34);
     JButton toggleSigns = new JButton(showSignDetectionsAction);
+    JButton toggleDetections = new JButton(showDetectionOutlinesAction);
+    showDetectionOutlinesAction.setButton(toggleDetections);
     showSignDetectionsAction.setButton(toggleSigns);
+    toggleDetections.setPreferredSize(buttonDim);
     toggleSigns.setPreferredSize(buttonDim);
     // Mac OS X won't show background colors if buttons aren't opaque.
     toggleSigns.setOpaque(true);
+    toggleDetections.setOpaque(true);
     buttons.add(toggleSigns);
+    buttons.add(toggleDetections);
     panel.add(buttons);
 
     setMode(MODE.NORMAL);
@@ -169,6 +175,27 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     }
 
     protected abstract BooleanProperty getProperty();
+  }
+
+  private static class ShowDetectionOutlinesAction extends JosmButtonAction {
+    private static final long serialVersionUID = 1943388917595255950L;
+
+    ShowDetectionOutlinesAction() {
+      super(
+        null, new ImageProvider("mapillary_sprite_source/package_objects", "object--traffic-light--other"), tr("Toggle detection outlines"), Shortcut.registerShortcut("mapillary:showdetections", tr("Mapillary: toggle detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false
+      );
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      MapillaryProperties.SHOW_DETECTION_OUTLINES.put(!MapillaryProperties.SHOW_DETECTION_OUTLINES.get());
+      this.setBackground();
+    }
+
+    @Override
+    protected BooleanProperty getProperty() {
+      return MapillaryProperties.SHOW_DETECTION_OUTLINES;
+    }
   }
 
   private static class ShowSignDetectionsAction extends JosmButtonAction {
@@ -561,6 +588,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   public void destroy() {
     if (!destroyed) {
       super.destroy();
+      showDetectionOutlinesAction.destroy();
       showSignDetectionsAction.destroy();
       playButton.destroy();
       pauseButton.destroy();
