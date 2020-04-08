@@ -27,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.spi.preferences.Config;
 
 /**
  * Handles the input event related with the layer. Mainly clicks.
@@ -61,7 +62,7 @@ public class SelectMode extends AbstractMode {
     }
 
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
-      if (e.getClickCount() == 2) { // Double click
+      if (e.getClickCount() == Config.getPref().getInt("mapillary.image.deselect.click.count", 3)) { // Triple click
         if (e.getButton() == MouseEvent.BUTTON1 && MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
