@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import org.openstreetmap.josm.command.ChangePropertyCommand;
+import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.osm.AbstractPrimitive;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.tools.I18n;
@@ -57,8 +60,14 @@ public class AddTagToPrimitiveAction extends AbstractAction {
         );
       }
       if (JOptionPane.YES_OPTION == conflictResolution) {
-        target.put(tag);
-        target.setModified(true);
+        if (target instanceof OsmPrimitive) {
+          UndoRedoHandler.getInstance().add(
+            new ChangePropertyCommand((OsmPrimitive) target, tag.getKey(), tag.getValue())
+            );
+        } else {
+          target.put(tag);
+          target.setModified(true);
+        }
       }
     }
   }
