@@ -444,34 +444,17 @@ public final class MapillaryImageDisplay extends JPanel {
    * @param pano       The property to indicate whether image is panorama or not.
    */
   void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
-    setImage(image, detections, pano, true);
-  }
-
-  /**
-   * Sets a new picture to be displayed.
-   *
-   * @param image      The picture to be displayed.
-   * @param detections image detections
-   * @param pano       The property to indicate whether image is panorama or not.
-   * @param repaint    If {@code true}, repaint
-   */
-  void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano, boolean repaint) {
     synchronized (this) {
       this.image = image;
       this.pano = pano;
       this.detections.clear();
-      this.painted = false;
       if (detections != null) {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
       this.visibleRect = getDefaultVisibleRect();
     }
-    if (repaint) {
-      repaint();
-    } else {
-      paintLoadingImage(getGraphics());
-    }
+    repaint();
   }
 
   public Rectangle getDefaultVisibleRect() {
@@ -513,9 +496,6 @@ public final class MapillaryImageDisplay extends JPanel {
     } else {
       paintImage(g, bufferedImage, paintVisibleRect);
       paintDetections(g, paintVisibleRect);
-      if (bufferedImage != this.image) {
-        paintLoadingImage(g);
-      }
     }
   }
 
@@ -529,6 +509,10 @@ public final class MapillaryImageDisplay extends JPanel {
         (int) ((size.width - noImageSize.getWidth()) / 2),
         (int) ((size.height - noImageSize.getHeight()) / 2));
     }
+  }
+
+  public void paintLoadingImage() {
+    paintLoadingImage(getGraphics());
   }
 
   private void paintLoadingImage(Graphics g) {

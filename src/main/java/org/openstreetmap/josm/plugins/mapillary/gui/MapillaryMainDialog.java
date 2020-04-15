@@ -350,14 +350,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if (this.image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) this.image;
         // Downloads the thumbnail.
-        this.mapillaryImageDisplay.setImage(null, null, false, false);
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
         try {
-          if (this.thumbnailCache.get() == null) {
-            this.thumbnailCache.submit(this, false);
-          }
+          this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -368,9 +365,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
           try {
-            if (this.imageCache.get() == null) {
-              this.imageCache.submit(this, false);
-            }
+            this.imageCache.submit(this, false);
           } catch (IOException e) {
             Logging.error(e);
           }
@@ -385,9 +380,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
               this.thumbnailCache.get().getImage(), ((MapillaryImage) this.image).getDetections(),
               this.image.isPanorama()
             );
+          } else {
+            this.mapillaryImageDisplay.paintLoadingImage();
           }
         } catch (IOException e) {
           Logging.error(e);
+          this.mapillaryImageDisplay.setImage(null, null, false);
         }
       } else if (this.image instanceof MapillaryImportedImage) {
         final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
@@ -562,9 +560,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if (img == null) {
         return;
       }
-      if ((imageCache == null || data.equals(imageCache.get())) &&
+      if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
+        || data.equals(thumbnailCache.get()))
+        &&
         (mapillaryImageDisplay.getImage() == null
-        || img.getHeight() > this.mapillaryImageDisplay.getImage().getHeight())) {
+          || img.getHeight() >= this.mapillaryImageDisplay.getImage().getHeight())) {
         final MapillaryAbstractImage mai = getImage();
         this.mapillaryImageDisplay.setImage(
           img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
