@@ -34,7 +34,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.drew.lang.Charsets;
-import javafx.event.ActionEvent;
 import javafx.scene.control.DatePicker;
 import org.apache.commons.io.IOUtils;
 
@@ -42,8 +41,10 @@ import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.javafx.gui.JavaFxWrapper;
+import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerFx;
+import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerSwing;
+import org.openstreetmap.josm.plugins.mapillary.gui.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
-import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
@@ -195,40 +196,38 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       lastSeen.add(new JLabel(I18n.tr("Last Seen End")), GBC.eol());
     }
 
-    JavaFxWrapper<DatePicker> firstSeenPicker = new JavaFxWrapper<>(DatePicker.class);
-    JavaFxWrapper<DatePicker> lastSeenPicker = new JavaFxWrapper<>(DatePicker.class);
-    firstSeen.add(firstSeenPicker, GBC.eol());
-    lastSeen.add(lastSeenPicker, GBC.eol());
-    firstSeenPicker.getNode().addEventHandler(
-      ActionEvent.ACTION,
-      t -> updateDates(firstLast, firstSeenPicker.getNode(), firstSeenPicker.getNode(), lastSeenPicker.getNode())
-    );
-    lastSeenPicker.getNode().addEventHandler(
-      ActionEvent.ACTION,
-      t -> updateDates(firstLast, lastSeenPicker.getNode(), firstSeenPicker.getNode(), lastSeenPicker.getNode())
-    );
-
-    firstSeenPicker.getNode().setConverter(new LocalDateConverter());
-    lastSeenPicker.getNode().setConverter(firstSeenPicker.getNode().getConverter());
-
-    // This is required to ensure that the dialogs don't collapse to nothing
-    SwingUtilities.invokeLater(() -> {
-      Dimension d = firstSeenPicker.getPreferredSize();
-      d.width = (int) Math.ceil(Math.max(d.width * 1.15, firstSeenPicker.getNode().getWidth()));
-      d.height = (int) Math.ceil(Math.max(d.height * 1.15, firstSeenPicker.getNode().getHeight()));
-      firstSeenPicker.setMinimumSize(d);
-      lastSeenPicker.setMinimumSize(d);
-    });
+    boolean fx = false;
+    try {
+      new DatePickerFx();
+      fx = true;
+    } catch (UnsupportedClassVersionError e) {
+      Logging.error(e);
+    }
+    final IDatePicker<?> firstSeenPicker;
+    final IDatePicker<?> lastSeenPicker;
+    if (fx) {
+      firstSeenPicker = new DatePickerFx();
+      lastSeenPicker = new DatePickerFx();
+    } else {
+      firstSeenPicker = new DatePickerSwing();
+      lastSeenPicker = new DatePickerSwing();
+    }
+    firstSeen.add(firstSeenPicker.getComponent(), GBC.eol());
+    lastSeen.add(lastSeenPicker.getComponent(), GBC.eol());
+    firstSeenPicker.addEventHandler(t -> updateDates(firstLast, firstSeenPicker, firstSeenPicker, lastSeenPicker));
+    lastSeenPicker.addEventHandler(t -> updateDates(firstLast, lastSeenPicker, firstSeenPicker, lastSeenPicker));
   }
 
-  private static void updateDates(String position, DatePicker modified, DatePicker firstSeen, DatePicker lastSeen) {
-    LocalDate start = firstSeen.getValue();
-    LocalDate end = lastSeen.getValue();
+  private static void updateDates(
+    String position, IDatePicker<?> modified, IDatePicker<?> firstSeen, IDatePicker<?> lastSeen
+  ) {
+    LocalDate start = firstSeen.getDate();
+    LocalDate end = lastSeen.getDate();
     if (start != null && end != null) {
       if (firstSeen.equals(modified) && start.compareTo(end) > 0) {
-        lastSeen.setValue(start);
+        lastSeen.setDate(start);
       } else if (lastSeen.equals(modified) && start.compareTo(end) > 0) {
-        lastSeen.setValue(end);
+        lastSeen.setDate(end);
       }
     }
     Filter dateFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
@@ -389,8 +388,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   }
 
   private void resetSubPanels(Component component) {
-    if (component instanceof JavaFxWrapper && ((JavaFxWrapper<?>) component).getNode() instanceof DatePicker) {
-      ((DatePicker) ((JavaFxWrapper<?>) component).getNode()).setValue(null);
+    if (component instanceof IDatePicker) {
+      ((IDatePicker<?>) component).reset();
     } else if (component instanceof JSpinner && ((JSpinner) component).getModel() instanceof SpinnerNumberModel
       && !((JSpinner) component).getModel().equals(showMaxNumberModel)) {
       ((SpinnerNumberModel) ((JSpinner) component).getModel()).setValue(0);
