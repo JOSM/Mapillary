@@ -87,6 +87,7 @@ public final class MapillaryImageDisplay extends JPanel {
    * 360-degree panorama photo projection class.
    */
   transient CameraPlane cameraPlane;
+  private boolean painted;
 
   protected class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
@@ -431,8 +432,8 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   private void setDarkMode(final boolean darkMode) {
-    setBackground(darkMode ? MapillaryColorScheme.TOOLBAR_DARK_GREY : Color.WHITE);
-    setForeground(darkMode ? Color.LIGHT_GRAY : Color.DARK_GRAY);
+    setBackground(darkMode ? MapillaryColorScheme.TOOLBAR_DARK_GREY : getBackground());
+    setForeground(darkMode ? Color.LIGHT_GRAY : getForeground());
   }
 
   /**
@@ -459,14 +460,18 @@ public final class MapillaryImageDisplay extends JPanel {
       this.image = image;
       this.pano = pano;
       this.detections.clear();
+      this.painted = false;
       if (detections != null) {
         this.detections.addAll(detections);
       }
       this.selectedRect = null;
       this.visibleRect = getDefaultVisibleRect();
     }
-    if (repaint)
+    if (repaint) {
       repaint();
+    } else {
+      paintLoadingImage(getGraphics());
+    }
   }
 
   public Rectangle getDefaultVisibleRect() {
@@ -508,6 +513,9 @@ public final class MapillaryImageDisplay extends JPanel {
     } else {
       paintImage(g, bufferedImage, paintVisibleRect);
       paintDetections(g, paintVisibleRect);
+      if (bufferedImage != this.image) {
+        paintLoadingImage(g);
+      }
     }
   }
 
@@ -520,6 +528,29 @@ public final class MapillaryImageDisplay extends JPanel {
       g.drawString(noImageStr,
         (int) ((size.width - noImageSize.getWidth()) / 2),
         (int) ((size.height - noImageSize.getHeight()) / 2));
+    }
+  }
+
+  private void paintLoadingImage(Graphics g) {
+    final String noImageStr = tr("loading image");
+    Rectangle2D noImageSize = g.getFontMetrics().getStringBounds(noImageStr, g);
+    Dimension size = getSize();
+    int llx = (int) ((size.width - noImageSize.getWidth()) / 2);
+    int lly = (int) ((size.height - noImageSize.getHeight()) / 2);
+    if (g instanceof Graphics2D) {
+      Graphics2D g2d = (Graphics2D) g;
+      int height = g2d.getFontMetrics().getHeight();
+      int descender = g2d.getFontMetrics().getDescent();
+      g2d.setColor(getBackground());
+      int width = (int) (noImageSize.getWidth() * 1);
+      int tlx = (int) ((size.getWidth() - noImageSize.getWidth()) / 2);
+      int tly = (int) ((size.getHeight() - 3 * noImageSize.getHeight()) / 2 + descender);
+      g2d.fillRect(tlx, tly, width, height);
+      g2d.setColor(getForeground());
+      g2d.drawString(noImageStr, llx, lly);
+    } else {
+      g.setColor(getForeground());
+      g.drawString(noImageStr, llx, lly);
     }
   }
 
