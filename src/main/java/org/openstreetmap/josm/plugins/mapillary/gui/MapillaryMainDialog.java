@@ -21,9 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.JosmAction;
@@ -120,7 +118,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     super(
       tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"), null, 200, true, MapillaryPreferenceSetting.class
     );
-    addShortcuts();
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 
     this.blueButton.setForeground(Color.BLUE);
@@ -219,23 +216,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     protected BooleanProperty getProperty() {
       return MapillaryProperties.SHOW_DETECTED_SIGNS;
     }
-  }
-
-  /**
-   * Adds the shortcuts to the buttons.
-   */
-  private void addShortcuts() {
-    this.nextButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("PAGE_DOWN"), "next");
-    this.nextButton.getActionMap().put("next", SelectNextImageAction.NEXT_ACTION);
-    this.previousButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-      .put(KeyStroke.getKeyStroke("PAGE_UP"), "previous");
-    this.previousButton.getActionMap().put("previous", SelectNextImageAction.PREVIOUS_ACTION);
-    this.blueButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-      .put(KeyStroke.getKeyStroke("control PAGE_UP"), "blue");
-    this.blueButton.getActionMap().put("blue", SelectNextImageAction.BLUE_ACTION);
-    this.redButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-      .put(KeyStroke.getKeyStroke("control PAGE_DOWN"), "red");
-    this.redButton.getActionMap().put("red", SelectNextImageAction.RED_ACTION);
   }
 
   /**
