@@ -34,13 +34,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.drew.lang.Charsets;
-import javafx.scene.control.DatePicker;
 import org.apache.commons.io.IOUtils;
 
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.widgets.FilterField;
-import org.openstreetmap.josm.plugins.javafx.gui.JavaFxWrapper;
 import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerFx;
 import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerSwing;
 import org.openstreetmap.josm.plugins.mapillary.gui.IDatePicker;

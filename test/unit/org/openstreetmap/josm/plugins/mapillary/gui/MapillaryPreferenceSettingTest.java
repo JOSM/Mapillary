@@ -61,7 +61,7 @@ public class MapillaryPreferenceSettingTest {
     MapillaryPreferenceSetting setting = new MapillaryPreferenceSetting();
     setting.addGui(tabs);
     setting.onLogout();
-    
+
     final String loginPanel = "loginPanel";
     final String loginButton = "loginButton";
 

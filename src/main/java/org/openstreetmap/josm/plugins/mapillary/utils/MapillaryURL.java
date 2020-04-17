@@ -70,7 +70,7 @@ public final class MapillaryURL {
     public static URL retrieveOrganizationss(String user) {
       return string2URL(baseUrl, "users/" + user + "/organizations", queryString(null));
     }
-    
+
     public static URL retrieveOrganization(String organization) {
       return string2URL(baseUrl, "organizations/" + organization, queryString(null));
     }
