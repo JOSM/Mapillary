@@ -87,7 +87,6 @@ public final class MapillaryImageDisplay extends JPanel {
    * 360-degree panorama photo projection class.
    */
   transient CameraPlane cameraPlane;
-  private boolean painted;
 
   protected class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
@@ -512,7 +511,8 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   public void paintLoadingImage() {
-    paintLoadingImage(getGraphics());
+    if (getGraphics() != null)
+      paintLoadingImage(getGraphics());
   }
 
   private void paintLoadingImage(Graphics g) {
