@@ -55,4 +55,3 @@ public class CameraPlaneTest {
     assertEquals(0.39674936, map.getY(), 1e-8);
   }
 }
-
