@@ -14,6 +14,7 @@ plugins {
   id("com.github.ben-manes.versions") version "0.28.0"
   id("com.github.spotbugs") version "4.0.1"
   id("net.ltgt.errorprone") version "1.1.1"
+  id("com.diffplug.gradle.spotless") version "3.28.1"
 
   eclipse
   jacoco
@@ -109,6 +110,22 @@ tasks {
       include("LICENSE_*")
     }
     from(md2html)
+  }
+}
+
+spotless {
+  format("misc") {
+    target("**/*.gradle", "**.*.md", "**/.gitignore")
+
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+  }
+  java {
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+    removeUnusedImports()
   }
 }
 
