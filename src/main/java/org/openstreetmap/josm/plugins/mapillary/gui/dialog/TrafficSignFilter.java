@@ -39,8 +39,6 @@ import org.apache.commons.io.IOUtils;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.widgets.FilterField;
-import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerFx;
-import org.openstreetmap.josm.plugins.mapillary.gui.DatePickerSwing;
 import org.openstreetmap.josm.plugins.mapillary.gui.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -194,22 +192,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       lastSeen.add(new JLabel(I18n.tr("Last Seen End")), GBC.eol());
     }
 
-    boolean fx = false;
-    try {
-      new DatePickerFx();
-      fx = true;
-    } catch (UnsupportedClassVersionError e) {
-      Logging.error(e);
-    }
-    final IDatePicker<?> firstSeenPicker;
-    final IDatePicker<?> lastSeenPicker;
-    if (fx) {
-      firstSeenPicker = new DatePickerFx();
-      lastSeenPicker = new DatePickerFx();
-    } else {
-      firstSeenPicker = new DatePickerSwing();
-      lastSeenPicker = new DatePickerSwing();
-    }
+    final IDatePicker<?> firstSeenPicker = IDatePicker.getNewDatePicker();
+    final IDatePicker<?> lastSeenPicker = IDatePicker.getNewDatePicker();
     firstSeen.add(firstSeenPicker.getComponent(), GBC.eol());
     lastSeen.add(lastSeenPicker.getComponent(), GBC.eol());
     firstSeenPicker.addEventHandler(t -> updateDates(firstLast, firstSeenPicker, firstSeenPicker, lastSeenPicker));

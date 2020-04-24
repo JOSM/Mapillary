@@ -87,6 +87,11 @@ public final class MapillaryProperties {
    */
   public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.50);
 
+  /**
+   * Whether or not to try to use JavaFX
+   */
+  public static final BooleanProperty JAVA_FX = new BooleanProperty("mapillary.javafx", true);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

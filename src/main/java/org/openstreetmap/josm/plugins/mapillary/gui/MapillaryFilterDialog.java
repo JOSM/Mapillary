@@ -52,7 +52,6 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 
 /**
  * ToggleDialog that lets you filter the images that are being shown.
@@ -122,15 +121,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
     fromPanel.add(this.time);
 
     JPanel timePanel;
-    try {
-      startDate = new DatePickerFx();
-      endDate = new DatePickerFx();
-    } catch (UnsupportedClassVersionError e) {
-      // Don't kill the plugin if JavaFX cannot be loaded
-      Logging.error(e);
-      startDate = new DatePickerSwing();
-      endDate = new DatePickerSwing();
-    }
+    startDate = IDatePicker.getNewDatePicker();
+    endDate = IDatePicker.getNewDatePicker();
     Consumer<IDatePicker<?>> function = this::updateDates;
     startDate.addEventHandler(function);
     endDate.addEventHandler(function);
