@@ -334,7 +334,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
         try {
-          this.thumbnailCache.submit(this, false);
+          if (this.thumbnailCache.get() == null)
+            this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -345,7 +346,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
           try {
-            this.imageCache.submit(this, false);
+            if (this.imageCache.get() == null)
+              this.imageCache.submit(this, false);
           } catch (IOException e) {
             Logging.error(e);
           }

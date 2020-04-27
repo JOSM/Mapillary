@@ -55,21 +55,12 @@ public final class CacheUtils {
    *          both.)
    */
   public static void downloadPicture(MapillaryImage img, PICTURE pic) {
-    switch (pic) {
-      case BOTH:
-        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null)
-          submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
-        if (new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).get() == null)
-          submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
-        break;
-      case THUMBNAIL:
-        submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
-        break;
-      case FULL_IMAGE:
-      default:
-        submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
-        break;
-    }
+    boolean thumbnail = new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null && (PICTURE.BOTH.equals(pic) || PICTURE.THUMBNAIL.equals(pic));
+    boolean fullImage = new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).get() == null && (PICTURE.BOTH.equals(pic) || PICTURE.FULL_IMAGE.equals(pic));
+    if (thumbnail)
+      submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
+    if (fullImage)
+      submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
   }
 
   /**
