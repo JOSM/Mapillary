@@ -40,7 +40,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -185,8 +184,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
         menu.editMenu, menu.fileMenu, menu.windowMenu)) {
       clearMenues(jmenu);
     }
-    for (Class<? extends Layer> layerClazz : Arrays.asList(MapillaryLayer.class, MapObjectLayer.class,
-        PointObjectLayer.class)) {
+    for (Class<? extends Layer> layerClazz : Arrays.asList(MapillaryLayer.class, PointObjectLayer.class)) {
       MainApplication.getLayerManager().getLayersOfType(layerClazz)
           .forEach(layer -> MainApplication.getLayerManager().removeLayer(layer));
     }
