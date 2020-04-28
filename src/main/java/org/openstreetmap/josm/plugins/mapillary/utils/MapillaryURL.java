@@ -106,7 +106,7 @@ public final class MapillaryURL {
     }
 
     private static String getEnabledLayers() {
-      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER, LINE_FEATURES_LAYER));
+      return String.join(",", Arrays.asList(POINT_FEATURES_LAYER, LINE_FEATURES_LAYER));
     }
 
     private static String getDetectionLayers() {

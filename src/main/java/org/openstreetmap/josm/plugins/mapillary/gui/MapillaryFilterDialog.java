@@ -89,8 +89,8 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Mapilla
 
   final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
 
-  private IDatePicker<?> startDate;
-  private IDatePicker<?> endDate;
+  private final IDatePicker<?> startDate;
+  private final IDatePicker<?> endDate;
 
   private boolean destroyed;
 
