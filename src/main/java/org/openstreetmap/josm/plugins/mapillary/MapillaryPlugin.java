@@ -23,7 +23,6 @@ import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
@@ -37,7 +36,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryHistoryDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer;
@@ -113,10 +111,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MainMenu.add(menu.imagerySubMenu, mapObjectLayerAction, false);
     destroyables.add(mapObjectLayerAction);
 
-    MapPointObjectLayerAction mapPointObjectLayerAction = new MapPointObjectLayerAction();
-    MainMenu.add(menu.imagerySubMenu, mapPointObjectLayerAction, false);
-    destroyables.add(mapPointObjectLayerAction);
-
     mapFrameInitialized(null, MainApplication.getMap());
   }
 
@@ -150,12 +144,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       newFrame.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       toggleDialog.add(MapillaryFilterDialog.getInstance());
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-      newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
-      toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
-      // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert filter
-      // dialog is added.
-      newFrame.conflictDialog.getToggleAction().actionPerformed(null);
-      newFrame.conflictDialog.getToggleAction().actionPerformed(null);
     } else if (oldFrame != null && newFrame == null) { // map frame removed
       toggleDialog.forEach(ToggleDialog::destroy);
       toggleDialog.clear();
