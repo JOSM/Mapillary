@@ -433,6 +433,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       return;
     }
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
+    if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
+      && !getData().getMultiSelectedImages().contains(img)
+      && (selectedImg == null || !img.getSequence().equals(selectedImg.getSequence()))) {
+      Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
+      return;
+    }
     final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
@@ -454,37 +460,35 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
     // Paint direction indicator
-    if (IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel())) {
-      g.setColor(directionC);
-      if (img.isPanorama()) {
-        g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
-          2 * CA_INDICATOR_RADIUS);
-      } else {
-        g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
-          2 * CA_INDICATOR_RADIUS,
-          (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);
-      }
-      // Paint image marker
-      g.setColor(markerC);
-      g.setPaint(markerC);
-      synchronized (IMAGE_CIRCLE) {
-        IMAGE_CIRCLE.x = (double) p.x - IMG_MARKER_RADIUS;
-        IMAGE_CIRCLE.y = (double) p.y - IMG_MARKER_RADIUS;
-        g.fill(IMAGE_CIRCLE);
-      }
+    g.setColor(directionC);
+    if (img.isPanorama()) {
+      g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
+        2 * CA_INDICATOR_RADIUS);
+    } else {
+      g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
+        2 * CA_INDICATOR_RADIUS,
+        (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);
+    }
+    // Paint image marker
+    g.setColor(markerC);
+    g.setPaint(markerC);
+    synchronized (IMAGE_CIRCLE) {
+      IMAGE_CIRCLE.x = (double) p.x - IMG_MARKER_RADIUS;
+      IMAGE_CIRCLE.y = (double) p.y - IMG_MARKER_RADIUS;
+      g.fill(IMAGE_CIRCLE);
+    }
 
-      // Paint highlight for selected or highlighted images
-      if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
-        || getData().getMultiSelectedImages().contains(img)) {
-        g.setColor(Color.WHITE);
-        g.setStroke(new BasicStroke(2));
-        g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
-      }
+    // Paint highlight for selected or highlighted images
+    if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
+      || getData().getMultiSelectedImages().contains(img)) {
+      g.setColor(Color.WHITE);
+      g.setStroke(new BasicStroke(2));
+      g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+    }
 
-      if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
-        g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 2d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 2d),
-          null);
-      }
+    if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
+      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 2d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 2d),
+        null);
     }
     g.setComposite(composite);
   }
