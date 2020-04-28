@@ -74,8 +74,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     layers.setLayout(new FlowLayout(FlowLayout.LEFT));
     layers.add(new JLabel(I18n.tr("Layer")));
     for (String[] layer : Arrays.asList(
-      new String[] { "trafficsigns", I18n.marktr("Traffic Signs") }, new String[] { "points", I18n.marktr("Point Objects") }
-    )) {
+      new String[] { "trafficsigns", I18n.marktr("Traffic Signs") },
+      new String[] { "points", I18n.marktr("Point Objects") })) {
       JCheckBox lbox = new JCheckBox(I18n.tr(layer[1]));
       layers.add(lbox);
       lbox.addItemListener(TrafficSignFilter::updateLayers);
@@ -83,23 +83,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       lbox.putClientProperty("layer", layer[0]);
     }
     add(layers);
-
-    /* Filter minimum detections */
-    add(new JLabel(I18n.tr("Minimum object detections")));
-    JSpinner minDetections = new JSpinner();
-    minDetections.setModel(new SpinnerNumberModel(0, 0, 100, 1));
-    add(minDetections, GBC.eol());
-    Filter minDetectionFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-      .filter(p -> p.text.contains("min_detections")).findFirst().orElseGet(() -> {
-        Filter filter = new Filter();
-        filter.enable = false;
-        filter.hiding = true;
-        filter.text = "min_detections < 0";
-        MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
-        return filter;
-      });
-    minDetections.addChangeListener(l -> updateMinDetectionFilter(minDetections, minDetectionFilter));
-    /* End filter minimum detections */
 
     /* Filter signs */
     filterField = new FilterField().filter(this::filterButtons);
@@ -169,9 +152,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   private void updateShown(SpinnerNumberModel model) {
     buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
     buttons.stream().filter(i -> i.isFiltered(filterField.getText())).skip(
-      detectionPage * model.getNumber().longValue()
-    ).limit(model.getNumber().longValue()
-    ).forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
+      detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
+      .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
     long notSelected = buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
     long selected = buttons.parallelStream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
       .count();
@@ -201,8 +183,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
   }
 
   private static void updateDates(
-    String position, IDatePicker<?> modified, IDatePicker<?> firstSeen, IDatePicker<?> lastSeen
-  ) {
+    String position, IDatePicker<?> modified, IDatePicker<?> firstSeen, IDatePicker<?> lastSeen) {
     LocalDate start = firstSeen.getDate();
     LocalDate end = lastSeen.getDate();
     if (start != null && end != null) {
@@ -237,17 +218,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     }
   }
 
-  private static void updateMinDetectionFilter(JSpinner minDetections, Filter filter) {
-    if (minDetections.getModel() instanceof SpinnerNumberModel) {
-      SpinnerNumberModel model = (SpinnerNumberModel) minDetections.getModel();
-      filter.enable = !Integer.valueOf(0).equals(model.getNumber());
-      if (filter.enable && model.getNumber() != null) {
-        filter.text = "detections_num < " + model.getNumber();
-      }
-      doFilterAddRemoveWork(filter);
-    }
-  }
-
   private static void doFilterAddRemoveWork(Filter filter) {
     int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
     if (index < 0 && filter.enable && !filter.text.isEmpty()) {
@@ -273,7 +243,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     }
     MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
     List<Future<?>> futures = buttons.stream().filter(ImageCheckBoxButton::isVisible)
-        .map(b -> b.setSelected(check)).filter(Objects::nonNull).collect(Collectors.toList());
+      .map(b -> b.setSelected(check)).filter(Objects::nonNull).collect(Collectors.toList());
 
     for (Future<?> future : futures) {
       try {
@@ -297,8 +267,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
 
   private void filterButtons(String expr) {
     SwingUtilities.invokeLater(
-      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant())))
-    );
+      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
   }
 
   public void getIcons(JComponent panel, String type) {
@@ -309,7 +278,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     String directory = "mapillary_sprite_source/package_" + type;
     try {
       List<String> files = IOUtils.readLines(ResourceProvider.getResourceAsStream("/images/" + directory),
-          Charsets.UTF_8.name());
+        Charsets.UTF_8.name());
       Collections.sort(files);
       for (String file : files) {
         try {
