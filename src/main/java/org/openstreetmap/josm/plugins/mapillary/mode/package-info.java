@@ -1,6 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 /**
- * The different modes that the {@link org.openstreetmap.josm.plugins.mapillary.MapillaryLayer} can be in.
+ * The different modes that the {@link org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer} can be in.
  * <br>
  * Currently there are two of them:
  * <ul>

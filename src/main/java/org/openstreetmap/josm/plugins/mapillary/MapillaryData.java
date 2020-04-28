@@ -33,6 +33,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
@@ -85,7 +86,7 @@ public class MapillaryData implements Data {
   /**
    * Creates a new object and adds the initial set of listeners.
    */
-  protected MapillaryData() {
+  public MapillaryData() {
     this.selectedImage = null;
     this.dataSources = new ArrayList<>();
 
