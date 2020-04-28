@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.gui;
+package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -45,7 +45,9 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.TrafficSignFilter;
+import org.openstreetmap.josm.plugins.mapillary.gui.IDatePicker;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;

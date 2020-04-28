@@ -22,7 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryExportDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExportDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;

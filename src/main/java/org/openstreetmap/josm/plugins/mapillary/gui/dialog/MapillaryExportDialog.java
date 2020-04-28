@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.gui;
+package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
