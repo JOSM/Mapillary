@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -14,7 +15,6 @@ import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,6 +127,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /** The sprite to use for the currently selected image */
   public static final ImageIcon SELECTED_IMAGE = ImageProvider.get("mapillary_sprite_source/package_ui", "cur-ca-0",
     ImageProvider.ImageSizes.MAPMAX);
+  /** The sprite to use to indicate that there are sign detections in the image */
+  private static final Image YIELD_SIGN = new ImageProvider("mapillary_sprite_source/package_signs",
+    "regulatory--yield--g1")
+      .setMaxSize(TRAFFIC_SIGN_SIZE).get()
+      .getImage();
 
   private static class DataSetSourceListener implements DataSourceListener {
     @Override
@@ -477,16 +482,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       }
 
       if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
-        Path2D trafficSign = new Path2D.Double();
-        trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-        trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-        trafficSign.lineTo(p.getX(), p.getY() + 2 * TRAFFIC_SIGN_HEIGHT_3RD);
-        trafficSign.closePath();
-        g.setColor(Color.WHITE);
-        g.fill(trafficSign);
-        g.setStroke(new BasicStroke(1));
-        g.setColor(Color.RED);
-        g.draw(trafficSign);
+        g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 2d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 2d),
+          null);
       }
     }
     g.setComposite(composite);
