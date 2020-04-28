@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.mode;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -19,6 +18,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandJoin;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * In this mode the user can join pictures to make sequences or unjoin them.
@@ -35,7 +35,8 @@ public class JoinMode extends AbstractMode {
    * Main constructor.
    */
   public JoinMode() {
-    this.cursor = Cursor.CROSSHAIR_CURSOR;
+    super(tr("Mapillary Join Mode"), "mapillary-join", tr("Join images into sequences in the Mapillary Layer"),
+      ImageProvider.getCursor("crosshair", null));
   }
 
   @Override
@@ -47,19 +48,14 @@ public class JoinMode extends AbstractMode {
     if (this.lastClick == null && highlighted instanceof MapillaryImportedImage) {
       this.lastClick = (MapillaryImportedImage) highlighted;
     } else if (this.lastClick != null
-        && highlighted instanceof MapillaryImportedImage) {
-      if (
-        (
-          (highlighted.previous() == null && this.lastClick.next() == null) ||
-          (highlighted.next() == null && this.lastClick.previous() == null)
-        )
-        && !highlighted.getSequence().equals(this.lastClick.getSequence())
-      ) {
+      && highlighted instanceof MapillaryImportedImage) {
+      if (((highlighted.previous() == null && this.lastClick.next() == null) ||
+        (highlighted.next() == null && this.lastClick.previous() == null))
+        && !highlighted.getSequence().equals(this.lastClick.getSequence())) {
         MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));
       } else if (highlighted.equals(this.lastClick.next()) || highlighted.equals(this.lastClick.previous())) {
         MapillaryRecord.getInstance().addCommand(
-          new CommandUnjoin(Arrays.asList(this.lastClick, highlighted))
-        );
+          new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));
       }
       this.lastClick = null;
     }
