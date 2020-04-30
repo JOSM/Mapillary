@@ -37,19 +37,19 @@ public class MapillaryDownloadAction extends JosmAction {
    */
   public MapillaryDownloadAction() {
     super(
-        tr("Mapillary"),
-        new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Open Mapillary layer"),
-        SHORTCUT,
-        false,
-        "mapillaryDownload",
-        false
-    );
+      tr("Mapillary"),
+      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr("Open Mapillary layer"),
+      SHORTCUT,
+      false,
+      "mapillaryDownload",
+      false);
   }
 
   @Override
   public void actionPerformed(ActionEvent ae) {
-    if (!MapillaryLayer.hasInstance() || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+    if ((!MapillaryLayer.hasInstance()
+      || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance()))) {
       LayerListModel model = LayerListDialog.getInstance().getModel();
       model.getLayerManager().addLayer(MapillaryLayer.getInstance());
       List<Layer> selected = model.getSelectedLayers();

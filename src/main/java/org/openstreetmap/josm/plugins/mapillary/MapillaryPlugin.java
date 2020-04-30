@@ -65,6 +65,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
   private final List<Destroyable> destroyables = new ArrayList<>();
 
+  private MapillaryDownloadAction mapillaryDownloadAction;
+
   /**
    * Main constructor.
    *
@@ -84,7 +86,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MainMenu.add(menu.fileMenu, mapillaryExportAction, false, 14);
     destroyables.add(mapillaryExportAction);
 
-    MapillaryDownloadAction mapillaryDownloadAction = new MapillaryDownloadAction();
+    mapillaryDownloadAction = new MapillaryDownloadAction();
+    mapillaryDownloadAction.setEnabled(false);
     MainMenu.add(menu.imagerySubMenu, mapillaryDownloadAction, false);
     destroyables.add(mapillaryDownloadAction);
 
@@ -152,6 +155,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
       toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
+      mapillaryDownloadAction.setEnabled(true);
       // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert filter
       // dialog is added.
       newFrame.conflictDialog.getToggleAction().actionPerformed(null);
@@ -159,6 +163,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     } else if (oldFrame != null && newFrame == null) { // map frame removed
       toggleDialog.forEach(ToggleDialog::destroy);
       toggleDialog.clear();
+      mapillaryDownloadAction.setEnabled(false);
     }
   }
 
