@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.time.LocalDate;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;
@@ -23,19 +24,14 @@ public interface IDatePicker<T extends JComponent> {
 
   void addEventHandler(Consumer<IDatePicker<?>> function);
 
-  public static IDatePicker<? extends JComponent> getNewDatePicker() {
-    boolean fx = false;
+  static IDatePicker<? extends JComponent> getNewDatePicker() {
     boolean useFx = MapillaryProperties.JAVA_FX.get();
     if (useFx) {
       try {
-        new DatePickerFx();
-        fx = true;
-      } catch (UnsupportedClassVersionError e) {
+        return new DatePickerFx();
+      } catch (NoClassDefFoundError | UnsupportedClassVersionError | ExecutionException e) {
         Logging.error(e);
       }
-    }
-    if (fx) {
-      return new DatePickerFx();
     }
     return new DatePickerSwing();
   }

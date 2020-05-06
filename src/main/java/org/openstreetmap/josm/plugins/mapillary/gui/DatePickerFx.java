@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.Dimension;
 import java.time.LocalDate;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import javafx.event.ActionEvent;
@@ -34,7 +35,7 @@ public class DatePickerFx extends JavaFxWrapper<DatePicker> implements IDatePick
 
   }
 
-  public DatePickerFx() {
+  public DatePickerFx() throws ExecutionException {
     super(DatePicker.class);
     this.getNode().setConverter(new LocalDateConverterJavaFX());
     GuiHelper.runInEDT(() -> {
