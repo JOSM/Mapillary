@@ -28,22 +28,39 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    */
   public enum Type {
     /** Full quality image */
-    FULL_IMAGE,
+    FULL_IMAGE(2048),
     /** Low quality image */
-    THUMBNAIL
+    THUMBNAIL(320);
+
+    private int width;
+
+    private Type(int dimension) {
+      this.width = dimension;
+    }
+
+    /** Get the anticipated width for the image */
+    public int getWidth() {
+      return width;
+    }
+
+    /** Get the anticipated height for the image */
+    public int getHeight() {
+      return width;
+    }
   }
 
   /**
    * Main constructor.
    *
    * @param key
-   *          The key of the image.
+   *             The key of the image.
    * @param type
-   *          The type of image that must be downloaded (THUMBNAIL or
-   *          FULL_IMAGE).
+   *             The type of image that must be downloaded (THUMBNAIL or
+   *             FULL_IMAGE).
    */
   public MapillaryCache(final String key, final Type type) {
-    super(Caches.ImageCache.getInstance().getCache(), new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)));
+    super(Caches.ImageCache.getInstance().getCache(type),
+      new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)));
     if (key == null || type == null) {
       this.key = null;
       this.url = null;
