@@ -13,10 +13,9 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
-import javax.swing.SwingUtilities;
-
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
@@ -70,18 +69,14 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
       Logging.log(Logging.LEVEL_WARN, message, e);
       if (!GraphicsEnvironment.isHeadless()) {
-        if (SwingUtilities.isEventDispatchThread()) {
-          showNotification(message);
-        } else {
-          SwingUtilities.invokeLater(() -> showNotification(message));
-        }
+        GuiHelper.runInEDT(() -> showNotification(message));
       }
     }
   }
 
   private static void showNotification(String message) {
     new Notification(message).setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
-        .setDuration(Notification.TIME_LONG).show();
+      .setDuration(Notification.TIME_LONG).show();
   }
 
   /**
