@@ -2,15 +2,19 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.swing.ImageIcon;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  * Abstract superclass for all image objects. At the moment there are just 2,
@@ -20,6 +24,18 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
  *
  */
 public abstract class MapillaryAbstractImage extends GpxImageEntry {
+  /** The common directory for the Mapillary image sprites (for Mapillary Images) */
+  protected static final String IMAGE_SPRITE_DIR = "josm-ca";
+  /** The default sprite for a Mapillary image */
+  protected static final ImageIcon DEFAULT_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "default-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+  /** The sprite to use for the active Mapillary sequence */
+  public static final ImageIcon ACTIVE_SEQUENCE_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "sequence-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+  /** The sprite to use for the currently selected image */
+  public static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
    */
@@ -314,15 +330,28 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     this.movingCa = this.tempCa + ca;
   }
 
-  public abstract Color paintHighlightedColour();
-
   public abstract Color paintHighlightedAngleColour();
-
-  public abstract Color paintSelectedColour();
 
   public abstract Color paintSelectedAngleColour();
 
-  public abstract Color paintUnselectedColour();
-
   public abstract Color paintUnselectedAngleColour();
+
+  /**
+   * @return The default image to represent this particular type of image
+   */
+  public abstract Image getDefaultImage();
+
+  /**
+   * @return The default image to indicate that this particular image is selected
+   */
+  public Image getSelectedImage() {
+    return SELECTED_IMAGE.getImage();
+  }
+
+  /**
+   * @return The image to indicate that the current sequence is active
+   */
+  public Image getActiveSequenceImage() {
+    return ACTIVE_SEQUENCE_SPRITE.getImage();
+  }
 }

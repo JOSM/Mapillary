@@ -13,8 +13,9 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,6 @@ import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -105,33 +105,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private static final int IMG_MARKER_RADIUS = 7;
   /** The radius of the circular sector that indicates the camera angle */
   private static final int CA_INDICATOR_RADIUS = 15;
-  /** The angle of the circular sector that indicates the camera angle */
-  private static final int CA_INDICATOR_ANGLE = 40;
   /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
-  private static final int TRAFFIC_SIGN_SIZE = 6;
-  /** A third of the height of the sign, for easier calculations */
-  private static final double TRAFFIC_SIGN_HEIGHT_3RD = Math.sqrt(
-    Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)) / 3;
+  private static final int TRAFFIC_SIGN_SIZE = ImageProvider.ImageSizes.MAP.getAdjustedWidth();
   /** The range to paint the full detection image at */
   private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
-  /** A shape to avoid many calculations */
-  private static final Ellipse2D.Double IMAGE_CIRCLE = new Ellipse2D.Double(0, 0, 2 * IMG_MARKER_RADIUS,
-    2 * IMG_MARKER_RADIUS);
 
-  /** The default sprite for a Mapillary image */
-  public static final ImageIcon DEFAULT_SPRITE = ImageProvider.get("mapillary_sprite_source/package_ui", "regular-0",
-    ImageProvider.ImageSizes.MAPMAX);
-  /** The sprite to use for the active Mapillary sequence */
-  public static final ImageIcon ACTIVE_SEQUENCE_SPRITE = ImageProvider.get("mapillary_sprite_source/package_ui",
-    "active-ca-0", ImageProvider.ImageSizes.MAPMAX);
-  /** The sprite to use for the currently selected image */
-  public static final ImageIcon SELECTED_IMAGE = ImageProvider.get("mapillary_sprite_source/package_ui", "cur-ca-0",
-    ImageProvider.ImageSizes.MAPMAX);
   /** The sprite to use to indicate that there are sign detections in the image */
-  private static final Image YIELD_SIGN = new ImageProvider("mapillary_sprite_source/package_signs",
-    "regulatory--yield--g1")
-      .setMaxSize(TRAFFIC_SIGN_SIZE).get()
-      .getImage();
+  private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection")
+    .setMaxSize(TRAFFIC_SIGN_SIZE).get()
+    .getImage();
 
   private static class DataSetSourceListener implements DataSourceListener {
     @Override
@@ -159,6 +141,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
   private static AlphaComposite fadeComposite = AlphaComposite
     .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+  private static Point2D standardImageCentroid = null;
 
   private MapillaryLayer() {
     super(I18n.tr("Mapillary Images"));
@@ -445,38 +428,40 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setComposite(fadeComposite);
     }
     // Determine colors
-    final Color markerC;
     final Color directionC;
+    final Image i;
     if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
-      markerC = img.paintHighlightedColour();
+      i = img.getSelectedImage();
       directionC = img.paintHighlightedAngleColour();
     } else if (selectedImg != null && selectedImg.getSequence() != null
       && selectedImg.getSequence().equals(img.getSequence())) {
-      markerC = img.paintSelectedColour();
       directionC = img.paintSelectedAngleColour();
+      i = img.getActiveSequenceImage();
     } else {
-      markerC = img.paintUnselectedColour();
+      i = img.getDefaultImage();
       directionC = img.paintUnselectedAngleColour();
     }
-
     // Paint direction indicator
     g.setColor(directionC);
     if (img.isPanorama()) {
+      Composite currentComposit = g.getComposite();
+      g.setComposite(fadeComposite);
       g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
         2 * CA_INDICATOR_RADIUS);
-    } else {
-      g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
-        2 * CA_INDICATOR_RADIUS,
-        (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);
+      g.setComposite(currentComposit);
     }
-    // Paint image marker
-    g.setColor(markerC);
-    g.setPaint(markerC);
-    synchronized (IMAGE_CIRCLE) {
-      IMAGE_CIRCLE.x = (double) p.x - IMG_MARKER_RADIUS;
-      IMAGE_CIRCLE.y = (double) p.y - IMG_MARKER_RADIUS;
-      g.fill(IMAGE_CIRCLE);
-    }
+
+    double angle = Math.toRadians(img.getMovingCa());
+    AffineTransform backup = g.getTransform();
+    Point2D originalCentroid = getOriginalCentroid(i);
+    AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+    move.translate(-originalCentroid.getX(), -originalCentroid.getY());
+    Point2D.Double d2 = new Point2D.Double(p.x + originalCentroid.getX(), p.y + originalCentroid.getY());
+    move.transform(d2, d2);
+    g.setTransform(move);
+
+    g.drawImage(i, p.x, p.y, null);
+    g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
@@ -491,6 +476,17 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         null);
     }
     g.setComposite(composite);
+  }
+
+  private static Point2D getOriginalCentroid(Image i) {
+    if (standardImageCentroid == null) {
+      int width = i.getWidth(null);
+      int height = i.getHeight(null);
+      double originalCentroidX = width / 2d;
+      double originalCentroidY = 2 * height / 3d;
+      standardImageCentroid = new Point2D.Double(originalCentroidX, originalCentroidY);
+    }
+    return standardImageCentroid;
   }
 
   @Override
