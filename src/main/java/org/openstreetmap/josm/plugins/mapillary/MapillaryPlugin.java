@@ -12,6 +12,7 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MainMenu;
@@ -116,9 +117,11 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MainMenu.add(menu.imagerySubMenu, mapObjectLayerAction, false);
     destroyables.add(mapObjectLayerAction);
 
-    MapPointObjectLayerAction mapPointObjectLayerAction = new MapPointObjectLayerAction();
-    MainMenu.add(menu.imagerySubMenu, mapPointObjectLayerAction, false);
-    destroyables.add(mapPointObjectLayerAction);
+    if (ExpertToggleAction.isExpert() && Boolean.TRUE.equals(MapillaryProperties.DEVELOPER_BROKEN.get())) {
+      MapPointObjectLayerAction mapPointObjectLayerAction = new MapPointObjectLayerAction();
+      MainMenu.add(menu.imagerySubMenu, mapPointObjectLayerAction, false);
+      destroyables.add(mapPointObjectLayerAction);
+    }
 
     mapFrameInitialized(null, MainApplication.getMap());
   }
@@ -153,8 +156,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       newFrame.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       toggleDialog.add(MapillaryFilterDialog.getInstance());
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
-      newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
-      toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
+      if (ExpertToggleAction.isExpert() && Boolean.TRUE.equals(MapillaryProperties.DEVELOPER_BROKEN.get())) {
+        newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
+        toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
+      }
       mapillaryDownloadAction.setEnabled(true);
       // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert filter
       // dialog is added.
