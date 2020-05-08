@@ -106,7 +106,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /** The radius of the circular sector that indicates the camera angle */
   private static final int CA_INDICATOR_RADIUS = 15;
   /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
-  private static final int TRAFFIC_SIGN_SIZE = ImageProvider.ImageSizes.MAP.getAdjustedWidth();
+  private static final int TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
   /** The range to paint the full detection image at */
   private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
 
@@ -472,7 +472,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
     if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
-      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 2d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 2d),
+      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
         null);
     }
     g.setComposite(composite);
