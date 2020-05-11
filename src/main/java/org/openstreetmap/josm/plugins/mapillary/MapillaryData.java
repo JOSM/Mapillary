@@ -22,7 +22,7 @@ import javax.json.JsonException;
 import javax.json.JsonReader;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs3.access.CacheAccess;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;

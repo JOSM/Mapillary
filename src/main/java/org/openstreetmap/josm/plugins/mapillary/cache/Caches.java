@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-import org.apache.commons.jcs.access.CacheAccess;
-import org.apache.commons.jcs.engine.behavior.IElementAttributes;
+import org.apache.commons.jcs3.access.CacheAccess;
+import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 
 import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
