@@ -6,13 +6,15 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
-import org.apache.commons.jcs.access.CacheAccess;
-import org.apache.commons.jcs.engine.behavior.IElementAttributes;
+import org.apache.commons.jcs3.access.CacheAccess;
+import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 
 import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 public final class Caches {
 
@@ -50,11 +52,18 @@ public final class Caches {
 
   public static class ImageCache {
     private static ImageCache instance;
-    private final CacheAccess<String, BufferedImageCacheEntry> cache =
-        JCSCacheManager.getCache("mapillary", 10, 10000, getCacheDirectory().getPath());
+    private final CacheAccess<String, BufferedImageCacheEntry> thumbnailCache = JCSCacheManager.getCache(
+      "mapillary:thumbnailImage",
+      Math.max(3 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get(), 10), 10000, getCacheDirectory().getPath());
+    private final CacheAccess<String, BufferedImageCacheEntry> imageCache = JCSCacheManager
+      .getCache("mapillary:fullImage", Math.max(2 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get() + 4, 10), 10_000,
+        getCacheDirectory().getPath());
 
-    public CacheAccess<String, BufferedImageCacheEntry> getCache() {
-      return cache;
+    public CacheAccess<String, BufferedImageCacheEntry> getCache(Type type) {
+      if (Type.THUMBNAIL.equals(type)) {
+        return thumbnailCache;
+      }
+      return imageCache;
     }
 
     public static ImageCache getInstance() {
@@ -99,8 +108,8 @@ public final class Caches {
 
     @Override
     protected CacheAccess<String, UserProfile> createNewCache() {
-      CacheAccess<String, UserProfile> cache =
-        JCSCacheManager.getCache("userProfile", 100, 1000, getCacheDirectory().getPath());
+      CacheAccess<String, UserProfile> cache = JCSCacheManager.getCache("userProfile", 100, 1000,
+        getCacheDirectory().getPath());
       IElementAttributes atts = cache.getDefaultElementAttributes();
       atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
       cache.setDefaultElementAttributes(atts);

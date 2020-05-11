@@ -76,6 +76,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
@@ -96,14 +97,15 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -119,14 +121,18 @@ public class PointObjectLayer extends AbstractOsmDataLayer
   implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener, DataSelectionListener,
   MapillaryDataListener, LayerChangeListener {
   private final Collection<DataSource> dataSources = new HashSet<>();
-  private static final String NAME = marktr("Mapillary Point Objects");
+  private static final String[] NAMES = new String[] { marktr("Mapillary point features"),
+    marktr("Mapillary traffic signs") };
   private static final int HATCHED_SIZE = 15;
-  private final DataSet followDataSet;
+  public final DataSet followDataSet;
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
   private final DataSet data;
   private final DataSetListenerAdapter dataSetListenerAdapter;
+  /** If true, display traffic signs. If false, display point objects. */
+  private final boolean trafficSigns;
+  private static final String DETECTIONS = "detections";
 
   /**
    * a texture for non-downloaded area Copied from OsmDataLayer
@@ -139,10 +145,10 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
-        .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
-        .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
+      .filter(MapCSSStyleSource.class::isInstance).map(MapCSSStyleSource.class::cast)
+      .filter(s -> PAINT_STYLE_SOURCE.equals(s.url)).collect(Collectors.toList());
     mapcss = styles.isEmpty() ? new MapCSSStyleSource(PAINT_STYLE_SOURCE, "Mapillary", "Mapillary Point Objects")
-        : styles.get(0);
+      : styles.get(0);
     return mapcss;
   }
 
@@ -162,15 +168,17 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     hatched = bi;
   }
 
-  public PointObjectLayer() {
-    super(NAME);
+  public PointObjectLayer(boolean trafficSigns) {
+    super(tr(trafficSigns ? NAMES[1] : NAMES[0]));
+    String name = trafficSigns ? NAMES[1] : NAMES[0];
+    this.trafficSigns = trafficSigns;
     data = new DataSet();
     data.setUploadPolicy(UploadPolicy.BLOCKED);
     data.setDownloadPolicy(DownloadPolicy.BLOCKED);
     data.lock();
     followDataSet = MainApplication.getLayerManager().getActiveDataSet();
     followDataSet.addDataSourceListener(this);
-    this.setName(NAME + ": " + MainApplication.getLayerManager().getActiveDataLayer().getName());
+    this.setName(name + ": " + followDataSet.getName());
     MainApplication.worker.execute(() -> followDataSet.getDataSources().forEach(this::getData));
     getMapCSSStyle();
     if (!MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
@@ -184,7 +192,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
     tableModelListener.tableChanged(null);
 
-    this.data.setName(NAME);
+    this.data.setName(name);
     this.dataSetListenerAdapter = new DataSetListenerAdapter(this);
     data.addDataSetListener(dataSetListenerAdapter);
     data.addDataSetListener(MultipolygonCache.getInstance());
@@ -198,18 +206,26 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
   @Override
   public void dataSourceChange(DataSourceChangeEvent event) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.execute(() -> event.getAdded().forEach(this::getData));
-    } else {
-      event.getAdded().forEach(this::getData);
+    if (MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA
+      .equals(MapillaryDownloader.DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()))) {
+      if (SwingUtilities.isEventDispatchThread()) {
+        MainApplication.worker.execute(() -> event.getAdded().forEach(this::getData));
+      } else {
+        event.getAdded().forEach(this::getData);
+      }
     }
+    String name = trafficSigns ? NAMES[1] : NAMES[0];
+    this.setName(name + ": " + followDataSet.getName());
+    this.data.setName(name);
   }
 
   public void getData(DataSource dataSource) {
     if (dataSources.add(dataSource)) {
       try {
         data.unlock();
-        realGetData(dataSource.bounds, data);
+        Bounds bound = dataSource.bounds;
+        realGetData(data,
+          trafficSigns ? MapillaryURL.APIv3.searchMapObjects(bound) : MapillaryURL.APIv3.searchMapPointObjects(bound));
         data.addDataSource(dataSource);
       } catch (IllegalDataException | IOException e) {
         Logging.error(e);
@@ -221,26 +237,26 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     }
   }
 
-  private static void realGetData(Bounds bound, DataSet data) throws IllegalDataException, IOException {
-    URL url = MapillaryURL.APIv3.searchMapPointObjects(bound);
+  private static void realGetData(DataSet data, URL url) throws IllegalDataException, IOException {
+    URL currentUrl = url;
     do {
-      HttpClient client = HttpClient.create(url);
+      HttpClient client = HttpClient.create(currentUrl);
       if (MapillaryUser.getUsername() != null)
         OAuthUtils.addAuthenticationHeader(client);
       client.connect();
       try (InputStream stream = client.getResponse().getContent()) {
         DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
-        ds.allPrimitives().parallelStream().filter(p -> p.hasKey("detections"))
-            .forEach(p -> p.put("detections_num", Integer.toString(p.get("detections").split("detection_key").length)));
+        ds.allPrimitives().parallelStream().filter(p -> p.hasKey(DETECTIONS))
+          .forEach(p -> p.put("detections_num", Integer.toString(p.get(DETECTIONS).split("detection_key").length)));
         ds.allPrimitives().forEach(p -> p.setModified(false));
         synchronized (PointObjectLayer.class) {
           data.mergeFrom(ds);
         }
-        url = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+        currentUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
       } finally {
         client.disconnect();
       }
-    } while (url != null);
+    } while (currentUrl != null);
   }
 
   @Override
@@ -278,7 +294,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       // paint remainder
       MapViewPoint anchor = mv.getState().getPointFor(new EastNorth(0, 0));
       Rectangle2D anchorRect = new Rectangle2D.Double(anchor.getInView().getX() % HATCHED_SIZE,
-          anchor.getInView().getY() % HATCHED_SIZE, HATCHED_SIZE, HATCHED_SIZE);
+        anchor.getInView().getY() % HATCHED_SIZE, HATCHED_SIZE, HATCHED_SIZE);
       if (hatched != null) {
         g.setPaint(new TexturePaint(hatched, anchorRect));
       }
@@ -292,22 +308,22 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
     AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, inactive);
     painter.enableSlowOperations(mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
-        || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get());
+      || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get());
     painter.render(data, virtual, box);
     MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
   }
 
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
-    OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey("detections")).findFirst()
-        .orElse(null);
+    OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey(DETECTIONS)).findFirst()
+      .orElse(null);
     if (prim != null && MapillaryLayer.hasInstance()) {
-      List<Map<String, String>> detections = parseDetections(prim.get("detections"));
+      List<Map<String, String>> detections = parseDetections(prim.get(DETECTIONS));
 
       MapillaryData mapillaryData = MapillaryLayer.getInstance().getData();
       MapillaryImage selectedImage = mapillaryData.getSelectedImage() instanceof MapillaryImage
-          ? (MapillaryImage) mapillaryData.getSelectedImage()
-          : null;
+        ? (MapillaryImage) mapillaryData.getSelectedImage()
+        : null;
       List<MapillaryImage> images = getImagesForDetections(mapillaryData, detections);
       MapillaryImage toSelect = images.isEmpty() ? null : images.get(0);
       boolean inDetections = selectedImage != null && images.contains(selectedImage);
@@ -334,7 +350,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
   public static List<Map<String, String>> parseDetections(String detectionsValue) {
     List<Map<String, String>> detections = new ArrayList<>();
     try (JsonParser parser = Json
-        .createParser(new ByteArrayInputStream(detectionsValue.getBytes(StandardCharsets.UTF_8)))) {
+      .createParser(new ByteArrayInputStream(detectionsValue.getBytes(StandardCharsets.UTF_8)))) {
       while (parser.hasNext() && JsonParser.Event.START_ARRAY == parser.next()) {
         JsonArray array = parser.getArray();
         for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
@@ -357,18 +373,19 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
   private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
     return detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key")).map(data::getImage)
-        .collect(Collectors.toList());
+      .collect(Collectors.toList());
   }
 
   @Override
   public Action[] getMenuEntries() {
     List<Action> actions = new ArrayList<>();
     actions.addAll(Arrays.asList(LayerListDialog.getInstance().createActivateLayerAction(this),
-        LayerListDialog.getInstance().createShowHideLayerAction(),
-        LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
-        LayerListDialog.getInstance().createMergeLayerAction(this)));
+      LayerListDialog.getInstance().createShowHideLayerAction(),
+      LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
+      LayerListDialog.getInstance().createMergeLayerAction(this)));
     actions.addAll(Arrays.asList(SeparatorLayerAction.INSTANCE, new RenameLayerAction(getAssociatedFile(), this),
-        SeparatorLayerAction.INSTANCE, new RequestDataAction(followDataSet)));
+      SeparatorLayerAction.INSTANCE, new RequestDataAction(followDataSet), SeparatorLayerAction.INSTANCE,
+      new LayerListPopup.InfoAction(this)));
     return actions.toArray(new Action[0]);
   }
 
@@ -387,7 +404,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       String bbox = "?bbox="
         + String.join(";",
           data.getDataSourceBounds().stream()
-          .map(Bounds::toBBox).map(b -> b.toStringCSV(",")).collect(Collectors.toList()));
+            .map(Bounds::toBBox).map(b -> b.toStringCSV(",")).collect(Collectors.toList()));
       OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request" + bbox);
     }
   }
@@ -433,8 +450,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     int rels = counter.relations - counter.deletedRelations;
 
     StringBuilder tooltip = new StringBuilder("<html>").append(trn("{0} node", "{0} nodes", nodes, nodes))
-        .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
-        .append(trn("{0} relation", "{0} relations", rels, rels));
+      .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
+      .append(trn("{0} relation", "{0} relations", rels, rels));
 
     File f = getAssociatedFile();
     if (f != null) {
@@ -450,16 +467,22 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       DataSet fromData = ((PointObjectLayer) from).getDataSet();
       final PleaseWaitProgressMonitor monitor = new PleaseWaitProgressMonitor(tr("Merging layers"));
       monitor.setCancelable(false);
-      fromData.unlock();
-      data.mergeFrom(fromData, monitor);
-      fromData.lock();
-      monitor.close();
+      try {
+        fromData.unlock();
+        data.unlock();
+        data.mergeFrom(fromData, monitor);
+      } finally {
+        fromData.lock();
+        data.lock();
+        monitor.close();
+        ((PointObjectLayer) from).destroy();
+      }
     }
   }
 
   @Override
   public boolean isMergable(Layer other) {
-    return other instanceof PointObjectLayer;
+    return other instanceof PointObjectLayer && this.trafficSigns == ((PointObjectLayer) other).trafficSigns;
   }
 
   @Override
@@ -476,11 +499,11 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
     p.add(new JLabel(tr("{0} consists of:", getName())), GBC.eol());
     p.add(new JLabel(nodeText, ImageProvider.get("data", "node"), SwingConstants.HORIZONTAL),
-        GBC.eop().insets(15, 0, 0, 0));
+      GBC.eop().insets(15, 0, 0, 0));
     p.add(new JLabel(wayText, ImageProvider.get("data", "way"), SwingConstants.HORIZONTAL),
-        GBC.eop().insets(15, 0, 0, 0));
+      GBC.eop().insets(15, 0, 0, 0));
     p.add(new JLabel(relationText, ImageProvider.get("data", "relation"), SwingConstants.HORIZONTAL),
-        GBC.eop().insets(15, 0, 0, 0));
+      GBC.eop().insets(15, 0, 0, 0));
 
     return p;
   }
@@ -582,10 +605,23 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     if (newImage instanceof MapillaryImage) {
       MapillaryImage image = (MapillaryImage) newImage;
       Collection<INode> nodes = image.getDetections().parallelStream().map(ImageDetection::getKey).flatMap(
-        d -> data.getNodes().parallelStream().filter(n -> n.hasKey("detections") && n.get("detections").contains(d))
-      ).collect(Collectors.toList());
+        d -> data.getNodes().parallelStream().filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
+        .collect(Collectors.toList());
       data.setSelected(nodes);
     }
   }
 
+  /**
+   * @return true if this layer has traffic signs
+   */
+  public boolean hasTrafficSigns() {
+    return this.trafficSigns;
+  }
+
+  /**
+   * @return true if this layer has point features (does not include traffic signs)
+   */
+  public boolean hasPointFeatures() {
+    return !this.trafficSigns;
+  }
 }

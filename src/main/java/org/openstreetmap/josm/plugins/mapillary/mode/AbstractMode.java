@@ -4,16 +4,17 @@ package org.openstreetmap.josm.plugins.mapillary.mode;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
 import java.util.Calendar;
 
+import org.openstreetmap.josm.actions.mapmode.MapMode;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Superclass for all the mode of the {@link MapillaryLayer}.
@@ -21,16 +22,36 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
  * @author nokutu
  * @see MapillaryLayer
  */
-public abstract class AbstractMode extends MouseAdapter implements
+public abstract class AbstractMode extends MapMode implements
   ZoomChangeListener {
+
+  /**
+   * Constructor for mapmodes with a menu (no shortcut will be registered)
+   *
+   * @param name     the action's text
+   * @param iconName icon filename in {@code mapmode} directory
+   * @param tooltip  a longer description of the action that will be displayed in the tooltip.
+   * @param cursor   cursor displayed when map mode is active
+   */
+  public AbstractMode(String name, String iconName, String tooltip, Cursor cursor) {
+    super(name, iconName, tooltip, cursor);
+  }
+
+  /**
+   * Constructor for mapmodes without a menu
+   *
+   * @param name     the action's text
+   * @param iconName icon filename in {@code mapmode} directory
+   * @param tooltip  a longer description of the action that will be displayed in the tooltip.
+   * @param shortcut a ready-created shortcut object or null if you don't want a shortcut.
+   * @param cursor   cursor displayed when map mode is active
+   */
+  public AbstractMode(String name, String iconName, String tooltip, Shortcut shortcut, Cursor cursor) {
+    super(name, iconName, tooltip, shortcut, cursor);
+  }
 
   private static final int DOWNLOAD_COOLDOWN = 2000;
   private static SemiautomaticThread semiautomaticThread = new SemiautomaticThread();
-
-  /**
-   * Cursor that should become active when this mode is activated.
-   */
-  public int cursor = Cursor.DEFAULT_CURSOR;
 
   protected MapillaryAbstractImage getClosest(Point clickPoint) {
     double snapDistance = 10;
@@ -52,8 +73,8 @@ public abstract class AbstractMode extends MouseAdapter implements
   /**
    * Paint the dataset using the engine set.
    *
-   * @param g {@link Graphics2D} used for painting
-   * @param mv The object that can translate GeoPoints to screen coordinates.
+   * @param g   {@link Graphics2D} used for painting
+   * @param mv  The object that can translate GeoPoints to screen coordinates.
    * @param box Area where painting is going to be performed
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);

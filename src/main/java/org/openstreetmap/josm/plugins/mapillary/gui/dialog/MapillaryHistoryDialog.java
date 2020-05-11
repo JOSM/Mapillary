@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.gui;
+package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -31,6 +31,8 @@ import javax.swing.tree.TreeSelectionModel;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageTreeCellRenderer;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecordListener;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;

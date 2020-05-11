@@ -15,13 +15,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonReader;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs3.access.CacheAccess;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;
@@ -31,8 +32,10 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
@@ -85,7 +88,7 @@ public class MapillaryData implements Data {
   /**
    * Creates a new object and adds the initial set of listeners.
    */
-  protected MapillaryData() {
+  public MapillaryData() {
     this.selectedImage = null;
     this.dataSources = new ArrayList<>();
 
@@ -352,25 +355,35 @@ public class MapillaryData implements Data {
    */
   public static boolean inCurrentlySelectedDetection(MapillaryImage image) {
     return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
-        .map(PointObjectLayer::getDataSet).flatMap(d -> d.getSelected().parallelStream())
-        .filter(p -> p.hasTag("detections"))
-        .flatMap(p -> PointObjectLayer.parseDetections(p.get("detections")).parallelStream())
-        .anyMatch(p -> image.getKey().equals(p.getOrDefault("image_key", null)));
+      .map(PointObjectLayer::getDataSet).flatMap(d -> d.getSelected().parallelStream())
+      .filter(p -> p.hasTag("detections"))
+      .flatMap(p -> PointObjectLayer.parseDetections(p.get("detections")).parallelStream())
+      .anyMatch(p -> image.getKey().equals(p.getOrDefault("image_key", null)));
   }
 
   /**
    * Downloads surrounding images of this mapillary image in background threads
+   *
    * @param mapillaryImage the image for which the surrounding images should be downloaded
    */
   private static void downloadSurroundingImages(MapillaryImage mapillaryImage) {
     MainApplication.worker.execute(() -> {
       final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
-      CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance().getCache();
+      CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance()
+        .getCache(MapillaryCache.Type.FULL_IMAGE);
 
       MapillaryAbstractImage nextImage = mapillaryImage.next();
       MapillaryAbstractImage prevImage = mapillaryImage.previous();
 
+      long freeMemory = Runtime.getRuntime().freeMemory();
+      // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
+      long estimatedImageSize = Stream.of(MapillaryCache.Type.values()).mapToLong(v -> v.getHeight() * v.getWidth() * 4)
+        .sum();
+
       for (int i = 0; i < prefetchCount; i++) {
+        if (freeMemory - estimatedImageSize < 0) {
+          break; // It doesn't make sense to try to cache images that won't be kept.
+        }
         if (nextImage != null) {
           if ((nextImage instanceof MapillaryImage) &&
             (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
@@ -384,6 +397,11 @@ public class MapillaryData implements Data {
             CacheUtils.downloadPicture((MapillaryImage) prevImage);
           }
           prevImage = prevImage.previous();
+        }
+        imageCache.getCacheControl();
+        imageCache.get(mapillaryImage.getKey());
+        if (mapillaryImage.next() != null) {
+          imageCache.get(mapillaryImage.getKey());
         }
       }
     });

@@ -41,8 +41,7 @@ public final class OrganizationRecord {
 
   private OrganizationRecord(
     String avatar, String description, String key, String name, String niceName, boolean privateRepository,
-    boolean publicRepository
-  ) {
+    boolean publicRepository) {
     this.avatar = createAvatarIcon(avatar, key);
     this.description = description;
     this.key = key;
@@ -57,10 +56,9 @@ public final class OrganizationRecord {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
     } else if (organizationKey != null && !organizationKey.isEmpty()) {
       try (CachedFile possibleAvatar = new CachedFile(
-        MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey).toExternalForm()
-      )) {
+        MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey).toExternalForm())) {
         OAuthUtils.addAuthenticationHeader(possibleAvatar);
-        return ImageProvider.get(possibleAvatar.getFile().getAbsolutePath(), ImageProvider.ImageSizes.DEFAULT);
+        return ImageProvider.getIfAvailable(possibleAvatar.getFile().getAbsolutePath());
       } catch (IOException e) {
         Logging.error(e);
       }
@@ -70,12 +68,10 @@ public final class OrganizationRecord {
 
   public static OrganizationRecord getOrganization(
     String avatar, String description, String key, String name, String niceName, boolean privateRepository,
-    boolean publicRepository
-  ) {
+    boolean publicRepository) {
     boolean newRecord = !CACHE.containsKey(key);
     OrganizationRecord record = CACHE.computeIfAbsent(
-      key, k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository)
-    );
+      key, k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository));
     // TODO remove when getNewOrganization is done, and make vars final again
     record.avatar = createAvatarIcon(avatar, key);
     record.description = description;

@@ -13,8 +13,8 @@ import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog.LayerListModel;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
@@ -37,19 +37,19 @@ public class MapillaryDownloadAction extends JosmAction {
    */
   public MapillaryDownloadAction() {
     super(
-        tr("Mapillary"),
-        new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Open Mapillary layer"),
-        SHORTCUT,
-        false,
-        "mapillaryDownload",
-        false
-    );
+      tr("Mapillary"),
+      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr("Open Mapillary layer"),
+      SHORTCUT,
+      false,
+      "mapillaryDownload",
+      false);
   }
 
   @Override
   public void actionPerformed(ActionEvent ae) {
-    if (!MapillaryLayer.hasInstance() || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+    if ((!MapillaryLayer.hasInstance()
+      || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance()))) {
       LayerListModel model = LayerListDialog.getInstance().getModel();
       model.getLayerManager().addLayer(MapillaryLayer.getInstance());
       List<Layer> selected = model.getSelectedLayers();

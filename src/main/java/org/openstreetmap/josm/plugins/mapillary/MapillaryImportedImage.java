@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,12 +53,14 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @param datetimeOriginal The date the picture was taken.
    * @param pano             The property to indicate whether image is panorama or not.
    */
-  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final String datetimeOriginal) {
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano,
+    final String datetimeOriginal) {
     this(latLon, ca, file, pano, parseTimestampElseCurrentTime(datetimeOriginal));
   }
 
   /**
    * Constructs a new image from an image entry of a {@link GeoImageLayer}.
+   *
    * @param geoImage the {@link ImageEntry}, from which the corresponding fields are taken
    * @return new image
    */
@@ -81,7 +84,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     boolean pano = false;
     try (FileInputStream fis = new FileInputStream(geoImage.getFile())) {
       pano = ImageMetaDataUtil.isPanorama(fis);
-    } catch(IOException ex) {
+    } catch (IOException ex) {
       Logging.trace(ex);
     }
     return new MapillaryImportedImage(coord, ca, geoImage.getFile(), pano, time);
@@ -99,7 +102,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     }
   }
 
-  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano, final long capturedAt) {
+  public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano,
+    final long capturedAt) {
     super(latLon, ca, pano);
     super.setFile(file);
     this.capturedAt = capturedAt;
@@ -157,18 +161,8 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public Color paintHighlightedColour() {
-    return MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED;
-  }
-
-  @Override
   public Color paintHighlightedAngleColour() {
     return MapillaryColorScheme.SEQ_IMPORTED_HIGHLIGHTED_CA;
-  }
-
-  @Override
-  public Color paintSelectedColour() {
-    return MapillaryColorScheme.SEQ_IMPORTED_SELECTED;
   }
 
   @Override
@@ -177,13 +171,13 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public Color paintUnselectedColour() {
-    return MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
+  public Color paintUnselectedAngleColour() {
+    return MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA;
   }
 
   @Override
-  public Color paintUnselectedAngleColour() {
-    return MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED_CA;
+  public Image getDefaultImage() {
+    return DEFAULT_SPRITE.getImage();
   }
 
 }

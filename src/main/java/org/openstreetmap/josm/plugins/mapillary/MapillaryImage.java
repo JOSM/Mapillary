@@ -2,16 +2,21 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.gpx.GpxImageEntry;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -34,6 +39,10 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * If {@code true}, the image is private. If {@code false}, then it is public.
    */
   private final boolean privateImage;
+
+  /** The default sprite for a private Mapillary image */
+  public static final ImageIcon PRIVATE_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "private-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
 
   /**
    * Main constructor of the class MapillaryImage
@@ -125,18 +134,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public Color paintHighlightedColour() {
-    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_HIGHLIGHTED : MapillaryColorScheme.SEQ_HIGHLIGHTED;
-  }
-
-  @Override
   public Color paintHighlightedAngleColour() {
     return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_HIGHLIGHTED_CA : MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
-  }
-
-  @Override
-  public Color paintSelectedColour() {
-    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_SELECTED : MapillaryColorScheme.SEQ_SELECTED;
   }
 
   @Override
@@ -145,12 +144,12 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public Color paintUnselectedColour() {
-    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED;
+  public Color paintUnselectedAngleColour() {
+    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_UNSELECTED_CA : MapillaryColorScheme.SEQ_UNSELECTED_CA;
   }
 
   @Override
-  public Color paintUnselectedAngleColour() {
-    return privateImage ? MapillaryColorScheme.SEQ_PRIVATE_UNSELECTED_CA : MapillaryColorScheme.SEQ_UNSELECTED_CA;
+  public Image getDefaultImage() {
+    return privateImage ? PRIVATE_SPRITE.getImage() : DEFAULT_SPRITE.getImage();
   }
 }

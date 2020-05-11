@@ -14,8 +14,10 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -24,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -38,13 +41,13 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -125,22 +128,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
     panel.add(mapillaryImageDisplay);
-    JPanel buttons = new JPanel();
-    buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
-    Dimension buttonDim = new Dimension(52, 34);
-    JButton toggleSigns = new JButton(showSignDetectionsAction);
-    JButton toggleDetections = new JButton(showDetectionOutlinesAction);
-    showDetectionOutlinesAction.setButton(toggleDetections);
-    showSignDetectionsAction.setButton(toggleSigns);
-    toggleDetections.setPreferredSize(buttonDim);
-    toggleSigns.setPreferredSize(buttonDim);
-    // Mac OS X won't show background colors if buttons aren't opaque.
-    toggleSigns.setOpaque(true);
-    toggleDetections.setOpaque(true);
-    buttons.add(toggleSigns);
-    buttons.add(toggleDetections);
-    panel.add(buttons);
-
     setMode(MODE.NORMAL);
   }
 
@@ -150,8 +137,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     public JosmButtonAction(
       String name, ImageProvider icon, String tooltip, Shortcut shortcut, boolean registerInToolbar, String toolbarId,
-      boolean installAdapters
-    ) {
+      boolean installAdapters) {
       super(name, icon, tooltip, shortcut, registerInToolbar, toolbarId, installAdapters);
     }
 
@@ -181,8 +167,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     ShowDetectionOutlinesAction() {
       super(
-        null, new ImageProvider("mapillary_sprite_source/package_objects", "object--traffic-light--other"), tr("Toggle detection outlines"), Shortcut.registerShortcut("mapillary:showdetections", tr("Mapillary: toggle detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false
-      );
+        null, new ImageProvider("mapillary_sprite_source/package_objects", "object--traffic-light--other"),
+        tr("Toggle detection outlines"), Shortcut.registerShortcut("mapillary:showdetections",
+          tr("Mapillary: toggle detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+        false, null, false);
     }
 
     @Override
@@ -202,8 +190,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     ShowSignDetectionsAction() {
       super(
-        null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"), tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections", tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false
-      );
+        null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
+        tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections",
+          tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+        false, null, false);
     }
 
     @Override
@@ -244,16 +234,32 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    * Sets a new mode for the dialog.
    *
    * @param mode
-   *          The mode to be set. Must not be {@code null}.
+   *             The mode to be set. Must not be {@code null}.
    */
   public void setMode(MODE mode) {
+    Dimension buttonDim = new Dimension(52, 34);
+    SideButton toggleSigns = new SideButton(showSignDetectionsAction);
+    showSignDetectionsAction.setButton(toggleSigns);
+    toggleSigns.setPreferredSize(buttonDim);
+    // Mac OS X won't show background colors if buttons aren't opaque.
+    toggleSigns.setOpaque(true);
+    SideButton toggleDetections = null;
+    if (ExpertToggleAction.isExpert() && Boolean.TRUE.equals(MapillaryProperties.DEVELOPER_BROKEN.get())) {
+      toggleDetections = new SideButton(showDetectionOutlinesAction);
+      showDetectionOutlinesAction.setButton(toggleDetections);
+      toggleDetections.setPreferredSize(buttonDim);
+      toggleDetections.setOpaque(true);
+    }
     switch (mode) {
     case WALK:
-      createLayout(this.panel, Arrays.asList(playButton, pauseButton, stopButton));
+      createLayout(this.panel, Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton)
+        .filter(Objects::nonNull).collect(Collectors.toList()));
       break;
     case NORMAL:
     default:
-      createLayout(this.panel, Arrays.asList(blueButton, previousButton, nextButton, redButton));
+      createLayout(this.panel,
+        Stream.of(blueButton, previousButton, toggleSigns, toggleDetections, nextButton, redButton)
+          .filter(Objects::nonNull).collect(Collectors.toList()));
       break;
     }
     disableAllButtons();
@@ -334,7 +340,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           this.thumbnailCache.cancelOutstandingTasks();
         this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
         try {
-          this.thumbnailCache.submit(this, false);
+          if (this.thumbnailCache.get() == null)
+            this.thumbnailCache.submit(this, false);
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -345,7 +352,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             this.imageCache.cancelOutstandingTasks();
           this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
           try {
-            this.imageCache.submit(this, false);
+            if (this.imageCache.get() == null)
+              this.imageCache.submit(this, false);
           } catch (IOException e) {
             Logging.error(e);
           }

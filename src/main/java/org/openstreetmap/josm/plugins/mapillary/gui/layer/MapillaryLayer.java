@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -7,13 +7,15 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,10 +60,20 @@ import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.mappaint.Range;
+import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryChangesetDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
@@ -76,6 +88,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -92,14 +105,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private static final int IMG_MARKER_RADIUS = 7;
   /** The radius of the circular sector that indicates the camera angle */
   private static final int CA_INDICATOR_RADIUS = 15;
-  /** The angle of the circular sector that indicates the camera angle */
-  private static final int CA_INDICATOR_ANGLE = 40;
   /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
-  private static final int TRAFFIC_SIGN_SIZE = 6;
-  /** A third of the height of the sign, for easier calculations */
-  private static final double TRAFFIC_SIGN_HEIGHT_3RD = Math.sqrt(
-    Math.pow(TRAFFIC_SIGN_SIZE, 2) - Math.pow(TRAFFIC_SIGN_SIZE / 2d, 2)
-  ) / 3;
+  private static final int TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
+  /** The range to paint the full detection image at */
+  private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
+
+  /** The sprite to use to indicate that there are sign detections in the image */
+  private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection")
+    .setMaxSize(TRAFFIC_SIGN_SIZE).get()
+    .getImage();
 
   private static class DataSetSourceListener implements DataSourceListener {
     @Override
@@ -127,6 +141,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
   private static AlphaComposite fadeComposite = AlphaComposite
     .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+  private static Point2D standardImageCentroid = null;
 
   private MapillaryLayer() {
     super(I18n.tr("Mapillary Images"));
@@ -187,11 +202,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (this.mode != null && mv != null) {
       mv.removeMouseListener(this.mode);
       mv.removeMouseMotionListener(this.mode);
+      this.mode.exitMode();
       NavigatableComponent.removeZoomChangeListener(this.mode);
     }
     this.mode = mode;
     if (mode != null && mv != null) {
-      mv.setNewCursor(mode.cursor, this);
+      mode.enterMode();
       mv.addMouseListener(mode);
       mv.addMouseMotionListener(mode);
       NavigatableComponent.addZoomChangeListener(mode);
@@ -231,7 +247,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
-  //@Override Depends upon #18801 for the override
+  // @Override Depends upon #18801 for the override
   public MapillaryData getData() {
     return this.data;
   }
@@ -250,6 +266,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * Returns the n-nearest image, for n=1 the nearest one is returned, for n=2 the second nearest one and so on.
    * The "n-nearest image" is picked from the list of one image from every sequence that is nearest to the currently
    * selected image, excluding the sequence to which the selected image belongs.
+   *
    * @param n the index for picking from the list of "nearest images", beginning from 1
    * @return the n-nearest image to the currently selected image, or null if no such image can be found
    */
@@ -296,7 +313,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
       }
     } catch (IllegalArgumentException e) {
-      // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has already been removed.
+      // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has
+      // already been removed.
     }
     UploadAction.unregisterUploadHook(this);
     super.destroy();
@@ -364,16 +382,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     for (MapillarySequence seq : getData().getSequences()) {
       if (seq.getImages().contains(selectedImage)) {
         g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED
-          );
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
       } else if (selectedImage == null) {
         g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
-          );
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
       } else {
         g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED
-          );
+          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
         g.setComposite(fadeComposite);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
@@ -391,7 +406,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   /**
    * Draws an image marker onto the given Graphics context.
-   * @param g the Graphics context
+   *
+   * @param g   the Graphics context
    * @param img the image to be drawn onto the Graphics context
    */
   private void drawImageMarker(final Graphics2D g, final MapillaryAbstractImage img) {
@@ -400,35 +416,52 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       return;
     }
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
+    if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
+      && !getData().getMultiSelectedImages().contains(img)
+      && (selectedImg == null || !img.getSequence().equals(selectedImg.getSequence()))) {
+      Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
+      return;
+    }
     final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
       g.setComposite(fadeComposite);
     }
     // Determine colors
-    final Color markerC;
     final Color directionC;
+    final Image i;
     if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
-      markerC = img.paintHighlightedColour();
+      i = img.getSelectedImage();
       directionC = img.paintHighlightedAngleColour();
-    } else if (selectedImg != null && selectedImg.getSequence() != null && selectedImg.getSequence().equals(img.getSequence())) {
-      markerC = img.paintSelectedColour();
+    } else if (selectedImg != null && selectedImg.getSequence() != null
+      && selectedImg.getSequence().equals(img.getSequence())) {
       directionC = img.paintSelectedAngleColour();
+      i = img.getActiveSequenceImage();
     } else {
-      markerC = img.paintUnselectedColour();
+      i = img.getDefaultImage();
       directionC = img.paintUnselectedAngleColour();
     }
-
     // Paint direction indicator
     g.setColor(directionC);
     if (img.isPanorama()) {
-      g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS);
-    } else {
-      g.fillArc(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS, (int) (90 - img.getMovingCa() - CA_INDICATOR_ANGLE / 2d), CA_INDICATOR_ANGLE);
+      Composite currentComposit = g.getComposite();
+      g.setComposite(fadeComposite);
+      g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
+        2 * CA_INDICATOR_RADIUS);
+      g.setComposite(currentComposit);
     }
-    // Paint image marker
-    g.setColor(markerC);
-    g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+
+    double angle = Math.toRadians(img.getMovingCa());
+    AffineTransform backup = g.getTransform();
+    Point2D originalCentroid = getOriginalCentroid(i);
+    AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+    move.translate(-originalCentroid.getX(), -originalCentroid.getY());
+    Point2D.Double d2 = new Point2D.Double(p.x + originalCentroid.getX(), p.y + originalCentroid.getY());
+    move.transform(d2, d2);
+    g.setTransform(move);
+
+    g.drawImage(i, p.x, p.y, null);
+    g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
@@ -439,18 +472,21 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
 
     if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
-      Path2D trafficSign = new Path2D.Double();
-      trafficSign.moveTo(p.getX() - TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.lineTo(p.getX() + TRAFFIC_SIGN_SIZE / 2d, p.getY() - TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.lineTo(p.getX(), p.getY() + 2 * TRAFFIC_SIGN_HEIGHT_3RD);
-      trafficSign.closePath();
-      g.setColor(Color.WHITE);
-      g.fill(trafficSign);
-      g.setStroke(new BasicStroke(1));
-      g.setColor(Color.RED);
-      g.draw(trafficSign);
+      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
+        null);
     }
     g.setComposite(composite);
+  }
+
+  private static Point2D getOriginalCentroid(Image i) {
+    if (standardImageCentroid == null) {
+      int width = i.getWidth(null);
+      int height = i.getHeight(null);
+      double originalCentroidX = width / 2d;
+      double originalCentroidY = 2 * height / 3d;
+      standardImageCentroid = new Point2D.Double(originalCentroidX, originalCentroidY);
+    }
+    return standardImageCentroid;
   }
 
   @Override
@@ -477,8 +513,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
                                                     // 0)
           List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
           if (primitives.parallelStream().filter(searchPrimitives::contains)
-              .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
-              .anyMatch(d -> d < maxDistance)) {
+            .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
+            .anyMatch(d -> d < maxDistance)) {
             isApplicable = true;
             break;
           }
@@ -506,7 +542,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Action[] getMenuEntries() {
-    return new Action[]{
+    return new Action[] {
       LayerListDialog.getInstance().createShowHideLayerAction(),
       LayerListDialog.getInstance().createDeleteLayerAction(),
       new LayerListPopup.InfoAction(this)
@@ -515,7 +551,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public Object getInfoComponent() {
-    IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size()).summaryStatistics();
+    IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size())
+      .summaryStatistics();
     final long numImported = getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count();
     final long numDownloaded = getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count();
     final int numTotal = getData().getImages().size();
@@ -528,8 +565,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         getData().getSequences().size(),
         seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
         seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(),
-        seqSizeStats.getAverage()
-      ))
+        seqSizeStats.getAverage()))
       .append("\n\n")
       .append(I18n.trn("{0} imported image", "{0} imported images", numImported, numImported))
       .append("\n+ ")
@@ -591,7 +627,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     // Don't care about this
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
    */
   @Override
@@ -599,8 +636,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     updateNearestImages();
   }
 
-  /* (non-Javadoc)
-   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.
+   * mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
@@ -612,7 +652,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * different from the specified target image.
    *
    * @param target the image for which you want to find the nearest other images
-   * @param limit the maximum length of the returned array
+   * @param limit  the maximum length of the returned array
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
@@ -625,10 +665,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         return resImg.orElse(null);
       })
       .filter(img -> // Filters out images too far away from target
-        img != null &&
-        img.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
-          < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get()
-       )
+      img != null &&
+        img.getMovingLatLon()
+          .greatCircleDistance(target.getMovingLatLon()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
       .sorted(new NearestImgToTargetComparator(target))
       .limit(limit)
       .toArray(MapillaryImage[]::new);
@@ -684,15 +723,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     public NearestImgToTargetComparator(MapillaryAbstractImage target) {
       this.target = target;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
     public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
       return (int) Math.signum(
         img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -
-        img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
-      );
+          img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()));
     }
   }
 

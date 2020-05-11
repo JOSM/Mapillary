@@ -16,6 +16,8 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 public final class MapillaryProperties {
   public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty("mapillary.delete-after-upload", true);
   public static final BooleanProperty DEVELOPER = new BooleanProperty("mapillary.developer", false);
+  /** This is for WIP items that may be very broken */
+  public static final BooleanProperty DEVELOPER_BROKEN = new BooleanProperty("mapillary.developer.broken", false);
   public static final BooleanProperty DISPLAY_HOUR = new BooleanProperty("mapillary.display-hour", true);
   public static final BooleanProperty HOVER_ENABLED = new BooleanProperty("mapillary.hover-enabled", true);
   public static final BooleanProperty DARK_MODE = new BooleanProperty("mapillary.dark-mode", true);

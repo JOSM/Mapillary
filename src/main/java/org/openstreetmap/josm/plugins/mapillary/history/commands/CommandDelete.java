@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
 /**
  * Command used to delete a set of images.

@@ -16,12 +16,14 @@ import org.apache.commons.imaging.common.RationalNumber;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Tests the {@link UploadUtils} class.
@@ -30,6 +32,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  * @see UploadUtils
  */
 public class UploadTest {
+  @Rule
+  public JOSMTestRules rule = new JOSMTestRules().projection();
 
   /**
    * Tests the {@link UploadUtils#updateFile(MapillaryImportedImage)} method.

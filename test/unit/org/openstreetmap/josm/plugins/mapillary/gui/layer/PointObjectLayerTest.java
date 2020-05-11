@@ -9,7 +9,6 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,32 +19,43 @@ import javax.swing.Icon;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapObjectLayer.STATUS;
+import org.openstreetmap.josm.data.DataSource;
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
-public class MapObjectLayerTest {
+public class PointObjectLayerTest {
 
   @Rule
   public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
 
   @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().timeout(20000);
+  public JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
 
   private static String oldBaseUrl;
+
+  private PointObjectLayer instance;
+  private OsmDataLayer osm;
 
   @Before
   public void setUp() {
     oldBaseUrl = TestUtil.getApiV3BaseUrl();
     TestUtil.setAPIv3BaseUrl("http://localhost:" + wmRule.port() + "/");
+    osm = new OsmDataLayer(new DataSet(), "Test", null);
+    MainApplication.getLayerManager().addLayer(osm);
+    instance = new PointObjectLayer(false);
   }
 
   @After
@@ -54,13 +64,7 @@ public class MapObjectLayerTest {
   }
 
   @Test
-  public void testStatusEnum() {
-    assertEquals(4, STATUS.values().length);
-    assertEquals(STATUS.COMPLETE, STATUS.valueOf("COMPLETE"));
-  }
-
-  @Test
-  public void testScheduleDownload() throws InterruptedException, URISyntaxException, IOException {
+  public void testScheduleDownload() throws URISyntaxException, IOException {
     stubFor(
       get(urlMatching("/map_features\\?.+"))
         .withQueryParam("client_id", new EqualToPattern("UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"))
@@ -69,41 +73,36 @@ public class MapObjectLayerTest {
           aResponse()
             .withStatus(200)
             .withBody(Files.readAllBytes(
-              Paths.get(MapObjectLayerTest.class.getResource("/api/v3/responses/searchMapObjects.json").toURI())
-            ))
-        )
-    );
+              Paths.get(PointObjectLayerTest.class.getResource("/api/v3/responses/searchMapObjects.json").toURI())))));
 
-    MapObjectLayer.getInstance().scheduleDownload(new Bounds(1,1,1,1));
+    osm.getDataSet().addDataSource(new DataSource(new Bounds(1, 1, 1, 1), "1/1/1/1"));
     // Wait for a maximum of 5 sec for a result
-    for (int i = 0; MapObjectLayer.getInstance().getObjectCount() <= 0 && i < 50; i++) {
-      Thread.sleep(100);
-    }
-    assertEquals(1, MapObjectLayer.getInstance().getObjectCount());
+    Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> instance.getDataSet().allPrimitives().size() != 0);
+    assertEquals(1, instance.getDataSet().allPrimitives().size());
   }
 
   @Test
   public void testGetIcon() {
-    Icon i = MapObjectLayer.getInstance().getIcon();
+    Icon i = instance.getIcon();
     assertEquals(ImageSizes.LAYER.getAdjustedHeight(), i.getIconHeight());
     assertEquals(ImageSizes.LAYER.getAdjustedWidth(), i.getIconWidth());
   }
 
   @Test
   public void testMergable() {
-    assertFalse(MapObjectLayer.getInstance().isMergable(null));
-    MapObjectLayer.getInstance().mergeFrom(null);
+    assertFalse(instance.isMergable(null));
+    instance.mergeFrom(null);
   }
 
   @Test
   public void testInfoComponent() {
-    assertNull(MapObjectLayer.getInstance().getInfoComponent());
+    assertNotNull(instance.getInfoComponent());
   }
 
   @Test
   public void testTrivialMethods() {
-    assertNotNull(MapObjectLayer.getInstance().getToolTipText());
-    MapObjectLayer.getInstance().visitBoundingBox(null);
-    assertEquals(0, MapObjectLayer.getInstance().getMenuEntries().length);
+    assertNotNull(instance.getToolTipText());
+    instance.visitBoundingBox(null);
+    assertEquals(11, instance.getMenuEntries().length);
   }
 }
