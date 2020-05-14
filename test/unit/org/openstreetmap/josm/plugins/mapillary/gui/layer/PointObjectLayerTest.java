@@ -74,6 +74,9 @@ public class PointObjectLayerTest {
             .withStatus(200)
             .withBody(Files.readAllBytes(
               Paths.get(PointObjectLayerTest.class.getResource("/api/v3/responses/searchMapObjects.json").toURI())))));
+    stubFor(get(urlMatching("/me\\?.+"))
+      .withQueryParam("client_id", new EqualToPattern("UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"))
+      .willReturn(aResponse().withStatus(404)));
 
     osm.getDataSet().addDataSource(new DataSource(new Bounds(1, 1, 1, 1), "1/1/1/1"));
     // Wait for a maximum of 5 sec for a result

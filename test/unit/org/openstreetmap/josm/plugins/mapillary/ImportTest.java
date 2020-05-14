@@ -10,10 +10,12 @@ import java.io.IOException;
 
 import javax.imageio.IIOException;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Test the importation of images.
@@ -22,6 +24,12 @@ import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
  *
  */
 public class ImportTest {
+  /*
+   * Preferences are required to avoid an NPE in OsmPrimitive#compileDirectionKeys
+   * Due to ordering, this also affected many other tests.
+   */
+  @Rule
+  public JOSMTestRules rule = new JOSMTestRules().preferences();
 
   /**
    * Test the importation of images in PNG format.
