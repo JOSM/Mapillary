@@ -10,7 +10,7 @@ import java.net.URL
 
 plugins {
   id("org.sonarqube") version "2.8"
-  id("org.openstreetmap.josm") version "0.6.5"
+  id("org.openstreetmap.josm") version "0.7.0"
   id("com.github.ben-manes.versions") version "0.28.0"
   id("com.github.spotbugs") version "4.0.1"
   id("net.ltgt.errorprone") version "1.1.1"
