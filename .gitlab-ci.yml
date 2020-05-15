@@ -2,7 +2,6 @@ image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:late
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  OPENJFX_CLASSPATH: "/usr/share/java/openjfx/jre/lib/ext/jfxrt.jar"
 
 include:
   - template: Dependency-Scanning.gitlab-ci.yml

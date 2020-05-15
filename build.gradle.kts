@@ -12,9 +12,9 @@ plugins {
   id("org.sonarqube") version "2.8"
   id("org.openstreetmap.josm") version "0.7.0"
   id("com.github.ben-manes.versions") version "0.28.0"
-  id("com.github.spotbugs") version "4.0.1"
+  id("com.github.spotbugs") version "4.2.0"
   id("net.ltgt.errorprone") version "1.1.1"
-  id("com.diffplug.gradle.spotless") version "3.28.1"
+  id("com.diffplug.gradle.spotless") version "3.30.0"
 
   eclipse
   jacoco
@@ -55,35 +55,17 @@ tasks.withType(JavaCompile::class).configureEach {
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
-base.archivesBaseName = "Mapillary"
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.26.0")
-  val junitVersion = "5.6.0"
+  testImplementation("com.github.tomakehurst:wiremock:2.26.3")
+  val junitVersion = "5.6.2"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
   testImplementation("org.awaitility:awaitility:4.0.2")
   testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
-  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.0")
-}
-
-val openjfxClasspath = System.getenv("OPENJFX_CLASSPATH")
-
-if (openjfxClasspath != null) {
-  sourceSets.forEach {
-    it.compileClasspath += files(openjfxClasspath)
-    it.runtimeClasspath += files(openjfxClasspath)
-  }
-  // This is currently needed for the `compileJava_*Josm` tasks, should eventually be handled by the gradle-josm-plugin
-  tasks.withType(JavaCompile::class) {
-    if (classpath == null) {
-      classpath = files(openjfxClasspath)
-    } else {
-      classpath += files(openjfxClasspath)
-    }
-  }
+  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.3")
 }
 
 sourceSets {
@@ -130,6 +112,7 @@ spotless {
 }
 
 josm {
+  pluginName = "Mapillary"
   debugPort = 7051
   manifest {
     // See https://floscher.gitlab.io/gradle-josm-plugin/kdoc/latest/gradle-josm-plugin/org.openstreetmap.josm.gradle.plugin.config/-josm-manifest/old-version-download-link.html
@@ -214,7 +197,7 @@ project.afterEvaluate {
 
 // Spotbugs config
 spotbugs {
-  toolVersion.set("4.0.0")
+  toolVersion.set("4.0.3")
   ignoreFailures.set(true)
   effort.set(Effort.MAX)
   reportLevel.set(Confidence.LOW)
@@ -241,7 +224,7 @@ tasks.build.get().dependsOn(jacocoTestReport)
 
 // PMD config
 pmd {
-  toolVersion = "6.21.0"
+  toolVersion = "6.23.0"
   isIgnoreFailures = true
   ruleSetConfig = resources.text.fromFile("$projectDir/config/pmd/ruleset.xml")
   ruleSets = listOf()
