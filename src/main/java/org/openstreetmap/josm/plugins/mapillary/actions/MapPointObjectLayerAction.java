@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
@@ -22,15 +21,14 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class MapPointObjectLayerAction extends JosmAction {
   private static final long serialVersionUID = 5780337309290262545L;
-  private static final String ACTION_NAME = marktr("Mapillary point features layer");
-  private static final String TOOLTIP = marktr(
-    "Displays the layer displaying the map point objects detected by Mapillary");
 
   public MapPointObjectLayerAction() {
     super(
-      tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP),
-      Shortcut.registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED,
-        Shortcut.NONE),
+      tr("Mapillary point features layer"), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT),
+      tr("Displays the layer displaying the map point objects detected by Mapillary"),
+      // @formatter:off
+      Shortcut.registerShortcut("mapillary:pointFeaturesLayer", tr("Mapillary point features layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      // @formatter:on
       false, "mapillary:pointFeaturesLayer", false);
   }
 

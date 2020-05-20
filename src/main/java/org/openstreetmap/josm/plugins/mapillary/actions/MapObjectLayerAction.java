@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -10,25 +12,21 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
 
 public class MapObjectLayerAction extends JosmAction {
   private static final long serialVersionUID = -8388752916891634738L;
-  private static final String ACTION_NAME = I18n.marktr("Mapillary traffic signs layer");
-  private static final String DESCRIPTION = I18n
-    .marktr("Displays the layer displaying the traffic sign objects detected by Mapillary");
 
   public MapObjectLayerAction() {
     super(
-      I18n.tr(ACTION_NAME),
+      tr("Mapillary traffic signs layer"),
       MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT),
-      I18n.tr(DESCRIPTION),
-      Shortcut.registerShortcut("mapillary:trafficSignLayer", ACTION_NAME, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      false,
-      "mapillary:trafficSignLayer",
-      false);
+      tr("Displays the layer displaying the traffic sign objects detected by Mapillary"),
+      // @formatter:off
+      Shortcut.registerShortcut("mapillary:trafficSignLayer", tr("Mapillary traffic signs layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      // @formatter:on
+      false, "mapillary:trafficSignLayer", false);
   }
 
   @Override
