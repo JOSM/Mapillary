@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 
 import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
@@ -121,13 +120,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     if (getFile() != null)
       return ImageIO.read(getFile());
     return null;
-  }
-
-  @Override
-  public int compareTo(GpxImageEntry image) {
-    if (image instanceof MapillaryImportedImage)
-      return getFile().compareTo(((MapillaryImportedImage) image).getFile());
-    return hashCode() - image.hashCode();
   }
 
   @Override

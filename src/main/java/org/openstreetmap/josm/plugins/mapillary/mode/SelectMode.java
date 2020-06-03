@@ -58,8 +58,7 @@ public class SelectMode extends AbstractMode {
     }
     final MapillaryAbstractImage closest = getClosest(e.getPoint());
     if (closest == null) {
-      if (e.getButton() == MouseEvent.BUTTON1
-        && e.getClickCount() == Config.getPref().getInt("mapillary.image.deselect.click.count", 3)
+      if (e.getClickCount() == Config.getPref().getInt("mapillary.image.deselect.click.count", 3)
         && MapillaryLayer.hasInstance()) { // Triple click
         MapillaryLayer.getInstance().getData().setSelectedImage(null);
       }
@@ -68,7 +67,7 @@ public class SelectMode extends AbstractMode {
 
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
-        if (e.getButton() == MouseEvent.BUTTON1 && MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
+        if (MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
       } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) { // ctrl + click

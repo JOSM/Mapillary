@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
@@ -96,14 +95,6 @@ public class MapillaryImage extends MapillaryAbstractImage {
   @Override
   public boolean equals(Object object) {
     return object instanceof MapillaryImage && this.key.equals(((MapillaryImage) object).getKey());
-  }
-
-  @Override
-  public int compareTo(GpxImageEntry image) {
-    if (image instanceof MapillaryImage) {
-      return this.key.compareTo(((MapillaryImage) image).getKey());
-    }
-    return hashCode() - image.hashCode();
   }
 
   @Override

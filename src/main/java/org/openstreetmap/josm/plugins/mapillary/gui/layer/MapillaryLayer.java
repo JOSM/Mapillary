@@ -193,7 +193,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Changes the mode the the given one.
+   * Changes the mode to the given one.
    *
    * @param mode The mode that is going to be activated.
    */
@@ -711,9 +711,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (hasInstance())
-        MapillaryRecord.getInstance().addCommand(
-          new CommandDelete(getData().getMultiSelectedImages()));
+      if (hasInstance() && MapillaryProperties.DEVELOPER.get()
+        && !getData().getMultiSelectedImages().isEmpty())
+          MapillaryRecord.getInstance().addCommand(
+            new CommandDelete(getData().getMultiSelectedImages()));
     }
   }
 

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Color;
 import java.awt.Image;
+import static java.lang.Integer.compare;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -279,6 +280,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public void setCapturedAt(final long capturedAt) {
     this.capturedAt = capturedAt;
+    this.setExifTime(new Date(capturedAt));
   }
 
   public void setLatLon(final LatLon latLon) {
@@ -353,5 +355,18 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public Image getActiveSequenceImage() {
     return ACTIVE_SEQUENCE_SPRITE.getImage();
+  }
+
+  @Override
+  public int compareTo(GpxImageEntry image) {
+    if (this.getSequence() == ((MapillaryAbstractImage) image).getSequence()) {
+      MapillarySequence seq = this.getSequence();
+      return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
+    }
+    int compareTime = super.compareTo(image);
+    if (compareTime == 0) {// both have same time
+      return hashCode() - image.hashCode();
+    }
+    return compareTime;
   }
 }

@@ -37,10 +37,12 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void execute() {
-    for (MapillaryAbstractImage img : this.images) {
-      this.changesHash.put(img, img.getSequence().getImages().indexOf(img));
-      MapillaryLayer.getInstance().getData().remove(img);
-    }
+      this.images.forEach((img) -> {
+          this.changesHash.put(img, img.getSequence().getImages().indexOf(img));
+      });
+      this.images.forEach((img) -> {
+          MapillaryLayer.getInstance().getData().remove(img);
+      });
   }
 
   @Override
