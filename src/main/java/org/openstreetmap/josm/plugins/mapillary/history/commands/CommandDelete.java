@@ -37,7 +37,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void execute() {
-      this.images.forEach((img) -> {// Get index first
+      this.images.forEach((img) -> {// Get index first so order is preserved
           this.changesHash.put(img, img.getSequence().getImages().indexOf(img));
       });
       this.images.forEach((img) -> {// Now Delete
