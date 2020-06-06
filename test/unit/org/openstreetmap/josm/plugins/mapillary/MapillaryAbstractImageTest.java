@@ -1,11 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.TimeZone;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +24,14 @@ public class MapillaryAbstractImageTest {
   @Rule
   public JOSMTestRules rules = new MapillaryTestRules();
 
+  private MapillaryAbstractImage img1;
+  private MapillaryAbstractImage img2;
+  private MapillaryAbstractImage img3;
+  private MapillaryAbstractImage img4;
+  private MapillaryAbstractImage img5;
+  final MapillarySequence seq = new MapillarySequence();
+  private final Map<MapillaryAbstractImage, Integer> changesHash = new HashMap<>();
+
   /**
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.
    */
@@ -27,23 +39,23 @@ public class MapillaryAbstractImageTest {
   public void testGetDate() {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0745"));
 
-    MapillaryAbstractImage mai = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
-    mai.setCapturedAt(1_044_087_606_000L); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
+    MapillaryAbstractImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
+    img.setCapturedAt(1_044_087_606_000L); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
 
 
-    testGetDate("01/02/2003", mai, false, false, false);
-    testGetDate("01/02/2003", mai, false, false, true);
-    testGetDate("01/02/2003 - 4:05:06 PM (GMT+07:45)", mai, false, true, false);
-    testGetDate("01/02/2003 - 16:05:06 (GMT+07:45)", mai, false, true, true);
-    testGetDate("2003-02-01", mai, true, false, false);
-    testGetDate("2003-02-01", mai, true, false, true);
-    testGetDate("2003-02-01 - 4:05:06 PM (GMT+07:45)", mai, true, true, false);
-    testGetDate("2003-02-01 - 16:05:06 (GMT+07:45)", mai, true, true, true);
+    testGetDate("01/02/2003", img, false, false, false);
+    testGetDate("01/02/2003", img, false, false, true);
+    testGetDate("01/02/2003 - 4:05:06 PM (GMT+07:45)", img, false, true, false);
+    testGetDate("01/02/2003 - 16:05:06 (GMT+07:45)", img, false, true, true);
+    testGetDate("2003-02-01", img, true, false, false);
+    testGetDate("2003-02-01", img, true, false, true);
+    testGetDate("2003-02-01 - 4:05:06 PM (GMT+07:45)", img, true, true, false);
+    testGetDate("2003-02-01 - 16:05:06 (GMT+07:45)", img, true, true, true);
 
     TimeZone.setDefault(TimeZone.getTimeZone("GMT-0123"));
-    mai.setCapturedAt(1_440_671_802_000L); // in Timezone GMT-0123 this is Thursday, August 27, 2015 09:13:42 AM
+    img.setCapturedAt(1_440_671_802_000L); // in Timezone GMT-0123 this is Thursday, August 27, 2015 09:13:42 AM
 
-    testGetDate("27/08/2015 - 09:13:42 (GMT-01:23)", mai, false, true, true);
+    testGetDate("27/08/2015 - 09:13:42 (GMT-01:23)", img, false, true, true);
   }
 
   private static void testGetDate(String expected, MapillaryAbstractImage img,
@@ -70,5 +82,37 @@ public class MapillaryAbstractImageTest {
     img.move(-1e-4, -1e-4);
     img.stopMoving();
     assertFalse(img.isModified());
+  }
+
+  /**
+   * Test method for {@link MapillaryAbstractImage#compareTo()}, .
+   */
+  @Test
+  public void testCompareTo() {
+    img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false, false);
+    img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false, false);
+    img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false, false);
+    img4 = new MapillaryImportedImage(new LatLon(0.4, 0.4), 90, null, false);
+    img5 = new MapillaryImportedImage(new LatLon(0.5, 0.5), 90, null, false);
+    img1.setCapturedAt(1);
+    img2.setCapturedAt(0);
+    img3.setCapturedAt(0);
+    img4.setCapturedAt(1);
+    seq.add(Arrays.asList(img1, img2, img3));
+
+    assertEquals(-1, img1.compareTo(img2));
+    assertEquals(-1, img2.compareTo(img3));
+    assertNotEquals(0, img1.compareTo(img4));
+    assertNotEquals(0, img4.compareTo(img5));
+    assertNotEquals(img4.hashCode(), img1.hashCode());
+    assertNotEquals(img4.hashCode(), img2.hashCode());
+    assertNotEquals(img4.hashCode(), img3.hashCode());
+    assertNotEquals(img4.hashCode(), img5.hashCode());
+    changesHash.put(img1, img1.getSequence().getImages().indexOf(img1));
+    changesHash.put(img2, img2.getSequence().getImages().indexOf(img2));
+    changesHash.put(img3, img3.getSequence().getImages().indexOf(img3));
+    changesHash.put(img4, img4.getSequence().getImages().indexOf(img4));
+    changesHash.put(img5, img5.getSequence().getImages().indexOf(img5));
+    assertEquals(5,changesHash.size());
   }
 }
