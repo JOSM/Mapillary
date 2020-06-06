@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 import java.awt.Color;
 import java.awt.Image;
 import static java.lang.Integer.compare;
+import static java.lang.Long.compare;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -192,7 +193,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   public MapillarySequence getSequence() {
     synchronized (this) {
       if (sequence == null) {
-        sequence = new MapillarySequence();
+        sequence = new MapillarySequence(null, null, null, this.getCapturedAt());
         sequence.add(this);
       }
       return this.sequence;
@@ -359,14 +360,19 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
 
   @Override
   public int compareTo(GpxImageEntry image) {
-    if (this.getSequence() == ((MapillaryAbstractImage) image).getSequence()) {
+    MapillaryAbstractImage img = (MapillaryAbstractImage) image;
+    if (this.getSequence() == img.getSequence()) {
       MapillarySequence seq = this.getSequence();
       return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
     }
-    int compareTime = super.compareTo(image);
-    if (compareTime == 0) {// both have same time
-      return hashCode() - image.hashCode();
+    int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());
+    if (compareSeq == 0) {
+      int compareTime = super.compareTo(image);
+      if (compareTime == 0) {// both have same time
+        return hashCode() - image.hashCode();
+      }
+      return compareTime;
     }
-    return compareTime;
+    return compareSeq;
   }
 }

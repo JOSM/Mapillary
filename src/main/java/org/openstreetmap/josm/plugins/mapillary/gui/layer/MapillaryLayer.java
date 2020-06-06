@@ -711,8 +711,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (hasInstance() && MapillaryProperties.DEVELOPER.get()
-        && !getData().getMultiSelectedImages().isEmpty())
+      if (hasInstance() && !getData().getMultiSelectedImages().isEmpty())
           MapillaryRecord.getInstance().addCommand(
             new CommandDelete(getData().getMultiSelectedImages()));
     }

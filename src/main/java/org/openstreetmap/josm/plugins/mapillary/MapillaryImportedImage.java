@@ -105,7 +105,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
     final long capturedAt) {
     super(latLon, ca, pano);
     super.setFile(file);
-    this.capturedAt = capturedAt;
+    setCapturedAt(capturedAt);
   }
 
   /**
@@ -126,8 +126,16 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((getFile() == null) ? 0 : getFile().hashCode());
+    result = prime * result + ((getFile() == null) ? super.hashCode() : getFile().hashCode());
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+      "Image[filename=%s,lat=%f,lon=%f,ca=%f,capturedAt=%d]",
+      getFile() == null ? "null" : getFile().getName(), latLon.lat(), latLon.lon(), ca, capturedAt
+    );
   }
 
   @Override
