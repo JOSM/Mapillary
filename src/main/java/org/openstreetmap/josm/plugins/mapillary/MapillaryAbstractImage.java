@@ -360,19 +360,21 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
 
   @Override
   public int compareTo(GpxImageEntry image) {
-    MapillaryAbstractImage img = (MapillaryAbstractImage) image;
-    if (this.getSequence() == img.getSequence()) {
-      MapillarySequence seq = this.getSequence();
-      return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
-    }
-    int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());
-    if (compareSeq == 0) {
-      int compareTime = super.compareTo(image);
-      if (compareTime == 0) {// both have same time
-        return hashCode() - image.hashCode();
+    if(image instanceof MapillaryAbstractImage) {
+      MapillaryAbstractImage img = (MapillaryAbstractImage) image;
+      if (this.getSequence() == img.getSequence()) {
+       MapillarySequence seq = this.getSequence();
+        return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
       }
-      return compareTime;
+      int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());
+      if (compareSeq != 0) {
+        return compareSeq;
+      }
     }
-    return compareSeq;
+    int compareTime = super.compareTo(image);
+    if (compareTime == 0) {// both have same time
+      return hashCode() - image.hashCode();
+    }
+    return compareTime;
   }
 }
