@@ -37,6 +37,7 @@ public class CommandDeleteTest {
   private MapillaryAbstractImage img5;
   private CommandDelete delete;
   final MapillarySequence seq = new MapillarySequence();
+  private MapillarySequence orignalSeq;
 
   /**
    * Creates a sample {@link MapillaryData} objects, 5 {@link MapillaryImage}
@@ -55,6 +56,7 @@ public class CommandDeleteTest {
     img3.setCapturedAt(0);
     img4.setCapturedAt(1);
     seq.add(Arrays.asList(img1, img2, img3));
+    orignalSeq = seq; 
     data = MapillaryLayer.getInstance().getData();
     data.addAll(Arrays.asList(img1, img2, img3, img4, img5));
     delete = new CommandDelete(new ConcurrentSkipListSet<>(Arrays.asList(img1,img3,img4,img5)));
@@ -80,10 +82,10 @@ public class CommandDeleteTest {
   @Test
   public void undoTest() {
     assertEquals(1, data.getImages().size());
-    System.out.println(delete.images);
     delete.undo();
-    System.out.println(seq.getImages().size());
     assertEquals(5, data.getImages().size());
-
+    for(MapillaryAbstractImage img : seq.getImages()) {
+      assertEquals(orignalSeq.getImages().indexOf(img), seq.getImages().indexOf(img));
+    }
   }
 }
