@@ -123,14 +123,6 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((getFile() == null) ? super.hashCode() : getFile().hashCode());
-    return result;
-  }
-
-  @Override
   public String toString() {
     return String.format(
       "Image[filename=%s,lat=%f,lon=%f,ca=%f,capturedAt=%d]",
