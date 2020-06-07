@@ -206,7 +206,9 @@ public class MapillaryData implements Data {
     if (getMultiSelectedImages().contains(image)) {
       setSelectedImage(null);
     }
-    image.getSequence().remove(image);
+    if (image.getSequence() != null) {
+      image.getSequence().remove(image);
+    }
     MapillaryLayer.invalidateInstance();
   }
 
