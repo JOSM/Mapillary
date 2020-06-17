@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -170,7 +171,7 @@ public final class MapillaryDownloader {
     if (mv != null) {
       final Bounds view = mv.getRealBounds();
       if (!isAreaTooBig(view.getArea()) && !isViewDownloaded(view)) {
-        MapillaryLayer.getInstance().getData().getBounds().add(view);
+        MapillaryLayer.getInstance().getData().addDataSource(new DataSource(view, view.toString()));
         getImages(view);
       }
     }
@@ -178,21 +179,12 @@ public final class MapillaryDownloader {
 
   private static boolean isViewDownloaded(Bounds view) {
     int n = 15;
-    boolean[][] inside = new boolean[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
-        if (isInBounds(new LatLon(view.getMinLat()
-          + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
-          view.getMinLon() + (view.getMaxLon() - view.getMinLon())
-            * ((double) j / n)))) {
-          inside[i][j] = true;
-        }
-      }
-    }
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        if (!inside[i][j])
+        if (!isInBounds(new LatLon(view.getMinLat() + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
+          view.getMinLon() + (view.getMaxLon() - view.getMinLon()) * ((double) j / n)))) {
           return false;
+        }
       }
     }
     return true;
@@ -220,8 +212,9 @@ public final class MapillaryDownloader {
     if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum))) {
       return;
     }
-    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
-      MapillaryLayer.getInstance().getData().getBounds().add(bounds);
+    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().
+    filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
+      MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
       MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
     });
   }
