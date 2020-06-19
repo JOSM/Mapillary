@@ -12,6 +12,7 @@ import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
@@ -25,19 +26,19 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
 
   private final MapillaryData data;
 
-  public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds) {
-    super(bounds);
+  public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, ProgressMonitor monitor) {
+    super(bounds, monitor);
     this.data = data;
   }
 
-  public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url) {
-    super(bounds, Collections.singleton(url));
+  public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url, ProgressMonitor monitor) {
+    super(bounds, Collections.singleton(url), monitor);
     this.data = data;
   }
 
   @Override
   public BoundsDownloadRunnable getNextUrl(URL nextUrl) {
-    return new ImageDetailsDownloadRunnable(data, bounds, nextUrl);
+    return new ImageDetailsDownloadRunnable(data, bounds, nextUrl, monitor);
   }
 
   @Override
@@ -51,6 +52,7 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
       JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);
       logConnectionInfo(client, null);
       MapillaryMainDialog.getInstance().updateTitle();
+      completed = Boolean.TRUE;
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     }

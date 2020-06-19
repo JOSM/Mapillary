@@ -24,6 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -69,7 +70,7 @@ public class SequenceDownloadRunnableTest {
   @Test
   public void testRun3() {
     stubFor(get(anyUrl()).willReturn(notFound()));
-    final SequenceDownloadRunnable sdr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), new Bounds(0, 0, 0, 0));
+    final SequenceDownloadRunnable sdr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), new Bounds(0, 0, 0, 0), NullProgressMonitor.INSTANCE);
     sdr.run();
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
     stubFor(get(anyUrl()).willReturn(noContent()));
@@ -107,7 +108,7 @@ public class SequenceDownloadRunnableTest {
       fail(e.getMessage());
     }
 
-    final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds);
+    final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds, NullProgressMonitor.INSTANCE);
     r.run();
     assertEquals(expectedNumImgs, MapillaryLayer.getInstance().getData().getImages().size());
   }

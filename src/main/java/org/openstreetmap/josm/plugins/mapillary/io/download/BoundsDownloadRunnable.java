@@ -15,8 +15,12 @@ import java.util.function.Function;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
+import org.openstreetmap.josm.gui.progress.ChildProgress;
+import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.DownloadProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
@@ -25,26 +29,32 @@ import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
-public abstract class BoundsDownloadRunnable extends RecursiveAction {
+public abstract class BoundsDownloadRunnable extends RecursiveAction  {
   private static final long serialVersionUID = -3097850570397160069L;
   protected final Bounds bounds;
   protected final Collection<URL> urls;
   protected static final int MAXIMUM_URLS = 50;
+  protected final ProgressMonitor monitor;
+  //Checks if this download has been completed before
+  protected boolean completed = Boolean.FALSE;
 
   protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
 
-  public BoundsDownloadRunnable(final Bounds bounds) {
-    this(bounds, null);
+  public BoundsDownloadRunnable(final Bounds bounds, ProgressMonitor monitor) {
+    this(bounds, null, monitor);
   }
 
-  public BoundsDownloadRunnable(final Bounds bounds, Collection<URL> urls) {
+  public BoundsDownloadRunnable(final Bounds bounds, Collection<URL> urls, ProgressMonitor monitor) {
     this.bounds = bounds;
     this.urls = urls == null ? getUrlGenerator().apply(bounds) : urls;
+    this.monitor = monitor;
   }
 
   public void run() {
-    for (URL url : urls) {
-      realRun(url);
+    if (!completed) {
+      for (URL url : urls) {
+       realRun(url);
+      }
     }
   }
 
@@ -59,11 +69,25 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       client.setHeader("Accept-Encoding", null); // compression is broken as of 2020-03-03
       if (MapillaryUser.getUsername() != null)
         OAuthUtils.addAuthenticationHeader(client);
-      client.connect();
-      URL nextURL = APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
+      HttpClient.Response response = client.connect(monitor);
+      if(monitor instanceof ChildProgress) {
+        AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
+        if (parentMonitor instanceof DownloadProgressMonitor) {
+          DownloadProgressMonitor parentDownloadMonitor = (DownloadProgressMonitor) parentMonitor;
+          parentDownloadMonitor.setSize(response.getContentLength());
+        }
+      }
+      URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
       if (nextURL != null)
         ForkJoinTask.getPool().execute(getNextUrl(nextURL));
       run(client);
+      if(monitor instanceof ChildProgress) {
+        AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
+        if (parentMonitor instanceof DownloadProgressMonitor) {
+          DownloadProgressMonitor parentDownloadMonitor = (DownloadProgressMonitor) parentMonitor;
+          parentDownloadMonitor.updateCompleted();
+        }
+      }
     } catch (IOException e) {
       client.disconnect();
       String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
@@ -76,7 +100,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
 
   private static void showNotification(String message) {
     new Notification(message).setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
-      .setDuration(Notification.TIME_LONG).show();
+      .setDuration(Notification.TIME_SHORT).show();
   }
 
   /**

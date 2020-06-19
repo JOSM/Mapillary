@@ -1,19 +1,24 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -52,7 +57,7 @@ public final class MapillaryDownloader {
       for (PRIVATE_IMAGE_DOWNLOAD_MODE val : PRIVATE_IMAGE_DOWNLOAD_MODE.values()) {
         if (val.prefId.equals(prefId))
           return val;
-      }
+        }
       return ALL;
     }
   }
@@ -114,11 +119,11 @@ public final class MapillaryDownloader {
 
   /** Executor that will run the petitions. */
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(
-    3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+          3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
 
   /**
    * Indicates whether the last download request has been rejected because it requested an area that was too big.
-   * Iff true, the last download has been rejected, if false, it was executed.
+   * If true, the last download has been rejected, if false, it was executed.
    */
   private static boolean stoppedDownload;
 
@@ -146,7 +151,13 @@ public final class MapillaryDownloader {
    * @param bounds A {@link Bounds} object containing the area to be downloaded.
    */
   public static void getImages(Bounds bounds) {
-    run(new MapillarySquareDownloadRunnable(bounds));
+    try {
+      run(new MapillarySquareDownloadRunnable(bounds));
+    } catch (RejectedExecutionException e) {
+      new Notification("Download limit reached").setIcon(MapillaryPlugin.LOGO.setSize(ImageProvider.ImageSizes.LARGEICON).get())
+              .setDuration(Notification.TIME_LONG).show();
+      MapillaryLayer.getInstance().getData().removeDataSource(new DataSource(bounds, bounds.toString()));
+    }
   }
 
   /**
@@ -159,7 +170,12 @@ public final class MapillaryDownloader {
   }
 
   private static void run(Runnable t) {
-    executor.execute(t);
+    try {
+      executor.execute(t);
+      MapillaryDownloadDialog.getInstance().downloadInfoChanged();
+    } catch (RejectedExecutionException e) {
+      throw new RejectedExecutionException(e);
+    }
   }
 
   /**
@@ -170,7 +186,7 @@ public final class MapillaryDownloader {
     if (mv != null) {
       final Bounds view = mv.getRealBounds();
       if (!isAreaTooBig(view.getArea()) && !isViewDownloaded(view)) {
-        MapillaryLayer.getInstance().getData().getBounds().add(view);
+        MapillaryLayer.getInstance().getData().addDataSource(new DataSource(view, view.toString()));
         getImages(view);
       }
     }
@@ -178,21 +194,12 @@ public final class MapillaryDownloader {
 
   private static boolean isViewDownloaded(Bounds view) {
     int n = 15;
-    boolean[][] inside = new boolean[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
-        if (isInBounds(new LatLon(view.getMinLat()
-          + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
-          view.getMinLon() + (view.getMaxLon() - view.getMinLon())
-            * ((double) j / n)))) {
-          inside[i][j] = true;
-        }
-      }
-    }
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        if (!inside[i][j])
+        if (!isInBounds(new LatLon(view.getMinLat() + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
+                view.getMinLon() + (view.getMaxLon() - view.getMinLon()) * ((double) j / n)))) {
           return false;
+        }
       }
     }
     return true;
@@ -217,19 +224,23 @@ public final class MapillaryDownloader {
     if (MainApplication.getLayerManager().getEditLayer() == null) {
       return;
     }
-    if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum))) {
+    if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().
+            parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum))) {
       return;
     }
-    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
-      MapillaryLayer.getInstance().getData().getBounds().add(bounds);
-      MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
-    });
+    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().
+            filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)
+            ).forEach(bounds -> {
+              MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
+              MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
+            });
   }
 
   /**
-   * Checks if the area for which Mapillary images should be downloaded is too big. This means that probably lots of
-   * Mapillary images are going to be downloaded, slowing down the program too much. A notification is shown when the
-   * download has stopped or continued.
+   * Checks if the area for which Mapillary images should be downloaded is too
+   * big. This means that probably lots of Mapillary images are going to be
+   * downloaded, slowing down the program too much. A notification is shown when
+   * the download has stopped or continued.
    *
    * @param area The size of the area in LatLon space
    * @return {@code true} if the area is too large
@@ -238,11 +249,9 @@ public final class MapillaryDownloader {
     final boolean tooBig = area > MAX_AREA;
     if (!stoppedDownload && tooBig) {
       new Notification(
-        I18n.tr("The Mapillary layer has stopped downloading images, because the requested area is too big!") + (
-          getMode() == DOWNLOAD_MODE.VISIBLE_AREA
-          ? "\n"+I18n.tr("To solve this problem, you could zoom in and load a smaller area of the map.")
-          : (getMode() == DOWNLOAD_MODE.OSM_AREA ? "\n"+I18n.tr("To solve this problem, you could switch to download mode ''{0}'' and load Mapillary images for a smaller portion of the map.", DOWNLOAD_MODE.MANUAL_ONLY): "")
-        )
+              I18n.tr("The Mapillary layer has stopped downloading images, because the requested area is too big!") + (getMode() == DOWNLOAD_MODE.VISIBLE_AREA
+              ? "\n" + I18n.tr("To solve this problem, you could zoom in and load a smaller area of the map.")
+              : (getMode() == DOWNLOAD_MODE.OSM_AREA ? "\n" + I18n.tr("To solve this problem, you could switch to download mode ''{0}'' and load Mapillary images for a smaller portion of the map.", DOWNLOAD_MODE.MANUAL_ONLY) : ""))
       ).setIcon(MapillaryPlugin.LOGO.get()).setDuration(Notification.TIME_LONG).show();
     }
     if (stoppedDownload && !tooBig) {
@@ -256,13 +265,46 @@ public final class MapillaryDownloader {
    * Stops all running threads.
    */
   public static void stopAll() {
-    executor.shutdownNow();
+    List<Runnable> shutdownTasks = executor.shutdownNow();
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Logging.error(e);
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+            new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+    shutdownTasks.forEach((download) -> {
+      removeDownload((MapillarySquareDownloadRunnable) download);
+    });
+  }
+
+  /** @return No. of downloads which haven't started yet.
+   */
+  public static int getQueuedSize() {
+    return executor.getQueue().size();
+  }
+
+  /** Remove all downloads which haven't started yet*/
+  public static void removeQueued() {
+    executor.getQueue().forEach((download) -> {
+      removeDownload((MapillarySquareDownloadRunnable) download);
+    });
+  }
+
+  /** Remove a download which has not been started yet   */
+  public static void removeDownload(MapillarySquareDownloadRunnable download) {
+    if (executor.remove(download)) {
+      removeHash(download);
+    }
+  }
+
+  /**Remove background hash of download if it was not able to complete   */
+  public static void removeHash(MapillarySquareDownloadRunnable download) {
+    MapillaryLayer.getInstance().getData().removeDataSource(new DataSource(download.getBounds(), download.getBounds().toString()));
+  }
+
+  /** Rerun a failed download.*/
+  public static void reRunDownload(MapillarySquareDownloadRunnable download) {
+    executor.execute(download);
   }
 }

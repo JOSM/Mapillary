@@ -73,6 +73,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
@@ -181,6 +182,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         .put("MapillaryDel", new DeleteImageAction());
 
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
+      getLocationChangeset().addChangesetListener(MapillaryDownloadDialog.getInstance());
     }
     createHatchTexture();
     invalidate();

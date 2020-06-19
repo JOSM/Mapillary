@@ -15,6 +15,7 @@ import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -32,19 +33,19 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
   private final MapillaryData data;
 
-  public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds) {
-    super(bounds);
+  public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds, ProgressMonitor monitor) {
+    super(bounds, monitor);
     this.data = data;
   }
 
-  public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url) {
-    super(bounds, Collections.singleton(url));
+  public DetectionsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url, ProgressMonitor monitor) {
+    super(bounds, Collections.singleton(url), monitor);
     this.data = data;
   }
 
   @Override
   public BoundsDownloadRunnable getNextUrl(URL nextUrl) {
-    return new DetectionsDownloadRunnable(data, bounds, nextUrl);
+    return new DetectionsDownloadRunnable(data, bounds, nextUrl, monitor);
   }
 
   @Override
@@ -76,10 +77,12 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
           MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
         }
       }
+      completed = Boolean.TRUE;
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
+    } finally {
+      MapillaryLayer.invalidateInstance();
     }
-    MapillaryLayer.invalidateInstance();
   }
 
   @Override

@@ -56,7 +56,7 @@ public class CommandDeleteTest {
     img3.setCapturedAt(0);
     img4.setCapturedAt(1);
     seq.add(Arrays.asList(img1, img2, img3));
-    orignalSeq = seq; 
+    orignalSeq = seq;
     data = MapillaryLayer.getInstance().getData();
     data.addAll(Arrays.asList(img1, img2, img3, img4, img5));
     delete = new CommandDelete(new ConcurrentSkipListSet<>(Arrays.asList(img1,img3,img4,img5)));

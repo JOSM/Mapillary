@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
@@ -33,21 +33,21 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Sumbits current changeset to Mapilary.
+ * Submits current changeset to Mapillary.
  */
-public class MapillarySubmitCurrentChangesetAction extends JosmAction {
+public class MapillarySubmitChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
-  private final MapillaryChangesetDialog changesetDialog;
+
+  public static final ImageProvider LOGO = new ImageProvider("mapillary-logo");
 
   /**
    * Main constructor.
-   * @param changesetDialog Mapillary changeset dialog
    */
-  public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
+  public MapillarySubmitChangesetAction() {
     super(
       I18n.tr("Submit changeset"),
-      new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
+      new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.LARGEICON),
       I18n.tr("Submit the current changeset"),
       // CHECKSTYLE.OFF: LineLength
       Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
@@ -56,14 +56,13 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       "mapillarySubmitChangeset",
       false
     );
-    this.changesetDialog = changesetDialog;
     setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent event) {
     new Thread(() -> {
-      changesetDialog.setUploadPending(true);
+      MapillaryDownloadDialog.getInstance().setUploadPending(true);
       String token = MapillaryProperties.ACCESS_TOKEN.get();
       if (token != null && !token.trim().isEmpty()) {
         PluginState.setSubmittingChangeset(true);
@@ -123,7 +122,7 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
       } else {
         PluginState.notLoggedInToMapillaryDialog();
       }
-      changesetDialog.setUploadPending(false);
+      MapillaryDownloadDialog.getInstance().setUploadPending(false);
     }, "Mapillary changeset upload").start();
   }
 }

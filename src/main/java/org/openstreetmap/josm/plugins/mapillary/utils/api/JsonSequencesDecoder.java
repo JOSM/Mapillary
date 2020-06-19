@@ -98,7 +98,7 @@ public final class JsonSequencesDecoder {
   }
 
   /**
-   * Given the JSON object representing the `properties` of a sequence, this method converts you one attribute from the
+   * Given the JSON object representing the `properties` of a sequence, this method converts one attribute from the
    * `coordinateProperties` object to an array of appropriate type.
    *
    * For example this is used to convert the `image_keys` JSON array to a String[] array or the `cas` JSON array to a

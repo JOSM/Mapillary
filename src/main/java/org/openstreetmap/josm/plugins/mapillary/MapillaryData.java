@@ -192,7 +192,15 @@ public class MapillaryData implements Data {
   }
 
   public List<Bounds> getBounds() {
-    return dataSources.stream().map(b -> b.bounds).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+    return getDataSourceBounds();
+  }
+
+  public void addDataSource(DataSource source) {
+    dataSources.add(source);
+  }
+
+  public void removeDataSource(DataSource source) {
+    dataSources.remove(source);
   }
 
   /**

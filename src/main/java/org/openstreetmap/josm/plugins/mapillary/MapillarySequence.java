@@ -60,8 +60,12 @@ public class MapillarySequence {
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.capturedAt = capturedAt;
-    setUser(userKey);
-    setOrganization(organizationKey);
+    if (userKey != null) {
+      setUser(userKey);
+    }
+    if (organizationKey != null) {
+      setOrganization(organizationKey);
+    }
   }
 
   /**
@@ -77,7 +81,8 @@ public class MapillarySequence {
   /**
    * Adds a set of {@link MapillaryAbstractImage} objects to the database.
    *
-   * @param images The set of {@link MapillaryAbstractImage} objects to be added.
+   * @param images The set of {@link MapillaryAbstractImage} objects to be
+   * added.
    */
   public synchronized void add(Collection<? extends MapillaryAbstractImage> images) {
     this.images.addAll(images);
@@ -100,8 +105,7 @@ public class MapillarySequence {
    * object.
    *
    * @return A {@link List} object containing all the
-   * {@link MapillaryAbstractImage} objects that are part of the
-   * sequence.
+   * {@link MapillaryAbstractImage} objects that are part of the sequence.
    */
   public List<MapillaryAbstractImage> getImages() {
     return this.images;
@@ -111,8 +115,7 @@ public class MapillarySequence {
    * Returns the unique identifier of the sequence.
    *
    * @return A {@code String} containing the unique identifier of the sequence.
-   * null means that the sequence has been created locally for imported
-   * images.
+   * null means that the sequence has been created locally for imported images.
    */
   public String getKey() {
     return this.key;
@@ -131,8 +134,8 @@ public class MapillarySequence {
    *
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
    *
-   * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong
-   * the this sequence.
+   * @throws IllegalArgumentException if the given
+   * {@link MapillaryAbstractImage} object doesn't belong the this sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -149,13 +152,13 @@ public class MapillarySequence {
    * Returns the previous {@link MapillaryAbstractImage} in the sequence of a
    * given {@link MapillaryAbstractImage} object.
    *
-   * @param image The {@link MapillaryAbstractImage} object whose previous image is
-   * going to be returned.
+   * @param image The {@link MapillaryAbstractImage} object whose previous image
+   * is going to be returned.
    *
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
    *
-   * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong
-   * the this sequence.
+   * @throws IllegalArgumentException if the given
+   * {@link MapillaryAbstractImage} object doesn't belong the this sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -183,10 +186,10 @@ public class MapillarySequence {
       if (cachedProfile == null) {
         try {
           Caches.UserProfileCache.getInstance().put(
-            userKey,
-            JsonUserProfileDecoder.decodeUserProfile(
-              Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
-            )
+                  userKey,
+                  JsonUserProfileDecoder.decodeUserProfile(
+                          Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
+                  )
           );
         } catch (IOException var4) {
           Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!", var4);
@@ -195,7 +198,7 @@ public class MapillarySequence {
 
       this.user = Caches.UserProfileCache.getInstance().get(userKey);
     }, "userProfileDownload_" + userKey).start();
- }
+  }
 
   /**
    * @param organizationKey

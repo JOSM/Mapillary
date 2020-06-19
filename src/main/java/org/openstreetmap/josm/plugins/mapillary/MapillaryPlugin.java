@@ -39,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDia
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryHistoryDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -152,6 +153,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       ));
       toggleDialog.add(MapillaryHistoryDialog.getInstance());
       newFrame.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
+      toggleDialog.add(MapillaryDownloadDialog.getInstance());
+      newFrame.addToggleDialog(MapillaryDownloadDialog.getInstance(), false);
       toggleDialog.add(MapillaryChangesetDialog.getInstance());
       newFrame.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       toggleDialog.add(MapillaryFilterDialog.getInstance());
@@ -208,6 +211,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
     MapillaryMainDialog.getInstance().destroy();
     MapillaryHistoryDialog.getInstance().destroy();
+    MapillaryDownloadDialog.getInstance().destroy();
     MapillaryChangesetDialog.getInstance().destroy();
     MapillaryFilterDialog.getInstance().destroy();
     ImageInfoPanel.getInstance().destroy();
