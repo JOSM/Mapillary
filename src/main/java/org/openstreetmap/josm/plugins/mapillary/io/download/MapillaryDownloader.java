@@ -197,7 +197,7 @@ public final class MapillaryDownloader {
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
         if (!isInBounds(new LatLon(view.getMinLat() + (view.getMaxLat() - view.getMinLat()) * ((double) i / n),
-                view.getMinLon() + (view.getMaxLon() - view.getMinLon()) * ((double) j / n)))) {
+          view.getMinLon() + (view.getMaxLon() - view.getMinLon()) * ((double) j / n)))) {
           return false;
         }
       }
@@ -229,11 +229,10 @@ public final class MapillaryDownloader {
       return;
     }
     MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().
-            filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)
-            ).forEach(bounds -> {
-              MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
-              MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
-            });
+    filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
+      MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
+      MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
+    });
   }
 
   /**
