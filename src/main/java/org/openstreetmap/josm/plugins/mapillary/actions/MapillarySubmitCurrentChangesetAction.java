@@ -33,7 +33,7 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Sumbits current changeset to Mapilary.
+ * Submits current changeset to Mapilary.
  */
 public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 

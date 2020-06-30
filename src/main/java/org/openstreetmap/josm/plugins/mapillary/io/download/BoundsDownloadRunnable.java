@@ -29,13 +29,16 @@ import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
-public abstract class BoundsDownloadRunnable extends RecursiveAction  {
+public abstract class BoundsDownloadRunnable extends RecursiveAction {
+
   private static final long serialVersionUID = -3097850570397160069L;
   protected final Bounds bounds;
   protected final Collection<URL> urls;
   protected static final int MAXIMUM_URLS = 50;
   protected final ProgressMonitor monitor;
-  //Checks if this download has been completed before
+  /**
+   * Checks if this download has been completed before
+   */
   protected boolean completed = Boolean.FALSE;
 
   protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
@@ -53,7 +56,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction  {
   public void run() {
     if (!completed) {
       for (URL url : urls) {
-       realRun(url);
+        realRun(url);
       }
     }
   }
@@ -67,10 +70,11 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction  {
       }
       client = HttpClient.create(currentUrl);
       client.setHeader("Accept-Encoding", null); // compression is broken as of 2020-03-03
-      if (MapillaryUser.getUsername() != null)
+      if (MapillaryUser.getUsername() != null) {
         OAuthUtils.addAuthenticationHeader(client);
+      }
       HttpClient.Response response = client.connect(monitor);
-      if(monitor instanceof ChildProgress) {
+      if (monitor instanceof ChildProgress) {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
         if (parentMonitor instanceof DownloadProgressMonitor) {
           DownloadProgressMonitor parentDownloadMonitor = (DownloadProgressMonitor) parentMonitor;
@@ -78,10 +82,11 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction  {
         }
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
-      if (nextURL != null)
+      if (nextURL != null) {
         ForkJoinTask.getPool().execute(getNextUrl(nextURL));
+      }
       run(client);
-      if(monitor instanceof ChildProgress) {
+      if (monitor instanceof ChildProgress) {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
         if (parentMonitor instanceof DownloadProgressMonitor) {
           DownloadProgressMonitor parentDownloadMonitor = (DownloadProgressMonitor) parentMonitor;
@@ -104,9 +109,8 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction  {
   }
 
   /**
-   * Logs information about the given connection via {@link Logging#info(String)}.
-   * If it's a {@link HttpURLConnection}, the request method, the response code and the URL itself are logged.
-   * Otherwise only the URL is logged.
+   * Logs information about the given connection via {@link Logging#info(String)}. If it's a {@link HttpURLConnection},
+   * the request method, the response code and the URL itself are logged. Otherwise only the URL is logged.
    *
    * @param client the {@link URLConnection} for which information is logged
    * @param info an additional info text, which is appended to the output in braces

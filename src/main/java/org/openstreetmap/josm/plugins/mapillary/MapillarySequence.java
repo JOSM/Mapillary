@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.Json;
+import org.openstreetmap.josm.gui.MainApplication;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
@@ -39,8 +40,7 @@ public class MapillarySequence {
   private OrganizationRecord organization;
 
   /**
-   * Creates a sequence without key or timestamp. Used for
-   * {@link MapillaryImportedImage} sequences.
+   * Creates a sequence without key or timestamp. Used for {@link MapillaryImportedImage} sequences.
    */
   public MapillarySequence() {
     this.images = new CopyOnWriteArrayList<>();
@@ -60,12 +60,8 @@ public class MapillarySequence {
     this.images = new CopyOnWriteArrayList<>();
     this.key = key;
     this.capturedAt = capturedAt;
-    if (userKey != null) {
-      setUser(userKey);
-    }
-    if (organizationKey != null) {
-      setOrganization(organizationKey);
-    }
+    setUser(userKey);
+    setOrganization(organizationKey);
   }
 
   /**
@@ -81,8 +77,7 @@ public class MapillarySequence {
   /**
    * Adds a set of {@link MapillaryAbstractImage} objects to the database.
    *
-   * @param images The set of {@link MapillaryAbstractImage} objects to be
-   * added.
+   * @param images The set of {@link MapillaryAbstractImage} objects to be added.
    */
   public synchronized void add(Collection<? extends MapillaryAbstractImage> images) {
     this.images.addAll(images);
@@ -101,11 +96,10 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns all {@link MapillaryAbstractImage} objects contained by this
-   * object.
+   * Returns all {@link MapillaryAbstractImage} objects contained by this object.
    *
-   * @return A {@link List} object containing all the
-   * {@link MapillaryAbstractImage} objects that are part of the sequence.
+   * @return A {@link List} object containing all the {@link MapillaryAbstractImage} objects that are part of the
+   * sequence.
    */
   public List<MapillaryAbstractImage> getImages() {
     return this.images;
@@ -114,8 +108,8 @@ public class MapillarySequence {
   /**
    * Returns the unique identifier of the sequence.
    *
-   * @return A {@code String} containing the unique identifier of the sequence.
-   * null means that the sequence has been created locally for imported images.
+   * @return A {@code String} containing the unique identifier of the sequence. null means that the sequence has been
+   * created locally for imported images.
    */
   public String getKey() {
     return this.key;
@@ -126,16 +120,14 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the next {@link MapillaryAbstractImage} in the sequence of a given
-   * {@link MapillaryAbstractImage} object.
+   * Returns the next {@link MapillaryAbstractImage} in the sequence of a given {@link MapillaryAbstractImage} object.
    *
-   * @param image The {@link MapillaryAbstractImage} object whose next image is
-   * going to be returned.
+   * @param image The {@link MapillaryAbstractImage} object whose next image is going to be returned.
    *
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
    *
-   * @throws IllegalArgumentException if the given
-   * {@link MapillaryAbstractImage} object doesn't belong the this sequence.
+   * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong the this
+   * sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -149,16 +141,15 @@ public class MapillarySequence {
   }
 
   /**
-   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a
-   * given {@link MapillaryAbstractImage} object.
+   * Returns the previous {@link MapillaryAbstractImage} in the sequence of a given {@link MapillaryAbstractImage}
+   * object.
    *
-   * @param image The {@link MapillaryAbstractImage} object whose previous image
-   * is going to be returned.
+   * @param image The {@link MapillaryAbstractImage} object whose previous image is going to be returned.
    *
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
    *
-   * @throws IllegalArgumentException if the given
-   * {@link MapillaryAbstractImage} object doesn't belong the this sequence.
+   * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong the this
+   * sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -181,23 +172,27 @@ public class MapillarySequence {
   }
 
   private void setUser(String userKey) {
-    new Thread(() -> {
-      UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
-      if (cachedProfile == null) {
-        try {
-          Caches.UserProfileCache.getInstance().put(
-                  userKey,
-                  JsonUserProfileDecoder.decodeUserProfile(
-                          Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
-                  )
-          );
-        } catch (IOException var4) {
-          Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!", var4);
+    if (userKey != null) {
+      MainApplication.worker.submit(() -> {
+        UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
+        if (cachedProfile == null) {
+          try {
+            Caches.UserProfileCache.getInstance().put(
+              userKey,
+              JsonUserProfileDecoder.decodeUserProfile(
+                Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
+              )
+            );
+          } catch (IOException var4) {
+            Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!", var4);
+          }
         }
-      }
 
-      this.user = Caches.UserProfileCache.getInstance().get(userKey);
-    }, "userProfileDownload_" + userKey).start();
+        this.user = Caches.UserProfileCache.getInstance().get(userKey);
+      }, "userProfileDownload_" + userKey);
+    } else {
+      this.user = null;
+    }
   }
 
   /**

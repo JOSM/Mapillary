@@ -9,8 +9,8 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownl
 import org.openstreetmap.josm.tools.Utils;
 
 /**
- * TableModel to store list of currently active downloads
- *  and display them in a table
+ * TableModel to store list of currently active downloads and display them in a table.
+ *
  * @author Kishan
  */
 public class DownloadTableModel extends AbstractTableModel {
@@ -18,11 +18,15 @@ public class DownloadTableModel extends AbstractTableModel {
   private final String[] columnNames = {"Info", "Progress", "Size", "Completed", "Status"};
   private final Class[] columnClasses = {String.class, JProgressBar.class, String.class, String.class, String.class};
 
-  // The table's list of current downloads.
+  /**
+   * The table's list of current downloads.
+   */
   private final ArrayList<MapillarySquareDownloadRunnable> downloadList = new ArrayList<>();
 
-  //The unique instance of the class.
-  public static DownloadTableModel instance;
+  /**
+   * The unique instance of the class.
+   */
+  private static DownloadTableModel instance;
 
   /**
    * Constructs a new {@code DownloadTableModel}.
@@ -45,13 +49,19 @@ public class DownloadTableModel extends AbstractTableModel {
     return columnNames.length;
   }
 
-  //Add a new Download to the list
+  /**
+   * Add a new Download to the list
+   *
+   * @param download
+   */
   public void addDownload(MapillarySquareDownloadRunnable download) {
     downloadList.add(download);
     fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
   }
 
-  //Remove existing download from the list
+  /**
+   * Remove existing download from the list.
+   */
   public synchronized void clearDownload(MapillarySquareDownloadRunnable download) {
     int index = getDownloadRow(download);
     downloadList.remove(index);
@@ -79,7 +89,9 @@ public class DownloadTableModel extends AbstractTableModel {
     return columnNames[col];
   }
 
-  // Get a column's class.
+  /**
+   * Get a column's class.
+   */
   @Override
   public Class getColumnClass(int col) {
     return columnClasses[col];

@@ -198,11 +198,11 @@ public class MapillaryData implements Data {
   public void addDataSource(DataSource source) {
     dataSources.add(source);
   }
-  
+
   public void removeDataSource(DataSource source) {
     dataSources.remove(source);
   }
-    
+
   /**
    * Removes an image from the database. From the {@link List} in this object
    * and from its {@link MapillarySequence}.

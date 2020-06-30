@@ -45,11 +45,17 @@ public class MapillarySquareDownloadRunnable implements Runnable {
   }
 
   public enum STATE {
-    QUEUED,//Added for download in future.
-    PAUSED,//Paused using {@link MapillaryDownloadDialog}.
-    RUNNING,//Normal execution of task.
-    STOPPED,//Stopped midway, may execute normally.
-    FAILED//task failed during normal execution.
+
+    /** Added for download in future. */
+    QUEUED,
+    /** Paused using {@link MapillaryDownloadDialog#pauseButton}. */
+    PAUSED,
+    /** Normal execution of task. */
+    RUNNING,
+    /** Stopped midway, may execute normally. */
+    STOPPED,
+    /** Task failed during normal execution. */
+    FAILED
   }
 
   @Override
@@ -132,6 +138,11 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     MapillaryMainDialog.getInstance().updateImage();
   }
 
+  /**
+   * Checks whether all parts of this download has been completed.
+   *
+   * @return True if all parts have been downloaded, False if any part hasn't been downloaded.
+   */
   public Boolean isComplete() {
     return sqr.completed && idr.completed && ddr.completed;
   }
@@ -166,7 +177,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     return bounds;
   }
 
-  //Cancel a download that hasn't started yet or is running, remove failed ones.
+  /** Cancel a download that hasn't started yet or is running, removes failed ones. */
   public void cancel() {
     if (state == STATE.QUEUED) {
       MapillaryDownloader.removeDownload(this);
@@ -178,12 +189,12 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     }
   }
 
-  //Atempts to pause the download after {@code sqr} has completed download.
+  /** Atempts to pause the download after {@code sqr} has completed download. */
   public void pause() {
     setState(STATE.PAUSED);
   }
 
-  //Resume after paused using {@link pause()} or redownload if failed.
+  /** Resume after paused using {@link pause()} or redownload if failed. */
   public void resume() {
     if (state == STATE.PAUSED) {
       synchronized (this) {
@@ -195,13 +206,13 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     }
   }
 
-  //Attempts to cancel a running download midway, it's hash is removed if download was not able to complete.
+  /** Attempts to cancel a running download midway, it's hash is removed if download was not able to complete. */
   public void finish() {
     state = STATE.STOPPED;
     thread.interrupt();
   }
 
-  //Set state and update download status in {@link DownloadTableModel}
+  /** Set state and update download status in {@link DownloadTableModel}. */
   public void setState(STATE state) {
     this.state = state;
     monitor.model.fireTableCellUpdated(monitor.model.getDownloadRow(this), monitor.model.findColumn("Status"));

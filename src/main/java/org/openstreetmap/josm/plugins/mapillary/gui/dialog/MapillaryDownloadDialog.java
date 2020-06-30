@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -36,6 +37,7 @@ import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Dialog for viewing and managing downloads.
@@ -64,8 +66,10 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
    * Constructs a new {@code MapillaryDownloadDialog}.
    */
   private MapillaryDownloadDialog() {
-    super(I18n.tr("Mapillary Download Dialog"), "mapillary-logo", I18n.tr("Download manager for Mapillary Images"),
-            null, 300
+    super(
+      I18n.tr("Mapillary Download Dialog"), "mapillary-logo", I18n.tr("Download manager for Mapillary Images"),
+      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED,
+      Shortcut.NONE), 300
     );
 
     this.model = DownloadTableModel.getInstance();
@@ -146,6 +150,11 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     instance = null;
   }
 
+  /**
+   * Returns the unique instance of the class.
+   *
+   * @return The unique instance of the class.
+   */
   public static synchronized MapillaryDownloadDialog getInstance() {
     if (instance == null) {
       instance = new MapillaryDownloadDialog();
