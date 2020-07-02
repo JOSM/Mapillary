@@ -69,7 +69,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     super(
       I18n.tr("Mapillary Download Dialog"), "mapillary-logo", I18n.tr("Download manager for Mapillary Images"),
       Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED,
-      Shortcut.NONE), 300
+        Shortcut.NONE), 300
     );
 
     this.model = DownloadTableModel.getInstance();
@@ -165,9 +165,17 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   @Override
   public void tableChanged(TableModelEvent e) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(table::repaint);
+      SwingUtilities.invokeLater(() -> {
+        table.repaint();
+        if (e.getColumn() == model.findColumn("Status") || e.getColumn() == -1) {
+          updateButtons();
+        }
+      });
     } else {
       table.repaint();
+      if (e.getColumn() == model.findColumn("Status") || e.getColumn() == -1) {
+        updateButtons();
+      }
     }
   }
 
@@ -196,6 +204,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
 
   private void updateDownloadInfo() {
     downloadLabel.setText(I18n.tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
+    updateButtons();
   }
 
   private void updateButtons() {
@@ -261,7 +270,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class CancelAllAction extends AbstractAction {
 
     CancelAllAction() {
-      super("Stop All");
+      super("Stop All", ImageProvider.get("dialogs", "mapillaryStop.png", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Cancel all downloads"));
     }
 
@@ -306,7 +315,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class CancelAction extends AbstractAction {
 
     CancelAction() {
-      super("Cancel", ImageProvider.get("dialogs", "mapillaryStop.png", ImageProvider.ImageSizes.SMALLICON));
+      super("Cancel");
       putValue(SHORT_DESCRIPTION, tr("Cancel selected download"));
     }
 

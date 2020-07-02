@@ -184,6 +184,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       monitor.finishTask();
     } else if (state == STATE.FAILED) {
       monitor.doFinishTask();
+      MapillaryDownloader.removeHash(this);
     } else {//Running
       finish();
     }
