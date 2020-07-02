@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryComman
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Toggle dialog that shows you the latest {@link MapillaryCommand} done and
@@ -75,8 +77,15 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   private boolean destroyed;
 
   private MapillaryHistoryDialog() {
-    super(tr("Mapillary history"), "mapillary-history", tr("Open Mapillary history dialog"), null, 200,
-        false, MapillaryPreferenceSetting.class);
+    super(
+      tr("Mapillary history"),
+      "mapillary-history",
+      tr("Open Mapillary history dialog"),
+      Shortcut.registerShortcut("mapillary:historydialog", tr("Mapillary history dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      200,
+      false,
+      MapillaryPreferenceSetting.class
+    );
 
     MapillaryRecord.getInstance().addListener(this);
 

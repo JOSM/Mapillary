@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -56,6 +57,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * ToggleDialog that lets you filter the images that are being shown.
@@ -104,8 +106,14 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
   private MapillaryFilterDialog() {
     super(
-      tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"), null, 200, false,
-      MapillaryPreferenceSetting.class);
+      tr("Mapillary filter"),
+      "mapillary-filter",
+      tr("Open Mapillary filter dialog"),
+      Shortcut.registerShortcut("mapillary:filterdialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      200,
+      false,
+      MapillaryPreferenceSetting.class
+    );
     MapillaryUser.addListener(this);
 
     this.signChooser.setEnabled(false);

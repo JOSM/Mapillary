@@ -119,7 +119,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private MapillaryMainDialog() {
     super(
-      tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"), null, 200, true, MapillaryPreferenceSetting.class
+      tr(BASE_TITLE),
+      "mapillary-main",
+      tr("Open Mapillary window"),
+      Shortcut.registerShortcut("mapillary:main", tr("Mapillary main dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      200,
+      true,
+      MapillaryPreferenceSetting.class
     );
     this.mapillaryImageDisplay = new MapillaryImageDisplay();
 

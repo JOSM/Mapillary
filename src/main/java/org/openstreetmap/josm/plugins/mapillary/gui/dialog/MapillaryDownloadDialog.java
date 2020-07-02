@@ -34,7 +34,6 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownl
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.I18n;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -67,9 +66,11 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
    */
   private MapillaryDownloadDialog() {
     super(
-      I18n.tr("Mapillary Download Dialog"), "mapillary-logo", I18n.tr("Download manager for Mapillary Images"),
-      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED,
-        Shortcut.NONE), 300
+      tr("Mapillary Download Dialog"),
+      "mapillary-logo",
+      tr("Download manager for Mapillary Images"),
+      Shortcut.registerShortcut("mapillary:downloaddialog", tr("Mapillary images download manager"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      300
     );
 
     this.model = DownloadTableModel.getInstance();
@@ -94,9 +95,9 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     table.getColumnModel().getColumn(3).setResizable(false);
 
     downloadLabel = new JLabel();
-    downloadLabel.setText(I18n.tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
+    downloadLabel.setText(tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
     changesetLabel = new JLabel();
-    changesetLabel.setText(I18n.tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
+    changesetLabel.setText(tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
     isUploadPending = Boolean.FALSE;
     uploadProgress.setIndeterminate(true);
     uploadProgress.setString(tr("Submitting changeset to server…"));
@@ -197,13 +198,13 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   }
 
   private void updateChangeset() {
-    changesetLabel.setText(I18n.tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
+    changesetLabel.setText(tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
     submitButton.setEnabled(!isUploadPending && MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
     uploadProgress.setVisible(isUploadPending);
   }
 
   private void updateDownloadInfo() {
-    downloadLabel.setText(I18n.tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
+    downloadLabel.setText(tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
     updateButtons();
   }
 
@@ -247,7 +248,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      setText(I18n.tr(value.toString()));
+      setText(tr(value.toString()));
       return this;
     }
   }

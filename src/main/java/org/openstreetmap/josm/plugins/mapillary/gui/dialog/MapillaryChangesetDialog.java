@@ -69,9 +69,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog implements Mapi
       tr("Current Mapillary changeset"),
       "mapillary-upload",
       tr("Open Mapillary changeset dialog"),
-      Shortcut.registerShortcut(
-        tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE
-      ),
+      Shortcut.registerShortcut(tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE),
       200
     );
     createLayout(rootComponent, false, Collections.singletonList(submitButton));

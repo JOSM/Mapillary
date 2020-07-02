@@ -1,12 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageinfo;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
@@ -32,8 +35,8 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Shortcut;
 
 public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, DataSelectionListener {
   private static final long serialVersionUID = 1320443250226377651L;
@@ -55,10 +58,10 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
   private ImageInfoPanel() {
     super(
-      I18n.tr("Image info"),
+      tr("Image info"),
       "mapillary-info",
-      I18n.tr("Displays detail information on the currently selected Mapillary image"),
-      null,
+      tr("Displays detail information on the currently selected Mapillary image"),
+      Shortcut.registerShortcut("mapillary:imageinfo", tr("Image info dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       150
     );
     MainApplication.getLayerManager().addAndFireActiveLayerChangeListener(event -> {
@@ -75,7 +78,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     numDetectionsLabel = new JLabel();
     numDetectionsLabel.setFont(numDetectionsLabel.getFont().deriveFont(Font.PLAIN));
 
-    showDetectionsCheck = new JCheckBox(I18n.tr("Show detections on top of image"));
+    showDetectionsCheck = new JCheckBox(tr("Show detections on top of image"));
     showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get());
     showDetectionsCheck.addActionListener(
       action -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected())
@@ -89,17 +92,17 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     imgKeyValue = new SelectableLabel();
 
-    imgLinkAction = new WebLinkAction(I18n.tr("View in browser"), null);
+    imgLinkAction = new WebLinkAction(tr("View in browser"), null);
 
-    copyImgUrlAction = new ClipboardAction(I18n.tr("Copy URL"), I18n.tr("Copied URL to clipboard …"), null);
+    copyImgUrlAction = new ClipboardAction(tr("Copy URL"), tr("Copied URL to clipboard …"), null);
     final MapillaryButton copyUrlButton = new MapillaryButton(copyImgUrlAction, true);
     copyImgUrlAction.setPopupParent(copyUrlButton);
 
-    copyImgKeyAction = new ClipboardAction(I18n.tr("Copy key"), I18n.tr("Copied key to clipboard …"), null);
+    copyImgKeyAction = new ClipboardAction(tr("Copy key"), tr("Copied key to clipboard …"), null);
     final MapillaryButton copyKeyButton = new MapillaryButton(copyImgKeyAction, true);
     copyImgKeyAction.setPopupParent(copyKeyButton);
 
-    addMapillaryTagAction = new AddTagToPrimitiveAction(I18n.tr("Add Mapillary tag"));
+    addMapillaryTagAction = new AddTagToPrimitiveAction(tr("Add Mapillary tag"));
 
     JPanel imgKey = new JPanel();
     imgKey.add(imgKeyValue);
@@ -120,16 +123,16 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     gbc.anchor = GridBagConstraints.LINE_END;
     gbc.gridwidth = 1;
     gbc.gridheight = 2;
-    root.add(new JLabel(I18n.tr("Image detections")), gbc);
+    root.add(new JLabel(tr("Image detections")), gbc);
     gbc.gridy += 2;
     gbc.gridheight = 1;
-    root.add(new JLabel(I18n.tr("User")), gbc);
+    root.add(new JLabel(tr("User")), gbc);
     gbc.gridy++;
-    root.add(new JLabel(I18n.tr("Image actions")), gbc);
+    root.add(new JLabel(tr("Image actions")), gbc);
     gbc.gridy++;
-    root.add(new JLabel(I18n.tr("Image key")), gbc);
+    root.add(new JLabel(tr("Image key")), gbc);
     gbc.gridy++;
-    root.add(new JLabel(I18n.tr("Sequence key")), gbc);
+    root.add(new JLabel(tr("Sequence key")), gbc);
 
     // Right column
     gbc.weightx = 1;
@@ -198,7 +201,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
     ));
 
-    numDetectionsLabel.setText(I18n.tr("{0} detections", newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
+    numDetectionsLabel.setText(tr("{0} detections", newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
     final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
     if (newImageKey != null) {
@@ -222,7 +225,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       imgLinkAction.setURL(null);
       copyImgUrlAction.setContents(null);
 
-      imgKeyValue.setText('‹' + I18n.tr("image has no key") + '›');
+      imgKeyValue.setText('‹' + tr("image has no key") + '›');
       copyImgKeyAction.setContents(null);
       addMapillaryTagAction.setTag(null);
     }
@@ -233,7 +236,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       usernameLabel.setText(user.getUsername());
       usernameLabel.setIcon(new ImageIcon(user.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
     } else {
-      usernameLabel.setText("‹" + I18n.tr("unknown user") + "›");
+      usernameLabel.setText("‹" + tr("unknown user") + "›");
       usernameLabel.setIcon(EMPTY_USER_AVATAR);
     }
 
@@ -242,7 +245,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     if (partOfSequence) {
       seqKeyValue.setText(newImage.getSequence().getKey());
     } else {
-      seqKeyValue.setText('‹' + I18n.tr("sequence has no key") + '›');
+      seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
     }
   }
   /* (non-Javadoc)

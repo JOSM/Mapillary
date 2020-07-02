@@ -82,9 +82,11 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
    */
   public MapillaryExpertFilterDialog() {
     super(
-      tr("Mapillary Expert Filter"), "mapillary-filter", tr("Filter mapillary objects and hide/disable them."),
-      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED,
-      Shortcut.NONE), 162
+      tr("Mapillary Expert Filter"),
+      "mapillary-filter",
+      tr("Filter mapillary objects and hide/disable them."),
+      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      162
     );
     build();
     MultikeyActionsHandler.getInstance().addAction(enableFilterAction);
