@@ -128,7 +128,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       monitor.finishTask();
     } else if (state == STATE.STOPPED) {//Stopped midway and download didn't complete.
       MapillaryDownloader.removeHash(this);
-    } else {//Failed normally, this can be then be reused to create a new download then.
+    } else {//Failed normally, this can be reused to create a new download.
       setState(STATE.FAILED);
     }
 
@@ -157,6 +157,10 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 
   public Boolean isCancelable() {
     return state != STATE.STOPPED;
+  }
+
+  public Boolean isRestartable() {
+    return state == STATE.FAILED;
   }
 
   public int completeCount() {
@@ -201,10 +205,12 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       synchronized (this) {
         this.notifyAll();
       }
-    } else if (state == STATE.FAILED) {
-      MapillaryDownloader.getImages(getBounds());
-      monitor.doFinishTask();
     }
+  }
+
+  public void restart() {
+    MapillaryDownloader.getImages(getBounds());
+    monitor.doFinishTask();
   }
 
   /** Attempts to cancel a running download midway, it's hash is removed if download was not able to complete. */

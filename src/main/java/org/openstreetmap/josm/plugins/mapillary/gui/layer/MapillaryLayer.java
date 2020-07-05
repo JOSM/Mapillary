@@ -295,6 +295,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public synchronized void destroy() {
+    data.setSelectedImage(null);
     clearInstance();
     setMode(null);
     MapillaryRecord.getInstance().reset();

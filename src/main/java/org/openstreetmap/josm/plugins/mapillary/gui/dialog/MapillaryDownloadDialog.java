@@ -1,6 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trn;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -30,11 +33,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable.STATE;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.GBC;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -57,6 +58,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private final MapillaryButton resumeButton;
   private final MapillaryButton pauseButton;
   private final MapillaryButton cancelButton;
+  private final MapillaryButton restartButton;
   private final MapillaryButton clearButton;
   private final MapillaryButton stopButton;
   private MapillarySquareDownloadRunnable selectedDownload;
@@ -67,7 +69,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private MapillaryDownloadDialog() {
     super(
       tr("Mapillary Download Dialog"),
-      "mapillary-logo",
+      "mapillary-download",
       tr("Download manager for Mapillary Images"),
       Shortcut.registerShortcut("mapillary:downloaddialog", tr("Mapillary images download manager"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       300
@@ -95,9 +97,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     table.getColumnModel().getColumn(3).setResizable(false);
 
     downloadLabel = new JLabel();
-    downloadLabel.setText(tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
     changesetLabel = new JLabel();
-    changesetLabel.setText(tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
     isUploadPending = Boolean.FALSE;
     uploadProgress.setIndeterminate(true);
     uploadProgress.setString(tr("Submitting changeset to server…"));
@@ -110,6 +110,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     pauseButton = new MapillaryButton(new PauseAction(), true);
     cancelButton = new MapillaryButton(new CancelAction(), true);
     stopButton = new MapillaryButton(new CancelAllAction(), true);
+    restartButton = new MapillaryButton(new RestartAction(), true);
 
     JPanel root = new JPanel(new GridBagLayout());
 
@@ -133,6 +134,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     downloadButtons.add(resumeButton);
     downloadButtons.add(pauseButton);
     downloadButtons.add(cancelButton);
+    downloadButtons.add(restartButton);
 
     root.add(changesetPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     root.add(downloadInfoPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
@@ -198,13 +200,14 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   }
 
   private void updateChangeset() {
-    changesetLabel.setText(tr("{0} Images changed", MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0));
+    int imgChanged = MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0;
+    changesetLabel.setText(trn("{0} Image changed", "{0} Images changed", imgChanged, imgChanged));
     submitButton.setEnabled(!isUploadPending && MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
     uploadProgress.setVisible(isUploadPending);
   }
 
   private void updateDownloadInfo() {
-    downloadLabel.setText(tr("{0} Downloads in queue", MapillaryDownloader.getQueuedSize()));
+    downloadLabel.setText(trn("{0} Download in queue", "{0} Downloads in queue", MapillaryDownloader.getQueuedSize(), MapillaryDownloader.getQueuedSize()));
     updateButtons();
   }
 
@@ -214,11 +217,12 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
       resumeButton.setEnabled(false);
       pauseButton.setEnabled(false);
       cancelButton.setEnabled(false);
+      restartButton.setEnabled(false);
     } else {
-      STATE state = selectedDownload.state;
       resumeButton.setEnabled(selectedDownload.isResumable());
       pauseButton.setEnabled(selectedDownload.isPausable());
-      cancelButton.setEnabled(state != STATE.STOPPED);
+      cancelButton.setEnabled(selectedDownload.isCancelable());
+      restartButton.setEnabled(selectedDownload.isRestartable());
     }
     clearButton.setEnabled(MapillaryDownloader.getQueuedSize() != 0);
     stopButton.setEnabled(PluginState.isDownloading());
@@ -256,7 +260,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class ClearAction extends AbstractAction {
 
     ClearAction() {
-      putValue(NAME, "Clear queue");
+      super("Clear queue", ImageProvider.get("dialogs", "mapillary-clear.svg", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Clear queued downloads"));
     }
 
@@ -316,7 +320,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class CancelAction extends AbstractAction {
 
     CancelAction() {
-      super("Cancel");
+      super("Cancel", ImageProvider.get("dialogs", "mapillary-cancel.svg", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Cancel selected download"));
     }
 
@@ -324,6 +328,22 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     public void actionPerformed(ActionEvent e) {
       MapillaryDownloadDialog instance = MapillaryDownloadDialog.getInstance();
       instance.selectedDownload.cancel();
+      instance.updateButtons();
+      instance.updateDownloadInfo();
+    }
+  }
+
+  private static class RestartAction extends AbstractAction {
+
+    RestartAction() {
+      super("Restart", ImageProvider.get("dialogs", "mapillary-restart.svg", ImageProvider.ImageSizes.SMALLICON));
+      putValue(SHORT_DESCRIPTION, tr("Restart selected download"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      MapillaryDownloadDialog instance = MapillaryDownloadDialog.getInstance();
+      instance.selectedDownload.restart();
       instance.updateButtons();
       instance.updateDownloadInfo();
     }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable;
 import org.openstreetmap.josm.tools.Utils;
 
@@ -42,6 +44,18 @@ public class DownloadTableModel extends AbstractTableModel {
       DownloadTableModel.instance = new DownloadTableModel();
     }
     return DownloadTableModel.instance;
+  }
+
+  /**
+   * Method to reset download list after downloader has been stopped.
+   */
+  public void reset() {
+    if (MapillaryLayer.hasInstance()) {
+      downloadList.forEach(download -> {
+        MapillaryDownloader.removeHash(download);
+      });
+    }
+    downloadList.clear();
   }
 
   @Override

@@ -48,8 +48,8 @@ public class MapillaryDownloadAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent ae) {
-    if ((!MapillaryLayer.hasInstance()
-      || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance()))) {
+    if (!MapillaryLayer.hasInstance()
+      || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
       LayerListModel model = LayerListDialog.getInstance().getModel();
       model.getLayerManager().addLayer(MapillaryLayer.getInstance());
       List<Layer> selected = model.getSelectedLayers();

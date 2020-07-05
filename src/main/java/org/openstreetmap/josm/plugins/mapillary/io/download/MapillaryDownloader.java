@@ -14,9 +14,11 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -281,8 +283,12 @@ public final class MapillaryDownloader {
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
       new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
     shutdownTasks.forEach((download) -> {
-      removeDownload((MapillarySquareDownloadRunnable) download);
+      MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) download;
+      msdrDownload.getMonitor().finishTask();
+      removeHash(msdrDownload);
     });
+    DownloadTableModel.getInstance().reset();
+    MapillaryUtils.updateHelpText();
   }
 
   /**
@@ -307,6 +313,7 @@ public final class MapillaryDownloader {
   public static void removeDownload(MapillarySquareDownloadRunnable download) {
     if (executor.remove(download)) {
       removeHash(download);
+      download.getMonitor().finishTask();
     }
   }
 
