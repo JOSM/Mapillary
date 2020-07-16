@@ -26,7 +26,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -250,12 +249,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     // Mac OS X won't show background colors if buttons aren't opaque.
     toggleSigns.setOpaque(true);
     SideButton toggleDetections = null;
-    if (ExpertToggleAction.isExpert() && Boolean.TRUE.equals(MapillaryProperties.DEVELOPER_BROKEN.get())) {
-      toggleDetections = new SideButton(showDetectionOutlinesAction);
-      showDetectionOutlinesAction.setButton(toggleDetections);
-      toggleDetections.setPreferredSize(buttonDim);
-      toggleDetections.setOpaque(true);
-    }
+    toggleDetections = new SideButton(showDetectionOutlinesAction);
+    showDetectionOutlinesAction.setButton(toggleDetections);
+    toggleDetections.setPreferredSize(buttonDim);
+    toggleDetections.setOpaque(true);
+
     switch (mode) {
     case WALK:
       createLayout(this.panel, Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton)

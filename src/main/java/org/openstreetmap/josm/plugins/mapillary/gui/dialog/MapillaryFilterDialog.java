@@ -34,7 +34,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -54,7 +53,6 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -218,13 +216,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
     signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
-    if (ExpertToggleAction.isExpert() && Boolean.TRUE.equals(MapillaryProperties.DEVELOPER_BROKEN.get())) {
-      panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-      objectFilter = new TrafficSignFilter();
-      panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
-    } else {
-      objectFilter = null;
-    }
+    panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    objectFilter = new TrafficSignFilter();
+    panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
   }
 
@@ -295,8 +289,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     this.time.setSelectedItem(TIME_LIST[0]);
     this.signChooser.setEnabled(false);
     this.spinnerModel.setValue(1);
-    if (this.objectFilter != null)
-      this.objectFilter.reset();
+    this.objectFilter.reset();
     if (this.endDate != null && this.startDate != null) {
       this.endDate.reset();
       this.startDate.reset();
@@ -525,9 +518,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      if (objectFilter != null) {
-        objectFilter.destroy();
-      }
+      objectFilter.destroy();
       MainApplication.getMap().removeToggleDialog(this);
       // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
       MapillaryUser.removeListener(this);
