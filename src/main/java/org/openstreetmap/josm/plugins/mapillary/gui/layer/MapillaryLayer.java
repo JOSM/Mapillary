@@ -300,8 +300,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     setMode(null);
     MapillaryRecord.getInstance().reset();
     AbstractMode.resetThread();
-    /** Stop downloads in a separate thread to avoid a 30s hang */
-    MainApplication.worker.submit(MapillaryDownloader::stopAll);
+    /**
+     * Stop downloads in a separate thread to avoid a 30s hang.
+     * Check if the worker is shutdown first though (so we don't throw an error).
+     */
+    if (MainApplication.worker.isShutdown()) {
+      MapillaryDownloader.stopAll();
+    } else {
+      MainApplication.worker.submit(MapillaryDownloader::stopAll);
+    }
     if (MapillaryMainDialog.hasInstance()) {
       MapillaryMainDialog.getInstance().setImage(null);
       MapillaryMainDialog.getInstance().updateImage();
