@@ -465,7 +465,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     StopAction() {
       putValue(NAME, trc("as synonym to halt or stand still", "Stop"));
       putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
-      new ImageProvider("dialogs/mapillaryStop.png").getResource().attachImageIcon(this, true);
+      new ImageProvider("dialogs/mapillaryStop").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -492,7 +492,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     PlayAction() {
       putValue(NAME, tr("Play"));
       putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
-      new ImageProvider("dialogs/mapillaryPlay.png").getResource().attachImageIcon(this, true);
+      new ImageProvider("dialogs/mapillaryPlay").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -521,7 +521,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     PauseAction() {
       putValue(NAME, tr("Pause"));
       putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
-      new ImageProvider("dialogs/mapillaryPause.png").getResource().attachImageIcon(this, true);
+      new ImageProvider("dialogs/mapillaryPause").getResource().attachImageIcon(this, true);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 

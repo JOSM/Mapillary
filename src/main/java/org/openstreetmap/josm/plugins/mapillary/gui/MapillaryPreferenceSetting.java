@@ -116,7 +116,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);
     JLabel brandImage = new JLabel();
-    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream("/images/mapillary-logo-white.png")) {
+    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream("/images/mapillary-logo-white")) {
       if (is != null) {
         brandImage.setIcon(new ImageIcon(ImageIO.read(is)));
       } else {

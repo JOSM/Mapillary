@@ -260,7 +260,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class ClearAction extends AbstractAction {
 
     ClearAction() {
-      super("Clear queue", ImageProvider.get("dialogs", "mapillary-clear.svg", ImageProvider.ImageSizes.SMALLICON));
+      super("Clear queue", ImageProvider.get("dialogs", "mapillary-clear", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Clear queued downloads"));
     }
 
@@ -275,7 +275,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class CancelAllAction extends AbstractAction {
 
     CancelAllAction() {
-      super("Stop All", ImageProvider.get("dialogs", "mapillaryStop.png", ImageProvider.ImageSizes.SMALLICON));
+      super("Stop All", ImageProvider.get("dialogs", "mapillaryStop", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Cancel all downloads"));
     }
 
@@ -290,7 +290,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class ResumeAction extends AbstractAction {
 
     ResumeAction() {
-      super("Resume", ImageProvider.get("dialogs", "mapillaryPlay.png", ImageProvider.ImageSizes.SMALLICON));
+      super("Resume", ImageProvider.get("dialogs", "mapillaryPlay", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Resume selected download"));
     }
 
@@ -305,7 +305,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class PauseAction extends AbstractAction {
 
     PauseAction() {
-      super("Pause", ImageProvider.get("dialogs", "mapillaryPause.png", ImageProvider.ImageSizes.SMALLICON));
+      super("Pause", ImageProvider.get("dialogs", "mapillaryPause", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Pause selected download"));
     }
 
@@ -320,7 +320,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class CancelAction extends AbstractAction {
 
     CancelAction() {
-      super("Cancel", ImageProvider.get("dialogs", "mapillary-cancel.svg", ImageProvider.ImageSizes.SMALLICON));
+      super("Cancel", ImageProvider.get("dialogs", "mapillary-cancel", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Cancel selected download"));
     }
 
@@ -336,7 +336,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   private static class RestartAction extends AbstractAction {
 
     RestartAction() {
-      super("Restart", ImageProvider.get("dialogs", "mapillary-restart.svg", ImageProvider.ImageSizes.SMALLICON));
+      super("Restart", ImageProvider.get("dialogs", "mapillary-restart", ImageProvider.ImageSizes.SMALLICON));
       putValue(SHORT_DESCRIPTION, tr("Restart selected download"));
     }
 
