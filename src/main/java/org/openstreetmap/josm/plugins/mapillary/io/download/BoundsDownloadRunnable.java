@@ -23,6 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
@@ -69,6 +70,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         return;
       }
       client = HttpClient.create(currentUrl);
+      client.setReadTimeout(MapillaryProperties.TIMEOUT.get());
       client.setHeader("Accept-Encoding", null); // compression is broken as of 2020-03-03
       if (MapillaryUser.getUsername() != null) {
         OAuthUtils.addAuthenticationHeader(client);
