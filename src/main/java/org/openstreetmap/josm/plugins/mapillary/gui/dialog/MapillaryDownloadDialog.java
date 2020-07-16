@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -24,9 +25,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
-import org.openstreetmap.josm.gui.MainApplication;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
@@ -281,9 +283,11 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryDownloader.stopAll();
-      MapillaryDownloadDialog.getInstance().updateDownloadInfo();
-      MapillaryDownloadDialog.getInstance().updateButtons();
+      MainApplication.worker.submit(() -> {
+        MapillaryDownloader.stopAll();
+        MapillaryDownloadDialog.getInstance().updateDownloadInfo();
+        GuiHelper.runInEDT(() -> MapillaryDownloadDialog.getInstance().updateButtons());
+      });
     }
   }
 

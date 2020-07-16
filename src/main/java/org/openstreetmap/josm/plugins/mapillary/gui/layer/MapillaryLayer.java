@@ -249,7 +249,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    *
    * @return The {@link MapillaryData} object that stores the database.
    */
-  // @Override Depends upon #18801 for the override
+  // @Override -- depends upon JOSM 16548+
   public MapillaryData getData() {
     return this.data;
   }
@@ -300,7 +300,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     setMode(null);
     MapillaryRecord.getInstance().reset();
     AbstractMode.resetThread();
-    MapillaryDownloader.stopAll();
+    /** Stop downloads in a separate thread to avoid a 30s hang */
+    MainApplication.worker.submit(MapillaryDownloader::stopAll);
     if (MapillaryMainDialog.hasInstance()) {
       MapillaryMainDialog.getInstance().setImage(null);
       MapillaryMainDialog.getInstance().updateImage();
