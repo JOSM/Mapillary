@@ -9,12 +9,12 @@ import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
-  id("org.sonarqube") version "2.8"
+  id("org.sonarqube") version "3.0"
   id("org.openstreetmap.josm") version "0.7.0"
   id("com.github.ben-manes.versions") version "0.28.0"
-  id("com.github.spotbugs") version "4.2.0"
-  id("net.ltgt.errorprone") version "1.1.1"
-  id("com.diffplug.gradle.spotless") version "3.30.0"
+  id("com.github.spotbugs") version "4.4.4"
+  id("net.ltgt.errorprone") version "1.2.1"
+  id("com.diffplug.spotless") version "5.1.0"
 
   eclipse
   jacoco
@@ -58,14 +58,14 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.26.3")
+  testImplementation("com.github.tomakehurst:wiremock:2.27.1")
   val junitVersion = "5.6.2"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:4.0.2")
+  testImplementation("org.awaitility:awaitility:4.0.3")
   testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
-  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.3")
+  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.6")
 }
 
 sourceSets {
@@ -197,7 +197,7 @@ project.afterEvaluate {
 
 // Spotbugs config
 spotbugs {
-  toolVersion.set("4.0.3")
+  toolVersion.set("4.0.6")
   ignoreFailures.set(true)
   effort.set(Effort.MAX)
   reportLevel.set(Confidence.LOW)
