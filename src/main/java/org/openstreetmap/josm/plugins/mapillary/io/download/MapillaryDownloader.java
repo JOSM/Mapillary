@@ -273,7 +273,7 @@ public final class MapillaryDownloader {
   /**
    * Stops all running threads.
    */
-  public static void stopAll() {
+  public static synchronized void stopAll() {
     List<Runnable> shutdownTasks = executor.shutdownNow();
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);
