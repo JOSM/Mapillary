@@ -6,8 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.progress.ChildProgress;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
@@ -69,7 +70,8 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     // Download basic sequence data synchronously
     ForkJoinPool pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-downloader-%d", 4);
 
-    sqr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds, (ChildProgress) monitor.createSubTaskMonitor(50, false));
+    sqr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
+      monitor.createSubTaskMonitor(50, false));
     pool.invoke(sqr);
     pool.awaitQuiescence(3600, TimeUnit.SECONDS);
 
@@ -92,8 +94,10 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       }
     }
     // Asynchronously load the rest of the image details
-    idr = new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds, (ChildProgress) monitor.createSubTaskMonitor(25, false));
-    ddr = new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds, (ChildProgress) monitor.createSubTaskMonitor(25, false));
+    idr = new ImageDetailsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
+      monitor.createSubTaskMonitor(25, false));
+    ddr = new DetectionsDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
+      monitor.createSubTaskMonitor(25, false));
     pool.execute(idr);
     pool.execute(ddr);
 
@@ -102,7 +106,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
       @Override
       public boolean isReleasable() {
         return (!pool.hasQueuedSubmissions() && pool.getActiveThreadCount() == 0)
-                || MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty();
+          || MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty();
       }
 
       @Override
@@ -126,9 +130,9 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     PluginState.finishDownload();
     if (isComplete()) {
       monitor.finishTask();
-    } else if (state == STATE.STOPPED) {//Stopped midway and download didn't complete.
+    } else if (state == STATE.STOPPED) {// Stopped midway and download didn't complete.
       MapillaryDownloader.removeHash(this);
-    } else {//Failed normally, this can be reused to create a new download.
+    } else {// Failed normally, this can be reused to create a new download.
       setState(STATE.FAILED);
     }
 
@@ -189,7 +193,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     } else if (state == STATE.FAILED) {
       monitor.doFinishTask();
       MapillaryDownloader.removeHash(this);
-    } else {//Running
+    } else {// Running
       finish();
     }
   }
@@ -222,6 +226,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
   /** Set state and update download status in {@link DownloadTableModel}. */
   public void setState(STATE state) {
     this.state = state;
-    monitor.model.fireTableCellUpdated(monitor.model.getDownloadRow(this), monitor.model.findColumn("Status"));
+    GuiHelper.runInEDT(
+      () -> monitor.model.fireTableCellUpdated(monitor.model.getDownloadRow(this), monitor.model.findColumn("Status")));
   }
 }

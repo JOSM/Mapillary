@@ -2,14 +2,18 @@
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.Component;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
+
 import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
 import org.openstreetmap.josm.gui.progress.CancelHandler;
 import org.openstreetmap.josm.gui.progress.ProgressTaskId;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
+import org.openstreetmap.josm.plugins.mapillary.io.download.BoundsDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable;
 
 /**
  * Progress Monitor to be used with {@link MapillarySquareDownloadRunnable
+ *
  * @author Kishan
  */
 public class DownloadProgressMonitor extends AbstractProgressMonitor {
@@ -34,7 +38,7 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
    */
   public void setSize(long newSize) {
     size = newSize;
-    model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Size"));
+    GuiHelper.runInEDT(() -> model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Size")));
   }
 
   /**
@@ -43,7 +47,7 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
    */
   @Override
   public void doBeginTask() {
-    DownloadTableModel.getInstance().addDownload(download);
+    GuiHelper.runInEDT(() -> DownloadTableModel.getInstance().addDownload(download));
   }
 
   /**
@@ -52,12 +56,12 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
    */
   @Override
   public void doFinishTask() {
-    DownloadTableModel.getInstance().clearDownload(download);
+    GuiHelper.runInEDT(() -> DownloadTableModel.getInstance().clearDownload(download));
   }
 
   @Override
   protected void doSetIntermediate(boolean bln) {
-    //Do Nothing
+    // Do Nothing
   }
 
   @Override
@@ -67,7 +71,7 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
 
   @Override
   protected void doSetCustomText(String string) {
-    //Do nothing.
+    // Do nothing.
   }
 
   @Override
@@ -76,12 +80,12 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
     if (newValue != currentProgressValue) {
       currentProgressValue = newValue;
     }
-    model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Progress"));
+    GuiHelper.runInEDT(() -> model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Progress")));
   }
 
   @Override
   public void setProgressTaskId(ProgressTaskId pti) {
-    //Do nothing.
+    // Do nothing.
   }
 
   @Override
@@ -98,6 +102,6 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
    * Update no. of completed parts.
    */
   public void updateCompleted() {
-    model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Completed"));
+    GuiHelper.runInEDT(() -> model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Completed")));
   }
 }
