@@ -106,6 +106,6 @@ public class PointObjectLayerTest {
   public void testTrivialMethods() {
     assertNotNull(instance.getToolTipText());
     instance.visitBoundingBox(null);
-    assertEquals(11, instance.getMenuEntries().length);
+    assertEquals(10, instance.getMenuEntries().length);
   }
 }

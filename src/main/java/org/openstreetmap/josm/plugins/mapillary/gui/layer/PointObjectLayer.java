@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Area;
@@ -41,7 +40,6 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -62,7 +60,6 @@ import org.openstreetmap.josm.data.osm.DownloadPolicy;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
@@ -112,7 +109,6 @@ import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.OpenBrowser;
 
 /**
  * Mapillary Point Object layer
@@ -384,29 +380,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
       LayerListDialog.getInstance().createMergeLayerAction(this)));
     actions.addAll(Arrays.asList(SeparatorLayerAction.INSTANCE, new RenameLayerAction(getAssociatedFile(), this),
-      SeparatorLayerAction.INSTANCE, new RequestDataAction(followDataSet), SeparatorLayerAction.INSTANCE,
+      SeparatorLayerAction.INSTANCE, SeparatorLayerAction.INSTANCE,
       new LayerListPopup.InfoAction(this)));
     return actions.toArray(new Action[0]);
-  }
-
-  static class RequestDataAction extends AbstractAction {
-    private static final long serialVersionUID = 8823333297547249069L;
-    private final OsmData<?, ?, ?, ?> data;
-
-    public RequestDataAction(DataSet data) {
-      super(tr("Request Data"));
-      this.data = data;
-      MapillaryPlugin.LOGO.getResource().attachImageIcon(this, true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      String bbox = "?bbox="
-        + String.join(";",
-          data.getDataSourceBounds().stream()
-            .map(Bounds::toBBox).map(b -> b.toStringCSV(",")).collect(Collectors.toList()));
-      OpenBrowser.displayUrl("https://mapillary.github.io/mapillary_solutions/data-request" + bbox);
-    }
   }
 
   @Override
