@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -53,14 +54,14 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
     if (Thread.interrupted()) {
       return;
     }
-    try (JsonReader reader = Json.createReader(client.getResponse().getContentReader())) {
+    try (BufferedReader content = client.getResponse().getContentReader();
+      JsonReader reader = Json.createReader(content)) {
       final long startTime = System.currentTimeMillis();
       final Collection<MapillarySequence> sequences = JsonDecoder
         .decodeFeatureCollection(reader.readObject(), JsonSequencesDecoder::decodeSequence);
       logConnectionInfo(
         client,
-        String.format("%d sequences in %.2f s", sequences.size(), (System.currentTimeMillis() - startTime) / 1000F)
-      );
+        String.format("%d sequences in %.2f s", sequences.size(), (System.currentTimeMillis() - startTime) / 1000F));
       if (Thread.interrupted()) {
         return;
       }
