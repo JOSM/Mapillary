@@ -3,8 +3,10 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
 import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
+
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable;
@@ -17,8 +19,8 @@ import org.openstreetmap.josm.tools.Utils;
  */
 public class DownloadTableModel extends AbstractTableModel {
 
-  private final String[] columnNames = {"Info", "Progress", "Size", "Completed", "Status"};
-  private final Class[] columnClasses = {String.class, JProgressBar.class, String.class, String.class, String.class};
+  private final String[] columnNames = { "Info", "Progress", "Size", "Completed", "Status" };
+  private final Class[] columnClasses = { String.class, JProgressBar.class, String.class, String.class, String.class };
 
   /**
    * The table's list of current downloads.
@@ -36,7 +38,7 @@ public class DownloadTableModel extends AbstractTableModel {
    * @param listSelectionModel selection model
    */
   private DownloadTableModel() {
-    //Private to avoid multiple instances.
+    // Private to avoid multiple instances.
   }
 
   public static synchronized DownloadTableModel getInstance() {
@@ -78,8 +80,10 @@ public class DownloadTableModel extends AbstractTableModel {
    */
   public synchronized void clearDownload(MapillarySquareDownloadRunnable download) {
     int index = getDownloadRow(download);
-    downloadList.remove(index);
-    this.fireTableRowsDeleted(index, index);
+    if (index >= 0 && index < downloadList.size()) {
+      downloadList.remove(index);
+      this.fireTableRowsDeleted(index, index);
+    }
   }
 
   @Override
