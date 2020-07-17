@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -28,6 +27,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import org.openstreetmap.josm.actions.JosmAction;
 
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
@@ -123,6 +123,7 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     this.redoButton = new SideButton(new RedoAction());
 
     createLayout(treesPanel, true, Arrays.asList(this.undoButton, this.redoButton));
+    buildTree();
   }
 
   private void buildTree() {
@@ -212,13 +213,15 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     }
   }
 
-  private static class UndoAction extends AbstractAction {
+  private static class UndoAction extends JosmAction {
 
     private static final long serialVersionUID = -6435832206342007269L;
 
     UndoAction() {
-      super(tr("Undo"));
-      new ImageProvider("undo").getResource().attachImageIcon(this, true);
+      super(tr("Undo"), new ImageProvider("undo"), null,
+         Shortcut.registerShortcut("mapillary:undo", tr("Mapillary: undo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+         false, null, false
+      );
     }
 
     @Override
@@ -227,13 +230,15 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     }
   }
 
-  private static class RedoAction extends AbstractAction {
+  private static class RedoAction extends JosmAction {
 
     private static final long serialVersionUID = -2761935780353053512L;
 
     RedoAction() {
-      super(tr("Redo"));
-      new ImageProvider("redo").getResource().attachImageIcon(this, true);
+      super(tr("Redo"), new ImageProvider("redo"), null,
+         Shortcut.registerShortcut("mapillary:redo", tr("Mapillary: redo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+         false, null, false
+      );
     }
 
     @Override
