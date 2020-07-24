@@ -7,10 +7,10 @@ import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-public class JsonLocationChangesetEncoderTest {
+public class JsonChangesetEncoderTest {
 
   @Test
   public void testSingleImageChangeset() {
@@ -20,7 +20,7 @@ public class JsonLocationChangesetEncoderTest {
     image.turn(273.3);
     image.stopMoving();
 
-    assertJsonEquals(JsonLocationChangesetEncoderTest.class, "/api/v3/requests/single_image_changeset.json", JsonLocationChangesetEncoder.encodeImageChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/single_image_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
@@ -30,7 +30,7 @@ public class JsonLocationChangesetEncoderTest {
     image.move(0.1111, 0.22222);
     image.stopMoving();
 
-    assertJsonEquals(JsonLocationChangesetEncoderTest.class, "/api/v3/requests/translation_only_changeset.json", JsonLocationChangesetEncoder.encodeImageChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/translation_only_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
@@ -40,7 +40,7 @@ public class JsonLocationChangesetEncoderTest {
     image.turn(-80.3);
     image.stopMoving();
 
-    assertJsonEquals(JsonLocationChangesetEncoderTest.class, "/api/v3/requests/rotation_only_changeset.json", JsonLocationChangesetEncoder.encodeImageChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/rotation_only_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
@@ -57,16 +57,16 @@ public class JsonLocationChangesetEncoderTest {
     image3.turn(13.4);
     image3.stopMoving();
 
-    MapillaryLocationChangeset changeset = new MapillaryLocationChangeset();
+    MapillaryChangeset changeset = new MapillaryChangeset();
     changeset.add(image1);
     changeset.add(image2);
     changeset.add(image3);
 
-    assertJsonEquals(JsonLocationChangesetEncoderTest.class, "/api/v3/requests/changeset.json", JsonLocationChangesetEncoder.encodeLocationChangeset(changeset));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/changeset.json", JsonChangesetEncoder.encodeLocationChangeset(changeset));
   }
 
   @Test
   public void testUtilityClass() {
-    TestUtil.testUtilityClass(JsonLocationChangesetEncoder.class);
+    TestUtil.testUtilityClass(JsonChangesetEncoder.class);
   }
 }

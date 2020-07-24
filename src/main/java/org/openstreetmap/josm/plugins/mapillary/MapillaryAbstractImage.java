@@ -358,6 +358,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     return ACTIVE_SEQUENCE_SPRITE.getImage();
   }
 
+  public void setMovingCa(double ca) {
+    this.movingCa = ca;
+  }
+
   @Override
   public int compareTo(GpxImageEntry image) {
     if(image instanceof MapillaryAbstractImage) {

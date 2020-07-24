@@ -67,7 +67,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
@@ -139,7 +139,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public AbstractMode mode;
 
   private volatile TexturePaint hatched;
-  private final MapillaryLocationChangeset locationChangeset = new MapillaryLocationChangeset();
+  private final MapillaryChangeset locationChangeset = new MapillaryChangeset();
+  private final MapillaryChangeset deletionChangeset = new MapillaryChangeset();
   private static AlphaComposite fadeComposite = AlphaComposite
     .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
@@ -182,6 +183,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         .put("MapillaryDel", new DeleteImageAction());
 
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
+      getDeletionChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
       getLocationChangeset().addChangesetListener(MapillaryDownloadDialog.getInstance());
     }
     createHatchTexture();
@@ -255,13 +257,21 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   }
 
   /**
-   * Returns the {@link MapillaryLocationChangeset} object, which acts as the database of the
-   * Layer.
+   * Returns the {@link MapillaryChangeset} object, which acts as the list of changed images.
    *
-   * @return The {@link MapillaryData} object that stores the database.
+   * @return The {@link MapillaryChangeset} object that stores the changed images.
    */
-  public MapillaryLocationChangeset getLocationChangeset() {
+  public MapillaryChangeset getLocationChangeset() {
     return locationChangeset;
+  }
+
+  /**
+   * Returns the {@link MapillaryChangeset} object, which acts as the list of deleted images.
+   *
+   * @return The {@link MapillaryChangeset} object that stores the deleted images.
+   */
+  public MapillaryChangeset getDeletionChangeset() {
+    return deletionChangeset;
   }
 
   /**

@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.actions;
+package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -17,15 +17,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryLocationChangeset;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonLocationChangesetEncoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonChangesetEncoder;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -33,9 +33,9 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Submits current changeset to Mapilary.
+ * Submits current deletion changeset to Mapillary.
  */
-public class MapillarySubmitCurrentChangesetAction extends JosmAction {
+public class SubmitDeletionChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
   private final MapillaryChangesetDialog changesetDialog;
@@ -44,13 +44,13 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
    * Main constructor.
    * @param changesetDialog Mapillary changeset dialog
    */
-  public MapillarySubmitCurrentChangesetAction(MapillaryChangesetDialog changesetDialog) {
+  public SubmitDeletionChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(
-      I18n.tr("Submit changeset"),
+      I18n.tr("Submit deletion changeset"),
       new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       I18n.tr("Submit the current changeset"),
       // CHECKSTYLE.OFF: LineLength
-      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit current deletion changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       // CHECKSTYLE.ON: LineLength
       false,
       "mapillarySubmitChangeset",
@@ -62,7 +62,10 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    new Thread(() -> {
+    MainApplication.worker.submit(() -> this.submitChangeset());
+  }
+
+  public void submitChangeset() {
       changesetDialog.setUploadPending(true);
       String token = MapillaryProperties.ACCESS_TOKEN.get();
       if (token != null && !token.trim().isEmpty()) {
@@ -72,8 +75,8 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         HttpPost httpPost = new HttpPost(APIv3.submitChangeset().toString());
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("Authorization", "Bearer " + token);
-        MapillaryLocationChangeset locationChangeset = MapillaryLayer.getInstance().getLocationChangeset();
-        String json = JsonLocationChangesetEncoder.encodeLocationChangeset(locationChangeset).build().toString();
+        MapillaryChangeset deletionChangeset = MapillaryLayer.getInstance().getDeletionChangeset();
+        String json = JsonChangesetEncoder.encodeDeletionChangeset(deletionChangeset).build().toString();
         Logging.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
           httpPost.setEntity(new StringEntity(json));
@@ -86,17 +89,16 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
               I18n.marktr("rejected");
               I18n.marktr("pending");
               I18n.marktr("approved");
-              final String message = I18n.trn(
-                "{0} image submitted, Changeset key: {1}, State: {2}",
+              final String message = I18n.trn("{0} image submitted, Changeset key: {1}, State: {2}",
                 "{0} images submitted, Changeset key: {1}, State: {2}",
-                locationChangeset.size(), key, state
+                deletionChangeset.size(), key, state
               );
               Logging.debug(message);
               new Notification(message)
                 .setDuration(Notification.TIME_LONG)
                 .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
                 .show();
-              locationChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
+              deletionChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
             } else {
               new Notification(
                 I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
@@ -124,6 +126,5 @@ public class MapillarySubmitCurrentChangesetAction extends JosmAction {
         PluginState.notLoggedInToMapillaryDialog();
       }
       changesetDialog.setUploadPending(false);
-    }, "Mapillary changeset upload").start();
-  }
+    }
 }

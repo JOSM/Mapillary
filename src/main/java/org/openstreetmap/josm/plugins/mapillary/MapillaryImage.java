@@ -38,6 +38,10 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * If {@code true}, the image is private. If {@code false}, then it is public.
    */
   private final boolean privateImage;
+  /**
+   * Indicates whether or not this images has been marked for deletion.
+   */
+  private boolean isDeleted = false;
 
   /** The default sprite for a private Mapillary image */
   public static final ImageIcon PRIVATE_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "private-ca")
@@ -122,6 +126,24 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public void turn(double ca) {
     super.turn(ca);
     checkModified();
+  }
+
+  public void markDeleted() {
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getDeletionChangeset().add(this);
+      isDeleted = Boolean.TRUE;
+    }
+  }
+
+  public void unmarkDeleted() {
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getDeletionChangeset().add(this);
+      isDeleted = Boolean.FALSE;
+    }
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
   }
 
   @Override

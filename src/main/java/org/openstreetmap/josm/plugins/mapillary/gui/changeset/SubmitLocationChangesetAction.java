@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary.actions;
+package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -19,8 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
-import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
@@ -36,27 +35,29 @@ import org.openstreetmap.josm.tools.Shortcut;
 /**
  * Submits current changeset to Mapillary.
  */
-public class MapillarySubmitChangesetAction extends JosmAction {
+public class SubmitLocationChangesetAction extends JosmAction {
 
   private static final long serialVersionUID = 4995924098228082806L;
-
-  public static final ImageProvider LOGO = new ImageProvider("mapillary-logo");
+  private final MapillaryChangesetDialog changesetDialog;
 
   /**
    * Main constructor.
+   *
+   * @param changesetDialog Mapillary changeset dialog
    */
-  public MapillarySubmitChangesetAction() {
+  public SubmitLocationChangesetAction(MapillaryChangesetDialog changesetDialog) {
     super(
-      I18n.tr("Submit changeset"),
-      new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.LARGEICON),
+      I18n.tr("Submit location changeset"),
+      new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       I18n.tr("Submit the current changeset"),
       // CHECKSTYLE.OFF: LineLength
-      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit the current changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit current location changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       // CHECKSTYLE.ON: LineLength
       false,
       "mapillarySubmitChangeset",
       false
     );
+    this.changesetDialog = changesetDialog;
     setEnabled(false);
   }
 
@@ -66,7 +67,7 @@ public class MapillarySubmitChangesetAction extends JosmAction {
   }
 
   public void submitChangeset() {
-    MapillaryDownloadDialog.getInstance().setUploadPending(true);
+    changesetDialog.setUploadPending(true);
     String token = MapillaryProperties.ACCESS_TOKEN.get();
     if (token != null && !token.trim().isEmpty()) {
       PluginState.setSubmittingChangeset(true);
@@ -126,6 +127,6 @@ public class MapillarySubmitChangesetAction extends JosmAction {
     } else {
       PluginState.notLoggedInToMapillaryDialog();
     }
-    MapillaryDownloadDialog.getInstance().setUploadPending(false);
+    changesetDialog.setUploadPending(false);
   }
 }

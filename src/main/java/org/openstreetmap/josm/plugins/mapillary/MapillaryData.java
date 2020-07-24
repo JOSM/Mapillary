@@ -34,6 +34,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
@@ -97,6 +98,7 @@ public class MapillaryData implements Data {
     if (MainApplication.getMainFrame() != null) {
       addListener(MapillaryMainDialog.getInstance());
       addListener(ImageInfoPanel.getInstance());
+      addListener(MapillaryChangesetDialog.getInstance());
     }
   }
 

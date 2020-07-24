@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 
 import java.util.AbstractSet;
 import java.util.Collections;
@@ -7,10 +7,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
-public class MapillaryLocationChangeset extends AbstractSet<MapillaryImage> {
+public class MapillaryChangeset extends AbstractSet<MapillaryImage> {
   private final Set<MapillaryChangesetListener> listeners = new HashSet<>();
   private final Set<MapillaryImage> changeset = Collections.newSetFromMap(new ConcurrentHashMap<>());
 

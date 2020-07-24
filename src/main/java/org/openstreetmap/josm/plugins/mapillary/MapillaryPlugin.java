@@ -29,6 +29,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAct
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryJoinAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryEditAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryUploadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
@@ -106,6 +107,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MapillaryJoinAction mapillaryJoinAction = new MapillaryJoinAction();
     MainMenu.add(menu.dataMenu, mapillaryJoinAction, false);
     destroyables.add(mapillaryJoinAction);
+
+    MapillaryEditAction mapillaryEditAction = new MapillaryEditAction();
+    MainMenu.add(menu.dataMenu, mapillaryEditAction, false);
+    destroyables.add(mapillaryEditAction);
 
     MainMenu.add(menu.moreToolsMenu, WALK_ACTION, false);
     destroyables.add(WALK_ACTION);

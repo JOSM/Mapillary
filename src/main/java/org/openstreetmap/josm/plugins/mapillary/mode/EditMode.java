@@ -4,40 +4,66 @@ package org.openstreetmap.josm.plugins.mapillary.mode;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Graphics2D;
-import java.awt.event.InputEvent;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ConcurrentSkipListSet;
-
-
+import java.util.Objects;
+import javax.swing.SwingUtilities;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
+import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
- * Handles the input event related with the layer. Mainly clicks.
+ * In this mode user can edit images, changeset of which can be submitted to Mapillary.
  *
- * @author nokutu
+ * @author Kishan
  */
-public class SelectMode extends AbstractMode {
-  private MapillaryAbstractImage closest;
-  private MapillaryAbstractImage lastClicked;
-  private boolean nothingHighlighted;
+public class EditMode extends AbstractMode {
+
+  private final MapillaryRecord record;
   private boolean imageHighlighted;
+  private boolean nothingHighlighted;
 
   /**
-   * Main constructor.
+   * Main Constructor
    */
-  public SelectMode() {
-    super(tr("Mapillary Select Mode"), "mapillary-select", tr("Select images in the Mapillary Layer"),
-      ImageProvider.getCursor("normal", null));
+  public EditMode() {
+    super(
+      tr("Mapillary Edit Mode"),
+      "mapillary-edit",
+      tr("Edit images in Mapillary Layer"),
+      ImageProvider.getCursor("normal", null)
+    );
+    this.record = MapillaryRecord.getInstance();
+  }
+
+  @Override
+  public void enterMode() {
+    super.enterMode();
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().setSelectedImage(null);
+    }
+  }
+
+  @Override
+  public void exitMode() {
+    super.exitMode();
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().setSelectedImage(null);
+    }
   }
 
   @Override
@@ -59,17 +85,6 @@ public class SelectMode extends AbstractMode {
         if (MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
-      } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) { // ctrl + click
-        MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest);
-      } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)) { // shift + click
-        if (lastClicked != null && closest.getSequence() == lastClicked.getSequence()) {
-          final int i = closest.getSequence().getImages().indexOf(closest);
-          final int j = lastClicked.getSequence().getImages().indexOf(lastClicked);
-          MapillaryLayer.getInstance().getData().addMultiSelectedImage(
-            new ConcurrentSkipListSet<>(closest.getSequence().getImages().subList(
-              Math.min(i, j),
-              Math.max(i, j) + 1)));
-        }
       } else { // click
         MapillaryLayer.getInstance().getData().setSelectedImage(closest);
       }
@@ -78,8 +93,50 @@ public class SelectMode extends AbstractMode {
         MapillaryLayer.getInstance().getData().setSelectedImage(closest);
       }
     }
-    this.lastClicked = this.closest;
-    this.closest = closest;
+  }
+
+  @Override
+  public void mouseDragged(MouseEvent e) {
+    MapillaryAbstractImage highlightImg = MapillaryLayer.getInstance().getData().getHighlightedImage();
+    if (MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
+      && SwingUtilities.isLeftMouseButton(e)
+      && highlightImg != null && highlightImg.getLatLon() != null) {
+      Point highlightImgPoint = MainApplication.getMap().mapView.getPoint(highlightImg.getTempLatLon());
+      if (e.isShiftDown()) { // turn
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
+          .forEach(img -> img
+          .turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY()))
+            - highlightImg.getTempCa()));
+      } else { // move
+        LatLon eventLatLon = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
+        LatLon imgLatLon = MainApplication.getMap().mapView.getLatLon(highlightImgPoint.getX(),
+          highlightImgPoint.getY());
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
+          .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
+      }
+      MapillaryLayer.invalidateInstance();
+    }
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+    final MapillaryData data = MapillaryLayer.getInstance().getData();
+    if (data.getSelectedImage() == null) {
+      return;
+    }
+    if (!Objects.equals(data.getSelectedImage().getTempCa(), data.getSelectedImage().getMovingCa())) {
+      double from = data.getSelectedImage().getTempCa();
+      double to = data.getSelectedImage().getMovingCa();
+      record.addCommand(new CommandTurn(data.getMultiSelectedImages(), to - from));
+    } else if (!Objects.equals(data.getSelectedImage().getTempLatLon(), data.getSelectedImage().getMovingLatLon())) {
+      LatLon from = data.getSelectedImage().getTempLatLon();
+      LatLon to = data.getSelectedImage().getMovingLatLon();
+      record
+        .addCommand(new CommandMove(data.getMultiSelectedImages(), to.getX() - from.getX(), to.getY() - from.getY()));
+    }
+    data.getMultiSelectedImages().parallelStream().filter(Objects::nonNull).forEach(MapillaryAbstractImage::stopMoving);
+    MapillaryChangesetDialog.getInstance().selectedImageChanged(data.getSelectedImage(), data.getSelectedImage());
+    MapillaryLayer.invalidateInstance();
   }
 
   /**
@@ -137,6 +194,6 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public String toString() {
-    return tr("Select mode");
+    return tr("Edit mode");
   }
 }
