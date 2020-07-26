@@ -15,6 +15,7 @@ import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.autofilter.AutoFilterManager;
 import org.openstreetmap.josm.gui.dialogs.FilterTableModel;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.util.SortableTableModel;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryFilterModel;
 import org.openstreetmap.josm.tools.Logging;
@@ -175,7 +176,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
       if (rowIndex >= 0 && model.getFiltersCount() > rowIndex && model.removeFilter(rowIndex) != null && !manyChanges) {
         savePrefs();
         updateFilters();
-        fireTableRowsDeleted(rowIndex, rowIndex);
+        GuiHelper.runInEDT(() -> fireTableRowsDeleted(rowIndex, rowIndex));
       }
     }
   }
