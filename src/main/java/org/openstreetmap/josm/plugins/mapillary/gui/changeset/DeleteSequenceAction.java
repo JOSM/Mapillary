@@ -37,9 +37,9 @@ public class DeleteSequenceAction extends AbstractAction {
       Iterator<MapillaryAbstractImage> iterator = seq.getImages().iterator();
       boolean isSeqDeleted = true;
       while (iterator.hasNext() && isSeqDeleted) {
-        if (iterator.next() instanceof MapillaryImage) {
-          MapillaryImage img = (MapillaryImage) iterator.next();
-          isSeqDeleted = img.isDeleted();
+        MapillaryAbstractImage img = iterator.next();
+        if (img instanceof MapillaryImage) {
+          isSeqDeleted = ((MapillaryImage) img).isDeleted();
         }
       }
       return isSeqDeleted;
@@ -55,16 +55,16 @@ public class DeleteSequenceAction extends AbstractAction {
       iterator = seq.getImages().iterator();
       if (isSeqDeleted()) {
         while (iterator.hasNext()) {
-          if (iterator.next() instanceof MapillaryImage) {
-            MapillaryImage img = (MapillaryImage) iterator.next();
-            img.unmarkDeleted();
+          MapillaryAbstractImage img = iterator.next();
+          if (img instanceof MapillaryImage) {
+            ((MapillaryImage) img).unmarkDeleted();
           }
         }
       } else {
         while (iterator.hasNext()) {
-          if (iterator.next() instanceof MapillaryImage) {
-            MapillaryImage img = (MapillaryImage) iterator.next();
-            img.markDeleted();
+          MapillaryAbstractImage img = iterator.next();
+          if (img instanceof MapillaryImage) {
+            ((MapillaryImage) img).markDeleted();
           }
         }
       }

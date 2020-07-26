@@ -16,6 +16,7 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -67,6 +68,25 @@ public class EditMode extends AbstractMode {
   }
 
   @Override
+  protected MapillaryAbstractImage getClosest(Point clickPoint) {
+    double snapDistance = 10;
+    double minDistance = Double.MAX_VALUE;
+    MapillaryAbstractImage closest = null;
+    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
+      Point imagePoint = MainApplication.getMap().mapView.getPoint(
+        (img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted()) ? img.getLatLon() : img.getMovingLatLon());
+      imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
+      double dist = clickPoint.distanceSq(imagePoint);
+      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance
+        && img.isVisible()) {
+        minDistance = dist;
+        closest = img;
+      }
+    }
+    return closest;
+  }
+
+  @Override
   public void mousePressed(MouseEvent e) {
     if (e.getButton() != MouseEvent.BUTTON1) {
       return;
@@ -82,7 +102,8 @@ public class EditMode extends AbstractMode {
 
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
-        if (MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
+        if (MapillaryLayer.getInstance().getData().getSelectedImage() != null
+          && (closest instanceof MapillaryImage ? ((MapillaryImage) closest).isDeleted() : false)) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
       } else { // click
@@ -103,16 +124,15 @@ public class EditMode extends AbstractMode {
       && highlightImg != null && highlightImg.getLatLon() != null) {
       Point highlightImgPoint = MainApplication.getMap().mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
-        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
-          .forEach(img -> img
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().forEach(img -> img
           .turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY()))
             - highlightImg.getTempCa()));
       } else { // move
         LatLon eventLatLon = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
         LatLon imgLatLon = MainApplication.getMap().mapView.getLatLon(highlightImgPoint.getX(),
           highlightImgPoint.getY());
-        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
-          .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().forEach(img -> img
+            .move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
       MapillaryLayer.invalidateInstance();
     }

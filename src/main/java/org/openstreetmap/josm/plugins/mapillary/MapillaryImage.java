@@ -124,14 +124,17 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   @Override
   public void turn(double ca) {
+    if (!isDeleted) {
     super.turn(ca);
     checkModified();
+    }
   }
 
   public void markDeleted() {
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
       isDeleted = Boolean.TRUE;
+      this.setMovingLatLon(latLon);
     }
   }
 
@@ -139,6 +142,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
       isDeleted = Boolean.FALSE;
+      this.setMovingLatLon(getTempLatLon());
     }
   }
 

@@ -11,7 +11,7 @@ import java.awt.geom.Path2D;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 
 /**
@@ -56,13 +56,46 @@ public final  class MapViewGeometryUtil {
    */
   public static Path2D getSequencePath(NavigatableComponent nc, MapillarySequence seq) {
     final Path2D.Double path = new Path2D.Double();
-    seq.getImages().stream().filter(MapillaryAbstractImage::isVisible).forEach(img -> {
+    seq.getImages().stream().filter(img -> img.isVisible()
+      && img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted()).forEach(img -> {
       Point p = nc.getPoint(img.getMovingLatLon());
       if (path.getCurrentPoint() == null) {
         path.moveTo(p.getX(), p.getY());
       } else {
         path.lineTo(p.getX(), p.getY());
       }
+    });
+    return path;
+  }
+
+  /**
+   * Converts a {@link MapillarySequence} into a {@link Path2D} that can be drawn
+   * on the specified {@link NavigatableComponent}'s {@link Graphics2D}-context.
+   * @param nc the {@link NavigatableComponent} for which this conversion should be performed, typically a {@link MapView}
+   * @param seq the sequence to convert
+   * @return the {@link Path2D} object to which the {@link MapillarySequence} has been converted
+   */
+  public static Path2D getOrignalSequencePath(NavigatableComponent nc, MapillarySequence seq) {
+    final Path2D.Double path = new Path2D.Double();
+    seq.getImages().stream().filter(img -> img.isVisible() && img instanceof MapillaryImage).forEach(img -> {
+      Point p = nc.getPoint(img.getLatLon());
+      if (path.getCurrentPoint() == null) {
+        path.moveTo(p.getX(), p.getY());
+      } else {
+        path.lineTo(p.getX(), p.getY());
+      }
+    });
+    return path;
+  }
+
+  public static Path2D getImageChangesPath(NavigatableComponent nc, MapillarySequence seq) {
+    final Path2D.Double path = new Path2D.Double();
+    seq.getImages().stream().filter(img -> img.isVisible()
+      && img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted()).forEach(img -> {
+      Point from = nc.getPoint(img.getLatLon());
+      Point to = nc.getPoint(img.getMovingLatLon());
+        path.moveTo(from.getX(), from.getY());
+        path.lineTo(to.getX(), to.getY());
     });
     return path;
   }

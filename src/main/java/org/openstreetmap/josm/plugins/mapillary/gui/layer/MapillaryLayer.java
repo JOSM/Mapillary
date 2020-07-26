@@ -80,6 +80,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
+import org.openstreetmap.josm.plugins.mapillary.mode.EditMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
@@ -413,6 +414,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         g.setComposite(fadeComposite);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
+      if (this.mode instanceof EditMode) {
+        Composite backup = g.getComposite();
+        g.setComposite(fadeComposite.derive(0.25f));
+        g.draw(MapViewGeometryUtil.getImageChangesPath(mv, seq));
+        g.draw(MapViewGeometryUtil.getOrignalSequencePath(mv, seq));
+        g.setComposite(backup);
+      }
       g.setComposite(AlphaComposite.SrcOver);
     }
     for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
@@ -443,7 +451,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
       return;
     }
-    final Point p = MainApplication.getMap().mapView.getPoint(img.getMovingLatLon());
+    final Point p = MainApplication.getMap().mapView.getPoint(
+      img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted() ? img.getLatLon() : img.getMovingLatLon());
+    final Point orignalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
       g.setComposite(fadeComposite);
@@ -472,18 +482,28 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setComposite(currentComposit);
     }
 
-    double angle = Math.toRadians(img.getMovingCa());
     AffineTransform backup = g.getTransform();
-    Point2D originalCentroid = getOriginalCentroid(i);
-    AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
-    move.preConcatenate(backup);
-    move.translate(-originalCentroid.getX(), -originalCentroid.getY());
-    Point2D.Double d2 = new Point2D.Double(p.getX() + originalCentroid.getX(), p.getY() + originalCentroid.getY());
-    move.transform(d2, d2);
-    g.setTransform(move);
-
-    g.drawImage(i, (int) p.getX(), (int) p.getY(), null);
-    g.setTransform(backup);
+    if (img instanceof MapillaryImage && mode instanceof EditMode) {
+      if (!((MapillaryImage) img).isDeleted()) {
+        Composite currentComposit = g.getComposite();
+        g.setComposite(fadeComposite.derive(0.25f));
+        g.setTransform(getTransform(Math.toRadians(img.getCa()), orignalP, getOriginalCentroid(i)));
+        g.drawImage(img.getActiveSequenceImage(), orignalP.x, orignalP.y, null);
+        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
+        g.setComposite(currentComposit);
+        g.drawImage(i, p.x, p.y, null);
+        g.setTransform(backup);
+      } else {
+        g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i)));
+        g.drawImage(img.getDeletedImage(), p.x, p.y, null);
+        g.setComposite(composite);
+        g.setTransform(backup);
+      }
+    } else {
+      g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
+      g.drawImage(i, p.x, p.y, null);
+      g.setTransform(backup);
+    }
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
@@ -491,13 +511,24 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+
     }
 
-    if (img instanceof MapillaryImage && !((MapillaryImage) img).getDetections().isEmpty()) {
-      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-        null);
+    if (img instanceof MapillaryImage) {
+      if (!((MapillaryImage) img).getDetections().isEmpty()) {
+        g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
+          null);
+      }
     }
     g.setComposite(composite);
+  }
+
+  public static AffineTransform getTransform (double angle, Point p, Point2D origin) {
+    AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+    move.translate(-origin.getX(), -origin.getY());
+    Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
+    move.transform(d2, d2);
+    return move;
   }
 
   private static Point2D getOriginalCentroid(Image i) {
@@ -682,7 +713,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
       .map(seq -> { // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter(img -> img instanceof MapillaryImage && img.isVisible())
+          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted()&& img.isVisible())
           .min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
       })
@@ -697,7 +728,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   private synchronized void updateNearestImages() {
     final MapillaryAbstractImage selected = data.getSelectedImage();
-    if (selected != null) {
+    if (selected != null && !(selected instanceof MapillaryImage &&((MapillaryImage) selected).isDeleted())) {
       nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       nearestImages = new MapillaryImage[0];

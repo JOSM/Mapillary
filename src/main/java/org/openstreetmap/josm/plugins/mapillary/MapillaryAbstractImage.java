@@ -37,6 +37,9 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   /** The sprite to use for the currently selected image */
   public static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
     .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+  /** The sprite to use for images marked as deleted */
+  public static final ImageIcon DELETED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "deleted-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
 
   /**
    * If two values for field ca differ by less than EPSILON both values are considered equal.
@@ -358,8 +361,19 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     return ACTIVE_SEQUENCE_SPRITE.getImage();
   }
 
+  /**
+   * @return The default image to indicate that this particular image is marked deleted.
+   */
+  public Image getDeletedImage() {
+    return DELETED_IMAGE.getImage();
+  }
+
   public void setMovingCa(double ca) {
     this.movingCa = ca;
+  }
+
+  public void setMovingLatLon(LatLon latLon) {
+    this.movingLatLon = latLon;
   }
 
   @Override
