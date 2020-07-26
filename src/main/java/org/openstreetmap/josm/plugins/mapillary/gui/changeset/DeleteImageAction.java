@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
+import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.mode.EditMode;
@@ -14,13 +14,12 @@ import org.openstreetmap.josm.plugins.mapillary.mode.EditMode;
  *
  * @author Kishan
  */
-public class DeleteImageAction extends AbstractAction {
+public class DeleteImageAction extends JosmAction {
 
   private MapillaryImage img;
 
   public DeleteImageAction() {
-    super("Delete Image");
-    putValue(SHORT_DESCRIPTION, tr("Mark image for deletion "));
+    super(tr("Delete Image"), null, tr("Mark image for deletion"), null, false);
   }
 
   public void setImage(MapillaryImage img) {
@@ -50,14 +49,14 @@ public class DeleteImageAction extends AbstractAction {
     if (img != null) {
       if (img.isDeleted()) {
         putValue(NAME, tr("Undelete Image"));
-        putValue(SHORT_DESCRIPTION, tr("Unmark whole imguence for deletion "));
+        putValue(SHORT_DESCRIPTION, tr("Unmark image for deletion"));
       } else {
         putValue(NAME, tr("Delete Image"));
-        putValue(SHORT_DESCRIPTION, tr("Mark whole imguence for deletion "));
+        putValue(SHORT_DESCRIPTION, tr("Mark image for deletion"));
       }
     } else {
       putValue(NAME, tr("Delete Image"));
-      putValue(SHORT_DESCRIPTION, tr("Mark whole imguence for deletion "));
+      putValue(SHORT_DESCRIPTION, tr("Mark image for deletion"));
     }
   }
 }

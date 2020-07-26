@@ -103,7 +103,7 @@ public class EditMode extends AbstractMode {
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
         if (MapillaryLayer.getInstance().getData().getSelectedImage() != null
-          && (closest instanceof MapillaryImage ? ((MapillaryImage) closest).isDeleted() : false)) {
+          && (closest instanceof MapillaryImage ? !((MapillaryImage) closest).isDeleted() : true)) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
       } else { // click
@@ -210,6 +210,7 @@ public class EditMode extends AbstractMode {
 
   @Override
   public void paint(Graphics2D g, MapView mv, Bounds box) {
+    // No extra graphics for this mode.
   }
 
   @Override

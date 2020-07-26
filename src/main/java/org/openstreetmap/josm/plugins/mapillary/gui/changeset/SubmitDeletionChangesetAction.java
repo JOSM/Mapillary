@@ -62,7 +62,7 @@ public class SubmitDeletionChangesetAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent event) {
-    MainApplication.worker.submit(() -> this.submitChangeset());
+    MainApplication.worker.execute(() -> this.submitChangeset());
   }
 
   public void submitChangeset() {

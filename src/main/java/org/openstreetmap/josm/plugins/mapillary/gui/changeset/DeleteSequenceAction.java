@@ -23,7 +23,7 @@ public class DeleteSequenceAction extends AbstractAction {
 
   public DeleteSequenceAction() {
     super("Delete Sequence");
-    putValue(SHORT_DESCRIPTION, tr("Mark whole sequence for deletion "));
+    putValue(SHORT_DESCRIPTION, tr("Mark whole sequence for deletion"));
   }
 
   public void setSequence(MapillarySequence seq) {
@@ -51,20 +51,16 @@ public class DeleteSequenceAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     if (seq != null && seq.getKey() != null) {
-      Iterator<MapillaryAbstractImage> iterator;
-      iterator = seq.getImages().iterator();
       if (isSeqDeleted()) {
-        while (iterator.hasNext()) {
-          MapillaryAbstractImage img = iterator.next();
+        for (MapillaryAbstractImage img : seq.getImages()) {
           if (img instanceof MapillaryImage) {
             ((MapillaryImage) img).unmarkDeleted();
           }
         }
       } else {
-        while (iterator.hasNext()) {
-          MapillaryAbstractImage img = iterator.next();
+        for (MapillaryAbstractImage img : seq.getImages()) {
           if (img instanceof MapillaryImage) {
-            ((MapillaryImage) img).markDeleted();
+            ((MapillaryImage) img).unmarkDeleted();
           }
         }
       }
@@ -80,10 +76,10 @@ public class DeleteSequenceAction extends AbstractAction {
   private void updateText() {
     if (isSeqDeleted()) {
       putValue(NAME, tr("Undelete Sequence"));
-      putValue(SHORT_DESCRIPTION, tr("Unmark whole sequence for deletion "));
+      putValue(SHORT_DESCRIPTION, tr("Unmark whole sequence for deletion"));
     } else {
       putValue(NAME, tr("Delete Sequence"));
-      putValue(SHORT_DESCRIPTION, tr("Mark whole sequence for deletion "));
+      putValue(SHORT_DESCRIPTION, tr("Mark whole sequence for deletion"));
     }
   }
 }

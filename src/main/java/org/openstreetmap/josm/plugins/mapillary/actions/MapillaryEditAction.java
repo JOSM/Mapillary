@@ -17,7 +17,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  * @author Kishan
  */
-public class MapillaryEditAction extends JosmAction{
+public class MapillaryEditAction extends JosmAction {
 
   public MapillaryEditAction() {
     super(

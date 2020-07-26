@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.swing.AbstractAction;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import org.openstreetmap.josm.actions.JosmAction;
 
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
@@ -262,11 +262,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     loginLabel.setText(tr("You are currently not logged in."));
   }
 
-  public static class SequenceOffsetAction extends AbstractAction {
+  public static class SequenceOffsetAction extends JosmAction {
 
     public SequenceOffsetAction() {
-      super("Set Offset");
-      putValue(SHORT_DESCRIPTION, tr("Offset every angle in the sequence"));
+      super(tr("Set Offset"), null, tr("Offset every angle in the sequence"), null, false);
     }
 
     @Override
@@ -287,11 +286,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog
 
   }
 
-  public static class ImgOffsetAction extends AbstractAction {
+  public static class ImgOffsetAction extends JosmAction {
 
     public ImgOffsetAction() {
-      super("Set");
-      putValue(SHORT_DESCRIPTION, tr("Offset compass angle"));
+      super(tr("Set"), null, tr("Set compass angle"), null, false);
     }
 
     @Override
@@ -305,11 +303,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     }
   }
 
-  public static class NormalizeAction extends AbstractAction {
+  public static class NormalizeAction extends JosmAction {
 
     public NormalizeAction() {
-      super("Normalize Sequence");
-      putValue(SHORT_DESCRIPTION, tr("Set each image direction towards next image"));
+      super(tr("Normalize Sequence"), null, tr("Set each image direction towards next image"), null, false);
     }
 
     @Override
