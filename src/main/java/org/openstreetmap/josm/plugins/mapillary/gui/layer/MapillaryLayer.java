@@ -250,6 +250,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The {@link MapillaryData} object that stores the database.
    */
   // @Override -- depends upon JOSM 16548+
+  @Override
   public MapillaryData getData() {
     return this.data;
   }
@@ -466,12 +467,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     AffineTransform backup = g.getTransform();
     Point2D originalCentroid = getOriginalCentroid(i);
     AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+    move.preConcatenate(backup);
     move.translate(-originalCentroid.getX(), -originalCentroid.getY());
-    Point2D.Double d2 = new Point2D.Double(p.x + originalCentroid.getX(), p.y + originalCentroid.getY());
+    Point2D.Double d2 = new Point2D.Double(p.getX() + originalCentroid.getX(), p.getY() + originalCentroid.getY());
     move.transform(d2, d2);
     g.setTransform(move);
 
-    g.drawImage(i, p.x, p.y, null);
+    g.drawImage(i, (int) p.getX(), (int) p.getY(), null);
     g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
@@ -723,8 +725,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (hasInstance() && !getData().getMultiSelectedImages().isEmpty())
-          MapillaryRecord.getInstance().addCommand(
-            new CommandDelete(getData().getMultiSelectedImages()));
+        MapillaryRecord.getInstance().addCommand(
+          new CommandDelete(getData().getMultiSelectedImages()));
     }
   }
 
