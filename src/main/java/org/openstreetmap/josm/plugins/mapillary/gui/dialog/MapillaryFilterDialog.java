@@ -85,6 +85,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
   private final SpinnerNumberModel spinnerModel;
 
   private final JCheckBox imported = new JCheckBox(tr("Imported images"));
+  private final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
   private final JComboBox<String> time;
   private final JTextField user;
 
@@ -138,10 +139,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
     startDate.addEventHandler(function);
     endDate.addEventHandler(function);
     timePanel = new JPanel(new GridBagLayout());
-    timePanel.add(new JLabel(tr("Start")), GBC.std());
-    timePanel.add(new JLabel(tr("End")), GBC.eol());
-    timePanel.add(startDate.getComponent(), GBC.std());
-    timePanel.add(endDate.getComponent(), GBC.eol());
+    timePanel.add(new JLabel(tr("Start")), GBC.std().anchor(GridBagConstraints.LINE_START));
+    timePanel.add(new JLabel(tr("End")), GBC.eol().anchor(GridBagConstraints.LINE_END));
+    timePanel.add(startDate.getComponent(), GBC.std().anchor(GridBagConstraints.LINE_START));
+    timePanel.add(endDate.getComponent(), GBC.eol().anchor(GridBagConstraints.LINE_END));
     Dimension d = timePanel.getMinimumSize();
     d.width = (int) Math.ceil(d.width * 1.15);
     d.height = (int) Math.ceil(d.height * 1.15);
@@ -285,6 +286,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     this.downloaded.setSelected(true);
     this.onlySigns.setEnabled(true);
     this.onlySigns.setSelected(false);
+    this.onlyPano.setSelected(false);
     this.user.setText("");
     this.time.setSelectedItem(TIME_LIST[0]);
     this.signChooser.setEnabled(false);
@@ -294,7 +296,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
       this.endDate.reset();
       this.startDate.reset();
     }
-    MapillaryFilterChooseSigns.reset();
+    MapillaryFilterChooseSigns.getInstance().reset();
     organizations.setSelectedItem(OrganizationRecord.NULL_RECORD);
     refresh();
   }
@@ -308,6 +310,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     final boolean downloadedIsSelected = this.downloaded.isSelected();
     final boolean timeFilter = filterByDateCheckbox.isSelected();
     final boolean onlySignsIsSelected = this.onlySigns.isSelected();
+    final boolean onlyPanoIsSelected = this.onlyPano.isSelected();
     final LocalDate endDateRefresh = this.endDate == null ? null : this.endDate.getDate();
     final LocalDate startDateRefresh = this.startDate == null ? convertDateRangeBox(spinnerModel, time)
       : this.startDate.getDate();
@@ -329,6 +332,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
         if (!importedIsSelected && img instanceof MapillaryImportedImage) {
+          return true;
+        }
+        if (onlyPanoIsSelected && !img.isPanorama()) {
           return true;
         }
         if (img instanceof MapillaryImage) {

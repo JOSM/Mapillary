@@ -36,6 +36,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.DeleteImageAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.DeleteSequenceAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.ReviewImageAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
@@ -62,6 +63,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
   private final MapillaryButton normalizeSequence = new MapillaryButton(new NormalizeAction(), true);
   private final DeleteImageAction deleteImgAction = new DeleteImageAction();
   private final DeleteSequenceAction deleteSeqAction = new DeleteSequenceAction();
+  private final ReviewImageAction reviewAction = new ReviewImageAction();
   private final DoubleSpinner seqOffset = new DoubleSpinner(0, 360);
   private final DoubleSpinner imgOffset = new DoubleSpinner(0, 360);
   private final JTextPane imgLat = new SelectableLabel();
@@ -104,6 +106,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     JPanel deleteButtons = new JPanel();
     deleteButtons.add(new MapillaryButton(deleteSeqAction, true));
     deleteButtons.add(new MapillaryButton(deleteImgAction, true));
+    deleteButtons.add(new MapillaryButton(reviewAction, true));
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(0, 5, 0, 5);
@@ -156,7 +159,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     gbc.anchor = GridBagConstraints.SOUTH;
     rootComponent.add(uploadPendingProgress, gbc);
 
-    createLayout(rootComponent, false, Arrays.asList(submitLocationChangesetButton, submitDeletionChangesetButton));
+    createLayout(rootComponent, true, Arrays.asList(submitLocationChangesetButton, submitDeletionChangesetButton));
     uploadPendingProgress.setIndeterminate(true);
     uploadPendingProgress.setString(tr("Submitting changeset to server…"));
     uploadPendingProgress.setStringPainted(true);
@@ -220,6 +223,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
       imgOffset.setValue(newImage.getMovingCa());
       seqOffset.setValue(0.0);
       deleteImgAction.setImage(newImage instanceof MapillaryImage ? (MapillaryImage) newImage : null);
+      reviewAction.setImage(newImage);
       deleteSeqAction.setSequence(newImage.getSequence());
       if (MapillaryLayer.getInstance().mode instanceof EditMode) {
         imgOffset.setEnabled(true);
@@ -240,6 +244,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
       normalizeSequence.setEnabled(false);
       deleteSeqAction.setSequence(null);
       deleteImgAction.setImage(null);
+      reviewAction.setImage(null);
     }
   }
 
