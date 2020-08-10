@@ -125,6 +125,18 @@ public final class PluginState {
     }
   }
 
+  public static void allImagesNotReviewedDialog() {
+    final MainFrame mainFrame = MainApplication.getMainFrame();
+    if (mainFrame != null) {
+      JOptionPane.showMessageDialog(
+        mainFrame,
+        tr("Some of the images have not been reviewed, please review them in changeset dialog"),
+        tr("Some Images not Reviewed"),
+        JOptionPane.WARNING_MESSAGE
+      );
+    }
+  }
+
 
 
   /**

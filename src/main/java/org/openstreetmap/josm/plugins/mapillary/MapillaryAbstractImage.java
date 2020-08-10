@@ -73,6 +73,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   protected double movingCa;
   /** Whether the image must be drown in the map or not */
   private boolean visible;
+  /**
+   * Indicates whether or not this image has been reviewed for Uploading/Changeset submission.
+   */
+  private boolean reviewed = false;
 
   /**
    * Creates a new object in the given position and with the given direction.
@@ -334,6 +338,14 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public void turn(final double ca) {
     this.movingCa = this.tempCa + ca;
+  }
+
+  public boolean isReviewed() {
+    return reviewed;
+  }
+
+  public void setReviewed(boolean reviewed) {
+    this.reviewed = reviewed;
   }
 
   public abstract Color paintHighlightedAngleColour();

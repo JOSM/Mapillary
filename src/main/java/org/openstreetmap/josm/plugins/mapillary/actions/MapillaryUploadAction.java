@@ -49,14 +49,12 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 
-    if (pane.getValue() != null
-        && (int) pane.getValue() == JOptionPane.OK_OPTION
-        && dialog.getDelete() != null
-        && dialog.getSequence().isSelected()) {
-      UploadUtils.uploadSequence(
+    if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION
+      && dialog.getDelete() != null && dialog.getSequence().isSelected()) {
+        UploadUtils.uploadSequence(
           MapillaryLayer.getInstance().getData().getSelectedImage().getSequence(),
           dialog.getDelete().isSelected()
-      );
+        );
     }
   }
 
