@@ -51,4 +51,12 @@ public class MapillaryChangeset extends AbstractSet<MapillaryImage> {
     fireListeners();
     return remove;
   }
+
+  public boolean checkImages() {
+    boolean allReviewed = true;
+    for (MapillaryImage img : changeset) {
+      allReviewed &= img.isReviewed();
+    }
+    return allReviewed;
+  }
 }

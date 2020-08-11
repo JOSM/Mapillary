@@ -57,7 +57,7 @@ public final  class MapViewGeometryUtil {
   public static Path2D getSequencePath(NavigatableComponent nc, MapillarySequence seq) {
     final Path2D.Double path = new Path2D.Double();
     seq.getImages().stream().filter(img -> img.isVisible()
-      && img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted()).forEach(img -> {
+      && (img instanceof MapillaryImage ? !((MapillaryImage) img).isDeleted() : true)).forEach(img -> {
       Point p = nc.getPoint(img.getMovingLatLon());
       if (path.getCurrentPoint() == null) {
         path.moveTo(p.getX(), p.getY());

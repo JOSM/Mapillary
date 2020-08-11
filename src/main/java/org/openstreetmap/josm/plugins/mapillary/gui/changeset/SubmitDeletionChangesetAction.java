@@ -66,16 +66,21 @@ public class SubmitDeletionChangesetAction extends JosmAction {
   }
 
   public void submitChangeset() {
-      changesetDialog.setUploadPending(true);
-      String token = MapillaryProperties.ACCESS_TOKEN.get();
-      if (token != null && !token.trim().isEmpty()) {
+    changesetDialog.setUploadPending(true);
+    String token = MapillaryProperties.ACCESS_TOKEN.get();
+    if (token == null || token.trim().isEmpty()) {
+      PluginState.notLoggedInToMapillaryDialog();
+    } else {
+      MapillaryChangeset deletionChangeset = MapillaryLayer.getInstance().getDeletionChangeset();
+      if (!deletionChangeset.checkImages()) {
+        PluginState.allImagesNotReviewedDialog();
+      } else {
         PluginState.setSubmittingChangeset(true);
         MapillaryUtils.updateHelpText();
         HttpClientBuilder builder = HttpClientBuilder.create();
         HttpPost httpPost = new HttpPost(APIv3.submitChangeset().toString());
         httpPost.addHeader("content-type", "application/json");
         httpPost.addHeader("Authorization", "Bearer " + token);
-        MapillaryChangeset deletionChangeset = MapillaryLayer.getInstance().getDeletionChangeset();
         String json = JsonChangesetEncoder.encodeDeletionChangeset(deletionChangeset).build().toString();
         Logging.info("Sending JSON to " + APIv3.submitChangeset() + "\n  " + json);
         try (CloseableHttpClient httpClient = builder.build()) {
@@ -122,9 +127,8 @@ public class SubmitDeletionChangesetAction extends JosmAction {
         } finally {
           PluginState.setSubmittingChangeset(false);
         }
-      } else {
-        PluginState.notLoggedInToMapillaryDialog();
       }
       changesetDialog.setUploadPending(false);
     }
+  }
 }

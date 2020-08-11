@@ -137,8 +137,6 @@ public final class PluginState {
     }
   }
 
-
-
   /**
    * Returns the text to be written in the status bar.
    *
