@@ -29,13 +29,10 @@ import javax.swing.table.TableCellRenderer;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillarySubmitChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownloadRunnable;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -46,17 +43,13 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  * @author Kishan
  */
-public class MapillaryDownloadDialog extends ToggleDialog implements TableModelListener, MapillaryChangesetListener {
+public class MapillaryDownloadDialog extends ToggleDialog implements TableModelListener {
 
   private static MapillaryDownloadDialog instance;
   private final JTable table;
   private boolean destroyed;
   private final DownloadTableModel model;
   private final JLabel downloadLabel;
-  private final JLabel changesetLabel;
-  private final JProgressBar uploadProgress = new JProgressBar();
-  public boolean isUploadPending;
-  private final MapillaryButton submitButton;
   private final MapillaryButton resumeButton;
   private final MapillaryButton pauseButton;
   private final MapillaryButton cancelButton;
@@ -99,14 +92,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     table.getColumnModel().getColumn(3).setResizable(false);
 
     downloadLabel = new JLabel();
-    changesetLabel = new JLabel();
-    isUploadPending = Boolean.FALSE;
-    uploadProgress.setIndeterminate(true);
-    uploadProgress.setString(tr("Submitting changeset to server…"));
-    uploadProgress.setStringPainted(true);
-    uploadProgress.setVisible(isUploadPending);
 
-    submitButton = new MapillaryButton(new MapillarySubmitChangesetAction(), true);
     clearButton = new MapillaryButton(new ClearAction(), true);
     resumeButton = new MapillaryButton(new ResumeAction(), true);
     pauseButton = new MapillaryButton(new PauseAction(), true);
@@ -115,12 +101,6 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     restartButton = new MapillaryButton(new RestartAction(), true);
 
     JPanel root = new JPanel(new GridBagLayout());
-
-    JPanel changesetPanel = new JPanel();
-    changesetPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    changesetPanel.add(changesetLabel);
-    changesetPanel.add(submitButton);
-    changesetPanel.add(uploadProgress);
 
     JPanel downloadInfoPanel = new JPanel();
     downloadInfoPanel.add(downloadLabel);
@@ -138,13 +118,11 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     downloadButtons.add(cancelButton);
     downloadButtons.add(restartButton);
 
-    root.add(changesetPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     root.add(downloadInfoPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     root.add(downloadButtons, GBC.eol().anchor(GridBagConstraints.LINE_START));
     root.add(tablePanel, GBC.eol().fill());
     createLayout(root, false, null);
     updateDownloadInfo();
-    updateChangeset();
     updateButtons();
   }
 
@@ -184,28 +162,12 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     }
   }
 
-  @Override
-  public void changesetChanged() {
-    if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(this::updateChangeset);
-    } else {
-      updateChangeset();
-    }
-  }
-
   public void downloadInfoChanged() {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(this::updateDownloadInfo);
     } else {
       this.updateDownloadInfo();
     }
-  }
-
-  private void updateChangeset() {
-    int imgChanged = MapillaryLayer.hasInstance() ? MapillaryLayer.getInstance().getLocationChangeset().size() : 0;
-    changesetLabel.setText(trn("{0} Image changed", "{0} Images changed", imgChanged, imgChanged));
-    submitButton.setEnabled(!isUploadPending && MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getLocationChangeset().isEmpty());
-    uploadProgress.setVisible(isUploadPending);
   }
 
   private void updateDownloadInfo() {
@@ -228,11 +190,6 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     }
     clearButton.setEnabled(MapillaryDownloader.getQueuedSize() != 0);
     stopButton.setEnabled(PluginState.isDownloading());
-  }
-
-  public void setUploadPending(final boolean isUploadPending) {
-    this.isUploadPending = isUploadPending;
-    updateChangeset();
   }
 
   public static class ProgressCellRender extends JProgressBar implements TableCellRenderer {
