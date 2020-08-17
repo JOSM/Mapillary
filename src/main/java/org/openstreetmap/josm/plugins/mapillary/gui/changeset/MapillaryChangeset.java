@@ -53,10 +53,6 @@ public class MapillaryChangeset extends AbstractSet<MapillaryImage> {
   }
 
   public boolean checkImages() {
-    boolean allReviewed = true;
-    for (MapillaryImage img : changeset) {
-      allReviewed &= img.isReviewed();
-    }
-    return allReviewed;
+    return changeset.stream().allMatch(MapillaryImage::isReviewed);
   }
 }
