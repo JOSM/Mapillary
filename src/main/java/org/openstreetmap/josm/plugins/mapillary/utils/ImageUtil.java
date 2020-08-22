@@ -1,7 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
@@ -26,5 +32,15 @@ public final class ImageUtil {
       icon.getIconHeight() >= icon.getIconWidth() ? size : Math.max(1, Math.round(icon.getIconHeight() / (float) icon.getIconWidth() * size)),
       Image.SCALE_SMOOTH
     ));
+  }
+
+  public static BufferedImage scale(BufferedImage src, int width, int height) {
+    BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    Graphics2D g = dest.createGraphics();
+    AffineTransform at = AffineTransform.getScaleInstance(
+      (double) width / src.getWidth(),
+      (double) height / src.getHeight());
+    g.drawRenderedImage(src, at);
+    return dest;
   }
 }
