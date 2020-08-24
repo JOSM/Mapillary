@@ -902,7 +902,3 @@ msgstr[2] "{0} linija"
 msgid "{0}Options requiring login{1}"
 msgstr "{0}Opcije zahtevaju prijavu{1}"
 
-msgid "Allows the user to work with pictures hosted at mapillary.com"
-msgstr ""
-"Pruža korisniku mogućnost da radi sa fotografijama koje se nalaze na "
-"mapillary.com"
