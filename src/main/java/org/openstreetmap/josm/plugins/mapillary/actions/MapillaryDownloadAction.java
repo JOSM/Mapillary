@@ -30,7 +30,8 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryDownloadAction extends JosmAction {
 
   private static final long serialVersionUID = 325060354730454948L;
-  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Open Mapillary layer"), KeyEvent.VK_COMMA, Shortcut.SHIFT);
+  public static final Shortcut SHORTCUT = Shortcut.registerShortcut("Mapillary", tr("Open Mapillary layer"),
+    KeyEvent.VK_COMMA, Shortcut.SHIFT);
 
   /**
    * Main constructor.
@@ -43,7 +44,7 @@ public class MapillaryDownloadAction extends JosmAction {
       SHORTCUT,
       false,
       "mapillaryDownload",
-      false);
+      true);
   }
 
   @Override
@@ -76,5 +77,10 @@ public class MapillaryDownloadAction extends JosmAction {
       // If the MapillaryLayer is not managed by LayerManager but you try to set it as active layer
       Logging.warn(e);
     }
+  }
+
+  @Override
+  public void updateEnabledState() {
+    super.setEnabled(MainApplication.isDisplayingMapView());
   }
 }

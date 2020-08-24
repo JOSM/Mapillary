@@ -28,7 +28,7 @@ public class MapObjectLayerAction extends JosmAction {
       Shortcut.registerShortcut("mapillary:trafficSignLayer", ACTION_NAME, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       false,
       "mapillary:trafficSignLayer",
-      false);
+      true);
   }
 
   @Override
@@ -46,5 +46,10 @@ public class MapObjectLayerAction extends JosmAction {
         }
       }
     });
+  }
+
+  @Override
+  public void updateEnabledState() {
+    super.setEnabled(MainApplication.isDisplayingMapView());
   }
 }

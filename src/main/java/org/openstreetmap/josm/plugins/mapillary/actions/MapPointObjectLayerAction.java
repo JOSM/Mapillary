@@ -31,7 +31,7 @@ public class MapPointObjectLayerAction extends JosmAction {
       tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), tr(TOOLTIP),
       Shortcut.registerShortcut("mapillary:pointFeaturesLayer", tr(ACTION_NAME), KeyEvent.CHAR_UNDEFINED,
         Shortcut.NONE),
-      false, "mapillary:pointFeaturesLayer", false);
+      false, "mapillary:pointFeaturesLayer", true);
   }
 
   @Override
@@ -54,6 +54,11 @@ public class MapPointObjectLayerAction extends JosmAction {
           }
         }
       });
+  }
+
+  @Override
+  public void updateEnabledState() {
+    super.setEnabled(MainApplication.isDisplayingMapView());
   }
 
 }
