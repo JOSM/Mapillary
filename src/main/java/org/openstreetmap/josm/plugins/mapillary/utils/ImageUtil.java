@@ -3,11 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
