@@ -38,7 +38,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
    * See {@link CameraPlane#mapping}.
    */
   static final int imageType = BufferedImage.TYPE_INT_RGB;
-  ZoomPanMouseListener zoomPanMouseListener;
+  public ZoomPanMouseListener zoomPanMouseListener;
 
   public PanoramicImageViewer() {
     super();

@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -46,7 +47,11 @@ import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.AbstractImageViewer;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.MapillaryImageViewer;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -108,7 +113,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   /**
    * Object containing the shown image and that handles zoom and drag
    */
-  public MapillaryImageDisplay mapillaryImageDisplay;
+  public AbstractImageViewer imageViewer;
+  private final MapillaryImageViewer mapillaryViewer = new MapillaryImageViewer();
+  private final PanoramicImageViewer panoramicViewer = new PanoramicImageViewer();
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
@@ -126,13 +133,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       true,
       MapillaryPreferenceSetting.class
     );
-    this.mapillaryImageDisplay = new MapillaryImageDisplay();
+    this.imageViewer = mapillaryViewer;
 
     this.blueButton.setForeground(Color.BLUE);
     this.redButton.setForeground(Color.RED);
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-    panel.add(mapillaryImageDisplay);
+    panel.add(imageViewer);
     setMode(MODE.NORMAL);
   }
 
@@ -302,7 +309,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         return;
       }
       if (this.image == null) {
-        this.mapillaryImageDisplay.setImage(null, null, false);
+        setDisplayImage(null, null, false);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -364,25 +371,22 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         }
         try {
           if (this.imageCache != null && this.imageCache.get() != null) {
-            this.mapillaryImageDisplay.setImage(
-              this.imageCache.get().getImage(), ((MapillaryImage) this.image).getDetections(), this.image.isPanorama()
-            );
+            setDisplayImage(imageCache.get().getImage(), ((MapillaryImage) image).getDetections(),
+              image.isPanorama());
           } else if (this.thumbnailCache != null && this.thumbnailCache.get() != null) {
-            this.mapillaryImageDisplay.setImage(
-              this.thumbnailCache.get().getImage(), ((MapillaryImage) this.image).getDetections(),
-              this.image.isPanorama()
-            );
+            setDisplayImage(thumbnailCache.get().getImage(), ((MapillaryImage) image).getDetections(),
+              image.isPanorama());
           } else {
-            this.mapillaryImageDisplay.paintLoadingImage();
+            this.imageViewer.paintLoadingImage();
           }
         } catch (IOException e) {
           Logging.error(e);
-          this.mapillaryImageDisplay.setImage(null, null, false);
+          setDisplayImage(null, null, false);
         }
       } else if (this.image instanceof MapillaryImportedImage) {
-        final MapillaryImportedImage mapillaryImage = (MapillaryImportedImage) this.image;
+        final MapillaryImportedImage importedImage = (MapillaryImportedImage) this.image;
         try {
-          this.mapillaryImageDisplay.setImage(mapillaryImage.getImage(), null, mapillaryImage.isPanorama());
+          setDisplayImage(importedImage.getImage(), null, importedImage.isPanorama());
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -413,6 +417,29 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
+  }
+
+  public void setDisplayImage(BufferedImage image, Collection<ImageDetection> detections, Boolean pano) {
+    if (image != null) {
+      if (pano) {
+        if (imageViewer == mapillaryViewer) {
+          panel.remove(imageViewer);
+          imageViewer = panoramicViewer;
+          panel.add(imageViewer);
+        }
+        imageViewer.setImage(image, detections);
+      } else {
+        if (imageViewer == panoramicViewer) {
+          panel.remove(imageViewer);
+          imageViewer = mapillaryViewer;
+          panel.add(imageViewer);
+        }
+        imageViewer.setImage(image, detections);
+      }
+    } else {
+      imageViewer.setImage(null, null);
+    }
+    repaint();
   }
 
   /**
@@ -555,13 +582,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
         || data.equals(thumbnailCache.get()))
         &&
-        (mapillaryImageDisplay.getImage() == null
-          || img.getHeight() >= this.mapillaryImageDisplay.getImage().getHeight())) {
+        (imageViewer.getImage() == null
+          || img.getHeight() >= this.imageViewer.getImage().getHeight())) {
         final MapillaryAbstractImage mai = getImage();
-        this.mapillaryImageDisplay.setImage(
-          img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
-          mai != null && mai.isPanorama()
-        );
+        setDisplayImage(img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
+          mai != null && mai.isPanorama());
       }
     } catch (IOException e) {
       Logging.error(e);

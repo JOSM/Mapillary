@@ -176,7 +176,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       MapillaryMainDialog.getInstance().showDialog();
     }
     if (MapillaryPlugin.getMapView() != null) {
-      MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
+      MapillaryMainDialog.getInstance().imageViewer.repaint();
       MapillaryMainDialog.getInstance()
         .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
