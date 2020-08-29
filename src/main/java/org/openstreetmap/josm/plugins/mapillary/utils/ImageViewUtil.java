@@ -49,4 +49,13 @@ public final class ImageViewUtil {
     }
     return new Rectangle(x + compRect.x, y + compRect.y, w, h);
   }
+
+  public static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
+    if (visibleRect.width > image.getWidth(null)) {
+      visibleRect.width = image.getWidth(null);
+    }
+    if (visibleRect.height > image.getHeight(null)) {
+      visibleRect.height = image.getHeight(null);
+    }
+  }
 }

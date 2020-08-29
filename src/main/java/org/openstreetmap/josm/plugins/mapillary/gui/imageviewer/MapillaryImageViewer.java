@@ -3,24 +3,34 @@ package org.openstreetmap.josm.plugins.mapillary.gui.imageviewer;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.List;
+import javax.swing.ImageIcon;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
+import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.checkIfDetectionIsFiltered;
 
 public class MapillaryImageViewer extends AbstractImageViewer {
 
   private Point mousePointInImg;
+  ZoomPanMouseListener zoomPanMouseListener;
 
   public MapillaryImageViewer() {
     super();
-    ZoomPanMouseListener zoomPanMouseListener = new ZoomPanMouseListener(this);
-    this.addMouseListener(zoomPanMouseListener);
-    this.addMouseWheelListener(zoomPanMouseListener);
-    this.addMouseMotionListener(zoomPanMouseListener);
+    zoomPanMouseListener = new ZoomPanMouseListener(this);
+    addMouseListener(zoomPanMouseListener);
+    addMouseWheelListener(zoomPanMouseListener);
+    addMouseMotionListener(zoomPanMouseListener);
   }
 
   @Override
@@ -33,7 +43,7 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   }
 
   @Override
-  void paintImage(Graphics g, BufferedImage image, Rectangle visibleRect) {
+  protected void paintImage(Graphics g, BufferedImage image, Rectangle visibleRect) {
     Rectangle target = ImageViewUtil.calculateDrawImageRectangle(visibleRect,
       new Rectangle(0, 0, getSize().width, getSize().height));
     g.drawImage(image, target.x, target.y, target.x + target.width,
@@ -42,7 +52,7 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   }
 
   @Override
-  public void zoomOut(int zoomCenterX, int zoomCenterY) {
+  public void zoom(int zoomCenterX, int zoomCenterY, boolean zoomedIn) {
     Image mouseImage;
     Rectangle mouseVisibleRect;
     synchronized (this) {
@@ -53,40 +63,16 @@ public class MapillaryImageViewer extends AbstractImageViewer {
       return;
     }
     mousePointInImg = comp2imgCoord(mouseVisibleRect, zoomCenterX, zoomCenterY);
-    mouseVisibleRect.width = mouseVisibleRect.width * 3 / 2;
-    mouseVisibleRect.height = mouseVisibleRect.height * 3 / 2;
+    if (zoomedIn) {
+      mouseVisibleRect.width = mouseVisibleRect.width * 2 / 3;
+      mouseVisibleRect.height = mouseVisibleRect.height * 2 / 3;
+    } else {
+      mouseVisibleRect.width = mouseVisibleRect.width * 3 / 2;
+      mouseVisibleRect.height = mouseVisibleRect.height * 3 / 2;
+    }
     checkZoom(mouseVisibleRect);
     checkAspectRatio(mouseVisibleRect);
-    checkVisibleRectSize(mouseImage, mouseVisibleRect);
-    Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
-    mouseVisibleRect.x = mousePointInImg.x
-      + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
-    mouseVisibleRect.y = mousePointInImg.y
-      + ((drawRect.y - zoomCenterY) * mouseVisibleRect.height) / drawRect.height;
-    ImageViewUtil.checkVisibleRectPos(mouseImage, mouseVisibleRect);
-    synchronized (this) {
-      visibleRect = mouseVisibleRect;
-    }
-    repaint();
-  }
-
-  @Override
-  public void zoomIn(int zoomCenterX, int zoomCenterY) {
-    Image mouseImage;
-    Rectangle mouseVisibleRect;
-    synchronized (this) {
-      mouseImage = getImage();
-      mouseVisibleRect = this.visibleRect;
-    }
-    if (mouseImage == null) {
-      return;
-    }
-    mousePointInImg = comp2imgCoord(mouseVisibleRect, zoomCenterX, zoomCenterY);
-    mouseVisibleRect.width = mouseVisibleRect.width * 2 / 3;
-    mouseVisibleRect.height = mouseVisibleRect.height * 2 / 3;
-    checkZoom(mouseVisibleRect);
-    checkAspectRatio(mouseVisibleRect);
-    checkVisibleRectSize(mouseImage, mouseVisibleRect);
+    ImageViewUtil.checkVisibleRectSize(mouseImage, mouseVisibleRect);
     Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
     mouseVisibleRect.x = mousePointInImg.x
       + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
@@ -132,22 +118,42 @@ public class MapillaryImageViewer extends AbstractImageViewer {
     repaint();
   }
 
+
   @Override
-  public void stopPanning() {
-    //Do Nothing.
+  protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    final Point upperLeft = img2compCoord(visibleRect, 0, 0);
+    final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+    final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
+    unit2CompTransform.concatenate(
+      AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+
+    for (final ImageDetection d : detections) {
+      if (checkIfDetectionIsFiltered(detectionLayers, d)) {
+        continue;
+      }
+      final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+      g2d.setColor(d.getColor());
+      g2d.draw(shape);
+      ImageIcon icon = MapObject.getIcon(d.getValue());
+      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
+        final Rectangle bounds = shape.getBounds();
+        g2d.drawImage(MapObject.getIcon(d.getValue()).getImage(), bounds.x, bounds.y, bounds.width, bounds.height,
+          null);
+      }
+    }
   }
 
-  /**
-   * Check that the Zoom is not greater than 3:1
-   *
-   * @param zoomedRectangle
-   */
-  protected void checkZoom(Rectangle zoomedRectangle) {
-    if (zoomedRectangle.width < getSize().width / 3) {
-      zoomedRectangle.width = getSize().width / 3;
-    }
-    if (zoomedRectangle.height < getSize().height / 3) {
-      zoomedRectangle.height = getSize().height / 3;
+  protected static class ComponentSizeListener extends ComponentAdapter {
+    @Override
+    public void componentResized(ComponentEvent e) {
+      final Component component = e.getComponent();
+      if (component instanceof MapillaryImageViewer) {
+        final MapillaryImageViewer imgDisplay = (MapillaryImageViewer) component;
+        if (imgDisplay.getImage() != null) {
+          imgDisplay.checkAspectRatio(imgDisplay.visibleRect);
+          ImageViewUtil.checkVisibleRectSize(imgDisplay.image, imgDisplay.visibleRect);
+        }
+      }
     }
   }
 }
