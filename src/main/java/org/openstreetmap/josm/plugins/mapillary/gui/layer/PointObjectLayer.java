@@ -328,7 +328,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
         mapillaryData.setSelectedImage(toSelect);
       }
     }
-    SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint());
+    SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
   }
 
   @Override

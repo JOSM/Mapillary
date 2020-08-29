@@ -77,7 +77,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       if (image instanceof MapillaryImage) {
         MapillaryImage mapillaryImage = (MapillaryImage) image;
         if (detections.containsKey(mapillaryImage.getKey())) {
-          MapillaryMainDialog.getInstance().mapillaryImageDisplay.repaint();
+          MapillaryMainDialog.getInstance().imageViewer.repaint();
         }
       }
       completed = Boolean.TRUE;

@@ -508,7 +508,7 @@ public class MapillaryData implements Data {
         fullyDownloadedDetections.add(i);
       });
       if (imagesToGet.contains(getSelectedImage())) {
-        MapillaryMainDialog.getInstance().mapillaryImageDisplay
+        MapillaryMainDialog.getInstance().imageViewer
           .setAllDetections(((MapillaryImage) getSelectedImage()).getDetections());
       }
     }
