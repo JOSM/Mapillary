@@ -34,7 +34,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
   private Point mousePointInImg;
   static final double PANORAMA_FOV = Math.toRadians(110);
   /**
-   * Use INT_RGB for faster image mapping 
+   * Use INT_RGB for faster image mapping
    * See {@link CameraPlane#mapping}.
    */
   static final int imageType = BufferedImage.TYPE_INT_RGB;
@@ -151,13 +151,11 @@ public class PanoramicImageViewer extends AbstractImageViewer {
       return;
     }
     Point newImagePoint = comp2imgCoord(mouseVisibleRect, p.x, p.y);
-    if (validMousePoint(newImagePoint)) {
-      cameraPlane.setRotationFromDelta(mousePointInImg, newImagePoint);
-      mousePointInImg = newImagePoint;
-    }
+    ImageViewUtil.checkPointInRect(newImagePoint, mouseVisibleRect);
+    cameraPlane.setRotationFromDelta(mousePointInImg, newImagePoint);
+    mousePointInImg = newImagePoint;
     repaint();
   }
-
 
   @Override
   protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {

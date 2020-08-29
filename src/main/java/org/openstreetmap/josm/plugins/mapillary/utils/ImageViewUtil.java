@@ -2,11 +2,12 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 public final class ImageViewUtil {
   private ImageViewUtil() {
-    
+
   }
 
   public static void checkVisibleRectPos(Image image, Rectangle visibleRect) {
@@ -56,6 +57,21 @@ public final class ImageViewUtil {
     }
     if (visibleRect.height > image.getHeight(null)) {
       visibleRect.height = image.getHeight(null);
+    }
+  }
+
+  public static void checkPointInRect(Point p, Rectangle rect) {
+    if (p.x < rect.x) {
+      p.x = rect.x;
+    }
+    if (p.x > rect.x + rect.width) {
+      p.x = rect.x + rect.width -1;
+    }
+    if (p.y < rect.y) {
+      p.y = rect.y;
+    }
+    if (p.y > rect.y + rect.height) {
+      p.y = rect.y + rect.height -1;
     }
   }
 }
