@@ -190,8 +190,8 @@ public class PanoramicImageViewer extends AbstractImageViewer {
   }
 
   private boolean validMousePoint(Point p) {
-    if (0 < p.x && p.x < offscreenImage.getWidth()) {
-      if (0 < p.y && p.y < offscreenImage.getHeight()) {
+    if (0 <= p.x && p.x < offscreenImage.getWidth()) {
+      if (0 <= p.y && p.y < offscreenImage.getHeight()) {
         return true;
       }
     }

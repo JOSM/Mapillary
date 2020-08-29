@@ -216,6 +216,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     signs.add(this.onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
     signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(onlyPano, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
     panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     objectFilter = new TrafficSignFilter();
