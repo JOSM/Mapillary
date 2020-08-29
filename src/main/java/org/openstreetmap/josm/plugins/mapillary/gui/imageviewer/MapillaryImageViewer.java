@@ -23,7 +23,7 @@ import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.chec
 public class MapillaryImageViewer extends AbstractImageViewer {
 
   private Point mousePointInImg;
-  ZoomPanMouseListener zoomPanMouseListener;
+  public ZoomPanMouseListener zoomPanMouseListener;
 
   public MapillaryImageViewer() {
     super();
