@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -14,10 +15,13 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.tools.I18n;
 
 /**
@@ -254,5 +258,18 @@ public final class MapillaryUtils {
       ret.append(" — ").append(PluginState.getUploadString());
     }
     MainApplication.getMap().statusLine.setHelpText(ret.toString());
+  }
+
+  /**
+   * Check if the given ImageDetection is filtered out.
+   */
+  public static boolean checkIfDetectionIsFiltered(final List<PointObjectLayer> detectionLayers, final ImageDetection d) {
+    if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
+        && !"trafficsigns".contains(d.getPackage()))
+        || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
+            && "trafficsigns".contains(d.getPackage())))
+      return true;
+    OsmPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(data -> data.allPrimitives().parallelStream()).filter(p -> p.hasKey("detections") && p.get("detections").contains(d.getKey())).findAny().orElse(null);
+    return prim != null && prim.isDisabled();
   }
 }

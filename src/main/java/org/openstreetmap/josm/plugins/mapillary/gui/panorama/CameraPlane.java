@@ -4,6 +4,8 @@ package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
@@ -150,16 +152,34 @@ public class CameraPlane {
   }
 
   public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
-    IntStream.range(0, targetImage.getHeight()).parallel().forEach(
-        y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(
-        x -> {
+    DataBuffer sourceBuffer = sourceImage.getRaster().getDataBuffer();
+    DataBuffer targetBuffer = targetImage.getRaster().getDataBuffer();
+    if (sourceBuffer.getDataType() == DataBuffer.TYPE_INT
+      && targetBuffer.getDataType() == DataBuffer.TYPE_INT) {// Faster mapping
+      int[] sourceImageBuffer = ((DataBufferInt) sourceImage.getRaster().getDataBuffer()).getData();
+      int[] targetImageBuffer = ((DataBufferInt) targetImage.getRaster().getDataBuffer()).getData();
+      IntStream.range(0, targetImage.getHeight()).parallel().forEach(y -> {
+        IntStream.range(0, targetImage.getWidth()).forEach(x -> {
           final Vector3D vec = getVector3D(new Point(x, y));
           final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
-          targetImage.setRGB(x, y,
+          int tx = (int) (p.x * (sourceImage.getWidth() - 1));
+          int ty = (int) (p.y * (sourceImage.getHeight() - 1));
+          int color = sourceImageBuffer[ty * sourceImage.getWidth() + tx];
+          targetImageBuffer[y * targetImage.getWidth() + x] = color;
+        });
+      });
+    } else {
+      IntStream.range(0, targetImage.getHeight()).parallel().forEach(
+        y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(
+          x -> {
+            final Vector3D vec = getVector3D(new Point(x, y));
+            final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
+            targetImage.setRGB(x, y,
               sourceImage.getRGB((int) (p.x * (sourceImage.getWidth() - 1)), (int) (p.y * (sourceImage.getHeight() - 1)))
-          );
-        }
-      )
-    );
+            );
+          }
+        )
+      );
+    }
   }
 }
