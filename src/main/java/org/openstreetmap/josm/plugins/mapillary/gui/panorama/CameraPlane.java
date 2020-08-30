@@ -13,6 +13,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
 import org.openstreetmap.josm.tools.Logging;
 
@@ -37,6 +39,9 @@ public class CameraPlane {
     this.width = width;
     this.height = height;
     this.distance = distance;
+    if (MapillaryMainDialog.getInstance().getImage() != null) {
+      this.theta = MapillaryMainDialog.getInstance().getImage().getTheta();
+    }
     rotation = new Rotation(RotationOrder.XYX, RotationConvention.VECTOR_OPERATOR, 0, 0, 0);
     setRotation(0.0, 0.0);
     vectors = new Vector3D[width][height];
@@ -95,6 +100,10 @@ public class CameraPlane {
       double deltaPhi = FastMath.atan2(f1.getY(), FastMath.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
           - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
       double newTheta = theta + deltaTheta;
+      if (MapillaryMainDialog.getInstance().getImage() != null) {
+        MapillaryMainDialog.getInstance().getImage().rotatePano(FastMath.toDegrees(deltaTheta));
+      }
+      MapillaryLayer.invalidateInstance();
       // Prevent flipping the 360 viewer accidentally
       double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
       setRotation(newTheta, newPhi);
