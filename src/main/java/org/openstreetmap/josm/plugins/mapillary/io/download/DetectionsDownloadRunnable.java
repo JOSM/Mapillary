@@ -15,6 +15,7 @@ import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
@@ -45,7 +46,9 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public BoundsDownloadRunnable getNextUrl(URL nextUrl) {
-    return new DetectionsDownloadRunnable(data, bounds, nextUrl, monitor);
+    // TODO figure out why the monitor is being finished/cancelled/something early (this prevents continued background
+    // downloads). This is why NullProgressMonitor is used here.
+    return new DetectionsDownloadRunnable(data, bounds, nextUrl, NullProgressMonitor.INSTANCE);
   }
 
   @Override
