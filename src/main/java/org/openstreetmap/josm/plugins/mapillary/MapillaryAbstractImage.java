@@ -56,6 +56,8 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   private LatLon tempLatLon;
 
   private final boolean pano;
+  /** Clockwise rotation from initial direction of 360 panoramic images */
+  private double panoTheta;
 
   /**
    * When the object is being dragged in the map, the temporal position is
@@ -357,6 +359,18 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     this.reviewed = reviewed;
   }
 
+  /**
+   * Rotate 360 image's point of view.
+   * @param theta
+   */
+  public void rotatePano(double theta) {
+    this.panoTheta += theta;
+  }
+
+  public double getTheta() {
+    return this.panoTheta;
+  }
+
   public abstract Color paintHighlightedAngleColour();
 
   public abstract Color paintSelectedAngleColour();
@@ -390,6 +404,11 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   }
 
   public void setMovingCa(double ca) {
+    if (ca > 360) {
+      ca = ca - 360;
+    } else if (ca < 0) {
+      ca = ca + 360;
+    }
     this.movingCa = ca;
   }
 
