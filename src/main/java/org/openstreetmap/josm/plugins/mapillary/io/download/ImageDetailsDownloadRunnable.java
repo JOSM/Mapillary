@@ -12,6 +12,7 @@ import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -38,7 +39,8 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public BoundsDownloadRunnable getNextUrl(URL nextUrl) {
-    return new ImageDetailsDownloadRunnable(data, bounds, nextUrl, monitor);
+    // Use NullProgressMonitor to avoid cancelled downloads...
+    return new ImageDetailsDownloadRunnable(data, bounds, nextUrl, NullProgressMonitor.INSTANCE);
   }
 
   @Override
