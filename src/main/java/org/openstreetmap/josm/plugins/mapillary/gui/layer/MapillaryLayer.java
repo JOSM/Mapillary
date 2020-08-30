@@ -479,26 +479,25 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         2 * CA_INDICATOR_RADIUS);
       g.setComposite(currentComposit);
     }
-
     AffineTransform backup = g.getTransform();
     if (img instanceof MapillaryImage && mode instanceof EditMode) {
       if (!((MapillaryImage) img).isDeleted()) {
         Composite currentComposit = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), orignalP, getOriginalCentroid(i)));
+        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), orignalP, getOriginalCentroid(i)));
         g.drawImage(img.getActiveSequenceImage(), orignalP.x, orignalP.y, null);
         g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
         g.setComposite(currentComposit);
         g.drawImage(i, p.x, p.y, null);
         g.setTransform(backup);
       } else {
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i)));
+        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
         g.drawImage(img.getDeletedImage(), p.x, p.y, null);
         g.setComposite(composite);
         g.setTransform(backup);
       }
     } else {
-      g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
+      g.setTransform(getTransform(Math.toRadians(img.getMovingCa() + img.getTheta()), p, getOriginalCentroid(i)));
       g.drawImage(i, p.x, p.y, null);
       g.setTransform(backup);
     }
