@@ -11,12 +11,16 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 public class ImageImportUtilTest {
+  @Rule
+  public JOSMTestRules rule = new JOSMTestRules().projection();
 
   @Test
   public void testUntaggedImage() throws URISyntaxException, IOException {
