@@ -24,8 +24,6 @@ assemble:
   artifacts:
     paths:
       - build/
-  except:
-    - schedules
 
 java 11 assemble:
   stage: build
@@ -35,8 +33,6 @@ java 11 assemble:
   artifacts:
     paths:
       - build/
-  except:
-    - schedules
 
 java 12 assemble:
   stage: build
@@ -47,8 +43,6 @@ java 12 assemble:
     paths:
       - build/
   allow_failure: true
-  except:
-    - schedules
 
 java 13 assemble:
   stage: build
@@ -59,8 +53,6 @@ java 13 assemble:
     paths:
       - build/
   allow_failure: true
-  except:
-    - schedules
 
 java 14 assemble:
   stage: build
@@ -71,8 +63,6 @@ java 14 assemble:
     paths:
       - build/
   allow_failure: true
-  except:
-    - schedules
 
 java 15 assemble:
   stage: build
@@ -83,8 +73,6 @@ java 15 assemble:
     paths:
       - build/
   allow_failure: true
-  except:
-    - schedules
 
 
 ##############
@@ -99,24 +87,18 @@ build:
     paths:
     - build
   needs: ["assemble"]
-  except:
-    - schedules
 
 min JOSM compile:
   stage: test
   script:
     - ./gradlew compileJava_minJosm --stacktrace
   needs: ["assemble"]
-  except:
-    - schedules
 
 latest JOSM compile:
   stage: test
   script:
     - ./gradlew compileJava_latestJosm --stacktrace
   needs: ["assemble"]
-  only:
-    - schedules@JOSM/plugin/Mapillary
 
 java 11 build:
   stage: test
@@ -124,8 +106,6 @@ java 11 build:
   script:
     - ./gradlew build --stacktrace
   needs: ["java 11 assemble"]
-  except:
-    - schedules
 
 java 12 build:
   stage: test
@@ -134,8 +114,6 @@ java 12 build:
     - ./gradlew build --stacktrace
   needs: ["java 12 assemble"]
   allow_failure: true
-  except:
-    - schedules
 
 java 13 build:
   stage: test
@@ -144,8 +122,6 @@ java 13 build:
     - ./gradlew build --stacktrace
   needs: ["java 13 assemble"]
   allow_failure: true
-  except:
-    - schedules
 
 java 14 build:
   stage: test
@@ -154,8 +130,6 @@ java 14 build:
     - ./gradlew build --stacktrace
   needs: ["java 14 assemble"]
   allow_failure: true
-  except:
-    - schedules
 
 java 15 build:
   stage: test
@@ -164,8 +138,6 @@ java 15 build:
     - ./gradlew build --stacktrace
   needs: ["java 15 assemble"]
   allow_failure: true
-  except:
-    - schedules
 
 ################
 # Deploy stage #
@@ -182,11 +154,9 @@ transifex.com:
   needs: ["assemble"]
   only:
     refs:
-      - master@JOSM/plugin/Mapillary
+      - master
     variables:
       - $TRANSIFEX_TOKEN
-  except:
-    - schedules
 
 codecov.io:
   image: alpine:3.10
@@ -202,11 +172,9 @@ codecov.io:
   needs: ["build"]
   only:
     refs:
-      - master@JOSM/plugin/Mapillary
+      - master
     variables:
       - $CODECOV_TOKEN
-  except:
-    - schedules
 
 sonarcloud.io:
   image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
@@ -219,11 +187,9 @@ sonarcloud.io:
   needs: ["build"]
   only:
     refs:
-      - master@JOSM/plugin/Mapillary
+      - master
     variables:
       - $SONAR_TOKEN
-  except:
-    - schedules
 
 GitLab Maven repo:
   stage: deploy
@@ -235,8 +201,6 @@ GitLab Maven repo:
   needs: ["build", "min JOSM compile", "latest JOSM compile"]
   only:
     - tags@JOSM/plugin/Mapillary
-  except:
-    - schedules
 
 release:
   stage: deploy
@@ -267,8 +231,6 @@ release:
   needs: ["build", "min JOSM compile", "latest JOSM compile"]
   only:
     - tags@JOSM/plugin/Mapillary
-  except:
-    - schedules
 
 
 #################
@@ -285,5 +247,3 @@ release to Gitlab.com:
   needs: ["GitLab Maven repo"]
   only:
     - tags@JOSM/plugin/Mapillary
-  except:
-    - schedules
