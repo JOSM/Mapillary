@@ -317,43 +317,44 @@ public final class MapillaryFilterDialog extends ToggleDialog
     final OrganizationRecord organization = (OrganizationRecord) organizations.getSelectedItem();
 
     // This predicate returns true if the image should be made invisible
-    Predicate<MapillaryAbstractImage> shouldHide = img -> {
-      if (!layerVisible) {
-        return true;
-      }
-      if (timeFilter && checkValidTime(img)) {
-        return true;
-      }
-      if (endDateRefresh != null && checkEndDate(img)) {
-        return true;
-      }
-      if (startDateRefresh != null && checkStartDate(img)) {
-        return true;
-      }
-      if (!importedIsSelected && img instanceof MapillaryImportedImage) {
-        return true;
-      }
-      if (onlyPanoIsSelected && !img.isPanorama()) {
-        return true;
-      }
-      if (img instanceof MapillaryImage) {
-        if (!downloadedIsSelected) {
+    Predicate<MapillaryAbstractImage> shouldHide =
+      img -> {
+        if (!layerVisible) {
           return true;
         }
-        if (onlySignsIsSelected && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+        if (timeFilter && checkValidTime(img)) {
           return true;
         }
-        UserProfile userProfile = ((MapillaryImage) img).getUser();
-        if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
+        if (endDateRefresh != null && checkEndDate(img)) {
           return true;
         }
-        if (!OrganizationRecord.NULL_RECORD.equals(organization)
-          && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
+        if (startDateRefresh != null && checkStartDate(img)) {
           return true;
         }
-      }
-      return false;
-    };
+        if (!importedIsSelected && img instanceof MapillaryImportedImage) {
+          return true;
+        }
+        if (onlyPanoIsSelected && !img.isPanorama()) {
+          return true;
+        }
+        if (img instanceof MapillaryImage) {
+          if (!downloadedIsSelected) {
+            return true;
+          }
+          if (onlySignsIsSelected && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+            return true;
+          }
+          UserProfile userProfile = ((MapillaryImage) img).getUser();
+          if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
+            return true;
+          }
+          if (!OrganizationRecord.NULL_RECORD.equals(organization)
+            && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
+            return true;
+          }
+        }
+        return false;
+      };
 
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getData().getImages().parallelStream().forEach(img -> img.setVisible(!shouldHide.test(img)));

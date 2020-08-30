@@ -66,6 +66,7 @@ dependencies {
   testImplementation("org.awaitility:awaitility:4.0.3")
   testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
   testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.6")
+  packIntoJar("org.jdatepicker:jdatepicker:1.3.4")
 }
 
 sourceSets {
