@@ -422,24 +422,24 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection> detections, Boolean pano) {
     if (image != null) {
       if (pano) {
-        if (imageViewer == mapillaryViewer) {
+        if (imageViewer instanceof MapillaryImageViewer) {
           panel.remove(imageViewer);
           imageViewer = panoramicViewer;
           panel.add(imageViewer);
+          repaint();
         }
-        imageViewer.setImage(image, detections);
       } else {
-        if (imageViewer == panoramicViewer) {
+        if (imageViewer instanceof PanoramicImageViewer) {
           panel.remove(imageViewer);
           imageViewer = mapillaryViewer;
           panel.add(imageViewer);
+          repaint();
         }
-        imageViewer.setImage(image, detections);
       }
+      imageViewer.setImage(image, detections);
     } else {
       imageViewer.setImage(null, null);
     }
-    repaint();
   }
 
   /**

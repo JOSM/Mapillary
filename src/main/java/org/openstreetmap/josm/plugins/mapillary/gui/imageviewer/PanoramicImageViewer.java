@@ -38,14 +38,9 @@ public class PanoramicImageViewer extends AbstractImageViewer {
    * See {@link CameraPlane#mapping}.
    */
   static final int imageType = BufferedImage.TYPE_INT_RGB;
-  public ZoomPanMouseListener zoomPanMouseListener;
 
   public PanoramicImageViewer() {
     super();
-    zoomPanMouseListener = new ZoomPanMouseListener(this);
-    addMouseListener(zoomPanMouseListener);
-    addMouseWheelListener(zoomPanMouseListener);
-    addMouseMotionListener(zoomPanMouseListener);
     addComponentListener(new ComponentSizeListener());
   }
 
@@ -198,6 +193,30 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     return false;
   }
 
+  @Override
+  public void viewSizeChanged() {
+    int width = getWidth();
+    int height = getHeight();
+    /*
+           for performance issues
+           if (width * height > Math.pow(10, 6)) {
+           double scaleFactor = Math.sqrt(Math.pow(10, 6) / (width * height));
+           width = (int) Math.round(width * scaleFactor);
+           height = (int) Math.round(height * scaleFactor);
+           }
+     */
+    offscreenImage = new BufferedImage(width, height,
+      imageType);
+    double cameraPlaneDistance = (width / 2d) / Math.tan(PANORAMA_FOV / 2);
+    cameraPlane = new CameraPlane(width, height,
+      cameraPlaneDistance);
+    if (getImage() != null) {
+      checkZoom(visibleRect);
+      checkAspectRatio(visibleRect);
+      ImageViewUtil.checkVisibleRectSize(offscreenImage, visibleRect);
+    }
+  }
+
   protected static class ComponentSizeListener extends ComponentAdapter {
 
     @Override
@@ -205,26 +224,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
       final Component component = e.getComponent();
       if (component instanceof PanoramicImageViewer) {
         final PanoramicImageViewer imgDisplay = (PanoramicImageViewer) component;
-        int width = imgDisplay.getWidth();
-        int height = imgDisplay.getHeight();
-        /*
-           for performance issues
-           if (width * height > Math.pow(10, 6)) {
-           double scaleFactor = Math.sqrt(Math.pow(10, 6) / (width * height));
-           width = (int) Math.round(width * scaleFactor);
-           height = (int) Math.round(height * scaleFactor);
-           }
-         */
-        imgDisplay.offscreenImage = new BufferedImage(width, height,
-          imageType);
-        double cameraPlaneDistance = (width / 2d) / Math.tan(PANORAMA_FOV / 2);
-        imgDisplay.cameraPlane = new CameraPlane(width, height,
-          cameraPlaneDistance);
-        if (imgDisplay.getImage() != null) {
-          imgDisplay.checkZoom(imgDisplay.visibleRect);
-          imgDisplay.checkAspectRatio(imgDisplay.visibleRect);
-          ImageViewUtil.checkVisibleRectSize(imgDisplay.offscreenImage, imgDisplay.visibleRect);
-        }
+        imgDisplay.viewSizeChanged();
       }
     }
   }

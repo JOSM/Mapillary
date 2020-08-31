@@ -43,8 +43,16 @@ public abstract class AbstractImageViewer extends JPanel {
    */
   volatile Rectangle visibleRect;
   protected final Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  private final ZoomPanMouseListener zoomPanMouseListener;
+  private boolean zoomPanEnabled;
 
   public AbstractImageViewer() {
+    zoomPanMouseListener = new ZoomPanMouseListener(this);
+    addMouseListener(zoomPanMouseListener);
+    addMouseWheelListener(zoomPanMouseListener);
+    addMouseMotionListener(zoomPanMouseListener);
+    zoomPanEnabled = true;
+
     setOpaque(true);
     setDarkMode(MapillaryProperties.DARK_MODE.get());
     MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
@@ -286,5 +294,7 @@ public abstract class AbstractImageViewer extends JPanel {
    * @param p The point in component.
    */
   public abstract void pan(Point p);
+
+  public abstract void viewSizeChanged();
 
 }
