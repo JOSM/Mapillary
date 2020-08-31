@@ -62,7 +62,7 @@ public final class ImageViewUtil {
 
   /**
    * Check if the given point is within the given rectangle.
-   * If it is out of bounds then it change it is bought on rectangle's edges.
+   * If it is out of bounds then it change it is brought back to rectangle's edges.
    */
   public static void checkPointInRect(Point p, Rectangle rect) {
     if (p.x < rect.x) {

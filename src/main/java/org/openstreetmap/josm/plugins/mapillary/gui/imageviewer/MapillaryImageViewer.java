@@ -23,14 +23,9 @@ import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.chec
 public class MapillaryImageViewer extends AbstractImageViewer {
 
   private Point mousePointInImg;
-  public ZoomPanMouseListener zoomPanMouseListener;
 
   public MapillaryImageViewer() {
     super();
-    zoomPanMouseListener = new ZoomPanMouseListener(this);
-    addMouseListener(zoomPanMouseListener);
-    addMouseWheelListener(zoomPanMouseListener);
-    addMouseMotionListener(zoomPanMouseListener);
   }
 
   @Override
@@ -140,6 +135,14 @@ public class MapillaryImageViewer extends AbstractImageViewer {
         g2d.drawImage(MapObject.getIcon(d.getValue()).getImage(), bounds.x, bounds.y, bounds.width, bounds.height,
           null);
       }
+    }
+  }
+
+  @Override
+  public void viewSizeChanged() {
+    if (getImage() != null) {
+      checkAspectRatio(visibleRect);
+      ImageViewUtil.checkVisibleRectSize(image, visibleRect);
     }
   }
 
