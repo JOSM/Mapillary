@@ -82,7 +82,7 @@ java 15 assemble:
 build:
   stage: test
   script:
-    - ./gradlew build generatePot --stacktrace
+    - ./gradlew build --stacktrace
   artifacts:
     paths:
     - build
@@ -143,6 +143,15 @@ java 15 build:
 # Deploy stage #
 ################
 
+translate:
+  stage: deploy
+  script:
+    - ./gradlew generatePot --stacktrace
+  artifacts:
+    paths:
+    - build
+  needs: ["assemble"]
+
 transifex.com:
   image: registry.gitlab.com/josm/docker-library/python-transifex:latest
   stage: deploy
@@ -151,7 +160,7 @@ transifex.com:
     url: https://www.transifex.com/josm/josm/josm-plugin_Mapillary/
   script:
     - TX_TOKEN="$TRANSIFEX_TOKEN" tx push -s --no-interactive
-  needs: ["assemble"]
+  needs: ["translate"]
   only:
     refs:
       - master
