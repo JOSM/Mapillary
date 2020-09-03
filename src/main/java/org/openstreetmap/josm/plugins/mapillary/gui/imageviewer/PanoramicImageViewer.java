@@ -38,6 +38,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
    * See {@link CameraPlane#mapping}.
    */
   static final int imageType = BufferedImage.TYPE_INT_RGB;
+  private boolean mappingChanged = true;
 
   public PanoramicImageViewer() {
     super();
@@ -81,7 +82,10 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     if (offscreenImage == null) {
       offscreenImage = new BufferedImage(getWidth(), getHeight(), imageType);
     }
-    cameraPlane.mapping(image, offscreenImage);
+    if (mappingChanged) {
+      cameraPlane.mapping(image, offscreenImage);
+      mappingChanged = false;
+    }
     target = new Rectangle(0, 0, getWidth(), getHeight());
     g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
       + target.height, visibleRect.x, visibleRect.y, visibleRect.x
@@ -148,6 +152,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     Point newImagePoint = comp2imgCoord(mouseVisibleRect, p.x, p.y);
     ImageViewUtil.checkPointInRect(newImagePoint, mouseVisibleRect);
     cameraPlane.setRotationFromDelta(mousePointInImg, newImagePoint);
+    mappingChanged = true;
     mousePointInImg = newImagePoint;
     repaint();
   }
@@ -208,8 +213,8 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     offscreenImage = new BufferedImage(width, height,
       imageType);
     double cameraPlaneDistance = (width / 2d) / Math.tan(PANORAMA_FOV / 2);
-    cameraPlane = new CameraPlane(width, height,
-      cameraPlaneDistance);
+    cameraPlane = new CameraPlane(width, height, cameraPlaneDistance);
+    mappingChanged = true;
     if (getImage() != null) {
       checkZoom(visibleRect);
       checkAspectRatio(visibleRect);

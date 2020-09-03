@@ -297,4 +297,21 @@ public abstract class AbstractImageViewer extends JPanel {
 
   public abstract void viewSizeChanged();
 
+  public void enableZoomPan() {
+    if (!zoomPanEnabled) {
+      addMouseListener(zoomPanMouseListener);
+      addMouseWheelListener(zoomPanMouseListener);
+      addMouseMotionListener(zoomPanMouseListener);
+      zoomPanEnabled = true;
+    }
+  }
+
+  public void disableZoomPan() {
+    if (zoomPanEnabled) {
+      removeMouseListener(zoomPanMouseListener);
+      removeMouseWheelListener(zoomPanMouseListener);
+      removeMouseMotionListener(zoomPanMouseListener);
+      zoomPanEnabled = false;
+    }
+  }
 }
