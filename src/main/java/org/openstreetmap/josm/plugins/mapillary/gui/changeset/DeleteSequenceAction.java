@@ -60,7 +60,7 @@ public class DeleteSequenceAction extends AbstractAction {
       } else {
         for (MapillaryAbstractImage img : seq.getImages()) {
           if (img instanceof MapillaryImage) {
-            ((MapillaryImage) img).unmarkDeleted();
+            ((MapillaryImage) img).markDeleted();
           }
         }
       }
