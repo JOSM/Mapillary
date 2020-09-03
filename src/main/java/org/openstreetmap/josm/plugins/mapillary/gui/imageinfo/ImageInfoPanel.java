@@ -9,11 +9,13 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
+import javax.swing.AbstractAction;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -25,16 +27,20 @@ import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
+import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -52,6 +58,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private final ClipboardAction copyImgKeyAction;
   private final AddTagToPrimitiveAction addMapillaryTagAction;
   private final JTextPane seqKeyValue;
+  private final MapillaryButton colorPickerButton;
 
   private ValueChangeListener<Boolean> imageLinkChangeListener;
   private boolean destroyed;
@@ -104,6 +111,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     addMapillaryTagAction = new AddTagToPrimitiveAction(tr("Add Mapillary tag"));
 
+    colorPickerButton = new MapillaryButton(new ColorChooserAction(), true);
+
     JPanel imgKey = new JPanel();
     imgKey.add(imgKeyValue);
     imgKey.add(copyKeyButton);
@@ -111,6 +120,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     imgButtons.add(new MapillaryButton(imgLinkAction, true));
     imgButtons.add(copyUrlButton);
     imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));
+    imgButtons.add(colorPickerButton);
     seqKeyValue = new SelectableLabel();
 
     JPanel root = new JPanel(new GridBagLayout());
@@ -247,6 +257,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     } else {
       seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
     }
+    if (newImage != null) {
+      colorPickerButton.setEnabled(true);
+    } else {
+      colorPickerButton.setEnabled(false);
+    }
   }
   /* (non-Javadoc)
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
@@ -266,5 +281,22 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       destroyed = true;
     }
     destroyInstance();
+  }
+
+  private static class ColorChooserAction extends AbstractAction {
+
+    private static final long serialVersionUID = 8706299665735930148L;
+
+    ColorChooserAction() {
+      super(tr("Pick Color"), ImageProvider.get("mapillary-eyedropper",
+      ImageProvider.ImageSizes.SMALLICON));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      ExtendedDialog abc = new ExtendedDialog( MainApplication.getMainFrame(), tr("Color Picker"));
+      abc.setContent(new ImageColorPicker());
+      abc.showDialog();
+    }
   }
 }
