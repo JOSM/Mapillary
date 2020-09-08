@@ -17,6 +17,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ChildProgress;
+import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -75,7 +76,9 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       if (MapillaryUser.getUsername() != null) {
         OAuthUtils.addAuthenticationHeader(client);
       }
-      HttpClient.Response response = client.connect(monitor);
+      // HttpClient sets the state to FINISHED, and the subsequent calls to getResponse().getBufferedReader() error out.
+      HttpClient.Response response = client.connect(NullProgressMonitor.INSTANCE);
+      monitor.beginTask("Download data");
       if (monitor instanceof ChildProgress) {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
         if (parentMonitor instanceof DownloadProgressMonitor) {
@@ -95,6 +98,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
           parentDownloadMonitor.updateCompleted();
         }
       }
+      monitor.finishTask();
     } catch (IOException e) {
       client.disconnect();
       String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
@@ -115,7 +119,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    * the request method, the response code and the URL itself are logged. Otherwise only the URL is logged.
    *
    * @param client the {@link URLConnection} for which information is logged
-   * @param info an additional info text, which is appended to the output in braces
+   * @param info   an additional info text, which is appended to the output in braces
    */
   public static void logConnectionInfo(final HttpClient client, final String info) {
     final StringBuilder message = new StringBuilder(client.getRequestMethod()).append(' ').append(client.getURL())
