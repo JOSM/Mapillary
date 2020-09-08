@@ -88,6 +88,15 @@ build:
     - build
   needs: ["assemble"]
 
+translate:
+  stage: test
+  script:
+    - ./gradlew generatePot --stacktrace
+  artifacts:
+    paths:
+    - build
+  needs: ["assemble"]
+
 min JOSM compile:
   stage: test
   script:
@@ -142,15 +151,6 @@ java 15 build:
 ################
 # Deploy stage #
 ################
-
-translate:
-  stage: deploy
-  script:
-    - ./gradlew generatePot --stacktrace
-  artifacts:
-    paths:
-    - build
-  needs: ["assemble"]
 
 transifex.com:
   image: registry.gitlab.com/josm/docker-library/python-transifex:latest
