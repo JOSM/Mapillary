@@ -4,9 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Florian Schäfer, 2018
-# Jurbo Lator <joern.map@gmail.com>, 2020
-# Simon Legner <simon.legner@gmail.com>, 2020
+# Nemanja Bračko, 2020
 # 
 #, fuzzy
 msgid ""
@@ -15,21 +13,21 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-09 15:15+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
-"Last-Translator: Simon Legner <simon.legner@gmail.com>, 2020\n"
-"Language-Team: Danish (https://www.transifex.com/josm/teams/2544/da/)\n"
+"Last-Translator: Nemanja Bračko, 2020\n"
+"Language-Team: Serbian (Latin) (https://www.transifex.com/josm/teams/2544/sr@latin/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: sr@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandJoin.java#L61
 msgid "2 images joined"
-msgstr "2 billeder lagt sammen"
+msgstr "2 fotografije objedinjene"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandUnjoin.java#L61
 msgid "2 images unjoined"
-msgstr "2 billeder adskilt"
+msgstr "2 fotografije razdvojene"
 
 #. filter mode: add
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L290
@@ -41,24 +39,23 @@ msgstr "A"
 #, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
-msgstr ""
-"Et tag med nøgle <i>{0}</i> er allerede til stede på det valgte OSM objekt."
+msgstr "Atribut sa ključem <i>{0}</i> već postoji na izabranom OSM objektu."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
 msgid "Add"
-msgstr "Tilføj"
+msgstr "Dodaj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L105
 msgid "Add Mapillary tag"
-msgstr "Tilføj Mapillary tag"
+msgstr "Dodaj Mapillary atribut"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
 msgid "Add filter."
-msgstr "Tilføj filter."
+msgstr "Dodaj filter."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L43
 msgid "All images in a directory"
-msgstr "Alle billeder i en mappe"
+msgstr "Sve fotografije u direktorijumu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L125
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L123
@@ -68,16 +65,16 @@ msgid ""
 "appears for the first time, simply try it again. This might have been an "
 "issue with the internet connection."
 msgstr ""
-"En hændelse opstod under forsøget på at indsende et rettesæt. Hvis det sker "
-"gentagne gange, overvej da at rapportere en fejl via menuen Hjælp. Hvis "
-"denne meddelelse vises for første gang, så prøv igen. Der kan have været et "
-"problem med internetforbindelsen."
+"Došlo je do izuzetka pri pokušaju slanja skupa promena. Ukoliko se ovo "
+"ponovo dogodi, razmislite o prijavi greške putem menija Pomoć. Ukoliko se "
+"ova poruka pojavila prvi put, samo pokušajte ponovo. Ova greška može biti "
+"prouzrokovana Internet vezom."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L61
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L46
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L59
 msgid "Cancel"
-msgstr "Annuller"
+msgstr "Otkaži"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L238
 msgid "Cancel all downloads"
@@ -92,21 +89,23 @@ msgstr ""
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
+"Centrira prikaz na novu fotografiju prilikom upotrebe dugmića za prelazak na"
+" drugu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L111
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L109
 #, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
-msgstr "Rettesæt upload mislykkedes med {0} fejl ''{1} {2}''!"
+msgstr "Nije uspelo otpremanje skupa promena uz {0} grešku ''{1} {2}''!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L503
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L513
 msgid "Choose signs"
-msgstr "Vælg skilte"
+msgstr "Izaberite znakove"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L31
 msgid "Clear"
-msgstr "Ryd"
+msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L223
 msgid "Clear queued downloads"
@@ -114,56 +113,57 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L492
 msgid "Continues with the paused walk."
-msgstr "Fortsætter med den gåtur der er på pause."
+msgstr "Nastavlja sa pauziranom šetnjom."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
 msgid "Copied URL to clipboard …"
-msgstr ""
+msgstr "URL je kopiran u ostavu…"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
 msgid "Copied key to clipboard …"
-msgstr ""
+msgstr "Ključ je kopiran u ostavu…"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
 msgid "Copy URL"
-msgstr ""
+msgstr "Kopiraj URL adresu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
 msgid "Copy key"
-msgstr "Kopier nøgle"
+msgstr "Kopiraj ključ"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L79
 msgid "Could not import a geotagged image to the Mapillary layer!"
-msgstr "Kunne ikke importere et geotagget billede til Mapillary laget!"
+msgstr ""
+"Nije moguće uvesti geo pozicioniranu fotografiju na Mapillary podlogu!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
 #, java-format
 msgid "Could not import the directory ''{0}''!"
-msgstr "Kunne ikke importere mappen ''{0}''!"
+msgstr "Nije moguće uvesti direktorijum ''{0}''!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
 #, java-format
 msgid "Could not import the image ''{0}''!"
-msgstr "Kunne ikke importere billedet ''{0}''!"
+msgstr "Nije moguće uvesti fotografiju ''{0}''!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/WebLinkAction.java#L48
 #, java-format
 msgid "Could not open the URL {0} in a browser"
-msgstr "Kunne ikke åbne URL {0} i en browser"
+msgstr "Nije moguće otvoriti URL adresu {0} u pregledaču"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/BoundsDownloadRunnable.java#L104
 #, java-format
 msgid "Could not read from URL {0}!"
-msgstr "Kunne ikke læse fra URL {0}!"
+msgstr "Nije moguće pročitati sa URL adrese {0}!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L87
 msgid "Current Mapillary changeset"
-msgstr "Aktuelt Mapillary rettesæt"
+msgstr "Trenutni Mapillary skup promena"
 
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L79
 msgid "Cut off sequences at download bounds"
-msgstr "Afskær sekvenser ved download grænse"
+msgstr "Odseci sekvence van preuzetog područja"
 
 #. filter mode: remove
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L292
@@ -174,15 +174,15 @@ msgstr "D"
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L76
 msgid "Dark mode for image display"
-msgstr ""
+msgstr "Tamni režim za prikaz fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Days"
-msgstr "Dage"
+msgstr "Dana"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
 msgid "Delete"
-msgstr "Slet"
+msgstr "Ukloni"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L22
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L54
@@ -196,37 +196,43 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L53
 msgid "Delete after upload"
-msgstr "Slet efter upload"
+msgstr "Ukloni posle otpremanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
 msgid "Delete filter."
-msgstr "Slet filter."
+msgstr "Ukloni filter."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandDelete.java#L50
 #, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
-msgstr[0] "Slettede {0} billede"
-msgstr[1] "Slettede {0} billeder"
+msgstr[0] "Uklonjena je {0} fotografija"
+msgstr[1] "Uklonjene su {0} fotografija"
+msgstr[2] "Uklonjeno je {0} fotografija"
 
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L64
 msgid "Display hour when the picture was taken"
-msgstr "Vis hvornår billedet blev taget"
+msgstr "Prikaži vreme kada je fotografija napravljena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L63
 msgid "Displays detail information on the currently selected Mapillary image"
-msgstr "Viser detaljerede oplysninger om det aktuelt valgte Mapillary billede"
+msgstr ""
+"Prikaži detaljne informacije o trenutno obeleženoj Mapillary fotografiji"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L27
 msgid ""
 "Displays the layer displaying the map point objects detected by Mapillary"
 msgstr ""
+"Prikazuje podlogu na kojoj su prikazane tačke objekata prepoznatih pomoću "
+"Mapillary algoritma"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L21
 msgid ""
 "Displays the layer displaying the traffic sign objects detected by Mapillary"
 msgstr ""
+"Prikazuje podlogu na kojoj su prikazani saobraćajni znaci prepoznatih pomoću"
+" Mapillary algoritma"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L53
 #, java-format
@@ -234,20 +240,20 @@ msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
 msgstr ""
-"Vil du virkelig erstatte den nuværende værdi <i>{0}</i> med den nye værdi "
-"<i>{1}</i>?"
+"Želite li zaista da zamenite trenutnu vrednost <i>{0}</i> sa novom vrednošću"
+" <i>{1}</i>?"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
 msgid "Down"
-msgstr "Ned"
+msgstr "Dole"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadViewAction.java#L28
 msgid "Download Mapillary images in current view"
-msgstr "Download Mapillary billeder i den aktuelle visning"
+msgstr "Preuzmite Mapillary fotografije unutar trenutnog prikaza"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L40
 msgid "Download all available images"
-msgstr ""
+msgstr "Preuzmite sve dostupne fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L68
 msgid "Download manager for Mapillary Images"
@@ -255,34 +261,34 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L144
 msgid "Download mode"
-msgstr "Download tilstand"
+msgstr "Režim preuzimanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L441
 msgid "Downloaded images"
-msgstr "Downloadede billeder"
+msgstr "Preuzete fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L242
 msgid "Downloading Mapillary images"
-msgstr "Downloader Mapillary billeder"
+msgstr "Preuzimanje Mapillary fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L54
 msgid "Downloading…"
-msgstr ""
+msgstr "Preuzimanje…"
 
 #. translators notes must be in front
 #. column header: enable filter
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
 msgctxt "filter"
 msgid "E"
-msgstr "Ø"
+msgstr "E"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
 msgid "Edit"
-msgstr "Rediger"
+msgstr "Uredi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
 msgid "Edit filter."
-msgstr "Rediger filter."
+msgstr "Uredi filter."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L48
 msgid "Edit images in Mapillary Layer"
@@ -300,50 +306,53 @@ msgstr ""
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L92
 msgid "Enable experimental beta-features (might be unstable)"
-msgstr "Aktiver eksperimentelle beta-funktioner (muligvis ustabil)"
+msgstr "Omogući eksperimentalne beta funkcije (može biti nestabilno)"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L116
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L480
 msgid "Enable filter"
-msgstr "Slå filter til"
+msgstr "Omogući filter"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L174
 msgid ""
 "Enable/disable JavaFX (requires restart). Using JavaFX may cause a smaller "
 "window issue, or a whited-out sidebar."
 msgstr ""
+"Omogući/onemogući JavaFX (zahteva ponovno pokretanje). Ukoliko koristite "
+"JavaFX može dovesti do manjih problema sa prozorom ili da traka sa strane "
+"postane bela."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L143
 msgid "End"
-msgstr ""
+msgstr "Završi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L87
 msgid "Explore"
-msgstr "Filstyringsprogram"
+msgstr "Istraži"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L48
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L49
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L50
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L68
 msgid "Export Mapillary images"
-msgstr "Exporter Mapillary billeder"
+msgstr "Izvezite Mapillary fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L68
 msgid "Export all images"
-msgstr "Eksporter alle billeder"
+msgstr "Izvezite sve fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L72
 msgid "Export selected images"
-msgstr "Eksporter valgte billeder"
+msgstr "Izvezite obeležene fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L70
 msgid "Export selected sequence"
-msgstr "Eksporter valgte rækkefølge"
+msgstr "Izvezite obeleženu sekvencu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L55
 msgid "Exporting Mapillary Images…"
-msgstr ""
+msgstr "Izvoz Mapillary fotografija…"
 
 #. filter mode: in selection
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L294
@@ -358,56 +367,56 @@ msgstr "Filter"
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L381
 #, java-format
 msgid "Filter Hidden:{0} Disabled:{1}"
-msgstr "Filter Skjult:{0} Deaktiveret:{1}"
+msgstr "Filter je sakrio:{0} Onemogućeno:{1}"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L89
 msgid "Filter Mapillary Detections"
-msgstr ""
+msgstr "Filtriranje Mapillary prepoznavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L87
 msgid "Filter mapillary objects and hide/disable them."
-msgstr ""
+msgstr "Filtriranje Mapillary objekata i sakrivanje/onemogućavanje istih."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L118
 msgid "Filter mode"
-msgstr "Filtertilstand"
+msgstr "Režim filtriranja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L111
 msgid "Finished upload"
-msgstr "Upload færdig"
+msgstr "Završeno otpremanje"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L171
 msgid "First Seen End"
-msgstr ""
+msgstr "Prvi put viđeno - kraj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L170
 msgid "First Seen Start"
-msgstr ""
+msgstr "Prvi put viđeno - početak"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L46
 msgid "Follow selected image"
-msgstr "Følg valgt billede"
+msgstr "Prati obeleženu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L45
 msgid "From existing image layer"
-msgstr "Fra eksisterende billedlag"
+msgstr "Sa postojeće podloge fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L39
 msgid "From which source do you want to import images to the Mapillary layer?"
-msgstr "Fra hvilken kilde vil du importere billeder til Mapillary laget?"
+msgstr "Sa kog izvora želite da uvezete fotografije na Mapillary podlogu?"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L69
 msgid "Give way"
-msgstr "Ubetinget vigepligt"
+msgstr "Ukrštanje sa putem sa prvenstvom prolaza"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L50
 msgid "Go forward"
-msgstr "Gå frem"
+msgstr "Idi napred"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L42
 msgid "Go to setting and log in to Mapillary before uploading."
-msgstr "Gå til indstilling og log på Mapillary før upload."
+msgstr "Dođite na postavke i prijavite se u Mapillary pre otpremanja."
 
 #. column header: hide filter
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
@@ -417,12 +426,12 @@ msgstr "H"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
 msgid "Hide filter"
-msgstr "Skjul filter"
+msgstr "Sakrij filter"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L505
 msgid "Hiding filter"
-msgstr "Skjuler filter"
+msgstr "Sakrivanje filtera"
 
 #. column header: inverted filter
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
@@ -432,19 +441,19 @@ msgstr "I"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L68
 msgid "I got it, close this."
-msgstr "Jeg fik det, luk dette."
+msgstr "Shvatio sam, zatvori."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L131
 msgid "Image actions"
-msgstr "Billedhandlinger"
+msgstr "Akcije nad fotografijom"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L126
 msgid "Image detections"
-msgstr "Billedetektioner"
+msgstr "Prepoznavanja na fotografijama"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L61
 msgid "Image info"
-msgstr "Billedinformation"
+msgstr "Informacije o fotografiji"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L64
 msgid "Image info dialog"
@@ -452,134 +461,135 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L133
 msgid "Image key"
-msgstr "Billednøgle"
+msgstr "Ključ fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L169
 msgid "Image selection"
-msgstr ""
+msgstr "Obeležavanje fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L41
 msgid "Images from my file system"
-msgstr "Billeder fra mit filsystem"
+msgstr "Fotografije sa mog sistema datoteka"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L63
 msgid "Import"
-msgstr "Importer"
+msgstr "Uvoz"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
 msgid "Import exception"
-msgstr "Import hændelse"
+msgstr "Izuzeci iz uvoza"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L36
 msgid "Import local pictures"
-msgstr "Importer lokale billeder"
+msgstr "Uvoz lokalnih fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L34
 msgid "Import pictures"
-msgstr "Importer billeder"
+msgstr "Uvoz fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L37
 msgid "Import pictures into Mapillary layer"
-msgstr "Importer billeder til Mapillary lag"
+msgstr "Uvoz fotografija na Mapillary podlogu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L87
 msgid "Imported images"
-msgstr "Importerede billeder"
+msgstr "Uvezene fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandImport.java#L54
 #, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
-msgstr[0] "Importerede {0} billede"
-msgstr[1] "Importerede {0} billeder"
+msgstr[0] "Uvezena je {0} fotografija"
+msgstr[1] "Uvezene su {0} fotografije"
+msgstr[2] "Uvezeno je {0} fotografija"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L75
 msgid "Intersection danger"
-msgstr "Farligt vejkryds"
+msgstr "Opasnost od preseka"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
 msgid "Inverse filter"
-msgstr "Omvend filter"
+msgstr "Inverzni filter"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L49
 msgid ""
 "It can be activated by clicking the left button at the bottom of this "
 "message or the button in the toolbar on the left, which uses the same icon."
 msgstr ""
-"Det kan aktiveres ved at klikke på den venstre knap nederst i denne "
-"meddelelse eller knappen i værktøjslinjen til venstre, som bruger det samme "
-"ikon."
+"Ovo može biti aktivirano klikom levog tastera miša na dnu ove poruke ili "
+"putem dugmeta koje se nalazi na traci sa alatkama sa leve strane, koje "
+"prikazano u obliku iste ikone."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
 msgid "Join images into sequences in the Mapillary Layer"
-msgstr ""
+msgstr "Objedini fotografije u sekvence na Mapillary podlozi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L87
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L30
 msgid "Join mode"
-msgstr "Sammenlæg tilstand"
+msgstr "Režim objedinjavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L31
 msgid "Join/unjoin pictures"
-msgstr "Sammenlæg/adskil billeder"
+msgstr "Objedini/razdvoji fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L64
 msgid "Jump to blue"
-msgstr "Hop til blå"
+msgstr "Pređi na plavu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L67
 msgid "Jump to blue image"
-msgstr ""
+msgstr "Prelazak na plavu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L25
 msgid "Jump to next image"
-msgstr ""
+msgstr "Prelazak na sledeću fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L42
 msgid "Jump to previous image"
-msgstr ""
+msgstr "Prelazak na prethodnu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L56
 msgid "Jump to red"
-msgstr "Hop til rød"
+msgstr "Pređi na crvenu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L59
 msgid "Jump to red image"
-msgstr ""
+msgstr "Prelazak na crvenu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L65
 msgid "Jumps to the picture at the other side of the blue line"
-msgstr "Hopper til billedet i den anden ende af den blå linje"
+msgstr "Prelazi na fotografije sa suprotne strane plave linije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L57
 msgid "Jumps to the picture at the other side of the red line"
-msgstr "Hopper til billedet i den anden ende af den røde linje"
+msgstr "Prelazi na fotografije sa suprotne strane crvene linije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L174
 msgid "Last Seen End"
-msgstr ""
+msgstr "Poslednji put viđeno - kraj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L173
 msgid "Last Seen Start"
-msgstr ""
+msgstr "Poslednji put viđeno - početak"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L75
 msgid "Layer"
-msgstr "Lag"
+msgstr "Podloga"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L266
 msgid "Login"
-msgstr "Log ind"
+msgstr "Prijava"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L33
 msgid "Login successful, return to JOSM."
-msgstr "Login lykkes, vend tilbage til JOSM."
+msgstr "Uspešna prijava, vratite se u JOSM."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L292
 msgid "Logout"
-msgstr "Log ud"
+msgstr "Odjava"
 
 #. column header: filter mode
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L220
@@ -590,7 +600,7 @@ msgstr "M"
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L77
 msgid "Mandatory direction (any)"
-msgstr "Påbudt kørselsretning (enhver)"
+msgstr "Obavezan smer (bilo koji)"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L41
 msgid "Mapillary"
@@ -606,23 +616,23 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L85
 msgid "Mapillary Expert Filter"
-msgstr ""
+msgstr "Mapillary filter za stručnjake"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L149
 msgid "Mapillary Images"
-msgstr "Mapillary billeder"
+msgstr "Mapillary fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
 msgid "Mapillary Join Mode"
-msgstr ""
+msgstr "Mapillary režim objedinjavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
 msgid "Mapillary Select Mode"
-msgstr ""
+msgstr "Mapillary režim obeležeavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
 msgid "Mapillary changeset"
-msgstr "Mapillary rettesæt"
+msgstr "Mapillary skup promena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L108
 msgid "Mapillary filter"
@@ -630,7 +640,7 @@ msgstr "Mapillary filter"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L81
 msgid "Mapillary history"
-msgstr "Mapillary historie"
+msgstr "Mapillary istorija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L84
 msgid "Mapillary history dialog"
@@ -638,7 +648,7 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L65
 msgid "Mapillary image"
-msgstr "Mapillary billede"
+msgstr "Mapillary fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L111
 msgid "Mapillary images Filter"
@@ -650,11 +660,11 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L610
 msgid "Mapillary layer"
-msgstr "Mapillary lag"
+msgstr "Mapillary podloga"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L32
 msgid "Mapillary login"
-msgstr "Mapillary login"
+msgstr "Mapillary prijava"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L124
 msgid "Mapillary main dialog"
@@ -662,19 +672,19 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L120
 msgid "Mapillary point features"
-msgstr ""
+msgstr "Mapillary funkcije tačaka"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L25
 msgid "Mapillary point features layer"
-msgstr ""
+msgstr "Mapillary podloga funkcija tačaka"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L121
 msgid "Mapillary traffic signs"
-msgstr ""
+msgstr "Mapillary saobraćajni znakovi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L19
 msgid "Mapillary traffic signs layer"
-msgstr ""
+msgstr "Mapillary podloga saobraćajnih znakova"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L239
 msgid "Mapillary: redo history changes"
@@ -682,11 +692,11 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L177
 msgid "Mapillary: toggle detections"
-msgstr ""
+msgstr "Mapillary: uključivanje prepoznavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L200
 msgid "Mapillary: toggle sign detections"
-msgstr ""
+msgstr "Mapillary: uključivanje prepoznatih znakova"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L222
 msgid "Mapillary: undo history changes"
@@ -719,7 +729,7 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L444
 msgid "Merging layers"
-msgstr "Sammenlægger lag"
+msgstr "Objedinjavanje podloga"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L29
 msgid "Month"
@@ -727,32 +737,33 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Months"
-msgstr "Måneder"
+msgstr "Meseci"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
 msgid "Move filter down."
-msgstr "Flyt filter ned."
+msgstr "Premesti filter nadole."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
 msgid "Move filter up."
-msgstr "Flyt filter op."
+msgstr "Premesti filter nagore."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandMove.java#L58
 #, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
-msgstr[0] "Flyttede {0} billede"
-msgstr[1] "Flyttede {0} billeder"
+msgstr[0] "Premeštena je {0} fotografija"
+msgstr[1] "Premeštene su {0} fotografije"
+msgstr[2] "Premešteno je {0} fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
 #, java-format
 msgid "Multikey: {0}"
-msgstr "Flertast: {0}"
+msgstr "Više ključeva: {0}"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L22
 msgid "Next picture"
-msgstr "Næste billede"
+msgstr "Sledeća fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L236
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L237
@@ -762,26 +773,26 @@ msgstr ""
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L73
 msgid "No entry"
-msgstr "Indkørsel forbudt"
+msgstr "Zabrana saobraćaja u jednom smeru"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L248
 msgid "No images found"
-msgstr "Ingen billeder fundet"
+msgstr "Nije pronađena nijedna fotografija"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L83
 msgid "No overtaking"
-msgstr "Overhaling forbudt"
+msgstr "Zabrana preticanja za motorna vozila"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L81
 msgid "No parking"
-msgstr "Parking forbudt"
+msgstr "Zabrana zaustavljanja i parkiranja"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L87
 msgid "No turn"
-msgstr "Sving forbudt"
+msgstr "Zabrana skretanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L314
 msgid "Normalize Sequence"
@@ -789,16 +800,16 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L122
 msgid "Not logged in to Mapillary"
-msgstr ""
+msgstr "Niste prijavljeni na Mapillary"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L125
 msgid "Not older than: "
-msgstr "Ikke ældre end: "
+msgstr "Ne starije od: "
 
 #. i18n: Spinner label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L158
 msgid "Number of images to be pre-fetched (forwards and backwards)"
-msgstr "Antal billeder der skal hentes (frem og tilbage)"
+msgstr "Broj fotografija koje će se unapred učitati (koje slede i prethode)"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L273
 msgid "Offset every angle in the sequence"
@@ -806,45 +817,45 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L39
 msgid "Only download private images"
-msgstr ""
+msgstr "Preuzmi samo privatne fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L38
 msgid "Only download public images"
-msgstr ""
+msgstr "Preuzmi samo javne fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L484
 msgid "Only images with signs"
-msgstr "Kun billeder med skilte"
+msgstr "Samo fotografije sa znakovima"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L89
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
 msgid "Open Mapillary changeset dialog"
-msgstr "Åben Mapillary rettesæt dialog"
+msgstr "Otvori Mapillary prozor skupa promena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L110
 msgid "Open Mapillary filter dialog"
-msgstr "Åbn Mapillary dialog filter"
+msgstr "Otvori Mapillary prozor filtera"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L83
 msgid "Open Mapillary history dialog"
-msgstr "Åbn Mapillary historie dialog"
+msgstr "Otvori Mapillary prozor istorije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L33
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L43
 msgid "Open Mapillary layer"
-msgstr "Åben Mapillary lag"
+msgstr "Otvori Mapillary podlogu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L123
 msgid "Open Mapillary window"
-msgstr "Åbn Mapillary vindue"
+msgstr "Otvori Mapillary prozor"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L166
 msgid "Org"
-msgstr ""
+msgstr "Org."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L167
 msgid "Organizations"
-msgstr ""
+msgstr "Organizacije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L88
 msgid "Panorama only"
@@ -852,7 +863,7 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L520
 msgid "Pause"
-msgstr "Pause"
+msgstr "Pauziraj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L270
 msgid "Pause selected download"
@@ -860,34 +871,34 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L521
 msgid "Pauses the walk."
-msgstr "Sætter gåturen på pause."
+msgstr "Pauzira šetnju."
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L85
 msgid "Pedestrian crossing"
-msgstr "Fodgængerfelt"
+msgstr "Pešački prelaz"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L491
 msgid "Play"
-msgstr "Afspil"
+msgstr "Reprodukuj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L78
 msgid "Point Objects"
-msgstr ""
+msgstr "Tačke objekata"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
 #, java-format
 msgid "Press \"{0}\" to download images"
-msgstr "Tryk \"{0}\" for at downloade billeder"
+msgstr "Pritisnite \"{0}\" kako biste preuzeli fotografije"
 
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L73
 msgid "Preview images when hovering its icon"
-msgstr "Forhåndsvis billeder når markør er over dets ikon"
+msgstr "Prikazivanje fotografija kada se mišem pređe preko ikonice"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L39
 msgid "Previous picture"
-msgstr "Forrige billede"
+msgstr "Prethodna fotografija"
 
 #. translators notes must be in front
 #. filter mode: replace
@@ -898,11 +909,11 @@ msgstr "R"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L238
 msgid "Redo"
-msgstr "Gendan"
+msgstr "Ponovi radnju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L469
 msgid "Reset"
-msgstr "Nulstil"
+msgstr "Poništi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L301
 msgid "Restart selected download"
@@ -914,11 +925,11 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
 msgid "Reverse"
-msgstr "Vend"
+msgstr "Obrni"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
 msgid "Reverse the filters order."
-msgstr ""
+msgstr "Obrnuti redosled filtera."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L19
 msgid "Review"
@@ -926,41 +937,41 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L74
 msgid "Rewrite imported images"
-msgstr "Genskriv importerede billeder"
+msgstr "Ponovo upiši uvezene fotografije"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L71
 msgid "Roundabout"
-msgstr "Rundkørsel"
+msgstr "Kružni tok"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L91
 msgid "Select Visible"
-msgstr ""
+msgstr "Obeležite vidljivo"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L86
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L114
 msgid "Select a directory"
-msgstr "Vælg en mappe"
+msgstr "Obeležite direktorijum"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L44
 msgid "Select directory to import images from"
-msgstr "Vælg mappe til at importere billeder fra"
+msgstr "Obeležite direktorijum kako biste iz njega uvezli fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
 msgid "Select images in the Mapillary Layer"
-msgstr ""
+msgstr "Obeležite fotografije na Mapillary podlozi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L140
 msgid "Select mode"
-msgstr "Vælg tilstand"
+msgstr "Režim obeležavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L42
 msgid "Select the images you want to import"
-msgstr "Vælg de billeder du vil importere"
+msgstr "Obeležite fotografije koje želite da uvezete"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L135
 msgid "Sequence key"
-msgstr "Sekvensnøgle"
+msgstr "Ključ sekvence"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L297
 msgid "Set"
@@ -980,19 +991,19 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L92
 msgid "Show Relevant"
-msgstr ""
+msgstr "Prikaži relevantne"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L81
 msgid "Show detections on top of image"
-msgstr "Vis detekteringer oven på billedet"
+msgstr "Prikazuje prepoznavanja u vrhu fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L23
 msgid "Shows the next picture in the sequence"
-msgstr "Viser det næste billede i sekvensen"
+msgstr "Prikazuje sledeću fotografiju sekvenci"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L40
 msgid "Shows the previous picture in the sequence"
-msgstr "Viser det forrige billede i sekvensen"
+msgstr "Prikazuje prethodnu fotografiju u sekvenci"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L134
 msgid "Some Images not Reviewed"
@@ -1007,35 +1018,35 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
 msgid "Sort"
-msgstr "Sorter"
+msgstr "Sortiranje"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
 msgid "Sort filters."
-msgstr ""
+msgstr "Filteri za sortiranje."
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L65
 msgid "Speed limit"
-msgstr "Hastighedsbegrænsning"
+msgstr "Ograničenja brzine"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L142
 msgid "Start"
-msgstr ""
+msgstr "Početak"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L464
 msgctxt "as synonym to halt or stand still"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Zaustavi"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L67
 msgctxt "name of the traffic sign"
 msgid "Stop"
-msgstr "Stop"
+msgstr "Znak stop"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L465
 msgid "Stops the walk."
-msgstr "Stopper gåtur."
+msgstr "Zaustavlja šetnju."
 
 #. CHECKSTYLE.OFF: LineLength
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L53
@@ -1058,23 +1069,23 @@ msgstr ""
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L52
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L51
 msgid "Submit the current changeset"
-msgstr "Indsend det aktuelle rettesæt"
+msgstr "Pošalji trenutni skup promena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L246
 msgid "Submitting Mapillary Changeset"
-msgstr "Indsender Mapillary rettesæt"
+msgstr "Slanje Mapillary skupa promena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L164
 msgid "Submitting changeset to server…"
-msgstr "Indsender rettesæt til server…"
+msgstr "Slanje skupa promena na server…"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil.java#L165
 msgid "Supported image formats (JPG and PNG)"
-msgstr "Understøttede billedformater (JPG og PNG)"
+msgstr "Podržani formati fotografija (JPG i PNG)"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L57
 msgid "Tag conflict"
-msgstr "Tag konflikt"
+msgstr "Konflikt u atributima"
 
 #. column header: filter text
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
@@ -1087,8 +1098,8 @@ msgid ""
 "The Mapillary layer has stopped downloading images, because the requested "
 "area is too big!"
 msgstr ""
-"Mapillary laget er stoppet med at downloade billeder, fordi det ønskede "
-"område er for stort!"
+"Mapillary podloga je prestala sa preuzimanjem fotografija jer je područje "
+"preveliko!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L47
 msgid ""
@@ -1096,13 +1107,13 @@ msgid ""
 "(like the image key) and actions for the currently selected Mapillary image "
 "(like viewing it in a browser)."
 msgstr ""
-"Mapillary udvidelsen bruger nu et separat panel til at vise ekstra "
-"information (som billednøglen) og handlinger for det aktuelt valgte "
-"Mapillary billede (som at se det i en browser)."
+"Mapillary dodatak sada koristi poseban panel kako bi prikazao dodatne "
+"informacije (poput ključa fotografije) i akcije koje možete primeniti na "
+"obeleženoj Mapillary fotografiji (poput otvaranja iste u pregledaču)."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L40
 msgid "There are currently no layers with geotagged images!"
-msgstr "Der er i øjeblikket ingen lag med geotagged billeder!"
+msgstr "Trenutno ne postoje podloge sa geo referenciranim fotografijama!"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L263
 #, java-format
@@ -1110,15 +1121,16 @@ msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
 "Mapillary images for a smaller portion of the map."
 msgstr ""
-"For at løse dette problem kan du skifte til download mode ''{0}'' og indlæse"
-" Mapillary billeder for en mindre del af kortet."
+"Da bi ste rešili ovaj problem možete da se prebacite na režim preuzimanja "
+"''{0}'' i da učitate Mapillary fotografije za manje područje prikazano na "
+"karti."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L262
 msgid ""
 "To solve this problem, you could zoom in and load a smaller area of the map."
 msgstr ""
-"For at løse dette problem kan du zoome ind og indlæse et mindre område på "
-"kortet."
+"Da bi ste rešili ovaj problem možete da zumirate i učitate manje područje na"
+" karti."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L28
 msgid "Today"
@@ -1126,32 +1138,33 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L176
 msgid "Toggle detection outlines"
-msgstr ""
+msgstr "Uključi prikaz prepoznatih objekata"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L199
 msgid "Toggle sign detection outlines"
-msgstr ""
+msgstr "Uključi prikaz prepoznatih znakova"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L88
 #, java-format
 msgid "Toggle: {0}"
-msgstr "Slå til/fra: {0}"
+msgstr "Uključivanje: {0}"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L244
 #, java-format
 msgid "Total Mapillary images: {0}"
-msgstr "Total antal Mapillary billeder: {0}"
+msgstr "Ukupno Mapillary fotografija: {0}"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L77
 msgid "Traffic Signs"
-msgstr ""
+msgstr "Saobraćajni znakovi"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandTurn.java#L53
 #, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
-msgstr[0] "Drejede {0} billede"
-msgstr[1] "Drejede {0} billeder"
+msgstr[0] "Uključena {0} fotografija"
+msgstr[1] "Uključene {0} fotografije"
+msgstr[2] "Uključeno {0} fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L51
 msgid "Undelete Image"
@@ -1163,12 +1176,12 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L221
 msgid "Undo"
-msgstr "Fortryd"
+msgstr "Opozovi"
 
 #. i18n: traffic sign
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L79
 msgid "Uneven road"
-msgstr "Ujævn vej"
+msgstr "Neujednačen put"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L47
 msgid "Unmark Reviewed"
@@ -1188,56 +1201,58 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
 msgid "Up"
-msgstr "Op"
+msgstr "Gore"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L455
 msgid "Update"
-msgstr "Opdater"
+msgstr "Ažuriraj"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryUploadAction.java#L32
 msgid "Upload Mapillary images"
-msgstr "Upload Mapillary billeder"
+msgstr "Otpremi Mapillary fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L46
 msgid "Upload selected sequence"
-msgstr "Upload valgt rækkefølge"
+msgstr "Otpremi obeleženu sekvencu"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L146
 #, java-format
 msgid "Uploading: {0}"
-msgstr "Uploader: {0}"
+msgstr "Otpremanje: {0}"
 
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L67
 msgid "Use 24 hour format"
-msgstr "Brug 24-timers format"
+msgstr "Koristi 24-časovni prikaz vremena"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L104
 msgid "Use JavaFX for better looking dialogs"
-msgstr ""
+msgstr "Koristi JavaFX za bolji izgled prozora"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L164
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L129
 msgid "User"
-msgstr "Bruger"
+msgstr "Korisnik"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L95
 msgid "View in browser"
-msgstr "Vis i browser"
+msgstr "Prikaži u pregledaču"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L42
 msgid "Wait for full quality pictures"
-msgstr "Vent på fuld kvalitets billeder"
+msgstr "Sačekajte za pun kvalitet fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L39
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L40
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L49
 msgid "Walk mode"
-msgstr "Gå tilstand"
+msgstr "Režim šetanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.java#L75
 msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
 msgstr ""
+"Režim šetanja: Čekanje na sledeću fotografiju traje predugo! Izlazak iz "
+"režima šetanja…"
 
 #. i18n: Checkbox label in JOSM settings
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L83
@@ -1245,12 +1260,13 @@ msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
 msgstr ""
-"Ved åbning af Mapillary billede i webbrowser, vis sløringseditoren i stedet "
-"for billedviseren"
+"Kada otvarate Mapillary fotografiju u web pregledaču, prikažite zamagljeni "
+"uređivač umesto prikaza same fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L41
 msgid "Which image layers do you want to import into the Mapillary layer?"
-msgstr "Hvilke billedlag vil du importere til Mapillary laget?"
+msgstr ""
+"Koju od podloga sa fotografijama želite da uvezete u Mapillary podlogu?"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L30
 msgid "Year"
@@ -1258,102 +1274,106 @@ msgstr ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Years"
-msgstr "År"
+msgstr "Godina"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L226
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L267
 msgid "You are currently not logged in."
-msgstr "Du er i øjeblikket ikke logget ind."
+msgstr "Trenutno niste prijavljeni."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L212
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L262
 #, java-format
 msgid "You are logged in as ''{0}''."
-msgstr "Du er logget ind som ''{0}''."
+msgstr "Trenutno ste prijavljeni ''{0}''."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L121
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr ""
-"Du er ikke logget ind, du kan logge ind på Mapillary under indstillinger"
+"Trenutno niste prijavljeni, prijavite se u Mapillary željenim opcijama"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java#L103
 msgid ""
 "You are trying to upload a sequence to mapillary.com that you previously "
 "downloaded from there. That is not possible."
 msgstr ""
+"Pokušavate da otpremite sekvencu na mapillary.com koju ste prethodno "
+"preuzeli odatle. To nije moguće."
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L110
 #, java-format
 msgid "You have successfully uploaded {0} image to mapillary.com"
 msgid_plural "You have successfully uploaded {0} images to mapillary.com"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Uspešno ste otpremili {0} fotografiju na mapillary.com"
+msgstr[1] "Uspešno ste otpremili {0} fotografije na mapillary.com"
+msgstr[2] "Uspešno ste otpremili {0} fotografija na mapillary.com"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L33
 msgid "Zoom to selected image"
-msgstr "Zoom til valgt billede"
+msgstr "Zumiraj obeleženu fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L35
 msgid "Zoom to the currently selected Mapillary image"
-msgstr "Zoom til det aktuelt valgt Mapillary billede"
+msgstr "Zumiraj trenutno obeleženu Mapillary fotografiju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L97
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L96
 msgid "approved"
-msgstr "godkendt"
+msgstr "odobreno"
 
 #. i18n: download mode for Mapillary images
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L78
 msgid "areas with downloaded OSM-data"
-msgstr "områder med downloadet OSM-data"
+msgstr "područja sa preuzetim OSM podacima"
 
 #. i18n: download mode for Mapillary images
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L76
 msgid "everything in the visible area"
-msgstr "alt i det synlige område"
+msgstr "sve što je vidljivo"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L228
 msgid "image has no key"
-msgstr "Billedet har ingen nøgle"
+msgstr "fotografija nema ključ"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L519
 msgid "loading image"
-msgstr ""
+msgstr "učitavanje fotografije"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
 msgid "no image selected"
-msgstr ""
+msgstr "nije obeležena fotografija"
 
 #. i18n: download mode for Mapillary images
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L80
 msgid "only when manually requested"
-msgstr "kun ved manuel anmodet"
+msgstr "samo kada je potrebno ručno"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L96
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L95
 msgid "pending"
-msgstr "afventer"
+msgstr "na čekanju"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L95
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L94
 msgid "rejected"
-msgstr "afvist"
+msgstr "odbijeno"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L248
 msgid "sequence has no key"
-msgstr "sekvens har ingen nøgle"
+msgstr "sekvenca nema ključ"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L239
 msgid "unknown user"
-msgstr "ukendt bruger"
+msgstr "nepoznat korisnik"
 
 #. i18n: {0} is the layer name, {1} the number of images in it
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L119
 #, java-format
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} ({1} fotografija)"
+msgstr[1] "{0} ({1} fotografije)"
+msgstr[2] "{0} ({1} fotografija)"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L174
 #, java-format
@@ -1361,6 +1381,7 @@ msgid "{0} Download in queue"
 msgid_plural "{0} Downloads in queue"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L256
 #, java-format
@@ -1368,6 +1389,7 @@ msgid "{0} Image changed"
 msgid_plural "{0} Images changed"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L257
 #, java-format
@@ -1375,88 +1397,99 @@ msgid "{0} Image deleted"
 msgid_plural "{0} Images deleted"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L476
 #, java-format
 msgid "{0} consists of:"
-msgstr "{0} består af:"
+msgstr "{0} sastoji se od:"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L204
 #, java-format
 msgid "{0} detections"
-msgstr "{0} detekteringer"
+msgstr "{0} prepoznavanja"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L623
 #, java-format
 msgid "{0} downloaded image"
 msgid_plural "{0} downloaded images"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} preuzeta fotografija"
+msgstr[1] "{0} preuzete fotografije"
+msgstr[2] "{0} preuzetih fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L625
 #, java-format
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ukupno {0} fotografija"
+msgstr[1] "ukupno {0} fotografije"
+msgstr[2] "ukupno {0} fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L99
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L97
 #, java-format
 msgid "{0} image submitted, Changeset key: {1}, State: {2}"
 msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "poslata {0} fotografija, ključ skupa promena: {1}, stanje: {2}"
+msgstr[1] "poslate {0} fotografije, ključ skupa promena: {1}, stanje: {2}"
+msgstr[2] "poslato {0} fotografija, ključ skupa promena: {1}, stanje: {2}"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L631
 #, java-format
 msgid "{0} images in {1} sequences"
-msgstr "{0} billeder i {1} sekvenser"
+msgstr "{0} fotografija u {1} sekvenci"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L621
 #, java-format
 msgid "{0} imported image"
 msgid_plural "{0} imported images"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "uvezena {0} fotografija"
+msgstr[1] "uvezene {0} fotografije"
+msgstr[2] "uvezeno {0} fotografija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L428
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L472
 #, java-format
 msgid "{0} node"
 msgid_plural "{0} nodes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} tačka"
+msgstr[1] "{0} tačke"
+msgstr[2] "{0} tačaka"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L430
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L474
 #, java-format
 msgid "{0} relation"
 msgid_plural "{0} relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} relacija"
+msgstr[1] "{0} relacije"
+msgstr[2] "{0} relacija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L613
 #, java-format
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
 "{0} sequences, each containing between {1} and {2} images (ø {3})"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} sekvenca, sadrži između {1} i {2} fotografija (ø {3})"
+msgstr[1] "{0} sekvence, sadrže između {1} i {2} fotografija (ø {3})"
+msgstr[2] "{0} sekvenci, sadrže između {1} i {2} fotografija (ø {3})"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L429
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L473
 #, java-format
 msgid "{0} way"
 msgid_plural "{0} ways"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{0} linija"
+msgstr[1] "{0} linije"
+msgstr[2] "{0} linija"
 
 #: gitlab.com/JOSM/plugin/Mapillary/blob/f4c114d/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L168
 #, java-format
 msgid "{0}Options requiring login{1}"
-msgstr ""
+msgstr "{0}Opcije zahtevaju prijavu{1}"
 
 #. Plugin description for root project 'Mapillary'.name
 msgid "Allows the user to work with pictures hosted at mapillary.com"
-msgstr "Tillader brugeren at arbejde med billeder gemt på mapillary.com"
+msgstr ""
+"Pruža korisniku mogućnost da radi sa fotografijama koje se nalaze na "
+"mapillary.com"
