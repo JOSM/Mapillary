@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -276,9 +277,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       return;
     }
     String directory = "mapillary_sprite_source/package_" + type;
-    try {
-      List<String> files = IOUtils.readLines(ResourceProvider.getResourceAsStream("/images/" + directory),
-        Charsets.UTF_8.name());
+    try (InputStream resourceStream = ResourceProvider.getResourceAsStream("/images/" + directory)) {
+      if (resourceStream == null) {
+        throw new IOException("/images/" + directory + " not found");
+      }
+      List<String> files = IOUtils.readLines(resourceStream, Charsets.UTF_8.name());
       Collections.sort(files);
       for (String file : files) {
         try {
