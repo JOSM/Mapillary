@@ -416,7 +416,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         Composite backup = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
         g.draw(MapViewGeometryUtil.getImageChangesPath(mv, seq));
-        g.draw(MapViewGeometryUtil.getOrignalSequencePath(mv, seq));
+        g.draw(MapViewGeometryUtil.getOriginalSequencePath(mv, seq));
         g.setComposite(backup);
       }
       g.setComposite(AlphaComposite.SrcOver);
@@ -451,7 +451,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
     final Point p = MainApplication.getMap().mapView.getPoint(
       img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted() ? img.getLatLon() : img.getMovingLatLon());
-    final Point orignalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
+    final Point originalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
       g.setComposite(fadeComposite);
@@ -485,8 +485,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (!((MapillaryImage) img).isDeleted()) {
         Composite currentComposit = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), orignalP, getOriginalCentroid(i), backup));
-        g.drawImage(img.getActiveSequenceImage(), orignalP.x, orignalP.y, null);
+        g.setTransform(getTransform(Math.toRadians(img.getCa()), originalP, getOriginalCentroid(i), backup));
+        g.drawImage(img.getActiveSequenceImage(), originalP.x, originalP.y, null);
         g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
         g.setComposite(currentComposit);
         g.drawImage(i, p.x, p.y, null);
@@ -521,9 +521,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     g.setComposite(composite);
   }
 
-  public static AffineTransform getTransform (double angle, Point p, Point2D origin, AffineTransform orignal) {
+  public static AffineTransform getTransform (double angle, Point p, Point2D origin, AffineTransform original) {
     AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
-    move.preConcatenate(orignal);
+    move.preConcatenate(original);
     move.translate(-origin.getX(), -origin.getY());
     Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
     move.transform(d2, d2);

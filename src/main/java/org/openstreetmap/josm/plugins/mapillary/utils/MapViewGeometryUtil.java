@@ -75,7 +75,7 @@ public final  class MapViewGeometryUtil {
    * @param seq the sequence to convert
    * @return the {@link Path2D} object to which the {@link MapillarySequence} has been converted
    */
-  public static Path2D getOrignalSequencePath(NavigatableComponent nc, MapillarySequence seq) {
+  public static Path2D getOriginalSequencePath(NavigatableComponent nc, MapillarySequence seq) {
     final Path2D.Double path = new Path2D.Double();
     seq.getImages().stream().filter(img -> img.isVisible() && img instanceof MapillaryImage).forEach(img -> {
       Point p = nc.getPoint(img.getLatLon());
