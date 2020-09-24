@@ -485,20 +485,20 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       if (!((MapillaryImage) img).isDeleted()) {
         Composite currentComposit = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), orignalP, getOriginalCentroid(i)));
+        g.setTransform(getTransform(Math.toRadians(img.getCa()), orignalP, getOriginalCentroid(i), backup));
         g.drawImage(img.getActiveSequenceImage(), orignalP.x, orignalP.y, null);
-        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
+        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
         g.setComposite(currentComposit);
         g.drawImage(i, p.x, p.y, null);
         g.setTransform(backup);
       } else {
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i)));
+        g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i), backup));
         g.drawImage(img.getDeletedImage(), p.x, p.y, null);
         g.setComposite(composite);
         g.setTransform(backup);
       }
     } else {
-      g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i)));
+      g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
       g.drawImage(i, p.x, p.y, null);
       g.setTransform(backup);
     }
@@ -521,8 +521,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     g.setComposite(composite);
   }
 
-  public static AffineTransform getTransform (double angle, Point p, Point2D origin) {
+  public static AffineTransform getTransform (double angle, Point p, Point2D origin, AffineTransform orignal) {
     AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
+    move.preConcatenate(orignal);
     move.translate(-origin.getX(), -origin.getY());
     Point2D.Double d2 = new Point2D.Double(p.x + origin.getX(), p.y + origin.getY());
     move.transform(d2, d2);
