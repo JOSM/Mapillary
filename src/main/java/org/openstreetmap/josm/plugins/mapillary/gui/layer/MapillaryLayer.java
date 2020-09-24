@@ -480,6 +480,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
       g.setComposite(currentComposit);
     }
 
+    // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
     if (img instanceof MapillaryImage && mode instanceof EditMode) {
       if (!((MapillaryImage) img).isDeleted()) {
