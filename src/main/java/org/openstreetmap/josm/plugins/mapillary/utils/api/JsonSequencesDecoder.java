@@ -11,8 +11,10 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 
 /**
@@ -61,7 +63,8 @@ public final class JsonSequencesDecoder {
       boolean privateImage = properties.getBoolean("private", false);
       for (int i = 0; i < sequenceLength; i++) {
         if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-          final MapillaryImage img = new MapillaryImage(imageKeys[i], geometry[i], cas[i], pano, privateImage);
+          getImage(imageKeys[i], geometry[i], cas[i], pano, privateImage);
+          final MapillaryImage img = getImage(imageKeys[i], geometry[i], cas[i], pano, privateImage);
           result.add(img);
         }
       }
@@ -73,8 +76,28 @@ public final class JsonSequencesDecoder {
   }
 
   /**
-   * Converts a {@link JsonArray} to a java array.
-   * The conversion from {@link JsonValue} to a java type is done by the supplied function.
+   * @param key          The image key
+   * @param location     The location of the image
+   * @param cameraAngle  The camera angle
+   * @param pano         If the image is a panoramic image
+   * @param privateImage If the image is private
+   */
+  private static MapillaryImage getImage(String key, LatLon location, Double cameraAngle, boolean pano,
+      boolean privateImage) {
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryAbstractImage image = MapillaryLayer.getInstance().getData().getImage(key);
+      if (image instanceof MapillaryImage) {
+        image.setExifCoor(location);
+        image.setCa(cameraAngle);
+        return (MapillaryImage) image;
+      }
+    }
+    return new MapillaryImage(key, location, cameraAngle, pano, privateImage);
+  }
+
+  /**
+   * Converts a {@link JsonArray} to a java array. The conversion from
+   * {@link JsonValue} to a java type is done by the supplied function.
    *
    * @param T                   the type that the elements of the resulting array will be
    * @param array               the array to be converted
@@ -87,7 +110,7 @@ public final class JsonSequencesDecoder {
   private static <T> T[] decodeJsonArray(final JsonArray array, final Function<JsonValue, T> decodeValueFunction, final Class<T> clazz) {
     final T[] result;
     if (array == null) {
-      result =  (T[]) Array.newInstance(clazz, 0);
+      result = (T[]) Array.newInstance(clazz, 0);
     } else {
       result = (T[]) Array.newInstance(clazz, array.size());
       for (int i = 0; i < result.length; i++) {

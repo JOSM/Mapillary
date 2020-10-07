@@ -90,10 +90,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   @Override
   public String toString() {
-    return String.format(
-      "Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]",
-      key, latLon.lat(), latLon.lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt
-    );
+    return String.format("Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]", key, getExifCoor().lat(),
+        getExifCoor().lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt);
   }
 
   @Override
@@ -134,7 +132,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
       isDeleted = Boolean.TRUE;
-      this.setMovingLatLon(latLon);
+      this.setMovingLatLon(getExifCoor());
     }
   }
 

@@ -40,9 +40,8 @@ public class CommandDelete extends MapillaryExecutableCommand {
       this.images.forEach((img) -> {// Get index first so order is preserved
           this.changesHash.put(img, img.getSequence().getImages().indexOf(img));
       });
-      this.images.forEach((img) -> {// Now Delete
-          MapillaryLayer.getInstance().getData().remove(img);
-      });
+      // Same code as redo
+      redo();
   }
 
   @Override
@@ -61,6 +60,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void redo() {
+    /** This method is called in {@link #execute()}. Please update execute if necessary. */
     MapillaryLayer.getInstance().getData().remove(this.images);
   }
 }

@@ -70,18 +70,14 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
       for (MapillarySequence seq : sequences) {
         if (Boolean.TRUE.equals(MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get())) {
           for (MapillaryAbstractImage img : seq.getImages()) {
-            if (bounds.contains(img.getLatLon())) {
+            if (bounds.isCollapsed() || bounds.isOutOfTheWorld() || bounds.contains(img.getLatLon())) {
               data.add(img);
             } else {
               seq.remove(img);
             }
           }
         } else {
-          boolean sequenceCrossesThroughBounds = false;
-          for (int i = 0; i < seq.getImages().size() && !sequenceCrossesThroughBounds; i++) {
-            sequenceCrossesThroughBounds = bounds.contains(seq.getImages().get(i).getLatLon());
-          }
-          if (sequenceCrossesThroughBounds) {
+          if (seq.getImages().stream().anyMatch(image -> bounds.contains(image.getLatLon()))) {
             data.addAll(seq.getImages(), true);
           }
         }

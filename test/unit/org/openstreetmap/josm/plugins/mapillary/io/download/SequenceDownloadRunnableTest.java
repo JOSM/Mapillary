@@ -87,7 +87,7 @@ public class SequenceDownloadRunnableTest {
   @Test
   public void testRun5() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
-    testNumberOfDecodedImages(0, new Bounds(0, 0, 0, 0));
+    testNumberOfDecodedImages(0, new Bounds(0, 0, 0.000001, 0));
   }
 
   private static void testNumberOfDecodedImages(int expectedNumImgs, Bounds bounds) {

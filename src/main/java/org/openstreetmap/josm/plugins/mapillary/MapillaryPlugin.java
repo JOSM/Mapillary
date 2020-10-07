@@ -20,6 +20,7 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
+import org.openstreetmap.josm.io.remotecontrol.RequestProcessor;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
@@ -44,6 +45,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -125,6 +127,11 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MainMenu.add(menu.imagerySubMenu, mapPointObjectLayerAction, false);
     mapPointObjectLayerAction.updateEnabledState();
     destroyables.add(mapPointObjectLayerAction);
+
+    // TODO remove in destroy (not currently possible)
+    RequestProcessor.addRequestHandlerClass("photo", MapillaryRemoteControl.class);
+    // instantiate to get action into Remote Control Preferences
+    new MapillaryRemoteControl();
 
     mapFrameInitialized(null, MainApplication.getMap());
   }

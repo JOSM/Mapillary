@@ -38,6 +38,46 @@ public final class MapillaryURL {
       // Private constructor to avoid instantiation
     }
 
+    /**
+     * Retrieve specific images
+     *
+     * @param key The image key(s)
+     * @return The URL for the image(s)
+     */
+    public static URL getImage(String... key) {
+      if (key.length == 1) {
+        return string2URL(baseUrl, "images/", key[0], queryString(null));
+      } else if (key.length > 1) {
+        return string2URL(baseUrl, "images", queryString(null), "&image_keys=", String.join(",", key));
+      }
+      return null;
+    }
+
+    /**
+     * Retrieve images by sequence
+     *
+     * @param key The sequence keys
+     * @return The URL to get images with
+     */
+    public static URL getImagesBySequences(String... key) {
+      return string2URL(baseUrl, "images", queryString(null), "&sequence_keys=", String.join(",", key));
+    }
+
+    /**
+     * Retrieve specific sequences
+     *
+     * @param key The sequence key(s)
+     * @return The URL for the sequence(s)
+     */
+    public static URL getSequence(String... key) {
+      if (key.length == 1) {
+        return string2URL(baseUrl, "sequences/", key[0], queryString(null));
+      } else if (key.length > 1) {
+        return string2URL(baseUrl, "sequences", queryString(null), "&sequence_keys=", String.join(",", key));
+      }
+      return null;
+    }
+
     public static URL getUser(String key) {
       return string2URL(baseUrl, "users/", key, MapillaryURL.queryString(null));
     }

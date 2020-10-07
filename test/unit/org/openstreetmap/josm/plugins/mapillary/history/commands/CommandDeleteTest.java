@@ -22,6 +22,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
  * Tests for {@link CommandDelete} class.
+ *
  * @author Kishan
  */
 public class CommandDeleteTest {
@@ -45,7 +46,6 @@ public class CommandDeleteTest {
    */
   @Before
   public void setUp() {
-
     img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false, false);
     img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false, false);
     img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false, false);
@@ -58,8 +58,10 @@ public class CommandDeleteTest {
     seq.add(Arrays.asList(img1, img2, img3));
     orignalSeq = seq;
     data = MapillaryLayer.getInstance().getData();
+    // Ensure that this test is not contaminated by other tests.
+    data.remove(data.getImages());
     data.addAll(Arrays.asList(img1, img2, img3, img4, img5));
-    delete = new CommandDelete(new ConcurrentSkipListSet<>(Arrays.asList(img1,img3,img4,img5)));
+    delete = new CommandDelete(new ConcurrentSkipListSet<>(Arrays.asList(img1, img3, img4, img5)));
     delete.execute();
   }
 
@@ -84,7 +86,7 @@ public class CommandDeleteTest {
     assertEquals(1, data.getImages().size());
     delete.undo();
     assertEquals(5, data.getImages().size());
-    for(MapillaryAbstractImage img : seq.getImages()) {
+    for (MapillaryAbstractImage img : seq.getImages()) {
       assertEquals(orignalSeq.getImages().indexOf(img), seq.getImages().indexOf(img));
     }
   }

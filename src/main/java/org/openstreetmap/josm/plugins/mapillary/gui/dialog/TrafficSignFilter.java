@@ -113,6 +113,10 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
 
     buttons = new ArrayList<>();
     addButtons();
+
+    if (!showRelevantObjs.isSelected()) {
+      showRelevantObjs.doClick();
+    }
     /* End filter signs */
   }
 
@@ -150,6 +154,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     updateShown(showMaxNumberModel);
   }
 
+  /**
+   * Update the shown buttons
+   *
+   * @param model The model used to paginate the buttons.
+   */
   private void updateShown(SpinnerNumberModel model) {
     buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
     buttons.stream().filter(i -> i.isFiltered(filterField.getText())).skip(
@@ -266,9 +275,15 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     add(scrollPane, GBC.eol().fill().anchor(GridBagConstraints.WEST));
   }
 
+  /**
+   * Filter buttons (along with a relevancy check).
+   *
+   * @param expr An expression to filter buttons with
+   */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(
-      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
+    SwingUtilities.invokeLater(() -> buttons.stream()
+        .forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
+    SwingUtilities.invokeLater(this::invalidate);
   }
 
   public void getIcons(JComponent panel, String type) {

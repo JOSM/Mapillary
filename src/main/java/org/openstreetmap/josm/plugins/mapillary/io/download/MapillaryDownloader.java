@@ -1,11 +1,24 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.DataSource;
@@ -13,19 +26,28 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.HttpClient.Response;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Class that concentrates all the ways of downloading of the plugin. All the download petitions will be managed one by
- * one.
+ * Class that concentrates all the ways of downloading of the plugin. All the
+ * download petitions will be managed one by one.
  *
  * @author nokutu
  */
@@ -39,7 +61,7 @@ public final class MapillaryDownloader {
     PRIVATE_ONLY("privateOnly", I18n.marktr("Only download private images")),
     ALL("all", I18n.marktr("Download all available images"));
 
-    public final static PRIVATE_IMAGE_DOWNLOAD_MODE DEFAULT = ALL;
+    public static final PRIVATE_IMAGE_DOWNLOAD_MODE DEFAULT = ALL;
 
     private final String prefId;
     private final String label;
@@ -79,7 +101,7 @@ public final class MapillaryDownloader {
     // i18n: download mode for Mapillary images
     MANUAL_ONLY("manualOnly", I18n.tr("only when manually requested"));
 
-    public final static DOWNLOAD_MODE DEFAULT = OSM_AREA;
+    public static final DOWNLOAD_MODE DEFAULT = OSM_AREA;
 
     private final String prefId;
     private final String label;
@@ -90,7 +112,8 @@ public final class MapillaryDownloader {
     }
 
     /**
-     * @return the ID that is used to represent this download mode in the JOSM preferences
+     * @return the ID that is used to represent this download mode in the JOSM
+     *         preferences
      */
     public String getPrefId() {
       return prefId;
@@ -127,15 +150,19 @@ public final class MapillaryDownloader {
    */
   private static final double MAX_AREA = MapillaryProperties.MAX_DOWNLOAD_AREA.get();
 
+  /** The key for GeoJSON features */
+  private static final String GEOJSON_FEATURES = "features";
+
   /**
    * Executor that will run the petitions.
    */
-  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(
-    3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+  private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
+      new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
 
   /**
-   * Indicates whether the last download request has been rejected because it requested an area that was too big. If
-   * true, the last download has been rejected, if false, it was executed.
+   * Indicates whether the last download request has been rejected because it
+   * requested an area that was too big. If true, the last download has been
+   * rejected, if false, it was executed.
    */
   private static boolean stoppedDownload;
 
@@ -144,8 +171,8 @@ public final class MapillaryDownloader {
   }
 
   /**
-   * Gets all the images in a square. It downloads all the images of all the sequences that pass through the given
-   * rectangle.
+   * Gets all the images in a square. It downloads all the images of all the
+   * sequences that pass through the given rectangle.
    *
    * @param minLatLon The minimum latitude and longitude of the rectangle.
    * @param maxLatLon The maximum latitude and longitude of the rectangle
@@ -166,8 +193,9 @@ public final class MapillaryDownloader {
     try {
       run(new MapillarySquareDownloadRunnable(bounds));
     } catch (RejectedExecutionException e) {
-      new Notification("Download limit reached").setIcon(MapillaryPlugin.LOGO.setSize(ImageProvider.ImageSizes.LARGEICON).get())
-        .setDuration(Notification.TIME_LONG).show();
+      new Notification("Download limit reached")
+          .setIcon(MapillaryPlugin.LOGO.setSize(ImageProvider.ImageSizes.LARGEICON).get())
+          .setDuration(Notification.TIME_LONG).show();
       MapillaryLayer.getInstance().getData().removeDataSource(new DataSource(bounds, bounds.toString()));
     }
   }
@@ -229,6 +257,74 @@ public final class MapillaryDownloader {
   }
 
   /**
+   * Download a specific set of images
+   *
+   * @param images The images to download
+   * @return The downloaded images
+   */
+  public static Map<String, Collection<MapillaryAbstractImage>> downloadImages(String... images) {
+    JsonObject response = getUrlResponse(MapillaryURL.APIv3.getImage(images));
+    return JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
+        .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new,
+            (rMap, oMap) -> rMap.putAll(oMap), (rMap, oMap) -> {
+              rMap.putAll(oMap);
+              return rMap;
+            }));
+  }
+
+  /**
+   * Download a specific set of sequences
+   *
+   * @param sequences The sequences to download
+   * @return The downloaded sequences
+   */
+  public static Collection<MapillarySequence> downloadSequences(String... sequences) {
+    JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(sequences));
+    Collection<MapillarySequence> returnSequences = JsonDecoder.decodeFeatureCollection(response,
+        JsonSequencesDecoder::decodeSequence);
+    JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3.getImagesBySequences(
+        returnSequences.stream().map(MapillarySequence::getKey).distinct().toArray(String[]::new)));
+    JsonDecoder.decodeFeatureCollection(imageResponse, JsonImageDetailsDecoder::decodeImageInfos);
+    return returnSequences;
+  }
+
+  private static JsonObject getUrlResponse(URL url) {
+    HttpClient client = OAuthUtils.addAuthenticationHeader(HttpClient.create(url));
+    try (JsonReader reader = Json.createReader(client.connect().getContentReader())) {
+      Response response = client.connect();
+      URL next = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
+      JsonObject returnObject = reader.readObject();
+      if (next != null && !next.toExternalForm().trim().isEmpty() && !next.equals(url)) {
+        JsonObject nextObject = getUrlResponse(next);
+        if (checkFeaturesIsArray(returnObject) && checkFeaturesIsArray(nextObject)) {
+          JsonArrayBuilder rArray = Json.createArrayBuilder(returnObject.getJsonArray(GEOJSON_FEATURES));
+          rArray.addAll(Json.createArrayBuilder(nextObject.getJsonArray(GEOJSON_FEATURES)));
+          JsonObjectBuilder rBuilder = Json.createObjectBuilder(returnObject);
+          rBuilder.add(GEOJSON_FEATURES, rArray);
+          returnObject = rBuilder.build();
+        }
+      }
+      return returnObject;
+    } catch (IOException e) {
+      Logging.trace(e);
+      return null;
+    } finally {
+      client.disconnect();
+    }
+  }
+
+  /**
+   * Utility method to check that a GeoJSON has a feature array
+   *
+   * @param object The object to check
+   * @return {@code true} if the object has a valid feature array
+   */
+  private static boolean checkFeaturesIsArray(JsonObject object) {
+    return object.containsKey(GEOJSON_FEATURES)
+        && object.get(GEOJSON_FEATURES).getValueType() == JsonValue.ValueType.ARRAY;
+  }
+
+  /**
    * Downloads all images of the area covered by the OSM data.
    */
   public static void downloadOSMArea() {
@@ -279,6 +375,7 @@ public final class MapillaryDownloader {
       executor.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Logging.error(e);
+      Thread.currentThread().interrupt();
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
       new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());

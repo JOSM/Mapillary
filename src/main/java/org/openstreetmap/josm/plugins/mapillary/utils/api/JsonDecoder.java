@@ -47,6 +47,11 @@ public final class JsonDecoder {
           }
         }
       }
+    } else if (json != null && "Feature".equals(json.getString("type", null))) {
+      final T feature = featureDecoder.apply(json);
+      if (feature != null) {
+        result.add(feature);
+      }
     }
     return result;
   }
