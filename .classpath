@@ -37,6 +37,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-apache-commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-apache-http"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-javafx"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

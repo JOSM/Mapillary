@@ -67,11 +67,11 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
@@ -141,6 +141,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private volatile TexturePaint hatched;
   private final MapillaryChangeset locationChangeset = new MapillaryChangeset();
   private final MapillaryChangeset deletionChangeset = new MapillaryChangeset();
+  private boolean destroyed;
   private static AlphaComposite fadeComposite = AlphaComposite
     .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
@@ -205,7 +206,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (this.mode != null && mv != null) {
       mv.removeMouseListener(this.mode);
       mv.removeMouseMotionListener(this.mode);
-      this.mode.exitMode();
+      try {
+        this.mode.exitMode();
+      } catch (IllegalArgumentException e) {
+        if (!e.getMessage().contains("was not registered before or already removed")) {
+          throw e;
+        }
+      }
       NavigatableComponent.removeZoomChangeListener(this.mode);
     }
     this.mode = mode;
@@ -251,6 +258,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * @return The {@link MapillaryData} object that stores the database.
    */
   // @Override -- depends upon JOSM 16548+
+  @Override
   public MapillaryData getData() {
     return this.data;
   }
@@ -304,40 +312,44 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public synchronized void destroy() {
-    data.setSelectedImage(null);
-    clearInstance();
-    setMode(null);
-    MapillaryRecord.getInstance().reset();
-    AbstractMode.resetThread();
-    /**
-     * Stop downloads in a separate thread to avoid a 30s hang.
-     * Check if the worker is shutdown first though (so we don't throw an error).
-     */
-    if (MainApplication.worker.isShutdown()) {
-      MapillaryDownloader.stopAll();
-    } else {
-      MainApplication.worker.submit(MapillaryDownloader::stopAll);
-    }
-    if (MapillaryMainDialog.hasInstance()) {
-      MapillaryMainDialog.getInstance().setImage(null);
-      MapillaryMainDialog.getInstance().updateImage();
-    }
-    final MapView mv = MapillaryPlugin.getMapView();
-    if (mv != null) {
-      mv.removeMouseListener(this.mode);
-      mv.removeMouseMotionListener(this.mode);
-    }
-    try {
-      MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
-      if (MainApplication.getLayerManager().getEditDataSet() != null) {
-        MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
+    if (!destroyed) {
+      data.setSelectedImage(null);
+      clearInstance();
+      setMode(null);
+      MapillaryRecord.getInstance().reset();
+      AbstractMode.resetThread();
+      /**
+       * Stop downloads in a separate thread to avoid a 30s hang. Check if the worker
+       * is shutdown first though (so we don't throw an error).
+       */
+      if (MainApplication.worker.isShutdown()) {
+        MapillaryDownloader.stopAll();
+      } else {
+        MainApplication.worker.submit(MapillaryDownloader::stopAll);
       }
-    } catch (IllegalArgumentException e) {
-      // TODO: It would be ideal, to fix this properly. But for the moment let's catch this, for when a listener has
-      // already been removed.
+      if (MapillaryMainDialog.hasInstance()) {
+        MapillaryMainDialog.getInstance().setImage(null);
+        MapillaryMainDialog.getInstance().updateImage();
+      }
+      final MapView mv = MapillaryPlugin.getMapView();
+      if (mv != null) {
+        mv.removeMouseListener(this.mode);
+        mv.removeMouseMotionListener(this.mode);
+      }
+      try {
+        MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
+        if (MainApplication.getLayerManager().getEditDataSet() != null) {
+          MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
+        }
+      } catch (IllegalArgumentException e) {
+        // TODO: It would be ideal, to fix this properly. But for the moment let's catch
+        // this, for when a listener has
+        // already been removed.
+      }
+      UploadAction.unregisterUploadHook(this);
     }
-    UploadAction.unregisterUploadHook(this);
     super.destroy();
+    destroyed = true;
   }
 
   @Override
@@ -516,13 +528,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (img instanceof MapillaryImage) {
       if (!((MapillaryImage) img).getDetections().isEmpty()) {
         g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-          null);
+            null);
       }
     }
     g.setComposite(composite);
   }
 
-  public static AffineTransform getTransform (double angle, Point p, Point2D origin, AffineTransform original) {
+  public static AffineTransform getTransform(double angle, Point p, Point2D origin, AffineTransform original) {
     AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
     move.preConcatenate(original);
     move.translate(-origin.getX(), -origin.getY());

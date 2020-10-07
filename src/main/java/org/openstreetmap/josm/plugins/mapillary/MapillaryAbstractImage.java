@@ -50,8 +50,6 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   protected long capturedAt;
   /** Sequence of pictures containing this object. */
   private MapillarySequence sequence;
-  /** Position of the picture. */
-  protected LatLon latLon;
   /** Direction of the picture. */
   protected double ca;
   /** Temporal position of the picture until it is uploaded. */
@@ -76,7 +74,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   /**
    * Indicates whether or not this image has been reviewed for Uploading/Changeset submission.
    */
-  private boolean reviewed = false;
+  private boolean reviewed;
 
   /**
    * Creates a new object in the given position and with the given direction.
@@ -87,9 +85,8 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
     super.setExifCoor(latLon);
-    this.latLon = latLon;
-    this.tempLatLon = this.latLon;
-    this.movingLatLon = this.latLon;
+    this.tempLatLon = latLon;
+    this.movingLatLon = latLon;
     super.setExifImgDir(ca);
     this.ca = ca;
     this.tempCa = ca;
@@ -169,7 +166,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * @return The LatLon object with the position of the object.
    */
   public LatLon getLatLon() {
-    return latLon;
+    return this.getExifCoor();
   }
 
   /**
@@ -231,7 +228,8 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * @return true if the object has been modified; false otherwise.
    */
   public boolean isModified() {
-    return !this.getMovingLatLon().equals(this.latLon) || Math.abs(this.getMovingCa() - this.ca) > EPSILON;
+    return this.getMovingLatLon() != null && !this.getMovingLatLon().equals(this.getExifCoor())
+        || Math.abs(this.getMovingCa() - this.ca) > EPSILON;
   }
 
   /**
@@ -291,9 +289,20 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     this.setExifTime(new Date(capturedAt));
   }
 
+  @Override
+  public void setExifCoor(final LatLon latLon) {
+    super.setExifCoor(latLon);
+    if (this.movingLatLon == null) {
+      this.movingLatLon = latLon;
+    }
+    if (this.tempLatLon == null) {
+      this.tempLatLon = latLon;
+    }
+  }
+
   public void setLatLon(final LatLon latLon) {
     if (latLon != null) {
-      this.latLon = latLon;
+      setExifCoor(latLon);
     }
   }
 
@@ -390,10 +399,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
 
   @Override
   public int compareTo(GpxImageEntry image) {
-    if(image instanceof MapillaryAbstractImage) {
+    if (image instanceof MapillaryAbstractImage) {
       MapillaryAbstractImage img = (MapillaryAbstractImage) image;
       if (this.getSequence() == img.getSequence()) {
-       MapillarySequence seq = this.getSequence();
+        MapillarySequence seq = this.getSequence();
         return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
       }
       int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());

@@ -174,6 +174,16 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     return null;
   }
 
+  @Override
+  public void setVisible(boolean visible) {
+    super.setVisible(visible);
+  }
+
+  @Override
+  public boolean isVisible() {
+    return super.isVisible();
+  }
+
   /**
    * @return {@code true} if selected (see {@link JCheckBox#isSelected}).
    */
