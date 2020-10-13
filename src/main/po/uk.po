@@ -13,9 +13,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: josm-plugin_Mapillary 1.5.25-3-g44bbd13\n"
+"Project-Id-Version: josm-plugin_Mapillary 1.5.25-7-g5845334\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-23 15:28+0000\n"
+"POT-Creation-Date: 2020-10-07 15:15+0000\n"
 "PO-Revision-Date: 2018-01-15 10:33+0000\n"
 "Last-Translator: Simon Legner <simon.legner@gmail.com>, 2020\n"
 "Language-Team: Ukrainian (https://www.transifex.com/josm/teams/2544/uk/)\n"
@@ -25,44 +25,44 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandJoin.java#L61
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandJoin.java#L61
 msgid "2 images joined"
 msgstr "2 знімки з’єднано"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandUnjoin.java#L61
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandUnjoin.java#L61
 msgid "2 images unjoined"
 msgstr "2 знімки роз’єднано"
 
 #. filter mode: add
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L290
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L290
 msgctxt "filter"
 msgid "A"
 msgstr "A"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L51
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L51
 #, java-format
 msgid ""
 "A tag with key <i>{0}</i> is already present on the selected OSM object."
 msgstr "Теґ з ключем <i>{0}</i> вже присутній у виділеного обʼєкта OSM."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
 msgid "Add"
 msgstr "Додати"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L105
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L105
 msgid "Add Mapillary tag"
 msgstr "Додати теґ Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L136
 msgid "Add filter."
 msgstr "Додати фільтр."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L43
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L43
 msgid "All images in a directory"
 msgstr "Всі знімки у теці"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L125
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L123
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L125
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L123
 msgid ""
 "An exception occured while trying to submit a changeset. If this happens "
 "repeatedly, consider reporting a bug via the Help menu. If this message "
@@ -74,138 +74,138 @@ msgstr ""
 "меню Довідка). Якщо це повідомлення зʼявилось вперше – спробуйте ще раз, "
 "можливо у вас виникла проблем з мережевим зʼєднанням."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L61
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L46
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L59
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L61
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L46
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L59
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L238
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L238
 msgid "Cancel all downloads"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L285
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L285
 msgid "Cancel selected download"
 msgstr ""
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L70
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L70
 msgid ""
 "Center view on new image when using the buttons to jump to another image"
 msgstr ""
 "Центрувати мапу на новому знімку під час використання кнопок для переходу до"
 " іншого"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L111
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L109
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L111
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L109
 #, java-format
 msgid "Changeset upload failed with {0} error ''{1} {2}''!"
 msgstr "Не вдалось надіслати набір змін, помилка  {0} ''{1} {2}''!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L503
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L513
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L503
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L513
 msgid "Choose signs"
 msgstr "Виберіть знаки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L31
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L31
 msgid "Clear"
 msgstr "Очистити"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L223
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L223
 msgid "Clear queued downloads"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L492
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L492
 msgid "Continues with the paused walk."
 msgstr "Продовжує програвання."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
 msgid "Copied URL to clipboard …"
 msgstr "URL скопійовано до буфера обміну…"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
 msgid "Copied key to clipboard …"
 msgstr "Ключ скопійовано до буфера обміну…"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L97
 msgid "Copy URL"
 msgstr "Копіювати URL"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L101
 msgid "Copy key"
 msgstr "Копіювати ключ"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L79
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L79
 msgid "Could not import a geotagged image to the Mapillary layer!"
 msgstr "Неможливо імпортувати геотеговані знімки до шару Mapillary’!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
 #, java-format
 msgid "Could not import the directory ''{0}''!"
 msgstr "Неможливо імпортувати теку ''{0}''!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
 #, java-format
 msgid "Could not import the image ''{0}''!"
 msgstr "Неможливо імпортувати знімок ''{0}''!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/WebLinkAction.java#L48
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/WebLinkAction.java#L48
 #, java-format
 msgid "Could not open the URL {0} in a browser"
 msgstr "Неможливо відкрити URL {0} в оглядачі"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/BoundsDownloadRunnable.java#L104
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/BoundsDownloadRunnable.java#L104
 #, java-format
 msgid "Could not read from URL {0}!"
 msgstr "Неможливо нічого отримати за посиланням URL {0}!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L87
 msgid "Current Mapillary changeset"
 msgstr "Зміни Mapillary"
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L79
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L79
 msgid "Cut off sequences at download bounds"
 msgstr "Обмежити послідовність межами завантаженої ділянки"
 
 #. filter mode: remove
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L292
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L292
 msgctxt "filter"
 msgid "D"
 msgstr "Вилуч."
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L76
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L76
 msgid "Dark mode for image display"
 msgstr "Використовувати темний режим для показу знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Days"
 msgstr "Дні"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
 msgid "Delete"
 msgstr "Вилучити"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L22
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L54
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L58
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L22
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L54
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L58
 msgid "Delete Image"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L81
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L81
 msgid "Delete Sequence"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L53
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L53
 msgid "Delete after upload"
 msgstr "Вилучити після надсилання"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L173
 msgid "Delete filter."
 msgstr "Вилучити фільтр."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandDelete.java#L50
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandDelete.java#L50
 #, java-format
 msgid "Deleted {0} image"
 msgid_plural "Deleted {0} images"
@@ -215,103 +215,103 @@ msgstr[2] "Вилучено {0} знімків"
 msgstr[3] "Вилучено {0} знімків"
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L64
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L64
 msgid "Display hour when the picture was taken"
 msgstr "Показувати час, коли було зроблено знімок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L63
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L63
 msgid "Displays detail information on the currently selected Mapillary image"
 msgstr "Показує докладну інформацію про поточний знімок Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L27
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L27
 msgid ""
 "Displays the layer displaying the map point objects detected by Mapillary"
 msgstr "Показує шар з обʼєктами, що були виявлені Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L21
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L21
 msgid ""
 "Displays the layer displaying the traffic sign objects detected by Mapillary"
 msgstr "Показує шар з дорожніми знаками, виявленими на знімках Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L53
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L53
 #, java-format
 msgid ""
 "Do you really want to replace the current value <i>{0}</i> with the new "
 "value <i>{1}</i>?"
 msgstr "Ви дійсно бажаєте замінити поточне значення <i>{0}</i> на <i>{1}</i>?"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
 msgid "Down"
 msgstr "Вниз"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadViewAction.java#L28
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadViewAction.java#L28
 msgid "Download Mapillary images in current view"
 msgstr "Завантажити знімки Mapillary для поточного виду"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L40
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L40
 msgid "Download all available images"
 msgstr "Завантажувати всі наявні знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L68
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L68
 msgid "Download manager for Mapillary Images"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L144
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L144
 msgid "Download mode"
 msgstr "Режим завантаження"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L441
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L441
 msgid "Downloaded images"
 msgstr "Завантажені знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L242
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L242
 msgid "Downloading Mapillary images"
 msgstr "Завантаження знімків Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L54
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L54
 msgid "Downloading…"
 msgstr "Завантаження…"
 
 #. translators notes must be in front
 #. column header: enable filter
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
 msgctxt "filter"
 msgid "E"
 msgstr "Вкл."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
 msgid "Edit"
 msgstr "Правити"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L155
 msgid "Edit filter."
 msgstr "Змінити фільтр."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L48
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L48
 msgid "Edit images in Mapillary Layer"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L218
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryEditAction.java#L24
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L218
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryEditAction.java#L24
 msgid "Edit mode"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryEditAction.java#L26
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryEditAction.java#L26
 msgid "Edit pictures"
 msgstr ""
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L92
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L92
 msgid "Enable experimental beta-features (might be unstable)"
 msgstr "Увімкнути експериментальні бета-функції (можуть бути нестабільними)"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L116
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L480
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L116
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L480
 msgid "Enable filter"
 msgstr "Увімкнути фільтр"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L174
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L174
 msgid ""
 "Enable/disable JavaFX (requires restart). Using JavaFX may cause a smaller "
 "window issue, or a whited-out sidebar."
@@ -319,182 +319,182 @@ msgstr ""
 "Увімкнути/вимкнути JavaFX (потребує перезапуску). Використання JavaFX може "
 "спричинити невеличкі негаразди з вікном або бічною панеллю."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L143
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L143
 msgid "End"
 msgstr "Кінець"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L87
 msgid "Explore"
 msgstr "Обрати"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L48
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L49
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L50
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L68
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L48
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L49
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L50
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryExportAction.java#L68
 msgid "Export Mapillary images"
 msgstr "Експорт знімків Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L68
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L68
 msgid "Export all images"
 msgstr "Експортувати всі знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L72
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L72
 msgid "Export selected images"
 msgstr "Експортувати виділені знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L70
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L70
 msgid "Export selected sequence"
 msgstr "Експортувати обрану послідовність"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L55
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/export/MapillaryExportManager.java#L55
 msgid "Exporting Mapillary Images…"
 msgstr "Експорт знімків Mapillary…"
 
 #. filter mode: in selection
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L294
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L294
 msgctxt "filter"
 msgid "F"
 msgstr "З"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L88
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L88
 msgid "Filter"
 msgstr "Фільтр"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L381
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L381
 #, java-format
 msgid "Filter Hidden:{0} Disabled:{1}"
 msgstr "Фільтр Приховано:{0} Відключено:{1}"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L90
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L90
 msgid "Filter Mapillary Detections"
 msgstr "Фільтр виявлених об’єктів Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L87
 msgid "Filter mapillary objects and hide/disable them."
 msgstr "Пошук об’єктів Mapillary та їх приховування."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L118
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L118
 msgid "Filter mode"
 msgstr "Режим фільтра"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L111
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L111
 msgid "Finished upload"
 msgstr "Надсилання закінчене"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L172
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L172
 msgid "First Seen End"
 msgstr "Перший помічений кінець"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L171
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L171
 msgid "First Seen Start"
 msgstr "Перший помічений початок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L46
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L46
 msgid "Follow selected image"
 msgstr "Рухати мапу за поточним знімком"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L45
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L45
 msgid "From existing image layer"
 msgstr "З поточного шару знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L39
 msgid "From which source do you want to import images to the Mapillary layer?"
 msgstr "Звідки ви бажаєте імпортувати знімки до шару Mapillary?"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L69
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L69
 msgid "Give way"
 msgstr "Дати дорогу"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L50
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L50
 msgid "Go forward"
 msgstr "Вперед"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L42
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L42
 msgid "Go to setting and log in to Mapillary before uploading."
 msgstr ""
 "Перейдіть до налаштувань та увійдіть у свій обліковий запис Mapillary перед "
 "надсиланням даних."
 
 #. column header: hide filter
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L218
 msgctxt "filter"
 msgid "H"
 msgstr "Викл."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
 msgid "Hide filter"
 msgstr "Сховати фільтр"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L505
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L505
 msgid "Hiding filter"
 msgstr "Приховування фільтру"
 
 #. column header: inverted filter
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
 msgctxt "filter"
 msgid "I"
 msgstr "I"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L68
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L68
 msgid "I got it, close this."
 msgstr "Зрозуміло, закрити вікно."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L131
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L131
 msgid "Image actions"
 msgstr "Дії"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L126
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L126
 msgid "Image detections"
 msgstr "Розпізнавання об’єктів"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L61
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L61
 msgid "Image info"
 msgstr "Про знімок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L64
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L64
 msgid "Image info dialog"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L133
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L133
 msgid "Image key"
 msgstr "Ключ знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L169
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L169
 msgid "Image selection"
 msgstr "Вибір знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L41
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L41
 msgid "Images from my file system"
 msgstr "Знімки з моєї файлової системи"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L63
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L63
 msgid "Import"
 msgstr "Імпортувати"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L107
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L128
 msgid "Import exception"
 msgstr "Помилка імпорту"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L36
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L36
 msgid "Import local pictures"
 msgstr "Імпортувати локальні знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L34
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L34
 msgid "Import pictures"
 msgstr "Імпортувати знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L37
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryImportAction.java#L37
 msgid "Import pictures into Mapillary layer"
 msgstr "Імпортувати знімки до шару Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L87
 msgid "Imported images"
 msgstr "Імпортовані знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandImport.java#L54
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandImport.java#L54
 #, java-format
 msgid "Imported {0} image"
 msgid_plural "Imported {0} images"
@@ -504,15 +504,15 @@ msgstr[2] "Імпортовано {0} знімків"
 msgstr[3] "Імпортовано {0} знімків"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L75
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L75
 msgid "Intersection danger"
 msgstr "Перехрещення з другорядною дорогою"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L117
 msgid "Inverse filter"
 msgstr "Інвертувати фільтр"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L49
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L49
 msgid ""
 "It can be activated by clicking the left button at the bottom of this "
 "message or the button in the toolbar on the left, which uses the same icon."
@@ -520,232 +520,232 @@ msgstr ""
 "Її можна активувати клацнувши лівою кнопкою миші внизу цього повідомлення "
 "або кнопкою на панелі інструментів ліворуч, з таким самим значком."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
 msgid "Join images into sequences in the Mapillary Layer"
 msgstr "Об’єднати знімки на шарі Mapillary в послідовності "
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L87
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L30
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L30
 msgid "Join mode"
 msgstr "Режим з’єднування"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L31
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryJoinAction.java#L31
 msgid "Join/unjoin pictures"
 msgstr "З’єднати/роз’єднати знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L64
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L64
 msgid "Jump to blue"
 msgstr "Блакитний"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L67
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L67
 msgid "Jump to blue image"
 msgstr "Перейти до блакитного знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L25
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L25
 msgid "Jump to next image"
 msgstr "Перейти до наступного знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L42
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L42
 msgid "Jump to previous image"
 msgstr "Перейти до попереднього знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L56
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L56
 msgid "Jump to red"
 msgstr "Червоний"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L59
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L59
 msgid "Jump to red image"
 msgstr "Перейти до червоного знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L65
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L65
 msgid "Jumps to the picture at the other side of the blue line"
 msgstr "Перейти до знімка на іншому боці блакитної лінії"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L57
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L57
 msgid "Jumps to the picture at the other side of the red line"
 msgstr "Перейти до знімка на іншому боці червоної лінії"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L175
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L175
 msgid "Last Seen End"
 msgstr "Останній помічений кінець"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L174
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L174
 msgid "Last Seen Start"
 msgstr "Останній помічений початок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L76
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L76
 msgid "Layer"
 msgstr "Шар"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L266
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L266
 msgid "Login"
 msgstr "Увійти"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L33
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L33
 msgid "Login successful, return to JOSM."
 msgstr "Вдалий вхід, можете повернутись в JOSM."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L292
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L292
 msgid "Logout"
 msgstr "Вихід"
 
 #. column header: filter mode
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L220
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L220
 msgctxt "filter"
 msgid "M"
 msgstr "M"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L77
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L77
 msgid "Mandatory direction (any)"
 msgstr "Напрямок руху"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L41
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L41
 msgid "Mapillary"
 msgstr "Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L66
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L66
 msgid "Mapillary Download Dialog"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L46
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/EditMode.java#L46
 msgid "Mapillary Edit Mode"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L85
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L85
 msgid "Mapillary Expert Filter"
 msgstr "Фільтр Mapillary експерт"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L149
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L149
 msgid "Mapillary Images"
 msgstr "Знімки Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/JoinMode.java#L38
 msgid "Mapillary Join Mode"
 msgstr "Режим з’єднання Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
 msgid "Mapillary Select Mode"
 msgstr "Режим виділення Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
 msgid "Mapillary changeset"
 msgstr "Зміни Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L108
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L108
 msgid "Mapillary filter"
 msgstr "Фільтр Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L81
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L81
 msgid "Mapillary history"
 msgstr "Історія Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L84
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L84
 msgid "Mapillary history dialog"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L65
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L65
 msgid "Mapillary image"
 msgstr "Знімок Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L111
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L111
 msgid "Mapillary images Filter"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L69
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L69
 msgid "Mapillary images download manager"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L610
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L612
 msgid "Mapillary layer"
 msgstr "Шар Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L32
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/OAuthPortListener.java#L32
 msgid "Mapillary login"
 msgstr "Вхід в Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L124
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L124
 msgid "Mapillary main dialog"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L120
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L120
 msgid "Mapillary point features"
 msgstr "Точкові об’єкти Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L25
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapPointObjectLayerAction.java#L25
 msgid "Mapillary point features layer"
 msgstr "Точкові об’єкти Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L121
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L121
 msgid "Mapillary traffic signs"
 msgstr "Дорожні знаки Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L19
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapObjectLayerAction.java#L19
 msgid "Mapillary traffic signs layer"
 msgstr "Дорожні знаки Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L239
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L239
 msgid "Mapillary: redo history changes"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L177
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L177
 msgid "Mapillary: toggle detections"
 msgstr "Mapillary: показ розпізнаного"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L200
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L200
 msgid "Mapillary: toggle sign detections"
 msgstr "Mapillary: розпізнані знаки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L222
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L222
 msgid "Mapillary: undo history changes"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L50
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L54
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L50
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L54
 msgid "Mark Reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L19
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L19
 msgid "Mark image as Reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L51
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L55
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L51
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L55
 msgid "Mark image as reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L22
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L55
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L59
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L22
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L55
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L59
 msgid "Mark image for deletion"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L26
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L82
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L26
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L82
 msgid "Mark whole sequence for deletion"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L444
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L444
 msgid "Merging layers"
 msgstr "Злиття шарів"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L29
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L29
 msgid "Month"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Months"
 msgstr "Місяці"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L208
 msgid "Move filter down."
 msgstr "Перемістити фільтр вниз."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
 msgid "Move filter up."
 msgstr "Перемістити фільтр вгору."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandMove.java#L58
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandMove.java#L58
 #, java-format
 msgid "Moved {0} image"
 msgid_plural "Moved {0} images"
@@ -754,345 +754,345 @@ msgstr[1] "Посунуто {0} знімки"
 msgstr[2] "Посунуто {0} знімків"
 msgstr[3] "Посунуто {0} знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L108
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L112
 #, java-format
 msgid "Multikey: {0}"
 msgstr "Мультиключ: {0}"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L22
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L22
 msgid "Next picture"
 msgstr "Вперед"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L236
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L237
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L236
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L237
 msgid "No Image Selected"
 msgstr ""
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L73
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L73
 msgid "No entry"
 msgstr "В’їзд заборонено"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L248
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L248
 msgid "No images found"
 msgstr "Знімків не знайдено"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L83
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L83
 msgid "No overtaking"
 msgstr "Обгін заборонений"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L81
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L81
 msgid "No parking"
 msgstr "Стоянка заборонена"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L87
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L87
 msgid "No turn"
 msgstr "Поворот заборонений"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L314
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L314
 msgid "Normalize Sequence"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L122
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L122
 msgid "Not logged in to Mapillary"
 msgstr "Не увійшов до Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L125
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L125
 msgid "Not older than: "
 msgstr "Не старіше ніж: "
 
 #. i18n: Spinner label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L158
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L158
 msgid "Number of images to be pre-fetched (forwards and backwards)"
 msgstr "Кількість знімків для попереднього завантаження (вперед та назад)"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L273
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L273
 msgid "Offset every angle in the sequence"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L39
 msgid "Only download private images"
 msgstr "Завантажувати тільки приватні знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L38
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L38
 msgid "Only download public images"
 msgstr "Завантажувати тільки публічні знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L484
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L484
 msgid "Only images with signs"
 msgstr "Тільки знімки зі знаками"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L89
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L89
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L90
 msgid "Open Mapillary changeset dialog"
 msgstr "Відкрити діалог змін Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L110
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L110
 msgid "Open Mapillary filter dialog"
 msgstr "Відкрити діалог фільтра Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L83
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L83
 msgid "Open Mapillary history dialog"
 msgstr "Відкрити історію Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L33
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L43
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L33
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryDownloadAction.java#L43
 msgid "Open Mapillary layer"
 msgstr "Відкрити шар Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L123
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L123
 msgid "Open Mapillary window"
 msgstr "Відкрити вікно Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L166
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L166
 msgid "Org"
 msgstr "Орг"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L167
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L167
 msgid "Organizations"
 msgstr "Організації"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L88
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L88
 msgid "Panorama only"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L520
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L520
 msgid "Pause"
 msgstr "Пауза"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L270
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L270
 msgid "Pause selected download"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L521
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L521
 msgid "Pauses the walk."
 msgstr "Призупиняє програвання."
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L85
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L85
 msgid "Pedestrian crossing"
 msgstr "Пішохідний перехід"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L491
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L491
 msgid "Play"
 msgstr "Пуск"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L79
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L79
 msgid "Point Objects"
 msgstr "Точкові об’єкти"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
 #, java-format
 msgid "Press \"{0}\" to download images"
 msgstr "Натисніть \"{0}\" для завантаження знімків"
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L73
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L73
 msgid "Preview images when hovering its icon"
 msgstr "Попередній перегляд знімків під курсором"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L39
 msgid "Previous picture"
 msgstr "Назад"
 
 #. translators notes must be in front
 #. filter mode: replace
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L288
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L288
 msgctxt "filter"
 msgid "R"
 msgstr "Замін."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L238
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L238
 msgid "Redo"
 msgstr "Повернути"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L469
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L469
 msgid "Reset"
 msgstr "Скинути"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L301
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L301
 msgid "Restart selected download"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L255
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L255
 msgid "Resume selected download"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
 msgid "Reverse"
 msgstr "У зворотному порядку"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L243
 msgid "Reverse the filters order."
 msgstr "Змінює послідовність фільтрів."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L19
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L19
 msgid "Review"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L74
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L74
 msgid "Rewrite imported images"
 msgstr "Перезаписати імпортовані знімки"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L71
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L71
 msgid "Roundabout"
 msgstr "Круг"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L92
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L92
 msgid "Select Visible"
 msgstr "Виділити видиме"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L86
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L114
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L86
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExportDialog.java#L114
 msgid "Select a directory"
 msgstr "Виберіть теку"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L44
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L44
 msgid "Select directory to import images from"
 msgstr "Оберіть теку звідки імпортувати знімки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L39
 msgid "Select images in the Mapillary Layer"
 msgstr "Виділіть знімки на шарі Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L140
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/mode/SelectMode.java#L140
 msgid "Select mode"
 msgstr "Режим виділення"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L42
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L42
 msgid "Select the images you want to import"
 msgstr "Оберіть знімки для імпорту"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L135
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L135
 msgid "Sequence key"
 msgstr "Ключ послідовності"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L297
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L297
 msgid "Set"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L273
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L273
 msgid "Set Offset"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L297
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L297
 msgid "Set compass angle"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L314
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L314
 msgid "Set each image direction towards next image"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L93
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L93
 msgid "Show Relevant"
 msgstr "Показати відповідне"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L81
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L81
 msgid "Show detections on top of image"
 msgstr "Показувати виявлені на знімку об’єкти"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L23
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L23
 msgid "Shows the next picture in the sequence"
 msgstr "Показує наступний знімок послідовності"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L40
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/SelectNextImageAction.java#L40
 msgid "Shows the previous picture in the sequence"
 msgstr "Показує попередній знімок послідовності"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L134
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L134
 msgid "Some Images not Reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L133
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L57
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L133
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L57
 msgid ""
 "Some of the images have not been reviewed, please review them in changeset "
 "dialog"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
 msgid "Sort"
 msgstr "Впорядкувати"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L227
 msgid "Sort filters."
 msgstr "Впорядковує фільтри."
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L65
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L65
 msgid "Speed limit"
 msgstr "Обмеження швидкості"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L142
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L142
 msgid "Start"
 msgstr "Початок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L464
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L464
 msgctxt "as synonym to halt or stand still"
 msgid "Stop"
 msgstr "Стоп"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L67
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L67
 msgctxt "name of the traffic sign"
 msgid "Stop"
 msgstr "Стоп"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L465
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L465
 msgid "Stops the walk."
 msgstr "Зупиняє програвання."
 
 #. CHECKSTYLE.OFF: LineLength
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L53
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L53
 msgid "Submit current deletion changeset to Mapillary"
 msgstr ""
 
 #. CHECKSTYLE.OFF: LineLength
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L54
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L54
 msgid "Submit current location changeset to Mapillary"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L49
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L49
 msgid "Submit deletion changeset"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L50
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L50
 msgid "Submit location changeset"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L52
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L51
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L52
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L51
 msgid "Submit the current changeset"
 msgstr "Надіслати поточні зміни"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L246
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L246
 msgid "Submitting Mapillary Changeset"
 msgstr "Надсилання змін Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L164
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L164
 msgid "Submitting changeset to server…"
 msgstr "Надсилання змін на сервер…"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil.java#L165
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/ImageImportUtil.java#L165
 msgid "Supported image formats (JPG and PNG)"
 msgstr "Підтримувані формати зображень (JPG та PNG)"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L57
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/AddTagToPrimitiveAction.java#L57
 msgid "Tag conflict"
 msgstr "Конфлікт теґів"
 
 #. column header: filter text
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterTableModel.java#L219
 msgctxt "filter"
 msgid "Text"
 msgstr "Текст"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L261
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L261
 msgid ""
 "The Mapillary layer has stopped downloading images, because the requested "
 "area is too big!"
@@ -1100,7 +1100,7 @@ msgstr ""
 "Завантаження знімків до шару Mapillary призупинено через надмірний розмір "
 "ділянки для завантаження!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L47
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoHelpPopup.java#L47
 msgid ""
 "The Mapillary plugin now uses a separate panel to display extra information "
 "(like the image key) and actions for the currently selected Mapillary image "
@@ -1110,11 +1110,11 @@ msgstr ""
 "інформації (наприклад, ключа знімку) і дії для поточного знімка Mapillary "
 "(наприклад, перегляд в оглядачі)."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L40
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ImportMethodDialog.java#L40
 msgid "There are currently no layers with geotagged images!"
 msgstr "Шар знімків з геопривʼязкою відсутній!"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L263
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L263
 #, java-format
 msgid ""
 "To solve this problem, you could switch to download mode ''{0}'' and load "
@@ -1123,40 +1123,40 @@ msgstr ""
 "Для розвʼязання цієї проблеми ви можете перейти в режим завантаження ''{0}''"
 " та завантажити знімки Mapillary для меншої ділянки мапи."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L262
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L262
 msgid ""
 "To solve this problem, you could zoom in and load a smaller area of the map."
 msgstr ""
 "Для розвʼязання цієї проблеми ви можете наблизитись або завантажити меншу "
 "ділянку мапи."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L28
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L28
 msgid "Today"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L176
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L176
 msgid "Toggle detection outlines"
 msgstr "Показувати контури розпізнаного"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L199
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryMainDialog.java#L199
 msgid "Toggle sign detection outlines"
 msgstr "Показувати знайдені знаки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L88
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L88
 #, java-format
 msgid "Toggle: {0}"
 msgstr "Включити/Виключити: {0}"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L244
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/MapillaryUtils.java#L244
 #, java-format
 msgid "Total Mapillary images: {0}"
 msgstr "Всього знімків Mapillary: {0}"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L78
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/TrafficSignFilter.java#L78
 msgid "Traffic Signs"
 msgstr "Дорожні знаки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandTurn.java#L53
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/history/commands/CommandTurn.java#L53
 #, java-format
 msgid "Turned {0} image"
 msgid_plural "Turned {0} images"
@@ -1165,96 +1165,96 @@ msgstr[1] "Обернуто {0} знімки"
 msgstr[2] "Обернуто {0} знімків"
 msgstr[3] "Обернуто {0} знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L51
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L51
 msgid "Undelete Image"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L78
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L78
 msgid "Undelete Sequence"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L221
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryHistoryDialog.java#L221
 msgid "Undo"
 msgstr "Скасувати"
 
 #. i18n: traffic sign
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L79
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryFilterChooseSigns.java#L79
 msgid "Uneven road"
 msgstr "Нерівна дорога"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L47
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L47
 msgid "Unmark Reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L48
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/ReviewImageAction.java#L48
 msgid "Unmark image as reviewed"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L52
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteImageAction.java#L52
 msgid "Unmark image for deletion"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L79
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/DeleteSequenceAction.java#L79
 msgid "Unmark whole sequence for deletion"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryExpertFilterDialog.java#L189
 msgid "Up"
 msgstr "Вгору"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L455
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L455
 msgid "Update"
 msgstr "Оновити"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryUploadAction.java#L32
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryUploadAction.java#L32
 msgid "Upload Mapillary images"
 msgstr "Надіслати знімки до Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L46
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryUploadDialog.java#L46
 msgid "Upload selected sequence"
 msgstr "Надіслати виділену послідовність"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L146
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L146
 #, java-format
 msgid "Uploading: {0}"
 msgstr "Надсилання: {0}"
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L67
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L67
 msgid "Use 24 hour format"
 msgstr "Використовувати 24-годинний формат"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L104
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L104
 msgid "Use JavaFX for better looking dialogs"
 msgstr "Використовувати JavaFX для кращої візуалізації діалогів "
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L164
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L129
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L164
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L129
 msgid "User"
 msgstr "Користувач"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L95
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L95
 msgid "View in browser"
 msgstr "Подивитись в оглядачі"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L42
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryWalkDialog.java#L42
 msgid "Wait for full quality pictures"
 msgstr "Очікувати завантаження HD знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L39
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L40
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L49
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L39
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L40
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryWalkAction.java#L49
 msgid "Walk mode"
 msgstr "Прогулянка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.java#L75
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/WalkThread.java#L75
 msgid "Walk mode: Waiting for next image takes too long! Exiting walk mode…"
 msgstr ""
 "Прогулянка: очікування наступного знімка затягнулося! Вихід із режиму "
 "програвання…"
 
 #. i18n: Checkbox label in JOSM settings
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L83
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L83
 msgid ""
 "When opening Mapillary image in web browser, show the blur editor instead of"
 " the image viewer"
@@ -1262,34 +1262,34 @@ msgstr ""
 "Під час відкривання знімка Mapillary в оглядачі, показувати редактор "
 "розмивання замість перегляду знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L41
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L41
 msgid "Which image layers do you want to import into the Mapillary layer?"
 msgstr "Які шари зі знімками ви бажаєте імпортувати до шару Mapillary?"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L30
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/datepicker/impl/DatePickerJDatePicker.java#L30
 msgid "Year"
 msgstr ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryFilterDialog.java#L73
 msgid "Years"
 msgstr "Роки"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L226
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L267
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L226
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L267
 msgid "You are currently not logged in."
 msgstr "Ви ще не увійшли."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L212
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L262
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L212
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L262
 #, java-format
 msgid "You are logged in as ''{0}''."
 msgstr "Ви увійшли як  ''{0}''."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L121
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L121
 msgid "You are not logged in, please log in to Mapillary in the preferences"
 msgstr "Ви не увійшли, будь ласка, здійсніть вхід в налаштуваннях Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java#L103
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/oauth/UploadUtils.java#L103
 msgid ""
 "You are trying to upload a sequence to mapillary.com that you previously "
 "downloaded from there. That is not possible."
@@ -1297,7 +1297,7 @@ msgstr ""
 "Ви намагаєтеся надіслати до mapillary.com послідовність, яку раніше "
 "завантажили звідти. Це неможливо."
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L110
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/utils/PluginState.java#L110
 #, java-format
 msgid "You have successfully uploaded {0} image to mapillary.com"
 msgid_plural "You have successfully uploaded {0} images to mapillary.com"
@@ -1306,66 +1306,66 @@ msgstr[1] "Ви завантажили {0} знімки до mapillary.com"
 msgstr[2] "Ви завантажили {0} знімків до mapillary.com"
 msgstr[3] "Ви завантажили {0} знімків до mapillary.com"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L33
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L33
 msgid "Zoom to selected image"
 msgstr "Масштабувати до виділеного знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L35
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/actions/MapillaryZoomAction.java#L35
 msgid "Zoom to the currently selected Mapillary image"
 msgstr "Масштабувати до поточного виділеного знімка Mapillary"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L97
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L96
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L97
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L96
 msgid "approved"
 msgstr "затверджено"
 
 #. i18n: download mode for Mapillary images
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L78
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L78
 msgid "areas with downloaded OSM-data"
 msgstr "області із завантаженими даними OSM"
 
 #. i18n: download mode for Mapillary images
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L76
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L76
 msgid "everything in the visible area"
 msgstr "все, що видно на мапі"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L228
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L228
 msgid "image has no key"
 msgstr "знімок не має ключа"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L519
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L519
 msgid "loading image"
 msgstr "завантаження знімка"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryImageDisplay.java#L502
 msgid "no image selected"
 msgstr "виділіть знімок для перегляду"
 
 #. i18n: download mode for Mapillary images
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L80
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/io/download/MapillaryDownloader.java#L80
 msgid "only when manually requested"
 msgstr "лише при запиті вручну"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L96
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L95
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L96
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L95
 msgid "pending"
 msgstr "у черзі"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L95
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L94
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L95
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L94
 msgid "rejected"
 msgstr "відхилено"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L248
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L248
 msgid "sequence has no key"
 msgstr "послідовність не має ключа"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L239
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L239
 msgid "unknown user"
 msgstr "невідомий користувач"
 
 #. i18n: {0} is the layer name, {1} the number of images in it
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L119
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/ChooseGeoImageLayersDialog.java#L119
 #, java-format
 msgid "{0} ({1} image)"
 msgid_plural "{0} ({1} images)"
@@ -1374,7 +1374,7 @@ msgstr[1] "{0} ({1} знімки)"
 msgstr[2] "{0} ({1} знімків)"
 msgstr[3] "{0} ({1} знімків)"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L174
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryDownloadDialog.java#L174
 #, java-format
 msgid "{0} Download in queue"
 msgid_plural "{0} Downloads in queue"
@@ -1383,7 +1383,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L256
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L256
 #, java-format
 msgid "{0} Image changed"
 msgid_plural "{0} Images changed"
@@ -1392,7 +1392,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L257
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/dialog/MapillaryChangesetDialog.java#L257
 #, java-format
 msgid "{0} Image deleted"
 msgid_plural "{0} Images deleted"
@@ -1401,17 +1401,17 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L476
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L476
 #, java-format
 msgid "{0} consists of:"
 msgstr "{0} складається з:"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L204
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/imageinfo/ImageInfoPanel.java#L204
 #, java-format
 msgid "{0} detections"
 msgstr "{0} розпізнано"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L623
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L625
 #, java-format
 msgid "{0} downloaded image"
 msgid_plural "{0} downloaded images"
@@ -1420,7 +1420,7 @@ msgstr[1] "{0} завантажених знімки"
 msgstr[2] "{0} завантажених знімків"
 msgstr[3] "{0} завантажених знімків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L625
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L627
 #, java-format
 msgid "{0} image in total"
 msgid_plural "{0} images in total"
@@ -1429,8 +1429,8 @@ msgstr[1] "{0} знімки всього"
 msgstr[2] "{0} знімків всього"
 msgstr[3] "{0} знімків всього"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L99
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L97
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitLocationChangesetAction.java#L99
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/changeset/SubmitDeletionChangesetAction.java#L97
 #, java-format
 msgid "{0} image submitted, Changeset key: {1}, State: {2}"
 msgid_plural "{0} images submitted, Changeset key: {1}, State: {2}"
@@ -1439,12 +1439,12 @@ msgstr[1] "{0} знімки надіслано, ключ набору змін: 
 msgstr[2] "{0} знімків надіслано, ключ набору змін: {1}, стан: {2}"
 msgstr[3] "{0} знімків надіслано, ключ набору змін: {1}, стан: {2}"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L631
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L633
 #, java-format
 msgid "{0} images in {1} sequences"
 msgstr "{0} знімків в {1} послідовностях"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L621
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L623
 #, java-format
 msgid "{0} imported image"
 msgid_plural "{0} imported images"
@@ -1453,8 +1453,8 @@ msgstr[1] "{0} знімки імпортовано"
 msgstr[2] "{0} знімків імпортовано"
 msgstr[3] "{0} знімків імпортовано"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L428
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L472
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L428
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L472
 #, java-format
 msgid "{0} node"
 msgid_plural "{0} nodes"
@@ -1463,8 +1463,8 @@ msgstr[1] "{0} точки"
 msgstr[2] "{0} точок"
 msgstr[3] "{0} точок"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L430
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L474
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L430
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L474
 #, java-format
 msgid "{0} relation"
 msgid_plural "{0} relations"
@@ -1473,7 +1473,7 @@ msgstr[1] "{0} зв’язки"
 msgstr[2] "{0} зв’язків"
 msgstr[3] "{0} зв’язків"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L613
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/MapillaryLayer.java#L615
 #, java-format
 msgid "{0} sequence, containing between {1} and {2} images (ø {3})"
 msgid_plural ""
@@ -1483,8 +1483,8 @@ msgstr[1] "{0} послідовності, що містять від {1} до {
 msgstr[2] "{0} послідовностей, що містять від {1} до {2} знімків (ø {3})"
 msgstr[3] "{0} послідовностей, що містять від {1} до {2} знімків (ø {3})"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L429
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L473
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L429
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/layer/PointObjectLayer.java#L473
 #, java-format
 msgid "{0} way"
 msgid_plural "{0} ways"
@@ -1493,7 +1493,7 @@ msgstr[1] "{0} лінії"
 msgstr[2] "{0} ліній"
 msgstr[3] "{0} ліній"
 
-#: gitlab.com/JOSM/plugin/Mapillary/blob/44bbd13/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L168
+#: gitlab.com/JOSM/plugin/Mapillary/blob/5845334/src/main/java/org/openstreetmap/josm/plugins/mapillary/gui/MapillaryPreferenceSetting.java#L168
 #, java-format
 msgid "{0}Options requiring login{1}"
 msgstr "{0}Параметри, що вимагають входу{1}"
