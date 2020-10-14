@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.awt.Component;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -18,6 +20,7 @@ import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.preferences.PreferenceSetting;
 import org.openstreetmap.josm.io.remotecontrol.RequestProcessor;
@@ -27,10 +30,10 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryEditAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryJoinAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryEditAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryUploadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
@@ -50,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * This is the main class of the Mapillary plugin.
@@ -69,11 +73,12 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
   private final List<Destroyable> destroyables = new ArrayList<>();
 
+  private MapillaryKeyListener popupHandler;
+
   /**
    * Main constructor.
    *
-   * @param info
-   *        Required information of the plugin. Obtained from the jar file.
+   * @param info Required information of the plugin. Obtained from the jar file.
    */
   public MapillaryPlugin(PluginInformation info) {
     super(info);
@@ -157,9 +162,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       toggleDialog.clear();
       toggleDialog.add(MapillaryMainDialog.getInstance());
       newFrame.addToggleDialog(MapillaryMainDialog.getInstance(), false);
-      MapillaryMainDialog.getInstance().setImageInfoHelp(new ImageInfoHelpPopup(
-          newFrame.addToggleDialog(ImageInfoPanel.getInstance(), false)
-      ));
+      MapillaryMainDialog.getInstance()
+          .setImageInfoHelp(new ImageInfoHelpPopup(newFrame.addToggleDialog(ImageInfoPanel.getInstance(), false)));
       toggleDialog.add(MapillaryHistoryDialog.getInstance());
       newFrame.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       toggleDialog.add(MapillaryDownloadDialog.getInstance());
@@ -175,7 +179,24 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       // dialog is added.
       newFrame.conflictDialog.getToggleAction().actionPerformed(null);
       newFrame.conflictDialog.getToggleAction().actionPerformed(null);
+
+      PropertiesDialog properties = newFrame.propertiesDialog;
+
+      try {
+        Field tagMenuField = PropertiesDialog.class.getDeclaredField("tagMenu");
+        tagMenuField.setAccessible(true);
+        JPopupMenu tagMenu = (JPopupMenu) tagMenuField.get(properties);
+        popupHandler = new MapillaryKeyListener(properties, tagMenu);
+        this.destroyables.add(popupHandler);
+      } catch (ReflectiveOperationException e) {
+        Logging.debug(e);
+      }
     } else if (oldFrame != null && newFrame == null) { // map frame removed
+      if (this.popupHandler != null) {
+        this.destroyables.remove(this.popupHandler);
+        this.popupHandler.destroy();
+        this.popupHandler = null;
+      }
       toggleDialog.forEach(ToggleDialog::destroy);
       toggleDialog.clear();
     }
