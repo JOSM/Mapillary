@@ -17,9 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.json.Json;
 import javax.json.JsonException;
-import javax.json.JsonReader;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.jcs3.access.CacheAccess;
@@ -38,13 +36,12 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDia
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.DetectionsDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -115,7 +112,7 @@ public class MapillaryData implements Data {
    * Adds a MapillaryImage to the object, but doesn't repaint mapView. This is
    * needed for concurrency.
    *
-   * @param image  The image to be added.
+   * @param image The image to be added.
    * @param update Whether the map must be updated or not.
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
@@ -226,7 +223,7 @@ public class MapillaryData implements Data {
    * Removes a set of images from the database.
    *
    * @param images A {@link Collection} of {@link MapillaryAbstractImage} objects that are
-   *               going to be removed.
+   *        going to be removed.
    */
   public void remove(Collection<MapillaryAbstractImage> images) {
     images.forEach(this::remove);
@@ -292,12 +289,13 @@ public class MapillaryData implements Data {
    * @return The MapillaryImage or {@code null}
    */
   public MapillaryImage getImage(String key) {
-    return getImages().parallelStream().filter(MapillaryImage.class::isInstance)
-        .map(MapillaryImage.class::cast).filter(m -> m.getKey().equals(key)).findAny().orElse(null);
+    return getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
+      .filter(m -> m.getKey().equals(key)).findAny().orElse(null);
   }
 
   /**
    * Returns a Set of all sequences, that the images are part of.
+   *
    * @return all sequences that are contained in the Mapillary data
    */
   public Set<MapillarySequence> getSequences() {
@@ -331,7 +329,7 @@ public class MapillaryData implements Data {
    * can choose whether to center the view on the new image or not.
    *
    * @param image The {@link MapillaryImage} which is going to be selected.
-   * @param zoom  True if the view must be centered on the image; false otherwise.
+   * @param zoom True if the view must be centered on the image; false otherwise.
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = this.selectedImage;
@@ -395,15 +393,15 @@ public class MapillaryData implements Data {
           break; // It doesn't make sense to try to cache images that won't be kept.
         }
         if (nextImage != null) {
-          if ((nextImage instanceof MapillaryImage) &&
-            (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
+          if ((nextImage instanceof MapillaryImage)
+            && (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
             CacheUtils.downloadPicture((MapillaryImage) nextImage);
           }
           nextImage = nextImage.next();
         }
         if (prevImage != null) {
-          if ((prevImage instanceof MapillaryImage) &&
-            (imageCache.get(((MapillaryImage) prevImage).getKey()) == null)) {
+          if ((prevImage instanceof MapillaryImage)
+            && (imageCache.get(((MapillaryImage) prevImage).getKey()) == null)) {
             CacheUtils.downloadPicture((MapillaryImage) prevImage);
           }
           prevImage = prevImage.previous();
@@ -456,7 +454,7 @@ public class MapillaryData implements Data {
    */
   public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
     List<MapillaryImage> list = imagesToGet.stream().filter(Objects::nonNull)
-        .collect(Collectors.toCollection(ArrayList::new));
+      .collect(Collectors.toCollection(ArrayList::new));
     int index = list.indexOf(getSelectedImage());
     MapillaryImage current = index >= 0 ? list.get(index) : null;
     if (current != null) {
@@ -478,29 +476,24 @@ public class MapillaryData implements Data {
       return;
     }
     synchronized (fullyDownloadedDetections) {
-      Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream()
-          .filter(Objects::nonNull)
-          .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
+      Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream().filter(Objects::nonNull)
+        .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
       URL nextUrl = MapillaryURL.APIv3
-          .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
+        .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
       Map<String, List<ImageDetection>> detections = new HashMap<>();
       while (nextUrl != null) {
         HttpClient client = HttpClient.create(nextUrl);
         if (MapillaryUser.getUsername() != null)
           OAuthUtils.addAuthenticationHeader(client);
-        try (JsonReader reader = createJsonReader(client)) {
-          Map<String, List<ImageDetection>> tMap = JsonDecoder
-              .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
-              .collect(Collectors.groupingBy(ImageDetection::getImageKey));
-          tMap.forEach((key, detection) -> {
-            List<ImageDetection> detectionList = detections.getOrDefault(key, new ArrayList<>());
-            detections.putIfAbsent(key, detectionList);
-            detectionList.addAll(detection);
-          });
+        try {
+          client.connect();
+          detections.putAll(DetectionsDownloadRunnable.doRun(client, this));
           nextUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
         } catch (IOException | JsonException | NumberFormatException e) {
           Logging.error(e);
           nextUrl = null; // Ensure we don't keep looping if there is an error.
+        } finally {
+          client.disconnect();
         }
       }
       imagesToGet.stream().filter(i -> detections.containsKey(i.getKey())).forEach(i -> {
@@ -512,10 +505,5 @@ public class MapillaryData implements Data {
           .setAllDetections(((MapillaryImage) getSelectedImage()).getDetections());
       }
     }
-  }
-
-  private static JsonReader createJsonReader(HttpClient client) throws IOException {
-    client.connect();
-    return Json.createReader(client.getResponse().getContent());
   }
 }

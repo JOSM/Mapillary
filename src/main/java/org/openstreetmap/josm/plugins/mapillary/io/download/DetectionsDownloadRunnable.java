@@ -19,12 +19,14 @@ import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.HttpClient;
 
 public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
@@ -58,19 +60,38 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final HttpClient client) throws IOException {
+    doRun(client, data);
+    this.completed = Boolean.TRUE;
+  }
+
+  /**
+   * Common image get and parsing code
+   *
+   * @param client The client to get data with
+   * @param data The location to put data
+   * @return
+   * @throws IOException If there is an issue with the received data
+   */
+  public static Map<String, List<ImageDetection>> doRun(final HttpClient client, final MapillaryData data)
+    throws IOException {
     try (JsonReader reader = Json.createReader(client.getResponse().getContent())) {
       final long startTime = System.currentTimeMillis();
-      Map<String, List<ImageDetection>> detections = JsonDecoder.decodeFeatureCollection(
-        reader.readObject(),
-        JsonImageDetectionDecoder::decodeImageDetection
-      ).stream().collect(Collectors.groupingBy(ImageDetection::getImageKey));
-      logConnectionInfo(client, String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
+      Map<String, List<ImageDetection>> detections = JsonDecoder
+        .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
+        .collect(Collectors.groupingBy(ImageDetection::getImageKey));
+      if (Config.getPref().getBoolean("mapillary.ignore_useless_detections", true)) {
+        for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
+          entry.getValue().removeIf(i -> i.isRejected() || ObjectDetections.IGNORE_DETECTIONS.contains(i.getValue()));
+        }
+      }
+      logConnectionInfo(client,
+        String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
       for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
         data.getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
-            .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
-                .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))
-            .forEach(img -> img.setAllDetections(entry.getValue()));
+          .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
+            .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))
+          .forEach(img -> img.setAllDetections(entry.getValue()));
       }
       // Repaint if we set the detections for the current selected image
       Object image = MapillaryLayer.getInstance().getData().getSelectedImage();
@@ -80,7 +101,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
           MapillaryMainDialog.getInstance().imageViewer.repaint();
         }
       }
-      completed = Boolean.TRUE;
+      return detections;
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     } finally {
