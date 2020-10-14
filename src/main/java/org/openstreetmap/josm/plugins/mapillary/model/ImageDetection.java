@@ -3,27 +3,29 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.awt.Color;
 import java.awt.geom.Path2D;
-import java.util.Arrays;
 
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.tools.Pair;
 
 public class ImageDetection extends SpecialImageArea {
   private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
   private final String packag;
   private final double score;
-  private final String value;
+  private final ObjectDetections value;
+  private boolean rejected;
 
-  public ImageDetection(
-    final Path2D shape, final String imageKey, final String key, final double score, final String packag,
-    final String value
-  ) {
+  public ImageDetection(final Path2D shape, final String imageKey, final String key, final double score,
+    final String packag, final String value) {
     super(shape, imageKey, key);
     this.packag = packag;
     this.score = score;
-    this.value = value;
+    Pair<Boolean, ObjectDetections> foundDetection = ObjectDetections.findFallbackDetection(value);
+    this.value = foundDetection.b;
+    this.rejected = foundDetection.a;
   }
 
   public String getPackage() {
@@ -34,13 +36,22 @@ public class ImageDetection extends SpecialImageArea {
     return score;
   }
 
-  public String getValue() {
+  /**
+   * Check if the detection has been rejected
+   *
+   * @return {@code true} if rejected
+   */
+  public boolean isRejected() {
+    return this.rejected;
+  }
+
+  public ObjectDetections getValue() {
     return value;
   }
 
   public boolean isTrafficSign() {
     return (packag != null && packag.contains(PACKAGE_TRAFFIC_SIGNS))
-      || (value != null && value.contains("traffic-sign"));
+      || (value != null && value.getKey().contains("traffic-sign"));
   }
 
   /**
@@ -49,15 +60,14 @@ public class ImageDetection extends SpecialImageArea {
    * @return The color to paint the detection outline
    */
   public Color getColor() {
-    if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream().map(
-      PointObjectLayer::getDataSet
-    ).flatMap(ds -> ds.getSelected().parallelStream()).filter(prim -> prim.hasKey("detections"))
-      .anyMatch(prim -> prim.get("detections").contains(getKey()))) {
-      return Color.CYAN;
+    if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
+      .map(PointObjectLayer::getDataSet).flatMap(ds -> ds.getSelected().parallelStream())
+      .filter(prim -> prim.hasKey("detections")).anyMatch(prim -> prim.get("detections").contains(getKey()))) {
+      return isRejected() ? Color.RED : Color.CYAN;
     }
     if (isTrafficSign())
       return MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN;
-    if (Arrays.asList("object--vehicle--car", "human--person--individual").contains(value))
+    if (ObjectDetections.IGNORE_DETECTIONS.contains(value))
       return Color.LIGHT_GRAY;
     return MapillaryColorScheme.IMAGEDETECTION_UNKNOWN;
   }

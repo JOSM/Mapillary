@@ -5,11 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -23,7 +22,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilter
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -33,28 +31,16 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   private static final long serialVersionUID = 3659377445718790107L;
   private final transient Filter filter;
   private final JCheckBox jcheckbox;
-  private final String imageName;
+  private final String detection;
   private final String[] splitName;
 
-  public ImageCheckBoxButton(String directory, String imageName) {
+  public ImageCheckBoxButton(ImageIcon icon, String detection) {
     super(new GridBagLayout());
-    this.imageName = imageName;
+    this.detection = detection;
     MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
-    ImageProvider provider = new ImageProvider(directory, imageName);
-    splitName = imageName.split("--", -1);
+    splitName = detection.split("--", -1);
     JButton image = new JButton();
-    CompletableFuture<Void> future = provider.getAsync(i -> SwingUtilities.invokeLater(() -> image.setIcon(i)));
-    MainApplication.worker.execute(() -> {
-      try {
-        future.get();
-      } catch (InterruptedException e) {
-        Logging.error(e);
-        Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
-        Logging.error(e);
-        Logging.error(e.getCause());
-      }
-    });
+    image.setIcon(icon);
     add(image, GBC.std().anchor(GridBagConstraints.WEST));
     String name = splitName[splitName.length - 1].replace(".svg", "");
     if (name.matches("g[0-9]+")) {
@@ -62,10 +48,9 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     }
 
     name = name.replace("-", " ");
-    String filterText = "value=\"" + imageName.replace(".svg", "") + "\"";
+    String filterText = "value:\"" + detection + "\"";
     filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-      .filter(f -> f.text.equals(filterText)).findAny()
-        .orElse(makeNewFilter());
+      .filter(f -> f.text.equals(filterText)).findAny().orElse(makeNewFilter());
     filter.text = filterText;
 
     jcheckbox = new JCheckBox(name);
@@ -73,7 +58,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     image.addActionListener(l -> updateCheckBox(jcheckbox, filter));
     jcheckbox.addActionListener(l -> updateFilters(jcheckbox, filter));
 
-    image.setToolTipText(imageName.replace(".svg", ""));
+    image.setToolTipText(detection);
     jcheckbox.setToolTipText(image.getToolTipText());
 
     tableChanged(null);
@@ -140,7 +125,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
    * @return The detection name
    */
   public String getDetectionName() {
-    return this.imageName;
+    return this.detection;
   }
 
   /**
@@ -150,7 +135,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   public boolean isFiltered(String searchString) {
     String[] searchSplit = searchString.split(" ", -1);
     return Stream.of(splitName).parallel()
-        .anyMatch(n -> Stream.of(searchSplit).parallel().anyMatch(s -> s.contains(n) || n.contains(s)));
+      .anyMatch(n -> Stream.of(searchSplit).parallel().anyMatch(s -> s.contains(n) || n.contains(s)));
   }
 
   /**
@@ -196,8 +181,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
    */
   public boolean isRelevant() {
     List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
-    return layers.isEmpty() || layers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(
-      ds -> ds.allPrimitives().parallelStream()
-    ).filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(imageName::contains);
+    return layers.isEmpty()
+      || layers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(ds -> ds.allPrimitives().parallelStream())
+        .filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(p -> p.contains(detection));
   }
 }

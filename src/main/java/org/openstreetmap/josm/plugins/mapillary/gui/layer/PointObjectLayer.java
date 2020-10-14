@@ -6,14 +6,19 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -27,11 +32,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -40,17 +49,26 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.openstreetmap.josm.actions.RenameLayerAction;
+import org.openstreetmap.josm.command.AddPrimitivesCommand;
+import org.openstreetmap.josm.command.Command;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;
 import org.openstreetmap.josm.data.DataSource;
+import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -59,9 +77,11 @@ import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.DownloadPolicy;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.UploadPolicy;
+import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
@@ -88,6 +108,8 @@ import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
 import org.openstreetmap.josm.gui.preferences.display.DrawingPreference;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.GeoJSONReader;
 import org.openstreetmap.josm.io.IllegalDataException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -95,6 +117,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
@@ -113,9 +136,8 @@ import org.openstreetmap.josm.tools.Logging;
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends AbstractOsmDataLayer
-  implements DataSourceListener, MouseListener, Listener, HighlightUpdateListener, DataSelectionListener,
-  MapillaryDataListener, LayerChangeListener {
+public class PointObjectLayer extends AbstractOsmDataLayer implements DataSourceListener, MouseListener, Listener,
+  HighlightUpdateListener, DataSelectionListener, MapillaryDataListener, LayerChangeListener {
   private final Collection<DataSource> dataSources = new HashSet<>();
   private static final String[] NAMES = new String[] { marktr("Mapillary point features"),
     marktr("Mapillary traffic signs") };
@@ -128,6 +150,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
   private final DataSetListenerAdapter dataSetListenerAdapter;
   /** If true, display traffic signs. If false, display point objects. */
   private final boolean trafficSigns;
+  private final Map<IPrimitive, JWindow> displayedWindows = new HashMap<>();
   private static final String DETECTIONS = "detections";
 
   /**
@@ -303,16 +326,146 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     }
 
     AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, inactive);
-    painter.enableSlowOperations(mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
-      || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get());
+    boolean slowOperations = mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
+      || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get();
+    painter.enableSlowOperations(slowOperations);
     painter.render(data, virtual, box);
     MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
+    if (slowOperations) {
+      // TODO is the box the same thing?
+      List<OsmPrimitive> selectedInView = this.getDataSet().getSelected().parallelStream().filter(p -> {
+        Point point = mv.getPoint(p.getBBox().getCenter());
+        return mv.contains(point);
+      }).collect(Collectors.toList());
+      selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
+    } else {
+      this.displayedWindows.forEach((o, w) -> this.hideWindow(w));
+    }
+  }
+
+  private void paintAdditionalPanel(IPrimitive mapillaryObject, final Graphics2D g, final MapView mv, Bounds box) {
+    if (!(mapillaryObject instanceof INode)) {
+      Logging.error("Mapillary Additional actions does not support {0}", mapillaryObject.getType());
+      return;
+    }
+    int iconWidth = ImageProvider.ImageSizes.MAP.getAdjustedWidth();
+    int iconHeight = ImageProvider.ImageSizes.MAP.getAdjustedHeight();
+    Point p = mv.getPoint((INode) mapillaryObject);
+    final JWindow displayedWindow = displayedWindows.getOrDefault(mapillaryObject,
+      new JWindow(MainApplication.getMainFrame()));
+
+    int xl = p.x - (iconWidth / 2) - 5;
+    int xr = p.x + (iconWidth / 2) + 5;
+    int yb = p.y - iconHeight - 1;
+    int yt = p.y + (iconHeight / 2) + 2;
+    Point pTooltip;
+
+    AdditionalActionPanel displayedPanel = Stream.of(displayedWindow.getComponents())
+      .filter(AdditionalActionPanel.class::isInstance).map(AdditionalActionPanel.class::cast).findAny().orElse(null);
+
+    if (displayedPanel == null) {
+      displayedPanel = new AdditionalActionPanel(mapillaryObject);
+      pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
+      displayedWindow.setAutoRequestFocus(false);
+      displayedWindow.add(displayedPanel);
+      // Forward mouse wheel scroll event to MapMover
+      displayedWindow.addMouseWheelListener(e -> mv.getMapMover()
+        .mouseWheelMoved((MouseWheelEvent) SwingUtilities.convertMouseEvent(displayedWindow, e, mv)));
+    } else {
+      pTooltip = fixPanelSizeAndLocation(mv, displayedPanel, xl, xr, yt, yb);
+    }
+
+    if (displayedPanel.hasContent()) {
+      displayedWindow.pack();
+      displayedWindow.setLocation(pTooltip);
+      displayedWindow.setVisible(mv.contains(p));
+      displayedWindows.put(mapillaryObject, displayedWindow);
+    }
+  }
+
+  private class AdditionalActionPanel extends JPanel {
+    private boolean hasContent;
+
+    /**
+     * @param mapillaryObject
+     */
+    public AdditionalActionPanel(IPrimitive mapillaryObject) {
+      this.setBackground(UIManager.getColor("ToolTip.background"));
+      this.setForeground(UIManager.getColor("ToolTip.foreground"));
+      this.setFont(UIManager.getFont("ToolTip.font"));
+      this.setBorder(BorderFactory.createLineBorder(Color.black));
+      if (!ObjectDetections.getTaggingPresetsFor(mapillaryObject.get("value")).isEmpty()) {
+        this.hasContent = true;
+        JButton add = new JButton(tr("Add"));
+        add.setAction(new AbstractAction(tr("Add")) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            addMapillaryPrimitiveToOsm(mapillaryObject);
+          }
+        });
+        this.add(add);
+      }
+    }
+
+    /**
+     * @return {@code true} if there is content to show
+     */
+    public boolean hasContent() {
+      return this.hasContent;
+    }
+
+  }
+
+  /**
+   * @param mv The current MapView
+   * @param displayedPanel The panel to display
+   * @param xl left x coord of icon
+   * @param xr right x coord of icon
+   * @param yt top y coord of icon
+   * @param yb bottom y coord of icon
+   * @return A point that will keep the panel in view
+   */
+  private static Point fixPanelSizeAndLocation(MapView mv, JPanel displayedPanel, int xl, int xr, int yt, int yb) {
+    int leftMaxWidth = (int) (0.95 * xl);
+    int rightMaxWidth = (int) (0.95 * mv.getWidth() - xr);
+    int topMaxHeight = (int) (0.95 * yt);
+    int bottomMaxHeight = (int) (0.95 * mv.getHeight() - yb);
+    Dimension d = displayedPanel.getPreferredSize();
+    // place tooltip on left or right side of icon, based on its width
+    Point screenloc = mv.getLocationOnScreen();
+    return new Point(screenloc.x + (d.width > rightMaxWidth && d.width <= leftMaxWidth ? xl - d.width : xr),
+      screenloc.y + (d.height > bottomMaxHeight && d.height <= topMaxHeight ? yt - d.height - 10 : yb));
+  }
+
+  /**
+   * Hide a window
+   *
+   * @param window The window to hide
+   */
+  private static void hideWindow(JWindow window) {
+    GuiHelper.runInEDT(() -> {
+      if (window != null) {
+        window.setVisible(false);
+        for (MouseWheelListener listener : window.getMouseWheelListeners()) {
+          window.removeMouseWheelListener(listener);
+        }
+        window.dispose();
+      }
+    });
   }
 
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
-    OsmPrimitive prim = event.getSelection().parallelStream().filter(p -> p.hasKey(DETECTIONS)).findFirst()
+    Collection<OsmPrimitive> selection = event.getSelection();
+    OsmPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(DETECTIONS)).findFirst()
       .orElse(null);
+    this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
+      .forEach(e -> hideWindow(e.getValue()));
+    Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
+      .filter(e -> selection.contains(e.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    this.displayedWindows.clear();
+    this.displayedWindows.putAll(temporaryWindows);
+
     if (prim != null && MapillaryLayer.hasInstance()) {
       List<Map<String, String>> detections = parseDetections(prim.get(DETECTIONS));
 
@@ -328,7 +481,84 @@ public class PointObjectLayer extends AbstractOsmDataLayer
         mapillaryData.setSelectedImage(toSelect);
       }
     }
-    SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
+    GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
+  }
+
+  /**
+   * Add a Mapillary Object Detection Primitive to OSM
+   *
+   * @param mapillaryObject The primitive to add to OSM
+   */
+  void addMapillaryPrimitiveToOsm(IPrimitive mapillaryObject) {
+    hideWindow(this.displayedWindows.get(mapillaryObject));
+    List<TaggingPreset> presets = ObjectDetections.getTaggingPresetsFor(mapillaryObject.get("value"));
+    DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
+    if (dataSet != null && !dataSet.isLocked() && presets.size() == 1) {
+      TaggingPreset preset = presets.get(0);
+      OsmPrimitive basePrimitive;
+      Collection<OsmPrimitive> toAdd;
+      if (mapillaryObject instanceof Node) {
+        basePrimitive = new Node((Node) mapillaryObject);
+        toAdd = Collections.singleton(basePrimitive);
+      } else if (mapillaryObject instanceof Way) {
+        Way way = new Way((Way) mapillaryObject);
+        way.removeAll();
+        way.setNodes(Collections.emptyList());
+        ((Way) mapillaryObject).getNodes().forEach(node -> way.addNode(new Node(node)));
+        basePrimitive = way;
+        toAdd = new HashSet<>();
+        toAdd.add(basePrimitive);
+        toAdd.addAll(((Way) basePrimitive).getNodes());
+      } else {
+        return;
+      }
+      basePrimitive.removeAll();
+
+      AddPrimitivesCommand add = new AddPrimitivesCommand(
+        toAdd.stream().map(OsmPrimitive::save).collect(Collectors.toList()), dataSet);
+      UndoRedoHandler.getInstance().add(add);
+      preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
+      basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
+      if (!basePrimitive.isTagged() && UndoRedoHandler.getInstance().hasUndoCommands()) {
+        // Technically, it would be easier to do one undo, but this avoids corner cases
+        // where a user makes some modifications while the preset window is open.
+        List<Command> undoCommands = UndoRedoHandler.getInstance().getUndoCommands();
+        int index = undoCommands.size() - undoCommands.indexOf(add);
+        UndoRedoHandler.getInstance().undo(index);
+      } else if (basePrimitive.isTagged() && mapillaryObject.getDataSet() instanceof DataSet) {
+        String detections = mapillaryObject.get("detections");
+        try (JsonParser parser = Json
+          .createParser(new ByteArrayInputStream(detections.getBytes(StandardCharsets.UTF_8)))) {
+          while (parser.hasNext()) {
+            Event event = parser.next();
+            if (event == Event.START_ARRAY) {
+              break;
+            }
+          }
+          JsonArray array = parser.getArray();
+          if (!array.isEmpty()) {
+            Optional<JsonString> imageKey = array.stream().filter(JsonObject.class::isInstance)
+              .map(JsonObject.class::cast).map(o -> o.getJsonString("image_key")).filter(Objects::nonNull).findFirst();
+            if (imageKey.isPresent()) {
+              basePrimitive.put("mapillary:image", imageKey.get().getString());
+            }
+          }
+          if (mapillaryObject.hasKey("key")) {
+            basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
+          }
+        }
+        DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
+        boolean locked = mapillaryObjectData.isLocked();
+        try {
+          mapillaryObjectData.unlock();
+          mapillaryObject.setDeleted(true);
+        } finally {
+          if (locked) {
+            mapillaryObjectData.lock();
+          }
+        }
+      }
+    }
   }
 
   @Override
@@ -352,7 +582,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
         for (JsonObject obj : array.getValuesAs(JsonObject.class)) {
           Map<String, String> detection = new HashMap<>();
           for (Map.Entry<String, JsonValue> entry : obj.entrySet()) {
-            if (entry.getValue().getValueType().equals(JsonValue.ValueType.STRING)) {
+            if (entry.getValue().getValueType() == JsonValue.ValueType.STRING) {
               detection.putIfAbsent(entry.getKey(), ((JsonString) entry.getValue()).getString());
             } else {
               detection.putIfAbsent(entry.getKey(), entry.getValue().toString());
@@ -380,8 +610,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       LayerListDialog.getInstance().createDeleteLayerAction(), SeparatorLayerAction.INSTANCE,
       LayerListDialog.getInstance().createMergeLayerAction(this)));
     actions.addAll(Arrays.asList(SeparatorLayerAction.INSTANCE, new RenameLayerAction(getAssociatedFile(), this),
-      SeparatorLayerAction.INSTANCE, SeparatorLayerAction.INSTANCE,
-      new LayerListPopup.InfoAction(this)));
+      SeparatorLayerAction.INSTANCE, SeparatorLayerAction.INSTANCE, new LayerListPopup.InfoAction(this)));
     return actions.toArray(new Action[0]);
   }
 
@@ -398,11 +627,12 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     data.removeDataSetListener(MultipolygonCache.getInstance());
     data.removeHighlightUpdateListener(this);
     data.removeSelectionListener(this);
+    this.displayedWindows.forEach((i, w) -> hideWindow(w));
+    this.displayedWindows.clear();
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getData().removeListener(this);
     }
     MainApplication.getLayerManager().removeLayerChangeListener(this);
-
   }
 
   @Override
@@ -410,7 +640,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
     return data;
   }
 
-  // @Override Depends upon #18801
+  @Override
   public Data getData() {
     return getDataSet();
   }
@@ -490,7 +720,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer
       return;
     }
     Point clickPoint = e.getPoint();
-    double snapDistance = 20;
+    double snapDistance = ImageProvider.ImageSizes.MAP.getAdjustedHeight();
     double minDistance = Double.MAX_VALUE;
     final int iconHeight = ImageProvider.ImageSizes.SMALLICON.getAdjustedHeight();
     Node closestNode = null;
@@ -577,13 +807,19 @@ public class PointObjectLayer extends AbstractOsmDataLayer
 
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+    Collection<OsmPrimitive> currentSelection = data.getSelected();
     data.clearSelection();
     if (newImage instanceof MapillaryImage) {
       MapillaryImage image = (MapillaryImage) newImage;
-      Collection<INode> nodes = image.getDetections().parallelStream().map(ImageDetection::getKey).flatMap(
-        d -> data.getNodes().parallelStream().filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
+      Collection<IPrimitive> nodes = image.getDetections().parallelStream().map(ImageDetection::getKey)
+        .flatMap(
+          d -> data.getNodes().parallelStream().filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
         .collect(Collectors.toList());
-      data.setSelected(nodes);
+      if (nodes.containsAll(currentSelection) || image.getDetections().isEmpty()) {
+        data.setSelected(currentSelection);
+      } else {
+        data.setSelected(nodes);
+      }
     }
   }
 

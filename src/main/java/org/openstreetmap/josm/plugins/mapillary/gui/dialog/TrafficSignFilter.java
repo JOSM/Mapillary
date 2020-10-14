@@ -7,47 +7,44 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.drew.lang.Charsets;
-import org.apache.commons.io.IOUtils;
-
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.ResourceProvider;
 
 /**
  * This filters traffic signs
@@ -74,8 +71,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     JPanel layers = new JPanel();
     layers.setLayout(new FlowLayout(FlowLayout.LEFT));
     layers.add(new JLabel(I18n.tr("Layer")));
-    for (String[] layer : Arrays.asList(
-      new String[] { "trafficsigns", I18n.marktr("Traffic Signs") },
+    for (String[] layer : Arrays.asList(new String[] { "trafficsigns", I18n.marktr("Traffic Signs") },
       new String[] { "points", I18n.marktr("Point Objects") })) {
       JCheckBox lbox = new JCheckBox(I18n.tr(layer[1]));
       layers.add(lbox);
@@ -161,8 +157,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
    */
   private void updateShown(SpinnerNumberModel model) {
     buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
-    buttons.stream().filter(i -> i.isFiltered(filterField.getText())).skip(
-      detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
+    buttons.stream().filter(i -> i.isFiltered(filterField.getText()))
+      .skip(detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
       .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
     long notSelected = buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
     long selected = buttons.parallelStream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
@@ -192,8 +188,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     lastSeenPicker.addEventHandler(t -> updateDates(firstLast, lastSeenPicker, firstSeenPicker, lastSeenPicker));
   }
 
-  private static void updateDates(
-    String position, IDatePicker<?> modified, IDatePicker<?> firstSeen, IDatePicker<?> lastSeen) {
+  private static void updateDates(String position, IDatePicker<?> modified, IDatePicker<?> firstSeen,
+    IDatePicker<?> lastSeen) {
     LocalDate start = firstSeen.getDate();
     LocalDate end = lastSeen.getDate();
     if (start != null && end != null) {
@@ -220,8 +216,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     dateFilter.enable = !dateFilter.text.isEmpty();
     doFilterAddRemoveWork(dateFilter);
     List<Filter> toRemove = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
-      .filter(f -> f.text.isEmpty())
-      .collect(Collectors.toList());
+      .filter(f -> f.text.isEmpty()).collect(Collectors.toList());
     for (Filter f : toRemove) {
       int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(f);
       MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
@@ -252,8 +247,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       return;
     }
     MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-    List<Future<?>> futures = buttons.stream().filter(ImageCheckBoxButton::isVisible)
-      .map(b -> b.setSelected(check)).filter(Objects::nonNull).collect(Collectors.toList());
+    List<Future<?>> futures = buttons.stream().filter(ImageCheckBoxButton::isVisible).map(b -> b.setSelected(check))
+      .filter(Objects::nonNull).collect(Collectors.toList());
 
     for (Future<?> future : futures) {
       try {
@@ -270,8 +265,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
 
   private void addButtons() {
     JPanel scrollPane = new JPanel(new GridBagLayout());
-    getIcons(scrollPane, "signs");
-    getIcons(scrollPane, "objects");
+    getIcons(scrollPane);
     add(scrollPane, GBC.eol().fill().anchor(GridBagConstraints.WEST));
   }
 
@@ -281,43 +275,41 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
    * @param expr An expression to filter buttons with
    */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(() -> buttons.stream()
-        .forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
+    SwingUtilities.invokeLater(
+      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
     SwingUtilities.invokeLater(this::invalidate);
   }
 
-  public void getIcons(JComponent panel, String type) {
+  public void getIcons(JComponent panel) {
     if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.execute(() -> getIcons(panel, type));
+      MainApplication.worker.execute(() -> getIcons(panel));
       return;
     }
-    String directory = "mapillary_sprite_source/package_" + type;
-    try (InputStream resourceStream = ResourceProvider.getResourceAsStream("/images/" + directory)) {
-      if (resourceStream == null) {
-        throw new IOException("/images/" + directory + " not found");
-      }
-      List<String> files = IOUtils.readLines(resourceStream, Charsets.UTF_8.name());
-      Collections.sort(files);
-      for (String file : files) {
-        try {
-          SwingUtilities.invokeAndWait(() -> {
-            ImageCheckBoxButton button = new ImageCheckBoxButton(directory, file);
-            buttons.add(button);
-            panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
-          });
-        } catch (InvocationTargetException e) {
-          Logging.error(e);
-        } catch (InterruptedException e) {
-          Logging.error(e);
-          Thread.currentThread().interrupt();
+    Map<String, List<ObjectDetections>> collected = Stream.of(ObjectDetections.values())
+      .filter(v -> v != ObjectDetections.UNKNOWN).collect(Collectors.groupingBy(ObjectDetections::getBaseKey));
+    collected = new TreeMap<>(collected); // Create a sorted map
+    for (Map.Entry<String, List<ObjectDetections>> entry : collected.entrySet()) {
+      final ImageIcon icon = entry.getValue().stream().map(detection -> {
+        for (DetectionType type : detection.getDetectionTypes()) {
+          if (type.getImageLocationString() == null)
+            continue;
+          ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), detection.getKey());
+          if (tIcon != null) {
+            return tIcon;
+          }
         }
+        return null;
+      }).filter(Objects::nonNull).findFirst().orElse(null);
+      if (icon != null) {
+        GuiHelper.runInEDTAndWait(() -> {
+          ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey());
+          buttons.add(button);
+          panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
+        });
       }
-      SwingUtilities.invokeLater(() -> panel.add(new JSeparator(), GBC.eol()));
-      Stream.of(showMaxNumberModel.getListeners(ChangeListener.class))
-        .forEach(i -> SwingUtilities.invokeLater(() -> i.stateChanged(new ChangeEvent(this))));
-    } catch (IOException e) {
-      Logging.error(e);
     }
+    Stream.of(showMaxNumberModel.getListeners(ChangeListener.class))
+      .forEach(i -> SwingUtilities.invokeLater(() -> i.stateChanged(new ChangeEvent(this))));
   }
 
   @Override

@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches.MapObjectIconCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -29,10 +30,8 @@ public class MapObject extends KeyIndexedObject {
   private final long firstSeenTime;
   private final long lastSeenTime;
 
-  public MapObject(
-    final LatLon coordinate, final String key, final String layer, final String value, long firstSeenTime,
-    long lastSeenTime
-  ) {
+  public MapObject(final LatLon coordinate, final String key, final String layer, final String value,
+    long firstSeenTime, long lastSeenTime) {
     super(key);
     if (layer == null || value == null || coordinate == null) {
       throw new IllegalArgumentException("The fields of a MapObject must not be null!");
@@ -50,8 +49,19 @@ public class MapObject extends KeyIndexedObject {
 
   /**
    * @param objectTypeID
-   *          the {@link String} representing the type of map object. This ID can be retrieved via {@link #getValue()}
-   *          for any given {@link MapObject}.
+   *        the {@link String} representing the type of map object. This ID can be retrieved via {@link #getValue()}
+   *        for any given {@link MapObject}.
+   * @return the icon, which represents the given objectTypeID
+   */
+  public static ImageIcon getIcon(final ObjectDetections objectDetection) {
+    return getIcon(objectDetection.getKey());
+  }
+
+  /**
+   * @param objectTypeID
+   *        the {@link String} representing the type of map object. This ID can be retrieved via
+   *        {@link #getValue().getKey()}
+   *        for any given {@link MapObject}.
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {
