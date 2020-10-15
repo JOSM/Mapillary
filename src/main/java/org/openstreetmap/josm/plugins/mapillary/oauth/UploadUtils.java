@@ -92,7 +92,7 @@ public final class UploadUtils {
     public SequenceUploadRunnable(Set<MapillaryAbstractImage> images, boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(8, 8, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(15));
+      this.ex = new ThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors() * 2, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(images.size()));
       this.delete = delete;
     }
 
