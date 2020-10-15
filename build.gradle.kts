@@ -11,10 +11,10 @@ import java.net.URL
 plugins {
   id("org.sonarqube") version "3.0"
   id("org.openstreetmap.josm") version "0.7.0"
-  id("com.github.ben-manes.versions") version "0.28.0"
-  id("com.github.spotbugs") version "4.4.4"
+  id("com.github.ben-manes.versions") version "0.33.0"
+  id("com.github.spotbugs") version "4.5.1"
   id("net.ltgt.errorprone") version "1.2.1"
-  id("com.diffplug.spotless") version "5.1.0"
+  id("com.diffplug.spotless") version "5.6.1"
 
   eclipse
   jacoco
@@ -56,18 +56,30 @@ tasks.withType(JavaCompile::class).configureEach {
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
+val versions = mapOf(
+  "awaitility" to "4.0.3",
+  "jdatepicker" to "1.3.4",
+  "jmockit" to "1.49",
+  "junit" to "5.7.0",
+  "spotbugs" to "4.1.3",
+  "wiremock" to "2.27.2"
+)
+
 dependencies {
   testImplementation ("org.openstreetmap.josm:josm-unittest:SNAPSHOT"){ isChanging = true }
-  testImplementation("com.github.tomakehurst:wiremock:2.27.1")
-  val junitVersion = "5.6.2"
-  testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+  testImplementation("com.github.tomakehurst:wiremock:${versions["wiremock"]}")
+
+  testImplementation("org.junit.jupiter:junit-jupiter-api:${versions["junit"]}")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
   // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
-  testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
-  testImplementation("org.awaitility:awaitility:4.0.3")
-  testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
-  testImplementation("com.github.spotbugs:spotbugs-annotations:4.0.6")
-  packIntoJar("org.jdatepicker:jdatepicker:1.3.4")
+  testImplementation("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
+  testCompile("org.junit.jupiter:junit-jupiter-params:${versions["junit"]}")
+
+  testImplementation("org.awaitility:awaitility:${versions["awaitility"]}")
+  testImplementation("org.jmockit:jmockit:${versions["jmockit"]}")
+  testImplementation("com.github.spotbugs:spotbugs-annotations:${versions["spotbugs"]}")
+  implementation("org.jdatepicker:jdatepicker:${versions["jdatepicker"]}")
+  packIntoJar("org.jdatepicker:jdatepicker:${versions["jdatepicker"]}")
 }
 
 sourceSets {
@@ -164,7 +176,10 @@ tasks.withType(Javadoc::class) {
 tasks.withType(Test::class).getByName("test") {
   project.afterEvaluate {
     jvmArgs("-javaagent:${classpath.find { it.name.contains("jmockit") }!!.absolutePath}")
+    jvmArgs("-Djunit.jupiter.extensions.autodetection.enabled=true")
+    jvmArgs("-Djava.awt.headless=true")
   }
+  useJUnitPlatform()
   testLogging {
     exceptionFormat = TestExceptionFormat.FULL
     events = setOf(TestLogEvent.FAILED, TestLogEvent.SKIPPED)
@@ -215,11 +230,6 @@ tasks.withType(SpotBugsTask::class) {
     outputLocation.set(File(spotbugs.reportsDir.get().asFile, "$baseName.html"))
     setStylesheet("color.xsl")
   }
-}
-
-// Test config
-tasks.test {
-  useJUnitPlatform()
 }
 
 // JaCoCo config
