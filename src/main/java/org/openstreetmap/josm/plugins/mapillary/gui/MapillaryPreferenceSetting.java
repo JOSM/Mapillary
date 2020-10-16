@@ -98,8 +98,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JLabel loginLabel = new JLabel();
   private final JPanel loginPanel = new JPanel();
 
-  private JCheckBox javaFx = new JCheckBox(I18n.tr("Use JavaFX for better looking dialogs"));
-
   @Override
   public TabPreferenceSetting getTabPreferenceSetting(PreferenceTabbedPane gui) {
     return gui.getDisplayPreference();
@@ -160,17 +158,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     requiresLogin.add(new JSeparator(), GBC.eol().fill(GBC.HORIZONTAL));
     mainPanel.add(requiresLogin, GBC.eol().fill(GBC.HORIZONTAL));
 
-    javaFx.setToolTipText(I18n.tr("Enable/disable JavaFX (requires restart). Using JavaFX may cause a smaller window issue, or a whited-out sidebar."));
-    javaFx.setSelected(MapillaryProperties.JAVA_FX.get());
-    mainPanel.add(new JSeparator(), GBC.eol().fill(GBC.HORIZONTAL));
-    mainPanel.add(javaFx, GBC.eol());
-
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       mainPanel.add(developer, GBC.eol());
     }
     MapillaryColorScheme.styleAsDefaultPanel(
       mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled, darkMode, cutOffSeq,
-      imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin, javaFx
+      imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin
       );
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
@@ -232,8 +225,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.IMAGE_MODE.put(((PRIVATE_IMAGE_DOWNLOAD_MODE) privateImages.getSelectedItem()).getPrefId());
 
-    // Restart is never required, except when JavaFX is switched on/off
-    return MapillaryProperties.JAVA_FX.put(javaFx.isSelected());
+    //Restart is never required
+    return false;
   }
 
   @Override
