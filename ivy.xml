@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+  <info organisation="org.openstreetmap.josm.plugins" module="mapillary"/>
+  <dependencies>
+    <dependency conf="default->default" org="org.jdatepicker" name="jdatepicker" rev="1.3.4"/>
+  </dependencies>
+</ivy-module>
