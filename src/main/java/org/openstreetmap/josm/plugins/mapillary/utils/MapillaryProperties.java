@@ -88,10 +88,6 @@ public final class MapillaryProperties {
   public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.50);
 
   /**
-   * Whether or not to try to use JavaFX
-   */
-  public static final BooleanProperty JAVA_FX = new BooleanProperty("mapillary.javafx", true);
-  /**
    * The timeout for downloading additional data (should not be used for image downloads)
    */
   public static IntegerProperty TIMEOUT = new IntegerProperty("mapillary.download.timeout", 50_000);
