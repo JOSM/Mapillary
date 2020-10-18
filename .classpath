@@ -37,5 +37,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-apache-commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JOSM-apache-http"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=JOSM-Mapillary&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
