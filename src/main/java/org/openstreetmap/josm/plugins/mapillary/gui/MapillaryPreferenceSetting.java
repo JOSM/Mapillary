@@ -6,16 +6,12 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -43,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.OpenBrowser;
 
@@ -116,15 +113,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     loginPanel.setBackground(MapillaryColorScheme.TOOLBAR_DARK_GREY);
     JLabel brandImage = new JLabel();
-    try (InputStream is = MapillaryPreferenceSetting.class.getResourceAsStream("/images/mapillary-logo-white")) {
-      if (is != null) {
-        brandImage.setIcon(new ImageIcon(ImageIO.read(is)));
-      } else {
-        Logging.warn("Could not load Mapillary brand image!");
-      }
-    } catch (IOException e) {
-      Logging.warn("While reading Mapillary brand image, an IO-exception occured!");
-    }
+    brandImage.setIcon(ImageProvider.getIfAvailable("mapillary-logo-white"));
     loginPanel.add(brandImage, 0);
     loginPanel.add(Box.createHorizontalGlue(), 1);
     loginLabel.setForeground(Color.WHITE);
@@ -243,7 +232,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.IMAGE_MODE.put(((PRIVATE_IMAGE_DOWNLOAD_MODE) privateImages.getSelectedItem()).getPrefId());
 
-    //Restart is never required, except when JavaFX is switched on/off
+    // Restart is never required, except when JavaFX is switched on/off
     return MapillaryProperties.JAVA_FX.put(javaFx.isSelected());
   }
 
