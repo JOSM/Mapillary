@@ -10,17 +10,16 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class CameraPlaneTest {
 
+  @RegisterExtension
+  JOSMTestRules rule = new JOSMTestRules().main();
+
   private CameraPlane cameraPlane;
   private static final double FOV = Math.toRadians(110);
   private static final double CAMERA_PLANE_DISTANCE = (800 / 2) / Math.tan(FOV / 2);
-
-  @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules();
 
   @Test
   void testSetRotation() {
