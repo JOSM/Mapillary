@@ -32,14 +32,21 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
+import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
@@ -51,7 +58,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author Taylor Smock
  */
-public class TrafficSignFilter extends JPanel implements Destroyable {
+public class TrafficSignFilter extends JPanel implements Destroyable, LayerChangeListener, DataSourceListener {
   private static final long serialVersionUID = 1177890183422385423L;
   private boolean destroyed;
   private final List<ImageCheckBoxButton> buttons;
@@ -114,6 +121,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       showRelevantObjs.doClick();
     }
     /* End filter signs */
+
+    MainApplication.getLayerManager().addAndFireLayerChangeListener(this);
   }
 
   private static void updateLayers(ItemEvent itemEvent) {
@@ -157,7 +166,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
    */
   private void updateShown(SpinnerNumberModel model) {
     buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
-    buttons.stream().filter(i -> i.isFiltered(filterField.getText()))
+    buttons.stream().filter(i -> checkRelevant(i, filterField.getText()))
       .skip(detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
       .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
     long notSelected = buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
@@ -165,6 +174,17 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
       .count();
     toggleVisibleCheckbox.setSelected(notSelected < selected);
     toggleVisibleCheckbox.invalidate();
+  }
+
+  /**
+   * Check if a button should be shown
+   *
+   * @param button The button to check
+   * @param expr The filter text
+   * @return {@code true} if the button should be shown
+   */
+  private boolean checkRelevant(ImageCheckBoxButton button, String expr) {
+    return button.isFiltered(expr) && (!showRelevant || button.isRelevant());
   }
 
   private static void createFirstLastSeen(JPanel panel, String firstLast) {
@@ -275,8 +295,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
    * @param expr An expression to filter buttons with
    */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(
-      () -> buttons.stream().forEach(b -> b.setVisible(b.isFiltered(expr) && (!showRelevant || b.isRelevant()))));
+    SwingUtilities.invokeLater(() -> buttons.stream().forEach(b -> b.setVisible(this.checkRelevant(b, expr))));
     SwingUtilities.invokeLater(this::invalidate);
   }
 
@@ -357,6 +376,34 @@ public class TrafficSignFilter extends JPanel implements Destroyable {
     }
     if (component instanceof JComponent) {
       Stream.of(((JComponent) component).getComponents()).forEach(this::resetSubPanels);
+    }
+  }
+
+  @Override
+  public void layerAdded(LayerAddEvent e) {
+    if (e.getAddedLayer() instanceof PointObjectLayer && this.showRelevant) {
+      PointObjectLayer layer = (PointObjectLayer) e.getAddedLayer();
+      layer.getDataSet().addDataSourceListener(this);
+    }
+  }
+
+  @Override
+  public void layerRemoving(LayerRemoveEvent e) {
+    if (e.getRemovedLayer() instanceof PointObjectLayer && this.showRelevant) {
+      PointObjectLayer layer = (PointObjectLayer) e.getRemovedLayer();
+      layer.getDataSet().removeDataSourceListener(this);
+    }
+  }
+
+  @Override
+  public void layerOrderChanged(LayerOrderChangeEvent e) {
+    // Do nothing (we don't care about layer order change)
+  }
+
+  @Override
+  public void dataSourceChange(DataSourceChangeEvent event) {
+    if (this.showRelevant) {
+      this.showRelevantObjects(this.showRelevant);
     }
   }
 }
