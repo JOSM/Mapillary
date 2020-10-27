@@ -18,6 +18,8 @@ import javax.swing.event.TableModelListener;
 
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -33,10 +35,12 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   private final JCheckBox jcheckbox;
   private final String detection;
   private final String[] splitName;
+  private final ObjectDetections[] detections;
 
-  public ImageCheckBoxButton(ImageIcon icon, String detection) {
+  public ImageCheckBoxButton(ImageIcon icon, String detection, ObjectDetections... detections) {
     super(new GridBagLayout());
     this.detection = detection;
+    this.detections = detections;
     MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
     splitName = detection.split("--", -1);
     JButton image = new JButton();
@@ -108,14 +112,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     if (SwingUtilities.isEventDispatchThread()) {
       jcheckbox.setSelected(filter.enable);
     } else {
-      try {
-        SwingUtilities.invokeAndWait(() -> jcheckbox.setSelected(filter.enable));
-      } catch (InvocationTargetException e1) {
-        Logging.error(e1);
-      } catch (InterruptedException e1) {
-        Logging.error(e1);
-        Thread.currentThread().interrupt();
-      }
+      // Invoke in GUI, but don't wait for it (may be blocked)
+      GuiHelper.runInEDT(() -> jcheckbox.setSelected(filter.enable));
     }
   }
 
@@ -126,6 +124,15 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
    */
   public String getDetectionName() {
     return this.detection;
+  }
+
+  /**
+   * Get the detections for this button
+   *
+   * @return The detections
+   */
+  public ObjectDetections[] getDetections() {
+    return this.detections;
   }
 
   /**

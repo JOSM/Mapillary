@@ -153,6 +153,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   private final Map<IPrimitive, JWindow> displayedWindows = new HashMap<>();
   private static final String DETECTIONS = "detections";
 
+  private boolean showingPresetWindow;
+
   /**
    * a texture for non-downloaded area Copied from OsmDataLayer
    */
@@ -339,13 +341,16 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       }).collect(Collectors.toList());
       selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
     } else {
-      this.displayedWindows.forEach((o, w) -> this.hideWindow(w));
+      this.displayedWindows.forEach((o, w) -> hideWindow(w));
     }
   }
 
   private void paintAdditionalPanel(IPrimitive mapillaryObject, final Graphics2D g, final MapView mv, Bounds box) {
     if (!(mapillaryObject instanceof INode)) {
       Logging.error("Mapillary Additional actions does not support {0}", mapillaryObject.getType());
+      return;
+    } else if (this.showingPresetWindow) {
+      // Don't draw additional windows when preset window is open
       return;
     }
     int iconWidth = ImageProvider.ImageSizes.MAP.getAdjustedWidth();
@@ -394,13 +399,14 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       this.setForeground(UIManager.getColor("ToolTip.foreground"));
       this.setFont(UIManager.getFont("ToolTip.font"));
       this.setBorder(BorderFactory.createLineBorder(Color.black));
-      if (!ObjectDetections.getTaggingPresetsFor(mapillaryObject.get("value")).isEmpty()) {
+      final ObjectDetections detection = ObjectDetections.valueOfMapillaryValue(mapillaryObject.get("value"));
+      if (!detection.getTaggingPresets().isEmpty()) {
         this.hasContent = true;
         JButton add = new JButton(tr("Add"));
         add.setAction(new AbstractAction(tr("Add")) {
           @Override
           public void actionPerformed(ActionEvent e) {
-            addMapillaryPrimitiveToOsm(mapillaryObject);
+            addMapillaryPrimitiveToOsm(mapillaryObject, detection);
           }
         });
         this.add(add);
@@ -488,13 +494,14 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
    * Add a Mapillary Object Detection Primitive to OSM
    *
    * @param mapillaryObject The primitive to add to OSM
+   * @param detection
    */
-  void addMapillaryPrimitiveToOsm(IPrimitive mapillaryObject) {
+  void addMapillaryPrimitiveToOsm(IPrimitive mapillaryObject, ObjectDetections detection) {
     hideWindow(this.displayedWindows.get(mapillaryObject));
-    List<TaggingPreset> presets = ObjectDetections.getTaggingPresetsFor(mapillaryObject.get("value"));
+    Collection<TaggingPreset> presets = detection.getTaggingPresets();
     DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
     if (dataSet != null && !dataSet.isLocked() && presets.size() == 1) {
-      TaggingPreset preset = presets.get(0);
+      TaggingPreset preset = presets.iterator().next();
       OsmPrimitive basePrimitive;
       Collection<OsmPrimitive> toAdd;
       if (mapillaryObject instanceof Node) {
@@ -513,13 +520,23 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         return;
       }
       basePrimitive.removeAll();
+      detection.getOsmKeys().forEach(basePrimitive::put);
 
       AddPrimitivesCommand add = new AddPrimitivesCommand(
         toAdd.stream().map(OsmPrimitive::save).collect(Collectors.toList()), dataSet);
       UndoRedoHandler.getInstance().add(add);
-      preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
+      // preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
+      this.showingPresetWindow = true;
+      int userSelection = TaggingPreset.DIALOG_ANSWER_CANCEL;
+      try {
+        userSelection = preset.showDialog(new HashSet<>(add.getParticipatingPrimitives()), false);
+      } finally {
+        this.showingPresetWindow = false;
+      }
       basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
-      if (!basePrimitive.isTagged() && UndoRedoHandler.getInstance().hasUndoCommands()) {
+      // Closing the window returns 0. Not in the TaggingPreset public answers at this time.
+      if ((userSelection == 0 || userSelection == TaggingPreset.DIALOG_ANSWER_CANCEL)
+        && UndoRedoHandler.getInstance().hasUndoCommands()) {
         // Technically, it would be easier to do one undo, but this avoids corner cases
         // where a user makes some modifications while the preset window is open.
         List<Command> undoCommands = UndoRedoHandler.getInstance().getUndoCommands();
