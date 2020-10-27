@@ -50,14 +50,14 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class MapillaryImage
    *
-   * @param key          The unique identifier of the image.
-   * @param latLon       The latitude and longitude where it is positioned.
-   * @param ca           The direction of the images in degrees, meaning 0 north.
-   * @param pano         The property to indicate whether image is panorama or not.
+   * @param key The unique identifier of the image.
+   * @param latLon The latitude and longitude where it is positioned.
+   * @param ca The direction of the images in degrees, meaning 0 north.
+   * @param pano The property to indicate whether image is panorama or not.
    * @param privateImage The property to indicate if the image is private or not.
    */
   public MapillaryImage(final String key, final LatLon latLon, final double ca, final boolean pano,
-      final boolean privateImage) {
+    final boolean privateImage) {
     super(latLon, ca, pano);
     this.key = key;
     this.privateImage = privateImage;
@@ -81,17 +81,19 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   public void setAllDetections(Collection<ImageDetection> newDetections) {
-    Logging.debug("Add {0} detections to image {1}", newDetections.size(), this.getKey());
-    synchronized (detections) {
-      detections.clear();
-      detections.addAll(newDetections);
+    if (newDetections != null) {
+      Logging.debug("Add {0} detections to image {1}", newDetections.size(), this.getKey());
+      synchronized (detections) {
+        detections.clear();
+        detections.addAll(newDetections);
+      }
     }
   }
 
   @Override
   public String toString() {
     return String.format("Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]", key, getExifCoor().lat(),
-        getExifCoor().lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt);
+      getExifCoor().lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt);
   }
 
   @Override
@@ -123,8 +125,8 @@ public class MapillaryImage extends MapillaryAbstractImage {
   @Override
   public void turn(double ca) {
     if (!isDeleted) {
-    super.turn(ca);
-    checkModified();
+      super.turn(ca);
+      checkModified();
     }
   }
 
