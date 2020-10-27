@@ -503,7 +503,7 @@ public class MapillaryData implements Data {
           nextUrl = null; // Ensure we don't keep looping if there is an error.
         }
       }
-      imagesToGet.forEach(i -> {
+      imagesToGet.stream().filter(i -> detections.containsKey(i.getKey())).forEach(i -> {
         i.setAllDetections(detections.get(i.getKey()));
         fullyDownloadedDetections.add(i);
       });
