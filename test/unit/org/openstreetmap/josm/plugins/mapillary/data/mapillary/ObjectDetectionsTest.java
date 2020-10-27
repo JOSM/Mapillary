@@ -2,7 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
@@ -28,6 +28,7 @@ class ObjectDetectionsTest {
   static void beforeClass() throws ReflectiveOperationException {
     osmKey = ObjectDetections.class.getDeclaredField("osmKey");
     osmKey.setAccessible(true);
+    ObjectDetections.updatePresets();
   }
 
   static Stream<Arguments> provideObjectDetections() {
@@ -45,7 +46,7 @@ class ObjectDetectionsTest {
   // minutes to run).
   @MethodSource("org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetectionsTest#provideObjectDetections")
   void testGetTaggingPreset(ObjectDetections detection) {
-    assertFalse(ObjectDetections.getTaggingPresetsFor(detection.getKey()).isEmpty());
+    assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(detection.getKey()).length);
   }
 
   /**
@@ -55,7 +56,7 @@ class ObjectDetectionsTest {
   void testFireHydrant() {
     ObjectDetections fireHydrant = ObjectDetections.OBJECT__FIRE_HYDRANT;
     assertEquals("object--fire-hydrant", fireHydrant.getKey());
-    assertFalse(ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).isEmpty());
+    assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).length);
   }
 
 }

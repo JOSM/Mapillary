@@ -30,6 +30,7 @@ import javax.json.JsonValue;
 
 import org.junit.jupiter.api.Test;
 
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
@@ -58,7 +59,7 @@ class JsonImageDetectionDecoderTest {
       assertEquals("33zgql54_tBVvmIij0zrcA", id1.getImageKey());
       assertEquals("bzqdn10wz1s1xd3lae3hawgja0", id1.getKey());
       assertEquals(0.000001, id1.getScore(), 1e-9);
-      assertEquals("information--pedestrians-crossing--g1", id1.getValue());
+      assertEquals(ObjectDetections.INFORMATION__PEDESTRIANS_CROSSING__G1, id1.getValue());
 
       final PathIterator pi1 = id1.getShape().getPathIterator(new AffineTransform());
       testPathSegment(pi1, PathIterator.SEG_MOVETO, 0.42724609375, 0.69091796875);
@@ -72,7 +73,7 @@ class JsonImageDetectionDecoderTest {
       assertEquals("33zgql54_tBVvmIij0zrcA", id2.getImageKey());
       assertEquals("uzve1xkyk5qbjwrzaq0do09u1x", id2.getKey());
       assertEquals(0.000001, id2.getScore(), 1e-9);
-      assertEquals("information--pedestrians-crossing--g1", id2.getValue());
+      assertEquals(ObjectDetections.INFORMATION__PEDESTRIANS_CROSSING__G1, id2.getValue());
 
       final PathIterator pi2 = id2.getShape().getPathIterator(new AffineTransform());
       testPathSegment(pi2, PathIterator.SEG_MOVETO, 0.42724609375, 0.69091796875);
@@ -96,7 +97,7 @@ class JsonImageDetectionDecoderTest {
       assertEquals("trafficsign", decodeResult.getPackage());
       assertTrue(decodeResult.isTrafficSign());
       assertEquals(0.710661225175, decodeResult.getScore(), 1e-9);
-      assertEquals("regulatory--no-overtaking-by-heavy-goods-vehicles--g1", decodeResult.getValue());
+      assertEquals(ObjectDetections.REGULATORY__NO_OVERTAKING_BY_HEAVY_GOODS_VEHICLES__G1, decodeResult.getValue());
 
       final PathIterator pi = decodeResult.getShape().getPathIterator(new AffineTransform());
       testPathSegment(pi, PathIterator.SEG_MOVETO, 0.330078125, 0.466064453125);

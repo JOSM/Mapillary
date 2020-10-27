@@ -31,7 +31,7 @@ class ImageDetectionTest {
     assertFalse(id.isTrafficSign());
     assertTrue(trafficsign.isTrafficSign());
 
-    assertEquals("value", id.getValue());
-    assertEquals("value2", trafficsign.getValue());
+    assertEquals("value", id.getUnknownValue());
+    assertEquals("value2", trafficsign.getUnknownValue());
   }
 }

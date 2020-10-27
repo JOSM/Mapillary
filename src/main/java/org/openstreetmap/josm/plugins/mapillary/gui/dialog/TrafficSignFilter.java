@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,14 +33,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Filter;
+import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
@@ -47,6 +52,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.I18n;
@@ -63,10 +69,19 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private boolean destroyed;
   private final List<ImageCheckBoxButton> buttons;
   private boolean showRelevant;
+  private boolean showAddable;
+  private Boolean[] show = new Boolean[] { showRelevant, showAddable };
   private final FilterField filterField;
   private final SpinnerNumberModel showMaxNumberModel;
   private int detectionPage;
   private final JCheckBox toggleVisibleCheckbox;
+  private static final String NEARBY_KEY = "nearby_osm_objects";
+
+  private interface ResetListener {
+    void reset();
+  }
+
+  private List<ResetListener> resetObjects = new ArrayList<>();
 
   public TrafficSignFilter() {
     setLayout(new GridBagLayout());
@@ -94,6 +109,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     add(filterField, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     toggleVisibleCheckbox = new JCheckBox(I18n.tr("Select Visible"));
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
+    JCheckBox showAddableObjs = new JCheckBox(I18n.tr("Only show addable objects"));
+    JCheckBox hideNearbyAddableObjs = new JCheckBox(I18n.tr("hide when nearby OSM objects"));
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
@@ -109,10 +126,20 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     pagination.add(showMax, GBC.std().anchor(GridBagConstraints.CENTER));
     pagination.add(nextButtonPagination, GBC.std().anchor(GridBagConstraints.WEST));
     showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
+    showAddableObjs.addItemListener(l -> showAddableObjects(l.getStateChange() == ItemEvent.SELECTED));
+    hideNearbyAddableObjs.addItemListener(l -> hideNearbyAddableObjs(l.getStateChange() == ItemEvent.SELECTED));
     toggleVisibleCheckbox.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
+    add(showAddableObjs, GBC.std().anchor(GridBagConstraints.WEST));
+    add(hideNearbyAddableObjs, GBC.eol().anchor(GridBagConstraints.CENTER));
     add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.WEST));
     add(toggleVisibleCheckbox, GBC.std().anchor(GridBagConstraints.CENTER));
     add(pagination, GBC.eol().anchor(GridBagConstraints.EAST));
+
+    this.resetObjects.add(() -> showAddableObjs.setSelected(false));
+    this.resetObjects.add(() -> showRelevantObjs.setSelected(true));
+    this.resetObjects.add(() -> hideNearbyAddableObjs.setSelected(false));
+    this.resetObjects.add(() -> filterField.setText(""));
+    this.resetObjects.add(() -> showMaxNumberModel.setValue(100));
 
     buttons = new ArrayList<>();
     addButtons();
@@ -184,7 +211,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @return {@code true} if the button should be shown
    */
   private boolean checkRelevant(ImageCheckBoxButton button, String expr) {
-    return button.isFiltered(expr) && (!showRelevant || button.isRelevant());
+    boolean relevant = !this.showRelevant || button.isRelevant();
+    boolean addable = !this.showAddable || ObjectDetections.getTaggingPresetsFor(button.getDetectionName()).length > 0;
+    return button.isFiltered(expr) && (relevant && addable);
   }
 
   private static void createFirstLastSeen(JPanel panel, String firstLast) {
@@ -255,8 +284,87 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   }
 
+  private void hideNearbyAddableObjs(boolean hideObjects) {
+    Filter filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
+      .filter(f -> f.text.equals(NEARBY_KEY)).findAny().orElseGet(() -> {
+        Filter nfilter = new Filter();
+        nfilter.hiding = true;
+        nfilter.text = NEARBY_KEY;
+        return nfilter;
+      });
+    int index = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().indexOf(filter);
+
+    if (hideObjects) {
+      final Collection<ObjectDetections> osmEquivalentPossible = Stream.of(ObjectDetections.values())
+        .filter(obj -> !obj.getOsmKeys().isEmpty()).collect(Collectors.toList());
+      final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 10.0); // meters
+      MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
+        DataSet dataSet = layer.getDataSet();
+        boolean locked = dataSet.isLocked();
+        try {
+          dataSet.beginUpdate();
+          dataSet.unlock();
+          dataSet.allNonDeletedPrimitives().stream().filter(p -> !p.hasKey(NEARBY_KEY)
+            && osmEquivalentPossible.contains(ObjectDetections.valueOfMapillaryValue(p.get("value")))).forEach(p -> {
+              TagMap tags = ObjectDetections.valueOfMapillaryValue(p.get("value")).getOsmKeys();
+              BBox searchBBox = p.getBBox();
+              searchBBox.addPrimitive(p, distance / 111000); // convert meters to degrees (roughly)
+              String nearby = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
+                .map(OsmDataLayer::getDataSet).flatMap(d -> d.searchPrimitives(searchBBox).stream())
+                .filter(pr -> !pr.isDeleted()).filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
+                .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
+              if (nearby != null && !nearby.trim().isEmpty()) {
+                p.put(NEARBY_KEY, nearby);
+              }
+            });
+        } finally {
+          if (locked) {
+            dataSet.lock();
+          }
+          dataSet.endUpdate();
+        }
+      });
+      filter.enable = true;
+      if (index < 0) {
+        MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+      }
+    } else {
+      filter.enable = false;
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
+    }
+  }
+
+  /**
+   * Check if a TagMap is a subset of another tagmap
+   *
+   * @param superSet The TagMap that should contain all of the other TagMap
+   * @param subSet The TagMap that should be contained by the other TagMap
+   * @return {@code true} if the subSet TagMap is actually a subset of the superSet TagMap.
+   */
+  private boolean tagMapIsSubset(TagMap superSet, TagMap subSet) {
+    return subSet.entrySet().stream()
+      .allMatch(t -> superSet.containsKey(t.getKey()) && superSet.get(t.getKey()).equals(t.getValue()));
+  }
+
   private void showRelevantObjects(boolean showRelevant) {
     this.showRelevant = showRelevant;
+    this.updateShownButtons();
+  }
+
+  private void showAddableObjects(boolean showAddable) {
+    this.showAddable = showAddable;
+    Collection<ImageCheckBoxButton> nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant)
+      .filter(button -> Stream.of(button.getDetections()).allMatch(d -> d.getTaggingPresets().isEmpty()))
+      .collect(Collectors.toList());
+    this.updateShownButtons();
+    GuiHelper.runInEDT(() -> {
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
+      nonAddable.forEach(b -> b.setSelected(this.showAddable));
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
+    });
+  }
+
+  private void updateShownButtons() {
     filterButtons(filterField.getText());
     updateShown(showMaxNumberModel);
   }
@@ -321,7 +429,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       }).filter(Objects::nonNull).findFirst().orElse(null);
       if (icon != null) {
         GuiHelper.runInEDTAndWait(() -> {
-          ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey());
+          ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
+            entry.getValue().toArray(new ObjectDetections[0]));
           buttons.add(button);
           panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
         });
@@ -343,9 +452,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * Reset everything
    */
   public void reset() {
+    this.resetObjects.forEach(ResetListener::reset);
     List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).collect(Collectors.toList());
-    filterField.setText("");
-    showMaxNumberModel.setValue(100);
     futures.add(MainApplication.worker.submit(() -> {
       while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
         MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
@@ -365,6 +473,22 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         }
       }
     });
+
+    // Remove the NEARBY_KEY tag
+    MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
+      DataSet dataSet = layer.getDataSet();
+      boolean locked = dataSet.isLocked();
+      try {
+        dataSet.unlock();
+        dataSet.beginUpdate();
+        dataSet.allPrimitives().stream().filter(p -> p.hasKey(NEARBY_KEY)).forEach(p -> p.remove(NEARBY_KEY));
+      } finally {
+        dataSet.endUpdate();
+        if (locked) {
+          dataSet.lock();
+        }
+      }
+    });
   }
 
   private void resetSubPanels(Component component) {
@@ -381,7 +505,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   @Override
   public void layerAdded(LayerAddEvent e) {
-    if (e.getAddedLayer() instanceof PointObjectLayer && this.showRelevant) {
+    if (e.getAddedLayer() instanceof PointObjectLayer) {
       PointObjectLayer layer = (PointObjectLayer) e.getAddedLayer();
       layer.getDataSet().addDataSourceListener(this);
     }
@@ -389,7 +513,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   @Override
   public void layerRemoving(LayerRemoveEvent e) {
-    if (e.getRemovedLayer() instanceof PointObjectLayer && this.showRelevant) {
+    if (e.getRemovedLayer() instanceof PointObjectLayer) {
       PointObjectLayer layer = (PointObjectLayer) e.getRemovedLayer();
       layer.getDataSet().removeDataSourceListener(this);
     }
@@ -402,8 +526,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   @Override
   public void dataSourceChange(DataSourceChangeEvent event) {
-    if (this.showRelevant) {
-      this.showRelevantObjects(this.showRelevant);
+    if (Stream.of(this.show).anyMatch(Boolean.TRUE::equals)) {
+      this.updateShownButtons();
     }
   }
 }

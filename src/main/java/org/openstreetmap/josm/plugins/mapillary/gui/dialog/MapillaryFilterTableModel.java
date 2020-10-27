@@ -101,8 +101,8 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
   /**
    * Runs the filter on a list of primitives that are part of the edit data set, if any.
    *
-   * @param force      force execution of filters even if no filter is enabled. Useful to reset state after change of
-   *                     filters
+   * @param force force execution of filters even if no filter is enabled. Useful to reset state after change of
+   *        filters
    * @param primitives The primitives
    * @since 14206
    */
@@ -215,9 +215,9 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
   @Override
   public String getColumnName(int column) {
     String[] names = { /* translators notes must be in front */
-        /* column header: enable filter */trc("filter", "E"), /* column header: hide filter */trc("filter", "H"),
-        /* column header: filter text */trc("filter", "Text"), /* column header: inverted filter */trc("filter", "I"),
-        /* column header: filter mode */trc("filter", "M") };
+      /* column header: enable filter */trc("filter", "E"), /* column header: hide filter */trc("filter", "H"),
+      /* column header: filter text */trc("filter", "Text"), /* column header: inverted filter */trc("filter", "I"),
+      /* column header: filter mode */trc("filter", "M") };
     return names[column];
   }
 
@@ -230,12 +230,12 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
   /**
    * Determines if a cell is enabled.
    *
-   * @param row    row index
+   * @param row row index
    * @param column column index
    * @return {@code true} if the cell at (row, column) is enabled
    */
   public boolean isCellEnabled(int row, int column) {
-    return model.getValue(row).enable || column == 0;
+    return model.getFiltersCount() > row && model.getValue(row).enable || column == 0;
   }
 
   @Override
