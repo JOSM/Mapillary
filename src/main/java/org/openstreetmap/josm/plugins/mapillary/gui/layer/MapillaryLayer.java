@@ -511,7 +511,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
         g.setTransform(backup);
       }
     } else {
-      g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
+      g.setTransform(getTransform(Math.toRadians(img.getMovingCa() + img.getTheta()), p, getOriginalCentroid(i), backup));
       g.drawImage(i, p.x, p.y, null);
       g.setTransform(backup);
     }
