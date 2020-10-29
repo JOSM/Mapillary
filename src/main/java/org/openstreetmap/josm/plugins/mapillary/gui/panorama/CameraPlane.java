@@ -40,10 +40,10 @@ public class CameraPlane {
     this.height = height;
     this.distance = distance;
     if (MapillaryMainDialog.getInstance().getImage() != null) {
-      this.theta = MapillaryMainDialog.getInstance().getImage().getTheta();
+      this.theta = FastMath.toRadians(MapillaryMainDialog.getInstance().getImage().getTheta());
     }
     rotation = new Rotation(RotationOrder.XYX, RotationConvention.VECTOR_OPERATOR, 0, 0, 0);
-    setRotation(0.0, 0.0);
+    setRotation(theta, 0.0);
     vectors = new Vector3D[width][height];
     IntStream.range(0, height).parallel().forEach(y -> IntStream.range(0, width).parallel()
       .forEach(x -> vectors[x][y] = new Vector3D(x - width / 2d, y - height / 2d, distance).normalize()));
