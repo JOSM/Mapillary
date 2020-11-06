@@ -27,8 +27,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
-import org.openstreetmap.josm.actions.JosmAction;
 
+import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -50,7 +50,6 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @author nokutu
  * @see MapillaryRecord
  * @see MapillaryCommand
- *
  */
 public final class MapillaryHistoryDialog extends ToggleDialog implements MapillaryRecordListener {
 
@@ -77,15 +76,10 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   private boolean destroyed;
 
   private MapillaryHistoryDialog() {
-    super(
-      tr("Mapillary history"),
-      "mapillary-history",
-      tr("Open Mapillary history dialog"),
-      Shortcut.registerShortcut("mapillary:historydialog", tr("Mapillary history dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      200,
-      false,
-      MapillaryPreferenceSetting.class
-    );
+    super(tr("Mapillary history"), "mapillary-history", tr("Open Mapillary history dialog"),
+      Shortcut.registerShortcut("mapillary:historydialog", tr("Mapillary history dialog"), KeyEvent.CHAR_UNDEFINED,
+        Shortcut.NONE),
+      200, false, MapillaryPreferenceSetting.class);
 
     MapillaryRecord.getInstance().addListener(this);
 
@@ -218,10 +212,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     private static final long serialVersionUID = -6435832206342007269L;
 
     UndoAction() {
-      super(tr("Undo"), new ImageProvider("undo"), null,
-         Shortcut.registerShortcut("mapillary:undo", tr("Mapillary: undo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
-         false, null, false
-      );
+      super(tr("Undo"), new ImageProvider("undo"), null, Shortcut.registerShortcut("mapillary:undo",
+        tr("Mapillary: undo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false);
     }
 
     @Override
@@ -235,10 +227,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     private static final long serialVersionUID = -2761935780353053512L;
 
     RedoAction() {
-      super(tr("Redo"), new ImageProvider("redo"), null,
-         Shortcut.registerShortcut("mapillary:redo", tr("Mapillary: redo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
-         false, null, false
-      );
+      super(tr("Redo"), new ImageProvider("redo"), null, Shortcut.registerShortcut("mapillary:redo",
+        tr("Mapillary: redo history changes"), KeyEvent.VK_UNDEFINED, Shortcut.NONE), false, null, false);
     }
 
     @Override
@@ -268,7 +258,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
     public void mousePressed(MouseEvent e) {
       if (e.getClickCount() == 2) {
         if (getUndoTree().getSelectionPath() == null) {
-          MapillaryUtils.showPictures(getCommandFromMap(getRedoTree().getSelectionPath().getLastPathComponent()).images, true);
+          MapillaryUtils.showPictures(getCommandFromMap(getRedoTree().getSelectionPath().getLastPathComponent()).images,
+            true);
         } else {
           MapillaryCommand cmd = getCommandFromMap(getUndoTree().getSelectionPath().getLastPathComponent());
           if (!(cmd instanceof CommandDelete)) {
@@ -311,7 +302,8 @@ public final class MapillaryHistoryDialog extends ToggleDialog implements Mapill
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      MainApplication.getMap().removeToggleDialog(this);
+      if (MainApplication.getMap() != null)
+        MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;
     }
     destroyInstance();

@@ -20,8 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import org.openstreetmap.josm.actions.JosmAction;
 
+import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
@@ -29,14 +29,14 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.changeset.SubmitDeletionChangesetAction;
-import org.openstreetmap.josm.plugins.mapillary.gui.changeset.SubmitLocationChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.DoubleSpinner;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.DeleteImageAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.DeleteSequenceAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.ReviewImageAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.SubmitDeletionChangesetAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.changeset.SubmitLocationChangesetAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
@@ -48,7 +48,6 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * Toggle dialog that shows you the current changeset and allows you to edit images.
- *
  */
 public final class MapillaryChangesetDialog extends ToggleDialog
   implements MapillaryChangesetListener, MapillaryDataListener, MapillaryLoginListener {
@@ -83,15 +82,9 @@ public final class MapillaryChangesetDialog extends ToggleDialog
   }
 
   private MapillaryChangesetDialog() {
-    super(
-      tr("Current Mapillary changeset"),
-      "mapillary-upload",
-      tr("Open Mapillary changeset dialog"),
-      Shortcut.registerShortcut(tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE),
-      300,
-      false,
-      MapillaryPreferenceSetting.class
-    );
+    super(tr("Current Mapillary changeset"), "mapillary-upload", tr("Open Mapillary changeset dialog"), Shortcut
+      .registerShortcut(tr("Mapillary changeset"), tr("Open Mapillary changeset dialog"), KeyEvent.VK_9, Shortcut.NONE),
+      300, false, MapillaryPreferenceSetting.class);
     MapillaryUser.addListener(this);
 
     JPanel imgAnglePanel = new JPanel();
@@ -134,7 +127,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     gbc.gridy++;
     rootComponent.add(new JLabel("Changeset"), gbc);
 
-    //Right column
+    // Right column
     gbc.weightx = 1;
     gbc.gridx++;
     gbc.gridy = 2;
@@ -204,7 +197,8 @@ public final class MapillaryChangesetDialog extends ToggleDialog
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      MainApplication.getMap().removeToggleDialog(this);
+      if (MainApplication.getMap() != null)
+        MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;
     }
     destroyInstance();
@@ -212,7 +206,7 @@ public final class MapillaryChangesetDialog extends ToggleDialog
 
   @Override
   public void imagesAdded() {
-    //Do nothing.
+    // Do nothing.
   }
 
   @Override
@@ -277,13 +271,15 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     public void actionPerformed(ActionEvent e) {
       double turnCa = getInstance().seqOffset.getDouble();
       if (turnCa != 0.0 && turnCa != 360.0) {
-        List<MapillaryAbstractImage> images = MapillaryLayer.getInstance().getData().getSelectedImage().getSequence().getImages();
+        List<MapillaryAbstractImage> images = MapillaryLayer.getInstance().getData().getSelectedImage().getSequence()
+          .getImages();
         images.forEach(img -> {
           img.turn(turnCa);
         });
         double from = MapillaryLayer.getInstance().getData().getSelectedImage().getTempCa();
         double to = MapillaryLayer.getInstance().getData().getSelectedImage().getMovingCa();
-        MapillaryRecord.getInstance().addCommand(new CommandTurn(images.stream().collect(Collectors.toSet()), to - from));
+        MapillaryRecord.getInstance()
+          .addCommand(new CommandTurn(images.stream().collect(Collectors.toSet()), to - from));
         images.forEach(MapillaryAbstractImage::stopMoving);
         MapillaryLayer.invalidateInstance();
       }
@@ -302,7 +298,8 @@ public final class MapillaryChangesetDialog extends ToggleDialog
       double ca = getInstance().imgOffset.getDouble();
       MapillaryAbstractImage img = MapillaryLayer.getInstance().getData().getSelectedImage();
       img.setMovingCa(ca);
-      MapillaryRecord.getInstance().addCommand(new CommandTurn(Collections.singleton(img), img.getMovingCa() - img.getTempCa()));
+      MapillaryRecord.getInstance()
+        .addCommand(new CommandTurn(Collections.singleton(img), img.getMovingCa() - img.getTempCa()));
       img.stopMoving();
       MapillaryLayer.invalidateInstance();
     }
@@ -318,11 +315,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     public void actionPerformed(ActionEvent e) {
       MapillaryLayer.getInstance().getData().getSelectedImage().getSequence().getImages().forEach(img -> {
         if (img.next() != null) {
-          img.setMovingCa(
-            (Math.toDegrees(Math.atan2(img.next().getMovingLatLon().getX() - img.getMovingLatLon().getX(),
-              img.next().getMovingLatLon().getY() - img.getMovingLatLon().getY())) + 360) % 360
-          );
-          MapillaryRecord.getInstance().addCommand(new CommandTurn(Collections.singleton(img), img.getMovingCa() - img.getTempCa()));
+          img.setMovingCa((Math.toDegrees(Math.atan2(img.next().getMovingLatLon().getX() - img.getMovingLatLon().getX(),
+            img.next().getMovingLatLon().getY() - img.getMovingLatLon().getY())) + 360) % 360);
+          MapillaryRecord.getInstance()
+            .addCommand(new CommandTurn(Collections.singleton(img), img.getMovingCa() - img.getTempCa()));
           img.stopMoving();
         }
       });

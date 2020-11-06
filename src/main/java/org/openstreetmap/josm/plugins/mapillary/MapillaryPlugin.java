@@ -163,7 +163,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       toggleDialog.add(MapillaryMainDialog.getInstance());
       newFrame.addToggleDialog(MapillaryMainDialog.getInstance(), false);
       MapillaryMainDialog.getInstance()
-          .setImageInfoHelp(new ImageInfoHelpPopup(newFrame.addToggleDialog(ImageInfoPanel.getInstance(), false)));
+        .setImageInfoHelp(new ImageInfoHelpPopup(newFrame.addToggleDialog(ImageInfoPanel.getInstance(), false)));
       toggleDialog.add(MapillaryHistoryDialog.getInstance());
       newFrame.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
       toggleDialog.add(MapillaryDownloadDialog.getInstance());
@@ -222,12 +222,12 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
   public void destroy() {
     MainMenu menu = MainApplication.getMenu();
     for (JMenu jmenu : Arrays.asList(menu.dataMenu, menu.viewMenu, menu.imagerySubMenu, menu.moreToolsMenu,
-        menu.editMenu, menu.fileMenu, menu.windowMenu)) {
+      menu.editMenu, menu.fileMenu, menu.windowMenu)) {
       clearMenues(jmenu);
     }
     for (Class<? extends Layer> layerClazz : Arrays.asList(MapillaryLayer.class, PointObjectLayer.class)) {
       MainApplication.getLayerManager().getLayersOfType(layerClazz)
-          .forEach(layer -> MainApplication.getLayerManager().removeLayer(layer));
+        .forEach(layer -> MainApplication.getLayerManager().removeLayer(layer));
     }
     MapFrame frame = MainApplication.getMap();
     if (frame != null) {
@@ -248,10 +248,10 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
   private void clearMenues(JMenu menu) {
     final Map<Action, Component> actions = Arrays.asList(menu.getMenuComponents()).stream()
-        .filter(JMenuItem.class::isInstance).map(JMenuItem.class::cast)
-        .collect(Collectors.toMap(JMenuItem::getAction, component -> component));
+      .filter(JMenuItem.class::isInstance).map(JMenuItem.class::cast).filter(j -> j.getAction() != null)
+      .collect(Collectors.toMap(JMenuItem::getAction, component -> component));
     final List<JosmAction> menuEntries = destroyables.parallelStream().filter(JosmAction.class::isInstance)
-        .map(JosmAction.class::cast).collect(Collectors.toList());
+      .map(JosmAction.class::cast).collect(Collectors.toList());
     for (final Map.Entry<Action, Component> action : actions.entrySet()) {
       if (menuEntries.contains(action.getKey())) {
         menu.remove(action.getValue());

@@ -62,13 +62,10 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
    * Constructs a new {@code MapillaryDownloadDialog}.
    */
   private MapillaryDownloadDialog() {
-    super(
-      tr("Mapillary Download Dialog"),
-      "mapillary-download",
-      tr("Download manager for Mapillary Images"),
-      Shortcut.registerShortcut("mapillary:downloaddialog", tr("Mapillary images download manager"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      300
-    );
+    super(tr("Mapillary Download Dialog"), "mapillary-download", tr("Download manager for Mapillary Images"),
+      Shortcut.registerShortcut("mapillary:downloaddialog", tr("Mapillary images download manager"),
+        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      300);
 
     this.model = DownloadTableModel.getInstance();
     DownloadTableModel.getInstance().addTableModelListener(this);
@@ -171,7 +168,8 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   }
 
   private void updateDownloadInfo() {
-    downloadLabel.setText(trn("{0} Download in queue", "{0} Downloads in queue", MapillaryDownloader.getQueuedSize(), MapillaryDownloader.getQueuedSize()));
+    downloadLabel.setText(trn("{0} Download in queue", "{0} Downloads in queue", MapillaryDownloader.getQueuedSize(),
+      MapillaryDownloader.getQueuedSize()));
     updateButtons();
   }
 
@@ -195,7 +193,8 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   public static class ProgressCellRender extends JProgressBar implements TableCellRenderer {
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+      int row, int column) {
       int progress = 0;
       if (value instanceof Float) {
         progress = Math.round(((Float) value) * 100f);
@@ -210,7 +209,8 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   public static class StringRender extends JLabel implements TableCellRenderer {
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+      int row, int column) {
       setText(tr(value.toString()));
       return this;
     }
@@ -314,7 +314,8 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      MainApplication.getMap().removeToggleDialog(this);
+      if (MainApplication.getMap() != null)
+        MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;
       this.invalidate();
     }

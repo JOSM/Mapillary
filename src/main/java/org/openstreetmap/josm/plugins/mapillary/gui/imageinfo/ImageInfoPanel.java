@@ -15,8 +15,8 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
-import javax.swing.AbstractAction;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -32,14 +32,13 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -47,7 +46,8 @@ import org.openstreetmap.josm.tools.Shortcut;
 public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, DataSelectionListener {
   private static final long serialVersionUID = 1320443250226377651L;
   private static ImageInfoPanel instance;
-  private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
+  private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(
+    new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
 
   private final JLabel numDetectionsLabel;
   private final JCheckBox showDetectionsCheck;
@@ -64,22 +64,18 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   private boolean destroyed;
 
   private ImageInfoPanel() {
-    super(
-      tr("Image info"),
-      "mapillary-info",
+    super(tr("Image info"), "mapillary-info",
       tr("Displays detail information on the currently selected Mapillary image"),
       Shortcut.registerShortcut("mapillary:imageinfo", tr("Image info dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      150
-    );
+      150);
     MainApplication.getLayerManager().addAndFireActiveLayerChangeListener(event -> {
       try {
-        Optional.ofNullable(event.getPreviousDataSet())
-            .ifPresent(it -> it.removeSelectionListener(this));
+        Optional.ofNullable(event.getPreviousDataSet()).ifPresent(it -> it.removeSelectionListener(this));
       } catch (IllegalArgumentException e) {
         // The selection listener was not registered
       }
       Optional.ofNullable(MainApplication.getLayerManager().getActiveDataSet())
-          .ifPresent(it -> it.addSelectionListener(this));
+        .ifPresent(it -> it.addSelectionListener(this));
     });
 
     numDetectionsLabel = new JLabel();
@@ -87,12 +83,10 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
 
     showDetectionsCheck = new JCheckBox(tr("Show detections on top of image"));
     showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get());
-    showDetectionsCheck.addActionListener(
-      action -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected())
-    );
-    MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(
-      valueChange -> showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
-    );
+    showDetectionsCheck
+      .addActionListener(action -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(showDetectionsCheck.isSelected()));
+    MapillaryProperties.SHOW_DETECTED_SIGNS
+      .addListener(valueChange -> showDetectionsCheck.setSelected(MapillaryProperties.SHOW_DETECTED_SIGNS.get()));
 
     usernameLabel = new JLabel();
     usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN));
@@ -181,7 +175,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     instance = null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see org.openstreetmap.josm.gui.dialogs.ToggleDialog#stateChanged()
    */
   @Override
@@ -192,7 +187,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
    */
   @Override
@@ -200,20 +196,23 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     // Method is not needed, but enforcesd by the interface MapillaryDataListener
   }
 
-  /* (non-Javadoc)
-   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
+  /*
+   * (non-Javadoc)
+   * @see
+   * org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.
+   * mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
    */
   @Override
-  public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage, final MapillaryAbstractImage newImage) {
-    Logging.debug(String.format(
-      "Selected Mapillary image changed from %s to %s.",
+  public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage,
+    final MapillaryAbstractImage newImage) {
+    Logging.debug(String.format("Selected Mapillary image changed from %s to %s.",
       oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
-      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"
-    ));
+      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"));
 
-    numDetectionsLabel.setText(tr("{0} detections", newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
+    numDetectionsLabel.setText(tr("{0} detections",
+      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
     imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
-    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey(): null;
+    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : null;
     if (newImageKey != null) {
       final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
         ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
@@ -250,20 +249,19 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       usernameLabel.setIcon(EMPTY_USER_AVATAR);
     }
 
-    final boolean partOfSequence = newImage != null && newImage.getSequence() != null && newImage.getSequence().getKey() != null;
+    final boolean partOfSequence = newImage != null && newImage.getSequence() != null
+      && newImage.getSequence().getKey() != null;
     seqKeyValue.setEnabled(partOfSequence);
     if (partOfSequence) {
       seqKeyValue.setText(newImage.getSequence().getKey());
     } else {
       seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
     }
-    if (newImage != null) {
-      colorPickerButton.setEnabled(true);
-    } else {
-      colorPickerButton.setEnabled(false);
-    }
+    colorPickerButton.setEnabled(newImage != null);
   }
-  /* (non-Javadoc)
+
+  /*
+   * (non-Javadoc)
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
@@ -277,7 +275,8 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      MainApplication.getMap().removeToggleDialog(this);
+      if (MainApplication.getMap() != null)
+        MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;
     }
     destroyInstance();
@@ -288,13 +287,12 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     private static final long serialVersionUID = 8706299665735930148L;
 
     ColorChooserAction() {
-      super(tr("Pick Color"), ImageProvider.get("mapillary-eyedropper",
-      ImageProvider.ImageSizes.SMALLICON));
+      super(tr("Pick Color"), ImageProvider.get("mapillary-eyedropper", ImageProvider.ImageSizes.SMALLICON));
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      ExtendedDialog abc = new ExtendedDialog( MainApplication.getMainFrame(), tr("Color Picker"));
+      ExtendedDialog abc = new ExtendedDialog(MainApplication.getMainFrame(), tr("Color Picker"));
       abc.setContent(new ImageColorPicker());
       abc.showDialog();
     }
