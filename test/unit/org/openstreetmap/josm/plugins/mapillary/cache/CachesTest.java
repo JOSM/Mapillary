@@ -1,14 +1,14 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-public class CachesTest {
+class CachesTest {
 
   @Test
-  public void testUtilityClass() {
+  void testUtilityClass() {
     TestUtil.testUtilityClass(Caches.class);
   }
 }

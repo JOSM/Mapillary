@@ -1,11 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link PluginState} class.
@@ -13,13 +13,13 @@ import org.junit.Test;
  * @author nokutu
  * @see PluginState
  */
-public class PluginStateTest {
+class PluginStateTest {
 
   /**
    * Test the methods related to the download.
    */
   @Test
-  public void downloadTest() {
+  void downloadTest() {
     assertFalse(PluginState.isDownloading());
     PluginState.startDownload();
     assertTrue(PluginState.isDownloading());
@@ -35,7 +35,7 @@ public class PluginStateTest {
    * Tests the methods related to the upload.
    */
   @Test
-  public void uploadTest() {
+  void uploadTest() {
     assertFalse(PluginState.isUploading());
     PluginState.addImagesToUpload(2);
     assertEquals(2, PluginState.getImagesToUpload());

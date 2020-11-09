@@ -1,10 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -13,13 +13,13 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapObjectLayerActionTest {
+class MapObjectLayerActionTest {
 
-  @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().main().projection();
+  @RegisterExtension
+  JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   @Test
-  public void testAction() {
+  void testAction() {
     assertEquals(0, MainApplication.getLayerManager().getLayers().size());
     new MapObjectLayerAction().actionPerformed(null);
     assertEquals(0, MainApplication.getLayerManager().getLayers().size());

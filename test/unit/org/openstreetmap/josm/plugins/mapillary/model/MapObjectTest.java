@@ -3,23 +3,23 @@ package org.openstreetmap.josm.plugins.mapillary.model;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -27,13 +27,12 @@ import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapObjectTest {
+class MapObjectTest {
 
-  @Rule
-  public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
-
-  @Rule
+  @RegisterExtension
   public JOSMTestRules rules = new MapillaryTestRules();
+
+  private WireMockServer wmRule;
 
   private static MapObject mo1;
   private static MapObject mo2;
@@ -48,8 +47,10 @@ public class MapObjectTest {
     mo3 = new MapObject(new LatLon(0, 0), "key1", "", "", 0, 0);
   }
 
-  @Before
-  public void setUp() throws IllegalArgumentException {
+  @BeforeEach
+  void setUp() throws IllegalArgumentException {
+    wmRule = new WireMockServer(wireMockConfig().dynamicPort());
+    wmRule.start();
     initMapObjects();
 
     oldBaseUrl = TestUtil.getMainWebsiteBaseUrl();
@@ -58,47 +59,42 @@ public class MapObjectTest {
     iconUnknownType = TestUtil.getPrivateFieldValue(MapObject.class, null, "ICON_UNKNOWN_TYPE");
   }
 
-  @After
-  public void cleanUp() throws IllegalArgumentException {
+  @AfterEach
+  void cleanUp() throws IllegalArgumentException {
+    wmRule.stop();
     TestUtil.setMainWebsiteBaseUrl(oldBaseUrl);
   }
 
-  @SuppressWarnings({ "unused", "PMD.AvoidDuplicateLiterals" })
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllArgEx1() {
-    new MapObject(new LatLon(0, 0), null, "", "", 0, 0);
-  }
-
-  @SuppressWarnings("unused")
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllArgEx2() {
-    new MapObject(new LatLon(0, 0), "", null, "", 0, 0);
-  }
-
-  @SuppressWarnings("unused")
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllArgEx3() {
-    new MapObject(new LatLon(0, 0), "", "", null, 0, 0);
-  }
-
-  @SuppressWarnings("unused")
-  @Test(expected = IllegalArgumentException.class)
-  public void testIllArgEx4() {
-    new MapObject(null, "", "", "", 0, 0);
+  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+  @Test
+  void testIllArgEx1() {
+    LatLon ll = new LatLon(0, 0);
+    assertThrows(IllegalArgumentException.class, () -> new MapObject(ll, null, "", "", 0, 0));
   }
 
   @Test
-  public void testIcon() throws URISyntaxException, IOException {
-    stubFor(
-      get(urlMatching("/developer/api-documentation/images/traffic_sign/[a-z]+\\.png"))
-        .willReturn(
-          aResponse()
-            .withStatus(200)
-            .withBody(Files.readAllBytes(
-              Paths.get(MapObject.class.getResource("/images/fake-avatar.png").toURI())
-            ))
-        )
-    );
+  void testIllArgEx2() {
+    LatLon ll = new LatLon(0, 0);
+    assertThrows(IllegalArgumentException.class, () -> new MapObject(ll, "", null, "", 0, 0));
+  }
+
+  @Test
+  void testIllArgEx3() {
+    LatLon ll = new LatLon(0, 0);
+    assertThrows(IllegalArgumentException.class, () -> new MapObject(ll, "", "", null, 0, 0));
+  }
+
+  @Test
+  void testIllArgEx4() {
+    assertThrows(IllegalArgumentException.class, () -> new MapObject(null, "", "", "", 0, 0));
+  }
+
+  @Test
+  void testIcon() throws URISyntaxException, IOException {
+    wmRule.addStubMapping(get(urlMatching("/developer/api-documentation/images/traffic_sign/[a-z]+\\.png"))
+      .willReturn(aResponse().withStatus(200)
+        .withBody(Files.readAllBytes(Paths.get(MapObject.class.getResource("/images/fake-avatar.png").toURI()))))
+      .build());
 
     final String mapIconKey = "iconkey";
     assertNotNull(MapObject.getIcon(mapIconKey));
@@ -109,10 +105,10 @@ public class MapObjectTest {
   }
 
   @Test
-  public void testEquals() throws SecurityException, IllegalArgumentException {
+  void testEquals() throws SecurityException, IllegalArgumentException {
     assertEquals(mo1, mo1);
-    assertNotEquals(mo1, null);
-    assertNotEquals(mo1, "");
+    assertNotNull(mo1);
+    assertNotEquals("", mo1);
     assertNotEquals(mo1, mo2);
     assertEquals(mo1, mo3);
     assertEquals(mo1.hashCode(), mo3.hashCode());

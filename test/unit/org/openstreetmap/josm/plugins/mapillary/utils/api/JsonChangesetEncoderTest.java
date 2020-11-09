@@ -3,50 +3,53 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import static org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil.assertJsonEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-public class JsonChangesetEncoderTest {
+class JsonChangesetEncoderTest {
 
   @Test
-  public void testSingleImageChangeset() {
+  void testSingleImageChangeset() {
     MapillaryImage image = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false,
-        false);
+      false);
     image.move(0.1111, 0.22222);
     image.turn(273.3);
     image.stopMoving();
 
-    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/single_image_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/single_image_changeset.json",
+      JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
-  public void testTranslationOnlyChangeset() {
+  void testTranslationOnlyChangeset() {
     MapillaryImage image = new MapillaryImage("translationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0,
-        false, false);
+      false, false);
     image.move(0.1111, 0.22222);
     image.stopMoving();
 
-    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/translation_only_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/translation_only_changeset.json",
+      JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
-  public void testRotationOnlyChangeset() {
+  void testRotationOnlyChangeset() {
     MapillaryImage image = new MapillaryImage("rotationOnlyChangesetImageKey", new LatLon(50.44612, 13.3323), 10.0,
-        false, false);
+      false, false);
     image.turn(-80.3);
     image.stopMoving();
 
-    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/rotation_only_changeset.json", JsonChangesetEncoder.encodeImageLocationChanges(image));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/rotation_only_changeset.json",
+      JsonChangesetEncoder.encodeImageLocationChanges(image));
   }
 
   @Test
-  public void testMultipleImagesChangeset() throws IllegalArgumentException {
+  void testMultipleImagesChangeset() throws IllegalArgumentException {
     MapillaryImage image1 = new MapillaryImage("wMAqAFr3xE9072G8Al6WLQ", new LatLon(50.44612, 13.3323), 10.0, false,
-        false);
+      false);
     image1.move(0.1111, 0.22222);
     image1.turn(273.3);
     image1.stopMoving();
@@ -62,11 +65,12 @@ public class JsonChangesetEncoderTest {
     changeset.add(image2);
     changeset.add(image3);
 
-    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/changeset.json", JsonChangesetEncoder.encodeLocationChangeset(changeset));
+    assertJsonEquals(JsonChangesetEncoderTest.class, "/api/v3/requests/changeset.json",
+      JsonChangesetEncoder.encodeLocationChangeset(changeset));
   }
 
   @Test
-  public void testUtilityClass() {
+  void testUtilityClass() {
     TestUtil.testUtilityClass(JsonChangesetEncoder.class);
   }
 }

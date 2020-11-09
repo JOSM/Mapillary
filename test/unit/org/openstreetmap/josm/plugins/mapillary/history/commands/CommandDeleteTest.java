@@ -1,14 +1,14 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.history.commands;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -25,10 +25,10 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
  *
  * @author Kishan
  */
-public class CommandDeleteTest {
+class CommandDeleteTest {
 
-  @Rule
-  public JOSMTestRules rules = new TestUtil.MapillaryTestRules().main().projection();
+  @RegisterExtension
+  JOSMTestRules rules = new TestUtil.MapillaryTestRules().main().projection();
 
   private MapillaryData data;
   private MapillaryAbstractImage img1;
@@ -44,8 +44,8 @@ public class CommandDeleteTest {
    * Creates a sample {@link MapillaryData} objects, 5 {@link MapillaryImage}
    * objects and a {@link MapillarySequence} object.
    */
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false, false);
     img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false, false);
     img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false, false);
@@ -69,7 +69,7 @@ public class CommandDeleteTest {
    * Test the deletion of images. Index of all deleted Image should be -1.
    */
   @Test
-  public void executeTest() {
+  void executeTest() {
     assertEquals(4, delete.images.size());
     assertEquals(-1, img1.getSequence().getImages().indexOf(img1));
     assertEquals(0, img2.getSequence().getImages().indexOf(img2));
@@ -82,7 +82,7 @@ public class CommandDeleteTest {
    * Test the {@link CommandDelete} command.
    */
   @Test
-  public void undoTest() {
+  void undoTest() {
     assertEquals(1, data.getImages().size());
     delete.undo();
     assertEquals(5, data.getImages().size());

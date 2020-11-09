@@ -1,14 +1,14 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.boilerplate;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SelectableLabelTest {
+class SelectableLabelTest {
   @Test
-  public void test() {
+  void test() {
     SelectableLabel l1 = new SelectableLabel();
     assertFalse(l1.isEditable());
     SelectableLabel l2 = new SelectableLabel("some text");

@@ -1,28 +1,28 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.TimeZone;
-import static org.junit.Assert.assertNotEquals;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapillaryAbstractImageTest {
+class MapillaryAbstractImageTest {
 
-  @Rule
-  public JOSMTestRules rules = new MapillaryTestRules();
+  @RegisterExtension
+  JOSMTestRules rules = new MapillaryTestRules();
 
   private MapillaryAbstractImage img1;
   private MapillaryAbstractImage img2;
@@ -36,12 +36,11 @@ public class MapillaryAbstractImageTest {
    * Test method for {@link org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage#getDate()}.
    */
   @Test
-  public void testGetDate() {
+  void testGetDate() {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0745"));
 
     MapillaryAbstractImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
     img.setCapturedAt(1_044_087_606_000L); // in timezone GMT+0745 this is Saturday, February 1, 2003 16:05:06
-
 
     testGetDate("01/02/2003", img, false, false, false);
     testGetDate("01/02/2003", img, false, false, true);
@@ -58,8 +57,8 @@ public class MapillaryAbstractImageTest {
     testGetDate("27/08/2015 - 09:13:42 (GMT-01:23)", img, false, true, true);
   }
 
-  private static void testGetDate(String expected, MapillaryAbstractImage img,
-      boolean isoDates, boolean displayHour, boolean format24) {
+  private static void testGetDate(String expected, MapillaryAbstractImage img, boolean isoDates, boolean displayHour,
+    boolean format24) {
     Config.getPref().putBoolean("iso.dates", isoDates);
     Config.getPref().putBoolean("mapillary.display-hour", displayHour);
     Config.getPref().putBoolean("mapillary.format-24", format24);
@@ -67,7 +66,7 @@ public class MapillaryAbstractImageTest {
   }
 
   @Test
-  public void testIsModified() {
+  void testIsModified() {
     MapillaryImage img = new MapillaryImage("key___________________", new LatLon(0, 0), 0, false, false);
     assertFalse(img.isModified());
     img.turn(1e-4);
@@ -88,7 +87,7 @@ public class MapillaryAbstractImageTest {
    * Test method for {@link MapillaryAbstractImage#compareTo()}, .
    */
   @Test
-  public void testCompareTo() {
+  void testCompareTo() {
     img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false, false);
     img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false, false);
     img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false, false);
@@ -113,6 +112,6 @@ public class MapillaryAbstractImageTest {
     changesHash.put(img3, img3.getSequence().getImages().indexOf(img3));
     changesHash.put(img4, img4.getSequence().getImages().indexOf(img4));
     changesHash.put(img5, img5.getSequence().getImages().indexOf(img5));
-    assertEquals(5,changesHash.size());
+    assertEquals(5, changesHash.size());
   }
 }

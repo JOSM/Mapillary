@@ -6,22 +6,21 @@ import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.noContent;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
@@ -32,18 +31,17 @@ import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class SequenceDownloadRunnableTest {
-
-  @Rule
-  public WireMockRule wmRule = new WireMockRule(wireMockConfig().dynamicPort());
-
-  @Rule
-  public JOSMTestRules rules = new MapillaryTestRules().preferences();
+class SequenceDownloadRunnableTest {
+  @RegisterExtension
+  JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private String oldBaseUrl;
+  private WireMockServer wmRule;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
+    wmRule = new WireMockServer(wireMockConfig().dynamicPort());
+    wmRule.start();
     MapillaryUser.setTokenValid(false);
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
@@ -52,63 +50,68 @@ public class SequenceDownloadRunnableTest {
     TestUtil.setAPIv3BaseUrl("http://localhost:" + wmRule.port() + "/");
   }
 
-  @After
-  public void tearDown() {
+  @AfterEach
+  void tearDown() {
+    wmRule.stop();
     TestUtil.setAPIv3BaseUrl(oldBaseUrl);
   }
 
   @Test
-  public void testRun1() {
-    testNumberOfDecodedImages(4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
+  void testRun1() {
+    testNumberOfDecodedImages(wmRule, 4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
   }
 
   @Test
-  public void testRun2() {
-    testNumberOfDecodedImages(0, new Bounds(0, 0, 0, 0));
+  void testRun2() {
+    testNumberOfDecodedImages(wmRule, 0, new Bounds(0, 0, 0, 0));
   }
 
   @Test
-  public void testRun3() {
-    stubFor(get(anyUrl()).willReturn(notFound()));
-    final SequenceDownloadRunnable sdr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), new Bounds(0, 0, 0, 0), NullProgressMonitor.INSTANCE);
+  void testRun3() {
+    wmRule.addStubMapping(get(anyUrl()).willReturn(notFound()).build());
+    final SequenceDownloadRunnable sdr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(),
+      new Bounds(0, 0, 0, 0), NullProgressMonitor.INSTANCE);
     sdr.run();
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
-    stubFor(get(anyUrl()).willReturn(noContent()));
+    wmRule.addStubMapping(get(anyUrl()).willReturn(noContent()).build());
     sdr.run();
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
   }
 
   @Test
-  public void testRun4() {
+  void testRun4() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
-    testNumberOfDecodedImages(4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
+    testNumberOfDecodedImages(wmRule, 4, new Bounds(7.246497, 16.432955, 7.249027, 16.432976));
   }
 
   @Test
-  public void testRun5() {
+  void testRun5() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
-    testNumberOfDecodedImages(0, new Bounds(0, 0, 0.000001, 0));
+    testNumberOfDecodedImages(wmRule, 0, new Bounds(0, 0, 0.000001, 0));
   }
 
-  private static void testNumberOfDecodedImages(int expectedNumImgs, Bounds bounds) {
+  private static void testNumberOfDecodedImages(WireMockServer wiremockServer, int expectedNumImgs, Bounds bounds) {
     try {
-      stubFor(
-        get(urlMatching("/sequences\\?.+"))
-          .willReturn(aResponse().withStatus(200).withBody(
-            Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json").toURI()))
-          ))
-      );
-      stubFor(
-        get(urlMatching("/users/[A-Za-z0-9-]+\\?.+"))
-          .willReturn(aResponse().withStatus(200).withBody(
-            Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/userProfile.json").toURI()))
-          ))
-      );
+      wiremockServer
+        .addStubMapping(
+          get(urlMatching("/sequences\\?.+"))
+            .willReturn(aResponse().withStatus(200)
+              .withBody(Files.readAllBytes(Paths.get(
+                SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/searchSequences.json").toURI()))))
+            .build());
+      wiremockServer
+        .addStubMapping(
+          get(urlMatching("/users/[A-Za-z0-9-]+\\?.+"))
+            .willReturn(aResponse().withStatus(200)
+              .withBody(Files.readAllBytes(Paths
+                .get(SequenceDownloadRunnableTest.class.getResource("/api/v3/responses/userProfile.json").toURI()))))
+            .build());
     } catch (IOException | URISyntaxException e) {
       fail(e.getMessage());
     }
 
-    final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds, NullProgressMonitor.INSTANCE);
+    final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
+      NullProgressMonitor.INSTANCE);
     r.run();
     assertEquals(expectedNumImgs, MapillaryLayer.getInstance().getData().getImages().size());
   }

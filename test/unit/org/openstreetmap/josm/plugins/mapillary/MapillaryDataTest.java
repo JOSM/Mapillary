@@ -1,15 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
@@ -21,9 +21,9 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
  * @author nokutu
  * @see MapillaryData
  */
-public class MapillaryDataTest {
+class MapillaryDataTest {
 
-  @Rule
+  @RegisterExtension
   public JOSMTestRules rules = new MapillaryTestRules();
 
   private MapillaryData data;
@@ -36,8 +36,8 @@ public class MapillaryDataTest {
    * Creates a sample {@link MapillaryData} objects, 4 {@link MapillaryImage}
    * objects and a {@link MapillarySequence} object.
    */
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     this.img1 = new MapillaryImage("key1__________________", new LatLon(0.1, 0.1), 90, false, false);
     this.img2 = new MapillaryImage("key2__________________", new LatLon(0.2, 0.2), 90, false, false);
     this.img3 = new MapillaryImage("key3__________________", new LatLon(0.3, 0.3), 90, false, false);
@@ -55,7 +55,7 @@ public class MapillaryDataTest {
    * another one in the database, the one that is being added should be ignored.
    */
   @Test
-  public void addTest() {
+  void addTest() {
     this.data = new MapillaryData();
     assertEquals(0, this.data.getImages().size());
     this.data.add(this.img1);
@@ -72,7 +72,7 @@ public class MapillaryDataTest {
    * Test that the size is properly calculated.
    */
   @Test
-  public void sizeTest() {
+  void sizeTest() {
     assertEquals(4, this.data.getImages().size());
     this.data.add(new MapillaryImage("key5__________________", new LatLon(0.1, 0.1), 90, false, false));
     assertEquals(5, this.data.getImages().size());
@@ -83,7 +83,7 @@ public class MapillaryDataTest {
    * and {@link MapillaryData#getHighlightedImage()} methods.
    */
   @Test
-  public void highlighTest() {
+  void highlighTest() {
     this.data.setHighlightedImage(this.img1);
     assertEquals(this.img1, this.data.getHighlightedImage());
 
@@ -95,7 +95,7 @@ public class MapillaryDataTest {
    * Tests the selection of images.
    */
   @Test
-  public void selectTest() {
+  void selectTest() {
     this.data.setSelectedImage(this.img1);
     assertEquals(this.img1, this.data.getSelectedImage());
 
@@ -111,7 +111,7 @@ public class MapillaryDataTest {
    * multiselected List should reset.
    */
   @Test
-  public void multiSelectTest() {
+  void multiSelectTest() {
     assertEquals(0, this.data.getMultiSelectedImages().size());
     this.data.setSelectedImage(this.img1);
     assertEquals(1, this.data.getMultiSelectedImages().size());

@@ -1,29 +1,29 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.panorama;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class CameraPlaneTest {
+class CameraPlaneTest {
 
   private CameraPlane cameraPlane;
   private static final double FOV = Math.toRadians(110);
   private static final double CAMERA_PLANE_DISTANCE = (800 / 2) / Math.tan(FOV / 2);
 
-  @Rule
-  public JOSMTestRules rules = new MapillaryTestRules();
+  @RegisterExtension
+  JOSMTestRules rules = new MapillaryTestRules();
 
   @Test
-  public void testSetRotation() {
+  void testSetRotation() {
     cameraPlane = new CameraPlane(800, 400, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
@@ -34,7 +34,7 @@ public class CameraPlaneTest {
   }
 
   @Test
-  public void testGetVector3D() {
+  void testGetVector3D() {
     cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
@@ -45,7 +45,7 @@ public class CameraPlaneTest {
   }
 
   @Test
-  public void testMapping() {
+  void testMapping() {
     cameraPlane = new CameraPlane(800, 600, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);

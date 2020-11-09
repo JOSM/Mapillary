@@ -1,24 +1,24 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
-public class MapillaryCacheTest {
+class MapillaryCacheTest {
 
-  @Rule
+  @RegisterExtension
   public JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   @Test
-  public void test() {
+  void test() {
     MapillaryCache cache = new MapillaryCache("00000", Type.FULL_IMAGE);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());

@@ -1,20 +1,24 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import javax.swing.JComponent;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MapillaryColorSchemeTest {
+class MapillaryColorSchemeTest {
 
   @Test
-  public void testUtilityClass() {
+  void testUtilityClass() {
     TestUtil.testUtilityClass(MapillaryColorScheme.class);
   }
 
   @Test
-  public void testStyleAsDefaultPanel() {
-    MapillaryColorScheme.styleAsDefaultPanel();
-    MapillaryColorScheme.styleAsDefaultPanel((JComponent[]) null);
+  void testStyleAsDefaultPanel() {
+    assertDoesNotThrow(() -> {
+      MapillaryColorScheme.styleAsDefaultPanel();
+      MapillaryColorScheme.styleAsDefaultPanel((JComponent[]) null);
+    });
   }
 }

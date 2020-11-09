@@ -1,19 +1,20 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.geom.Path2D;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ImageDetectionTest {
+class ImageDetectionTest {
   @Test
-  public void test() {
+  void test() {
     ImageDetection id = new ImageDetection(new Path2D.Double(), "imgKey", "key", 0.123, "packageName", "value");
-    ImageDetection trafficsign = new ImageDetection(new Path2D.Double(), "imgKey2", "key2", 4.567, "trafficsign", "value2");
+    ImageDetection trafficsign = new ImageDetection(new Path2D.Double(), "imgKey2", "key2", 4.567, "trafficsign",
+      "value2");
 
     assertEquals("imgKey", id.getImageKey());
     assertEquals("imgKey2", trafficsign.getImageKey());

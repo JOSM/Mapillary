@@ -62,6 +62,7 @@ dependencies {
   val junitVersion = "5.6.2"
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+  // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
   testImplementation("org.junit.vintage:junit-vintage-engine:$junitVersion")
   testImplementation("org.awaitility:awaitility:4.0.3")
   testImplementation("org.jmockit:jmockit:1.46") { because("versions >= 1.47 are incompatible with JOSM, see https://josm.openstreetmap.de/ticket/18200") }
@@ -214,6 +215,11 @@ tasks.withType(SpotBugsTask::class) {
     outputLocation.set(File(spotbugs.reportsDir.get().asFile, "$baseName.html"))
     setStylesheet("color.xsl")
   }
+}
+
+// Test config
+tasks.test {
+  useJUnitPlatform()
 }
 
 // JaCoCo config
