@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.openstreetmap.josm.data.osm.Tag;
@@ -1573,8 +1574,10 @@ public enum ObjectDetections {
   MARKING__DISCRETE__ARROW__SPLIT_LEFT_OR_STRAIGHT(DetectionType.POINT),
   MARKING__DISCRETE__ARROW__SPLIT_RIGHT_OR_STRAIGHT(DetectionType.POINT),
   MARKING__DISCRETE__ARROW__STRAIGHT(DetectionType.POINT),
-  MARKING__DISCRETE__CROSSWALK_ZEBRA("highway=crossing", TaggingPresetType.NODE,
+  MARKING__DISCRETE__CROSSWALK_ZEBRA("highway=crossing", new TaggingPresetType[] { TaggingPresetType.NODE },
+    AdditionalInstructions.SnapToRoad::new,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   MARKING__DISCRETE__GIVE_WAY_ROW(DetectionType.POINT),
   MARKING__DISCRETE__GIVE_WAY_SINGLE(DetectionType.POINT),
   MARKING__DISCRETE__OTHER_MARKING(DetectionType.POINT, DetectionType.SEGMENTATION),
@@ -1584,13 +1587,17 @@ public enum ObjectDetections {
   OBJECT__BANNER(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__BENCH("amenity=bench", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__BIKE_RACK("amenity=bicycle_parking", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__CATCH_BASIN("man_made=manhole;;manhole=drain", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__CCTV_CAMERA(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__FIRE_HYDRANT("emergency=fire_hydrant", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__JUNCTION_BOX(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__MAILBOX(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__MANHOLE(DetectionType.POINT, DetectionType.SEGMENTATION),
@@ -1601,22 +1608,29 @@ public enum ObjectDetections {
   OBJECT__SIGN__STORE(DetectionType.POINT),
   OBJECT__STREET_LIGHT("highway=street_lamp", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__SUPPORT__POLE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__SUPPORT__TRAFFIC_SIGN_FRAME(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__SUPPORT__UTILITY_POLE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_CONE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_LIGHT__CYCLISTS("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_SINGLE("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }),
+
   OBJECT__TRAFFIC_LIGHT__OTHER("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }),
+
   OBJECT__TRAFFIC_LIGHT__PEDESTRIANS("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }),
+
   OBJECT__TRASH_CAN(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__WATER_VALVE(DetectionType.POINT, DetectionType.SEGMENTATION),
   // End point features
@@ -1665,18 +1679,25 @@ public enum ObjectDetections {
   OBJECT__RAMP(DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_BACK("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_BACK("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__OTHER_TRAFFIC_LIGHT("highway=traffic_signals", TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.SEGMENTATION }),
+
   OBJECT__TRAFFIC_LIGHT__TEMPORARY(DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_SIGN__BACK(DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_SIGN__DIRECTION_BACK(DetectionType.SEGMENTATION),
@@ -1751,6 +1772,7 @@ public enum ObjectDetections {
   private final DetectionType[] detectionTypes;
   private final String[] osmKey;
   private final Collection<TaggingPresetType> taggingPresetType;
+  private final Supplier<AdditionalInstructions> additionalCommands;
   // Not final just in case a preset change listener needs to be implemented
   private TaggingPreset[] presets = new TaggingPreset[0];
 
@@ -1789,11 +1811,25 @@ public enum ObjectDetections {
    * @param detectionTypes The types that the detection <i>may</i> appear as
    */
   ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType, DetectionType[] detectionTypes) {
+    this(osmKey, taggingPresetType, null, detectionTypes);
+  }
+
+  /**
+   * Create an ObjectDetection
+   *
+   * @param osmKey The OSM key for the object
+   * @param taggingPresetType The valid types for the preset
+   * @param additionalCommands Additional commands to run
+   * @param detectionTypes The types that the detection <i>may</i> appear as
+   */
+  ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType,
+    Supplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes) {
     this.key = this.name().replace("_", "-").toLowerCase(Locale.ENGLISH);
     this.detectionTypes = detectionTypes;
     // Use two ;; to avoid cases where a delimited list is needed
     this.osmKey = osmKey != null ? osmKey.split(";;", 0) : null;
     this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : null;
+    this.additionalCommands = additionalCommands;
     this.updateMappingPresets();
   }
 
@@ -1829,6 +1865,18 @@ public enum ObjectDetections {
     String toFind = detection.replaceAll("--g[0-9]+$", "");
     return new Pair<>(false, Stream.of(ObjectDetections.values()).filter(d -> d.getKey().contains(toFind)).findFirst()
       .orElse(ObjectDetections.UNKNOWN));
+  }
+
+  /**
+   * Get additional instructions
+   *
+   * @return The additional instructions
+   */
+  public AdditionalInstructions getAdditionalInstructions() {
+    if (this.additionalCommands != null) {
+      return this.additionalCommands.get();
+    }
+    return null;
   }
 
   /**
