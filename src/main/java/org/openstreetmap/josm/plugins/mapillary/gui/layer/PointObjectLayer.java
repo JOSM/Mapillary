@@ -117,6 +117,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -496,7 +497,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
    * @param mapillaryObject The primitive to add to OSM
    * @param detection
    */
-  void addMapillaryPrimitiveToOsm(IPrimitive mapillaryObject, ObjectDetections detection) {
+  void addMapillaryPrimitiveToOsm(final IPrimitive mapillaryObject, final ObjectDetections detection) {
     hideWindow(this.displayedWindows.get(mapillaryObject));
     Collection<TaggingPreset> presets = detection.getTaggingPresets();
     DataSet dataSet = MainApplication.getLayerManager().getActiveDataSet();
@@ -543,7 +544,50 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         int index = undoCommands.size() - undoCommands.indexOf(add);
         UndoRedoHandler.getInstance().undo(index);
       } else if (basePrimitive.isTagged() && mapillaryObject.getDataSet() instanceof DataSet) {
+        Command deleteOriginal = new Command(dataSet) {
+          @Override
+          public String getDescriptionText() {
+            return tr("Delete Mapillary object");
+          }
+
+          @Override
+          public void fillModifiedData(Collection<OsmPrimitive> modified, Collection<OsmPrimitive> deleted,
+            Collection<OsmPrimitive> added) {
+            if (mapillaryObject instanceof OsmPrimitive)
+              deleted.add((OsmPrimitive) mapillaryObject);
+          }
+
+          @Override
+          public boolean executeCommand() {
+            DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
+            boolean locked = mapillaryObjectData.isLocked();
+            try {
+              mapillaryObjectData.unlock();
+              mapillaryObject.setDeleted(true);
+            } finally {
+              if (locked) {
+                mapillaryObjectData.lock();
+              }
+            }
+            return true;
+          }
+
+          @Override
+          public void undoCommand() {
+            DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
+            boolean locked = mapillaryObjectData.isLocked();
+            try {
+              mapillaryObjectData.unlock();
+              mapillaryObject.setDeleted(false);
+            } finally {
+              if (locked) {
+                mapillaryObjectData.lock();
+              }
+            }
+          }
+        };
         String detections = mapillaryObject.get("detections");
+        UndoRedoHandler.getInstance().add(deleteOriginal);
         try (JsonParser parser = Json
           .createParser(new ByteArrayInputStream(detections.getBytes(StandardCharsets.UTF_8)))) {
           while (parser.hasNext()) {
@@ -563,15 +607,12 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
           if (mapillaryObject.hasKey("key")) {
             basePrimitive.put("mapillary:map_feature", mapillaryObject.get("key"));
           }
-        }
-        DataSet mapillaryObjectData = (DataSet) mapillaryObject.getDataSet();
-        boolean locked = mapillaryObjectData.isLocked();
-        try {
-          mapillaryObjectData.unlock();
-          mapillaryObject.setDeleted(true);
-        } finally {
-          if (locked) {
-            mapillaryObjectData.lock();
+          final AdditionalInstructions additionalInstructions = detection.getAdditionalInstructions();
+          if (additionalInstructions != null) {
+            final Command additionalCommand = additionalInstructions.apply(basePrimitive);
+            if (additionalCommand != null) {
+              UndoRedoHandler.getInstance().add(additionalCommand);
+            }
           }
         }
       }
