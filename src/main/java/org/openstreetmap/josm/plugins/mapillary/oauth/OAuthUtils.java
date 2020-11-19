@@ -1,13 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import javax.json.Json;
@@ -23,9 +21,11 @@ import org.openstreetmap.josm.tools.HttpClient;
  * A set of utilities related to OAuth.
  *
  * @author nokutu
- *
  */
 public final class OAuthUtils {
+
+  private static final String AUTHORIZATION = "Authorization";
+  private static final String BEARER = "Bearer ";
 
   private OAuthUtils() {
     // Private constructor to avoid instantiation
@@ -36,19 +36,17 @@ public final class OAuthUtils {
    * authorization header.
    *
    * @param url
-   *          The {@link URL} where the request must be made.
+   *        The {@link URL} where the request must be made.
    * @return A JsonObject containing the result of the GET request.
    * @throws IOException
-   *           Errors relating to the connection.
+   *         Errors relating to the connection.
    */
   public static JsonObject getWithHeader(URL url) throws IOException {
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
     con.setRequestMethod("GET");
     addAuthenticationHeader(con);
 
-    try (
-      JsonReader reader = Json.createReader(new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)))
-    ) {
+    try (InputStream inputStream = con.getInputStream(); JsonReader reader = Json.createReader(inputStream)) {
       return reader.readObject();
     } catch (JsonException e) {
       throw new IOException(e);
@@ -63,7 +61,7 @@ public final class OAuthUtils {
    * @return The URLConnection for easy chaining
    */
   public static URLConnection addAuthenticationHeader(URLConnection con) {
-    con.setRequestProperty("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
+    con.setRequestProperty(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
     return con;
   }
 
@@ -76,7 +74,8 @@ public final class OAuthUtils {
    */
   public static CachedFile addAuthenticationHeader(CachedFile file) {
     if (MapillaryProperties.ACCESS_TOKEN.get() != null) {
-      return file.setHttpHeaders(Collections.singletonMap("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get()));
+      return file
+        .setHttpHeaders(Collections.singletonMap(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get()));
     }
     return file;
   }
@@ -89,6 +88,6 @@ public final class OAuthUtils {
    * @return The HttpClient for easy chaining
    */
   public static HttpClient addAuthenticationHeader(HttpClient client) {
-    return client.setHeader("Authorization", "Bearer " + MapillaryProperties.ACCESS_TOKEN.get());
+    return client.setHeader(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
   }
 }

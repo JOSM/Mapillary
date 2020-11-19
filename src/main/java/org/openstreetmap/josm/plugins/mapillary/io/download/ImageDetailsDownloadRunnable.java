@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +51,8 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
 
   @Override
   public void run(final HttpClient client) throws IOException {
-    try (JsonReader reader = Json.createReader(client.getResponse().getContent())) {
+    try (InputStream inputStream = client.getResponse().getContent();
+      JsonReader reader = Json.createReader(inputStream)) {
       JsonImageDetailsDecoder.decodeImageInfos(reader.readObject(), data);
       logConnectionInfo(client, null);
       MapillaryMainDialog.getInstance().updateTitle();

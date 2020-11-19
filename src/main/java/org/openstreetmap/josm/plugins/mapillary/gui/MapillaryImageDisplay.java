@@ -198,34 +198,33 @@ public final class MapillaryImageDisplay extends JPanel {
             MapillaryImageDisplay.this.repaint();
           }
           return;
-        } else {
-          if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
-            if (!MapillaryImageDisplay.this.visibleRect
-              .equals(new Rectangle(0, 0, mouseImage.getWidth(null), mouseImage.getHeight(null)))) {
-              // Zooms to 1:1
-              MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0, mouseImage.getWidth(null),
-                mouseImage.getHeight(null));
-            } else {
-              // Zooms to best fit.
-              MapillaryImageDisplay.this.visibleRect = new Rectangle(0,
-                (mouseImage.getHeight(null) - (mouseImage.getWidth(null) * getHeight()) / getWidth()) / 2,
-                mouseImage.getWidth(null), (mouseImage.getWidth(null) * getHeight()) / getWidth());
-            }
-            MapillaryImageDisplay.this.repaint();
-            return;
-          } else if (e.getButton() != MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
-            return;
+        }
+        if (e.getButton() == MapillaryProperties.PICTURE_OPTION_BUTTON.get()) {
+          if (!MapillaryImageDisplay.this.visibleRect
+            .equals(new Rectangle(0, 0, mouseImage.getWidth(null), mouseImage.getHeight(null)))) {
+            // Zooms to 1:1
+            MapillaryImageDisplay.this.visibleRect = new Rectangle(0, 0, mouseImage.getWidth(null),
+              mouseImage.getHeight(null));
+          } else {
+            // Zooms to best fit.
+            MapillaryImageDisplay.this.visibleRect = new Rectangle(0,
+              (mouseImage.getHeight(null) - (mouseImage.getWidth(null) * getHeight()) / getWidth()) / 2,
+              mouseImage.getWidth(null), (mouseImage.getWidth(null) * getHeight()) / getWidth());
           }
-          // Calculate the translation to set the clicked point the center of
-          // the view.
-          Point click = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
-          Point center = getCenterImgCoord(mouseVisibleRect);
-          mouseVisibleRect.x += click.x - center.x;
-          mouseVisibleRect.y += click.y - center.y;
-          checkVisibleRectPos(mouseImage, mouseVisibleRect);
-          synchronized (MapillaryImageDisplay.this) {
-            MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
-          }
+          MapillaryImageDisplay.this.repaint();
+          return;
+        } else if (e.getButton() != MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
+          return;
+        }
+        // Calculate the translation to set the clicked point the center of
+        // the view.
+        Point click = comp2imgCoord(mouseVisibleRect, e.getX(), e.getY());
+        Point center = getCenterImgCoord(mouseVisibleRect);
+        mouseVisibleRect.x += click.x - center.x;
+        mouseVisibleRect.y += click.y - center.y;
+        checkVisibleRectPos(mouseImage, mouseVisibleRect);
+        synchronized (MapillaryImageDisplay.this) {
+          MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
         }
         MapillaryImageDisplay.this.repaint();
       }

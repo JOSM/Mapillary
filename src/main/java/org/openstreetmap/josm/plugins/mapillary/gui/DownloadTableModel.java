@@ -20,7 +20,8 @@ import org.openstreetmap.josm.tools.Utils;
 public class DownloadTableModel extends AbstractTableModel {
 
   private final String[] columnNames = { "Info", "Progress", "Size", "Completed", "Status" };
-  private final Class[] columnClasses = { String.class, JProgressBar.class, String.class, String.class, String.class };
+  private final Class<?>[] columnClasses = { String.class, JProgressBar.class, String.class, String.class,
+    String.class };
 
   /**
    * The table's list of current downloads.
@@ -53,9 +54,7 @@ public class DownloadTableModel extends AbstractTableModel {
    */
   public void reset() {
     if (MapillaryLayer.hasInstance()) {
-      downloadList.forEach(download -> {
-        MapillaryDownloader.removeHash(download);
-      });
+      downloadList.forEach(MapillaryDownloader::removeHash);
     }
     downloadList.clear();
   }
@@ -111,7 +110,7 @@ public class DownloadTableModel extends AbstractTableModel {
    * Get a column's class.
    */
   @Override
-  public Class getColumnClass(int col) {
+  public Class<?> getColumnClass(int col) {
     return columnClasses[col];
   }
 
@@ -119,16 +118,18 @@ public class DownloadTableModel extends AbstractTableModel {
   public Object getValueAt(int rowIndex, int columnIndex) {
     MapillarySquareDownloadRunnable download = downloadList.get(rowIndex);
     switch (columnIndex) {
-      case 0: //Info
-        return download.getMonitor().title;
-      case 1: //ProgressBar
-        return download.getMonitor().currentProgressValue;
-      case 2: //Size
-        return Utils.getSizeString(download.getMonitor().size, Locale.getDefault());
-      case 3: //Completed
-        return download.completeCount() + "/3";
-      case 4: //Status
-        return download.state.name();
+    case 0: // Info
+      return download.getMonitor().title;
+    case 1: // ProgressBar
+      return download.getMonitor().currentProgressValue;
+    case 2: // Size
+      return Utils.getSizeString(download.getMonitor().size, Locale.getDefault());
+    case 3: // Completed
+      return download.completeCount() + "/3";
+    case 4: // Status
+      return download.state.name();
+    default:
+      // Fall through
     }
     return "";
   }
