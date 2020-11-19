@@ -54,16 +54,14 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  * The filter dialog displays a list of filters that are active on the current edit layer.
- *
  * Copied from JOSM (FilterDialog not extended since there was no real way to override the filter model)
+ *
  * @author Petr_Dlouhý
  */
 public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSetListener, MapModeChangeListener {
   private static final long serialVersionUID = -3067786777238478114L;
   private JTable userTable;
-  private final MapillaryFilterTableModel filterModel = new MapillaryFilterTableModel(
-    new DefaultListSelectionModel()
-  );
+  private final MapillaryFilterTableModel filterModel = new MapillaryFilterTableModel(new DefaultListSelectionModel());
 
   private final AddAction addAction = new AddAction();
   private final EditAction editAction = new EditAction();
@@ -77,22 +75,19 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
   private boolean destroyed;
 
   private static MapillaryExpertFilterDialog instance;
+
   /**
    * Constructs a new {@code FilterDialog}
    */
   public MapillaryExpertFilterDialog() {
-    super(
-      tr("Mapillary Expert Filter"),
-      "mapillary-filter",
-      tr("Filter mapillary objects and hide/disable them."),
-      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      162
-    );
+    super(tr("Mapillary Expert Filter"), "mapillary-filter", tr("Filter mapillary objects and hide/disable them."),
+      Shortcut.registerShortcut("mapillary:expertfilter", tr("Toggle: {0}", tr("Filter")), KeyEvent.CHAR_UNDEFINED,
+        Shortcut.NONE),
+      162);
     build();
     MultikeyActionsHandler.getInstance().addAction(enableFilterAction);
     MultikeyActionsHandler.getInstance().addAction(hidingFilterAction);
   }
-
 
   /**
    * @return The instance for the toggle dialog
@@ -104,18 +99,16 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     return instance;
   }
 
-  private static final Shortcut ENABLE_FILTER_SHORTCUT = Shortcut.registerShortcut(
-    "mapillary_multikey:enableFilter", tr("Multikey: {0}", tr("Enable filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
-  );
+  private static final Shortcut ENABLE_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:enableFilter",
+    tr("Multikey: {0}", tr("Enable filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
 
-  private static final Shortcut HIDING_FILTER_SHORTCUT = Shortcut.registerShortcut(
-    "mapillary_multikey:hidingFilter", tr("Multikey: {0}", tr("Hide filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE
-  );
+  private static final Shortcut HIDING_FILTER_SHORTCUT = Shortcut.registerShortcut("mapillary_multikey:hidingFilter",
+    tr("Multikey: {0}", tr("Hide filter")), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE);
 
-  private static final String[] COLUMN_TOOLTIPS = { Shortcut.makeTooltip(
-    tr("Enable filter"), ENABLE_FILTER_SHORTCUT.getKeyStroke()
-  ), Shortcut.makeTooltip(tr("Hiding filter"), HIDING_FILTER_SHORTCUT.getKeyStroke()), null, tr("Inverse filter"),
-      tr("Filter mode") };
+  private static final String[] COLUMN_TOOLTIPS = {
+    Shortcut.makeTooltip(tr("Enable filter"), ENABLE_FILTER_SHORTCUT.getKeyStroke()),
+    Shortcut.makeTooltip(tr("Hiding filter"), HIDING_FILTER_SHORTCUT.getKeyStroke()), null, tr("Inverse filter"),
+    tr("Filter mode") };
 
   private abstract class FilterAction extends AbstractAction implements IEnabledStateUpdating {
 
@@ -297,8 +290,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
       }
     });
 
-    List<FilterAction> actions = Arrays
-      .asList(addAction, editAction, deleteAction, moveUpAction, moveDownAction, sortAction, reverseAction);
+    List<FilterAction> actions = Arrays.asList(addAction, editAction, deleteAction, moveUpAction, moveDownAction,
+      sortAction, reverseAction);
     for (FilterAction action : actions) {
       TableHelper.adaptTo(action, filterModel);
       TableHelper.adaptTo(action, filterModel.getSelectionModel());
@@ -346,9 +339,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
 
   static class StringRenderer extends DefaultTableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(
-      JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column
-    ) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+      int row, int column) {
       Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       TableModel model = table.getModel();
       if (model instanceof MapillaryFilterTableModel) {
@@ -360,9 +352,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
 
   static class BooleanRenderer extends JCheckBox implements TableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(
-      JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column
-    ) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+      int row, int column) {
       MapillaryFilterTableModel model = (MapillaryFilterTableModel) table.getModel();
       setSelected(value != null && (Boolean) value);
       setEnabled(model.isCellEnabled(row, column));
@@ -375,14 +366,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
    * Updates the headline of this dialog to display the number of active filters.
    */
   public void updateDialogHeader() {
-    SwingUtilities.invokeLater(
-      () -> setTitle(
-        tr(
-          "Filter Hidden:{0} Disabled:{1}", filterModel.model.getDisabledAndHiddenCount(),
-          filterModel.model.getDisabledCount()
-        )
-      )
-    );
+    SwingUtilities.invokeLater(() -> setTitle(tr("Filter Hidden:{0} Disabled:{1}",
+      filterModel.model.getDisabledAndHiddenCount(), filterModel.model.getDisabledCount())));
   }
 
   @Override
@@ -469,8 +454,7 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     public MultikeyInfo getLastMultikeyAction() {
       if (isLastFilterValid())
         return new MultikeyInfo(-1, lastFilter.text);
-      else
-        return null;
+      return null;
     }
   }
 
@@ -493,8 +477,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
         filterModel.setValueAt(!filter.enable, index, MapillaryFilterTableModel.COL_ENABLED);
         lastFilter = filter;
       } else if (repeatLastAction && isLastFilterValid()) {
-        filterModel
-          .setValueAt(!lastFilter.enable, filterModel.getFilters().indexOf(lastFilter), MapillaryFilterTableModel.COL_ENABLED);
+        filterModel.setValueAt(!lastFilter.enable, filterModel.getFilters().indexOf(lastFilter),
+          MapillaryFilterTableModel.COL_ENABLED);
       }
     }
   }
@@ -518,8 +502,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
         filterModel.setValueAt(!filter.hiding, index, MapillaryFilterTableModel.COL_HIDING);
         lastFilter = filter;
       } else if (repeatLastAction && isLastFilterValid()) {
-        filterModel
-          .setValueAt(!lastFilter.hiding, filterModel.getFilters().indexOf(lastFilter), MapillaryFilterTableModel.COL_HIDING);
+        filterModel.setValueAt(!lastFilter.hiding, filterModel.getFilters().indexOf(lastFilter),
+          MapillaryFilterTableModel.COL_HIDING);
       }
     }
   }

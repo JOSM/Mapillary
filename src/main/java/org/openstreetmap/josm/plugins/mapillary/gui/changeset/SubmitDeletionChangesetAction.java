@@ -4,9 +4,11 @@ package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.swing.JOptionPane;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -42,20 +44,18 @@ public class SubmitDeletionChangesetAction extends JosmAction {
 
   /**
    * Main constructor.
+   *
    * @param changesetDialog Mapillary changeset dialog
    */
   public SubmitDeletionChangesetAction(MapillaryChangesetDialog changesetDialog) {
-    super(
-      I18n.tr("Submit deletion changeset"),
+    super(I18n.tr("Submit deletion changeset"),
       new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       I18n.tr("Submit the current changeset"),
       // CHECKSTYLE.OFF: LineLength
-      Shortcut.registerShortcut("Submit changeset to Mapillary", I18n.tr("Submit current deletion changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      Shortcut.registerShortcut("Submit changeset to Mapillary",
+        I18n.tr("Submit current deletion changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       // CHECKSTYLE.ON: LineLength
-      false,
-      "mapillarySubmitChangeset",
-      false
-    );
+      false, "mapillarySubmitChangeset", false);
     this.changesetDialog = changesetDialog;
     setEnabled(false);
   }
@@ -88,42 +88,38 @@ public class SubmitDeletionChangesetAction extends JosmAction {
           try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
             Logging.debug("HTTP request finished with response code " + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 201) {
-              final JsonObject jsonObject = Json.createReader(response.getEntity().getContent()).readObject();
-              final String key = jsonObject.getString("key");
-              final String state = jsonObject.getString("state");
-              I18n.marktr("rejected");
-              I18n.marktr("pending");
-              I18n.marktr("approved");
-              final String message = I18n.trn("{0} image submitted, Changeset key: {1}, State: {2}",
-                "{0} images submitted, Changeset key: {1}, State: {2}",
-                deletionChangeset.size(), key, state
-              );
-              Logging.debug(message);
-              new Notification(message)
-                .setDuration(Notification.TIME_LONG)
-                .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
-                .show();
-              deletionChangeset.cleanChangeset(); // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while uploading.
+              try (InputStream inputStream = response.getEntity().getContent();
+                JsonReader reader = Json.createReader(inputStream)) {
+                final JsonObject jsonObject = reader.readObject();
+                final String key = jsonObject.getString("key");
+                final String state = jsonObject.getString("state");
+                I18n.marktr("rejected");
+                I18n.marktr("pending");
+                I18n.marktr("approved");
+                final String message = I18n.trn("{0} image submitted, Changeset key: {1}, State: {2}",
+                  "{0} images submitted, Changeset key: {1}, State: {2}", deletionChangeset.size(), key, state);
+                Logging.debug(message);
+                new Notification(message).setDuration(Notification.TIME_LONG)
+                  .setIcon("rejected".equals(state) ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE)
+                  .show();
+                // TODO: Remove only uploaded changes. If the user made changes while uploading the changeset, these
+                // changes would also be removed, although they weren't uploaded. Alternatively: Disallow editing while
+                // uploading.
+                deletionChangeset.cleanChangeset();
+              }
             } else {
-              new Notification(
-                I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
-                  response.getStatusLine().getProtocolVersion(),
-                  response.getStatusLine().getStatusCode(),
-                  response.getStatusLine().getReasonPhrase()
-                )
-              ).setIcon(JOptionPane.ERROR_MESSAGE)
-                .setDuration(Notification.TIME_LONG)
-                .show();
+              new Notification(I18n.tr("Changeset upload failed with {0} error ''{1} {2}''!",
+                response.getStatusLine().getProtocolVersion(), response.getStatusLine().getStatusCode(),
+                response.getStatusLine().getReasonPhrase())).setIcon(JOptionPane.ERROR_MESSAGE)
+                  .setDuration(Notification.TIME_LONG).show();
               Logging.error("Failed response " + EntityUtils.toString(response.getEntity()));
             }
           }
         } catch (IOException e) {
           Logging.log(Logging.LEVEL_ERROR, "Exception while trying to submit a changeset to mapillary.com", e);
-          new Notification(
-            I18n.tr("An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection.")
-          ).setDuration(Notification.TIME_LONG)
-            .setIcon(JOptionPane.ERROR_MESSAGE)
-            .show();
+          new Notification(I18n.tr(
+            "An exception occured while trying to submit a changeset. If this happens repeatedly, consider reporting a bug via the Help menu. If this message appears for the first time, simply try it again. This might have been an issue with the internet connection."))
+              .setDuration(Notification.TIME_LONG).setIcon(JOptionPane.ERROR_MESSAGE).show();
         } finally {
           PluginState.setSubmittingChangeset(false);
         }

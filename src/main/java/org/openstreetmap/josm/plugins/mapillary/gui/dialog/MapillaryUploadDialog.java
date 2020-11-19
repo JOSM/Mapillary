@@ -1,8 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
-import java.util.List;
 import static org.openstreetmap.josm.tools.I18n.tr;
+
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -10,20 +11,18 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * JPanel used when uploading pictures.
  *
  * @author nokutu
- *
  */
 public class MapillaryUploadDialog extends JPanel {
   private static final long serialVersionUID = 2517368588113991767L;
@@ -73,7 +72,7 @@ public class MapillaryUploadDialog extends JPanel {
     return sequence;
   }
 
-  private boolean checkImages(MapillarySequence sequence) {
+  private static boolean checkImages(MapillarySequence sequence) {
     boolean allReviewed = true;
     List<MapillaryAbstractImage> images = sequence.getImages();
     for (MapillaryAbstractImage img : images) {

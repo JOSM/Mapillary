@@ -39,9 +39,8 @@ public final class OrganizationRecord {
 
   public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "", "", false, false);
 
-  private OrganizationRecord(
-    String avatar, String description, String key, String name, String niceName, boolean privateRepository,
-    boolean publicRepository) {
+  private OrganizationRecord(String avatar, String description, String key, String name, String niceName,
+    boolean privateRepository, boolean publicRepository) {
     this.avatar = createAvatarIcon(avatar, key);
     this.description = description;
     this.key = key;
@@ -51,6 +50,8 @@ public final class OrganizationRecord {
     this.publicRepository = publicRepository;
   }
 
+  // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
+  @SuppressWarnings("resource")
   private static ImageIcon createAvatarIcon(String avatar, String organizationKey) {
     if (avatar != null && !avatar.isEmpty()) {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
@@ -66,12 +67,11 @@ public final class OrganizationRecord {
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
 
-  public static OrganizationRecord getOrganization(
-    String avatar, String description, String key, String name, String niceName, boolean privateRepository,
-    boolean publicRepository) {
+  public static OrganizationRecord getOrganization(String avatar, String description, String key, String name,
+    String niceName, boolean privateRepository, boolean publicRepository) {
     boolean newRecord = !CACHE.containsKey(key);
-    OrganizationRecord record = CACHE.computeIfAbsent(
-      key, k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository));
+    OrganizationRecord record = CACHE.computeIfAbsent(key,
+      k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository));
     // TODO remove when getNewOrganization is done, and make vars final again
     record.avatar = createAvatarIcon(avatar, key);
     record.description = description;
@@ -89,12 +89,15 @@ public final class OrganizationRecord {
     return key == null ? NULL_RECORD : CACHE.computeIfAbsent(key, OrganizationRecord::getNewOrganization);
   }
 
+  // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
+  @SuppressWarnings("resource")
   private static OrganizationRecord getNewOrganization(String key) {
     // TODO Fix
-    CachedFile file = new CachedFile(MapillaryURL.APIv3.retrieveOrganization(key).toString());
-    Logging.error(file.getName());
-    OAuthUtils.addAuthenticationHeader(file);
-    try (BufferedReader br = file.getContentReader(); JsonReader reader = Json.createReader(br)) {
+    try (
+      CachedFile file = OAuthUtils
+        .addAuthenticationHeader(new CachedFile(MapillaryURL.APIv3.retrieveOrganization(key).toString()));
+      BufferedReader br = file.getContentReader();
+      JsonReader reader = Json.createReader(br)) {
       String line = br.readLine();
       Logging.error(line);
       while (line != null) {
@@ -103,8 +106,6 @@ public final class OrganizationRecord {
       }
     } catch (IOException e) {
       Logging.error(e);
-    } finally {
-      file.close();
     }
     OrganizationRecord gr = new OrganizationRecord("", "", key, "", "", false, false);
     LISTENERS.fireEvent(l -> l.organizationAdded(gr));

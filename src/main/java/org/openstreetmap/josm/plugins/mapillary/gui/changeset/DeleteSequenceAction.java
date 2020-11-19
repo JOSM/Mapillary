@@ -5,7 +5,9 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
+
 import javax.swing.AbstractAction;
+
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
@@ -43,9 +45,8 @@ public class DeleteSequenceAction extends AbstractAction {
         }
       }
       return isSeqDeleted;
-    } else {
-      return false;
     }
+    return false;
   }
 
   @Override

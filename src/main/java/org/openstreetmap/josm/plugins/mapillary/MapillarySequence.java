@@ -2,13 +2,15 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.Json;
-import org.openstreetmap.josm.gui.MainApplication;
+import javax.json.JsonReader;
 
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
@@ -86,7 +88,6 @@ public class MapillarySequence {
 
   /**
    * Returns the Epoch time when the sequence was captured.
-   *
    * Negative values mean, no value is set.
    *
    * @return A long containing the Epoch time when the sequence was captured.
@@ -99,7 +100,7 @@ public class MapillarySequence {
    * Returns all {@link MapillaryAbstractImage} objects contained by this object.
    *
    * @return A {@link List} object containing all the {@link MapillaryAbstractImage} objects that are part of the
-   * sequence.
+   *         sequence.
    */
   public List<MapillaryAbstractImage> getImages() {
     return this.images;
@@ -109,7 +110,7 @@ public class MapillarySequence {
    * Returns the unique identifier of the sequence.
    *
    * @return A {@code String} containing the unique identifier of the sequence. null means that the sequence has been
-   * created locally for imported images.
+   *         created locally for imported images.
    */
   public String getKey() {
     return this.key;
@@ -123,11 +124,9 @@ public class MapillarySequence {
    * Returns the next {@link MapillaryAbstractImage} in the sequence of a given {@link MapillaryAbstractImage} object.
    *
    * @param image The {@link MapillaryAbstractImage} object whose next image is going to be returned.
-   *
    * @return The next {@link MapillaryAbstractImage} object in the sequence.
-   *
    * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong the this
-   * sequence.
+   *         sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -145,11 +144,9 @@ public class MapillarySequence {
    * object.
    *
    * @param image The {@link MapillaryAbstractImage} object whose previous image is going to be returned.
-   *
    * @return The previous {@link MapillaryAbstractImage} object in the sequence.
-   *
    * @throws IllegalArgumentException if the given {@link MapillaryAbstractImage} object doesn't belong the this
-   * sequence.
+   *         sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
     int i = this.images.indexOf(image);
@@ -176,15 +173,13 @@ public class MapillarySequence {
       MainApplication.worker.submit(() -> {
         UserProfile cachedProfile = Caches.UserProfileCache.getInstance().get(userKey);
         if (cachedProfile == null) {
-          try {
-            Caches.UserProfileCache.getInstance().put(
-              userKey,
-              JsonUserProfileDecoder.decodeUserProfile(
-                Json.createReader(MapillaryURL.APIv3.getUser(userKey).openStream()).readObject()
-              )
-            );
+          try (InputStream inputStream = MapillaryURL.APIv3.getUser(userKey).openStream();
+            JsonReader reader = Json.createReader(inputStream)) {
+            Caches.UserProfileCache.getInstance().put(userKey,
+              JsonUserProfileDecoder.decodeUserProfile(reader.readObject()));
           } catch (IOException var4) {
-            Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!", var4);
+            Logging.log(Logging.LEVEL_WARN, "Error when downloading user profile for user key '" + userKey + "'!",
+              var4);
           }
         }
 

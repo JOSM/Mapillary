@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,6 @@ import org.openstreetmap.josm.tools.Logging;
  * Represents the current logged in user and stores its data.
  *
  * @author nokutu
- *
  */
 public final class MapillaryUser {
 
@@ -72,9 +72,9 @@ public final class MapillaryUser {
     }
     if (userInformation == null) {
       try {
-        userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv3.userURL()).entrySet().parallelStream().filter(
-          e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType())
-        ).collect(Collectors.toMap(Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
+        userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv3.userURL()).entrySet().parallelStream()
+          .filter(e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType()))
+          .collect(Collectors.toMap(Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
       } catch (IOException e) {
         Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
         reset();
@@ -93,14 +93,10 @@ public final class MapillaryUser {
     Map<String, String> hash = new HashMap<>();
     try {
       if (imagesHash == null)
-        imagesHash = OAuthUtils
-            .getWithHeader(MapillaryURL.uploadSecretsURL())
-            .getString("images_hash", null);
+        imagesHash = OAuthUtils.getWithHeader(MapillaryURL.uploadSecretsURL()).getString("images_hash", null);
       hash.put("images_hash", imagesHash);
       if (imagesPolicy == null)
-        imagesPolicy = OAuthUtils
-            .getWithHeader(MapillaryURL.uploadSecretsURL())
-            .getString("images_policy");
+        imagesPolicy = OAuthUtils.getWithHeader(MapillaryURL.uploadSecretsURL()).getString("images_policy");
     } catch (IOException e) {
       Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
       reset();
@@ -111,11 +107,13 @@ public final class MapillaryUser {
 
   public static synchronized List<OrganizationRecord> getOrganizations() {
     if (isTokenValid && organizations == null) {
-      HttpClient client = HttpClient.create(APIv3.retrieveOrganizationss(getUserInformation().getOrDefault("key", username)));
+      HttpClient client = HttpClient
+        .create(APIv3.retrieveOrganizationss(getUserInformation().getOrDefault("key", username)));
       OAuthUtils.addAuthenticationHeader(client);
       try {
         client.connect();
-        try (JsonReader reader = Json.createReader(client.getResponse().getContentReader())) {
+        try (InputStream inputStream = client.getResponse().getContent();
+          JsonReader reader = Json.createReader(inputStream)) {
           organizations = JsonOrganizationDecoderUtils.decodeOrganizations(reader.readValue());
         }
       } catch (IOException e) {

@@ -144,12 +144,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(preFetchPanel, GBC.eol());
 
     privateImages.setSelectedItem(PRIVATE_IMAGE_DOWNLOAD_MODE.getFromId(MapillaryProperties.IMAGE_MODE.get()));
-    requiresLogin.add(new JSeparator(), GBC.eol().fill(GBC.HORIZONTAL));
+    requiresLogin.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     requiresLogin.add(new JLabel(I18n.tr("{0}Options requiring login{1}", "<html><h3>", "</h3></html>")), GBC.eol());
     requiresLogin.add(new JLabel(I18n.tr("Image selection")));
     requiresLogin.add(privateImages, GBC.eol());
-    requiresLogin.add(new JSeparator(), GBC.eol().fill(GBC.HORIZONTAL));
-    mainPanel.add(requiresLogin, GBC.eol().fill(GBC.HORIZONTAL));
+    requiresLogin.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    mainPanel.add(requiresLogin, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
 
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       mainPanel.add(developer, GBC.eol());

@@ -292,7 +292,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
       this.endDate.reset();
       this.startDate.reset();
     }
-    MapillaryFilterChooseSigns.getInstance().reset();
+    MapillaryFilterChooseSigns.reset();
     organizations.setSelectedItem(OrganizationRecord.NULL_RECORD);
     refresh();
   }

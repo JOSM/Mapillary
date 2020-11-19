@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -49,7 +50,8 @@ public class MapObject extends KeyIndexedObject {
 
   /**
    * @param objectTypeID
-   *        the {@link String} representing the type of map object. This ID can be retrieved via {@link #getValue()}
+   *        the {@link String} representing the type of map object. This ID can be retrieved via
+   *        {@link #getValue()}
    *        for any given {@link MapObject}.
    * @return the icon, which represents the given objectTypeID
    */
@@ -80,9 +82,9 @@ public class MapObject extends KeyIndexedObject {
           break;
       }
       if (downloadedIcon == null) {
-        try (CachedFile image = new CachedFile(iconUrlGen.apply(objectTypeID).toExternalForm())) {
-          Logging.error("Trying to get " + image.getName() + " " + objectTypeID);
-          downloadedIcon = new ImageIcon(ImageIO.read(image.getInputStream()));
+        try (CachedFile image = new CachedFile(iconUrlGen.apply(objectTypeID).toExternalForm());
+          InputStream inputStream = image.getInputStream()) {
+          downloadedIcon = new ImageIcon(ImageIO.read(inputStream));
           Logging.warn("Downloaded icon. ID known to the icon list: " + objectTypeID);
         } catch (IOException e) {
           Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
