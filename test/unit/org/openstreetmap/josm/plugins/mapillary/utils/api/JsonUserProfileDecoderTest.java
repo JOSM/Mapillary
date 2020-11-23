@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.json.Json;
+import javax.json.JsonReader;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -52,21 +53,25 @@ class JsonUserProfileDecoderTest {
 
   @Test
   void testDecodeUserProfile() throws IOException, URISyntaxException, IllegalArgumentException {
-    UserProfile profile = JsonUserProfileDecoder
-      .decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile.json")).readObject());
-    assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
-    assertEquals("gyllen", profile.getUsername());
-    assertNotNull(profile.getAvatar());
-    assertNotSame(getFakeAvatar(), profile.getAvatar());
+    try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile.json");
+      JsonReader reader = Json.createReader(inputStream)) {
+      UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
+      assertEquals("2BJl04nvnfW1y2GNaj7x5w", profile.getKey());
+      assertEquals("gyllen", profile.getUsername());
+      assertNotNull(profile.getAvatar());
+      assertNotSame(getFakeAvatar(), profile.getAvatar());
+    }
   }
 
   @Test
   void testDecodeUserProfile2() throws IOException, URISyntaxException, IllegalArgumentException {
-    UserProfile profile = JsonUserProfileDecoder
-      .decodeUserProfile(Json.createReader(getJsonInputStream("/api/v3/responses/userProfile2.json")).readObject());
-    assertEquals("abcdefg1", profile.getKey());
-    assertEquals("mapillary_userÄ2!", profile.getUsername());
-    assertSame(getFakeAvatar(), profile.getAvatar());
+    try (InputStream inputStream = getJsonInputStream("/api/v3/responses/userProfile2.json");
+      JsonReader reader = Json.createReader(inputStream)) {
+      UserProfile profile = JsonUserProfileDecoder.decodeUserProfile(reader.readObject());
+      assertEquals("abcdefg1", profile.getKey());
+      assertEquals("mapillary_userÄ2!", profile.getUsername());
+      assertSame(getFakeAvatar(), profile.getAvatar());
+    }
   }
 
   @Test
