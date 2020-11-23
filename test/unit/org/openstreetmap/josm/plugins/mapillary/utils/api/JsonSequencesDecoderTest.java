@@ -11,7 +11,6 @@ import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -141,8 +140,7 @@ class JsonSequencesDecoderTest {
    * Checks if an empty array is returned, if <code>null</code> is supplied to the method as the array.
    */
   @Test
-  void testDecodeJsonArray() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-    IllegalArgumentException, InvocationTargetException {
+  void testDecodeJsonArray() throws ReflectiveOperationException {
     Method method = JsonSequencesDecoder.class.getDeclaredMethod("decodeJsonArray", JsonArray.class, Function.class,
       Class.class);
     method.setAccessible(true);
@@ -151,8 +149,7 @@ class JsonSequencesDecoderTest {
   }
 
   @Test
-  void testDecodeCoordinateProperty() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-    IllegalArgumentException, InvocationTargetException {
+  void testDecodeCoordinateProperty() throws ReflectiveOperationException {
     Method decodeCoordinateProperty = JsonSequencesDecoder.class.getDeclaredMethod("decodeCoordinateProperty",
       JsonObject.class, String.class, Function.class, Class.class);
     decodeCoordinateProperty.setAccessible(true);
@@ -167,8 +164,7 @@ class JsonSequencesDecoderTest {
   }
 
   @Test
-  void testDecodeLatLons() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-    IllegalArgumentException, InvocationTargetException {
+  void testDecodeLatLons() throws ReflectiveOperationException, IOException {
     Method decodeLatLons = JsonSequencesDecoder.class.getDeclaredMethod("decodeLatLons", JsonObject.class);
     decodeLatLons.setAccessible(true);
 
@@ -176,22 +172,24 @@ class JsonSequencesDecoderTest {
     assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":0}"))).length);
     assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":[]}"))).length);
 
-    assertEquals(0,
-      ((LatLon[]) decodeLatLons.invoke(null,
-        Json
-          .createReader(
-            new ByteArrayInputStream("{\"type\": \"Feature\", \"coordinates\": []}".getBytes(StandardCharsets.UTF_8)))
-          .readObject())).length);
+    try (
+      InputStream inputStream = new ByteArrayInputStream(
+        "{\"type\": \"Feature\", \"coordinates\": []}".getBytes(StandardCharsets.UTF_8));
+      JsonReader reader = Json.createReader(inputStream)) {
+      assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, reader.readObject())).length);
+    }
 
-    LatLon[] example = (LatLon[]) decodeLatLons.invoke(null,
-      Json.createReader(
-        new ByteArrayInputStream("{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}"
-          .getBytes(StandardCharsets.UTF_8)))
-        .readObject());
-    assertEquals(3, example.length);
-    assertNull(example[0]);
-    assertNull(example[1]);
-    assertNull(example[2]);
+    try (
+      InputStream inputStream = new ByteArrayInputStream(
+        "{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}"
+          .getBytes(StandardCharsets.UTF_8));
+      JsonReader reader = Json.createReader(inputStream)) {
+      LatLon[] example = (LatLon[]) decodeLatLons.invoke(null, reader.readObject());
+      assertEquals(3, example.length);
+      assertNull(example[0]);
+      assertNull(example[1]);
+      assertNull(example[2]);
+    }
   }
 
   @Test
