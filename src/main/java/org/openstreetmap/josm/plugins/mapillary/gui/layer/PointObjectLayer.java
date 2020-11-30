@@ -120,6 +120,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
@@ -340,7 +341,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         Point point = mv.getPoint(p.getBBox().getCenter());
         return mv.contains(point);
       }).collect(Collectors.toList());
-      selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
+      if (DeveloperToggleAction.isDeveloper()) {
+        selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
+      }
     } else {
       this.displayedWindows.forEach((o, w) -> hideWindow(w));
     }

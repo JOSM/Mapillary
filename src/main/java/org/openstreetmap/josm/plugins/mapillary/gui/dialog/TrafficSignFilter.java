@@ -50,6 +50,7 @@ import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.spi.preferences.Config;
@@ -111,6 +112,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
     JCheckBox showAddableObjs = new JCheckBox(I18n.tr("Only show addable objects"));
     JCheckBox hideNearbyAddableObjs = new JCheckBox(I18n.tr("hide when nearby OSM objects"));
+    DeveloperToggleAction.addVisibilitySwitcher(showAddableObjs);
+    DeveloperToggleAction.addVisibilitySwitcher(hideNearbyAddableObjs);
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
