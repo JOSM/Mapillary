@@ -4,12 +4,13 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.event.ActionEvent;
+
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.mode.EditMode;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -20,17 +21,9 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class MapillaryEditAction extends JosmAction {
 
   public MapillaryEditAction() {
-    super(
-      tr("Edit mode"),
-      new ImageProvider("mapmode", "mapillary-edit").setSize(ImageProvider.ImageSizes.DEFAULT),
-      tr("Edit pictures"),
-      null,
-      false,
-      "mapillaryEdit",
-      true
-    );
-    MapillaryProperties.DEVELOPER.addListener(
-      valueChange -> updateEnabledState());
+    super(tr("Edit mode"), new ImageProvider("mapmode", "mapillary-edit").setSize(ImageProvider.ImageSizes.DEFAULT),
+      tr("Edit pictures"), null, false, "mapillaryEdit", true);
+    DeveloperToggleAction.addDeveloperModeChangeListener(l -> updateEnabledState());
   }
 
   @Override
@@ -54,6 +47,6 @@ public class MapillaryEditAction extends JosmAction {
   protected void updateEnabledState() {
     super.updateEnabledState();
     setEnabled(MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer
-      && MapillaryProperties.DEVELOPER.get());
+      && DeveloperToggleAction.isDeveloper());
   }
 }

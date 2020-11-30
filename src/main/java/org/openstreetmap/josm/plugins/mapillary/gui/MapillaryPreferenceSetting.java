@@ -83,7 +83,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox developer =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"),
-      MapillaryProperties.DEVELOPER.get());
+      DeveloperToggleAction.isDeveloper());
   private final SpinnerNumberModel preFetchSize = new SpinnerNumberModel(
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue(), 0, Integer.MAX_VALUE, 1);
   private final JButton loginButton = new MapillaryButton(new LoginAction(this));
@@ -151,8 +151,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     requiresLogin.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     mainPanel.add(requiresLogin, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
 
+    developer.addActionListener(e -> DeveloperToggleAction.getInstance().actionPerformed(null));
+
+    ExpertToggleAction.addVisibilitySwitcher(developer);
+    mainPanel.add(developer, GBC.eol());
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
-      mainPanel.add(developer, GBC.eol());
+      developer.setVisible(true);
     }
     MapillaryColorScheme.styleAsDefaultPanel(mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled,
       darkMode, cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
@@ -204,6 +208,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @SuppressWarnings("PMD.ShortMethodName")
   @Override
   public boolean ok() {
+    DeveloperToggleAction.getInstance().setDeveloper(developer.isSelected());
     MapillaryProperties.DOWNLOAD_MODE
       .put(DOWNLOAD_MODE.fromLabel((String) downloadModeComboBox.getSelectedItem()).getPrefId());
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
@@ -213,7 +218,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.DARK_MODE.put(darkMode.isSelected());
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
-    MapillaryProperties.DEVELOPER.put(developer.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.IMAGE_MODE.put(((PRIVATE_IMAGE_DOWNLOAD_MODE) privateImages.getSelectedItem()).getPrefId());
 
