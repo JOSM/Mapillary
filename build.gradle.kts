@@ -10,11 +10,11 @@ import java.net.URL
 
 plugins {
   id("org.sonarqube") version "3.0"
-  id("org.openstreetmap.josm") version "0.7.0"
-  id("com.github.ben-manes.versions") version "0.33.0"
-  id("com.github.spotbugs") version "4.5.1"
-  id("net.ltgt.errorprone") version "1.2.1"
-  id("com.diffplug.spotless") version "5.6.1"
+  id("org.openstreetmap.josm") version "0.7.1"
+  id("com.github.ben-manes.versions") version "0.36.0"
+  id("com.github.spotbugs") version "4.6.0"
+  id("net.ltgt.errorprone") version "1.3.0"
+  id("com.diffplug.spotless") version "5.8.2"
 
   eclipse
   jacoco
@@ -61,7 +61,7 @@ val versions = mapOf(
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
   "junit" to "5.7.0",
-  "spotbugs" to "4.1.3",
+  "spotbugs" to "4.2.0",
   "wiremock" to "2.27.2"
 )
 
@@ -147,7 +147,7 @@ josm {
     oldVersionDownloadLink(10824, "v1.5.3", URL("https://github.com/JOSM/Mapillary/releases/download/v1.5.3/Mapillary.jar"))
   }
   i18n {
-    pathTransformer = getPathTransformer("gitlab.com/JOSM/plugin/Mapillary/blob")
+    pathTransformer = getPathTransformer(project.projectDir, "gitlab.com/JOSM/plugin/Mapillary/blob")
   }
 }
 
