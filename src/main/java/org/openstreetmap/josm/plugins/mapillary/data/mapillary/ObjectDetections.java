@@ -222,8 +222,10 @@ public enum ObjectDetections {
   REGULATORY__LOW_BEAM_HEADLIGHTS__G2(DetectionType.TRAFFIC_SIGN),
   REGULATORY__LOW_BEAM_HEADLIGHTS__G3(DetectionType.TRAFFIC_SIGN),
   REGULATORY__LOW_SPEED_VEHICLE_PERMITTED__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_10__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_10__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_10__G1("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=10",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_10__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=10 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_100__G1(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_100__G3(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_110__G1(DetectionType.TRAFFIC_SIGN),
@@ -233,34 +235,50 @@ public enum ObjectDetections {
   REGULATORY__MAXIMUM_SPEED_LIMIT_130__G1(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_130__G3(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_15__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_15__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_15__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=15 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_20__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_20__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_20__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=20 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_25__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_25__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_25__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=25 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_30__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_30__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_30__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=30 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_35__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_35__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_35__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=35 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_40__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_40__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_40__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=40 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_45__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_45__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=45 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_5__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_5__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_5__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=5 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_50__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_50__G3(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_55__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_50__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=50 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_55__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=55 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_60__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_60__G3(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_60__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=60 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_65__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_65__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_65__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=65 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_70__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_70__G3(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_75__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_70__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=70 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_75__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=75 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_80__G1(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_80__G3(DetectionType.TRAFFIC_SIGN),
-  REGULATORY__MAXIMUM_SPEED_LIMIT_85__G2(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_80__G3("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=80 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
+  REGULATORY__MAXIMUM_SPEED_LIMIT_85__G2("highway=traffic_sign;;traffic_sign=maxspeed;;maxspeed=85 mph",
+    TaggingPresetType.NODE, DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_90__G1(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_90__G3(DetectionType.TRAFFIC_SIGN),
   REGULATORY__MAXIMUM_SPEED_LIMIT_LED_10__G1(DetectionType.TRAFFIC_SIGN),
@@ -1678,25 +1696,25 @@ public enum ObjectDetections {
   OBJECT__POTHOLE(DetectionType.SEGMENTATION),
   OBJECT__RAMP(DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_BACK("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_BACK("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__OTHER_TRAFFIC_LIGHT("highway=traffic_signals", TaggingPresetType.NODE,
-    new DetectionType[] { DetectionType.SEGMENTATION }),
+    DetectionType.SEGMENTATION),
 
   OBJECT__TRAFFIC_LIGHT__TEMPORARY(DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_SIGN__BACK(DetectionType.SEGMENTATION),
@@ -1790,6 +1808,17 @@ public enum ObjectDetections {
    */
   ObjectDetections(DetectionType... detectionTypes) {
     this(null, (TaggingPresetType[]) null, detectionTypes);
+  }
+
+  /**
+   * Create an ObjectDetection
+   *
+   * @param osmKey The OSM key for the object
+   * @param taggingPresetType The valid types for the preset
+   * @param detectionType The types that the detection <i>may</i> appear as
+   */
+  ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType detectionTypes) {
+    this(osmKey, new TaggingPresetType[] { taggingPresetType }, new DetectionType[] { detectionTypes });
   }
 
   /**
