@@ -29,12 +29,12 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
   private final MapillaryData data;
 
   public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, ProgressMonitor monitor) {
-    super(bounds, monitor);
+    super(bounds, URL_GEN, monitor);
     this.data = data;
   }
 
   public ImageDetailsDownloadRunnable(final MapillaryData data, final Bounds bounds, URL url, ProgressMonitor monitor) {
-    super(bounds, Collections.singleton(url), monitor);
+    super(bounds, URL_GEN, Collections.singleton(url), monitor);
     this.data = data;
   }
 
@@ -61,10 +61,4 @@ public class ImageDetailsDownloadRunnable extends BoundsDownloadRunnable {
       throw new IOException(e);
     }
   }
-
-  @Override
-  protected Function<Bounds, Collection<URL>> getUrlGenerator() {
-    return URL_GEN;
-  }
-
 }

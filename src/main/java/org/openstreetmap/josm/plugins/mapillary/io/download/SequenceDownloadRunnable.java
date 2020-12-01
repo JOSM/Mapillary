@@ -31,12 +31,12 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
   private static final Function<Bounds, Collection<URL>> URL_GEN = APIv3::searchSequences;
 
   public SequenceDownloadRunnable(final MapillaryData data, final Bounds bounds, ProgressMonitor monitor) {
-    super(bounds, monitor);
+    super(bounds, URL_GEN, monitor);
     this.data = data;
   }
 
   public SequenceDownloadRunnable(MapillaryData data, Bounds bounds, URL url, ProgressMonitor monitor) {
-    super(bounds, Collections.singleton(url), monitor);
+    super(bounds, URL_GEN, Collections.singleton(url), monitor);
     this.data = data;
   }
 
@@ -59,10 +59,9 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
     try (BufferedReader content = client.getResponse().getContentReader();
       JsonReader reader = Json.createReader(content)) {
       final long startTime = System.currentTimeMillis();
-      final Collection<MapillarySequence> sequences = JsonDecoder
-        .decodeFeatureCollection(reader.readObject(), JsonSequencesDecoder::decodeSequence);
-      logConnectionInfo(
-        client,
+      final Collection<MapillarySequence> sequences = JsonDecoder.decodeFeatureCollection(reader.readObject(),
+        JsonSequencesDecoder::decodeSequence);
+      logConnectionInfo(client,
         String.format("%d sequences in %.2f s", sequences.size(), (System.currentTimeMillis() - startTime) / 1000F));
       if (Thread.interrupted()) {
         return;
@@ -88,11 +87,5 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
     } finally {
       MapillaryLayer.getInstance().invalidate();
     }
-
-  }
-
-  @Override
-  protected Function<Bounds, Collection<URL>> getUrlGenerator() {
-    return URL_GEN;
   }
 }

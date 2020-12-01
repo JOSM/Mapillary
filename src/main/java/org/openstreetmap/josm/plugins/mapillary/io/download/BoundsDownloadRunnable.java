@@ -9,11 +9,13 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ChildProgress;
@@ -38,19 +40,21 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
   protected final Collection<URL> urls;
   protected static final int MAXIMUM_URLS = 50;
   protected final ProgressMonitor monitor;
+  private final Function<Bounds, Collection<URL>> urlGen;
   /**
    * Checks if this download has been completed before
    */
   protected boolean completed = Boolean.FALSE;
 
-  protected abstract Function<Bounds, Collection<URL>> getUrlGenerator();
-
-  public BoundsDownloadRunnable(final Bounds bounds, ProgressMonitor monitor) {
-    this(bounds, null, monitor);
+  public BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
+    ProgressMonitor monitor) {
+    this(bounds, urlGen, null, monitor);
   }
 
-  public BoundsDownloadRunnable(final Bounds bounds, Collection<URL> urls, ProgressMonitor monitor) {
+  public BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
+    Collection<URL> urls, ProgressMonitor monitor) {
     this.bounds = bounds;
+    this.urlGen = urlGen;
     this.urls = urls == null ? getUrlGenerator().apply(bounds) : urls;
     this.monitor = monitor;
   }
@@ -61,6 +65,10 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         realRun(url);
       }
     }
+  }
+
+  protected Function<Bounds, Collection<URL>> getUrlGenerator() {
+    return this.urlGen;
   }
 
   private void realRun(URL currentUrl) {
@@ -88,7 +96,11 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
       if (nextURL != null) {
-        ForkJoinTask.getPool().execute(getNextUrl(nextURL));
+        ForkJoinPool pool = ForkJoinTask.getPool();
+        if (pool != null)
+          pool.execute(getNextUrl(nextURL));
+        else
+          MainApplication.worker.execute(() -> getNextUrl(nextURL));
       }
       run(client);
       if (monitor instanceof ChildProgress) {
@@ -109,7 +121,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
     }
   }
 
-  private static void showNotification(String message) {
+  protected static void showNotification(String message) {
     new Notification(message).setIcon(MapillaryPlugin.LOGO.setSize(ImageSizes.LARGEICON).get())
       .setDuration(Notification.TIME_SHORT).show();
   }
@@ -119,7 +131,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    * the request method, the response code and the URL itself are logged. Otherwise only the URL is logged.
    *
    * @param client the {@link URLConnection} for which information is logged
-   * @param info   an additional info text, which is appended to the output in braces
+   * @param info an additional info text, which is appended to the output in braces
    */
   public static void logConnectionInfo(final HttpClient client, final String info) {
     final StringBuilder message = new StringBuilder(client.getRequestMethod()).append(' ').append(client.getURL())

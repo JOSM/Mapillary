@@ -25,9 +25,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,8 +107,6 @@ import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.io.GeoJSONReader;
-import org.openstreetmap.josm.io.IllegalDataException;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
@@ -124,13 +119,11 @@ import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.ObjectDetectionsDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
@@ -243,43 +236,21 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   }
 
   public void getData(DataSource dataSource) {
-    if (dataSources.add(dataSource)) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      MainApplication.worker.submit(() -> getData(dataSource));
+    } else if (dataSources.add(dataSource)) {
+      ObjectDetectionsDownloadRunnable runnable = new ObjectDetectionsDownloadRunnable(data, dataSource.bounds,
+        trafficSigns ? MapillaryURL.APIv3::searchMapObjects : MapillaryURL.APIv3::searchMapPointObjects,
+        NullProgressMonitor.INSTANCE);
       try {
         data.unlock();
-        Bounds bound = dataSource.bounds;
-        realGetData(data,
-          trafficSigns ? MapillaryURL.APIv3.searchMapObjects(bound) : MapillaryURL.APIv3.searchMapPointObjects(bound));
+        runnable.run();
         data.addDataSource(dataSource);
-      } catch (IllegalDataException | IOException e) {
-        Logging.error(e);
-        dataSources.remove(dataSource);
       } finally {
         data.lock();
         this.tableModelListener.updateAndRunFilters();
       }
     }
-  }
-
-  private static void realGetData(DataSet data, URL url) throws IllegalDataException, IOException {
-    URL currentUrl = url;
-    do {
-      HttpClient client = HttpClient.create(currentUrl);
-      if (MapillaryUser.getUsername() != null)
-        OAuthUtils.addAuthenticationHeader(client);
-      client.connect();
-      try (InputStream stream = client.getResponse().getContent()) {
-        DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
-        ds.allPrimitives().parallelStream().filter(p -> p.hasKey(DETECTIONS))
-          .forEach(p -> p.put("detections_num", Integer.toString(p.get(DETECTIONS).split("detection_key").length)));
-        ds.allPrimitives().forEach(p -> p.setModified(false));
-        synchronized (PointObjectLayer.class) {
-          data.mergeFrom(ds);
-        }
-        currentUrl = MapillaryURL.APIv3.parseNextFromLinkHeaderValue(client.getResponse().getHeaderField("Link"));
-      } finally {
-        client.disconnect();
-      }
-    } while (currentUrl != null);
   }
 
   @Override

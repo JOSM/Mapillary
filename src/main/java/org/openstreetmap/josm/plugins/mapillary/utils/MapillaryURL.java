@@ -27,9 +27,8 @@ public final class MapillaryURL {
   private static final String POINT_FEATURES_LAYER = "points";
   private static final String LINE_FEATURES_LAYER = "lines";
 
-  /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly  */
+  /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly */
   private static final String SORT_BY_KEY = "&sort_by=key";
-
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
@@ -91,7 +90,7 @@ public final class MapillaryURL {
 
     public static Collection<URL> searchDetections(Bounds bounds) {
       return Collections
-          .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
+        .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
     }
 
     public static URL retrieveDetections(String imageKey) {
@@ -100,7 +99,7 @@ public final class MapillaryURL {
 
     public static URL retrieveDetections(Collection<String> imageKeys) {
       return string2URL(baseUrl, "image_detections/",
-          queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
+        queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
     }
 
     public static Collection<URL> searchImages(Bounds bounds) {
@@ -131,8 +130,9 @@ public final class MapillaryURL {
      * @param bounds The bounds to search
      * @return A URL to use to get traffic sign map features
      */
-    public static URL searchMapObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY);
+    public static Collection<URL> searchMapObjects(final Bounds bounds) {
+      return Collections
+        .singleton(string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
     }
 
     /**
@@ -141,8 +141,9 @@ public final class MapillaryURL {
      * @param bounds The bounds to search
      * @return A URL to use to get point object map features
      */
-    public static URL searchMapPointObjects(final Bounds bounds) {
-      return string2URL(baseUrl, "map_features", queryString(bounds, getEnabledLayers()) + SORT_BY_KEY);
+    public static Collection<URL> searchMapPointObjects(final Bounds bounds) {
+      return Collections
+        .singleton(string2URL(baseUrl, "map_features", queryString(bounds, getEnabledLayers()) + SORT_BY_KEY));
     }
 
     private static String getEnabledLayers() {
@@ -156,7 +157,7 @@ public final class MapillaryURL {
     public static Collection<URL> searchSequences(final Bounds bounds) {
       List<URL> urls = new ArrayList<>();
       PRIVATE_IMAGE_DOWNLOAD_MODE imageMode = PRIVATE_IMAGE_DOWNLOAD_MODE
-          .getFromId(MapillaryProperties.IMAGE_MODE.get());
+        .getFromId(MapillaryProperties.IMAGE_MODE.get());
       // If the private=true|false is left out, all images are obtained (as of
       // 2020-02-20).
       if (imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PUBLIC_ONLY)
@@ -172,6 +173,7 @@ public final class MapillaryURL {
      * The APIv3 returns a Link header for each request. It contains a URL for requesting more results.
      * If you supply the value of the Link header, this method returns the next URL,
      * if such a URL is defined in the header.
+     *
      * @param value the value of the HTTP-header with key "Link"
      * @return the {@link URL} for the next result page, or <code>null</code> if no such URL could be found
      */
@@ -253,6 +255,7 @@ public final class MapillaryURL {
 
     /**
      * Gives you the URL for the online viewer of a specific mapillary image.
+     *
      * @param key the key of the image to which you want to link
      * @return the URL of the online viewer for the image with the given image key
      * @throws IllegalArgumentException if the image key is <code>null</code>
@@ -266,6 +269,7 @@ public final class MapillaryURL {
 
     /**
      * Gives you the URL for the blur editor of the image with the given key.
+     *
      * @param key the key of the image for which you want to open the blur editor
      * @return the URL of the blur editor
      * @throws IllegalArgumentException if the image key is <code>null</code>
@@ -286,6 +290,7 @@ public final class MapillaryURL {
 
     /**
      * Gives you the URL which the user should visit to initiate the OAuth authentication process
+     *
      * @param redirectURI the URI to which the user will be redirected when the authentication is finished.
      *        When this is <code>null</code>, it's omitted from the query string.
      * @return the URL that the user should visit to start the OAuth authentication
@@ -318,6 +323,7 @@ public final class MapillaryURL {
 
   /**
    * Builds a query string from it's parts that are supplied as a {@link Map}
+   *
    * @param parts the parts of the query string
    * @return the constructed query string (including a leading ?)
    */
@@ -326,9 +332,7 @@ public final class MapillaryURL {
     if (parts != null) {
       for (Map.Entry<String, String> entry : parts.entrySet()) {
         try {
-          ret.append('&')
-            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()))
-            .append('=')
+          ret.append('&').append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name())).append('=')
             .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
           Logging.error(e); // This should not happen, as the encoding is hard-coded
@@ -342,6 +346,7 @@ public final class MapillaryURL {
    * Converts a {@link String} into a {@link URL} without throwing a {@link MalformedURLException}.
    * Instead such an exception will lead to an {@link Logging#error(Throwable)}.
    * So you should be very confident that your URL is well-formed when calling this method.
+   *
    * @param strings the Strings describing the URL
    * @return the URL that is constructed from the given string
    */
@@ -353,11 +358,8 @@ public final class MapillaryURL {
     try {
       return new URL(builder.toString());
     } catch (MalformedURLException e) {
-      Logging.log(Logging.LEVEL_ERROR, String.format(
-          "The class '%s' produces malformed URLs like '%s'!",
-          MapillaryURL.class.getName(),
-          builder
-      ), e);
+      Logging.log(Logging.LEVEL_ERROR,
+        String.format("The class '%s' produces malformed URLs like '%s'!", MapillaryURL.class.getName(), builder), e);
       return null;
     }
   }

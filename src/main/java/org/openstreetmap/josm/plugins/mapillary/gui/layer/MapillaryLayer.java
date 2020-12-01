@@ -99,8 +99,8 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends AbstractModifiableLayer implements
-  ActiveLayerChangeListener, LayerChangeListener, MapillaryDataListener, UploadHook {
+public final class MapillaryLayer extends AbstractModifiableLayer
+  implements ActiveLayerChangeListener, LayerChangeListener, MapillaryDataListener, UploadHook {
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -112,9 +112,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private static final Range IMAGE_CA_PAINT_RANGE = Selector.GeneralSelector.fromLevel(18, Integer.MAX_VALUE);
 
   /** The sprite to use to indicate that there are sign detections in the image */
-  private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection")
-    .setMaxSize(TRAFFIC_SIGN_SIZE).get()
-    .getImage();
+  private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE)
+    .get().getImage();
 
   private static class DataSetSourceListener implements DataSourceListener {
     @Override
@@ -142,8 +141,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   private final MapillaryChangeset locationChangeset = new MapillaryChangeset();
   private final MapillaryChangeset deletionChangeset = new MapillaryChangeset();
   private boolean destroyed;
-  private static AlphaComposite fadeComposite = AlphaComposite
-    .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+  private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+    MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
 
   private MapillaryLayer() {
@@ -177,11 +176,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     }
     if (MapillaryPlugin.getMapView() != null) {
       MapillaryMainDialog.getInstance().imageViewer.repaint();
-      MapillaryMainDialog.getInstance()
-        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      MapillaryMainDialog.getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
-      MapillaryMainDialog.getInstance().getActionMap()
-        .put("MapillaryDel", new DeleteImageAction());
+      MapillaryMainDialog.getInstance().getActionMap().put("MapillaryDel", new DeleteImageAction());
 
       getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
       getDeletionChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
@@ -302,8 +299,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   public boolean setImageViewed(MapillaryAbstractImage image) {
     DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
     if (image != null && ds != null) {
-      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap
-        .getOrDefault(ds, Collections.synchronizedSet(new HashSet<MapillaryAbstractImage>()));
+      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap.getOrDefault(ds,
+        Collections.synchronizedSet(new HashSet<MapillaryAbstractImage>()));
       imageViewedMap.putIfAbsent(ds, imageViewedList);
       return imageViewedList.add(image);
     }
@@ -385,8 +382,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   @Override
   public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    fadeComposite = AlphaComposite
-      .getInstance(AlphaComposite.SRC_OVER, MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
+    fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+      MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
     if (MainApplication.getLayerManager().getActiveLayer() == this) {
       // paint remainder
       g.setPaint(this.hatched);
@@ -446,7 +443,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
   /**
    * Draws an image marker onto the given Graphics context.
    *
-   * @param g   the Graphics context
+   * @param g the Graphics context
    * @param img the image to be drawn onto the Graphics context
    */
   private void drawImageMarker(final Graphics2D g, final MapillaryAbstractImage img) {
@@ -528,7 +525,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     if (img instanceof MapillaryImage) {
       if (!((MapillaryImage) img).getDetections().isEmpty()) {
         g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-            null);
+          null);
       }
     }
     g.setComposite(composite);
@@ -601,17 +598,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
 
   @Override
   public void mergeFrom(Layer from) {
-    throw new UnsupportedOperationException(
-      "This layer does not support merging yet");
+    throw new UnsupportedOperationException("This layer does not support merging yet");
   }
 
   @Override
   public Action[] getMenuEntries() {
-    return new Action[] {
-      LayerListDialog.getInstance().createShowHideLayerAction(),
-      LayerListDialog.getInstance().createDeleteLayerAction(),
-      new LayerListPopup.InfoAction(this)
-    };
+    return new Action[] { LayerListDialog.getInstance().createShowHideLayerAction(),
+      LayerListDialog.getInstance().createDeleteLayerAction(), new LayerListPopup.InfoAction(this) };
   }
 
   @Override
@@ -621,23 +614,14 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     final long numImported = getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count();
     final long numDownloaded = getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count();
     final int numTotal = getData().getImages().size();
-    return new StringBuilder(I18n.tr("Mapillary layer"))
-      .append('\n')
-      .append(I18n.trn(
-        "{0} sequence, containing between {1} and {2} images (ø {3})",
-        "{0} sequences, each containing between {1} and {2} images (ø {3})",
-        getData().getSequences().size(),
-        getData().getSequences().size(),
-        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
-        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(),
-        seqSizeStats.getAverage()))
-      .append("\n\n")
-      .append(I18n.trn("{0} imported image", "{0} imported images", numImported, numImported))
-      .append("\n+ ")
-      .append(I18n.trn("{0} downloaded image", "{0} downloaded images", numDownloaded, numDownloaded))
-      .append("\n= ")
-      .append(I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal))
-      .toString();
+    return new StringBuilder(I18n.tr("Mapillary layer")).append('\n')
+      .append(I18n.trn("{0} sequence, containing between {1} and {2} images (ø {3})",
+        "{0} sequences, each containing between {1} and {2} images (ø {3})", getData().getSequences().size(),
+        getData().getSequences().size(), seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
+        seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(), seqSizeStats.getAverage()))
+      .append("\n\n").append(I18n.trn("{0} imported image", "{0} imported images", numImported, numImported))
+      .append("\n+ ").append(I18n.trn("{0} downloaded image", "{0} downloaded images", numDownloaded, numDownloaded))
+      .append("\n= ").append(I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal)).toString();
   }
 
   @Override
@@ -717,30 +701,26 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
    * different from the specified target image.
    *
    * @param target the image for which you want to find the nearest other images
-   * @param limit  the maximum length of the returned array
+   * @param limit the maximum length of the returned array
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
     return data.getSequences().parallelStream()
-      .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey()))
-      .map(seq -> { // Maps sequence to image from sequence that is nearest to target
+      .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())).map(seq -> {
+        // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted()&& img.isVisible())
+          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted() && img.isVisible())
           .min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
-      })
-      .filter(img -> // Filters out images too far away from target
-      img != null &&
-        img.getMovingLatLon()
-          .greatCircleDistance(target.getMovingLatLon()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
-      .sorted(new NearestImgToTargetComparator(target))
-      .limit(limit)
-      .toArray(MapillaryImage[]::new);
+      }).filter(img -> // Filters out images too far away from target
+      img != null && img.getMovingLatLon()
+        .greatCircleDistance(target.getMovingLatLon()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
+      .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(MapillaryImage[]::new);
   }
 
   private synchronized void updateNearestImages() {
     final MapillaryAbstractImage selected = data.getSelectedImage();
-    if (selected != null && !(selected instanceof MapillaryImage &&((MapillaryImage) selected).isDeleted())) {
+    if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).isDeleted())) {
       nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       nearestImages = new MapillaryImage[0];
@@ -777,8 +757,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
     @Override
     public void actionPerformed(ActionEvent e) {
       if (hasInstance() && !getData().getMultiSelectedImages().isEmpty())
-        MapillaryRecord.getInstance().addCommand(
-          new CommandDelete(getData().getMultiSelectedImages()));
+        MapillaryRecord.getInstance().addCommand(new CommandDelete(getData().getMultiSelectedImages()));
     }
   }
 
@@ -795,9 +774,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer implements
      */
     @Override
     public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
-      return (int) Math.signum(
-        img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()) -
-          img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()));
+      return (int) Math.signum(img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
+        - img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()));
     }
   }
 

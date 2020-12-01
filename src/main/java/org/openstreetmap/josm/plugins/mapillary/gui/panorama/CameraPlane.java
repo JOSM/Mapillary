@@ -45,11 +45,8 @@ public class CameraPlane {
     rotation = new Rotation(RotationOrder.XYX, RotationConvention.VECTOR_OPERATOR, 0, 0, 0);
     setRotation(0.0, 0.0);
     vectors = new Vector3D[width][height];
-    IntStream.range(0, height).parallel().forEach(
-      y -> IntStream.range(0, width).parallel().forEach(
-        x -> vectors[x][y] = new Vector3D(x - width / 2d, y - height / 2d, distance).normalize()
-      )
-    );
+    IntStream.range(0, height).parallel().forEach(y -> IntStream.range(0, width).parallel()
+      .forEach(x -> vectors[x][y] = new Vector3D(x - width / 2d, y - height / 2d, distance).normalize()));
   }
 
   /**
@@ -59,7 +56,8 @@ public class CameraPlane {
   public Point getPoint(final Vector3D vector) {
     final Vector3D rotatedVector = rotate(vector, -1);
     if (rotatedVector.getZ() < 0) {
-      return null; // Ignores any points "behind the back", so they don't get painted a second time on the other side of the sphere
+      return null; // Ignores any points "behind the back", so they don't get painted a second time on the other side of
+                   // the sphere
     }
     // This is a slightly faster than just doing the (brute force) method of Math.max(Math.min)). Reduces if statements
     // by 1 per call.
@@ -70,7 +68,7 @@ public class CameraPlane {
       return new Point(FastMath.toIntExact(x), FastMath.toIntExact(y));
     } catch (ArithmeticException e) {
       return new Point((int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, x)),
-          (int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, y)));
+        (int) FastMath.max(Integer.MIN_VALUE, FastMath.min(Integer.MAX_VALUE, y)));
     }
   }
 
@@ -86,6 +84,7 @@ public class CameraPlane {
 
   /**
    * Set camera plane rotation by current plane position.
+   *
    * @param p Point within current plane.
    */
   public void setRotation(final Point p) {
@@ -98,7 +97,7 @@ public class CameraPlane {
       Vector3D t1 = vectors[to.x][to.y];
       double deltaTheta = FastMath.atan2(f1.getX(), f1.getZ()) - FastMath.atan2(t1.getX(), t1.getZ());
       double deltaPhi = FastMath.atan2(f1.getY(), FastMath.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
-          - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
+        - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
       double newTheta = theta + deltaTheta;
       if (MapillaryMainDialog.getInstance().getImage() != null) {
         MapillaryMainDialog.getInstance().getImage().rotatePano(FastMath.toDegrees(deltaTheta));
@@ -114,6 +113,7 @@ public class CameraPlane {
 
   /**
    * Set camera plane rotation by spherical vector.
+   *
    * @param vec vector pointing new view position.
    */
   public void setRotation(Vector3D vec) {
@@ -163,8 +163,8 @@ public class CameraPlane {
   public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
     DataBuffer sourceBuffer = sourceImage.getRaster().getDataBuffer();
     DataBuffer targetBuffer = targetImage.getRaster().getDataBuffer();
-    if (sourceBuffer.getDataType() == DataBuffer.TYPE_INT
-      && targetBuffer.getDataType() == DataBuffer.TYPE_INT) {// Faster mapping
+    if (sourceBuffer.getDataType() == DataBuffer.TYPE_INT && targetBuffer.getDataType() == DataBuffer.TYPE_INT) {// Faster
+                                                                                                                 // mapping
       int[] sourceImageBuffer = ((DataBufferInt) sourceImage.getRaster().getDataBuffer()).getData();
       int[] targetImageBuffer = ((DataBufferInt) targetImage.getRaster().getDataBuffer()).getData();
       IntStream.range(0, targetImage.getHeight()).parallel().forEach(y -> {
@@ -178,17 +178,13 @@ public class CameraPlane {
         });
       });
     } else {
-      IntStream.range(0, targetImage.getHeight()).parallel().forEach(
-        y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(
-          x -> {
-            final Vector3D vec = getVector3D(new Point(x, y));
-            final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
-            targetImage.setRGB(x, y,
-              sourceImage.getRGB((int) (p.x * (sourceImage.getWidth() - 1)), (int) (p.y * (sourceImage.getHeight() - 1)))
-            );
-          }
-        )
-      );
+      IntStream.range(0, targetImage.getHeight()).parallel()
+        .forEach(y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(x -> {
+          final Vector3D vec = getVector3D(new Point(x, y));
+          final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
+          targetImage.setRGB(x, y, sourceImage.getRGB((int) (p.x * (sourceImage.getWidth() - 1)),
+            (int) (p.y * (sourceImage.getHeight() - 1))));
+        }));
     }
   }
 }
