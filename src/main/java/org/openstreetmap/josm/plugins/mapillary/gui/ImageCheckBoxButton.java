@@ -3,8 +3,8 @@ package org.openstreetmap.josm.plugins.mapillary.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
@@ -24,7 +24,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilter
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.Logging;
 
 /**
  * @author Taylor Smock
@@ -88,7 +87,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
       MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
     }
     if (index < 0 && filter.enable) {
-      GuiHelper.runInEDT(() -> MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter));
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
     }
   }
 
@@ -150,20 +149,13 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
    * @return A future to indicate if the call finished
    */
   public Future<?> setSelected(boolean selected) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      return MainApplication.worker.submit(() -> setSelected(selected));
-    }
-    try {
-      SwingUtilities.invokeAndWait(() -> jcheckbox.setSelected(selected));
-    } catch (InvocationTargetException e) {
-      Logging.error(e);
-    } catch (InterruptedException e) {
-      Logging.error(e);
-      Thread.currentThread().interrupt();
-    } finally {
+    CompletableFuture<?> completableFuture = new CompletableFuture<>();
+    GuiHelper.runInEDT(() -> {
+      jcheckbox.setSelected(selected);
       updateFilters(jcheckbox, filter);
-    }
-    return null;
+      completableFuture.complete(null);
+    });
+    return completableFuture;
   }
 
   @Override

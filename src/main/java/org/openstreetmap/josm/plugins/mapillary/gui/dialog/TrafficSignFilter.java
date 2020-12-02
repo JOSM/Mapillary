@@ -54,6 +54,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
@@ -71,8 +72,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private boolean destroyed;
   private final List<ImageCheckBoxButton> buttons;
   private boolean showRelevant;
-  private boolean showAddable;
-  private Boolean[] show = new Boolean[] { showRelevant, showAddable };
+  private boolean smartEditMode = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
+  private Boolean[] show = new Boolean[] { showRelevant, smartEditMode };
   private final FilterField filterField;
   private final SpinnerNumberModel showMaxNumberModel;
   private int detectionPage;
@@ -111,10 +112,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     add(filterField, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     toggleVisibleCheckbox = new JCheckBox(I18n.tr("Select Visible"));
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
-    JCheckBox showAddableObjs = new JCheckBox(I18n.tr("Only show addable objects"));
-    JCheckBox hideNearbyAddableObjs = new JCheckBox(I18n.tr("hide when nearby OSM objects"));
-    DeveloperToggleAction.addVisibilitySwitcher(showAddableObjs);
-    DeveloperToggleAction.addVisibilitySwitcher(hideNearbyAddableObjs);
+    JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
+    // TODO remove when no longer under development and testing
+    DeveloperToggleAction.addVisibilitySwitcher(smartEditMode);
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
@@ -130,18 +130,15 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     pagination.add(showMax, GBC.std().anchor(GridBagConstraints.CENTER));
     pagination.add(nextButtonPagination, GBC.std().anchor(GridBagConstraints.WEST));
     showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
-    showAddableObjs.addItemListener(l -> showAddableObjects(l.getStateChange() == ItemEvent.SELECTED));
-    hideNearbyAddableObjs.addItemListener(l -> hideNearbyAddableObjs(l.getStateChange() == ItemEvent.SELECTED));
+    smartEditMode.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
     toggleVisibleCheckbox.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
-    add(showAddableObjs, GBC.std().anchor(GridBagConstraints.WEST));
-    add(hideNearbyAddableObjs, GBC.eol().anchor(GridBagConstraints.CENTER));
+    add(smartEditMode, GBC.std().anchor(GridBagConstraints.WEST));
     add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.WEST));
     add(toggleVisibleCheckbox, GBC.std().anchor(GridBagConstraints.CENTER));
     add(pagination, GBC.eol().anchor(GridBagConstraints.EAST));
 
-    this.resetObjects.add(() -> showAddableObjs.setSelected(false));
+    this.resetObjects.add(() -> smartEditMode.setSelected(false));
     this.resetObjects.add(() -> showRelevantObjs.setSelected(true));
-    this.resetObjects.add(() -> hideNearbyAddableObjs.setSelected(false));
     this.resetObjects.add(() -> filterField.setText(""));
     this.resetObjects.add(() -> showMaxNumberModel.setValue(100));
 
@@ -216,7 +213,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    */
   private boolean checkRelevant(ImageCheckBoxButton button, String expr) {
     boolean relevant = !this.showRelevant || button.isRelevant();
-    boolean addable = !this.showAddable || ObjectDetections.getTaggingPresetsFor(button.getDetectionName()).length > 0;
+    boolean addable = Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())
+      || ObjectDetections.getTaggingPresetsFor(button.getDetectionName()).length > 0;
     return button.isFiltered(expr) && (relevant && addable);
   }
 
@@ -355,16 +353,44 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     this.updateShownButtons();
   }
 
-  private void showAddableObjects(boolean showAddable) {
-    this.showAddable = showAddable;
+  /**
+   * Turn smart edit mode on or off
+   *
+   * @param smartEditMode {@code true} to turn smart edit mode on
+   */
+  private void smartEditMode(boolean smartEditMode) {
+    MapillaryProperties.SMART_EDIT.put(smartEditMode);
+    this.smartEditMode = smartEditMode;
+    MapillaryFilterTableModel filterModel = MapillaryExpertFilterDialog.getInstance().getFilterModel();
+    synchronized (filterModel) {
+      try {
+        filterModel.pauseUpdates();
+        hideNearbyAddableObjs(this.smartEditMode);
+      } finally {
+        filterModel.resumeUpdates();
+      }
+    }
     Collection<ImageCheckBoxButton> nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant)
       .filter(button -> Stream.of(button.getDetections()).allMatch(d -> d.getTaggingPresets().isEmpty()))
       .collect(Collectors.toList());
     this.updateShownButtons();
-    GuiHelper.runInEDT(() -> {
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-      nonAddable.forEach(b -> b.setSelected(this.showAddable));
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
+    MainApplication.worker.execute(() -> {
+      synchronized (filterModel) {
+        filterModel.pauseUpdates();
+        List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode))
+          .filter(Objects::nonNull).collect(Collectors.toList());
+        for (Future<?> future : futures) {
+          try {
+            future.get();
+          } catch (ExecutionException e) {
+            Logging.error(e);
+          } catch (InterruptedException e) {
+            Logging.error(e);
+            Thread.currentThread().interrupt();
+          }
+        }
+        filterModel.resumeUpdates();
+      }
     });
   }
 
@@ -432,7 +458,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         return null;
       }).filter(Objects::nonNull).findFirst().orElse(null);
       if (icon != null) {
-        GuiHelper.runInEDTAndWait(() -> {
+        GuiHelper.runInEDT(() -> {
           ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
             entry.getValue().toArray(new ObjectDetections[0]));
           buttons.add(button);
@@ -457,8 +483,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    */
   public void reset() {
     this.resetObjects.forEach(ResetListener::reset);
-    MapillaryExpertFilterDialog.getInstance().getFilterModel().model.clearFilters();
-    List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).collect(Collectors.toList());
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
+    List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).filter(Objects::nonNull)
+      .collect(Collectors.toList());
     futures.add(MainApplication.worker.submit(() -> {
       while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
         MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);
@@ -477,6 +504,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
           Logging.error(e.getCause());
         }
       }
+      MapillaryExpertFilterDialog.getInstance().getFilterModel().resumeUpdates();
     });
 
     // Remove the NEARBY_KEY tag

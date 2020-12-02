@@ -99,6 +99,10 @@ public final class MapillaryProperties {
    */
   public static final DoubleProperty SMART_ADD_MIN_DIST_PER_PIXEL = new DoubleProperty(
     "mapillary.smart-add.min-dist-per-pixel", 25);
+  /**
+   * Smart edit preference setting
+   */
+  public static final BooleanProperty SMART_EDIT = new BooleanProperty("mapillary.smartedit", false);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
