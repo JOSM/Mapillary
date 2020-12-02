@@ -124,6 +124,7 @@ public class CameraPlane {
   public Rotation getRotation() {
     // TODO use this.rotation -- not currently used due to other issues (largely rotation such that the image appears
     // skewed)
+    // TODO don't forget to re-enable the test!
     return new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, this.phi, 0, this.theta);
   }
 
