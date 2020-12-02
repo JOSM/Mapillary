@@ -457,6 +457,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    */
   public void reset() {
     this.resetObjects.forEach(ResetListener::reset);
+    MapillaryExpertFilterDialog.getInstance().getFilterModel().model.clearFilters();
     List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).collect(Collectors.toList());
     futures.add(MainApplication.worker.submit(() -> {
       while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
