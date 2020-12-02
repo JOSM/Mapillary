@@ -751,7 +751,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (!SwingUtilities.isLeftMouseButton(e) || this.equals(MainApplication.getLayerManager().getActiveLayer())) {
+    if (!SwingUtilities.isLeftMouseButton(e) || this.equals(MainApplication.getLayerManager().getActiveLayer())
+      || e.isConsumed()) {
       return;
     }
     Point clickPoint = e.getPoint();
@@ -769,7 +770,10 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         closestNode = node;
       }
     }
-    data.setSelected(closestNode);
+    if (closestNode != null || Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())
+      || e.getClickCount() == MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
+      data.setSelected(closestNode);
+    }
   }
 
   @Override

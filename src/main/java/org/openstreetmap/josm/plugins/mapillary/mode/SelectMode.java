@@ -8,7 +8,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -18,7 +17,6 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -42,13 +40,12 @@ public class SelectMode extends AbstractMode {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (e.getButton() != MouseEvent.BUTTON1) {
+    if (e.getButton() != MouseEvent.BUTTON1 || e.isConsumed()) {
       return;
     }
     final MapillaryAbstractImage closest = getClosest(e.getPoint());
     if (closest == null) {
-      if (e.getClickCount() == Config.getPref().getInt("mapillary.image.deselect.click.count", 3)
-        && MapillaryLayer.hasInstance()) { // Triple click
+      if (e.getClickCount() == MapillaryProperties.DESELECT_CLICK_COUNT.get() && MapillaryLayer.hasInstance()) {
         MapillaryLayer.getInstance().getData().setSelectedImage(null);
       }
       return;
@@ -66,9 +63,7 @@ public class SelectMode extends AbstractMode {
           final int i = closest.getSequence().getImages().indexOf(closest);
           final int j = lastClicked.getSequence().getImages().indexOf(lastClicked);
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(
-            new ConcurrentSkipListSet<>(closest.getSequence().getImages().subList(
-              Math.min(i, j),
-              Math.max(i, j) + 1)));
+            new ConcurrentSkipListSet<>(closest.getSequence().getImages().subList(Math.min(i, j), Math.max(i, j) + 1)));
         }
       } else { // click
         MapillaryLayer.getInstance().getData().setSelectedImage(closest);

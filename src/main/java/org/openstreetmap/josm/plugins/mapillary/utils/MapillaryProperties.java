@@ -103,6 +103,11 @@ public final class MapillaryProperties {
    * Smart edit preference setting
    */
   public static final BooleanProperty SMART_EDIT = new BooleanProperty("mapillary.smartedit", false);
+  /**
+   * The number of times to click before deselecting image objects (all the time), and detection objects in smart mode
+   */
+  public static final IntegerProperty DESELECT_CLICK_COUNT = new IntegerProperty("mapillary.image.deselect.click.count",
+    3);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
