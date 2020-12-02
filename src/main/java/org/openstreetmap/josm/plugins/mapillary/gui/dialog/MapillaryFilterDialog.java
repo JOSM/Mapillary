@@ -10,14 +10,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,13 +22,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -72,9 +62,9 @@ import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -401,7 +391,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
             layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getDataSet))
           .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
-        Collection<String> keys = currentSelection.stream().map(this::getImagesFromDetections)
+        Collection<String> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
           .flatMap(Collection::stream).collect(Collectors.toSet());
         if (!keys.contains(((MapillaryImage) img).getKey())) {
           return true;
@@ -440,25 +430,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         }
       }
       return false;
-    }
-
-    private Collection<String> getImagesFromDetections(OsmPrimitive osmPrimitive) {
-      if (osmPrimitive.hasKey("detections")) {
-        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(osmPrimitive.get("detections").getBytes());
-          JsonReader reader = Json.createReader(inputStream)) {
-          JsonStructure value = reader.read();
-          if (value.getValueType() == JsonValue.ValueType.ARRAY) {
-            JsonArray array = value.asJsonArray();
-            return array.stream().filter(JsonObject.class::isInstance).map(JsonObject.class::cast)
-              .filter(obj -> obj.containsKey("image_key")).map(obj -> obj.get("image_key"))
-              .filter(JsonString.class::isInstance).map(JsonString.class::cast).map(JsonString::getString)
-              .collect(Collectors.toSet());
-          }
-        } catch (IOException e) {
-          Logging.error(e);
-        }
-      }
-      return Collections.emptyList();
     }
 
     private boolean checkValidTime(MapillaryAbstractImage img) {

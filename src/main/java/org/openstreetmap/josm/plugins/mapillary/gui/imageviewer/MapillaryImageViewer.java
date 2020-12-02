@@ -22,6 +22,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 public class MapillaryImageViewer extends AbstractImageViewer {
 
@@ -129,7 +130,8 @@ public class MapillaryImageViewer extends AbstractImageViewer {
       g2d.setColor(d.getColor());
       g2d.draw(shape);
       ImageIcon icon = MapObject.getIcon(d.getValue());
-      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
+      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)
+        && Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())) {
         final Rectangle bounds = shape.getBounds();
         g2d.drawImage(MapObject.getIcon(d.getValue()).getImage(), bounds.x, bounds.y, bounds.width, bounds.height,
           null);
