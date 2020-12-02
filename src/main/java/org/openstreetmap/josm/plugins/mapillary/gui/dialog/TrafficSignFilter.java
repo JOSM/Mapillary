@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,11 +79,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private final JCheckBox toggleVisibleCheckbox;
   private static final String NEARBY_KEY = "nearby_osm_objects";
 
-  private interface ResetListener {
+  private interface ResetListener extends Serializable {
     void reset();
   }
 
-  private List<ResetListener> resetObjects = new ArrayList<>();
+  private final List<ResetListener> resetObjects = new ArrayList<>();
 
   public TrafficSignFilter() {
     setLayout(new GridBagLayout());
@@ -287,7 +288,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   }
 
-  private void hideNearbyAddableObjs(boolean hideObjects) {
+  private static void hideNearbyAddableObjs(boolean hideObjects) {
     Filter filter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
       .filter(f -> f.text.equals(NEARBY_KEY)).findAny().orElseGet(() -> {
         Filter nfilter = new Filter();
@@ -344,7 +345,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param subSet The TagMap that should be contained by the other TagMap
    * @return {@code true} if the subSet TagMap is actually a subset of the superSet TagMap.
    */
-  private boolean tagMapIsSubset(TagMap superSet, TagMap subSet) {
+  private static boolean tagMapIsSubset(TagMap superSet, TagMap subSet) {
     return subSet.entrySet().stream()
       .allMatch(t -> superSet.containsKey(t.getKey()) && superSet.get(t.getKey()).equals(t.getValue()));
   }
