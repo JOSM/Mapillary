@@ -119,6 +119,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
   private final JLabel organizationLabel;
   private final TrafficSignFilter objectFilter;
 
+  private Predicate<MapillaryAbstractImage> shouldHidePredicate;
+
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
       Shortcut.registerShortcut("mapillary:filterdialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
@@ -317,27 +319,84 @@ public final class MapillaryFilterDialog extends ToggleDialog
    * Applies the selected filter.
    */
   public synchronized void refresh() {
-    final boolean smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
-    final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
-    final boolean importedIsSelected = this.imported.isSelected();
-    final boolean downloadedIsSelected = this.downloaded.isSelected();
-    final boolean timeFilter = filterByDateCheckbox.isSelected();
-    final boolean onlySignsIsSelected = this.onlySigns.isSelected();
-    final boolean onlyPanoIsSelected = this.onlyPano.isSelected();
-    final LocalDate endDateRefresh = this.endDate == null ? null : this.endDate.getDate();
-    final LocalDate startDateRefresh = this.startDate == null ? convertDateRangeBox(spinnerModel, time)
-      : this.startDate.getDate();
-    final OrganizationRecord organization = (OrganizationRecord) organizations.getSelectedItem();
-
     // This predicate returns true if the image should be made invisible
-    Predicate<MapillaryAbstractImage> shouldHide = img -> {
+    this.shouldHidePredicate = new ImageFilterPredicate(this.imported, this.downloaded, this.filterByDateCheckbox,
+      this.onlySigns, this.onlyPano, this.endDate, this.startDate, this.spinnerModel, this.time, this.organizations,
+      this.user);
+
+    updateFilteredImages();
+  }
+
+  /**
+   * Update filtered images
+   */
+  public void updateFilteredImages() {
+    if (MapillaryLayer.hasInstance()) {
+      Predicate<MapillaryAbstractImage> shouldHide = this.getShouldHidePredicate();
+      MapillaryLayer.getInstance().getData().getImages().parallelStream()
+        .forEach(img -> img.setVisible(!shouldHide.test(img)));
+      MapillaryLayer.invalidateInstance();
+    }
+  }
+
+  /**
+   * Get the current predicate for filtering images
+   *
+   * @return The image filtering predicate
+   */
+  public Predicate<MapillaryAbstractImage> getShouldHidePredicate() {
+    return this.shouldHidePredicate;
+  }
+
+  private static class ImageFilterPredicate implements Predicate<MapillaryAbstractImage> {
+    private final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
+    private final boolean importedIsSelected;
+    private final boolean downloadedIsSelected;
+    private final boolean timeFilter;
+    private final boolean onlySignsIsSelected;
+    private final boolean onlyPanoIsSelected;
+    private final LocalDate endDateRefresh;
+    private final LocalDate startDateRefresh;
+    private final OrganizationRecord organization;
+    private final boolean smartAdd;
+    private final String user;
+    private JComboBox<String> time;
+    private SpinnerNumberModel spinnerModel;
+    private IDatePicker<?> startDate;
+    private IDatePicker<?> endDate;
+
+    public ImageFilterPredicate(JCheckBox imported, JCheckBox downloaded, JCheckBox filterByDateCheckbox,
+      JCheckBox onlySigns, JCheckBox onlyPano, IDatePicker<?> endDate, IDatePicker<?> startDate,
+      SpinnerNumberModel spinnerModel, JComboBox<String> time, JComboBox<OrganizationRecord> organizations,
+      JTextField user) {
+      this.importedIsSelected = imported.isSelected();
+      this.downloadedIsSelected = downloaded.isSelected();
+      this.timeFilter = filterByDateCheckbox.isSelected();
+      this.onlySignsIsSelected = onlySigns.isSelected();
+      this.onlyPanoIsSelected = onlyPano.isSelected();
+      this.endDateRefresh = endDate == null ? null : endDate.getDate();
+      this.startDateRefresh = startDate == null ? convertDateRangeBox(spinnerModel, time) : startDate.getDate();
+      this.organization = (OrganizationRecord) organizations.getSelectedItem();
+      this.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
+      this.user = user.getText();
+      this.time = time;
+      this.spinnerModel = spinnerModel;
+      this.startDate = startDate;
+      this.endDate = endDate;
+    }
+
+    @Override
+    public boolean test(MapillaryAbstractImage img) {
       if (!layerVisible) {
         return true;
       }
-      if (smartAdd && img instanceof MapillaryImage) {
-        Collection<String> keys = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream()
-          .flatMap(layer -> layer.getDataSet().getAllSelected().stream())
-          .map(MapillaryFilterDialog::getImagesFromDetections).flatMap(Collection::stream).collect(Collectors.toList());
+      if (smartAdd && img instanceof MapillaryImage
+        && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
+        Collection<OsmPrimitive> currentSelection = MainApplication.getLayerManager()
+          .getLayersOfType(PointObjectLayer.class).stream()
+          .flatMap(layer -> layer.getDataSet().getAllSelected().stream()).collect(Collectors.toSet());
+        Collection<String> keys = currentSelection.stream().map(this::getImagesFromDetections)
+          .flatMap(Collection::stream).collect(Collectors.toSet());
         if (!keys.contains(((MapillaryImage) img).getKey())) {
           return true;
         }
@@ -366,7 +425,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
         UserProfile userProfile = ((MapillaryImage) img).getUser();
-        if (!"".equals(user.getText()) && (userProfile == null || !user.getText().equals(userProfile.getUsername()))) {
+        if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
         if (!OrganizationRecord.NULL_RECORD.equals(organization)
@@ -375,96 +434,89 @@ public final class MapillaryFilterDialog extends ToggleDialog
         }
       }
       return false;
-    };
-
-    if (MapillaryLayer.hasInstance()) {
-      MapillaryLayer.getInstance().getData().getImages().parallelStream()
-        .forEach(img -> img.setVisible(!shouldHide.test(img)));
     }
 
-    MapillaryLayer.invalidateInstance();
-  }
-
-  private static Collection<String> getImagesFromDetections(OsmPrimitive osmPrimitive) {
-    if (osmPrimitive.hasKey("detections")) {
-      try (ByteArrayInputStream inputStream = new ByteArrayInputStream(osmPrimitive.get("detections").getBytes());
-        JsonReader reader = Json.createReader(inputStream)) {
-        JsonStructure value = reader.read();
-        if (value.getValueType() == JsonValue.ValueType.ARRAY) {
-          JsonArray array = value.asJsonArray();
-          return array.stream().filter(JsonObject.class::isInstance).map(JsonObject.class::cast)
-            .filter(obj -> obj.containsKey("image_key")).map(obj -> obj.get("image_key"))
-            .map(JsonString.class::isInstance).map(JsonString.class::cast).map(JsonString::getString)
-            .collect(Collectors.toSet());
+    private Collection<String> getImagesFromDetections(OsmPrimitive osmPrimitive) {
+      if (osmPrimitive.hasKey("detections")) {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(osmPrimitive.get("detections").getBytes());
+          JsonReader reader = Json.createReader(inputStream)) {
+          JsonStructure value = reader.read();
+          if (value.getValueType() == JsonValue.ValueType.ARRAY) {
+            JsonArray array = value.asJsonArray();
+            return array.stream().filter(JsonObject.class::isInstance).map(JsonObject.class::cast)
+              .filter(obj -> obj.containsKey("image_key")).map(obj -> obj.get("image_key"))
+              .filter(JsonString.class::isInstance).map(JsonString.class::cast).map(JsonString::getString)
+              .collect(Collectors.toSet());
+          }
+        } catch (IOException e) {
+          Logging.error(e);
         }
-      } catch (IOException e) {
-        Logging.error(e);
       }
+      return Collections.emptyList();
     }
-    return Collections.emptyList();
-  }
 
-  private boolean checkValidTime(MapillaryAbstractImage img) {
-    final long currentTime = currentTime();
-    for (int i = 0; i < 3; i++) {
-      if (TIME_LIST[i].equals(time.getSelectedItem())
-        && img.getCapturedAt() < currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {
-        return true;
+    private boolean checkValidTime(MapillaryAbstractImage img) {
+      final long currentTime = currentTime();
+      for (int i = 0; i < 3; i++) {
+        if (TIME_LIST[i].equals(time.getSelectedItem())
+          && img.getCapturedAt() < currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
 
-  /**
-   * @param img The image to check
-   * @return {@code true} if the start date is after the image date
-   */
-  private boolean checkStartDate(MapillaryAbstractImage img) {
-    LocalDate start = this.startDate.getDate();
-    LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
-    return start.isAfter(imgDate);
-  }
-
-  /**
-   * @param img The image to check
-   * @return {@code true} if the end date is before the image date
-   */
-  private boolean checkEndDate(MapillaryAbstractImage img) {
-    LocalDate end = this.endDate.getDate();
-    LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
-    return end.isBefore(imgDate);
-  }
-
-  /**
-   * Checks if the image fulfills the sign conditions.
-   *
-   * @param img The {@link MapillaryAbstractImage} object that is going to be
-   *        checked.
-   * @return {@code true} if it fulfills the conditions; {@code false}
-   *         otherwise.
-   */
-  private static boolean checkSigns(MapillaryImage img) {
-    for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
-      if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i],
-        MapillaryFilterChooseSigns.SIGN_TAGS[i]))
-        return true;
+    /**
+     * @param img The image to check
+     * @return {@code true} if the start date is after the image date
+     */
+    private boolean checkStartDate(MapillaryAbstractImage img) {
+      LocalDate start = startDate.getDate();
+      LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+      return start.isAfter(imgDate);
     }
-    return false;
-  }
 
-  private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
-    boolean contains = false;
-    for (ImageDetection detection : img.getDetections()) {
-      if (Pattern.compile(signTag).matcher(detection.getValue().getKey()).find()) {
-        contains = true;
+    /**
+     * @param img The image to check
+     * @return {@code true} if the end date is before the image date
+     */
+    private boolean checkEndDate(MapillaryAbstractImage img) {
+      LocalDate end = endDate.getDate();
+      LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+      return end.isBefore(imgDate);
+    }
+
+    /**
+     * Checks if the image fulfills the sign conditions.
+     *
+     * @param img The {@link MapillaryAbstractImage} object that is going to be
+     *        checked.
+     * @return {@code true} if it fulfills the conditions; {@code false}
+     *         otherwise.
+     */
+    private static boolean checkSigns(MapillaryImage img) {
+      for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
+        if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i],
+          MapillaryFilterChooseSigns.SIGN_TAGS[i]))
+          return true;
       }
+      return false;
     }
-    return contains == signCheckBox.isSelected() && contains;
-  }
 
-  private static long currentTime() {
-    Calendar cal = Calendar.getInstance();
-    return cal.getTimeInMillis();
+    private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
+      boolean contains = false;
+      for (ImageDetection detection : img.getDetections()) {
+        if (Pattern.compile(signTag).matcher(detection.getValue().getKey()).find()) {
+          contains = true;
+        }
+      }
+      return contains == signCheckBox.isSelected() && contains;
+    }
+
+    private static long currentTime() {
+      Calendar cal = Calendar.getInstance();
+      return cal.getTimeInMillis();
+    }
   }
 
   /**
