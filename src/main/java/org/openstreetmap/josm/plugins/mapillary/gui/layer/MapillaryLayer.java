@@ -508,7 +508,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
         g.setTransform(backup);
       }
     } else {
-      g.setTransform(getTransform(Math.toRadians(img.getMovingCa() + img.getTheta()), p, getOriginalCentroid(i), backup));
+      double angle = Math.toRadians(img.getMovingCa());
+      if (selectedImg == img)
+        angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
+      g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
       g.drawImage(i, p.x, p.y, null);
       g.setTransform(backup);
     }

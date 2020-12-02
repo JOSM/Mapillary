@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageviewer;
 
+import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.checkIfDetectionIsFiltered;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,12 +15,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
+
 import javax.swing.ImageIcon;
+
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
-import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.checkIfDetectionIsFiltered;
 
 public class MapillaryImageViewer extends AbstractImageViewer {
 
@@ -41,9 +44,8 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   protected void paintImage(Graphics g, BufferedImage image, Rectangle visibleRect) {
     Rectangle target = ImageViewUtil.calculateDrawImageRectangle(visibleRect,
       new Rectangle(0, 0, getSize().width, getSize().height));
-    g.drawImage(image, target.x, target.y, target.x + target.width,
-      target.y + target.height, visibleRect.x, visibleRect.y,
-      visibleRect.x + visibleRect.width, visibleRect.y + visibleRect.height, this);
+    g.drawImage(image, target.x, target.y, target.x + target.width, target.y + target.height, visibleRect.x,
+      visibleRect.y, visibleRect.x + visibleRect.width, visibleRect.y + visibleRect.height, this);
   }
 
   @Override
@@ -69,10 +71,8 @@ public class MapillaryImageViewer extends AbstractImageViewer {
     checkAspectRatio(mouseVisibleRect);
     ImageViewUtil.checkVisibleRectSize(mouseImage, mouseVisibleRect);
     Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
-    mouseVisibleRect.x = mousePointInImg.x
-      + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
-    mouseVisibleRect.y = mousePointInImg.y
-      + ((drawRect.y - zoomCenterY) * mouseVisibleRect.height) / drawRect.height;
+    mouseVisibleRect.x = mousePointInImg.x + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
+    mouseVisibleRect.y = mousePointInImg.y + ((drawRect.y - zoomCenterY) * mouseVisibleRect.height) / drawRect.height;
     ImageViewUtil.checkVisibleRectPos(mouseImage, mouseVisibleRect);
     synchronized (this) {
       visibleRect = mouseVisibleRect;
@@ -112,7 +112,6 @@ public class MapillaryImageViewer extends AbstractImageViewer {
     }
     repaint();
   }
-
 
   @Override
   protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
@@ -158,5 +157,10 @@ public class MapillaryImageViewer extends AbstractImageViewer {
         }
       }
     }
+  }
+
+  @Override
+  public double getRotation() {
+    return 0;
   }
 }

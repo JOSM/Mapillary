@@ -1,10 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import java.awt.Color;
-import java.awt.Image;
 import static java.lang.Integer.compare;
 import static java.lang.Long.compare;
+
+import java.awt.Color;
+import java.awt.Image;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +24,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * {@link MapillaryImportedImage} and {@link MapillaryImage}.
  *
  * @author nokutu
- *
  */
 public abstract class MapillaryAbstractImage extends GpxImageEntry {
   /** The common directory for the Mapillary image sprites (for Mapillary Images) */
@@ -56,8 +56,6 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   private LatLon tempLatLon;
 
   private final boolean pano;
-  /** Clockwise rotation from initial direction of 360 panoramic images */
-  private double panoTheta;
 
   /**
    * When the object is being dragged in the map, the temporal position is
@@ -81,9 +79,9 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   /**
    * Creates a new object in the given position and with the given direction.
    *
-   * @param latLon  The latitude and longitude where the picture was taken.
-   * @param ca  The direction of the picture (0 means north).
-   * @param pano   The property to indicate whether image is panorama or not.
+   * @param latLon The latitude and longitude where the picture was taken.
+   * @param ca The direction of the picture (0 means north).
+   * @param pano The property to indicate whether image is panorama or not.
    */
   protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
     super.setExifCoor(latLon);
@@ -150,7 +148,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * Returns the date the picture was taken in the given format.
    *
    * @param format
-   *          Format of the date. See {@link SimpleDateFormat}.
+   *        Format of the date. See {@link SimpleDateFormat}.
    * @return A String containing the date the picture was taken using the given
    *         format.
    * @throws NullPointerException if parameter format is <code>null</code>
@@ -231,7 +229,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public boolean isModified() {
     return this.getMovingLatLon() != null && !this.getMovingLatLon().equals(this.getExifCoor())
-        || Math.abs(this.getMovingCa() - this.ca) > EPSILON;
+      || Math.abs(this.getMovingCa() - this.ca) > EPSILON;
   }
 
   /**
@@ -313,7 +311,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    *
    * @param sequence The MapillarySequence that contains the MapillaryImage.
    * @throws IllegalArgumentException if the image is not already part of the {@link MapillarySequence}.
-   *   Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
+   *         Call {@link MapillarySequence#add(MapillaryAbstractImage)} first.
    */
   public void setSequence(final MapillarySequence sequence) {
     synchronized (this) {
@@ -359,18 +357,6 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
     this.reviewed = reviewed;
   }
 
-  /**
-   * Rotate 360 image's point of view.
-   * @param theta
-   */
-  public void rotatePano(double theta) {
-    this.panoTheta += theta;
-  }
-
-  public double getTheta() {
-    return this.panoTheta;
-  }
-
   public abstract Color paintHighlightedAngleColour();
 
   public abstract Color paintSelectedAngleColour();
@@ -404,12 +390,13 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   }
 
   public void setMovingCa(double ca) {
+    double tCa = ca;
     if (ca > 360) {
-      ca = ca - 360;
+      tCa = ca - 360;
     } else if (ca < 0) {
-      ca = ca + 360;
+      tCa = ca + 360;
     }
-    this.movingCa = ca;
+    this.movingCa = tCa;
   }
 
   public void setMovingLatLon(LatLon latLon) {

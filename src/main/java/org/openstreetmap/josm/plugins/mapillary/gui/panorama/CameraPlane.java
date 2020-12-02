@@ -13,9 +13,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.Logging;
 
 public class CameraPlane {
@@ -24,7 +23,6 @@ public class CameraPlane {
   private final double distance;
 
   private Vector3D[][] vectors;
-  private Rotation rotation;
   private double theta;
   private double sinTheta;
   private double cosTheta;
@@ -39,10 +37,6 @@ public class CameraPlane {
     this.width = width;
     this.height = height;
     this.distance = distance;
-    if (MapillaryMainDialog.getInstance().getImage() != null) {
-      this.theta = FastMath.toRadians(MapillaryMainDialog.getInstance().getImage().getTheta());
-    }
-    rotation = new Rotation(RotationOrder.XYX, RotationConvention.VECTOR_OPERATOR, 0, 0, 0);
     setRotation(theta, 0.0);
     vectors = new Vector3D[width][height];
     IntStream.range(0, height).parallel().forEach(y -> IntStream.range(0, width).parallel()
@@ -95,17 +89,16 @@ public class CameraPlane {
     try {
       Vector3D f1 = vectors[from.x][from.y];
       Vector3D t1 = vectors[to.x][to.y];
+      // TODO switch to all apache math
+      // rotation = new Rotation(f1, t1).applyTo(rotation);
       double deltaTheta = FastMath.atan2(f1.getX(), f1.getZ()) - FastMath.atan2(t1.getX(), t1.getZ());
       double deltaPhi = FastMath.atan2(f1.getY(), FastMath.sqrt(f1.getX() * f1.getX() + f1.getZ() * f1.getZ()))
         - FastMath.atan2(t1.getY(), FastMath.sqrt(t1.getX() * t1.getX() + t1.getZ() * t1.getZ()));
       double newTheta = theta + deltaTheta;
-      if (MapillaryMainDialog.getInstance().getImage() != null) {
-        MapillaryMainDialog.getInstance().getImage().rotatePano(FastMath.toDegrees(deltaTheta));
-      }
-      MapillaryLayer.invalidateInstance();
       // Prevent flipping the 360 viewer accidentally
       double newPhi = Math.max(Math.min(phi + deltaPhi, HALF_PI), -HALF_PI);
       setRotation(newTheta, newPhi);
+      MapillaryLayer.invalidateInstance();
     } catch (ArrayIndexOutOfBoundsException e) {
       Logging.error(e);
     }
@@ -128,8 +121,10 @@ public class CameraPlane {
     setRotation(theta, phi);
   }
 
-  Vector3D getRotation() {
-    return new Vector3D(sinTheta, sinPhi, cosPhi * cosTheta);
+  public Rotation getRotation() {
+    // TODO use this.rotation -- not currently used due to other issues (largely rotation such that the image appears
+    // skewed)
+    return new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, this.phi, 0, this.theta);
   }
 
   synchronized void setRotation(double theta, double phi) {

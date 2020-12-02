@@ -1,9 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageviewer;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,10 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.JPanel;
+
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
-
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
@@ -27,10 +29,8 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
- *
  * @author Kishan
  */
 public abstract class AbstractImageViewer extends JPanel {
@@ -57,7 +57,8 @@ public abstract class AbstractImageViewer extends JPanel {
     setDarkMode(MapillaryProperties.DARK_MODE.get());
     MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
       @Override
-      public void layerAdded(LayerManager.LayerAddEvent e) { }
+      public void layerAdded(LayerManager.LayerAddEvent e) {
+      }
 
       @Override
       public void layerRemoving(LayerManager.LayerRemoveEvent e) {
@@ -67,7 +68,8 @@ public abstract class AbstractImageViewer extends JPanel {
       }
 
       @Override
-      public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) { }
+      public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) {
+      }
     });
     MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(it -> repaint());
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
@@ -75,7 +77,7 @@ public abstract class AbstractImageViewer extends JPanel {
   }
 
   protected void setImage(BufferedImage image) {
-      this.image = image;
+    this.image = image;
   }
 
   public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
@@ -137,13 +139,13 @@ public abstract class AbstractImageViewer extends JPanel {
   }
 
   private void paintNoImage(Graphics g) {
-    final String noImageStr = MapillaryLayer.hasInstance() ? tr("no image selected") : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
+    final String noImageStr = MapillaryLayer.hasInstance() ? tr("no image selected")
+      : tr("Press \"{0}\" to download images", MapillaryDownloadAction.SHORTCUT.getKeyText());
     if (noImageStr != null) {
       Rectangle2D noImageSize = g.getFontMetrics(g.getFont()).getStringBounds(noImageStr, g);
       Dimension size = getSize();
       g.setColor(getForeground());
-      g.drawString(noImageStr,
-        (int) ((size.width - noImageSize.getWidth()) / 2),
+      g.drawString(noImageStr, (int) ((size.width - noImageSize.getWidth()) / 2),
         (int) ((size.height - noImageSize.getHeight()) / 2));
     }
   }
@@ -181,14 +183,16 @@ public abstract class AbstractImageViewer extends JPanel {
     if (g instanceof Graphics2D) {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.setStroke(new BasicStroke(2));
-      List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+      List<PointObjectLayer> detectionLayers = MainApplication.getLayerManager()
+        .getLayersOfType(PointObjectLayer.class);
       synchronized (detections) {
         paintDetections(g2d, visibleRect, detectionLayers);
       }
     }
   }
 
-  protected abstract void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers);
+  protected abstract void paintDetections(Graphics2D g2d, Rectangle visibleRect,
+    List<PointObjectLayer> detectionLayers);
 
   protected void checkAspectRatio(Rectangle zoomedRectangle) {
     int hFact = zoomedRectangle.height * getSize().width;
@@ -213,16 +217,13 @@ public abstract class AbstractImageViewer extends JPanel {
     if (zoomImage == null) {
       return;
     }
-    if (zoomVisibleRect.width != zoomImage.getWidth(null)
-      || zoomVisibleRect.height != zoomImage.getHeight(null)) {
+    if (zoomVisibleRect.width != zoomImage.getWidth(null) || zoomVisibleRect.height != zoomImage.getHeight(null)) {
       // The display is not at best fit. => Zoom to best fit
-      zoomVisibleRect = new Rectangle(0, 0, zoomImage.getWidth(null),
-        zoomImage.getHeight(null));
+      zoomVisibleRect = new Rectangle(0, 0, zoomImage.getWidth(null), zoomImage.getHeight(null));
     } else {
       // The display is at best fit => zoom to 1:1
       Point center = getCenterImgCoord(zoomVisibleRect);
-      zoomVisibleRect = new Rectangle(center.x - getWidth() / 2, center.y
-        - getHeight() / 2, getWidth(), getHeight());
+      zoomVisibleRect = new Rectangle(center.x - getWidth() / 2, center.y - getHeight() / 2, getWidth(), getHeight());
       ImageViewUtil.checkVisibleRectPos(zoomImage, zoomVisibleRect);
     }
     synchronized (this) {
@@ -237,21 +238,19 @@ public abstract class AbstractImageViewer extends JPanel {
 
   protected Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-    return new Point(
-      visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
-      visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height
-    );
+    return new Point(visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
+      visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
   }
 
   protected Point img2compCoord(Rectangle visibleRect, int xImg, int yImg) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
-    return new Point(drawRect.x + ((xImg - visibleRect.x) * drawRect.width)
-      / visibleRect.width, drawRect.y
-      + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
+    return new Point(drawRect.x + ((xImg - visibleRect.x) * drawRect.width) / visibleRect.width,
+      drawRect.y + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
   }
 
   protected Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
-    return ImageViewUtil.calculateDrawImageRectangle(visibleRect, new Rectangle(0, 0, getSize().width, getSize().height));
+    return ImageViewUtil.calculateDrawImageRectangle(visibleRect,
+      new Rectangle(0, 0, getSize().width, getSize().height));
   }
 
   private void setDarkMode(final boolean darkMode) {
@@ -277,6 +276,7 @@ public abstract class AbstractImageViewer extends JPanel {
 
   /**
    * Method for zooming.
+   *
    * @param zoomCenterX The x coordinate in component where zoomed
    * @param zoomCenterY The y coordinate in component where zoomed
    * @param zoomedIn true if zoomed inwards else false
@@ -285,12 +285,14 @@ public abstract class AbstractImageViewer extends JPanel {
 
   /**
    * Start dragging Image.
+   *
    * @param p The point in component.
    */
   public abstract void startPanning(Point p);
 
   /**
    * Drag Image to this point
+   *
    * @param p The point in component.
    */
   public abstract void pan(Point p);
@@ -314,4 +316,11 @@ public abstract class AbstractImageViewer extends JPanel {
       zoomPanEnabled = false;
     }
   }
+
+  /**
+   * Get the camera plane rotation
+   *
+   * @return The rotation
+   */
+  public abstract double getRotation();
 }

@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -26,10 +29,11 @@ class CameraPlaneTest {
     cameraPlane = new CameraPlane(800, 400, CAMERA_PLANE_DISTANCE);
     Vector3D vec = new Vector3D(0, 0, 1);
     cameraPlane.setRotation(vec);
-    Vector3D out = cameraPlane.getRotation();
-    assertEquals(0, out.getX(), 0.001);
-    assertEquals(0, out.getY(), 0.001);
-    assertEquals(1, out.getZ(), 0.001);
+    Rotation out = cameraPlane.getRotation();
+    double[] xyz = out.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
+    assertEquals(0, xyz[0], 0.001);
+    assertEquals(0, xyz[1], 0.001);
+    assertEquals(1, xyz[2], 0.001);
   }
 
   @Test

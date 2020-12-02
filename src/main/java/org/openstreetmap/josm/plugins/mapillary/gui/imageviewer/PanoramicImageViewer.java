@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.imageviewer;
 
+import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.checkIfDetectionIsFiltered;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,15 +15,19 @@ import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
-import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils.checkIfDetectionIsFiltered;
 
 /**
  * Image viewer for Panoramic Images.
+ *
  * @author Kishan
  */
 public class PanoramicImageViewer extends AbstractImageViewer {
@@ -61,8 +67,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
   @Override
   protected void setImage(BufferedImage image) {
     if (image != null) {
-      BufferedImage newImage = new BufferedImage(image.getWidth(),
-        image.getHeight(), imageType);
+      BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
       Graphics2D g = newImage.createGraphics();
       g.drawImage(image, 0, 0, null);
       g.dispose();
@@ -87,9 +92,8 @@ public class PanoramicImageViewer extends AbstractImageViewer {
       mappingChanged = false;
     }
     target = new Rectangle(0, 0, getWidth(), getHeight());
-    g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y
-      + target.height, visibleRect.x, visibleRect.y, visibleRect.x
-      + visibleRect.width, visibleRect.y + visibleRect.height, null);
+    g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y + target.height, visibleRect.x,
+      visibleRect.y, visibleRect.x + visibleRect.width, visibleRect.y + visibleRect.height, null);
   }
 
   @Override
@@ -115,10 +119,8 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     checkAspectRatio(mouseVisibleRect);
     ImageViewUtil.checkVisibleRectSize(offscreenImage, mouseVisibleRect);
     Rectangle drawRect = calculateDrawImageRectangle(mouseVisibleRect);
-    mouseVisibleRect.x = mousePointInImg.x
-      + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
-    mouseVisibleRect.y = mousePointInImg.y
-      + ((drawRect.y - zoomCenterY) * mouseVisibleRect.height) / drawRect.height;
+    mouseVisibleRect.x = mousePointInImg.x + ((drawRect.x - zoomCenterX) * mouseVisibleRect.width) / drawRect.width;
+    mouseVisibleRect.y = mousePointInImg.y + ((drawRect.y - zoomCenterY) * mouseVisibleRect.height) / drawRect.height;
     ImageViewUtil.checkVisibleRectPos(offscreenImage, mouseVisibleRect);
     synchronized (this) {
       visibleRect = mouseVisibleRect;
@@ -203,15 +205,14 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     int width = getWidth();
     int height = getHeight();
     /*
-           for performance issues
-           if (width * height > Math.pow(10, 6)) {
-           double scaleFactor = Math.sqrt(Math.pow(10, 6) / (width * height));
-           width = (int) Math.round(width * scaleFactor);
-           height = (int) Math.round(height * scaleFactor);
-           }
+     * for performance issues
+     * if (width * height > Math.pow(10, 6)) {
+     * double scaleFactor = Math.sqrt(Math.pow(10, 6) / (width * height));
+     * width = (int) Math.round(width * scaleFactor);
+     * height = (int) Math.round(height * scaleFactor);
+     * }
      */
-    offscreenImage = new BufferedImage(width, height,
-      imageType);
+    offscreenImage = new BufferedImage(width, height, imageType);
     double cameraPlaneDistance = (width / 2d) / Math.tan(PANORAMA_FOV / 2);
     cameraPlane = new CameraPlane(width, height, cameraPlaneDistance);
     mappingChanged = true;
@@ -220,6 +221,16 @@ public class PanoramicImageViewer extends AbstractImageViewer {
       checkAspectRatio(visibleRect);
       ImageViewUtil.checkVisibleRectSize(offscreenImage, visibleRect);
     }
+  }
+
+  @Override
+  public double getRotation() {
+    if (this.cameraPlane != null) {
+      double[] rotation = this.cameraPlane.getRotation().getAngles(RotationOrder.XYZ,
+        RotationConvention.VECTOR_OPERATOR);
+      return rotation[2];
+    }
+    return 0;
   }
 
   protected static class ComponentSizeListener extends ComponentAdapter {
