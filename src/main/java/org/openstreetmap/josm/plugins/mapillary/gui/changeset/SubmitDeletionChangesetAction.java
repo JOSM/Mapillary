@@ -52,7 +52,7 @@ public class SubmitDeletionChangesetAction extends JosmAction {
       new ImageProvider("dialogs", "mapillary-upload").setSize(ImageSizes.DEFAULT),
       I18n.tr("Submit the current changeset"),
       // CHECKSTYLE.OFF: LineLength
-      Shortcut.registerShortcut("Submit changeset to Mapillary",
+      Shortcut.registerShortcut("mapillary:submit-deletion-changeset",
         I18n.tr("Submit current deletion changeset to Mapillary"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       // CHECKSTYLE.ON: LineLength
       false, "mapillarySubmitChangeset", false);
