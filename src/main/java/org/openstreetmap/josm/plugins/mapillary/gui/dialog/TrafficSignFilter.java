@@ -300,7 +300,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     if (hideObjects) {
       final Collection<ObjectDetections> osmEquivalentPossible = Stream.of(ObjectDetections.values())
         .filter(obj -> !obj.getOsmKeys().isEmpty()).collect(Collectors.toList());
-      final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 10.0); // meters
+      final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 20.0); // meters
       MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
         DataSet dataSet = layer.getDataSet();
         boolean locked = dataSet.isLocked();
