@@ -94,6 +94,12 @@ public final class MapillaryProperties {
    */
   public static final IntegerProperty TIMEOUT = new IntegerProperty("mapillary.download.timeout", 50_000);
 
+  /**
+   * The minimum distance per pixel in order to show the smart add panel
+   */
+  public static final DoubleProperty SMART_ADD_MIN_DIST_PER_PIXEL = new DoubleProperty(
+    "mapillary.smart-add.min-dist-per-pixel", 25);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

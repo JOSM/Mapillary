@@ -312,7 +312,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         Point point = mv.getPoint(p.getBBox().getCenter());
         return mv.contains(point);
       }).collect(Collectors.toList());
-      if (DeveloperToggleAction.isDeveloper()) {
+      if (DeveloperToggleAction.isDeveloper() && MainApplication.getMap().mapView
+        .getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL.get()) {
         selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
       }
     } else {
