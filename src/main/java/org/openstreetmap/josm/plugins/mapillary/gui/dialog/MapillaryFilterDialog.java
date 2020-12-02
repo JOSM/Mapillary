@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -50,6 +51,9 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
+import org.openstreetmap.josm.gui.layer.MainLayerManager;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
@@ -390,11 +394,13 @@ public final class MapillaryFilterDialog extends ToggleDialog
       if (!layerVisible) {
         return true;
       }
+      MainLayerManager layerManager = MainApplication.getLayerManager();
       if (smartAdd && img instanceof MapillaryImage
-        && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
-        Collection<OsmPrimitive> currentSelection = MainApplication.getLayerManager()
-          .getLayersOfType(PointObjectLayer.class).stream()
-          .flatMap(layer -> layer.getDataSet().getAllSelected().stream()).collect(Collectors.toSet());
+        && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
+        Collection<OsmPrimitive> currentSelection = Stream
+          .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
+            layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getDataSet))
+          .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
         Collection<String> keys = currentSelection.stream().map(this::getImagesFromDetections)
           .flatMap(Collection::stream).collect(Collectors.toSet());
         if (!keys.contains(((MapillaryImage) img).getKey())) {
