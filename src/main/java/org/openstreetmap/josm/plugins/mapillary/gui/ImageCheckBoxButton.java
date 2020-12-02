@@ -88,7 +88,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
       MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(index);
     }
     if (index < 0 && filter.enable) {
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter);
+      GuiHelper.runInEDT(() -> MapillaryExpertFilterDialog.getInstance().getFilterModel().addFilter(filter));
     }
   }
 
