@@ -115,6 +115,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
     // TODO remove when no longer under development and testing
     DeveloperToggleAction.addVisibilitySwitcher(smartEditMode);
+    smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
+    MapillaryProperties.SMART_EDIT.addListener(l -> smartEditMode.setSelected(Boolean.TRUE.equals(l)));
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
@@ -141,6 +143,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     this.resetObjects.add(() -> showRelevantObjs.setSelected(true));
     this.resetObjects.add(() -> filterField.setText(""));
     this.resetObjects.add(() -> showMaxNumberModel.setValue(100));
+    this.resetObjects.add(() -> MapillaryProperties.SMART_EDIT.put(false));
 
     buttons = new ArrayList<>();
     addButtons();
