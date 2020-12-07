@@ -33,8 +33,4 @@
     <include name="apache-commons.jar"/>
     <include name="apache-http.jar"/>
   </fileset>
-
-  <target name="pre-compile" depends="fetch_dependencies">
-    <!-- include fetch_dependencies task -->
-  </target>
 </project>
