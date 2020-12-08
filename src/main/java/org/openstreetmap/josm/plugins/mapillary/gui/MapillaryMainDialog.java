@@ -107,7 +107,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     /**
      * Mode when in walk.
      */
-    WALK
+    WALK,
+    /**
+     * Mode when in smart edit
+     */
+    SMART_EDIT
   }
 
   /**
@@ -253,20 +257,22 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     toggleDetections.setPreferredSize(buttonDim);
     toggleDetections.setOpaque(true);
 
+    Stream<SideButton> buttons;
     switch (mode) {
     case WALK:
-      createLayout(this.panel, Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton)
-        .filter(Objects::nonNull).collect(Collectors.toList()));
+      buttons = Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton);
+      break;
+    case SMART_EDIT:
+      buttons = Stream.of(blueButton, previousButton, nextButton, redButton);
       break;
     case NORMAL:
     default:
-      createLayout(this.panel,
-        Stream.of(blueButton, previousButton, toggleSigns, toggleDetections, nextButton, redButton)
-          .filter(Objects::nonNull).collect(Collectors.toList()));
+      buttons = Stream.of(blueButton, previousButton, toggleSigns, toggleDetections, nextButton, redButton);
       break;
     }
+    createLayout(this.panel, buttons.filter(Objects::nonNull).collect(Collectors.toList()));
     disableAllButtons();
-    if (MODE.NORMAL.equals(mode)) {
+    if (Stream.of(MODE.WALK, MODE.SMART_EDIT).anyMatch(mode::equals)) {
       updateImage();
     }
     revalidate();
