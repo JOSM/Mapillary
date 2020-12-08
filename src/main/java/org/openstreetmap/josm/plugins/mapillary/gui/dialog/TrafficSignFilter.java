@@ -380,7 +380,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       }
     }
     Collection<ImageCheckBoxButton> nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant)
-      .filter(button -> Stream.of(button.getDetections()).allMatch(d -> d.getTaggingPresets().isEmpty()))
+      .filter(button -> Stream.of(button.getDetections())
+        .allMatch(d -> !d.shouldBeAddable() || d.getTaggingPresets().isEmpty()))
       .collect(Collectors.toList());
     this.updateShownButtons();
     MainApplication.worker.execute(() -> {
