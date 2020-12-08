@@ -149,6 +149,9 @@ josm {
   i18n {
     pathTransformer = getPathTransformer(project.projectDir, "gitlab.com/JOSM/plugin/Mapillary/blob")
   }
+  initialPreferences.set(
+    "<tag key='mapillary.developer' value='true'/>"
+  )
 }
 
 eclipse {
