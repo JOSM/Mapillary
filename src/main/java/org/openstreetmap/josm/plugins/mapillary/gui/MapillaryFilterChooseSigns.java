@@ -117,6 +117,8 @@ public final class MapillaryFilterChooseSigns extends JPanel {
    * Reset the sign filters
    */
   public static void reset() {
+    if (instance == null)
+      return;
     for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
       instance.signCheckboxes[i].setSelected(true);
     }
