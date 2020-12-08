@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ class GenericDateImplementationTest {
     maxCalendar.setTime(new Date(Long.MAX_VALUE));
     LocalDate zero = LocalDate.of(1, 1, 1);
     LocalDate dec = LocalDate.of(1, 12, 31);
-    LocalDate current = LocalDate.now();
+    LocalDate current = LocalDate.now(ZoneOffset.UTC);
     // Don't use LocalDate.MAX and LocalDate.MIN due to conversions between Date and LocalDate
     LocalDate max = LocalDate.of(maxCalendar.get(Calendar.YEAR), maxCalendar.get(Calendar.MONTH),
       maxCalendar.get(Calendar.DAY_OF_MONTH));

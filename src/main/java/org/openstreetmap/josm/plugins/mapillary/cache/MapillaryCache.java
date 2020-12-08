@@ -14,7 +14,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
  * Stores the downloaded pictures locally.
  *
  * @author nokutu
- *
  */
 public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImageCacheEntry> {
 
@@ -32,7 +31,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     /** Low quality image */
     THUMBNAIL(320);
 
-    private int width;
+    private final int width;
 
     private Type(int dimension) {
       this.width = dimension;
@@ -53,10 +52,10 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    * Main constructor.
    *
    * @param key
-   *             The key of the image.
+   *        The key of the image.
    * @param type
-   *             The type of image that must be downloaded (THUMBNAIL or
-   *             FULL_IMAGE).
+   *        The type of image that must be downloaded (THUMBNAIL or
+   *        FULL_IMAGE).
    */
   public MapillaryCache(final String key, final Type type) {
     super(Caches.ImageCache.getInstance().getCache(type),

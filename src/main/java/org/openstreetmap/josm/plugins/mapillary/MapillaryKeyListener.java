@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,8 +89,8 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     if (value == null || value.trim().isEmpty() || !MapillaryLayer.hasInstance()) {
       return;
     }
-    key = key.toLowerCase(Locale.ENGLISH);
-    if (Arrays.asList("mapillary", "mapillary:image").contains(key)) {
+    String lowerKey = key.toLowerCase(Locale.ENGLISH);
+    if (Arrays.asList("mapillary", "mapillary:image").contains(lowerKey)) {
       List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
       List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
       if (!strings.contains(value)) {
@@ -97,7 +98,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
         components.add(popup.add(new MapillaryImageKeyAction(value)));
       }
       // TODO only if not filtering map features
-    } else if ("mapillary:map_feature".equals(key)
+    } else if ("mapillary:map_feature".equals(lowerKey)
       && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
       List<String> strings = addedValues.computeIfAbsent(popup, p -> new ArrayList<>());
       List<Component> components = addedComponents.computeIfAbsent(popup, p -> new ArrayList<>());
@@ -178,7 +179,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
     }
 
     private static Collection<String> detectionsKeyToImages(String key) {
-      try (InputStream keyStream = new ByteArrayInputStream(key.getBytes());
+      try (InputStream keyStream = new ByteArrayInputStream(key.getBytes(StandardCharsets.UTF_8));
         JsonReader reader = Json.createReader(keyStream)) {
         JsonStructure structure = reader.read();
         Set<String> imageKeys = new TreeSet<>();
