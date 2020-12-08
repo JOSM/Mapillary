@@ -1932,6 +1932,9 @@ public enum ObjectDetections {
       Tag parsedTag = Tag.ofString(tag);
       tagMap.put(parsedTag.getKey(), parsedTag.getValue());
     }
+    if (Stream.of(this.detectionTypes).anyMatch(DetectionType.TRAFFIC_SIGN::equals)) {
+      tagMap.put("direction", "");
+    }
     return tagMap;
   }
 

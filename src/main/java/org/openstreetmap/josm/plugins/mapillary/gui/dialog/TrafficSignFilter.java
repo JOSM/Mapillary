@@ -160,6 +160,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private void updateSmartEdit(ValueChangeEvent<? extends Boolean> l, JCheckBox smartEditMode) {
     this.smartEditMode = Boolean.TRUE.equals(l.getProperty().get());
     smartEditMode.setSelected(this.smartEditMode);
+    if (MapillaryFilterDialog.getInstance() != null) {
+      MapillaryFilterDialog.getInstance().refresh();
+    }
   }
 
   private static void updateLayers(ItemEvent itemEvent) {
