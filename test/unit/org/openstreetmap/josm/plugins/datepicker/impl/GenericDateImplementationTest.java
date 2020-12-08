@@ -9,12 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.stream.Stream;
 
-import javax.swing.JFormattedTextField;
-
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,38 +18,12 @@ import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
- *
+ * Test method for date implementations.
+ * The {@link #getDatePickers} method should be updated when new date pickers are implemented.
  */
 class GenericDateImplementationTest {
-
-  static class JFormattedTextFieldMock extends MockUp<JFormattedTextField> {
-    private String text = null;
-
-    @Mock
-    public String getText() {
-      return this.text;
-    }
-
-    @Mock
-    public void setText(Invocation inv, String text) {
-      this.text = text;
-      inv.proceed(text);
-    }
-
-    public void setText(String text) {
-      this.text = text;
-
-    }
-  }
-
   @RegisterExtension
   static JOSMTestRules rules = new JOSMTestRules();
-  JFormattedTextFieldMock jformattedTextFieldMock;
-
-  @BeforeEach
-  void setUpEach() {
-    this.jformattedTextFieldMock = new JFormattedTextFieldMock();
-  }
 
   static Stream<Arguments> getDatePickers() {
     Calendar minCalendar = Calendar.getInstance();
