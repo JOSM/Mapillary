@@ -4,15 +4,19 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.DataSource;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
@@ -68,8 +72,16 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
       }
       for (MapillarySequence seq : sequences) {
         if (Boolean.TRUE.equals(MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.get())) {
+          Collection<Bounds> boundsCollection = new ArrayList<>();
+          boundsCollection.add(bounds);
+          if (MapillaryLayer.hasInstance()) {
+            boundsCollection.addAll(MapillaryLayer.getInstance().getData().getBounds());
+          }
+          boundsCollection = boundsCollection.stream().filter(b -> !b.isCollapsed() && !b.isOutOfTheWorld())
+            .collect(Collectors.toSet());
           for (MapillaryAbstractImage img : seq.getImages()) {
-            if (bounds.isCollapsed() || bounds.isOutOfTheWorld() || bounds.contains(img.getLatLon())) {
+            LatLon ll = img.getLatLon();
+            if (boundsCollection.isEmpty() || boundsCollection.stream().anyMatch(b -> b.contains(ll))) {
               data.add(img);
             } else {
               seq.remove(img);
@@ -82,6 +94,7 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
         }
       }
       completed = Boolean.TRUE;
+      data.addDataSource(new DataSource(bounds, "Mapillary"));
     } catch (JsonException | NumberFormatException e) {
       throw new IOException(e);
     } finally {

@@ -506,4 +506,17 @@ public class MapillaryData implements Data {
       }
     }
   }
+
+  /**
+   * Remove all data
+   */
+  public void clear() {
+    this.fullyDownloadedDetections.clear();
+    this.dataSources.clear();
+    this.images.clear();
+    this.highlightedImage = null;
+    this.highlightedImages.clear();
+    this.images.clear();
+    this.multiSelectedImages.clear();
+  }
 }

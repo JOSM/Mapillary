@@ -8,6 +8,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.noContent;
 import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -24,6 +25,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -42,6 +46,9 @@ class SequenceDownloadRunnableTest {
   void setUp() {
     wmRule = new WireMockServer(wireMockConfig().dynamicPort());
     wmRule.start();
+    if (MapillaryLayer.hasInstance()) {
+      MapillaryLayer.getInstance().getData().clear();
+    }
     MapillaryUser.setTokenValid(false);
     MapillaryLayer.getInstance().getData().remove(MapillaryLayer.getInstance().getData().getImages());
     assertEquals(0, MapillaryLayer.getInstance().getData().getImages().size());
@@ -88,6 +95,29 @@ class SequenceDownloadRunnableTest {
   void testRun5() {
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
     testNumberOfDecodedImages(wmRule, 0, new Bounds(0, 0, 0.000001, 0));
+  }
+
+  @Test
+  void testJosmTicket20211() throws IOException, URISyntaxException {
+    MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(true);
+    MapillaryData data = MapillaryLayer.getInstance().getData();
+    SequenceDownloadRunnable first = new SequenceDownloadRunnable(data,
+      new Bounds(39.0649681, -108.5641782, 39.0656596, -108.5629087), NullProgressMonitor.INSTANCE);
+    SequenceDownloadRunnable second = new SequenceDownloadRunnable(data,
+      new Bounds(39.0649571, -108.5621009, 39.0656631, -108.5608057), NullProgressMonitor.INSTANCE);
+
+    wmRule.addStubMapping(get(urlMatching("/sequences\\?.+"))
+      .willReturn(aResponse().withStatus(200).withBody(Files.readAllBytes(Paths.get(SequenceDownloadRunnableTest.class
+        .getResource("/api/v3/responses/searchSequencesTicket20211Area1.geojson").toURI()))))
+      .build());
+    first.run();
+    second.run();
+    assertEquals(3, data.getImages().size());
+    assertEquals(1, data.getSequences().size());
+    for (MapillaryAbstractImage image : data.getImages()) {
+      assertDoesNotThrow(() -> image.next(), ((MapillaryImage) image).getKey());
+      assertDoesNotThrow(() -> image.previous());
+    }
   }
 
   private static void testNumberOfDecodedImages(WireMockServer wiremockServer, int expectedNumImgs, Bounds bounds) {

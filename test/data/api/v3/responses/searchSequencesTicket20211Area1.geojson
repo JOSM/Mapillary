@@ -1,0 +1,58 @@
+{
+   "type" : "FeatureCollection",
+   "features" : [
+      {
+         "type" : "Feature",
+         "geometry" : {
+            "type" : "LineString",
+            "coordinates" : [
+               [
+                  -108.560526,
+                  39.065414
+               ],
+               [
+                  -108.561343,
+                  39.065418
+               ],
+               [
+                  -108.562143,
+                  39.065415
+               ],
+               [
+                  -108.563105,
+                  39.065425
+               ],
+               [
+                  -108.563708,
+                  39.065407
+               ]
+            ]
+         },
+         "properties" : {
+            "captured_at" : "2019-07-21T14:56:25.559Z",
+            "username" : "vorpalblade",
+            "camera_make" : "Essential Products",
+            "pano" : false,
+            "user_key" : "x0hTY8cakpy0m3ui1GaG1A",
+            "key" : "yqly53hefz24ylz79bwc5x",
+            "coordinateProperties" : {
+               "image_keys" : [
+                  "3d3y3_-3jKsAm2khDHLaMQ",
+                  "axRgdZfUfW6I3Pq05GZIEw",
+                  "eYCNyXzan1GEALnFO4A0Ow",
+                  "3hxG2Xi6KEN2zeIKwUu8lQ",
+                  "lz_OmSdoDAaoAEDgQXZ4_w"
+               ],
+               "cas" : [
+                  252.27,
+                  252.08,
+                  253.21,
+                  251.92,
+                  253.5
+               ]
+            },
+            "created_at" : "2019-07-25T00:46:42.003Z"
+         }
+      }
+   ]
+}
