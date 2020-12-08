@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -23,6 +25,7 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -36,6 +39,7 @@ public final class ImageImportUtil {
 
   /**
    * Recursive method to retrieve all images inside a directory or in a single file.
+   *
    * @param f the file or directory from which all contained images should be read
    * @param defaultLL the coordinates that the images should get, if no coordinates are found in metadata
    * @return all images that were found within the given file or directory
@@ -62,7 +66,9 @@ public final class ImageImportUtil {
         images.add(readImageFrom(fis, f, defaultLL));
       }
     }
-    return images;
+    // Sort by time captured at prior to returning. This fixes #144 on JOSM/Mapillary GitHub.
+    return images.stream().sorted(Comparator.comparing(MapillaryAbstractImage::getCapturedAt))
+      .collect(Collectors.toList());
   }
 
   /**
@@ -72,9 +78,8 @@ public final class ImageImportUtil {
    * @return the {@link MapillaryImportedImage} with the read metadata and the given file set
    * @throws IOException if an IOException occurs while reading from the input stream
    */
-  private static MapillaryImportedImage readImageFrom(
-      final InputStream is, final File f, final LatLon defaultLL
-  ) throws IOException {
+  private static MapillaryImportedImage readImageFrom(final InputStream is, final File f, final LatLon defaultLL)
+    throws IOException {
     Object latRef = null;
     Object lonRef = null;
     Object lat = null;
@@ -99,10 +104,8 @@ public final class ImageImportUtil {
 
     final LatLon latLon;
     if (lat instanceof RationalNumber[] && latRef != null && lon instanceof RationalNumber[] && lonRef != null) {
-      latLon = new LatLon(
-          MapillaryUtils.degMinSecToDouble((RationalNumber[]) lat, latRef.toString()),
-          MapillaryUtils.degMinSecToDouble((RationalNumber[]) lon, lonRef.toString())
-      );
+      latLon = new LatLon(MapillaryUtils.degMinSecToDouble((RationalNumber[]) lat, latRef.toString()),
+        MapillaryUtils.degMinSecToDouble((RationalNumber[]) lon, lonRef.toString()));
     } else {
       latLon = defaultLL;
     }
@@ -132,9 +135,11 @@ public final class ImageImportUtil {
   }
 
   private static class ImageFileFilter extends FileFilter {
-    private static final byte[] JFIF_MAGIC = new byte[]{-1 /*0xFF*/, -40 /*0xD8*/};
-    private static final byte[] PNG_MAGIC = new byte[]{
-        -119 /*0x89*/, 80 /*0x50*/, 78 /*0x4E*/, 71 /*0x47*/, 13 /*0x0D*/, 10 /*0x0A*/, 26 /*0x1A*/, 10 /*0x0A*/
+    private static final byte[] JFIF_MAGIC = new byte[] { -1 /* 0xFF */, -40 /* 0xD8 */ };
+    private static final byte[] PNG_MAGIC = new byte[] { -119 /* 0x89 */, 80 /* 0x50 */, 78 /* 0x4E */, 71 /* 0x47 */,
+      13 /* 0x0D */, 10 /* 0x0A */, 26 /* 0x1A */, 10 /*
+                                                       * 0x0A
+                                                       */
     };
     private final byte[] magic = new byte[Math.max(JFIF_MAGIC.length, PNG_MAGIC.length)];
 
@@ -148,14 +153,12 @@ public final class ImageImportUtil {
       }
       try (FileInputStream fis = new FileInputStream(f)) {
         int numBytes = fis.read(magic);
-        return numBytes >= 0 && (
-          Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))
-          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length)))
-        );
+        return numBytes >= 0 && (Arrays.equals(JFIF_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, JFIF_MAGIC.length)))
+          || Arrays.equals(PNG_MAGIC, Arrays.copyOf(magic, Math.min(numBytes, PNG_MAGIC.length))));
       } catch (FileNotFoundException e) {
         return false;
       } catch (IOException e) {
-        Logging.log(Logging.LEVEL_WARN, "IO-exception while reading file "+f.getAbsolutePath(), e);
+        Logging.log(Logging.LEVEL_WARN, "IO-exception while reading file " + f.getAbsolutePath(), e);
         return false;
       }
     }
