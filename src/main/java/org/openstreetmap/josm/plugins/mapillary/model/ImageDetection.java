@@ -8,6 +8,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Pair;
 
 /**
@@ -104,7 +105,7 @@ public class ImageDetection extends SpecialImageArea {
     if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
       .map(PointObjectLayer::getDataSet).flatMap(ds -> ds.getSelected().parallelStream())
       .filter(prim -> prim.hasKey("detections")).anyMatch(prim -> prim.get("detections").contains(getKey()))) {
-      return isRejected() ? Color.RED : Color.CYAN;
+      return isRejected() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) ? Color.RED : Color.CYAN;
     }
     if (isTrafficSign())
       return MapillaryColorScheme.IMAGEDETECTION_TRAFFICSIGN;
