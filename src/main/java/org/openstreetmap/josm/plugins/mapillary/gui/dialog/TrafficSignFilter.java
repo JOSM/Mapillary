@@ -40,6 +40,7 @@ import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
 import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.TagMap;
+import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
@@ -116,7 +117,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     // TODO remove when no longer under development and testing
     DeveloperToggleAction.addVisibilitySwitcher(smartEditMode);
     smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
-    MapillaryProperties.SMART_EDIT.addListener(l -> smartEditMode.setSelected(Boolean.TRUE.equals(l)));
+    MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditMode));
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
@@ -154,6 +155,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     /* End filter signs */
 
     MainApplication.getLayerManager().addAndFireLayerChangeListener(this);
+  }
+
+  private void updateSmartEdit(ValueChangeEvent<? extends Boolean> l, JCheckBox smartEditMode) {
+    this.smartEditMode = Boolean.TRUE.equals(l.getProperty().get());
+    smartEditMode.setSelected(this.smartEditMode);
   }
 
   private static void updateLayers(ItemEvent itemEvent) {
@@ -378,22 +384,20 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       .collect(Collectors.toList());
     this.updateShownButtons();
     MainApplication.worker.execute(() -> {
-      synchronized (filterModel) {
-        filterModel.pauseUpdates();
-        List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode))
-          .filter(Objects::nonNull).collect(Collectors.toList());
-        for (Future<?> future : futures) {
-          try {
-            future.get();
-          } catch (ExecutionException e) {
-            Logging.error(e);
-          } catch (InterruptedException e) {
-            Logging.error(e);
-            Thread.currentThread().interrupt();
-          }
+      filterModel.pauseUpdates();
+      List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode)).filter(Objects::nonNull)
+        .collect(Collectors.toList());
+      for (Future<?> future : futures) {
+        try {
+          future.get();
+        } catch (ExecutionException e) {
+          Logging.error(e);
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
         }
-        filterModel.resumeUpdates();
       }
+      filterModel.resumeUpdates();
     });
   }
 
