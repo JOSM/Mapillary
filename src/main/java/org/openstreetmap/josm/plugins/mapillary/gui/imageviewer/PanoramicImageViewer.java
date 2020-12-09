@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -129,6 +130,12 @@ public class PanoramicImageViewer extends AbstractImageViewer {
   }
 
   @Override
+  public void zoom(Rectangle rectangle, boolean zoomedIn) {
+    // TODO
+    this.zoom((int) rectangle.getCenterX(), (int) rectangle.getCenterY(), true);
+  }
+
+  @Override
   public void startPanning(Point p) {
     if (getImage() == null) {
       return;
@@ -157,6 +164,11 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     mappingChanged = true;
     mousePointInImg = newImagePoint;
     repaint();
+  }
+
+  @Override
+  AffineTransform getTransform(Rectangle visibleRect) {
+    return null; // TODO
   }
 
   @Override

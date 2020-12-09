@@ -82,6 +82,24 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   }
 
   @Override
+  public void zoom(Rectangle rectangle, boolean zoomedIn) {
+    if (rectangle == null)
+      return;
+    Image mouseImage;
+    synchronized (this) {
+      mouseImage = getImage();
+    }
+    checkZoom(rectangle);
+    checkAspectRatio(rectangle);
+    ImageViewUtil.checkVisibleRectSize(mouseImage, rectangle);
+    synchronized (this) {
+      visibleRect = rectangle;
+    }
+    this.zoom((int) rectangle.getCenterX(), (int) rectangle.getCenterY(), zoomedIn);
+    repaint();
+  }
+
+  @Override
   public void startPanning(Point p) {
     if (getImage() == null) {
       return;
@@ -115,13 +133,18 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   }
 
   @Override
-  protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+  AffineTransform getTransform(Rectangle visibleRect) {
     final Point upperLeft = img2compCoord(visibleRect, 0, 0);
     final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
     final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
     unit2CompTransform.concatenate(
       AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
+    return unit2CompTransform;
+  }
 
+  @Override
+  protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+    final AffineTransform unit2CompTransform = getTransform(visibleRect);
     for (final ImageDetection d : detections) {
       if (checkIfDetectionIsFiltered(detectionLayers, d)) {
         continue;

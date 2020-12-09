@@ -11,15 +11,18 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
+import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
@@ -83,11 +86,30 @@ public abstract class AbstractImageViewer extends JPanel {
   public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
     synchronized (this) {
       setImage(image);
+      this.visibleRect = getDefaultVisibleRect();
       this.detections.clear();
       if (detections != null) {
         this.detections.addAll(detections);
+        if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
+          Collection<String> selectedPrimitives = MainApplication.getLayerManager()
+            .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getDataSet)
+            .map(DataSet::getAllSelected).flatMap(Collection::stream).filter(p -> p.hasKey("detections"))
+            .map(p -> p.get("detections")).collect(Collectors.toList());
+          Collection<ImageDetection> zoomTo = detections.stream()
+            .filter(d -> selectedPrimitives.stream().anyMatch(string -> string.contains(d.getKey())))
+            .collect(Collectors.toSet());
+          // TODO remove null check
+          if (!zoomTo.isEmpty() && getTransform(this.visibleRect) != null) {
+            Rectangle first = getTransform(this.visibleRect).createTransformedShape(zoomTo.iterator().next().getShape())
+              .getBounds();
+            Point ll = comp2imgCoord(this.visibleRect, first.x, first.y);
+            Point rr = comp2imgCoord(this.visibleRect, first.x + first.width, first.y + first.height);
+            Rectangle zoom = new Rectangle();
+            zoom.setBounds(ll.x, ll.y, rr.x - ll.x, rr.y - ll.y);
+            this.zoom(zoom, true);
+          }
+        }
       }
-      this.visibleRect = getDefaultVisibleRect();
     }
     repaint();
   }
@@ -284,6 +306,14 @@ public abstract class AbstractImageViewer extends JPanel {
   public abstract void zoom(int zoomCenterX, int zoomCenterY, boolean zoomedIn);
 
   /**
+   * Method for zooming.
+   *
+   * @param inView The rectangle to have in view. Will fill left-right or top-down.
+   * @param zoomedIn true if zoomed inwards else false
+   */
+  public abstract void zoom(Rectangle inView, boolean zoomedIn);
+
+  /**
    * Start dragging Image.
    *
    * @param p The point in component.
@@ -296,6 +326,14 @@ public abstract class AbstractImageViewer extends JPanel {
    * @param p The point in component.
    */
   public abstract void pan(Point p);
+
+  /**
+   * Get the transform to use for shapes
+   *
+   * @param visibleRect The visible area
+   * @return The transform to use
+   */
+  abstract AffineTransform getTransform(Rectangle visibleRect);
 
   public abstract void viewSizeChanged();
 
