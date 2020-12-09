@@ -192,7 +192,7 @@ sonarcloud.io:
     name: sonarcloud.io
     url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
   script:
-    - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube --info --debug
+    - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
   needs: ["build"]
   only:
     refs:

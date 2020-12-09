@@ -264,7 +264,8 @@ sonarqube {
     property("sonar.projectKey", "Mapillary")
     property("sonar.organization", "josm")
     property("sonar.projectVersion", project.version)
-    property("sonar.projectDescription", properties.get("plugin.description")!!)
+    //property("sonar.projectDescription", "Allows the user to work with pictures hosted at mapillary.com")
+    property("sonar.projectDescription", findProperty("plugin.description"))
     property("sonar.sources", listOf("src"))
   }
 }
