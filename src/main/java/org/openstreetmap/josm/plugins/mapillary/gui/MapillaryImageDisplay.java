@@ -616,7 +616,7 @@ public final class MapillaryImageDisplay extends JPanel {
     for (final ImageDetection d : detections) {
       if (checkIfDetectionIsFiltered(detectionLayers, d))
         continue;
-      final Shape shape = d.getShape().createTransformedShape(unit2CompTransform);
+      final Shape shape = unit2CompTransform.createTransformedShape(d.getShape());
       g2d.setColor(d.getColor());
       g2d.draw(shape);
       ImageIcon icon = MapObject.getIcon(d.getValue().getKey());

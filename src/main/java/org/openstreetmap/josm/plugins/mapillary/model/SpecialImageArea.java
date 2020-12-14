@@ -1,7 +1,10 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
+import java.awt.Shape;
 import java.awt.geom.Path2D;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 public class SpecialImageArea extends KeyIndexedObject {
   private final String imageKey;
@@ -17,7 +20,10 @@ public class SpecialImageArea extends KeyIndexedObject {
     return imageKey;
   }
 
-  public Path2D getShape() {
+  public Shape getShape() {
+    if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
+      return shape.getBounds2D();
+    }
     return shape;
   }
 }
