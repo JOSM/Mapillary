@@ -106,6 +106,10 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       lbox.addItemListener(TrafficSignFilter::updateLayers);
       lbox.setSelected(true);
       lbox.putClientProperty("layer", layer[0]);
+      // TODO remove when it listens to layers.
+      // Maybe get rid of Traffic SIgn/Point object layer filters (no longer needed due to separate layers) OR clicking
+      // on them adds the appropriate layer. Affect hide/show action of layers instead of adding filters?
+      DeveloperToggleAction.addVisibilitySwitcher(lbox);
     }
     add(layers);
 
