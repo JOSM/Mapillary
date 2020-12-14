@@ -114,7 +114,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     filterField.setToolTipText(I18n.tr("Filter Mapillary Detections"));
     add(filterField, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
     toggleVisibleCheckbox = new JCheckBox(I18n.tr("Select Visible"));
+    this.toggleVisibleCheckbox.setToolTipText(I18n.tr("Select/Deselect all object detections on the current page"));
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
+    showRelevantObjs.setToolTipText(I18n.tr("Only show objects on detection layers (\"Relevant objects\")"));
     JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
     // TODO remove when no longer under development and testing
     DeveloperToggleAction.addVisibilitySwitcher(smartEditMode);
@@ -132,6 +134,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     showMax.setModel(showMaxNumberModel);
     showMaxNumberModel.addChangeListener(l -> updateShown(showMaxNumberModel));
     showMax.addChangeListener(l -> updateShown(showMaxNumberModel));
+    previousButtonPagination.setToolTipText(I18n.tr("Show the previous page of items"));
+    showMax.setToolTipText(I18n.tr("Show this number of items on each page"));
+    nextButtonPagination.setToolTipText(I18n.tr("Show the next page of items"));
     pagination.add(showMax, GBC.std().anchor(GridBagConstraints.CENTER));
     pagination.add(nextButtonPagination, GBC.std().anchor(GridBagConstraints.WEST));
     showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
