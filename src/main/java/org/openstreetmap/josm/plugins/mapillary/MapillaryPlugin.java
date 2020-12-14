@@ -87,6 +87,11 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       MapillaryUser.setTokenValid(false);
     }
 
+    // TODO Default Smart Edit mode to off on each JOSM start, for now.
+    if (MapillaryProperties.SMART_EDIT.isSet()) {
+      MapillaryProperties.SMART_EDIT.remove();
+    }
+
     MainMenu menu = MainApplication.getMenu();
 
     MapillaryExportAction mapillaryExportAction = new MapillaryExportAction();
