@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   private static final long serialVersionUID = 3659377445718790107L;
   private final transient Filter filter;
   private final JCheckBox jcheckbox;
+  private final JButton image;
   private final String detection;
   private final String[] splitName;
   private final ObjectDetections[] detections;
@@ -42,7 +45,7 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
     this.detections = detections;
     MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(this);
     splitName = detection.split("--", -1);
-    JButton image = new JButton();
+    image = new JButton();
     image.setIcon(icon);
     add(image, GBC.std().anchor(GridBagConstraints.WEST));
     String name = splitName[splitName.length - 1].replace(".svg", "");
@@ -58,13 +61,23 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
 
     jcheckbox = new JCheckBox(name);
     add(jcheckbox, GBC.eol().fill());
-    image.addActionListener(l -> updateCheckBox(jcheckbox, filter));
-    jcheckbox.addActionListener(l -> updateFilters(jcheckbox, filter));
+    image.addActionListener(l -> {
+      updateCheckBox(jcheckbox, filter);
+      updateTooltips(detection, image, jcheckbox);
+    });
+    jcheckbox.addActionListener(l -> {
+      updateFilters(jcheckbox, filter);
+      updateTooltips(detection, image, jcheckbox);
+    });
 
-    image.setToolTipText(detection);
-    jcheckbox.setToolTipText(image.getToolTipText());
+    updateTooltips(detection, image, jcheckbox);
 
     tableChanged(null);
+  }
+
+  private static void updateTooltips(String detection, JButton image, JCheckBox jcheckbox) {
+    image.setToolTipText(tr("{0}: {1}", detection, jcheckbox.isSelected() ? tr("hidden") : tr("shown")));
+    jcheckbox.setToolTipText(image.getToolTipText());
   }
 
   private static Filter makeNewFilter() {
@@ -148,24 +161,15 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
    * @param selected Set the checkbox state to the selected boolean
    * @return A future to indicate if the call finished
    */
-  public Future<?> setSelected(boolean selected) {
-    CompletableFuture<?> completableFuture = new CompletableFuture<>();
+  public Future<Void> setSelected(boolean selected) {
+    CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     GuiHelper.runInEDT(() -> {
       jcheckbox.setSelected(selected);
+      updateTooltips(this.detection, this.image, this.jcheckbox);
       updateFilters(jcheckbox, filter);
       completableFuture.complete(null);
     });
     return completableFuture;
-  }
-
-  @Override
-  public void setVisible(boolean visible) {
-    super.setVisible(visible);
-  }
-
-  @Override
-  public boolean isVisible() {
-    return super.isVisible();
   }
 
   /**
