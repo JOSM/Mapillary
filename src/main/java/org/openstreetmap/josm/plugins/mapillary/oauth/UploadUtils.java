@@ -67,7 +67,7 @@ public final class UploadUtils {
   /**
    * Required keys for POST
    */
-  private static final String[] KEYS = {"key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type"};
+  private static final String[] KEYS = { "key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type" };
 
   /**
    * Mapillary upload URL
@@ -92,17 +92,20 @@ public final class UploadUtils {
     public SequenceUploadRunnable(Set<MapillaryAbstractImage> images, boolean delete) {
       this.images = images;
       this.uuid = UUID.randomUUID();
-      this.ex = new ThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors() * 2, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(images.size()));
+      this.ex = new ThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors() * 2, 25, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<>(images.size()));
       this.delete = delete;
     }
 
     @Override
     public void run() {
-      final Set<MapillaryImportedImage> uploadImages = this.images.stream().map(it -> it instanceof MapillaryImportedImage ? (MapillaryImportedImage) it : null).collect(Collectors.toSet());
+      final Set<MapillaryImportedImage> uploadImages = this.images.stream()
+        .map(it -> it instanceof MapillaryImportedImage ? (MapillaryImportedImage) it : null)
+        .collect(Collectors.toSet());
       if (uploadImages.stream().anyMatch(Objects::isNull)) {
-        new Notification(I18n.tr("You are trying to upload a sequence to mapillary.com that you previously downloaded from there. That is not possible."))
-          .setIcon(MapillaryPlugin.LOGO.get())
-          .show();
+        new Notification(I18n.tr(
+          "You are trying to upload a sequence to mapillary.com that you previously downloaded from there. That is not possible."))
+            .setIcon(MapillaryPlugin.LOGO.get()).show();
       } else {
         PluginState.addImagesToUpload(uploadImages.size());
         MapillaryUtils.updateHelpText();
@@ -127,10 +130,10 @@ public final class UploadUtils {
    *
    * @param image The image to be uploaded
    * @return A File object containing the picture and an updated version of the
-   * EXIF tags.
-   * @throws ImageReadException  if there are errors reading the image from the file.
-   * @throws IOException         if there are errors getting the metadata from the file or writing
-   *                             the output.
+   *         EXIF tags.
+   * @throws ImageReadException if there are errors reading the image from the file.
+   * @throws IOException if there are errors getting the metadata from the file or writing
+   *         the output.
    * @throws ImageWriteException if there are errors writing the image in the file.
    */
   static File updateFile(MapillaryImportedImage image) throws ImageReadException, IOException, ImageWriteException {
@@ -154,15 +157,13 @@ public final class UploadUtils {
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
     gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
-            GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+      GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
     gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-            RationalNumber.valueOf(image.getMovingCa()));
+    gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION, RationalNumber.valueOf(image.getMovingCa()));
 
     exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-            image.getDate("yyyy/MM/dd HH:mm:ss"));
+    exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, image.getDate("yyyy/MM/dd HH:mm:ss"));
 
     // Removes the ImageDescription tag, that causes problems in the upload.
     rootDirectory.removeField(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
@@ -192,16 +193,15 @@ public final class UploadUtils {
 
   /**
    * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
-   * @param sequenceUUID  The UUID used to create the sequence.
+   *
+   * @param sequenceUUID The UUID used to create the sequence.
    */
   public static void uploadDoneFile(UUID sequenceUUID) {
     Map<String, String> secretMap = MapillaryUser.getSecrets();
     if (secretMap == null) {
-      throw new IllegalStateException("Can't obtain secrents from user");
+      throw new IllegalStateException("Can't obtain secrets from user");
     }
-    String key = MapillaryUser.getUsername() +
-      '/' + sequenceUUID +
-      "/DONE";
+    String key = MapillaryUser.getUsername() + '/' + sequenceUUID + "/DONE";
     Map<String, String> hash = getUploadParts(secretMap);
     hash.put("key", key);
     try {
@@ -210,9 +210,10 @@ public final class UploadUtils {
       Logging.error(e);
     }
   }
+
   /**
    * @param image The image to be uploaded
-   * @param sequenceUUID  The UUID used to create the sequence.
+   * @param sequenceUUID The UUID used to create the sequence.
    */
   public static void upload(MapillaryImportedImage image, UUID sequenceUUID) {
     Map<String, String> secretMap = MapillaryUser.getSecrets();
@@ -220,14 +221,8 @@ public final class UploadUtils {
       throw new IllegalStateException("Can't obtain secrents from user");
     }
 
-    String key = String.format(Locale.UK, "%s/%s/%f_%f_%f_%d.jpg",
-      MapillaryUser.getUsername(),
-      sequenceUUID.toString(),
-      image.getMovingLatLon().lat(),
-      image.getMovingLatLon().lon(),
-      image.getMovingCa(),
-      image.getCapturedAt()
-    );
+    String key = String.format(Locale.UK, "%s/%s/%f_%f_%f_%d.jpg", MapillaryUser.getUsername(), sequenceUUID.toString(),
+      image.getMovingLatLon().lat(), image.getMovingLatLon().lon(), image.getMovingCa(), image.getCapturedAt());
 
     Map<String, String> hash = getUploadParts(secretMap);
     hash.put("key", key);
@@ -240,9 +235,10 @@ public final class UploadUtils {
 
   /**
    * Constructs the parameters necessary to upload files to Amazon S3
+   *
    * @param secretMap the upload policy
    * @return the parts map
-  */
+   */
   private static Map<String, String> getUploadParts(Map<String, String> secretMap) {
     String policy;
     String signature;
@@ -262,7 +258,7 @@ public final class UploadUtils {
    * @param file File that is going to be uploaded
    * @param hash Information attached to the upload
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
-   * @throws IOException              if an HTTP connection cannot be opened
+   * @throws IOException if an HTTP connection cannot be opened
    */
   private static void uploadFile(File file, Map<String, String> hash) throws IOException {
     HttpClientBuilder builder = HttpClientBuilder.create();
@@ -273,8 +269,7 @@ public final class UploadUtils {
       for (String key : KEYS) {
         if (hash.get(key) == null)
           throw new IllegalArgumentException();
-        entityBuilder.addPart(key, new StringBody(hash.get(key),
-                ContentType.TEXT_PLAIN));
+        entityBuilder.addPart(key, new StringBody(hash.get(key), ContentType.TEXT_PLAIN));
       }
       entityBuilder.addPart("file", new FileBody(file));
       HttpEntity entity = entityBuilder.build();
@@ -300,10 +295,11 @@ public final class UploadUtils {
    * Uploads the given {@link MapillarySequence}.
    *
    * @param sequence The sequence to upload. It must contain only
-   *                 {@link MapillaryImportedImage} objects.
-   * @param delete   Whether the images must be deleted after upload or not.
+   *        {@link MapillaryImportedImage} objects.
+   * @param delete Whether the images must be deleted after upload or not.
    */
   public static void uploadSequence(MapillarySequence sequence, boolean delete) {
-    MainApplication.worker.execute(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
+    MainApplication.worker
+      .execute(new SequenceUploadRunnable(new ConcurrentSkipListSet<>(sequence.getImages()), delete));
   }
 }
