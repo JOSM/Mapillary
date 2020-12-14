@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
@@ -12,6 +11,7 @@ import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonStructure;
 
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -42,14 +42,30 @@ public final class OAuthUtils {
    *         Errors relating to the connection.
    */
   public static JsonObject getWithHeader(URL url) throws IOException {
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-    con.setRequestMethod("GET");
-    addAuthenticationHeader(con);
+    HttpClient client = HttpClient.create(url, "GET");
+    return getWithHeader(client);
+  }
 
-    try (InputStream inputStream = con.getInputStream(); JsonReader reader = Json.createReader(inputStream)) {
-      return reader.readObject();
+  /**
+   * Returns a JsonObject containing the result of making a request with the
+   * authorization header.
+   *
+   * @param client The HttpClient to get the data with
+   * @return A JsonObject containing the result of the request.
+   * @throws IOException
+   *         Errors relating to the connection.
+   */
+  public static JsonObject getWithHeader(HttpClient client) throws IOException {
+    addAuthenticationHeader(client);
+    client.connect();
+    try (InputStream inputStream = client.getResponse().getContent();
+      JsonReader reader = Json.createReader(inputStream)) {
+      JsonStructure structure = reader.read();
+      return structure.asJsonObject();
     } catch (JsonException e) {
       throw new IOException(e);
+    } finally {
+      client.disconnect();
     }
   }
 

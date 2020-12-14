@@ -3,14 +3,15 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -33,8 +34,7 @@ public final class MapillaryUser {
 
   private static final ListenerList<MapillaryLoginListener> LISTENERS = ListenerList.create();
   private static String username;
-  private static String imagesPolicy;
-  private static String imagesHash;
+  private static JsonObject uploadSession;
   /** If the stored token is valid or not. */
   private static boolean isTokenValid = true;
 
@@ -84,25 +84,32 @@ public final class MapillaryUser {
   }
 
   /**
-   * @return A HashMap object containing the images_policy and images_hash
-   *         strings.
+   * @return A JsonObject containing secrets for upload
    */
-  public static synchronized Map<String, String> getSecrets() {
+  public static synchronized JsonObject getSecrets() {
     if (!isTokenValid)
       return null;
-    Map<String, String> hash = new HashMap<>();
+    JsonObject session = uploadSession;
     try {
-      if (imagesHash == null)
-        imagesHash = OAuthUtils.getWithHeader(MapillaryURL.uploadSecretsURL()).getString("images_hash", null);
-      hash.put("images_hash", imagesHash);
-      if (imagesPolicy == null)
-        imagesPolicy = OAuthUtils.getWithHeader(MapillaryURL.uploadSecretsURL()).getString("images_policy");
+      if (session == null) {
+        final HttpClient client = HttpClient.create(MapillaryURL.APIv3.uploadSecretsURL(), "POST");
+        client.setHeader("Content-Type", "application/json");
+        // Currently, this is the only request body and it MUST be present
+        client.setRequestBody("{\"type\": \"images/sequence\"}".getBytes(StandardCharsets.UTF_8));
+        session = OAuthUtils.getWithHeader(client);
+      }
     } catch (IOException e) {
       Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
       reset();
     }
-    hash.put("images_policy", imagesPolicy);
-    return hash;
+    return session;
+  }
+
+  /**
+   * Finish a secret session (clear upload secrets).
+   */
+  public static synchronized void clearSecrets() {
+    uploadSession = null;
   }
 
   public static synchronized List<OrganizationRecord> getOrganizations() {
@@ -132,8 +139,7 @@ public final class MapillaryUser {
     username = null;
     userInformation = null;
     organizations = null;
-    imagesPolicy = null;
-    imagesHash = null;
+    uploadSession = null;
     isTokenValid = false;
     MapillaryProperties.ACCESS_TOKEN.put(MapillaryProperties.ACCESS_TOKEN.getDefaultValue());
     LISTENERS.fireEvent(MapillaryLoginListener::onLogout);

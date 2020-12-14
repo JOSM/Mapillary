@@ -136,8 +136,8 @@ class MapillaryURLTest {
 
   @Test
   void testUploadSecretsURL() throws MalformedURLException {
-    assertEquals(new URL("https://a.mapillary.com/v2/me/uploads/secrets?" + CLIENT_ID_QUERY_PART),
-      MapillaryURL.uploadSecretsURL());
+    assertEquals(new URL("https://a.mapillary.com/v3/me/uploads?" + CLIENT_ID_QUERY_PART),
+      MapillaryURL.APIv3.uploadSecretsURL());
   }
 
   @Test

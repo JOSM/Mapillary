@@ -170,6 +170,26 @@ public final class MapillaryURL {
     }
 
     /**
+     * @return the URL where you'll find the upload secrets as JSON
+     */
+    public static URL uploadSecretsURL() {
+      return string2URL(baseUrl, "me/uploads", queryString(null));
+    }
+
+    /**
+     * @return A url to indicate an upload is finished. You <i>must</i>
+     *         call {@code String.format(returnValue, key)}.
+     *         May return {@code null}.
+     */
+    public static String uploadFinish() {
+      final URL toReturn = string2URL(baseUrl, "me/uploads/%s/closed", MapillaryURL.queryString(null));
+      if (toReturn == null) {
+        return null;
+      }
+      return toReturn.toExternalForm();
+    }
+
+    /**
      * The APIv3 returns a Link header for each request. It contains a URL for requesting more results.
      * If you supply the value of the Link header, this method returns the next URL,
      * if such a URL is defined in the header.
@@ -312,13 +332,6 @@ public final class MapillaryURL {
 
   private MapillaryURL() {
     // Private constructor to avoid instantiation
-  }
-
-  /**
-   * @return the URL where you'll find the upload secrets as JSON
-   */
-  public static URL uploadSecretsURL() {
-    return string2URL(BASE_API_V2_URL, "me/uploads/secrets", queryString(null));
   }
 
   /**

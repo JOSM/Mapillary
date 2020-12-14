@@ -7,13 +7,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
@@ -41,20 +44,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -64,16 +69,6 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  */
 public final class UploadUtils {
-  /**
-   * Required keys for POST
-   */
-  private static final String[] KEYS = { "key", "AWSAccessKeyId", "acl", "policy", "signature", "Content-Type" };
-
-  /**
-   * Mapillary upload URL
-   */
-  private static final String UPLOAD_URL = "https://s3-eu-west-1.amazonaws.com/mapillary.uploads.manual.images";
-
   /**
    * Count to name temporal files.
    */
@@ -85,13 +80,11 @@ public final class UploadUtils {
 
   private static final class SequenceUploadRunnable implements Runnable {
     private final Set<MapillaryAbstractImage> images;
-    private final UUID uuid;
     private final boolean delete;
     private final ThreadPoolExecutor ex;
 
     public SequenceUploadRunnable(Set<MapillaryAbstractImage> images, boolean delete) {
       this.images = images;
-      this.uuid = UUID.randomUUID();
       this.ex = new ThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors() * 2, 25, TimeUnit.SECONDS,
         new ArrayBlockingQueue<>(images.size()));
       this.delete = delete;
@@ -109,12 +102,13 @@ public final class UploadUtils {
       } else {
         PluginState.addImagesToUpload(uploadImages.size());
         MapillaryUtils.updateHelpText();
-        uploadImages.forEach(img -> ex.execute(() -> upload(img, uuid)));
+        uploadImages.forEach(img -> ex.execute(() -> upload(img)));
         try {
+          ex.shutdown();
           ex.awaitTermination(5L * uploadImages.size(), TimeUnit.MINUTES);
-          uploadDoneFile(this.uuid);
+          uploadDoneFile();
           if (this.delete) {
-            MapillaryRecord.getInstance().addCommand(new CommandDelete(uploadImages));
+            GuiHelper.runInEDT(() -> MapillaryRecord.getInstance().addCommand(new CommandDelete(uploadImages)));
           }
         } catch (final InterruptedException e) {
           Logging.error(e);
@@ -182,76 +176,63 @@ public final class UploadUtils {
   }
 
   /**
+   * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
+   *
+   * @param sequenceUUID The UUID used to create the sequence.
+   */
+  public static void uploadDoneFile() {
+    JsonObject secretMap = MapillaryUser.getSecrets();
+    if (secretMap == null) {
+      throw new IllegalStateException("Can't obtain secrets from user");
+    }
+    URL url;
+    String urlString = String.format(MapillaryURL.APIv3.uploadFinish(),
+      ((JsonString) secretMap.get("key")).getString());
+    try {
+      url = new URL(urlString);
+    } catch (MalformedURLException e1) {
+      Logging.error("Could not finish upload: {0}", urlString);
+      return;
+    }
+    HttpClient client = HttpClient.create(url, "PUT");
+    // This avoids several NPE's in JOSM code
+    client.setRequestBody(new byte[] {});
+    try {
+      OAuthUtils.addAuthenticationHeader(client);
+      client.connect();
+    } catch (IOException e) {
+      Logging.error(e);
+    } finally {
+      client.disconnect();
+      MapillaryUser.clearSecrets();
+    }
+  }
+
+  /**
    * Uploads the given MapillaryImportedImage object.
    *
    * @param image The image to be uploaded
    * @throws IllegalStateException If {@link MapillaryUser#getSecrets()} returns null
    */
   public static void upload(MapillaryImportedImage image) {
-    upload(image, UUID.randomUUID());
-  }
-
-  /**
-   * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
-   *
-   * @param sequenceUUID The UUID used to create the sequence.
-   */
-  public static void uploadDoneFile(UUID sequenceUUID) {
-    Map<String, String> secretMap = MapillaryUser.getSecrets();
+    JsonObject secretMap = MapillaryUser.getSecrets();
     if (secretMap == null) {
       throw new IllegalStateException("Can't obtain secrets from user");
     }
-    String key = MapillaryUser.getUsername() + '/' + sequenceUUID + "/DONE";
-    Map<String, String> hash = getUploadParts(secretMap);
-    hash.put("key", key);
-    try {
-      uploadFile(File.createTempFile("DONE", "donefile"), hash);
-    } catch (IOException e) {
-      Logging.error(e);
-    }
-  }
 
-  /**
-   * @param image The image to be uploaded
-   * @param sequenceUUID The UUID used to create the sequence.
-   */
-  public static void upload(MapillaryImportedImage image, UUID sequenceUUID) {
-    Map<String, String> secretMap = MapillaryUser.getSecrets();
-    if (secretMap == null) {
-      throw new IllegalStateException("Can't obtain secrents from user");
-    }
-
-    String key = String.format(Locale.UK, "%s/%s/%f_%f_%f_%d.jpg", MapillaryUser.getUsername(), sequenceUUID.toString(),
+    String key = String.format(Locale.UK, "%s%f_%f_%f_%d.jpg", ((JsonString) secretMap.get("key_prefix")).getString(),
       image.getMovingLatLon().lat(), image.getMovingLatLon().lon(), image.getMovingCa(), image.getCapturedAt());
-
-    Map<String, String> hash = getUploadParts(secretMap);
-    hash.put("key", key);
     try {
-      uploadFile(updateFile(image), hash);
+      uploadFile(key, updateFile(image), secretMap);
     } catch (ImageReadException | ImageWriteException | IOException e) {
       Logging.error(e);
     }
   }
 
-  /**
-   * Constructs the parameters necessary to upload files to Amazon S3
-   *
-   * @param secretMap the upload policy
-   * @return the parts map
-   */
-  private static Map<String, String> getUploadParts(Map<String, String> secretMap) {
-    String policy;
-    String signature;
-    policy = secretMap.get("images_policy");
-    signature = secretMap.get("images_hash");
-
-    Map<String, String> hash = new HashMap<>();
-    hash.put("AWSAccessKeyId", "AKIAI2X3BJAT2W75HILA");
-    hash.put("acl", "private");
-    hash.put("policy", policy);
-    hash.put("signature", signature);
-    hash.put("Content-Type", "image/jpeg");
-    return hash;
+  private static Map<String, String> getUploadFormParts(JsonObject secretMap) {
+    return secretMap.getJsonObject("fields").entrySet().stream()
+      .filter(entry -> entry.getValue().getValueType() == JsonValue.ValueType.STRING)
+      .collect(Collectors.toMap(Map.Entry::getKey, entry -> ((JsonString) entry.getValue()).getString()));
   }
 
   /**
@@ -260,35 +241,36 @@ public final class UploadUtils {
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    * @throws IOException if an HTTP connection cannot be opened
    */
-  private static void uploadFile(File file, Map<String, String> hash) throws IOException {
+  private static void uploadFile(String key, File file, JsonObject secretMap) throws IOException {
+    boolean uploaded = false;
+    HttpPost httpPost = new HttpPost(secretMap.getString("url"));
     HttpClientBuilder builder = HttpClientBuilder.create();
-    HttpPost httpPost = new HttpPost(UPLOAD_URL);
-
     try (CloseableHttpClient httpClient = builder.build()) {
       MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
-      for (String key : KEYS) {
-        if (hash.get(key) == null)
-          throw new IllegalArgumentException();
-        entityBuilder.addPart(key, new StringBody(hash.get(key), ContentType.TEXT_PLAIN));
-      }
+      getUploadFormParts(secretMap)
+        .forEach((key1, value) -> entityBuilder.addTextBody(key1, value, ContentType.MULTIPART_FORM_DATA));
+      entityBuilder.addTextBody("key", key, ContentType.MULTIPART_FORM_DATA);
       entityBuilder.addPart("file", new FileBody(file));
       HttpEntity entity = entityBuilder.build();
       httpPost.setEntity(entity);
       try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
         if (response.getStatusLine().toString().contains("204")) {
-          PluginState.imageUploaded();
+          GuiHelper.runInEDT(PluginState::imageUploaded);
           Logging.info("{0} (Mapillary)", PluginState.getUploadString());
+          uploaded = true;
         } else {
           Logging.info("Upload error");
         }
       }
     }
-    try {
-      Files.delete(file.toPath());
-    } catch (IOException | SecurityException e) {
-      Logging.log(Logging.LEVEL_ERROR, "MapillaryPlugin: File could not be deleted during upload", e);
+    if (uploaded) {
+      try {
+        Files.delete(file.toPath());
+      } catch (IOException | SecurityException e) {
+        Logging.log(Logging.LEVEL_ERROR, "MapillaryPlugin: File could not be deleted during upload", e);
+      }
+      MapillaryUtils.updateHelpText();
     }
-    MapillaryUtils.updateHelpText();
   }
 
   /**
