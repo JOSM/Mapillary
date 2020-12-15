@@ -279,7 +279,7 @@ public class MapillaryData implements Data {
    *
    * @return A Set object containing all images.
    */
-  public synchronized Set<MapillaryAbstractImage> getImages() {
+  public Set<MapillaryAbstractImage> getImages() {
     return images.stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
   }
 
