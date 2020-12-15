@@ -536,12 +536,14 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       // preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
       this.showingPresetWindow = true;
       int userSelection = TaggingPreset.DIALOG_ANSWER_CANCEL;
+      basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
+      Command updateTagsCommand = null;
       try {
-        userSelection = preset.showDialog(new HashSet<>(add.getParticipatingPrimitives()), false);
+        userSelection = preset.showDialog(Collections.singleton(basePrimitive), false);
+        updateTagsCommand = TaggingPreset.createCommand(Collections.singleton(basePrimitive), preset.getChangedTags());
       } finally {
         this.showingPresetWindow = false;
       }
-      basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
       // Closing the window returns 0. Not in the TaggingPreset public answers at this time.
       if ((userSelection == 0 || userSelection == TaggingPreset.DIALOG_ANSWER_CANCEL)
         && UndoRedoHandler.getInstance().hasUndoCommands()) {
@@ -595,6 +597,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         };
         String detections = mapillaryObject.get("detections");
         UndoRedoHandler.getInstance().add(deleteOriginal);
+        UndoRedoHandler.getInstance().add(updateTagsCommand);
         try (JsonParser parser = Json
           .createParser(new ByteArrayInputStream(detections.getBytes(StandardCharsets.UTF_8)))) {
           while (parser.hasNext()) {
