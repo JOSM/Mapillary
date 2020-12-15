@@ -75,6 +75,8 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * Indicates whether or not this image has been reviewed for Uploading/Changeset submission.
    */
   private boolean reviewed;
+  /** The quality score for the image. May not be present. */
+  private int qualityScore = Integer.MIN_VALUE;
 
   /**
    * Creates a new object in the given position and with the given direction.
@@ -421,5 +423,28 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
       return hashCode() - image.hashCode();
     }
     return compareTime;
+  }
+
+  /**
+   * The quality score for the image
+   *
+   * @param qualityScore
+   */
+  public void setQuality(int qualityScore) {
+    if (qualityScore > 0 && qualityScore < 6) {
+      this.qualityScore = qualityScore;
+    } else {
+      this.qualityScore = Integer.MIN_VALUE;
+    }
+  }
+
+  /**
+   * The quality score for the image
+   *
+   * @return An int in the range of 1-5. Any other value should be considered "unset". We use {@code Integer#MIN_VALUE}
+   *         for this purpose explicitly.
+   */
+  public int getQuality() {
+    return this.qualityScore;
   }
 }

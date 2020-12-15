@@ -47,15 +47,14 @@ public final class JsonImageDetailsDecoder {
    * @return The added or modified images sorted by sequences
    */
   public static Map<String, Collection<MapillaryAbstractImage>> decodeImageInfos(final JsonObject json,
-      final MapillaryData data) {
+    final MapillaryData data) {
     if (data != null) {
       return JsonDecoder.decodeFeatureCollection(json, j -> decodeImageInfo(j, data)).stream()
-          .filter(entry -> entry.b != null)
-          .collect(Collectors.groupingBy(p -> p.a, Collector.of(ArrayList<MapillaryAbstractImage>::new,
-              (list, entry) -> list.add(entry.b), (list1, list2) -> {
-                list1.addAll(list2);
-                return list1;
-              })));
+        .filter(entry -> entry.b != null).collect(Collectors.groupingBy(p -> p.a,
+          Collector.of(ArrayList<MapillaryAbstractImage>::new, (list, entry) -> list.add(entry.b), (list1, list2) -> {
+            list1.addAll(list2);
+            return list1;
+          })));
     }
     return null;
   }
@@ -68,8 +67,7 @@ public final class JsonImageDetailsDecoder {
    * @param data The data to add the image info to
    * @return The MapillaryAbstractImage that was added/modified
    */
-  private static Pair<String, MapillaryAbstractImage> decodeImageInfo(final JsonObject json,
-      final MapillaryData data) {
+  private static Pair<String, MapillaryAbstractImage> decodeImageInfo(final JsonObject json, final MapillaryData data) {
     if (json != null && data != null) {
       JsonValue propertiesValue = json.get("properties");
       if (propertiesValue instanceof JsonObject) {
@@ -80,16 +78,19 @@ public final class JsonImageDetailsDecoder {
           MapillaryAbstractImage image = data.getImage(key);
           if (image == null) {
             image = new MapillaryImage(key, null, properties.getJsonNumber("ca").doubleValue(),
-                properties.getBoolean("pano", false), properties.getBoolean("private", false));
+              properties.getBoolean("pano", false), properties.getBoolean("private", false));
             data.add(image);
           }
           if (image.getExifCoor() == null) {
             image.setExifCoor(JsonDecoder.decodeLatLon(json.getJsonObject("geometry").getJsonArray("coordinates")));
           }
+          if (properties.containsKey("quality_score")) {
+            image.setQuality(properties.getInt("quality_score"));
+          }
           image.setCapturedAt(capturedAt);
           String sequence = properties.getString("sequence_key", "");
           Optional<MapillarySequence> rSequence = data.getSequences().stream()
-              .filter(seq -> sequence.equals(seq.getKey())).findAny();
+            .filter(seq -> sequence.equals(seq.getKey())).findAny();
           if (rSequence.isPresent()) {
             image.setSequence(rSequence.get());
           }

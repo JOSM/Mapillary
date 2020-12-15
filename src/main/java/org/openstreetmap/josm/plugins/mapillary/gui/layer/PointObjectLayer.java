@@ -30,12 +30,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -126,9 +128,11 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Pair;
 
 /**
  * Mapillary Point Object layer
@@ -462,7 +466,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         ? (MapillaryImage) mapillaryData.getSelectedImage()
         : null;
       List<MapillaryImage> images = getImagesForDetections(mapillaryData, detections);
-      MapillaryImage toSelect = images.isEmpty() ? null : images.get(0);
+      MapillaryImage toSelect = images.isEmpty() ? null : getBestImage(prim, images);
       boolean inDetections = selectedImage != null && images.contains(selectedImage);
 
       if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
@@ -471,6 +475,27 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     }
     GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
     GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().updateFilteredImages());
+  }
+
+  /**
+   * Get a decent image to look at a primiitive
+   *
+   * @param <T> The type of images
+   * @param primitive The primitive to get the best image for
+   * @param images The images to look through
+   * @return The best image (hopefully)
+   */
+  private static <T extends MapillaryAbstractImage> T getBestImage(OsmPrimitive primitive, Collection<T> images) {
+    List<Pair<T, Double>> distance = images.stream().filter(Objects::nonNull)
+      .map(image -> new Pair<>(image, Geometry.getDistance(primitive, new Node(image.getExifCoor()))))
+      .sorted(Comparator.comparing(p -> p.b)).collect(Collectors.toList());
+    for (int i : new int[] { 5, 4, 3, Integer.MIN_VALUE, 2, 1 }) {
+      Optional<T> imageOptional = distance.stream().map(p -> p.a).filter(image -> image.getQuality() == i).findFirst();
+      if (imageOptional.isPresent()) {
+        return imageOptional.get();
+      }
+    }
+    return null;
   }
 
   /**
@@ -638,8 +663,21 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   }
 
   private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
-    return detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key")).map(data::getImage)
+    List<String> keys = detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key"))
       .collect(Collectors.toList());
+    String[] missing = keys.stream().filter(image -> data.getImage(image) == null).toArray(String[]::new);
+    if (keys.isEmpty())
+      MapillaryDownloader.downloadImages(missing);
+    else
+      try {
+        MainApplication.worker.submit(() -> MapillaryDownloader.downloadImages(missing)).get();
+      } catch (InterruptedException e) {
+        Logging.error(e);
+        Thread.currentThread().interrupt();
+      } catch (ExecutionException e) {
+        Logging.error(e);
+      }
+    return keys.stream().map(data::getImage).collect(Collectors.toList());
   }
 
   @Override
