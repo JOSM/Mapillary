@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.DetectionsDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
@@ -34,6 +35,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    * Set of traffic signs in the image.
    */
   private final List<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  private boolean detectionsForced;
   /**
    * If {@code true}, the image is private. If {@code false}, then it is public.
    */
@@ -72,8 +74,28 @@ public class MapillaryImage extends MapillaryAbstractImage {
     return this.key;
   }
 
+  /**
+   * Get the detections for this image
+   *
+   * @return Currently downloaded detections for the image
+   */
   public List<ImageDetection> getDetections() {
+    return this.getDetections(false);
+  }
+
+  /**
+   * Get the detections for this image
+   *
+   * @param force {@code true} to force a download, if there are no detections yet for the image.
+   * @return Detections for the image
+   */
+  public List<ImageDetection> getDetections(boolean force) {
+    if (force && !this.detectionsForced && this.detections.isEmpty()) {
+      DetectionsDownloadRunnable.get(this);
+      this.detectionsForced = true;
+    }
     return detections;
+
   }
 
   public UserProfile getUser() {

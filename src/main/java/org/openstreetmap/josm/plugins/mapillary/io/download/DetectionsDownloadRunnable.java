@@ -23,11 +23,14 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Logging;
 
 public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
   private static final long serialVersionUID = -3086641197630479852L;
@@ -106,6 +109,22 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       throw new IOException(e);
     } finally {
       MapillaryLayer.invalidateInstance();
+    }
+  }
+
+  /**
+   * @param mapillaryImage
+   */
+  public static void get(MapillaryImage mapillaryImage) {
+    HttpClient client = HttpClient.create(MapillaryURL.APIv3.retrieveDetections(mapillaryImage.getKey()));
+    OAuthUtils.addAuthenticationHeader(client);
+    try {
+      client.connect();
+      doRun(client, MapillaryLayer.getInstance().getData());
+    } catch (IOException e) {
+      Logging.error(e);
+    } finally {
+      client.disconnect();
     }
   }
 }
