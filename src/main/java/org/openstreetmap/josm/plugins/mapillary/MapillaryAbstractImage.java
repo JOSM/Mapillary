@@ -77,6 +77,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   private boolean reviewed;
   /** The quality score for the image. May not be present. */
   private int qualityScore = Integer.MIN_VALUE;
+  private boolean deleted;
 
   /**
    * Creates a new object in the given position and with the given direction.
@@ -234,7 +235,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * @return True if the image is visible; false otherwise.
    */
   public boolean isVisible() {
-    return this.visible;
+    return this.visible && !this.isDeleted();
   }
 
   /**
@@ -446,5 +447,19 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public int getQuality() {
     return this.qualityScore;
+  }
+
+  /**
+   * @param Set the image as deleted
+   */
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
+
+  /**
+   * @return {@code true} if this image is "deleted".
+   */
+  public boolean isDeleted() {
+    return this.deleted;
   }
 }

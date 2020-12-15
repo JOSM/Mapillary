@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
@@ -29,6 +30,7 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * @author Kishan
@@ -101,6 +103,22 @@ public abstract class AbstractImageViewer extends JPanel {
       this.detections.addAll(detections);
     }
     repaint();
+  }
+
+  /**
+   * @return The current list of detections
+   */
+  public Collection<ImageDetection> getAllDetections() {
+    return Collections.unmodifiableCollection(this.detections);
+  }
+
+  /**
+   * @return The detections to be shown.
+   */
+  public Collection<ImageDetection> getShownDetections() {
+    List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+    return this.detections.stream().filter(d -> !MapillaryUtils.checkIfDetectionIsFiltered(layers, d))
+      .collect(Collectors.toList());
   }
 
   public abstract Rectangle getDefaultVisibleRect();

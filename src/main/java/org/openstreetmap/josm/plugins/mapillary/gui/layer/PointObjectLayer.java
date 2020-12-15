@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -672,14 +671,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     if (keys.isEmpty())
       MapillaryDownloader.downloadImages(missing);
     else
-      try {
-        MainApplication.worker.submit(() -> MapillaryDownloader.downloadImages(missing)).get();
-      } catch (InterruptedException e) {
-        Logging.error(e);
-        Thread.currentThread().interrupt();
-      } catch (ExecutionException e) {
-        Logging.error(e);
-      }
+      MainApplication.worker.execute(() -> MapillaryDownloader.downloadImages(missing));
     return keys.stream().map(data::getImage).collect(Collectors.toList());
   }
 

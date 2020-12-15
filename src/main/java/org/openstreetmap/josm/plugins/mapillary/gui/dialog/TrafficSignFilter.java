@@ -19,6 +19,8 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -410,8 +412,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         .collect(Collectors.toList());
       for (Future<?> future : futures) {
         try {
-          future.get();
-        } catch (ExecutionException e) {
+          future.get(1, TimeUnit.SECONDS);
+        } catch (ExecutionException | TimeoutException e) {
           Logging.error(e);
         } catch (InterruptedException e) {
           Logging.error(e);

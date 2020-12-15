@@ -41,7 +41,7 @@ public class DeleteSequenceAction extends AbstractAction {
       while (iterator.hasNext() && isSeqDeleted) {
         MapillaryAbstractImage img = iterator.next();
         if (img instanceof MapillaryImage) {
-          isSeqDeleted = ((MapillaryImage) img).isDeleted();
+          isSeqDeleted = ((MapillaryImage) img).toDelete();
         }
       }
       return isSeqDeleted;

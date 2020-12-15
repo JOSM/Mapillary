@@ -81,10 +81,9 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
             .collect(Collectors.toSet());
           for (MapillaryAbstractImage img : seq.getImages()) {
             LatLon ll = img.getLatLon();
-            if (boundsCollection.isEmpty() || boundsCollection.stream().anyMatch(b -> b.contains(ll))) {
-              data.add(img);
-            } else {
-              seq.remove(img);
+            data.add(img);
+            if (!boundsCollection.isEmpty() && boundsCollection.stream().noneMatch(b -> b.contains(ll))) {
+              img.setDeleted(true);
             }
           }
         } else {

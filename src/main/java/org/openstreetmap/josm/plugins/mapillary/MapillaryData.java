@@ -209,12 +209,11 @@ public class MapillaryData implements Data {
    * @param image The {@link MapillaryAbstractImage} that is going to be deleted.
    */
   public void remove(MapillaryAbstractImage image) {
-    images.remove(image);
     if (getMultiSelectedImages().contains(image)) {
       setSelectedImage(null);
     }
     if (image.getSequence() != null) {
-      image.getSequence().remove(image);
+      image.setDeleted(true);
     }
     MapillaryLayer.invalidateInstance();
   }
@@ -279,7 +278,7 @@ public class MapillaryData implements Data {
    * @return A Set object containing all images.
    */
   public synchronized Set<MapillaryAbstractImage> getImages() {
-    return images;
+    return images.stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
   }
 
   /**
@@ -289,7 +288,7 @@ public class MapillaryData implements Data {
    * @return The MapillaryImage or {@code null}
    */
   public MapillaryImage getImage(String key) {
-    return getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
+    return this.images.parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
       .filter(m -> m.getKey().equals(key)).findAny().orElse(null);
   }
 

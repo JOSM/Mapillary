@@ -53,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageVi
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -127,6 +128,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
   private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
 
+  private VerifyRejectAction approveAction = new VerifyRejectAction(DetectionVerification.TYPE.APPROVE);
+  private VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
+
   private MapillaryMainDialog() {
     super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
       Shortcut.registerShortcut("mapillary:main", tr("Mapillary main dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
@@ -138,6 +142,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
     panel.add(imageViewer);
+    // Ensure that selecting one enables the other.
+    this.approveAction.setOther(this.rejectAction);
+    this.rejectAction.setOther(this.approveAction);
     setMode(MODE.NORMAL);
   }
 
@@ -190,6 +197,101 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     @Override
     protected BooleanProperty getProperty() {
       return MapillaryProperties.SHOW_DETECTION_OUTLINES;
+    }
+  }
+
+  private static class VerifyRejectAction extends JosmButtonAction {
+    private final DetectionVerification.TYPE type;
+    private VerifyRejectAction other;
+    private boolean listenerAdded;
+    private final MapillaryDataListener mapillaryDataListener = new MapillaryDataListener() {
+
+      @Override
+      public void imagesAdded() {
+        // Do nothing
+      }
+
+      @Override
+      public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+        updateEnabledState();
+      }
+    };
+
+    VerifyRejectAction(DetectionVerification.TYPE type) {
+      super(tr("Vote: {0}", type.toString()), getIcon(type),
+        tr("Tell Mapillary that you {0} this detection", type.toString()),
+        Shortcut.registerShortcut("mapillary:vote:" + type.toString(), tr("Mapillary: Vote {0}", type.toString()),
+          KeyEvent.VK_UNDEFINED, Shortcut.NONE),
+        false, null, false);
+      this.type = type;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (!this.listenerAdded) {
+        MapillaryLayer.getInstance().getData().addListener(mapillaryDataListener);
+        this.listenerAdded = true;
+      }
+      ImageDetection detection = getDetection();
+      if (detection != null) {
+        MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
+        if (image instanceof MapillaryImage && detection.getImageKey().equals(((MapillaryImage) image).getKey())
+          && DetectionVerification.vote(detection, this.type)) {
+          detection.setApprovalType(this.type);
+          this.updateEnabledState();
+          if (this.other != null) {
+            this.other.updateEnabledState();
+          }
+        }
+      }
+    }
+
+    @Override
+    public void updateEnabledState() {
+      MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
+      ImageDetection detection = getDetection();
+      if (!(image instanceof MapillaryImage) || detection == null) {
+        this.setEnabled(false);
+      } else {
+        if (this.type != detection.getApprovalType())
+          this.setEnabled(((MapillaryImage) image).getKey().equals(detection.getImageKey()));
+        else
+          this.setEnabled(false);
+      }
+    }
+
+    /**
+     * @return The single detection to verify/reject
+     */
+    private static ImageDetection getDetection() {
+      Collection<ImageDetection> detections = MapillaryMainDialog.getInstance().imageViewer.getShownDetections();
+      if (detections.size() == 1) {
+        return detections.iterator().next();
+      }
+      return null;
+    }
+
+    /**
+     * Set the other verify action
+     *
+     * @param other The other verify action
+     */
+    public void setOther(VerifyRejectAction other) {
+      this.other = other;
+    }
+
+    @Override
+    protected BooleanProperty getProperty() {
+      return null;
+    }
+
+    private static ImageProvider getIcon(DetectionVerification.TYPE type) {
+      if (type == DetectionVerification.TYPE.APPROVE) {
+        return new ImageProvider("apply");
+      } else if (type == DetectionVerification.TYPE.REJECT) {
+        return new ImageProvider("cancel");
+      }
+      throw new IllegalArgumentException("type " + type.name() + " is not recognized");
     }
   }
 
@@ -263,7 +365,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       buttons = Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton);
       break;
     case SMART_EDIT:
-      buttons = Stream.of(blueButton, previousButton, nextButton, redButton);
+      SideButton verify = new SideButton(approveAction);
+      SideButton reject = new SideButton(rejectAction);
+      buttons = Stream.of(blueButton, previousButton, verify, reject, nextButton, redButton);
       break;
     case NORMAL:
     default:

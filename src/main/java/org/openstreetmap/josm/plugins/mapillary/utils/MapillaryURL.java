@@ -252,6 +252,16 @@ public final class MapillaryURL {
     public static URL userURL() {
       return string2URL(baseUrl, "me", MapillaryURL.queryString(null));
     }
+
+    /**
+     * @param layer The object layer
+     * @param key The object key
+     * @return A URL to vote for the detection
+     */
+    public static URL vote(String layer, String key) {
+      return string2URL(baseUrl, String.format("object_detections/%s/%s/votes", layer, key),
+        MapillaryURL.queryString(null));
+    }
   }
 
   public static final class Cloudfront {

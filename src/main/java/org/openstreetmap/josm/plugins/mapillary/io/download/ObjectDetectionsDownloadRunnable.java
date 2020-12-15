@@ -53,7 +53,16 @@ public class ObjectDetectionsDownloadRunnable extends BoundsDownloadRunnable {
         .forEach(p -> p.put("detections_num", Integer.toString(p.get(DETECTIONS).split("detection_key").length)));
       ds.allPrimitives().forEach(p -> p.setModified(false));
       synchronized (PointObjectLayer.class) {
-        data.mergeFrom(ds);
+        boolean locked = data.isLocked();
+        try {
+          if (locked)
+            data.unlock();
+          data.mergeFrom(ds);
+        } finally {
+          if (locked) {
+            data.lock();
+          }
+        }
       }
     } catch (IllegalDataException e) {
       Logging.error(e);

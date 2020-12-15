@@ -31,7 +31,7 @@ public class DeleteImageAction extends JosmAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     if (img != null) {
-      if (img.isDeleted()) {
+      if (img.toDelete()) {
         img.unmarkDeleted();
       } else {
         img.markDeleted();
@@ -47,7 +47,7 @@ public class DeleteImageAction extends JosmAction {
 
   private void updateText() {
     if (img != null) {
-      if (img.isDeleted()) {
+      if (img.toDelete()) {
         putValue(NAME, tr("Undelete Image"));
         putValue(SHORT_DESCRIPTION, tr("Unmark image for deletion"));
       } else {

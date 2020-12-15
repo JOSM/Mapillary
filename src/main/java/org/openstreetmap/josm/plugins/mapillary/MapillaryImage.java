@@ -26,7 +26,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillarySequence
  * @see MapillaryData
  */
-public class MapillaryImage extends MapillaryAbstractImage {
+public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
   /**
    * Unique identifier of the object.
    */
@@ -43,7 +43,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   /**
    * Indicates whether or not this images has been marked for deletion.
    */
-  private boolean isDeleted = false;
+  private boolean toDelete = false;
 
   /** The default sprite for a private Mapillary image */
   public static final ImageIcon PRIVATE_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "private-ca")
@@ -70,6 +70,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
    *
    * @return A {@code String} containing the unique identifier of the object.
    */
+  @Override
   public String getKey() {
     return this.key;
   }
@@ -149,7 +150,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
 
   @Override
   public void turn(double ca) {
-    if (!isDeleted) {
+    if (!toDelete) {
       super.turn(ca);
       checkModified();
     }
@@ -158,7 +159,7 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public void markDeleted() {
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
-      isDeleted = Boolean.TRUE;
+      toDelete = Boolean.TRUE;
       this.setMovingLatLon(getExifCoor());
     }
   }
@@ -166,13 +167,13 @@ public class MapillaryImage extends MapillaryAbstractImage {
   public void unmarkDeleted() {
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
-      isDeleted = Boolean.FALSE;
+      toDelete = Boolean.FALSE;
       this.setMovingLatLon(getTempLatLon());
     }
   }
 
-  public boolean isDeleted() {
-    return isDeleted;
+  public boolean toDelete() {
+    return toDelete;
   }
 
   @Override

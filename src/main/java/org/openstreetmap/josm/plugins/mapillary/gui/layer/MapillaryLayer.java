@@ -459,7 +459,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       return;
     }
     final Point p = MainApplication.getMap().mapView.getPoint(
-      img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted() ? img.getLatLon() : img.getMovingLatLon());
+      img instanceof MapillaryImage && ((MapillaryImage) img).toDelete() ? img.getLatLon() : img.getMovingLatLon());
     final Point originalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
     Composite composite = g.getComposite();
     if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
@@ -492,7 +492,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
     if (img instanceof MapillaryImage && mode instanceof EditMode) {
-      if (!((MapillaryImage) img).isDeleted()) {
+      if (!((MapillaryImage) img).toDelete()) {
         Composite currentComposit = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
         g.setTransform(getTransform(Math.toRadians(img.getCa()), originalP, getOriginalCentroid(i), backup));
@@ -715,7 +715,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())).map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
         Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).isDeleted() && img.isVisible())
+          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).toDelete() && img.isVisible())
           .min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
       }).filter(img -> // Filters out images too far away from target
@@ -726,7 +726,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
 
   private synchronized void updateNearestImages() {
     final MapillaryAbstractImage selected = data.getSelectedImage();
-    if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).isDeleted())) {
+    if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).toDelete())) {
       nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       nearestImages = new MapillaryImage[0];

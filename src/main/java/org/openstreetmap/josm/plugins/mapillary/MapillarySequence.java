@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonReader;
@@ -104,7 +105,7 @@ public class MapillarySequence {
    *         sequence.
    */
   public List<MapillaryAbstractImage> getImages() {
-    return this.images;
+    return this.images.stream().filter(m -> !m.isDeleted()).collect(Collectors.toList());
   }
 
   /**
@@ -113,7 +114,7 @@ public class MapillarySequence {
   public void setImages(List<MapillaryAbstractImage> imageList) {
     for (MapillaryAbstractImage image : new ArrayList<>(this.images)) {
       if (!imageList.contains(image)) {
-        this.remove(image);
+        this.images.remove(image);
       }
     }
     for (MapillaryAbstractImage image : imageList) {
@@ -149,14 +150,14 @@ public class MapillarySequence {
    *         sequence.
    */
   public MapillaryAbstractImage next(MapillaryAbstractImage image) {
-    int i = this.images.indexOf(image);
+    int i = this.getImages().indexOf(image);
     if (i == -1) {
       throw new IllegalArgumentException();
     }
-    if (i == this.images.size() - 1) {
+    if (i == this.getImages().size() - 1) {
       return null;
     }
-    return this.images.get(i + 1);
+    return this.getImages().get(i + 1);
   }
 
   /**
@@ -169,23 +170,14 @@ public class MapillarySequence {
    *         sequence.
    */
   public MapillaryAbstractImage previous(MapillaryAbstractImage image) {
-    int i = this.images.indexOf(image);
+    int i = this.getImages().indexOf(image);
     if (i < 0) {
       throw new IllegalArgumentException();
     }
     if (i == 0) {
       return null;
     }
-    return this.images.get(i - 1);
-  }
-
-  /**
-   * Removes a {@link MapillaryAbstractImage} object from the database.
-   *
-   * @param image The {@link MapillaryAbstractImage} object to be removed.
-   */
-  public void remove(MapillaryAbstractImage image) {
-    this.images.remove(image);
+    return this.getImages().get(i - 1);
   }
 
   private void setUser(String userKey) {

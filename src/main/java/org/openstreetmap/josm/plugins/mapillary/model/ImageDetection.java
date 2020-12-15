@@ -7,6 +7,7 @@ import java.awt.geom.Path2D;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Pair;
@@ -22,6 +23,8 @@ public class ImageDetection extends SpecialImageArea {
   private final ObjectDetections value;
   private final String originalValue;
   private boolean rejected;
+
+  private DetectionVerification.TYPE approvalType;
 
   /**
    * Create a new ImageDetection
@@ -112,5 +115,23 @@ public class ImageDetection extends SpecialImageArea {
     if (ObjectDetections.IGNORE_DETECTIONS.contains(value))
       return Color.LIGHT_GRAY;
     return MapillaryColorScheme.IMAGEDETECTION_UNKNOWN;
+  }
+
+  /**
+   * Set the approval type
+   *
+   * @param type The approval type
+   */
+  public void setApprovalType(DetectionVerification.TYPE type) {
+    this.approvalType = type;
+  }
+
+  /**
+   * Get the approval type
+   *
+   * @return The approval type
+   */
+  public DetectionVerification.TYPE getApprovalType() {
+    return this.approvalType;
   }
 }

@@ -71,9 +71,8 @@ public class EditMode extends AbstractMode {
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
     for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      Point imagePoint = MainApplication.getMap().mapView
-        .getPoint((img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted()) ? img.getLatLon()
-          : img.getMovingLatLon());
+      Point imagePoint = MainApplication.getMap().mapView.getPoint(
+        (img instanceof MapillaryImage && ((MapillaryImage) img).toDelete()) ? img.getLatLon() : img.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
       if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance && img.isVisible()) {
@@ -101,7 +100,7 @@ public class EditMode extends AbstractMode {
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
         if (MapillaryLayer.getInstance().getData().getSelectedImage() != null
-          && (closest instanceof MapillaryImage ? !((MapillaryImage) closest).isDeleted() : true)
+          && (closest instanceof MapillaryImage ? !((MapillaryImage) closest).toDelete() : true)
           && closest.getSequence() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
