@@ -123,8 +123,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
     showRelevantObjs.setToolTipText(I18n.tr("Only show objects on detection layers (\"Relevant objects\")"));
     JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
-    // TODO remove when no longer under development and testing
-    DeveloperToggleAction.addVisibilitySwitcher(smartEditMode);
     smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
     MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditMode));
     JPanel pagination = new JPanel(new GridBagLayout());

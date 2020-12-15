@@ -117,7 +117,6 @@ import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
@@ -318,9 +317,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         Point point = mv.getPoint(p.getBBox().getCenter());
         return mv.contains(point);
       }).collect(Collectors.toList());
-      if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())
-        && MainApplication.getMap().mapView.getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL.get()
-        && DeveloperToggleAction.isDeveloper()) {
+      if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && MainApplication.getMap().mapView
+        .getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL.get()) {
         selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
       }
     } else {
