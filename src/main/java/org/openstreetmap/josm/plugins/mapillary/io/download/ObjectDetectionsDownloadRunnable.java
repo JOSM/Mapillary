@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
+import javax.json.JsonException;
+
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
@@ -64,7 +66,7 @@ public class ObjectDetectionsDownloadRunnable extends BoundsDownloadRunnable {
           }
         }
       }
-    } catch (IllegalDataException e) {
+    } catch (IllegalDataException | JsonException e) {
       Logging.error(e);
       showNotification(tr("Bad data for URL: {0}", client.getURL().toExternalForm()));
     }
