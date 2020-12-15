@@ -100,7 +100,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         if (pool != null)
           pool.execute(getNextUrl(nextURL));
         else
-          MainApplication.worker.execute(() -> getNextUrl(nextURL));
+          MainApplication.worker.execute(() -> getNextUrl(nextURL).run());
       }
       run(client);
       if (monitor instanceof ChildProgress) {
