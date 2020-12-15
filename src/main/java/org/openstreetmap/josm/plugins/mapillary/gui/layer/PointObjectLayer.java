@@ -112,6 +112,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
@@ -450,10 +451,13 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     this.displayedWindows.clear();
     this.displayedWindows.putAll(temporaryWindows);
 
-    if (prim != null && MapillaryLayer.hasInstance()) {
+    if (prim != null && (MapillaryLayer.hasInstance() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()))) {
       List<Map<String, String>> detections = parseDetections(prim.get(DETECTIONS));
 
       MapillaryData mapillaryData = MapillaryLayer.getInstance().getData();
+      if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
+        MapillaryDownloadAction.addLayer();
+      }
       MapillaryImage selectedImage = mapillaryData.getSelectedImage() instanceof MapillaryImage
         ? (MapillaryImage) mapillaryData.getSelectedImage()
         : null;

@@ -25,7 +25,6 @@ import org.openstreetmap.josm.tools.Shortcut;
  * download the images in the areas where there is OSM data.
  *
  * @author nokutu
- *
  */
 public class MapillaryDownloadAction extends JosmAction {
 
@@ -37,31 +36,15 @@ public class MapillaryDownloadAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryDownloadAction() {
-    super(
-      tr("Mapillary"),
-      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Open Mapillary layer"),
-      SHORTCUT,
-      false,
-      "mapillaryDownload",
-      true);
+    super(tr("Mapillary"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr("Open Mapillary layer"), SHORTCUT, false, "mapillaryDownload", true);
   }
 
   @Override
   public void actionPerformed(ActionEvent ae) {
     if (!MapillaryLayer.hasInstance()
       || !MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
-      LayerListModel model = LayerListDialog.getInstance().getModel();
-      model.getLayerManager().addLayer(MapillaryLayer.getInstance());
-      List<Layer> selected = model.getSelectedLayers();
-      int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
-      model.setSelectedLayer(MapillaryLayer.getInstance());
-      int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
-      while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
-        model.moveDown(mapillaryLayerIndex);
-        mapillaryLayerIndex++;
-      }
-      selected.forEach(model::setSelectedLayer);
+      addLayer();
       return;
     }
 
@@ -82,5 +65,22 @@ public class MapillaryDownloadAction extends JosmAction {
   @Override
   public void updateEnabledState() {
     super.setEnabled(MainApplication.isDisplayingMapView());
+  }
+
+  /**
+   * Add the MapillaryLayer to the JOSM layer manager
+   */
+  public static void addLayer() {
+    LayerListModel model = LayerListDialog.getInstance().getModel();
+    model.getLayerManager().addLayer(MapillaryLayer.getInstance());
+    List<Layer> selected = model.getSelectedLayers();
+    int index = model.getLayers().indexOf(model.getLayerManager().getActiveDataLayer());
+    model.setSelectedLayer(MapillaryLayer.getInstance());
+    int mapillaryLayerIndex = model.getLayers().indexOf(MapillaryLayer.getInstance());
+    while (mapillaryLayerIndex < index && mapillaryLayerIndex < model.getLayers().size()) {
+      model.moveDown(mapillaryLayerIndex);
+      mapillaryLayerIndex++;
+    }
+    selected.forEach(model::setSelectedLayer);
   }
 }
