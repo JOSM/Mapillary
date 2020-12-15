@@ -253,7 +253,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         data.addDataSource(dataSource);
       } finally {
         data.lock();
-        this.tableModelListener.updateAndRunFilters();
+        if (this.tableModelListener != null)
+          this.tableModelListener.updateAndRunFilters();
       }
     }
   }
