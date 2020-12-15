@@ -15,7 +15,6 @@ import java.util.concurrent.RecursiveAction;
 import java.util.function.Function;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ChildProgress;
@@ -28,6 +27,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -60,9 +60,13 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
   }
 
   public void run() {
+    ForkJoinPool pool = ForkJoinTask.getPool();
+    if (pool == null) {
+      pool = MapillaryUtils.getForkJoinPool(this.getClass());
+    }
     if (!completed) {
       for (URL url : urls) {
-        realRun(url);
+        pool.execute(() -> realRun(url));
       }
     }
   }
@@ -73,6 +77,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
 
   private void realRun(URL currentUrl) {
     HttpClient client = null;
+    ForkJoinPool pool = ForkJoinTask.getPool();
     try {
       if (Thread.interrupted()) {
         Logging.debug("{} for {} interrupted!", getClass().getSimpleName(), bounds.toString());
@@ -96,11 +101,10 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
       if (nextURL != null) {
-        ForkJoinPool pool = ForkJoinTask.getPool();
-        if (pool != null)
-          pool.execute(getNextUrl(nextURL));
-        else
-          MainApplication.worker.execute(() -> getNextUrl(nextURL).run());
+        if (monitor.isCanceled()) {
+          pool.shutdown();
+        }
+        pool.execute(getNextUrl(nextURL));
       }
       run(client);
       if (monitor instanceof ChildProgress) {
@@ -114,7 +118,8 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
     } catch (IOException e) {
       client.disconnect();
       String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
-      Logging.log(Logging.LEVEL_WARN, message, e);
+      Logging.warn(message);
+      Logging.warn(e);
       if (!GraphicsEnvironment.isHeadless()) {
         GuiHelper.runInEDT(() -> showNotification(message));
       }

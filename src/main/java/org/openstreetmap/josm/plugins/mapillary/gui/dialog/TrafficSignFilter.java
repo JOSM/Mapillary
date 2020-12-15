@@ -19,8 +19,6 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,6 +58,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.MODE;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
@@ -406,14 +405,14 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         .allMatch(d -> !d.shouldBeAddable() || d.getTaggingPresets().isEmpty()))
       .collect(Collectors.toList());
     this.updateShownButtons();
-    MainApplication.worker.execute(() -> {
-      filterModel.pauseUpdates();
-      List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode)).filter(Objects::nonNull)
-        .collect(Collectors.toList());
+    filterModel.pauseUpdates();
+    List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode)).filter(Objects::nonNull)
+      .collect(Collectors.toList());
+    MapillaryUtils.getForkJoinPool().execute(() -> {
       for (Future<?> future : futures) {
         try {
-          future.get(1, TimeUnit.SECONDS);
-        } catch (ExecutionException | TimeoutException e) {
+          future.get();
+        } catch (ExecutionException e) {
           Logging.error(e);
         } catch (InterruptedException e) {
           Logging.error(e);

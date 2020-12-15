@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +43,7 @@ import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -376,6 +378,7 @@ public class MapillaryData implements Data {
    */
   private static void downloadSurroundingImages(MapillaryImage mapillaryImage) {
     MainApplication.worker.execute(() -> {
+      ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
       final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
       CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance()
         .getCache(MapillaryCache.Type.FULL_IMAGE);
@@ -395,14 +398,16 @@ public class MapillaryData implements Data {
         if (nextImage != null) {
           if ((nextImage instanceof MapillaryImage)
             && (imageCache.get(((MapillaryImage) nextImage).getKey()) == null)) {
-            CacheUtils.downloadPicture((MapillaryImage) nextImage);
+            MapillaryImage current = (MapillaryImage) nextImage;
+            pool.execute(() -> CacheUtils.downloadPicture(current));
           }
           nextImage = nextImage.next();
         }
         if (prevImage != null) {
           if ((prevImage instanceof MapillaryImage)
             && (imageCache.get(((MapillaryImage) prevImage).getKey()) == null)) {
-            CacheUtils.downloadPicture((MapillaryImage) prevImage);
+            MapillaryImage current = (MapillaryImage) prevImage;
+            pool.execute(() -> CacheUtils.downloadPicture(current));
           }
           prevImage = prevImage.previous();
         }

@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +41,9 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 class SequenceDownloadRunnableTest {
   @RegisterExtension
   JOSMTestRules rules = new MapillaryTestRules().preferences();
+
+  /** It takes some time for the first test to fully initialize */
+  private static final Duration MINIMUM_INITIALIZATION = Durations.TWO_SECONDS;
 
   private String oldBaseUrl;
   private WireMockServer wmRule;
@@ -111,7 +117,9 @@ class SequenceDownloadRunnableTest {
         .getResource("/api/v3/responses/searchSequencesTicket20211Area1.geojson").toURI()))))
       .build());
     first.run();
+    Awaitility.await().atMost(MINIMUM_INITIALIZATION).until(() -> 2 == data.getImages().size());
     second.run();
+    Awaitility.await().atMost(MINIMUM_INITIALIZATION).until(() -> 3 == data.getImages().size());
     assertEquals(3, data.getImages().size());
     assertEquals(1, data.getSequences().size());
     for (MapillaryAbstractImage image : data.getImages()) {
@@ -143,6 +151,8 @@ class SequenceDownloadRunnableTest {
     final SequenceDownloadRunnable r = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
       NullProgressMonitor.INSTANCE);
     r.run();
-    assertEquals(expectedNumImgs, MapillaryLayer.getInstance().getData().getImages().size());
+    MapillaryData data = MapillaryLayer.getInstance().getData();
+    Awaitility.await().atMost(MINIMUM_INITIALIZATION).until(() -> expectedNumImgs == data.getImages().size());
+    assertEquals(expectedNumImgs, data.getImages().size());
   }
 }

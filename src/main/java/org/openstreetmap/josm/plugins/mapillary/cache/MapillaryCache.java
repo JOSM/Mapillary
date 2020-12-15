@@ -3,10 +3,12 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
+import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
 
@@ -19,6 +21,9 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
   private final URL url;
   private final String key;
+
+  private static final ThreadPoolExecutor DEFAULT_JOB_EXECUTOR = TMSCachedTileLoader
+    .getNewThreadPoolExecutor("Mapillary-image-downloader-%d", THREAD_LIMIT.get(), THREAD_LIMIT.get());
 
   /**
    * Types of images.
@@ -59,7 +64,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    */
   public MapillaryCache(final String key, final Type type) {
     super(Caches.ImageCache.getInstance().getCache(type),
-      new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)));
+      new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
     if (key == null || type == null) {
       this.key = null;
       this.url = null;

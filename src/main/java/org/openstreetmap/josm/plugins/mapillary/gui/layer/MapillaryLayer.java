@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
@@ -462,7 +463,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       img instanceof MapillaryImage && ((MapillaryImage) img).toDelete() ? img.getLatLon() : img.getMovingLatLon());
     final Point originalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
     Composite composite = g.getComposite();
-    if (selectedImg != null && !selectedImg.getSequence().equals(img.getSequence())) {
+    if (selectedImg != null && selectedImg.getSequence() != null
+      && !selectedImg.getSequence().equals(img.getSequence())) {
       g.setComposite(fadeComposite);
     }
     // Determine colors
@@ -725,6 +727,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   }
 
   private synchronized void updateNearestImages() {
+    ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
     final MapillaryAbstractImage selected = data.getSelectedImage();
     if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).toDelete())) {
       nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
@@ -739,9 +742,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       }
     }
     if (nearestImages.length >= 1) {
-      CacheUtils.downloadPicture(nearestImages[0]);
+      pool.execute(() -> CacheUtils.downloadPicture(nearestImages[0]));
       if (nearestImages.length >= 2) {
-        CacheUtils.downloadPicture(nearestImages[1]);
+        pool.execute(() -> CacheUtils.downloadPicture(nearestImages[1]));
       }
     }
   }

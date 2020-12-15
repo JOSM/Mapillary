@@ -16,7 +16,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.PluginState;
 import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Utils;
 
 public class MapillarySquareDownloadRunnable implements Runnable {
 
@@ -32,7 +31,6 @@ public class MapillarySquareDownloadRunnable implements Runnable {
    * Main constructor.
    *
    * @param bounds the bounds of the area that should be downloaded
-   *
    */
   public MapillarySquareDownloadRunnable(Bounds bounds) {
     this.bounds = bounds;
@@ -68,7 +66,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     MapillaryDownloadDialog.getInstance().downloadInfoChanged();
 
     // Download basic sequence data synchronously
-    ForkJoinPool pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-downloader-%d", 4);
+    ForkJoinPool pool = MapillaryUtils.getForkJoinPool(this.getClass());
 
     sqr = new SequenceDownloadRunnable(MapillaryLayer.getInstance().getData(), bounds,
       monitor.createSubTaskMonitor(50, false));

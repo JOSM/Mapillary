@@ -3,14 +3,18 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.AccessControlException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -36,6 +40,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * Set of utilities.
@@ -45,6 +50,7 @@ import org.openstreetmap.josm.tools.Logging;
 public final class MapillaryUtils {
 
   private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
+  private static Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
 
   private MapillaryUtils() {
     // Private constructor to avoid instantiation
@@ -347,5 +353,32 @@ public final class MapillaryUtils {
       }
     }
     return Collections.emptyList();
+  }
+
+  /**
+   * Get the Mapillary ForkJoin pools.
+   *
+   * @param clazz The class to use for naming and creating the ForkJoin pool
+   * @return The fork join pool
+   */
+  public static synchronized ForkJoinPool getForkJoinPool(Class<?> clazz) {
+    ForkJoinPool pool = forkJoinPool.get(clazz.getSimpleName());
+    if (pool == null || pool.isShutdown()) {
+      pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-" + clazz.getSimpleName() + "-%d", 4);
+      forkJoinPool.put(clazz.getSimpleName(), pool);
+    }
+    return pool;
+  }
+
+  /**
+   * @return The default ForkJoin pool
+   */
+  public static ForkJoinPool getForkJoinPool() {
+    try {
+      return ForkJoinPool.commonPool();
+    } catch (AccessControlException e) {
+      // This will occur when run with Java WebStart.
+    }
+    return getForkJoinPool(MapillaryUtils.class);
   }
 }
