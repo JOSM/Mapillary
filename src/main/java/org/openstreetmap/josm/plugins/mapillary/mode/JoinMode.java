@@ -24,7 +24,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * In this mode the user can join pictures to make sequences or unjoin them.
  *
  * @author nokutu
- *
  */
 public class JoinMode extends AbstractMode {
 
@@ -47,15 +46,13 @@ public class JoinMode extends AbstractMode {
     }
     if (this.lastClick == null && highlighted instanceof MapillaryImportedImage) {
       this.lastClick = (MapillaryImportedImage) highlighted;
-    } else if (this.lastClick != null
-      && highlighted instanceof MapillaryImportedImage) {
-      if (((highlighted.previous() == null && this.lastClick.next() == null) ||
-        (highlighted.next() == null && this.lastClick.previous() == null))
+    } else if (this.lastClick != null && highlighted instanceof MapillaryImportedImage) {
+      if (((highlighted.previous() == null && this.lastClick.next() == null)
+        || (highlighted.next() == null && this.lastClick.previous() == null)) && highlighted.getSequence() != null
         && !highlighted.getSequence().equals(this.lastClick.getSequence())) {
         MapillaryRecord.getInstance().addCommand(new CommandJoin(this.lastClick, highlighted));
       } else if (highlighted.equals(this.lastClick.next()) || highlighted.equals(this.lastClick.previous())) {
-        MapillaryRecord.getInstance().addCommand(
-          new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));
+        MapillaryRecord.getInstance().addCommand(new CommandUnjoin(Arrays.asList(this.lastClick, highlighted)));
       }
       this.lastClick = null;
     }

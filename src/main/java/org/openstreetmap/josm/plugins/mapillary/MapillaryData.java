@@ -299,7 +299,8 @@ public class MapillaryData implements Data {
    * @return all sequences that are contained in the Mapillary data
    */
   public Set<MapillarySequence> getSequences() {
-    return images.stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
+    return images.stream().map(MapillaryAbstractImage::getSequence).filter(Objects::nonNull)
+      .collect(Collectors.toSet());
   }
 
   /**

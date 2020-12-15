@@ -197,13 +197,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
   public MapillarySequence getSequence() {
-    synchronized (this) {
-      if (sequence == null) {
-        sequence = new MapillarySequence(null, null, null, this.getCapturedAt());
-        sequence.add(this);
-      }
-      return this.sequence;
-    }
+    return this.sequence;
   }
 
   /**
@@ -261,7 +255,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public MapillaryAbstractImage next() {
     synchronized (this) {
-      return getSequence().next(this);
+      if (this.getSequence() != null) {
+        return getSequence().next(this);
+      }
+      return null;
     }
   }
 
@@ -273,7 +270,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public MapillaryAbstractImage previous() {
     synchronized (this) {
-      return getSequence().previous(this);
+      if (this.getSequence() != null) {
+        return getSequence().previous(this);
+      }
+      return null;
     }
   }
 
@@ -409,7 +409,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
   public int compareTo(GpxImageEntry image) {
     if (image instanceof MapillaryAbstractImage) {
       MapillaryAbstractImage img = (MapillaryAbstractImage) image;
-      if (this.getSequence() == img.getSequence()) {
+      if (this.getSequence() == img.getSequence() && this.getSequence() != null) {
         MapillarySequence seq = this.getSequence();
         return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
       }

@@ -33,7 +33,6 @@ import org.openstreetmap.josm.tools.Shortcut;
  * Action that launches a MapillaryExportDialog and lets you export the images.
  *
  * @author nokutu
- *
  */
 public class MapillaryExportAction extends JosmAction {
 
@@ -46,9 +45,9 @@ public class MapillaryExportAction extends JosmAction {
    */
   public MapillaryExportAction() {
     super(tr("Export Mapillary images"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Export Mapillary images"), Shortcut.registerShortcut("Export Mapillary",
-            tr("Export Mapillary images"), KeyEvent.CHAR_UNDEFINED,
-            Shortcut.NONE), false, "mapillaryExport", true);
+      tr("Export Mapillary images"), Shortcut.registerShortcut("Export Mapillary", tr("Export Mapillary images"),
+        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      false, "mapillaryExport", true);
     this.setEnabled(false);
   }
 
@@ -63,16 +62,14 @@ public class MapillaryExportAction extends JosmAction {
 
     this.dialog = new MapillaryExportDialog(ok);
     pane.setMessage(this.dialog);
-    pane.setOptions(new JButton[] {ok, cancel});
+    pane.setOptions(new JButton[] { ok, cancel });
 
     JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Export Mapillary images"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 
     // Checks if the inputs are correct and starts the export process.
-    if (pane.getValue() != null
-        && (int) pane.getValue() == JOptionPane.OK_OPTION
-        && this.dialog.chooser != null) {
+    if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION && this.dialog.chooser != null) {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
         export(MapillaryLayer.getInstance().getData().getImages());
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
@@ -80,7 +77,11 @@ public class MapillaryExportAction extends JosmAction {
         for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getMultiSelectedImages()) {
           if (image instanceof MapillaryImage) {
             if (!images.contains(image)) {
-              images.addAll(image.getSequence().getImages());
+              if (image.getSequence() != null) {
+                images.addAll(image.getSequence().getImages());
+              } else {
+                images.add(image);
+              }
             }
           } else {
             images.add(image);
@@ -93,7 +94,8 @@ public class MapillaryExportAction extends JosmAction {
       // This option ignores the selected directory.
     } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
       ArrayList<MapillaryImportedImage> images = new ArrayList<>();
-      MapillaryLayer.getInstance().getData().getImages().stream().filter(img -> img instanceof MapillaryImportedImage).forEach(img -> images.add((MapillaryImportedImage) img));
+      MapillaryLayer.getInstance().getData().getImages().stream().filter(img -> img instanceof MapillaryImportedImage)
+        .forEach(img -> images.add((MapillaryImportedImage) img));
       try {
         MainApplication.worker.execute(new MapillaryExportManager(images));
       } catch (IOException e1) {
@@ -107,11 +109,11 @@ public class MapillaryExportAction extends JosmAction {
    * Exports the given images from the database.
    *
    * @param images
-   *          The set of images to be exported.
+   *        The set of images to be exported.
    */
   public void export(Set<MapillaryAbstractImage> images) {
-    MainApplication.worker.execute(new MapillaryExportManager(images,
-        this.dialog.chooser.getSelectedFile().toString()));
+    MainApplication.worker
+      .execute(new MapillaryExportManager(images, this.dialog.chooser.getSelectedFile().toString()));
   }
 
   @Override

@@ -77,7 +77,10 @@ public class MapillaryImage extends MapillaryAbstractImage {
   }
 
   public UserProfile getUser() {
-    return getSequence().getUser();
+    if (getSequence() != null) {
+      return getSequence().getUser();
+    }
+    return UserProfile.NONE;
   }
 
   public void setAllDetections(Collection<ImageDetection> newDetections) {

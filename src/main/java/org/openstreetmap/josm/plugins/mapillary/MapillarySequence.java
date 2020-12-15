@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -104,6 +105,25 @@ public class MapillarySequence {
    */
   public List<MapillaryAbstractImage> getImages() {
     return this.images;
+  }
+
+  /**
+   * @param imageList
+   */
+  public void setImages(List<MapillaryAbstractImage> imageList) {
+    for (MapillaryAbstractImage image : new ArrayList<>(this.images)) {
+      if (!imageList.contains(image)) {
+        this.remove(image);
+      }
+    }
+    for (MapillaryAbstractImage image : imageList) {
+      if (!this.images.contains(image)) {
+        this.add(image);
+      }
+    }
+    // Clear the list, and then readd for order.
+    this.images.clear();
+    this.images.addAll(imageList);
   }
 
   /**

@@ -24,7 +24,6 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
  * performed. It lets you select a couple of options.
  *
  * @author nokutu
- *
  */
 public class MapillaryUploadAction extends JosmAction implements MapillaryDataListener {
 
@@ -35,26 +34,24 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
    * Main constructor.
    */
   public MapillaryUploadAction() {
-    super(TITLE, new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        TITLE, null, false, "mapillaryUpload", true);
+    super(TITLE, new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT), TITLE, null, false,
+      "mapillaryUpload", true);
     this.setEnabled(false);
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
     MapillaryUploadDialog dialog = new MapillaryUploadDialog();
-    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.OK_CANCEL_OPTION);
+    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
     JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), TITLE);
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
 
-    if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION
-      && dialog.getDelete() != null && dialog.getSequence().isSelected()) {
-        UploadUtils.uploadSequence(
-          MapillaryLayer.getInstance().getData().getSelectedImage().getSequence(),
-          dialog.getDelete().isSelected()
-        );
+    if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION && dialog.getDelete() != null
+      && dialog.getSequence().isSelected()
+      && MapillaryLayer.getInstance().getData().getSelectedImage().getSequence() != null) {
+      UploadUtils.uploadSequence(MapillaryLayer.getInstance().getData().getSelectedImage().getSequence(),
+        dialog.getDelete().isSelected());
     }
   }
 

@@ -5,8 +5,14 @@ import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
+import org.openstreetmap.josm.tools.ImageProvider;
+
 public class UserProfile extends KeyIndexedObject implements Serializable {
   private static final long serialVersionUID = -2626823438368139952L;
+
+  /** A default user profile */
+  public static final UserProfile NONE = new UserProfile("", "",
+    ImageProvider.createBlankIcon(ImageProvider.ImageSizes.DEFAULT));
 
   private final String username;
   private final ImageIcon avatar;

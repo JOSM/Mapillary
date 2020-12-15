@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +158,7 @@ public final class MapillaryDownloader {
    * Executor that will run the petitions.
    */
   private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+    new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
 
   /**
    * Indicates whether the last download request has been rejected because it
@@ -194,8 +195,8 @@ public final class MapillaryDownloader {
       run(new MapillarySquareDownloadRunnable(bounds));
     } catch (RejectedExecutionException e) {
       new Notification("Download limit reached")
-          .setIcon(MapillaryPlugin.LOGO.setSize(ImageProvider.ImageSizes.LARGEICON).get())
-          .setDuration(Notification.TIME_LONG).show();
+        .setIcon(MapillaryPlugin.LOGO.setSize(ImageProvider.ImageSizes.LARGEICON).get())
+        .setDuration(Notification.TIME_LONG).show();
       MapillaryLayer.getInstance().getData().removeDataSource(new DataSource(bounds, bounds.toString()));
     }
   }
@@ -249,7 +250,6 @@ public final class MapillaryDownloader {
    * Checks if the given {@link LatLon} object lies inside the bounds of the image.
    *
    * @param latlon The coordinates to check.
-   *
    * @return true if it lies inside the bounds; false otherwise;
    */
   private static boolean isInBounds(LatLon latlon) {
@@ -263,13 +263,16 @@ public final class MapillaryDownloader {
    * @return The downloaded images
    */
   public static Map<String, Collection<MapillaryAbstractImage>> downloadImages(String... images) {
+    if (images.length == 0) {
+      return Collections.emptyMap();
+    }
     JsonObject response = getUrlResponse(MapillaryURL.APIv3.getImage(images));
     return JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
-        .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new,
-            (rMap, oMap) -> rMap.putAll(oMap), (rMap, oMap) -> {
-              rMap.putAll(oMap);
-              return rMap;
-            }));
+      .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new, (rMap, oMap) -> rMap.putAll(oMap),
+        (rMap, oMap) -> {
+          rMap.putAll(oMap);
+          return rMap;
+        }));
   }
 
   /**
@@ -281,9 +284,9 @@ public final class MapillaryDownloader {
   public static Collection<MapillarySequence> downloadSequences(String... sequences) {
     JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(sequences));
     Collection<MapillarySequence> returnSequences = JsonDecoder.decodeFeatureCollection(response,
-        JsonSequencesDecoder::decodeSequence);
-    JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3.getImagesBySequences(
-        returnSequences.stream().map(MapillarySequence::getKey).distinct().toArray(String[]::new)));
+      JsonSequencesDecoder::decodeSequence);
+    JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3
+      .getImagesBySequences(returnSequences.stream().map(MapillarySequence::getKey).distinct().toArray(String[]::new)));
     JsonDecoder.decodeFeatureCollection(imageResponse, JsonImageDetailsDecoder::decodeImageInfos);
     return returnSequences;
   }
@@ -321,7 +324,7 @@ public final class MapillaryDownloader {
    */
   private static boolean checkFeaturesIsArray(JsonObject object) {
     return object.containsKey(GEOJSON_FEATURES)
-        && object.get(GEOJSON_FEATURES).getValueType() == JsonValue.ValueType.ARRAY;
+      && object.get(GEOJSON_FEATURES).getValueType() == JsonValue.ValueType.ARRAY;
   }
 
   /**
@@ -331,15 +334,15 @@ public final class MapillaryDownloader {
     if (MainApplication.getLayerManager().getEditLayer() == null) {
       return;
     }
-    if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().
-      parallelStream().map(Bounds::getArea).reduce(0.0, Double::sum))) {
+    if (isAreaTooBig(MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().parallelStream()
+      .map(Bounds::getArea).reduce(0.0, Double::sum))) {
       return;
     }
-    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream().
-      filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
-      MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
-      MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
-    });
+    MainApplication.getLayerManager().getEditLayer().data.getDataSourceBounds().stream()
+      .filter(bounds -> !MapillaryLayer.getInstance().getData().getBounds().contains(bounds)).forEach(bounds -> {
+        MapillaryLayer.getInstance().getData().addDataSource(new DataSource(bounds, bounds.toString()));
+        MapillaryDownloader.getImages(bounds.getMin(), bounds.getMax());
+      });
   }
 
   /**
@@ -353,14 +356,18 @@ public final class MapillaryDownloader {
   private static boolean isAreaTooBig(final double area) {
     final boolean tooBig = area > MAX_AREA;
     if (!stoppedDownload && tooBig) {
-      new Notification(
-        I18n.tr("The Mapillary layer has stopped downloading images, because the requested area is too big!") + (getMode() == DOWNLOAD_MODE.VISIBLE_AREA
-        ? "\n" + I18n.tr("To solve this problem, you could zoom in and load a smaller area of the map.")
-        : (getMode() == DOWNLOAD_MODE.OSM_AREA ? "\n" + I18n.tr("To solve this problem, you could switch to download mode ''{0}'' and load Mapillary images for a smaller portion of the map.", DOWNLOAD_MODE.MANUAL_ONLY) : ""))
-      ).setIcon(MapillaryPlugin.LOGO.get()).setDuration(Notification.TIME_LONG).show();
+      new Notification(I18n
+        .tr("The Mapillary layer has stopped downloading images, because the requested area is too big!")
+        + (getMode() == DOWNLOAD_MODE.VISIBLE_AREA
+          ? "\n" + I18n.tr("To solve this problem, you could zoom in and load a smaller area of the map.")
+          : (getMode() == DOWNLOAD_MODE.OSM_AREA ? "\n" + I18n.tr(
+            "To solve this problem, you could switch to download mode ''{0}'' and load Mapillary images for a smaller portion of the map.",
+            DOWNLOAD_MODE.MANUAL_ONLY) : ""))).setIcon(MapillaryPlugin.LOGO.get()).setDuration(Notification.TIME_LONG)
+              .show();
     }
     if (stoppedDownload && !tooBig) {
-      new Notification("The Mapillary layer now continues to download images…").setIcon(MapillaryPlugin.LOGO.get()).show();
+      new Notification("The Mapillary layer now continues to download images…").setIcon(MapillaryPlugin.LOGO.get())
+        .show();
     }
     stoppedDownload = tooBig;
     return tooBig;
@@ -377,8 +384,8 @@ public final class MapillaryDownloader {
       Logging.error(e);
       Thread.currentThread().interrupt();
     }
-    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.DiscardPolicy());
+    executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100),
+      new ThreadPoolExecutor.DiscardPolicy());
     shutdownTasks.forEach((download) -> {
       MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) download;
       msdrDownload.getMonitor().finishTask();
@@ -418,7 +425,8 @@ public final class MapillaryDownloader {
    * Remove background hash of download if it was not able to complete
    */
   public static void removeHash(MapillarySquareDownloadRunnable download) {
-    MapillaryLayer.getInstance().getData().removeDataSource(new DataSource(download.getBounds(), download.getBounds().toString()));
+    MapillaryLayer.getInstance().getData()
+      .removeDataSource(new DataSource(download.getBounds(), download.getBounds().toString()));
   }
 
   /**

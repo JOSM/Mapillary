@@ -426,7 +426,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
-        if (!OrganizationRecord.NULL_RECORD.equals(organization)
+        if (!OrganizationRecord.NULL_RECORD.equals(organization) && img.getSequence() != null
           && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
           return true;
         }

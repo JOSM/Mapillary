@@ -53,13 +53,14 @@ public class SelectMode extends AbstractMode {
 
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
-        if (MapillaryLayer.getInstance().getData().getSelectedImage() != null) {
+        if (MapillaryLayer.getInstance().getData().getSelectedImage() != null && closest.getSequence() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
       } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) { // ctrl + click
         MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest);
       } else if (e.getModifiersEx() == (InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK)) { // shift + click
-        if (lastClicked != null && closest.getSequence() == lastClicked.getSequence()) {
+        if (lastClicked != null && closest.getSequence() != null
+          && closest.getSequence() == lastClicked.getSequence()) {
           final int i = closest.getSequence().getImages().indexOf(closest);
           final int j = lastClicked.getSequence().getImages().indexOf(lastClicked);
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(

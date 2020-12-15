@@ -271,8 +271,11 @@ public final class MapillaryChangesetDialog extends ToggleDialog
     public void actionPerformed(ActionEvent e) {
       double turnCa = getInstance().seqOffset.getDouble();
       if (turnCa != 0.0 && turnCa != 360.0) {
-        List<MapillaryAbstractImage> images = MapillaryLayer.getInstance().getData().getSelectedImage().getSequence()
-          .getImages();
+        MapillaryAbstractImage image = MapillaryLayer.getInstance().getData().getSelectedImage();
+        if (image.getSequence() == null) {
+          return;
+        }
+        List<MapillaryAbstractImage> images = image.getSequence().getImages();
         images.forEach(img -> {
           img.turn(turnCa);
         });
@@ -313,7 +316,11 @@ public final class MapillaryChangesetDialog extends ToggleDialog
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryLayer.getInstance().getData().getSelectedImage().getSequence().getImages().forEach(img -> {
+      MapillaryAbstractImage image = MapillaryLayer.getInstance().getData().getSelectedImage();
+      if (image.getSequence() == null) {
+        return;
+      }
+      image.getSequence().getImages().forEach(img -> {
         if (img.next() != null) {
           img.setMovingCa((Math.toDegrees(Math.atan2(img.next().getMovingLatLon().getX() - img.getMovingLatLon().getX(),
             img.next().getMovingLatLon().getY() - img.getMovingLatLon().getY())) + 360) % 360);

@@ -14,7 +14,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
  * Command used to delete a set of images.
  *
  * @author nokutu
- *
  */
 public class CommandDelete extends MapillaryExecutableCommand {
 
@@ -24,7 +23,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
    * Main constructor.
    *
    * @param images
-   *          The set of images that are going to be deleted.
+   *        The set of images that are going to be deleted.
    */
   public CommandDelete(final Set<? extends MapillaryAbstractImage> images) {
     super(images);
@@ -37,17 +36,16 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void execute() {
-      this.images.forEach((img) -> {// Get index first so order is preserved
-          this.changesHash.put(img, img.getSequence().getImages().indexOf(img));
-      });
-      // Same code as redo
-      redo();
+    this.images.stream().filter(image -> image.getSequence() != null).forEach((img) ->
+    // Get index first so order is preserved
+    this.changesHash.put(img, img.getSequence().getImages().indexOf(img)));
+    // Same code as redo
+    redo();
   }
 
   @Override
   public String toString() {
-    return trn("Deleted {0} image", "Deleted {0} images", this.images.size(),
-        this.images.size());
+    return trn("Deleted {0} image", "Deleted {0} images", this.images.size(), this.images.size());
   }
 
   @Override

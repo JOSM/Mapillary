@@ -7,7 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
+
 import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -42,12 +44,8 @@ public class EditMode extends AbstractMode {
    * Main Constructor
    */
   public EditMode() {
-    super(
-      tr("Mapillary Edit Mode"),
-      "mapillary-edit",
-      tr("Edit images in Mapillary Layer"),
-      ImageProvider.getCursor("normal", null)
-    );
+    super(tr("Mapillary Edit Mode"), "mapillary-edit", tr("Edit images in Mapillary Layer"),
+      ImageProvider.getCursor("normal", null));
     this.record = MapillaryRecord.getInstance();
   }
 
@@ -73,12 +71,12 @@ public class EditMode extends AbstractMode {
     double minDistance = Double.MAX_VALUE;
     MapillaryAbstractImage closest = null;
     for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      Point imagePoint = MainApplication.getMap().mapView.getPoint(
-        (img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted()) ? img.getLatLon() : img.getMovingLatLon());
+      Point imagePoint = MainApplication.getMap().mapView
+        .getPoint((img instanceof MapillaryImage && ((MapillaryImage) img).isDeleted()) ? img.getLatLon()
+          : img.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
-      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance
-        && img.isVisible()) {
+      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance && img.isVisible()) {
         minDistance = dist;
         closest = img;
       }
@@ -103,7 +101,8 @@ public class EditMode extends AbstractMode {
     if (MainApplication.getLayerManager().getActiveLayer() instanceof MapillaryLayer) {
       if (e.getClickCount() == 2) { // Double click
         if (MapillaryLayer.getInstance().getData().getSelectedImage() != null
-          && (closest instanceof MapillaryImage ? !((MapillaryImage) closest).isDeleted() : true)) {
+          && (closest instanceof MapillaryImage ? !((MapillaryImage) closest).isDeleted() : true)
+          && closest.getSequence() != null) {
           MapillaryLayer.getInstance().getData().addMultiSelectedImage(closest.getSequence().getImages());
         }
       } else { // click
@@ -120,19 +119,19 @@ public class EditMode extends AbstractMode {
   public void mouseDragged(MouseEvent e) {
     MapillaryAbstractImage highlightImg = MapillaryLayer.getInstance().getData().getHighlightedImage();
     if (MainApplication.getLayerManager().getActiveLayer() == MapillaryLayer.getInstance()
-      && SwingUtilities.isLeftMouseButton(e)
-      && highlightImg != null && highlightImg.getLatLon() != null) {
+      && SwingUtilities.isLeftMouseButton(e) && highlightImg != null && highlightImg.getLatLon() != null) {
       Point highlightImgPoint = MainApplication.getMap().mapView.getPoint(highlightImg.getTempLatLon());
       if (e.isShiftDown()) { // turn
-        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().forEach(img -> img
-          .turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY()))
-            - highlightImg.getTempCa()));
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
+          .forEach(img -> img
+            .turn(Math.toDegrees(Math.atan2(e.getX() - highlightImgPoint.getX(), -e.getY() + highlightImgPoint.getY()))
+              - highlightImg.getTempCa()));
       } else { // move
         LatLon eventLatLon = MainApplication.getMap().mapView.getLatLon(e.getX(), e.getY());
         LatLon imgLatLon = MainApplication.getMap().mapView.getLatLon(highlightImgPoint.getX(),
           highlightImgPoint.getY());
-        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream().forEach(img -> img
-            .move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
+        MapillaryLayer.getInstance().getData().getMultiSelectedImages().parallelStream()
+          .forEach(img -> img.move(eventLatLon.getX() - imgLatLon.getX(), eventLatLon.getY() - imgLatLon.getY()));
       }
       MapillaryLayer.invalidateInstance();
     }

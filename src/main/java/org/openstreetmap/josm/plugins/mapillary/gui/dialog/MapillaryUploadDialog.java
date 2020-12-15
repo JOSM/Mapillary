@@ -73,6 +73,9 @@ public class MapillaryUploadDialog extends JPanel {
   }
 
   private static boolean checkImages(MapillarySequence sequence) {
+    if (sequence == null) {
+      return false;
+    }
     boolean allReviewed = true;
     List<MapillaryAbstractImage> images = sequence.getImages();
     for (MapillaryAbstractImage img : images) {

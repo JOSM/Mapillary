@@ -150,7 +150,7 @@ public final class MapillaryUtils {
     if (imgA == null || imgB == null) {
       throw new IllegalArgumentException("Both images must be non-null for joining.");
     }
-    if (imgA.getSequence() == imgB.getSequence()) {
+    if (imgA.getSequence() == imgB.getSequence() || imgB.getSequence() == null || imgA.getSequence() == null) {
       throw new IllegalArgumentException("You can only join images of different sequences.");
     }
     if ((imgA.next() != null || imgB.previous() != null) && (imgB.next() != null || imgA.previous() != null)) {
@@ -224,7 +224,7 @@ public final class MapillaryUtils {
     if (imgA == null || imgB == null) {
       throw new IllegalArgumentException("Both images must be non-null for unjoining.");
     }
-    if (imgA.getSequence() != imgB.getSequence()) {
+    if (imgA.getSequence() != imgB.getSequence() || imgA.getSequence() == null) {
       throw new IllegalArgumentException("You can only unjoin with two images from the same sequence.");
     }
     if (imgB.equals(imgA.next()) && imgA.equals(imgB.next())) {

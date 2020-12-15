@@ -454,7 +454,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
       && !getData().getMultiSelectedImages().contains(img)
-      && (selectedImg == null || !img.getSequence().equals(selectedImg.getSequence()))) {
+      && (selectedImg == null || (img.getSequence() != null && !img.getSequence().equals(selectedImg.getSequence())))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
       return;
     }
@@ -708,6 +708,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
   private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
+    if (target.getSequence() == null) {
+      return new MapillaryImage[] {};
+    }
     return data.getSequences().parallelStream()
       .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())).map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
