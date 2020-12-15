@@ -197,7 +197,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    *
    * @return The MapillarySequence object that contains this MapillaryImage.
    */
-  public MapillarySequence getSequence() {
+  public synchronized MapillarySequence getSequence() {
     return this.sequence;
   }
 
@@ -414,9 +414,11 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
         MapillarySequence seq = this.getSequence();
         return compare(seq.getImages().indexOf(this), seq.getImages().indexOf(image));
       }
-      int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());
-      if (compareSeq != 0) {
-        return compareSeq;
+      if (this.getSequence() != null && img.getSequence() != null) {
+        int compareSeq = compare(this.getSequence().getCapturedAt(), img.getSequence().getCapturedAt());
+        if (compareSeq != 0) {
+          return compareSeq;
+        }
       }
     }
     int compareTime = super.compareTo(image);

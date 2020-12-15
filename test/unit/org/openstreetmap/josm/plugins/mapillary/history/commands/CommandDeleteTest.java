@@ -57,9 +57,13 @@ class CommandDeleteTest {
     img4.setCapturedAt(1);
     seq.add(Arrays.asList(img1, img2, img3));
     orignalSeq = seq;
+    for (MapillaryAbstractImage img : Arrays.asList(img1, img2, img3, img4, img5)) {
+      MapillarySequence seq = new MapillarySequence(null, null, null, img.getCapturedAt());
+      seq.add(img);
+    }
     data = MapillaryLayer.getInstance().getData();
     // Ensure that this test is not contaminated by other tests.
-    data.remove(data.getImages());
+    data.clear();
     data.addAll(Arrays.asList(img1, img2, img3, img4, img5));
     delete = new CommandDelete(new ConcurrentSkipListSet<>(Arrays.asList(img1, img3, img4, img5)));
     delete.execute();

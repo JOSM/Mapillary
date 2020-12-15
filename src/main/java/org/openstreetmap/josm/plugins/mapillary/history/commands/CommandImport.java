@@ -12,7 +12,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
  * Imports a set of images stored locally.
  *
  * @author nokutu
- *
  */
 public class CommandImport extends MapillaryExecutableCommand {
 
@@ -20,8 +19,8 @@ public class CommandImport extends MapillaryExecutableCommand {
    * Main constructor.
    *
    * @param images
-   *          The set of images that are going to be added. Might be in the same
-   *          sequence or not.
+   *        The set of images that are going to be added. Might be in the same
+   *        sequence or not.
    */
   public CommandImport(Set<MapillaryAbstractImage> images) {
     super(images);
@@ -34,14 +33,13 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void undo() {
-    for (MapillaryAbstractImage img : this.images) {
-      MapillaryLayer.getInstance().getData().getImages().remove(img);
-    }
+    MapillaryLayer.getInstance().getData().remove(this.images);
     MapillaryLayer.invalidateInstance();
   }
 
   @Override
   public void redo() {
+    this.images.stream().forEach(image -> image.setDeleted(false));
     this.execute();
   }
 
@@ -51,7 +49,6 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public String toString() {
-    return trn("Imported {0} image", "Imported {0} images", this.images.size(),
-        this.images.size());
+    return trn("Imported {0} image", "Imported {0} images", this.images.size(), this.images.size());
   }
 }

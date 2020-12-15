@@ -110,8 +110,10 @@ class MapillaryAbstractImageTest {
     changesHash.put(img1, img1.getSequence().getImages().indexOf(img1));
     changesHash.put(img2, img2.getSequence().getImages().indexOf(img2));
     changesHash.put(img3, img3.getSequence().getImages().indexOf(img3));
-    changesHash.put(img4, img4.getSequence().getImages().indexOf(img4));
-    changesHash.put(img5, img5.getSequence().getImages().indexOf(img5));
+
+    // We don't create a default sequence anymore for images.
+    changesHash.put(img4, 0);
+    changesHash.put(img5, 0);
     assertEquals(5, changesHash.size());
   }
 }
