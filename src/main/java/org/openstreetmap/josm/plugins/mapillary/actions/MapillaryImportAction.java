@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.ImportMethodDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandImport;
@@ -30,19 +30,15 @@ public class MapillaryImportAction extends JosmAction {
    * @see JosmAction#JosmAction(String, String, String, Shortcut, boolean, String, boolean)
    */
   public MapillaryImportAction() {
-    super(
-      tr("Import pictures"),
-      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Import local pictures"),
-      Shortcut.registerShortcut("Import Mapillary", tr("Import pictures into Mapillary layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      false,
-      "mapillaryImport",
-      false
-    );
+    super(tr("Import pictures"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr("Import local pictures"), Shortcut.registerShortcut("Import Mapillary",
+        tr("Import pictures into Mapillary layer"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      false, "mapillaryImport", false);
   }
 
   /**
    * Records in the history, that the given images were loaded
+   *
    * @param addedImages the images that have been loaded
    */
   public static void recordChanges(List<MapillaryAbstractImage> addedImages) {

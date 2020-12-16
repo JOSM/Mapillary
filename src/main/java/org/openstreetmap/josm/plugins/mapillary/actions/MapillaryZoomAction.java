@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -18,10 +18,8 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
  * Zooms to the currently selected image.
  *
  * @author nokutu
- *
  */
-public class MapillaryZoomAction extends JosmAction implements
-    MapillaryDataListener {
+public class MapillaryZoomAction extends JosmAction implements MapillaryDataListener {
 
   private static final long serialVersionUID = -6050566219765623059L;
 
@@ -29,15 +27,8 @@ public class MapillaryZoomAction extends JosmAction implements
    * Main constructor.
    */
   public MapillaryZoomAction() {
-    super(
-      tr("Zoom to selected image"),
-      new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Zoom to the currently selected Mapillary image"),
-      null,
-      false,
-      "mapillaryZoom",
-      true
-    );
+    super(tr("Zoom to selected image"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr("Zoom to the currently selected Mapillary image"), null, false, "mapillaryZoom", true);
   }
 
   @Override
@@ -45,8 +36,8 @@ public class MapillaryZoomAction extends JosmAction implements
     if (MapillaryLayer.getInstance().getData().getSelectedImage() == null) {
       throw new IllegalStateException();
     }
-    MainApplication.getMap().mapView.zoomTo(MapillaryLayer.getInstance().getData()
-        .getSelectedImage().getMovingLatLon());
+    MainApplication.getMap().mapView
+      .zoomTo(MapillaryLayer.getInstance().getData().getSelectedImage().getMovingLatLon());
   }
 
   @Override

@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.data.image;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.DetectionsDownloadRunnable;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;

@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.data.image;
 
 import static java.lang.Integer.compare;
 import static java.lang.Long.compare;

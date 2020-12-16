@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.openstreetmap.josm.gui.PleaseWaitRunnable;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -50,11 +50,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    * @param path Export path.
    */
   public MapillaryExportManager(Set<MapillaryAbstractImage> images, String path) {
-    super(
-      tr("Downloading…"),
-      new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")),
-      true
-    );
+    super(tr("Downloading…"), new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")), true);
     this.images = images == null ? new HashSet<>() : images;
     this.path = path;
     this.amount = this.images.size();
@@ -64,11 +60,11 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    * Constructor used to rewrite imported images.
    *
    * @param images
-   *          The set of {@link MapillaryImportedImage} object that is going to
-   *          be rewritten.
+   *        The set of {@link MapillaryImportedImage} object that is going to
+   *        be rewritten.
    * @throws IOException
-   *           If the file of one of the {@link MapillaryImportedImage} objects
-   *           doesn't contain a picture.
+   *         If the file of one of the {@link MapillaryImportedImage} objects
+   *         doesn't contain a picture.
    */
   public MapillaryExportManager(List<MapillaryImportedImage> images) throws IOException {
     this(null, null);
@@ -88,8 +84,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   @Override
   protected void realRun() throws IOException {
     // Starts a writer thread in order to write the pictures on the disk.
-    this.writer = new MapillaryExportWriterThread(this.path, this.queue,
-        this.queueImages, this.amount, this.getProgressMonitor());
+    this.writer = new MapillaryExportWriterThread(this.path, this.queue, this.queueImages, this.amount,
+      this.getProgressMonitor());
     this.writer.start();
     if (this.path == null) {
       try {
@@ -100,13 +96,11 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       }
       return;
     }
-    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS,
-      new ArrayBlockingQueue<>(10));
+    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
     for (MapillaryAbstractImage image : this.images) {
       if (image instanceof MapillaryImage) {
         try {
-          this.ex.execute(new MapillaryExportDownloadThread(
-              (MapillaryImage) image, this.queue, this.queueImages));
+          this.ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image, this.queue, this.queueImages));
         } catch (Exception e) {
           Logging.error(e);
         }

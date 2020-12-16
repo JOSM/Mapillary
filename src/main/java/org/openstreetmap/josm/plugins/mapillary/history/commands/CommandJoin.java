@@ -6,14 +6,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * Command joined when joining two images into the same sequence.
  *
  * @author nokutu
- *
  */
 public class CommandJoin extends MapillaryExecutableCommand {
 

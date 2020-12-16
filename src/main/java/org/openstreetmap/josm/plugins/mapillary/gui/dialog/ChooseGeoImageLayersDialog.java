@@ -27,10 +27,10 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -38,7 +38,8 @@ import org.openstreetmap.josm.tools.Logging;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
-  private static final String QUESTION = I18n.marktr("Which image layers do you want to import into the Mapillary layer?");
+  private static final String QUESTION = I18n
+    .marktr("Which image layers do you want to import into the Mapillary layer?");
 
   public ChooseGeoImageLayersDialog(final Component parent, final List<GeoImageLayer> layers) {
     super(GuiHelper.getFrameForComponent(parent), I18n.tr(QUESTION));
@@ -63,31 +64,31 @@ public class ChooseGeoImageLayersDialog extends JDialog {
     final JButton importButton = new JButton(I18n.tr("Import"), new ImageProvider("copy").get());
 
     // Set the import button enabled/disabled depending on if there are selected items in the layer list
-    final ListSelectionListener importButtonEnabler = it -> importButton.setEnabled(list.getSelectedValuesList().size() >= 1);
+    final ListSelectionListener importButtonEnabler = it -> importButton
+      .setEnabled(list.getSelectedValuesList().size() >= 1);
     importButtonEnabler.valueChanged(null);
     list.addListSelectionListener(importButtonEnabler);
 
     importButton.addActionListener(e -> {
       list.getSelectedValuesList().parallelStream().map(gil -> {
         MapillarySequence seq = new MapillarySequence();
-        seq.add(
-          gil.getImages().parallelStream()
-            .map(img -> {
-              try {
-                return MapillaryImportedImage.createInstance(img);
-              } catch (IllegalArgumentException iae) {
-                final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");
-                Logging.log(Logging.LEVEL_WARN, message, iae);
-                if (!GraphicsEnvironment.isHeadless()) {
-                  new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();
-                }
-                return null;
-              }
-            })
-            .filter(Objects::nonNull)
-            .sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order by capturedAt timestamp (ascending)
-            .collect(Collectors.toList())
-        );
+        seq.add(gil.getImages().parallelStream().map(img -> {
+          try {
+            return MapillaryImportedImage.createInstance(img);
+          } catch (IllegalArgumentException iae) {
+            final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");
+            Logging.log(Logging.LEVEL_WARN, message, iae);
+            if (!GraphicsEnvironment.isHeadless()) {
+              new Notification(message).setIcon(MapillaryPlugin.LOGO.get()).show();
+            }
+            return null;
+          }
+        }).filter(Objects::nonNull).sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order
+                                                                                                                   // by
+                                                                                                                   // capturedAt
+                                                                                                                   // timestamp
+                                                                                                                   // (ascending)
+          .collect(Collectors.toList()));
         return seq;
       }).forEach(seq -> {
         MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
@@ -109,20 +110,18 @@ public class ChooseGeoImageLayersDialog extends JDialog {
 
   protected static class GeoImageLayerListCellRenderer implements ListCellRenderer<GeoImageLayer> {
     @Override
-    public Component getListCellRendererComponent(
-      JList<? extends GeoImageLayer> list, GeoImageLayer value, int index, boolean isSelected, boolean cellHasFocus
-    ) {
-      final JLabel result = value == null
-          ? null
-          : new JLabel(
-            /* i18n: {0} is the layer name, {1} the number of images in it */
-            I18n.trn("{0} ({1} image)", "{0} ({1} images)", value.getImages().size(), value.getName(), value.getImages().size()),
-            value.getIcon(),
-            SwingConstants.LEADING
-          );
+    public Component getListCellRendererComponent(JList<? extends GeoImageLayer> list, GeoImageLayer value, int index,
+      boolean isSelected, boolean cellHasFocus) {
+      final JLabel result = value == null ? null
+        : new JLabel(
+          /* i18n: {0} is the layer name, {1} the number of images in it */
+          I18n.trn("{0} ({1} image)", "{0} ({1} images)", value.getImages().size(), value.getName(),
+            value.getImages().size()),
+          value.getIcon(), SwingConstants.LEADING);
       if (result != null) {
         result.setOpaque(true);
-        result.setBackground(isSelected ? UIManager.getColor("List.selectionBackground") : UIManager.getColor("List.background"));
+        result.setBackground(
+          isSelected ? UIManager.getColor("List.selectionBackground") : UIManager.getColor("List.background"));
       }
       return result;
     }

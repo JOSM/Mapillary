@@ -4,13 +4,12 @@ package org.openstreetmap.josm.plugins.mapillary.history.commands;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 
 /**
  * Abstract class for any Mapillary command.
  *
  * @author nokutu
- *
  */
 public abstract class MapillaryCommand {
   /** Set of {@link MapillaryAbstractImage} objects affected by the command */
@@ -20,7 +19,7 @@ public abstract class MapillaryCommand {
    * Main constructor.
    *
    * @param images
-   *          The images that are affected by the command.
+   *        The images that are affected by the command.
    */
   public MapillaryCommand(final Set<? extends MapillaryAbstractImage> images) {
     this.images = new ConcurrentSkipListSet<>(images);
@@ -41,7 +40,7 @@ public abstract class MapillaryCommand {
    * they are summed in order to reduce them to just one command.
    *
    * @param command
-   *          The command to be summed to last command.
+   *        The command to be summed to last command.
    */
   public abstract void sum(MapillaryCommand command);
 

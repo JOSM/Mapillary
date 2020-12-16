@@ -13,9 +13,9 @@ import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryWalkDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
@@ -26,7 +26,6 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
  * Walks forward at a given interval.
  *
  * @author nokutu
- *
  */
 public class MapillaryWalkAction extends JosmAction implements MapillaryDataListener {
 
@@ -36,24 +35,20 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   private final List<WalkListener> listeners = new ArrayList<>();
 
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-        tr("Walk mode"), null,
-        false, "mapillaryWalk", true);
+    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT), tr("Walk mode"), null,
+      false, "mapillaryWalk", true);
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
     MapillaryWalkDialog dialog = new MapillaryWalkDialog();
-    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE,
-        JOptionPane.OK_CANCEL_OPTION);
+    JOptionPane pane = new JOptionPane(dialog, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
     JDialog dlg = pane.createDialog(MainApplication.getMainFrame(), tr("Walk mode"));
     dlg.setMinimumSize(new Dimension(400, 150));
     dlg.setVisible(true);
-    if (pane.getValue() != null
-        && (int) pane.getValue() == JOptionPane.OK_OPTION) {
-      this.thread = new WalkThread((int) dialog.spin.getValue(),
-          dialog.waitForPicture.isSelected(),
-          dialog.followSelection.isSelected(), dialog.goForward.isSelected());
+    if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION) {
+      this.thread = new WalkThread((int) dialog.spin.getValue(), dialog.waitForPicture.isSelected(),
+        dialog.followSelection.isSelected(), dialog.goForward.isSelected());
       fireWalkStarted();
       this.thread.start();
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.WALK);
@@ -69,7 +64,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
    * Adds a listener.
    *
    * @param lis
-   *          The listener to be added.
+   *        The listener to be added.
    */
   public void addListener(WalkListener lis) {
     this.listeners.add(lis);
@@ -79,7 +74,7 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
    * Removes a listener.
    *
    * @param lis
-   *          The listener to be added.
+   *        The listener to be added.
    */
   public void removeListener(WalkListener lis) {
     this.listeners.remove(lis);

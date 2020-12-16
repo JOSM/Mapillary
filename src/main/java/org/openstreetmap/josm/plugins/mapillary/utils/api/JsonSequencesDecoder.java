@@ -11,9 +11,9 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 

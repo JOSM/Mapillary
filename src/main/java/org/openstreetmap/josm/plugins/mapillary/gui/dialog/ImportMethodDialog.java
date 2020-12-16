@@ -26,8 +26,8 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -36,7 +36,8 @@ import org.openstreetmap.josm.tools.ImageProvider;
 
 public class ImportMethodDialog extends JDialog {
   private static final long serialVersionUID = -1654848887884375567L;
-  private static final String QUESTION = I18n.marktr("From which source do you want to import images to the Mapillary layer?");
+  private static final String QUESTION = I18n
+    .marktr("From which source do you want to import images to the Mapillary layer?");
   private static final String NO_LAYERS_MESSAGE = I18n.marktr("There are currently no layers with geotagged images!");
   private static final String IMPORT_METHOD_FILE = I18n.marktr("Images from my file system");
   private static final String FILE_IMPORT_TITLE = I18n.marktr("Select the images you want to import");
@@ -104,7 +105,8 @@ public class ImportMethodDialog extends JDialog {
             }
             MapillaryImportAction.recordChanges(seq.getImages());
           } catch (IOException e1) {
-            JOptionPane.showMessageDialog(this, I18n.tr("Could not import the image ''{0}''!", f.getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
+            JOptionPane.showMessageDialog(this, I18n.tr("Could not import the image ''{0}''!", f.getAbsolutePath(),
+              I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
           }
         }
         MapillaryLayer.invalidateInstance();
@@ -125,7 +127,9 @@ public class ImportMethodDialog extends JDialog {
           }
           MapillaryImportAction.recordChanges(seq.getImages());
         } catch (IOException e1) {
-          JOptionPane.showMessageDialog(this, I18n.tr("Could not import the directory ''{0}''!", DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(), I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
+          JOptionPane.showMessageDialog(this,
+            I18n.tr("Could not import the directory ''{0}''!", DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(),
+              I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
         }
         MapillaryLayer.invalidateInstance();
         dispose();
@@ -135,7 +139,8 @@ public class ImportMethodDialog extends JDialog {
     imgLayerBtn.addActionListener(ae -> {
       List<GeoImageLayer> layers = MainApplication.getLayerManager().getLayersOfType(GeoImageLayer.class);
       if (layers.isEmpty()) {
-        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE), JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, I18n.tr(NO_LAYERS_MESSAGE), I18n.tr(NO_LAYERS_MESSAGE),
+          JOptionPane.WARNING_MESSAGE);
       } else {
         ChooseGeoImageLayersDialog dia = new ChooseGeoImageLayersDialog(this, layers);
         dia.setVisible(true);
@@ -148,12 +153,12 @@ public class ImportMethodDialog extends JDialog {
       }
     });
 
-
     final JPanel answerPanel = new JPanel(new GridLayout(1, 3, 10, 10));
     answerPanel.add(filesBtn);
     answerPanel.add(directoryBtn);
     answerPanel.add(imgLayerBtn);
-    answerPanel.setPreferredSize(new Dimension(answerPanel.getPreferredSize().width, answerPanel.getPreferredSize().height*3));
+    answerPanel
+      .setPreferredSize(new Dimension(answerPanel.getPreferredSize().width, answerPanel.getPreferredSize().height * 3));
     return answerPanel;
   }
 }

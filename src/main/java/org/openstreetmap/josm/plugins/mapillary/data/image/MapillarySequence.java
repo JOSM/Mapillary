@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.data.image;
 
 import java.io.IOException;
 import java.io.InputStream;

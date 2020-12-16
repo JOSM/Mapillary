@@ -7,7 +7,7 @@ import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
@@ -19,9 +19,8 @@ public class MapillaryImageTreeCellRenderer extends DefaultTreeCellRenderer {
   private static final Icon ICON = new ImageProvider("mapicon").setMaxSize(16).get();
 
   @Override
-  public Component getTreeCellRendererComponent(
-    JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus
-  ) {
+  public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+    int row, boolean hasFocus) {
     super.getTreeCellRendererComponent(tree, value.toString(), sel, expanded, leaf, row, hasFocus);
     setIcon(ICON);
     return this;

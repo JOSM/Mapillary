@@ -5,14 +5,13 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.Set;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
 /**
  * Command created when an image's direction is changed.
  *
  * @author nokutu
- *
  */
 public class CommandTurn extends MapillaryCommand {
   private double ca;
@@ -21,9 +20,9 @@ public class CommandTurn extends MapillaryCommand {
    * Main constructor.
    *
    * @param images
-   *          Set of images that is turned.
+   *        Set of images that is turned.
    * @param ca
-   *          How much the images turn.
+   *        How much the images turn.
    */
   public CommandTurn(Set<MapillaryAbstractImage> images, double ca) {
     super(images);
@@ -50,8 +49,7 @@ public class CommandTurn extends MapillaryCommand {
 
   @Override
   public String toString() {
-    return trn("Turned {0} image", "Turned {0} images", this.images.size(),
-        this.images.size());
+    return trn("Turned {0} image", "Turned {0} images", this.images.size(), this.images.size());
   }
 
   @Override

@@ -11,10 +11,10 @@ import javax.imageio.ImageIO;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -25,8 +25,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillaryExportManager
  * @see MapillaryExportWriterThread
  */
-public class MapillaryExportDownloadThread extends Thread implements
-    ICachedLoaderListener {
+public class MapillaryExportDownloadThread extends Thread implements ICachedLoaderListener {
 
   private final ArrayBlockingQueue<BufferedImage> queue;
   private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
@@ -37,17 +36,16 @@ public class MapillaryExportDownloadThread extends Thread implements
    * Main constructor.
    *
    * @param image
-   *          Image to be downloaded.
+   *        Image to be downloaded.
    * @param queue
-   *          Queue of {@link BufferedImage} objects for the
-   *          {@link MapillaryExportWriterThread}.
+   *        Queue of {@link BufferedImage} objects for the
+   *        {@link MapillaryExportWriterThread}.
    * @param queueImages
-   *          Queue of {@link MapillaryAbstractImage} objects for the
-   *          {@link MapillaryExportWriterThread}.
+   *        Queue of {@link MapillaryAbstractImage} objects for the
+   *        {@link MapillaryExportWriterThread}.
    */
-  public MapillaryExportDownloadThread(MapillaryImage image,
-      ArrayBlockingQueue<BufferedImage> queue,
-      ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
+  public MapillaryExportDownloadThread(MapillaryImage image, ArrayBlockingQueue<BufferedImage> queue,
+    ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
     this.queue = queue;
     this.image = image;
     this.queueImages = queueImages;
@@ -59,12 +57,10 @@ public class MapillaryExportDownloadThread extends Thread implements
   }
 
   @Override
-  public synchronized void loadingFinished(CacheEntry data,
-      CacheEntryAttributes attributes, LoadResult result) {
+  public synchronized void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
     try {
       synchronized (MapillaryExportDownloadThread.class) {
-        this.queue
-            .put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
+        this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
         this.queueImages.put(this.image);
       }
     } catch (InterruptedException e) {

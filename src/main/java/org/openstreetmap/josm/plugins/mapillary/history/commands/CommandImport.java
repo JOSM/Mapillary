@@ -5,7 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 
 import java.util.Set;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
 /**
