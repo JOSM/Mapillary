@@ -6,10 +6,12 @@ import static java.lang.Long.compare;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 
@@ -25,7 +27,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  * @author nokutu
  */
-public abstract class MapillaryAbstractImage extends GpxImageEntry {
+public abstract class MapillaryAbstractImage extends GpxImageEntry implements Serializable {
   /** The common directory for the Mapillary image sprites (for Mapillary Images) */
   protected static final String IMAGE_SPRITE_DIR = "josm-ca";
   /** The default sprite for a Mapillary image */
@@ -463,5 +465,20 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry {
    */
   public boolean isDeleted() {
     return this.deleted;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (super.equals(other) && other instanceof MapillaryAbstractImage) {
+      MapillaryAbstractImage o = (MapillaryAbstractImage) other;
+      // Ignore temporary/changing variables
+      return Objects.equals(this.pano, o.pano) && Objects.equals(this.qualityScore, o.qualityScore);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), this.pano, this.qualityScore);
   }
 }

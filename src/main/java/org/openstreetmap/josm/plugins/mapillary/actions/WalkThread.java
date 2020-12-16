@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
+import java.io.Serializable;
+
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.gui.Notification;
@@ -21,7 +23,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author nokutu
  */
-public class WalkThread extends Thread implements MapillaryDataListener {
+public class WalkThread extends Thread implements MapillaryDataListener, Serializable {
   private final int interval;
   private final MapillaryData data;
   private boolean endWalk;
@@ -35,12 +37,11 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    *
    * @param interval How often the images switch.
    * @param waitForPicture If it must wait for the full resolution picture or just the
-   * thumbnail.
+   *        thumbnail.
    * @param followSelected Zoom to each image that is selected.
    * @param goForward true to go forward; false to go backwards.
    */
-  public WalkThread(int interval, boolean waitForPicture,
-                    boolean followSelected, boolean goForward) {
+  public WalkThread(int interval, boolean waitForPicture, boolean followSelected, boolean goForward) {
     this.interval = interval;
     this.waitForFullQuality = waitForPicture;
     this.followSelected = followSelected;
@@ -54,11 +55,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
     try {
       MapillaryAbstractImage curSelection;
       MapillaryImage curImage;
-      while (
-          !this.endWalk &&
-          (curSelection = this.data.getSelectedImage().next()) != null &&
-          (curImage = curSelection instanceof MapillaryImage ? (MapillaryImage) curSelection : null) != null
-      ) {
+      while (!this.endWalk && (curSelection = this.data.getSelectedImage().next()) != null
+        && (curImage = curSelection instanceof MapillaryImage ? (MapillaryImage) curSelection : null) != null) {
         // Predownload next 10 thumbnails.
         preDownloadImages(curImage, 10, CacheUtils.PICTURE.THUMBNAIL, goForward);
         if (this.waitForFullQuality) {
@@ -67,14 +65,14 @@ public class WalkThread extends Thread implements MapillaryDataListener {
         }
         try {
           // Wait for picture for 1 minute.
-          final MapillaryCache cache = new MapillaryCache(curImage.getKey(), waitForFullQuality ? MapillaryCache.Type.FULL_IMAGE : MapillaryCache.Type.THUMBNAIL);
+          final MapillaryCache cache = new MapillaryCache(curImage.getKey(),
+            waitForFullQuality ? MapillaryCache.Type.FULL_IMAGE : MapillaryCache.Type.THUMBNAIL);
           int limit = 240; // 240 * 250 = 60000 ms
           while (cache.get() == null) {
             Thread.sleep(250);
             if (limit-- < 0) {
               new Notification(I18n.tr("Walk mode: Waiting for next image takes too long! Exiting walk mode…"))
-                  .setIcon(MapillaryPlugin.LOGO.get())
-                  .show();
+                .setIcon(MapillaryPlugin.LOGO.get()).show();
               end();
               return;
             }
@@ -88,7 +86,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
           }
           final MapillaryAbstractImage selectedImage = this.data.getSelectedImage();
           if (selectedImage != null) {
-            final MapillaryAbstractImage nextSelectedImg = this.goForward ? selectedImage.next() : selectedImage.previous();
+            final MapillaryAbstractImage nextSelectedImg = this.goForward ? selectedImage.next()
+              : selectedImage.previous();
             if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
               this.data.setSelectedImage(nextSelectedImg, followSelected);
             }
@@ -116,7 +115,8 @@ public class WalkThread extends Thread implements MapillaryDataListener {
    * @param type the quality of the image (full or thumbnail)
    * @param goForward true if the next images, false if the previous ones should be downloaded
    */
-  private static void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type, final boolean goForward) {
+  private static void preDownloadImages(MapillaryImage startImage, int n, CacheUtils.PICTURE type,
+    final boolean goForward) {
     if (n >= 1 && startImage != null) {
       CacheUtils.downloadPicture(startImage, type);
       final MapillaryAbstractImage nextImg = goForward ? startImage.next() : startImage.previous();

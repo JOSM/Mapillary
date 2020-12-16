@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillaryAbstractImage
  * @see MapillarySequence
  */
-public class MapillaryData implements Data {
+public class MapillaryData implements Data, Serializable {
   private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.newKeySet();
   /**
    * The image currently selected, this is the one being shown.

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +27,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  * @see MapillaryAbstractImage
  */
-public class MapillarySequence {
+public class MapillarySequence implements Serializable {
 
   /**
    * The images in the sequence.

@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -25,7 +26,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author Taylor Smock
  */
-public final class OrganizationRecord {
+public final class OrganizationRecord implements Serializable {
   private static final ListenerList<OrganizationRecordListener> LISTENERS = ListenerList.create();
   private String description;
   private final String key;
@@ -170,7 +171,7 @@ public final class OrganizationRecord {
     LISTENERS.removeListener(listener);
   }
 
-  public interface OrganizationRecordListener {
+  public interface OrganizationRecordListener extends Serializable {
     void organizationAdded(OrganizationRecord organization);
   }
 

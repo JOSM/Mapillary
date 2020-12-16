@@ -148,7 +148,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     setMode(MODE.NORMAL);
   }
 
-  private static abstract class JosmButtonAction extends JosmAction {
+  private abstract static class JosmButtonAction extends JosmAction {
     private static final long serialVersionUID = -4009253801009731575L;
     JButton pbutton;
 
@@ -204,7 +204,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     private final DetectionVerification.TYPE type;
     private VerifyRejectAction other;
     private boolean listenerAdded;
-    private final MapillaryDataListener mapillaryDataListener = new MapillaryDataListener() {
+    private final transient MapillaryDataListener mapillaryDataListener = new MapillaryDataListener() {
 
       @Override
       public void imagesAdded() {
@@ -522,7 +522,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
     if (image != null) {
-      if (pano) {
+      if (Boolean.TRUE.equals(pano)) {
         if (imageViewer instanceof MapillaryImageViewer) {
           panel.remove(imageViewer);
           imageViewer = panoramicViewer;
