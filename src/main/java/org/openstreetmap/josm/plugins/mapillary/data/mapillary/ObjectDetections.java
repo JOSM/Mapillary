@@ -1632,22 +1632,22 @@ public enum ObjectDetections {
   OBJECT__SUPPORT__TRAFFIC_SIGN_FRAME(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__SUPPORT__UTILITY_POLE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_CONE(DetectionType.POINT, DetectionType.SEGMENTATION),
-  OBJECT__TRAFFIC_LIGHT__CYCLISTS("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__CYCLISTS(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_SINGLE("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_SINGLE(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__OTHER("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__OTHER(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT }, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__PEDESTRIANS("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__PEDESTRIANS(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
 
   OBJECT__TRASH_CAN(DetectionType.POINT, DetectionType.SEGMENTATION),
@@ -1696,25 +1696,25 @@ public enum ObjectDetections {
   OBJECT__BILLBOARD(DetectionType.SEGMENTATION),
   OBJECT__POTHOLE(DetectionType.SEGMENTATION),
   OBJECT__RAMP(DetectionType.SEGMENTATION),
-  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_BACK("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_BACK(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_FRONT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_HORIZONTAL_SIDE(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_BACK("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_BACK(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_FRONT("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_FRONT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_SIDE("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__GENERAL_UPRIGHT_SIDE(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
-  OBJECT__TRAFFIC_LIGHT__OTHER_TRAFFIC_LIGHT("highway=traffic_signals", TaggingPresetType.NODE,
+  OBJECT__TRAFFIC_LIGHT__OTHER_TRAFFIC_LIGHT(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     DetectionType.SEGMENTATION, DataType.PRODUCTION),
 
   OBJECT__TRAFFIC_LIGHT__TEMPORARY(DetectionType.SEGMENTATION),
@@ -2021,5 +2021,12 @@ public enum ObjectDetections {
       }
     }
     return UNKNOWN;
+  }
+
+  /**
+   * Useful constants
+   */
+  private static class Constants {
+    private static final String HIGHWAY_TRAFFIC_SIGNALS = "highway=traffic_signals";
   }
 }
