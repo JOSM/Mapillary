@@ -62,7 +62,7 @@ public final class MapillaryImageDisplay extends JPanel {
   private final transient Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
 
   /** The image currently displayed */
-  transient volatile BufferedImage image;
+  transient BufferedImage image;
 
   boolean pano;
 
@@ -70,7 +70,7 @@ public final class MapillaryImageDisplay extends JPanel {
    * The rectangle (in image coordinates) of the image that is visible. This
    * rectangle is calculated each time the zoom is modified
    */
-  volatile Rectangle visibleRect;
+  Rectangle visibleRect;
 
   /**
    * When a selection is done, the rectangle of the selection (in image
@@ -406,6 +406,7 @@ public final class MapillaryImageDisplay extends JPanel {
     MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
       @Override
       public void layerAdded(LayerManager.LayerAddEvent e) {
+        // We don't care about this
       }
 
       @Override
@@ -417,6 +418,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
       @Override
       public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) {
+        // We don't care about this
       }
     });
 
@@ -567,7 +569,7 @@ public final class MapillaryImageDisplay extends JPanel {
         .getLayersOfType(PointObjectLayer.class);
       synchronized (detections) {
         if (pano) {
-          paintPano(g2d, visibleRect, detectionLayers);
+          paintPano(g2d, detectionLayers);
         } else {
           paintNonPano(g2d, visibleRect, detectionLayers);
         }
@@ -575,7 +577,7 @@ public final class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private void paintPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
+  private void paintPano(Graphics2D g2d, List<PointObjectLayer> detectionLayers) {
     List<ImageDetection> paintDetections = detections.parallelStream()
       .filter(d -> !checkIfDetectionIsFiltered(detectionLayers, d)).collect(Collectors.toList());
     for (final ImageDetection d : paintDetections) {
