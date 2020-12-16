@@ -186,7 +186,7 @@ codecov.io:
       - $CODECOV_TOKEN
 
 sonarcloud.io:
-  image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
+  image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   stage: deploy
   environment:
     name: sonarcloud.io
