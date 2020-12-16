@@ -119,11 +119,11 @@ public class DownloadTableModel extends AbstractTableModel {
     MapillarySquareDownloadRunnable download = downloadList.get(rowIndex);
     switch (columnIndex) {
     case 0: // Info
-      return download.getMonitor().title;
+      return download.getMonitor().getTitle();
     case 1: // ProgressBar
-      return download.getMonitor().currentProgressValue;
+      return download.getMonitor().getProgress();
     case 2: // Size
-      return Utils.getSizeString(download.getMonitor().size, Locale.getDefault());
+      return Utils.getSizeString(download.getMonitor().getSize(), Locale.getDefault());
     case 3: // Completed
       return download.completeCount() + "/3";
     case 4: // Status

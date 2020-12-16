@@ -75,7 +75,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private boolean destroyed;
 
-  private volatile MapillaryAbstractImage image;
+  private transient MapillaryAbstractImage image;
 
   private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
   private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);

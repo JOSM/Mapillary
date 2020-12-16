@@ -14,7 +14,6 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -22,6 +21,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -173,23 +173,19 @@ public class ImageColorPicker extends JPanel {
 
   private void setupEyeDropperButton() {
     eyeDropperButton = new JToggleButton(ImageProvider.get("mapillary-eyedropper"));
-    ItemListener itemListener = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          addEyeDropper();
-        } else {
-          removeEyeDropper();
-        }
+    eyeDropperButton.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        addEyeDropper();
+      } else {
+        removeEyeDropper();
       }
-    };
-    eyeDropperButton.addItemListener(itemListener);
+    });
   }
 
-  public class EyeDropper implements MouseListener, MouseMotionListener {
+  public class EyeDropper implements MouseListener, MouseMotionListener, Serializable {
 
     private boolean inWindow = false;
-    private BufferedImage screenShot;
+    private transient BufferedImage screenShot;
 
     public EyeDropper(AbstractImageViewer panel) {
       if (panel != null && panel.getSize().getHeight() > 0 && panel.getSize().getWidth() > 0) {
