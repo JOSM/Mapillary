@@ -27,7 +27,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillarySequence
  * @see MapillaryData
  */
-public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
+public class MapillaryImage extends MapillaryAbstractImage implements Detections, Keyed {
   /**
    * Unique identifier of the object.
    */
@@ -79,18 +79,10 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
   /**
    * Get the detections for this image
    *
-   * @return Currently downloaded detections for the image
-   */
-  public List<ImageDetection<?>> getDetections() {
-    return this.getDetections(false);
-  }
-
-  /**
-   * Get the detections for this image
-   *
    * @param force {@code true} to force a download, if there are no detections yet for the image.
    * @return Detections for the image
    */
+  @Override
   public List<ImageDetection<?>> getDetections(boolean force) {
     if (force && !this.detectionsForced && this.detections.isEmpty()) {
       DetectionsDownloadRunnable.get(this);
@@ -107,6 +99,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
     return UserProfile.NONE;
   }
 
+  @Override
   public void setAllDetections(Collection<ImageDetection<?>> newDetections) {
     if (newDetections != null) {
       Logging.debug("Add {0} detections to image {1}", newDetections.size(), this.getKey());
