@@ -19,10 +19,10 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillarySquareDownl
 public class DownloadProgressMonitor extends AbstractProgressMonitor {
 
   private final MapillarySquareDownloadRunnable download;
-  public String title;
+  private String title;
   private static final int PROGRESS_BAR_MAX = 100;
-  public int currentProgressValue;
-  public long size;
+  private int currentProgressValue;
+  private long size;
   public final DownloadTableModel model;
 
   public DownloadProgressMonitor(MapillarySquareDownloadRunnable download) {
@@ -103,5 +103,26 @@ public class DownloadProgressMonitor extends AbstractProgressMonitor {
    */
   public void updateCompleted() {
     GuiHelper.runInEDT(() -> model.fireTableCellUpdated(model.getDownloadRow(download), model.findColumn("Completed")));
+  }
+
+  /**
+   * @return The current progress value
+   */
+  public int getProgress() {
+    return this.currentProgressValue;
+  }
+
+  /**
+   * @return The size of the download/upload
+   */
+  public long getSize() {
+    return this.size;
+  }
+
+  /**
+   * @return The title for this monitor
+   */
+  public String getTitle() {
+    return this.title;
   }
 }
