@@ -33,6 +33,8 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Keyed;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
@@ -84,7 +86,7 @@ public class MapillaryData implements Data, Serializable {
   /**
    * Keeps track of images where detections have been fully downloaded
    */
-  private final Set<MapillaryAbstractImage> fullyDownloadedDetections = ConcurrentHashMap.newKeySet();
+  private final Set<Detections> fullyDownloadedDetections = ConcurrentHashMap.newKeySet();
 
   /** Keeps track of highlighted images */
   private final Set<MapillaryAbstractImage> highlightedImages = ConcurrentHashMap.newKeySet();
@@ -480,15 +482,15 @@ public class MapillaryData implements Data, Serializable {
     }
   }
 
-  private void getDetections(Collection<MapillaryImage> imagesToGetDetections) {
+  private <T extends Detections & Keyed> void getDetections(Collection<T> imagesToGetDetections) {
     if (imagesToGetDetections == null || imagesToGetDetections.isEmpty()) {
       return;
     }
     synchronized (fullyDownloadedDetections) {
-      Collection<MapillaryImage> imagesToGet = imagesToGetDetections.stream().filter(Objects::nonNull)
+      Collection<T> imagesToGet = imagesToGetDetections.stream().filter(Objects::nonNull)
         .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
       URL nextUrl = MapillaryURL.APIv3
-        .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
+        .retrieveDetections(imagesToGet.stream().map(Keyed::getKey).collect(Collectors.toList()));
       Map<String, List<ImageDetection<?>>> detections = new HashMap<>();
       while (nextUrl != null) {
         HttpClient client = HttpClient.create(nextUrl);
@@ -509,9 +511,10 @@ public class MapillaryData implements Data, Serializable {
         i.setAllDetections(detections.get(i.getKey()));
         fullyDownloadedDetections.add(i);
       });
-      if (imagesToGet.contains(getSelectedImage())) {
+      MapillaryAbstractImage selectedImageTemp = getSelectedImage();
+      if (selectedImageTemp instanceof Detections && imagesToGet.contains((Detections) selectedImageTemp)) {
         MapillaryMainDialog.getInstance().imageViewer
-          .setAllDetections(((MapillaryImage) getSelectedImage()).getDetections());
+          .setAllDetections(((Detections) selectedImageTemp).getDetections());
       }
     }
   }

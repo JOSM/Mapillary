@@ -67,6 +67,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
@@ -527,11 +528,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
 
     }
 
-    if (img instanceof MapillaryImage) {
-      if (!((MapillaryImage) img).getDetections().isEmpty()) {
-        g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-          null);
-      }
+    if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
+      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
+        null);
     }
     g.setComposite(composite);
   }
