@@ -40,7 +40,7 @@ class JsonImageDetectionDecoderTest {
   void testDecodeImageDetections() throws IOException {
     try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/searchImageDetections.json");
       JsonReader reader = Json.createReader(stream)) {
-      final Collection<ImageDetection> decodeResult = JsonDecoder.decodeFeatureCollection(reader.readObject(),
+      final Collection<ImageDetection<?>> decodeResult = JsonDecoder.decodeFeatureCollection(reader.readObject(),
         JsonImageDetectionDecoder::decodeImageDetection);
 
       assertNotNull(decodeResult);
@@ -48,14 +48,14 @@ class JsonImageDetectionDecoderTest {
 
       // Keep in mind, that no particular order is enforced for the decoded result.
       // That's why the entries of the collection are put into a Map, so that we can refer to the entries by key.
-      final Iterator<ImageDetection> it = decodeResult.iterator();
-      HashMap<String, ImageDetection> detections = new HashMap<>();
+      final Iterator<ImageDetection<?>> it = decodeResult.iterator();
+      HashMap<String, ImageDetection<?>> detections = new HashMap<>();
       while (it.hasNext()) {
-        final ImageDetection detection = it.next();
+        final ImageDetection<?> detection = it.next();
         detections.put(detection.getKey(), detection);
       }
 
-      final ImageDetection id1 = detections.get("bzqdn10wz1s1xd3lae3hawgja0");
+      final ImageDetection<?> id1 = detections.get("bzqdn10wz1s1xd3lae3hawgja0");
       assertEquals("33zgql54_tBVvmIij0zrcA", id1.getImageKey());
       assertEquals("bzqdn10wz1s1xd3lae3hawgja0", id1.getKey());
       assertEquals(0.000001, id1.getScore(), 1e-9);
@@ -69,7 +69,7 @@ class JsonImageDetectionDecoderTest {
       testPathSegment(pi1, PathIterator.SEG_LINETO, 0.42724609375, 0.69091796875);
       testPathSegment(pi1, PathIterator.SEG_CLOSE, 0, 0);
 
-      final ImageDetection id2 = detections.get("uzve1xkyk5qbjwrzaq0do09u1x");
+      final ImageDetection<?> id2 = detections.get("uzve1xkyk5qbjwrzaq0do09u1x");
       assertEquals("33zgql54_tBVvmIij0zrcA", id2.getImageKey());
       assertEquals("uzve1xkyk5qbjwrzaq0do09u1x", id2.getKey());
       assertEquals(0.000001, id2.getScore(), 1e-9);
@@ -89,7 +89,7 @@ class JsonImageDetectionDecoderTest {
   void testDecodeImageDetection() throws IOException {
     try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/imageDetection.json");
       JsonReader reader = Json.createReader(stream)) {
-      final ImageDetection decodeResult = JsonImageDetectionDecoder.decodeImageDetection(reader.readObject());
+      final ImageDetection<?> decodeResult = JsonImageDetectionDecoder.decodeImageDetection(reader.readObject());
 
       assertNotNull(decodeResult);
       assertEquals("QhRcdlGS_Rn_a1_HTclefg", decodeResult.getImageKey());

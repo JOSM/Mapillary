@@ -2,7 +2,9 @@
 package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.awt.Color;
-import java.awt.geom.Path2D;
+import java.awt.Shape;
+import java.io.Serializable;
+import java.util.Objects;
 
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
@@ -15,7 +17,7 @@ import org.openstreetmap.josm.tools.Pair;
 /**
  * A store for ImageDetection information
  */
-public class ImageDetection extends SpecialImageArea {
+public class ImageDetection<T extends Shape & Serializable> extends SpecialImageArea<T> {
   private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
   private final String packag;
@@ -36,8 +38,8 @@ public class ImageDetection extends SpecialImageArea {
    * @param packag The layer (formerly package) of the detection
    * @param value The actual detection value (e.g., `object--fire-hydrant`)
    */
-  public ImageDetection(final Path2D shape, final String imageKey, final String key, final double score,
-    final String packag, final String value) {
+  public ImageDetection(final T shape, final String imageKey, final String key, final double score, final String packag,
+    final String value) {
     super(shape, imageKey, key);
     this.packag = packag;
     this.score = score;
@@ -133,5 +135,22 @@ public class ImageDetection extends SpecialImageArea {
    */
   public DetectionVerification.TYPE getApprovalType() {
     return this.approvalType;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (super.equals(other) && other instanceof ImageDetection) {
+      ImageDetection<?> o = (ImageDetection<?>) other;
+      return Objects.equals(this.approvalType, o.approvalType) && Objects.equals(this.originalValue, o.originalValue)
+        && Objects.equals(this.packag, o.packag) && Objects.equals(this.rejected, o.rejected)
+        && Objects.equals(this.score, o.score) && Objects.equals(this.value, o.value);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), this.approvalType, this.originalValue, this.packag, this.rejected, this.score,
+      this.value);
   }
 }

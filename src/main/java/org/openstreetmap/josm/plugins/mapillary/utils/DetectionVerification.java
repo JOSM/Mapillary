@@ -37,7 +37,7 @@ public final class DetectionVerification {
    * @param type The type of vote to make
    * @return {@code true} if successful
    */
-  public static boolean vote(ImageDetection detection, TYPE type) {
+  public static boolean vote(ImageDetection<?> detection, TYPE type) {
     HttpClient client = HttpClient.create(MapillaryURL.APIv3.vote(detection.getPackage(), detection.getKey()), "POST");
     client.setHeader("Content-Type", "application/json");
     JsonObjectBuilder builder = Json.createObjectBuilder();

@@ -12,9 +12,10 @@ import org.junit.jupiter.api.Test;
 class ImageDetectionTest {
   @Test
   void test() {
-    ImageDetection id = new ImageDetection(new Path2D.Double(), "imgKey", "key", 0.123, "packageName", "value");
-    ImageDetection trafficsign = new ImageDetection(new Path2D.Double(), "imgKey2", "key2", 4.567, "trafficsign",
-      "value2");
+    ImageDetection<Path2D.Double> id = new ImageDetection<>(new Path2D.Double(), "imgKey", "key", 0.123, "packageName",
+      "value");
+    ImageDetection<Path2D.Double> trafficsign = new ImageDetection<>(new Path2D.Double(), "imgKey2", "key2", 4.567,
+      "trafficsign", "value2");
 
     assertEquals("imgKey", id.getImageKey());
     assertEquals("imgKey2", trafficsign.getImageKey());

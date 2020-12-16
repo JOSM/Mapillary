@@ -1,10 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
+import java.io.Serializable;
+
 /**
  * An object that is identified amongst objects of the same class by a {@link String} key.
  */
-public class KeyIndexedObject {
+public class KeyIndexedObject implements Serializable {
   private final String key;
 
   protected KeyIndexedObject(final String key) {
@@ -21,7 +23,8 @@ public class KeyIndexedObject {
     return key;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -30,7 +33,8 @@ public class KeyIndexedObject {
     return prime * (prime + getClass().getName().hashCode()) + key.hashCode();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
