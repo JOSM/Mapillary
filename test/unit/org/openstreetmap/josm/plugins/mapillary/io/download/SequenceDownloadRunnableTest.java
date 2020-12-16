@@ -43,7 +43,7 @@ class SequenceDownloadRunnableTest {
   JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   /** It takes some time for the first test to fully initialize */
-  private static final Duration MINIMUM_INITIALIZATION = Durations.TWO_SECONDS;
+  private static final Duration MINIMUM_INITIALIZATION = Durations.FIVE_SECONDS;
 
   private String oldBaseUrl;
   private WireMockServer wmRule;
