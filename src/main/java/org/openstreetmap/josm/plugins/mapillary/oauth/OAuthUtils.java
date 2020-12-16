@@ -13,6 +13,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonStructure;
 
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -105,5 +107,17 @@ public final class OAuthUtils {
    */
   public static HttpClient addAuthenticationHeader(HttpClient client) {
     return client.setHeader(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
+  }
+
+  /**
+   * Returns a HttpEntity with an authorization header for use when making user
+   * specific API calls
+   *
+   * @param httpEntity The HttpEntity to add authentication headers to
+   * @return The HttpEntity for easy chaining
+   */
+  public static HttpEntityEnclosingRequestBase addAuthenticationHeader(HttpEntityEnclosingRequestBase httpEntity) {
+    httpEntity.addHeader(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
+    return httpEntity;
   }
 }
