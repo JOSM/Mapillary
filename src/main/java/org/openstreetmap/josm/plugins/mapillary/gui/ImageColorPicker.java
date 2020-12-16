@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.ColorHelper.color2html;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Color;
@@ -21,17 +22,18 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ClipboardAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.AbstractImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.MapillaryImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageViewer;
-import static org.openstreetmap.josm.tools.ColorHelper.color2html;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -115,9 +117,10 @@ public class ImageColorPicker extends JPanel {
     }
   }
 
-  private void drawColorIndicator(Graphics2D g, Point p, Color current, Color temp) {
-    int r = 100;
-    int w = r / 5;
+  private static void drawColorIndicator(Graphics2D g, Point p, Color current, Color temp) {
+    // Use floats instead of ints to avoid casting everywhere. Same size as int.
+    final float r = 100;
+    final float w = r / 5;
 
     Shape upperOuterArc = new Arc2D.Float(p.x - r, p.y - r, 2 * r, 2 * r, 0, 180, Arc2D.CHORD);
     Shape upperInnerArc = new Arc2D.Float(p.x - (r - w), p.y - (r - w), 2 * (r - w), 2 * (r - w), 0, 180, Arc2D.CHORD);
@@ -125,7 +128,8 @@ public class ImageColorPicker extends JPanel {
     upperRing.subtract(new Area(upperInnerArc));
 
     Shape lowerOuterArc = new Arc2D.Float(p.x - r, p.y - r, 2 * r, 2 * r, 180, 180, Arc2D.CHORD);
-    Shape lowerInnerArc = new Arc2D.Float(p.x - (r - w), p.y - (r - w), 2 * (r - w), 2 * (r - w), 180, 180, Arc2D.CHORD);
+    Shape lowerInnerArc = new Arc2D.Float(p.x - (r - w), p.y - (r - w), 2 * (r - w), 2 * (r - w), 180, 180,
+      Arc2D.CHORD);
     Area lowerRing = new Area(lowerOuterArc);
     lowerRing.subtract(new Area(lowerInnerArc));
 
@@ -145,7 +149,7 @@ public class ImageColorPicker extends JPanel {
 
   private void setupImageViewer() {
     if (MapillaryMainDialog.getInstance().imageViewer instanceof PanoramicImageViewer) {
-      imageViewer = new PanoramicImageViewer(){
+      imageViewer = new PanoramicImageViewer() {
         @Override
         public void paintComponent(Graphics g) {
           super.paintComponent(g);
@@ -154,7 +158,7 @@ public class ImageColorPicker extends JPanel {
         }
       };
     } else {
-      imageViewer = new MapillaryImageViewer(){
+      imageViewer = new MapillaryImageViewer() {
         @Override
         public void paintComponent(Graphics g) {
           super.paintComponent(g);
@@ -253,7 +257,7 @@ public class ImageColorPicker extends JPanel {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-      //Do Nothing.
+      // Do Nothing.
     }
 
     private BufferedImage getImage() {
