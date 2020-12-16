@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.datepicker;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.function.Consumer;
 
@@ -59,20 +58,20 @@ public interface IDatePicker<T extends JComponent> {
    * @return A new date picker
    */
   @SuppressWarnings("unchecked")
-  static IDatePicker<? extends JComponent> getNewDatePicker() {
+  static IDatePicker<JComponent> getNewDatePicker() {
     String datePicker = Config.getPref().get("datepicker.classname",
       "org.openstreetmap.josm.plugins.datepicker.impl.DatePickerJDatePicker");
     try {
       Class<?> cls = Class.forName(datePicker);
       Object instance = cls.getConstructor().newInstance();
       if (instance instanceof IDatePicker) {
-        return (IDatePicker<? extends JComponent>) instance;
+        return (IDatePicker<JComponent>) instance;
       }
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-      | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+    } catch (ReflectiveOperationException e) {
       Logging.error(e);
     }
     // Fall back to basic text entry
-    return new DatePickerSwing();
+    IDatePicker<?> rDatePicker = new DatePickerSwing();
+    return (IDatePicker<JComponent>) rDatePicker;
   }
 }
