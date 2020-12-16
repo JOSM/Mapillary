@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryExecutableCommand;
 
@@ -13,7 +13,6 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryExecut
  * History record system in order to let the user undo and redo commands.
  *
  * @author nokutu
- *
  */
 public class MapillaryRecord {
   /** The unique instance of the class. */
@@ -48,7 +47,7 @@ public class MapillaryRecord {
    * Adds a listener.
    *
    * @param lis
-   *          The listener to be added.
+   *        The listener to be added.
    */
   public void addListener(MapillaryRecordListener lis) {
     this.listeners.add(lis);
@@ -58,7 +57,7 @@ public class MapillaryRecord {
    * Removes the given listener.
    *
    * @param lis
-   *          The listener to be removed.
+   *        The listener to be removed.
    */
   public void removeListener(MapillaryRecordListener lis) {
     this.listeners.remove(lis);
@@ -68,7 +67,7 @@ public class MapillaryRecord {
    * Adds a new command to the list.
    *
    * @param command
-   *          The command to be added.
+   *        The command to be added.
    */
   public void addCommand(final MapillaryCommand command) {
 

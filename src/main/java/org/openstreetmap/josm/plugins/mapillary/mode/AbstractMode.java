@@ -11,7 +11,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent.ZoomChangeListener;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -22,16 +22,15 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @author nokutu
  * @see MapillaryLayer
  */
-public abstract class AbstractMode extends MapMode implements
-  ZoomChangeListener {
+public abstract class AbstractMode extends MapMode implements ZoomChangeListener {
 
   /**
    * Constructor for mapmodes with a menu (no shortcut will be registered)
    *
-   * @param name     the action's text
+   * @param name the action's text
    * @param iconName icon filename in {@code mapmode} directory
-   * @param tooltip  a longer description of the action that will be displayed in the tooltip.
-   * @param cursor   cursor displayed when map mode is active
+   * @param tooltip a longer description of the action that will be displayed in the tooltip.
+   * @param cursor cursor displayed when map mode is active
    */
   public AbstractMode(String name, String iconName, String tooltip, Cursor cursor) {
     super(name, iconName, tooltip, cursor);
@@ -40,11 +39,11 @@ public abstract class AbstractMode extends MapMode implements
   /**
    * Constructor for mapmodes without a menu
    *
-   * @param name     the action's text
+   * @param name the action's text
    * @param iconName icon filename in {@code mapmode} directory
-   * @param tooltip  a longer description of the action that will be displayed in the tooltip.
+   * @param tooltip a longer description of the action that will be displayed in the tooltip.
    * @param shortcut a ready-created shortcut object or null if you don't want a shortcut.
-   * @param cursor   cursor displayed when map mode is active
+   * @param cursor cursor displayed when map mode is active
    */
   public AbstractMode(String name, String iconName, String tooltip, Shortcut shortcut, Cursor cursor) {
     super(name, iconName, tooltip, shortcut, cursor);
@@ -61,8 +60,7 @@ public abstract class AbstractMode extends MapMode implements
       Point imagePoint = MainApplication.getMap().mapView.getPoint(image.getMovingLatLon());
       imagePoint.setLocation(imagePoint.getX(), imagePoint.getY());
       double dist = clickPoint.distanceSq(imagePoint);
-      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance
-        && image.isVisible()) {
+      if (minDistance > dist && clickPoint.distance(imagePoint) < snapDistance && image.isVisible()) {
         minDistance = dist;
         closest = image;
       }
@@ -73,8 +71,8 @@ public abstract class AbstractMode extends MapMode implements
   /**
    * Paint the dataset using the engine set.
    *
-   * @param g   {@link Graphics2D} used for painting
-   * @param mv  The object that can translate GeoPoints to screen coordinates.
+   * @param g {@link Graphics2D} used for painting
+   * @param mv The object that can translate GeoPoints to screen coordinates.
    * @param box Area where painting is going to be performed
    */
   public abstract void paint(Graphics2D g, MapView mv, Bounds box);

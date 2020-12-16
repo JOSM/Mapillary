@@ -26,9 +26,9 @@ import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
 
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -49,20 +49,18 @@ public class MapillaryExportWriterThread extends Thread {
    * Main constructor.
    *
    * @param path
-   *          Path to write the pictures.
+   *        Path to write the pictures.
    * @param queue
-   *          Queue of {@link MapillaryAbstractImage} objects.
+   *        Queue of {@link MapillaryAbstractImage} objects.
    * @param queueImages
-   *          Queue of {@link BufferedImage} objects.
+   *        Queue of {@link BufferedImage} objects.
    * @param amount
-   *          Amount of images that are going to be exported.
+   *        Amount of images that are going to be exported.
    * @param monitor
-   *          Progress monitor.
+   *        Progress monitor.
    */
-  public MapillaryExportWriterThread(String path,
-      ArrayBlockingQueue<BufferedImage> queue,
-      ArrayBlockingQueue<MapillaryAbstractImage> queueImages, int amount,
-      ProgressMonitor monitor) {
+  public MapillaryExportWriterThread(String path, ArrayBlockingQueue<BufferedImage> queue,
+    ArrayBlockingQueue<MapillaryAbstractImage> queueImages, int amount, ProgressMonitor monitor) {
     this.path = path;
     this.queue = queue;
     this.queueImages = queueImages;
@@ -100,8 +98,7 @@ public class MapillaryExportWriterThread extends Thread {
         TiffOutputDirectory gpsDirectory;
         // If the image is imported, loads the rest of the EXIF data.
         if (mimg instanceof MapillaryImportedImage) {
-          final ImageMetadata metadata = Imaging
-              .getMetadata(((MapillaryImportedImage) mimg).getFile());
+          final ImageMetadata metadata = Imaging.getMetadata(((MapillaryImportedImage) mimg).getFile());
           final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
           if (null != jpegMetadata) {
             final TiffImageMetadata exif = jpegMetadata.getExif();
@@ -118,19 +115,16 @@ public class MapillaryExportWriterThread extends Thread {
 
         gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
         gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF,
-            GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
+          GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
         gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-            RationalNumber.valueOf(mimg.getMovingCa()));
+        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION, RationalNumber.valueOf(mimg.getMovingCa()));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         if (mimg instanceof MapillaryImportedImage) {
-          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-              mimg.getDate("yyyy/MM/dd HH:mm:ss"));
+          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, mimg.getDate("yyyy/MM/dd HH:mm:ss"));
         } else if (mimg instanceof MapillaryImage) {
-          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL,
-              mimg.getDate("yyyy/MM/dd HH/mm/ss"));
+          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, mimg.getDate("yyyy/MM/dd HH/mm/ss"));
         }
         outputSet.setGPSInDegrees(mimg.getMovingLatLon().lon(), mimg.getMovingLatLon().lat());
         try (OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"))) {

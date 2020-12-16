@@ -3,9 +3,9 @@ package org.openstreetmap.josm.plugins.mapillary.gui.changeset;
 
 import java.awt.event.ActionEvent;
 import org.openstreetmap.josm.actions.JosmAction;
-import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Mark/Unmark current Image as reviewed for uploading/changeset submission.

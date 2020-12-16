@@ -16,15 +16,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 
 /**
  * GUI for exporting images.
  *
  * @author nokutu
- *
  */
 public class MapillaryExportDialog extends JPanel implements ActionListener {
 
@@ -54,7 +53,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
    * Main constructor.
    *
    * @param ok
-   *          The button for to OK option.
+   *        The button for to OK option.
    */
   public MapillaryExportDialog(JButton ok) {
     this.ok = ok;
@@ -81,7 +80,8 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {
       this.selected.setEnabled(false);
     }
-    this.rewrite.setEnabled(MapillaryLayer.getInstance().getData().getImages().parallelStream().anyMatch(img -> img instanceof MapillaryImportedImage));
+    this.rewrite.setEnabled(MapillaryLayer.getInstance().getData().getImages().parallelStream()
+      .anyMatch(img -> img instanceof MapillaryImportedImage));
 
     this.path = new JLabel(tr("Select a directory"));
     this.choose = new JButton(tr("Explore"));
@@ -109,8 +109,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     this.chooser = new JFileChooser();
-    this.chooser.setCurrentDirectory(new java.io.File(System
-        .getProperty("user.home")));
+    this.chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
     this.chooser.setDialogTitle(tr("Select a directory"));
     this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     this.chooser.setAcceptAllFileFilterUsed(false);
@@ -127,7 +126,6 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
    * active.
    *
    * @author nokutu
-   *
    */
   public class RewriteButtonAction extends AbstractAction {
 
@@ -139,7 +137,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
      * Main constructor.
      *
      * @param dlg
-     *          Parent dialog.
+     *        Parent dialog.
      */
     public RewriteButtonAction(MapillaryExportDialog dlg) {
       this.dlg = dlg;
@@ -147,8 +145,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      MapillaryExportDialog.this.choose
-          .setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());
+      MapillaryExportDialog.this.choose.setEnabled(!MapillaryExportDialog.this.rewrite.isSelected());
       if (MapillaryExportDialog.this.rewrite.isSelected()) {
         this.lastPath = this.dlg.path.getText();
         this.dlg.path.setText(" ");

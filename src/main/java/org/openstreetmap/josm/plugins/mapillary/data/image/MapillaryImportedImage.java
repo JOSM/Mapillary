@@ -1,5 +1,5 @@
 // License: GPL. For details, see LICENSE file.
-package org.openstreetmap.josm.plugins.mapillary;
+package org.openstreetmap.josm.plugins.mapillary.data.image;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -17,6 +17,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
 import org.openstreetmap.josm.gui.layer.geoimage.ImageEntry;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -26,7 +27,6 @@ import org.openstreetmap.josm.tools.Logging;
  * A MapillaryImoprtedImage object represents a picture imported locally.
  *
  * @author nokutu
- *
  */
 public class MapillaryImportedImage extends MapillaryAbstractImage {
 
@@ -34,10 +34,10 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * Creates a new MapillaryImportedImage object using as date the current date.
    * Using when the EXIF tags doesn't contain that info.
    *
-   * @param latLon  The latitude and longitude where the picture was taken.
-   * @param ca      Direction of the picture (0 means north).
-   * @param file    The file containing the picture.
-   * @param pano    The property to indicate whether image is panorama or not.
+   * @param latLon The latitude and longitude where the picture was taken.
+   * @param ca Direction of the picture (0 means north).
+   * @param file The file containing the picture.
+   * @param pano The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano) {
     this(latLon, ca, file, pano, Calendar.getInstance().getTimeInMillis());
@@ -46,11 +46,11 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   /**
    * Main constructor of the class.
    *
-   * @param latLon           Latitude and Longitude where the picture was taken.
-   * @param ca               Direction of the picture (0 means north),
-   * @param file             The file containing the picture.
+   * @param latLon Latitude and Longitude where the picture was taken.
+   * @param ca Direction of the picture (0 means north),
+   * @param file The file containing the picture.
    * @param datetimeOriginal The date the picture was taken.
-   * @param pano             The property to indicate whether image is panorama or not.
+   * @param pano The property to indicate whether image is panorama or not.
    */
   public MapillaryImportedImage(final LatLon latLon, final double ca, final File file, final boolean pano,
     final String datetimeOriginal) {
@@ -77,8 +77,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
       coord = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
     }
     final double ca = geoImage.getExifImgDir() == null ? 0 : geoImage.getExifImgDir();
-    final long time = geoImage.hasGpsTime()
-      ? geoImage.getGpsTime().getTime()
+    final long time = geoImage.hasGpsTime() ? geoImage.getGpsTime().getTime()
       : geoImage.hasExifTime() ? geoImage.getExifTime().getTime() : System.currentTimeMillis();
     boolean pano = false;
     try (FileInputStream fis = new FileInputStream(geoImage.getFile())) {
@@ -114,7 +113,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
    * @return A {@link BufferedImage} object containing the picture, or null if
    *         the {@link File} given in the constructor was null.
    * @throws IOException
-   *           If the file parameter of the object isn't an image.
+   *         If the file parameter of the object isn't an image.
    */
   public BufferedImage getImage() throws IOException {
     if (getFile() != null)
@@ -125,7 +124,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   @Override
   public String toString() {
     return String.format("Image[filename=%s,lat=%f,lon=%f,ca=%f,capturedAt=%d]",
-        getFile() == null ? "null" : getFile().getName(), getExifCoor().lat(), getExifCoor().lon(), ca, capturedAt);
+      getFile() == null ? "null" : getFile().getName(), getExifCoor().lat(), getExifCoor().lon(), ca, capturedAt);
   }
 
   @Override

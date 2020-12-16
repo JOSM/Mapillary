@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryImage;
 
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryChangesetListener;
 
 public class MapillaryChangeset extends AbstractSet<MapillaryImage> {

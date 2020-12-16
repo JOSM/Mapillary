@@ -19,14 +19,13 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
 import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
 
 /**
  * Remote Control handler for Mapillary
- *
  */
 public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHandler {
   private static final PermissionPrefWithDefault PERMISSION_PREF_WITH_DEFAULT = new PermissionPrefWithDefault(
@@ -83,8 +82,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
     String[] mapillaryImages = Stream.of(images).filter(image -> image.startsWith(MAPILLARY_PREFIX))
       .map(image -> image.substring(MAPILLARY_PREFIX.length())).toArray(String[]::new);
     List<String> mapillarySequences = Stream.of(sequences).filter(sequence -> sequence.startsWith(MAPILLARY_PREFIX))
-      .map(sequence -> sequence.substring(MAPILLARY_PREFIX.length()))
-      .collect(Collectors.toCollection(ArrayList::new));
+      .map(sequence -> sequence.substring(MAPILLARY_PREFIX.length())).collect(Collectors.toCollection(ArrayList::new));
     if (mapillaryImages.length == 0 && mapillarySequences.isEmpty()) {
       throw new RequestHandlerBadRequestException(tr("No known image provider used"));
     }

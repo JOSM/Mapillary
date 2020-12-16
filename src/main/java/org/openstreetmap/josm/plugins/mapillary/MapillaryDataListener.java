@@ -1,11 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+
 /**
  * Interface for listeners of the class {@link MapillaryData}.
  *
  * @author nokutu
- *
  */
 public interface MapillaryDataListener {
 
@@ -19,10 +20,9 @@ public interface MapillaryDataListener {
    * manually clicking on the icon.
    *
    * @param oldImage
-   *          Old selected {@link MapillaryAbstractImage}
+   *        Old selected {@link MapillaryAbstractImage}
    * @param newImage
-   *          New selected {@link MapillaryAbstractImage}
+   *        New selected {@link MapillaryAbstractImage}
    */
-  void selectedImageChanged(MapillaryAbstractImage oldImage,
-      MapillaryAbstractImage newImage);
+  void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage);
 }
