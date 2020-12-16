@@ -161,9 +161,9 @@ public class PanoramicImageViewer extends AbstractImageViewer {
 
   @Override
   protected void paintDetections(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
-    List<ImageDetection> paintDetections = detections.parallelStream()
+    List<ImageDetection<?>> paintDetections = detections.parallelStream()
       .filter(d -> !checkIfDetectionIsFiltered(detectionLayers, d)).collect(Collectors.toList());
-    for (final ImageDetection d : paintDetections) {
+    for (final ImageDetection<?> d : paintDetections) {
       g2d.setColor(d.getColor());
       final PathIterator pathIt = d.getShape().getPathIterator(null);
       Point prevPoint = null;

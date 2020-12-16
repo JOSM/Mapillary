@@ -2,15 +2,16 @@
 package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.awt.Shape;
-import java.awt.geom.Path2D;
+import java.io.Serializable;
+import java.util.Objects;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
-public class SpecialImageArea extends KeyIndexedObject {
+public class SpecialImageArea<T extends Shape & Serializable> extends KeyIndexedObject {
   private final String imageKey;
-  private final Path2D shape;
+  private final T shape;
 
-  protected SpecialImageArea(final Path2D shape, final String imageKey, final String key) {
+  protected SpecialImageArea(final T shape, final String imageKey, final String key) {
     super(key);
     this.shape = shape;
     this.imageKey = imageKey;
@@ -25,5 +26,19 @@ public class SpecialImageArea extends KeyIndexedObject {
       return shape.getBounds2D();
     }
     return shape;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (super.equals(object) && object instanceof SpecialImageArea) {
+      SpecialImageArea<?> other = (SpecialImageArea<?>) object;
+      return Objects.equals(this.shape, other.shape) && Objects.equals(this.imageKey, other.imageKey);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), this.imageKey, this.shape);
   }
 }

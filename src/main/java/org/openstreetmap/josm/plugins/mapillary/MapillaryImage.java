@@ -34,7 +34,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
   /**
    * Set of traffic signs in the image.
    */
-  private final List<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  private final List<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
   private boolean detectionsForced;
   /**
    * If {@code true}, the image is private. If {@code false}, then it is public.
@@ -80,7 +80,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
    *
    * @return Currently downloaded detections for the image
    */
-  public List<ImageDetection> getDetections() {
+  public List<ImageDetection<?>> getDetections() {
     return this.getDetections(false);
   }
 
@@ -90,7 +90,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
    * @param force {@code true} to force a download, if there are no detections yet for the image.
    * @return Detections for the image
    */
-  public List<ImageDetection> getDetections(boolean force) {
+  public List<ImageDetection<?>> getDetections(boolean force) {
     if (force && !this.detectionsForced && this.detections.isEmpty()) {
       DetectionsDownloadRunnable.get(this);
       this.detectionsForced = true;
@@ -106,7 +106,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Keyed {
     return UserProfile.NONE;
   }
 
-  public void setAllDetections(Collection<ImageDetection> newDetections) {
+  public void setAllDetections(Collection<ImageDetection<?>> newDetections) {
     if (newDetections != null) {
       Logging.debug("Add {0} detections to image {1}", newDetections.size(), this.getKey());
       synchronized (detections) {

@@ -35,8 +35,7 @@ public class MapillaryImageViewer extends AbstractImageViewer {
   @Override
   public Rectangle getDefaultVisibleRect() {
     if (image != null) {
-      Rectangle visibleRectangle = new Rectangle(0, 0, image.getWidth(), image.getHeight());
-      return visibleRectangle;
+      return new Rectangle(0, 0, image.getWidth(), image.getHeight());
     }
     return visibleRect;
   }
@@ -122,7 +121,7 @@ public class MapillaryImageViewer extends AbstractImageViewer {
     unit2CompTransform.concatenate(
       AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
-    for (final ImageDetection d : detections) {
+    for (final ImageDetection<?> d : detections) {
       if (checkIfDetectionIsFiltered(detectionLayers, d)) {
         continue;
       }

@@ -59,7 +59,7 @@ public final class MapillaryImageDisplay extends JPanel {
   private static final long serialVersionUID = 3369727203329307716L;
   static final double PANORAMA_FOV = Math.toRadians(110);
 
-  private final transient Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  private final transient Collection<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
 
   /** The image currently displayed */
   transient BufferedImage image;
@@ -439,7 +439,7 @@ public final class MapillaryImageDisplay extends JPanel {
    * @param detections image detections
    * @param pano The property to indicate whether image is panorama or not.
    */
-  void setImage(BufferedImage image, Collection<ImageDetection> detections, boolean pano) {
+  void setImage(BufferedImage image, Collection<ImageDetection<?>> detections, boolean pano) {
     synchronized (this) {
       this.image = image;
       this.pano = pano;
@@ -578,9 +578,9 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   private void paintPano(Graphics2D g2d, List<PointObjectLayer> detectionLayers) {
-    List<ImageDetection> paintDetections = detections.parallelStream()
+    List<ImageDetection<?>> paintDetections = detections.parallelStream()
       .filter(d -> !checkIfDetectionIsFiltered(detectionLayers, d)).collect(Collectors.toList());
-    for (final ImageDetection d : paintDetections) {
+    for (final ImageDetection<?> d : paintDetections) {
       g2d.setColor(d.getColor());
       final PathIterator pathIt = d.getShape().getPathIterator(null);
       Point prevPoint = null;
@@ -615,7 +615,7 @@ public final class MapillaryImageDisplay extends JPanel {
     unit2CompTransform.concatenate(
       AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
-    for (final ImageDetection d : detections) {
+    for (final ImageDetection<?> d : detections) {
       if (checkIfDetectionIsFiltered(detectionLayers, d))
         continue;
       final Shape shape = unit2CompTransform.createTransformedShape(d.getShape());
@@ -630,7 +630,7 @@ public final class MapillaryImageDisplay extends JPanel {
     }
   }
 
-  private static boolean checkIfDetectionIsFiltered(List<PointObjectLayer> detectionLayers, ImageDetection d) {
+  private static boolean checkIfDetectionIsFiltered(List<PointObjectLayer> detectionLayers, ImageDetection<?> d) {
     if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
       && !"trafficsigns".contains(d.getPackage()))
       || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
@@ -760,7 +760,7 @@ public final class MapillaryImageDisplay extends JPanel {
   /**
    * @param detections The detections to set. Triggers a repaint.
    */
-  public void setAllDetections(List<ImageDetection> detections) {
+  public void setAllDetections(List<ImageDetection<?>> detections) {
     this.detections.clear();
     if (detections != null) {
       this.detections.addAll(detections);

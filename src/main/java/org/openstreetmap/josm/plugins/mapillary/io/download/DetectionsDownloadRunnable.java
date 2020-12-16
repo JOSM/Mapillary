@@ -75,22 +75,22 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
    * @return
    * @throws IOException If there is an issue with the received data
    */
-  public static Map<String, List<ImageDetection>> doRun(final HttpClient client, final MapillaryData data)
+  public static Map<String, List<ImageDetection<?>>> doRun(final HttpClient client, final MapillaryData data)
     throws IOException {
     try (JsonReader reader = Json.createReader(client.getResponse().getContent())) {
       final long startTime = System.currentTimeMillis();
-      Map<String, List<ImageDetection>> detections = JsonDecoder
+      Map<String, List<ImageDetection<?>>> detections = JsonDecoder
         .decodeFeatureCollection(reader.readObject(), JsonImageDetectionDecoder::decodeImageDetection).stream()
         .collect(Collectors.groupingBy(ImageDetection::getImageKey));
       if (Config.getPref().getBoolean("mapillary.ignore_useless_detections", true)) {
-        for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
+        for (Map.Entry<String, List<ImageDetection<?>>> entry : detections.entrySet()) {
           entry.getValue().removeIf(i -> i.isRejected() || ObjectDetections.IGNORE_DETECTIONS.contains(i.getValue()));
         }
       }
       logConnectionInfo(client,
         String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
-      for (Map.Entry<String, List<ImageDetection>> entry : detections.entrySet()) {
+      for (Map.Entry<String, List<ImageDetection<?>>> entry : detections.entrySet()) {
         data.getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
           .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
             .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))

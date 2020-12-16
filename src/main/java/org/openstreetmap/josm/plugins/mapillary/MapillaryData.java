@@ -485,7 +485,7 @@ public class MapillaryData implements Data {
         .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
       URL nextUrl = MapillaryURL.APIv3
         .retrieveDetections(imagesToGet.stream().map(MapillaryImage::getKey).collect(Collectors.toList()));
-      Map<String, List<ImageDetection>> detections = new HashMap<>();
+      Map<String, List<ImageDetection<?>>> detections = new HashMap<>();
       while (nextUrl != null) {
         HttpClient client = HttpClient.create(nextUrl);
         if (MapillaryUser.getUsername() != null)

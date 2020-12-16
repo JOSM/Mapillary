@@ -484,7 +484,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
       boolean contains = false;
-      for (ImageDetection detection : img.getDetections()) {
+      for (ImageDetection<?> detection : img.getDetections()) {
         if (Pattern.compile(signTag).matcher(detection.getValue().getKey()).find()) {
           contains = true;
         }

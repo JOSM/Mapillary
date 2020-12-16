@@ -232,7 +232,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         MapillaryLayer.getInstance().getData().addListener(mapillaryDataListener);
         this.listenerAdded = true;
       }
-      ImageDetection detection = getDetection();
+      ImageDetection<?> detection = getDetection();
       if (detection != null) {
         MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
         if (image instanceof MapillaryImage && detection.getImageKey().equals(((MapillaryImage) image).getKey())
@@ -249,7 +249,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     @Override
     public void updateEnabledState() {
       MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
-      ImageDetection detection = getDetection();
+      ImageDetection<?> detection = getDetection();
       if (!(image instanceof MapillaryImage) || detection == null) {
         this.setEnabled(false);
       } else {
@@ -263,8 +263,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     /**
      * @return The single detection to verify/reject
      */
-    private static ImageDetection getDetection() {
-      Collection<ImageDetection> detections = MapillaryMainDialog.getInstance().imageViewer.getShownDetections();
+    private static ImageDetection<?> getDetection() {
+      Collection<ImageDetection<?>> detections = MapillaryMainDialog.getInstance().imageViewer.getShownDetections();
       if (detections.size() == 1) {
         return detections.iterator().next();
       }
@@ -520,7 +520,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     }
   }
 
-  public void setDisplayImage(BufferedImage image, Collection<ImageDetection> detections, Boolean pano) {
+  public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
     if (image != null) {
       if (pano) {
         if (imageViewer instanceof MapillaryImageViewer) {

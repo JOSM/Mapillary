@@ -37,14 +37,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
  */
 public abstract class AbstractImageViewer extends JPanel {
 
-  protected BufferedImage image;
-  protected BufferedImage displayImage;
+  protected transient BufferedImage image;
+  protected transient BufferedImage displayImage;
   /**
    * The rectangle (in image coordinates) of the image that is visible.
    * This rectangle is calculated each time the zoom is modified.
    */
-  volatile Rectangle visibleRect;
-  protected final Collection<ImageDetection> detections = Collections.synchronizedList(new ArrayList<>());
+  Rectangle visibleRect;
+  protected final Collection<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
   private final ZoomPanMouseListener zoomPanMouseListener;
   private boolean zoomPanEnabled;
 
@@ -60,6 +60,7 @@ public abstract class AbstractImageViewer extends JPanel {
     MainApplication.getLayerManager().addLayerChangeListener(new LayerManager.LayerChangeListener() {
       @Override
       public void layerAdded(LayerManager.LayerAddEvent e) {
+        // We don't care about this
       }
 
       @Override
@@ -71,6 +72,7 @@ public abstract class AbstractImageViewer extends JPanel {
 
       @Override
       public void layerOrderChanged(LayerManager.LayerOrderChangeEvent e) {
+        // We don't care about this
       }
     });
     MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(it -> repaint());
@@ -82,7 +84,7 @@ public abstract class AbstractImageViewer extends JPanel {
     this.image = image;
   }
 
-  public void setImage(BufferedImage image, Collection<ImageDetection> detections) {
+  public void setImage(BufferedImage image, Collection<ImageDetection<?>> detections) {
     synchronized (this) {
       setImage(image);
       this.detections.clear();
@@ -97,7 +99,7 @@ public abstract class AbstractImageViewer extends JPanel {
   /**
    * @param detections The detections to set. Triggers a repaint.
    */
-  public void setAllDetections(List<ImageDetection> detections) {
+  public void setAllDetections(List<ImageDetection<?>> detections) {
     this.detections.clear();
     if (detections != null) {
       this.detections.addAll(detections);
@@ -108,14 +110,14 @@ public abstract class AbstractImageViewer extends JPanel {
   /**
    * @return The current list of detections
    */
-  public Collection<ImageDetection> getAllDetections() {
+  public Collection<ImageDetection<?>> getAllDetections() {
     return Collections.unmodifiableCollection(this.detections);
   }
 
   /**
    * @return The detections to be shown.
    */
-  public Collection<ImageDetection> getShownDetections() {
+  public Collection<ImageDetection<?>> getShownDetections() {
     List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
     return this.detections.stream().filter(d -> !MapillaryUtils.checkIfDetectionIsFiltered(layers, d))
       .collect(Collectors.toList());
@@ -140,7 +142,7 @@ public abstract class AbstractImageViewer extends JPanel {
     super.paintComponent(g);
     final BufferedImage bufferedImage;
     final Rectangle paintVisibleRect;
-    final Collection<ImageDetection> imageDetections;
+    final Collection<ImageDetection<?>> imageDetections;
     synchronized (this) {
       bufferedImage = this.image;
       paintVisibleRect = this.visibleRect;

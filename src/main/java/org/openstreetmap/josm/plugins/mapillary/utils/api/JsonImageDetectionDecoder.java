@@ -25,7 +25,7 @@ public final class JsonImageDetectionDecoder {
     // Private constructor to avoid instantiation
   }
 
-  public static ImageDetection decodeImageDetection(final JsonObject json) {
+  public static ImageDetection<Path2D.Double> decodeImageDetection(final JsonObject json) {
     if (json == null || !"Feature".equals(json.getString("type", null))) {
       return null;
     }
@@ -40,10 +40,10 @@ public final class JsonImageDetectionDecoder {
       final JsonValue scoreVal = jsonObject.get("score");
       final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;
       final Shape shape = decodeShape(jsonObject.get("shape"));
-      if (shape instanceof Path2D && imageKey != null && key != null && score != null && packag != null
+      if (shape instanceof Path2D.Double && imageKey != null && key != null && score != null && packag != null
         && value != null) {
         try {
-          return new ImageDetection((Path2D) shape, imageKey, key, score, packag, value);
+          return new ImageDetection<>((Path2D.Double) shape, imageKey, key, score, packag, value);
         } catch (IllegalArgumentException e) {
           if (e.getMessage().startsWith("Unknown detection")) {
             Logging.error(e.getMessage());
@@ -77,8 +77,8 @@ public final class JsonImageDetectionDecoder {
    * @param json the json array to decode, must not be <code>null</code>
    * @return the decoded polygon as {@link Path2D.Double}
    */
-  private static Path2D decodePolygon(final JsonArray json) {
-    final Path2D shape = new Path2D.Double();
+  private static Path2D.Double decodePolygon(final JsonArray json) {
+    final Path2D.Double shape = new Path2D.Double();
     json.forEach(val -> {
       final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;
       if (part != null) {
@@ -98,8 +98,8 @@ public final class JsonImageDetectionDecoder {
    * @return the decoded polygon as {@link Path2D.Double}
    * @throws NullPointerException if parameter is <code>null</code>
    */
-  private static Path2D decodeSimplePolygon(final JsonArray json) {
-    final Path2D shape = new Path2D.Double();
+  private static Path2D.Double decodeSimplePolygon(final JsonArray json) {
+    final Path2D.Double shape = new Path2D.Double();
     json.forEach(val -> {
       double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);
       if (shape.getCurrentPoint() == null && coord != null) {

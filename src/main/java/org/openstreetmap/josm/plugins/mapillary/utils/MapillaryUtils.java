@@ -287,7 +287,7 @@ public final class MapillaryUtils {
    * Check if the given ImageDetection is filtered out.
    */
   public static boolean checkIfDetectionIsFiltered(final List<PointObjectLayer> detectionLayers,
-    final ImageDetection d) {
+    final ImageDetection<?> d) {
     if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())
       && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
       return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream()
