@@ -88,7 +88,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Detections
       DetectionsDownloadRunnable.get(this);
       this.detectionsForced = true;
     }
-    return detections;
+    return Collections.unmodifiableList(detections);
 
   }
 
