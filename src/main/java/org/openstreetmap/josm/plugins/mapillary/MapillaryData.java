@@ -463,21 +463,26 @@ public class MapillaryData implements Data, Serializable {
    *
    * @param imagesToGet The images to get detections for
    */
-  public void getAllDetections(Collection<MapillaryImage> imagesToGet) {
-    List<MapillaryImage> list = imagesToGet.stream().filter(Objects::nonNull)
-      .collect(Collectors.toCollection(ArrayList::new));
+  public <T extends Detections & Keyed> void getAllDetections(Collection<T> imagesToGet) {
+    List<T> list = imagesToGet.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     int index = list.indexOf(getSelectedImage());
-    MapillaryImage current = index >= 0 ? list.get(index) : null;
+    T current = index >= 0 ? list.get(index) : null;
     if (current != null) {
       list.remove(current);
     }
+    final Collection<T> currentCollection;
+    if (current == null) {
+      currentCollection = Collections.emptyList();
+    } else {
+      currentCollection = Collections.singleton(current);
+    }
     if (SwingUtilities.isEventDispatchThread()) {
       MainApplication.worker.execute(() -> {
-        getDetections(Collections.singleton(current));
+        getDetections(currentCollection);
         getDetections(list);
       });
     } else {
-      getDetections(Collections.singleton(current));
+      getDetections(currentCollection);
       getDetections(list);
     }
   }
@@ -489,8 +494,10 @@ public class MapillaryData implements Data, Serializable {
     synchronized (fullyDownloadedDetections) {
       Collection<T> imagesToGet = imagesToGetDetections.stream().filter(Objects::nonNull)
         .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
+      // Keyed::getKey was throwing a LambdaConversionException.
+      @SuppressWarnings("java:S1612")
       URL nextUrl = MapillaryURL.APIv3
-        .retrieveDetections(imagesToGet.stream().map(Keyed::getKey).collect(Collectors.toList()));
+        .retrieveDetections(imagesToGet.stream().map(t -> t.getKey()).collect(Collectors.toList()));
       Map<String, List<ImageDetection<?>>> detections = new HashMap<>();
       while (nextUrl != null) {
         HttpClient client = HttpClient.create(nextUrl);
@@ -512,7 +519,7 @@ public class MapillaryData implements Data, Serializable {
         fullyDownloadedDetections.add(i);
       });
       MapillaryAbstractImage selectedImageTemp = getSelectedImage();
-      if (selectedImageTemp instanceof Detections && imagesToGet.contains((Detections) selectedImageTemp)) {
+      if (selectedImageTemp instanceof Detections && imagesToGet.contains(selectedImageTemp)) {
         MapillaryMainDialog.getInstance().imageViewer
           .setAllDetections(((Detections) selectedImageTemp).getDetections());
       }
