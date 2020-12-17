@@ -595,7 +595,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         };
         String detections = mapillaryObject.get("detections");
         UndoRedoHandler.getInstance().add(deleteOriginal);
-        UndoRedoHandler.getInstance().add(updateTagsCommand);
+        if (updateTagsCommand != null) {
+          UndoRedoHandler.getInstance().add(updateTagsCommand);
+        }
         try (JsonParser parser = Json
           .createParser(new ByteArrayInputStream(detections.getBytes(StandardCharsets.UTF_8)))) {
           while (parser.hasNext()) {
