@@ -1630,7 +1630,8 @@ public enum ObjectDetections {
 
   OBJECT__SUPPORT__POLE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__SUPPORT__TRAFFIC_SIGN_FRAME(DetectionType.POINT, DetectionType.SEGMENTATION),
-  OBJECT__SUPPORT__UTILITY_POLE(DetectionType.POINT, DetectionType.SEGMENTATION),
+  OBJECT__SUPPORT__UTILITY_POLE("man_made=utility_pole", TaggingPresetType.NODE,
+    new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PREVIEW),
   OBJECT__TRAFFIC_CONE(DetectionType.POINT, DetectionType.SEGMENTATION),
   OBJECT__TRAFFIC_LIGHT__CYCLISTS(Constants.HIGHWAY_TRAFFIC_SIGNALS, TaggingPresetType.NODE,
     new DetectionType[] { DetectionType.POINT, DetectionType.SEGMENTATION }, DataType.PRODUCTION),
