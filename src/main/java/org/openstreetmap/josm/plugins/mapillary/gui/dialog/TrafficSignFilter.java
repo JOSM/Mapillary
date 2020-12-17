@@ -213,7 +213,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     if (detectionPage < 0) {
       detectionPage = 0;
     }
-    long visible = buttons.parallelStream().filter(b -> b.isFiltered(filterField.getText())).count();
+    long visible = buttons.parallelStream().filter(b -> checkRelevant(b, filterField.getText())).count();
     while (detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
       detectionPage--;
     }
