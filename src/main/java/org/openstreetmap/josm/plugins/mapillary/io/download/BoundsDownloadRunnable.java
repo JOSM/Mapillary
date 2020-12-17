@@ -36,10 +36,11 @@ import org.openstreetmap.josm.tools.Logging;
 public abstract class BoundsDownloadRunnable extends RecursiveAction {
 
   private static final long serialVersionUID = -3097850570397160069L;
+  private static final short MAX_DOWNLOAD_ATTEMPTS = 2;
   protected final Bounds bounds;
   protected final Collection<URL> urls;
   protected static final int MAXIMUM_URLS = 50;
-  protected final ProgressMonitor monitor;
+  private ProgressMonitor monitor;
   private final Function<Bounds, Collection<URL>> urlGen;
   /**
    * Checks if this download has been completed before
@@ -76,6 +77,10 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
   }
 
   private void realRun(URL currentUrl) {
+    realRun(currentUrl, 0);
+  }
+
+  private void realRun(URL currentUrl, int attempt) {
     HttpClient client = null;
     ForkJoinPool pool = ForkJoinTask.getPool();
     try {
@@ -116,8 +121,20 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       }
       monitor.finishTask();
     } catch (IOException e) {
+      // Finish the task and use the nullprogressmonitor instance for future attempts.
+      monitor.finishTask();
+      this.monitor = NullProgressMonitor.INSTANCE;
+      final String message;
+      // Limit retries to 504 server timeouts and no more than {@link MAX_DOWNLOAD_ATTEMPTS} (2 attempts).
+      if (client.getResponse() != null && client.getResponse().getResponseCode() == 504
+        && attempt < MAX_DOWNLOAD_ATTEMPTS) {
+        message = I18n.tr("Server timeout, trying {0} again (attempt {1} of {2})", currentUrl.toString(), attempt + 1,
+          MAX_DOWNLOAD_ATTEMPTS);
+        pool.execute(() -> this.realRun(currentUrl, attempt + 1));
+      } else {
+        message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
+      }
       client.disconnect();
-      String message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
       Logging.warn(message);
       Logging.warn(e);
       if (!GraphicsEnvironment.isHeadless()) {

@@ -281,12 +281,21 @@ public class MapillaryData implements Data, Serializable {
   }
 
   /**
+   * Returns a Set containing all visible images. Deleted images are not visible.
+   *
+   * @return A Set object containing all visible images.
+   */
+  public Set<MapillaryAbstractImage> getImages() {
+    return images.stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
+  }
+
+  /**
    * Returns a Set containing all images.
    *
    * @return A Set object containing all images.
    */
-  public Set<MapillaryAbstractImage> getImages() {
-    return images.stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
+  public Set<MapillaryAbstractImage> getAllImages() {
+    return Collections.unmodifiableSet(this.images);
   }
 
   /**

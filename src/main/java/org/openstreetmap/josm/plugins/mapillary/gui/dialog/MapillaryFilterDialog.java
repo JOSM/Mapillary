@@ -328,7 +328,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     if (MapillaryLayer.hasInstance()) {
       Predicate<MapillaryAbstractImage> shouldHide = this.getShouldHidePredicate();
       if (shouldHide != null) {
-        MapillaryLayer.getInstance().getData().getImages().parallelStream()
+        MapillaryLayer.getInstance().getData().getAllImages().parallelStream()
           .forEach(img -> img.setVisible(!shouldHide.test(img)));
         MapillaryLayer.invalidateInstance();
       }
