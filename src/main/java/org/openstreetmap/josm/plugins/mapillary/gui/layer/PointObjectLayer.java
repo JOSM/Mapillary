@@ -112,6 +112,8 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Keyed;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
@@ -886,16 +888,19 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   @Override
   public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
     Collection<OsmPrimitive> currentSelection = data.getSelected();
-    if (newImage instanceof MapillaryImage) {
-      MapillaryImage image = (MapillaryImage) newImage;
+    if (newImage instanceof Detections) {
+      Detections newImageDetections = (Detections) newImage;
       this.data.getNodes();
-      Collection<IPrimitive> nodes = image.getDetections(true).parallelStream().map(ImageDetection::getKey).flatMap(
-        // Create a new ArrayList to avoid a ConcurrentModificationException
-        d -> new ArrayList<>(data.getNodes()).parallelStream()
-          .filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
+      String key = (newImage instanceof Keyed) ? ((Keyed) newImage).getKey() : null;
+      Collection<IPrimitive> nodes = newImageDetections.getDetections(false).parallelStream()
+        .map(ImageDetection::getKey).flatMap(
+          // Create a new ArrayList to avoid a ConcurrentModificationException
+          d -> new ArrayList<>(data.getNodes()).parallelStream()
+            .filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
         .collect(Collectors.toList());
-      if (!nodes.containsAll(currentSelection) && !image.getDetections().isEmpty()
-        && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
+      if (!nodes.containsAll(currentSelection) && !newImageDetections.getDetections().isEmpty()
+        && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && currentSelection.stream()
+          .filter(i -> i.hasKey(DETECTIONS)).anyMatch(i -> !i.get(DETECTIONS).contains(key))) {
         data.setSelected(nodes);
       }
     } else {

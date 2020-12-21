@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +44,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
@@ -55,6 +57,7 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -472,11 +475,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           }
         }
         try {
+          ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
+          List<ImageDetection<?>> detections = ((MapillaryImage) image).getDetections(false);
           if (this.imageCache != null && this.imageCache.get() != null) {
-            setDisplayImage(imageCache.get().getImage(), ((MapillaryImage) image).getDetections(), image.isPanorama());
+            setDisplayImage(imageCache.get().getImage(), detections, image.isPanorama());
+            pool.execute(() -> updateDetections(this.imageCache, (MapillaryImage) this.image, detections));
           } else if (this.thumbnailCache != null && this.thumbnailCache.get() != null) {
-            setDisplayImage(thumbnailCache.get().getImage(), ((MapillaryImage) image).getDetections(),
-              image.isPanorama());
+            setDisplayImage(thumbnailCache.get().getImage(), detections, image.isPanorama());
+            pool.execute(() -> updateDetections(this.thumbnailCache, (MapillaryImage) this.image, detections));
           } else {
             this.imageViewer.paintLoadingImage();
           }
@@ -494,7 +500,25 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       }
       updateTitle();
     }
+  }
 
+  private <T extends MapillaryAbstractImage & Detections> void updateDetections(MapillaryCache cache, T image,
+    Collection<ImageDetection<?>> currentDetections) {
+    Collection<ImageDetection<?>> detections = image.getDetections(true);
+    if (detections.containsAll(currentDetections) && currentDetections.containsAll(detections)) {
+      GuiHelper.runInEDT(() -> {
+        synchronized (this.image) {
+          if (this.image != null && this.image.equals(image)) {
+            try {
+              this.setDisplayImage(cache.get().getImage(), detections, image.isPanorama());
+            } catch (IOException e) {
+              // Leave the current image up
+              Logging.error(e);
+            }
+          }
+        }
+      });
+    }
   }
 
   /**

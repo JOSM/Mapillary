@@ -350,8 +350,10 @@ public class MapillaryData implements Data, Serializable {
    */
   public void setSelectedImage(MapillaryAbstractImage image, boolean zoom) {
     MapillaryAbstractImage oldImage = this.selectedImage;
-    if (image instanceof MapillaryImage && inCurrentlySelectedDetection((MapillaryImage) image)) {
-      getAllDetections(Collections.singleton((MapillaryImage) image));
+    if (image instanceof Detections && image instanceof Keyed
+      && inCurrentlySelectedDetection((MapillaryAbstractImage & Detections & Keyed) image)) {
+      SwingUtilities.invokeLater(
+        () -> getAllDetections(Collections.singleton((MapillaryAbstractImage & Detections & Keyed) image)));
     }
     this.selectedImage = image;
     this.multiSelectedImages.clear();
@@ -378,7 +380,7 @@ public class MapillaryData implements Data, Serializable {
    * @param image The image to check
    * @return {@code true} if any point object layer has a selected object with the image key.
    */
-  public static boolean inCurrentlySelectedDetection(MapillaryImage image) {
+  public static <T extends MapillaryAbstractImage & Detections & Keyed> boolean inCurrentlySelectedDetection(T image) {
     return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
       .map(PointObjectLayer::getDataSet).flatMap(d -> d.getSelected().parallelStream())
       .filter(p -> p.hasTag("detections"))
@@ -472,7 +474,7 @@ public class MapillaryData implements Data, Serializable {
    *
    * @param imagesToGet The images to get detections for
    */
-  public <T extends Detections & Keyed> void getAllDetections(Collection<T> imagesToGet) {
+  public <T extends MapillaryAbstractImage & Detections & Keyed> void getAllDetections(Collection<T> imagesToGet) {
     List<T> list = imagesToGet.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     int index = list.indexOf(getSelectedImage());
     T current = index >= 0 ? list.get(index) : null;
@@ -496,7 +498,8 @@ public class MapillaryData implements Data, Serializable {
     }
   }
 
-  private <T extends Detections & Keyed> void getDetections(Collection<T> imagesToGetDetections) {
+  private <T extends MapillaryAbstractImage & Detections & Keyed> void getDetections(
+    Collection<T> imagesToGetDetections) {
     if (imagesToGetDetections == null || imagesToGetDetections.isEmpty()) {
       return;
     }
@@ -528,9 +531,11 @@ public class MapillaryData implements Data, Serializable {
         fullyDownloadedDetections.add(i);
       });
       MapillaryAbstractImage selectedImageTemp = getSelectedImage();
-      if (selectedImageTemp instanceof Detections && imagesToGet.contains(selectedImageTemp)) {
+      if (selectedImageTemp instanceof Detections && imagesToGet.contains(selectedImageTemp)
+        && MapillaryMainDialog.hasInstance()) {
         MapillaryMainDialog.getInstance().imageViewer
           .setAllDetections(((Detections) selectedImageTemp).getDetections());
+        MapillaryMainDialog.getInstance().updateImage();
       }
     }
   }
