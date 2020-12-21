@@ -888,9 +888,11 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     Collection<OsmPrimitive> currentSelection = data.getSelected();
     if (newImage instanceof MapillaryImage) {
       MapillaryImage image = (MapillaryImage) newImage;
-      Collection<IPrimitive> nodes = image.getDetections(true).parallelStream().map(ImageDetection::getKey)
-        .flatMap(
-          d -> data.getNodes().parallelStream().filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
+      this.data.getNodes();
+      Collection<IPrimitive> nodes = image.getDetections(true).parallelStream().map(ImageDetection::getKey).flatMap(
+        // Create a new ArrayList to avoid a ConcurrentModificationException
+        d -> new ArrayList<>(data.getNodes()).parallelStream()
+          .filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
         .collect(Collectors.toList());
       if (!nodes.containsAll(currentSelection) && !image.getDetections().isEmpty()
         && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())) {
