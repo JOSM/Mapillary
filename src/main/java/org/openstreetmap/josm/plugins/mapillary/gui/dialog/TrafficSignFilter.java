@@ -488,7 +488,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
           }
         }
         return null;
-      }).filter(Objects::nonNull).findFirst().orElse(null);
+      }).filter(Objects::nonNull).findFirst().orElse(ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP));
       if (icon != null) {
         GuiHelper.runInEDT(() -> {
           ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
