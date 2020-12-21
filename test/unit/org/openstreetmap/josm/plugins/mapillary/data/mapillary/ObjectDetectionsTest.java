@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.Field;
@@ -14,6 +15,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import org.openstreetmap.josm.actions.ExpertToggleAction;
+import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
@@ -31,14 +34,22 @@ class ObjectDetectionsTest {
     ObjectDetections.updatePresets();
   }
 
+  /**
+   * Get production object detections for testing
+   *
+   * @return A stream of arguments for object detections that can be added <i>and</i> should be addable by default.
+   */
   static Stream<Arguments> provideObjectDetections() {
+    // Ensure that we are only testing production object detections
+    assertFalse(ExpertToggleAction.isExpert());
+    assertFalse(DeveloperToggleAction.isDeveloper());
     return Stream.of(ObjectDetections.values()).filter(d -> {
       try {
         return osmKey.get(d) != null;
       } catch (ReflectiveOperationException e) {
         return false;
       }
-    }).map(Arguments::of);
+    }).filter(ObjectDetections::shouldBeAddable).map(Arguments::of);
   }
 
   @ParameterizedTest
