@@ -17,6 +17,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,11 +25,13 @@ import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -63,6 +66,7 @@ import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListen
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.mappaint.Range;
 import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -129,7 +133,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
   /** The nearest images to the selected image from different sequences sorted by distance from selection. */
-  private MapillaryImage[] nearestImages = {};
+  // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
+  // synchronization
+  private final List<MapillaryImage> nearestImages = Collections.synchronizedList(new ArrayList<>());
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
@@ -288,8 +294,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param n the index for picking from the list of "nearest images", beginning from 1
    * @return the n-nearest image to the currently selected image, or null if no such image can be found
    */
-  public synchronized MapillaryImage getNNearestImage(final int n) {
-    return n >= 1 && n <= nearestImages.length ? nearestImages[n - 1] : null;
+  public MapillaryImage getNNearestImage(final int n) {
+    synchronized (this.nearestImages) {
+      return n >= 1 && n <= this.nearestImages.size() ? this.nearestImages.get(n - 1) : null;
+    }
   }
 
   /**
@@ -342,8 +350,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
         }
       } catch (IllegalArgumentException e) {
         // TODO: It would be ideal, to fix this properly. But for the moment let's catch
-        // this, for when a listener has
-        // already been removed.
+        // this, for when a listener has already been removed.
       }
       UploadAction.unregisterUploadHook(this);
     }
@@ -382,7 +389,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   }
 
   @Override
-  public synchronized void paint(final Graphics2D g, final MapView mv, final Bounds box) {
+  public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
       MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
@@ -393,16 +400,16 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     }
 
     // Draw the blue and red line
-    synchronized (MapillaryLayer.class) {
+    synchronized (this) {
       final MapillaryAbstractImage selectedImg = data.getSelectedImage();
-      for (int i = 0; i < nearestImages.length && selectedImg != null; i++) {
+      for (int i = 0; i < this.nearestImages.size() && selectedImg != null; i++) {
         if (i == 0) {
           g.setColor(Color.RED);
         } else {
           g.setColor(Color.BLUE);
         }
         final Point selected = mv.getPoint(selectedImg.getMovingLatLon());
-        final Point p = mv.getPoint(nearestImages[i].getMovingLatLon());
+        final Point p = mv.getPoint(this.nearestImages.get(i).getMovingLatLon());
         g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
       }
     }
@@ -712,6 +719,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     if (target.getSequence() == null) {
       return new MapillaryImage[] {};
     }
+    // Locked MapillaryLayer, waiting for a java.util.stream.Nodes$CollectorTask$OfRef
     return data.getSequences().parallelStream()
       .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())).map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
@@ -725,32 +733,32 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(MapillaryImage[]::new);
   }
 
-  private synchronized void updateNearestImages() {
+  private void updateNearestImages() {
     ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
     final MapillaryAbstractImage selected = data.getSelectedImage();
+    MapillaryImage[] newNearestImages;
     if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).toDelete())) {
-      nearestImages = getNearestImagesFromDifferentSequences(selected, 2);
+      newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
-      nearestImages = new MapillaryImage[0];
+      newNearestImages = new MapillaryImage[0];
     }
-    if (MainApplication.isDisplayingMapView()) {
-      if (SwingUtilities.isEventDispatchThread()) {
-        updateRedBlueButtons();
-      } else {
-        SwingUtilities.invokeLater(this::updateRedBlueButtons);
+    synchronized (this.nearestImages) {
+      this.nearestImages.clear();
+      Stream.of(newNearestImages).filter(Objects::nonNull).forEach(this.nearestImages::add);
+
+      if (MainApplication.isDisplayingMapView()) {
+        GuiHelper.runInEDT(this::updateRedBlueButtons);
       }
-    }
-    if (nearestImages.length >= 1) {
-      pool.execute(() -> CacheUtils.downloadPicture(nearestImages[0]));
-      if (nearestImages.length >= 2) {
-        pool.execute(() -> CacheUtils.downloadPicture(nearestImages[1]));
-      }
+      this.nearestImages.stream().filter(Objects::nonNull)
+        .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
     }
   }
 
   private void updateRedBlueButtons() {
-    MapillaryMainDialog.getInstance().redButton.setEnabled(nearestImages.length >= 1);
-    MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.length >= 2);
+    synchronized (this.nearestImages) {
+      MapillaryMainDialog.getInstance().redButton.setEnabled(!nearestImages.isEmpty());
+      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.size() >= 2);
+    }
   }
 
   /**
