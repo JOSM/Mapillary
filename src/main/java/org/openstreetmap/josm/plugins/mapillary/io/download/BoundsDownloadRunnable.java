@@ -106,10 +106,12 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
       if (nextURL != null) {
-        if (monitor.isCanceled()) {
+        BoundsDownloadRunnable next = getNextUrl(nextURL);
+        if (monitor.isCanceled() || next == null) {
           pool.shutdown();
+        } else {
+          pool.execute(next);
         }
-        pool.execute(getNextUrl(nextURL));
       }
       run(client);
       if (monitor instanceof ChildProgress) {
