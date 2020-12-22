@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -83,10 +82,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private int detectionPage;
   private final JCheckBox toggleVisibleCheckbox;
   private static final String NEARBY_KEY = "nearby_osm_objects";
-
-  private interface ResetListener extends Serializable {
-    void reset();
-  }
 
   private final List<ResetListener> resetObjects = new ArrayList<>();
 
