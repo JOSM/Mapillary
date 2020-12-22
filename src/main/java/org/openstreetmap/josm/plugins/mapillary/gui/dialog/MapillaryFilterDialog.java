@@ -18,7 +18,6 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -41,6 +40,8 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.openstreetmap.josm.actions.ExpertToggleAction;
+import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListener;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
@@ -66,10 +67,12 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -93,7 +96,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
     86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
   };
 
-  private final Collection<ResetListener> resetObjects = new HashSet<>();
+  /** Reset objects (reset done in order added) */
+  private final ListenerList<ResetListener> resetObjects = ListenerList.create();
+  private ListenerList<Destroyable> destroyable = ListenerList.create();
 
   private final JLabel organizationLabel = new JLabel(tr("Org"));
   final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
@@ -104,7 +109,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
-      Shortcut.registerShortcut("mapillary:filterdialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
+      Shortcut.registerShortcut("mapillary:filter<dialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
         Shortcut.NONE),
       200, false, MapillaryPreferenceSetting.class);
     MapillaryUser.addListener(this);
@@ -120,43 +125,171 @@ public final class MapillaryFilterDialog extends ToggleDialog
     signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
     signChooserPanel.add(signChooser);
 
-    final JPanel fromPanel = new JPanel();
-    fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    final JCheckBox filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
-    fromPanel.add(filterByDateCheckbox);
-    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
-    final JSpinner spinner = new JSpinner(spinnerModel);
-    spinner.setEnabled(false);
-    fromPanel.add(spinner);
+    final JCheckBox imported = new JCheckBox(tr("Imported images"));
+    imported.setSelected(true);
+    downloaded.setSelected(true);
 
-    final JComboBox<String> time = new JComboBox<>(TIME_LIST);
-    time.setEnabled(false);
-    fromPanel.add(time);
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.add(new JLabel(tr("Picture Filters")), GBC.eol().anchor(GridBagConstraints.LINE_START));
+    final JPanel imageLine = new JPanel();
+    imageLine.add(downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
+    imageLine.add(imported, GBC.eol());
+    panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    this.addTimeFilters(panel);
+    this.addUserGroupFilters(panel);
+    this.addCameraMakeModelFilters(panel);
+    this.addImageQualityFilters(panel);
+    final JPanel signs = new JPanel();
+    signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
+    signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
+    panel.add(onlyPano, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
-    final JPanel timePanel = new JPanel(new GridBagLayout());
-    final IDatePicker<JComponent> startDate = IDatePicker.getNewDatePicker();
-    final IDatePicker<JComponent> endDate = IDatePicker.getNewDatePicker();
-    final Consumer<IDatePicker<?>> function = (modified) -> this.updateDates(startDate, endDate, modified);
-    startDate.addEventHandler(function);
-    endDate.addEventHandler(function);
-    timePanel.add(new JLabel(tr("Start")), GBC.std().anchor(GridBagConstraints.LINE_START));
-    timePanel.add(new JLabel(tr("End")), GBC.eol().anchor(GridBagConstraints.LINE_END));
-    timePanel.add(startDate.getComponent(), GBC.std().anchor(GridBagConstraints.LINE_START));
-    timePanel.add(endDate.getComponent(), GBC.eol().anchor(GridBagConstraints.LINE_END));
-    final Dimension d = timePanel.getMinimumSize();
-    d.width = (int) Math.ceil(d.width * 1.15);
-    d.height = (int) Math.ceil(d.height * 1.15);
-    timePanel.setMinimumSize(d);
+    panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
+    final TrafficSignFilter objectFilter = new TrafficSignFilter();
+    panel.add(new JLabel(tr("Object Detection Filters")),
+      GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
+    this.destroyable.addListener(objectFilter);
+    panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
+    createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
 
-    filterByDateCheckbox.addItemListener(itemE -> {
-      spinner.setEnabled(filterByDateCheckbox.isSelected());
-      time.setEnabled(filterByDateCheckbox.isSelected());
+    // Add listeners for the shouldHidePredicate
+    imported
+      .addItemListener(l -> this.shouldHidePredicate.importedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    downloaded
+      .addItemListener(l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    onlyPano
+      .addItemListener(l -> this.shouldHidePredicate.onlyPanoIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    onlySigns
+      .addItemListener(l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+
+    // Add reset functions
+    this.resetObjects.addListener(() -> imported.setSelected(true));
+    this.resetObjects.addListener(() -> downloaded.setSelected(true));
+    this.resetObjects.addListener(() -> onlySigns.setEnabled(true));
+    this.resetObjects.addListener(() -> onlySigns.setSelected(false));
+    this.resetObjects.addListener(() -> onlyPano.setSelected(false));
+    this.resetObjects.addListener(() -> signChooser.setEnabled(false));
+    this.resetObjects.addListener(objectFilter::reset);
+    this.resetObjects.addListener(MapillaryFilterChooseSigns::reset);
+
+    // Set defaults for the shouldHidePredicate
+    // This must be added last
+    ResetListener setFields = () -> {
+      this.shouldHidePredicate.importedIsSelected = imported.isSelected();
+      this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
+      this.shouldHidePredicate.onlyPanoIsSelected = onlyPano.isSelected();
+      this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
+    };
+    this.resetObjects.addListener(setFields);
+    setFields.reset();
+  }
+
+  /**
+   * Add camera make/model filters
+   *
+   * @param panel The panel to add the filters to
+   */
+  private void addCameraMakeModelFilters(JPanel panel) {
+    JLabel cameraMakeLabel = new JLabel(tr("Camera Make"));
+    panel.add(cameraMakeLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
+    final JosmTextField cameraMake = new JosmTextField();
+    panel.add(cameraMake, GBC.std().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
+    JLabel cameraModelLabel = new JLabel("Model");
+    panel.add(cameraModelLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
+    final JosmTextField cameraModel = new JosmTextField();
+    panel.add(cameraModel, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
+
+    cameraMake.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        // Do nothing
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        shouldHidePredicate.cameraMake = cameraMake.getText();
+      }
     });
 
-    spinner.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
-    time.addActionListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
-    filterByDateCheckbox.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
+    cameraModel.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        // Do nothing
+      }
 
+      @Override
+      public void focusLost(FocusEvent e) {
+        shouldHidePredicate.cameraModel = cameraModel.getText();
+      }
+    });
+    this.resetObjects.addListener(() -> cameraMake.setText(""));
+    this.resetObjects.addListener(() -> cameraModel.setText(""));
+
+    ResetListener setFields = () -> {
+      this.shouldHidePredicate.cameraMake = cameraMake.getText();
+      this.shouldHidePredicate.cameraModel = cameraModel.getText();
+    };
+    this.resetObjects.addListener(setFields);
+    setFields.reset();
+
+    ExpertToggleAction.addVisibilitySwitcher(cameraMakeLabel);
+    ExpertToggleAction.addVisibilitySwitcher(cameraMake);
+    ExpertToggleAction.addVisibilitySwitcher(cameraModelLabel);
+    ExpertToggleAction.addVisibilitySwitcher(cameraModel);
+    ExpertModeChangeListener expertModeChangeListener = l -> setFields.reset();
+    ExpertToggleAction.addExpertModeChangeListener(expertModeChangeListener);
+    this.destroyable.addListener(() -> ExpertToggleAction.removeExpertModeChangeListener(expertModeChangeListener));
+    this.destroyable.addListener(() -> {
+      ExpertToggleAction.removeVisibilitySwitcher(cameraMakeLabel);
+      ExpertToggleAction.removeVisibilitySwitcher(cameraMake);
+      ExpertToggleAction.removeVisibilitySwitcher(cameraModelLabel);
+      ExpertToggleAction.removeVisibilitySwitcher(cameraModel);
+    });
+  }
+
+  /**
+   * Add image quality filters
+   *
+   * @param panel The panel to add the filters to
+   */
+  private void addImageQualityFilters(JPanel panel) {
+    final JCheckBox qualityCheck = new JCheckBox(tr("Image Quality"));
+    final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(3, 1, 5, 1);
+    final JSpinner spinnerQuality = new JSpinner(spinnerQualityModel);
+    qualityCheck.addItemListener(l -> spinnerQuality.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
+    spinnerQuality.setEnabled(qualityCheck.isSelected());
+    panel.add(qualityCheck, GBC.std().anchor(GridBagConstraints.LINE_START));
+    panel.add(spinnerQuality, GBC.eol());
+
+    spinnerQualityModel
+      .addChangeListener(l -> this.shouldHidePredicate.qualityScore = spinnerQualityModel.getNumber().intValue());
+    this.resetObjects.addListener(() -> spinnerQualityModel.setValue(3));
+    this.resetObjects.addListener(() -> qualityCheck.setSelected(false));
+    this.resetObjects.addListener(() -> spinnerQuality.setEnabled(false));
+    ResetListener setFields = () -> this.shouldHidePredicate.qualityScore = Integer.MIN_VALUE;
+    this.resetObjects.addListener(setFields);
+    setFields.reset();
+
+    ExpertToggleAction.addVisibilitySwitcher(qualityCheck);
+    ExpertToggleAction.addVisibilitySwitcher(spinnerQuality);
+    ExpertModeChangeListener expertModeChangeListener = l -> setFields.reset();
+    ExpertToggleAction.addExpertModeChangeListener(expertModeChangeListener);
+    this.destroyable.addListener(() -> ExpertToggleAction.removeExpertModeChangeListener(expertModeChangeListener));
+    this.destroyable.addListener(() -> {
+      ExpertToggleAction.removeVisibilitySwitcher(qualityCheck);
+      ExpertToggleAction.removeVisibilitySwitcher(spinnerQuality);
+    });
+
+  }
+
+  /**
+   * Add user/organization filters
+   *
+   * @param panel The panel to add the filters to
+   */
+  private void addUserGroupFilters(JPanel panel) {
     final JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -194,6 +327,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
       }
 
     });
+    panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+
     if (MapillaryUser.getUsername() != null) {
       onLogin(null);
     }
@@ -201,70 +336,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     // OrganizationRecord.addOrganizationListener(this); // TODO uncomment when API for orgs is available
     OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
-    final JCheckBox imported = new JCheckBox(tr("Imported images"));
-    imported.setSelected(true);
-    downloaded.setSelected(true);
-
-    final JPanel panel = new JPanel(new GridBagLayout());
-    panel.add(new JLabel(tr("Picture Filters")));
-    final JPanel imageLine = new JPanel();
-    imageLine.add(downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
-    imageLine.add(imported, GBC.eol());
-    panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    panel.add(timePanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    final JPanel signs = new JPanel();
-    signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
-    signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
-    panel.add(onlyPano, GBC.eol().anchor(GridBagConstraints.LINE_START));
-
-    panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    final TrafficSignFilter objectFilter = new TrafficSignFilter();
-    panel.add(new JLabel(tr("Object Detection Filters")),
-      GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
-    panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
-    createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
-
-    // Add reset functions
-    this.resetObjects.add(() -> filterByDateCheckbox.setSelected(false));
-    this.resetObjects.add(() -> imported.setSelected(true));
-    this.resetObjects.add(() -> downloaded.setSelected(true));
-    this.resetObjects.add(() -> onlySigns.setEnabled(true));
-    this.resetObjects.add(() -> onlySigns.setSelected(false));
-    this.resetObjects.add(() -> onlyPano.setSelected(false));
-    this.resetObjects.add(() -> user.setText(""));
-    this.resetObjects.add(() -> time.setSelectedItem(TIME_LIST[0]));
-    this.resetObjects.add(() -> signChooser.setEnabled(false));
-    this.resetObjects.add(() -> spinnerModel.setValue(1));
-    this.resetObjects.add(objectFilter::reset);
-    this.resetObjects.add(() -> {
-      if (endDate != null && startDate != null) {
-        endDate.reset();
-        startDate.reset();
-      }
-    });
-    this.resetObjects.add(MapillaryFilterChooseSigns::reset);
-    this.resetObjects.add(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
-
-    // Add listeners for the shouldHidePredicate
-    imported
-      .addItemListener(l -> this.shouldHidePredicate.importedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
-    downloaded
-      .addItemListener(l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
-    filterByDateCheckbox
-      .addItemListener(l -> this.shouldHidePredicate.timeFilter = l.getStateChange() == ItemEvent.SELECTED);
-    onlyPano
-      .addItemListener(l -> this.shouldHidePredicate.onlyPanoIsSelected = l.getStateChange() == ItemEvent.SELECTED);
-    onlySigns
-      .addItemListener(l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
-    endDate.addEventHandler(l -> this.shouldHidePredicate.endDateRefresh = l.getDate());
-    startDate.addEventHandler(l -> this.shouldHidePredicate.startDateRefresh = l.getDate());
-    this.organizations.addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
-    spinnerModel.addChangeListener(l -> this.shouldHidePredicate.dateRange = spinnerModel.getNumber());
-    time.addItemListener(l -> this.shouldHidePredicate.time = (String) l.getItem());
+    // Listeners
     user.addFocusListener(new FocusListener() {
       @Override
       public void focusGained(FocusEvent e) {
@@ -276,19 +348,96 @@ public final class MapillaryFilterDialog extends ToggleDialog
         shouldHidePredicate.user = user.getText();
       }
     });
+    this.organizations.addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
 
-    // Set defaults for the shouldHidePredicate
-    this.shouldHidePredicate.importedIsSelected = imported.isSelected();
-    this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
-    this.shouldHidePredicate.timeFilter = filterByDateCheckbox.isSelected();
-    this.shouldHidePredicate.onlyPanoIsSelected = onlyPano.isSelected();
-    this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
-    this.shouldHidePredicate.endDateRefresh = endDate.getDate();
-    this.shouldHidePredicate.startDateRefresh = startDate.getDate();
-    this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations.getSelectedItem();
-    this.shouldHidePredicate.dateRange = spinnerModel.getNumber();
-    this.shouldHidePredicate.time = (String) time.getSelectedItem();
-    this.shouldHidePredicate.user = user.getText();
+    this.resetObjects.addListener(() -> user.setText(""));
+    this.resetObjects.addListener(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
+    ResetListener setListener = () -> {
+      this.shouldHidePredicate.user = user.getText();
+      this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations.getSelectedItem();
+    };
+    this.resetObjects.addListener(setListener);
+    setListener.reset();
+  }
+
+  /**
+   * Add time filters for pictures
+   *
+   * @param panel The panel to add the time filters to
+   */
+  private void addTimeFilters(JPanel panel) {
+    // Time from panel
+    final JPanel fromPanel = new JPanel();
+    fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    final JCheckBox filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
+    fromPanel.add(filterByDateCheckbox);
+    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
+    final JSpinner spinner = new JSpinner(spinnerModel);
+    spinner.setEnabled(false);
+    fromPanel.add(spinner);
+
+    final JComboBox<String> time = new JComboBox<>(TIME_LIST);
+    time.setEnabled(false);
+    fromPanel.add(time);
+
+    panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    // Time panel
+    final JPanel timePanel = new JPanel(new GridBagLayout());
+    final IDatePicker<JComponent> startDate = IDatePicker.getNewDatePicker();
+    final IDatePicker<JComponent> endDate = IDatePicker.getNewDatePicker();
+    final Consumer<IDatePicker<?>> function = (modified) -> updateDates(startDate, endDate, modified);
+    startDate.addEventHandler(function);
+    endDate.addEventHandler(function);
+    timePanel.add(new JLabel(tr("Start")), GBC.std().anchor(GridBagConstraints.LINE_START));
+    timePanel.add(new JLabel(tr("End")), GBC.eol().anchor(GridBagConstraints.LINE_END));
+    timePanel.add(startDate.getComponent(), GBC.std().anchor(GridBagConstraints.LINE_START));
+    timePanel.add(endDate.getComponent(), GBC.eol().anchor(GridBagConstraints.LINE_END));
+    final Dimension d = timePanel.getMinimumSize();
+    d.width = (int) Math.ceil(d.width * 1.15);
+    d.height = (int) Math.ceil(d.height * 1.15);
+    timePanel.setMinimumSize(d);
+    panel.add(timePanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
+
+    // Listeners
+    filterByDateCheckbox.addItemListener(itemE -> {
+      spinner.setEnabled(filterByDateCheckbox.isSelected());
+      time.setEnabled(filterByDateCheckbox.isSelected());
+    });
+
+    spinner.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
+    time.addActionListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
+    filterByDateCheckbox.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
+
+    endDate.addEventHandler(l -> this.shouldHidePredicate.endDateRefresh = l.getDate());
+    startDate.addEventHandler(l -> this.shouldHidePredicate.startDateRefresh = l.getDate());
+    filterByDateCheckbox
+      .addItemListener(l -> this.shouldHidePredicate.timeFilter = l.getStateChange() == ItemEvent.SELECTED);
+    spinnerModel.addChangeListener(l -> this.shouldHidePredicate.dateRange = spinnerModel.getNumber());
+    time.addItemListener(l -> this.shouldHidePredicate.time = (String) l.getItem());
+
+    this.resetObjects.addListener(() -> {
+      filterByDateCheckbox.setSelected(false);
+      filterByDateCheckbox.getItemListeners();
+    });
+    this.resetObjects.addListener(() -> time.setSelectedItem(TIME_LIST[0]));
+    this.resetObjects.addListener(() -> spinnerModel.setValue(1));
+
+    this.resetObjects.addListener(() -> {
+      if (endDate != null && startDate != null) {
+        endDate.reset();
+        startDate.reset();
+      }
+    });
+
+    ResetListener setFields = () -> {
+      this.shouldHidePredicate.timeFilter = filterByDateCheckbox.isSelected();
+      this.shouldHidePredicate.endDateRefresh = endDate.getDate();
+      this.shouldHidePredicate.startDateRefresh = startDate.getDate();
+      this.shouldHidePredicate.dateRange = spinnerModel.getNumber();
+      this.shouldHidePredicate.time = (String) time.getSelectedItem();
+    };
+    this.resetObjects.addListener(setFields);
+    setFields.reset();
   }
 
   @Override
@@ -321,7 +470,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     return null;
   }
 
-  private void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
+  private static void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
     LocalDate start = startDate.getDate();
     LocalDate end = endDate.getDate();
     if (start == null || end == null)
@@ -356,7 +505,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
    * Resets the dialog to its default state.
    */
   public void reset() {
-    this.resetObjects.forEach(ResetListener::reset);
+    this.resetObjects.fireEvent(ResetListener::reset);
     refresh();
   }
 
@@ -366,6 +515,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public synchronized void refresh() {
     // This predicate returns true if the image should be made invisible
     this.shouldHidePredicate.updateLayerVisible();
+    this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
     updateFilteredImages();
   }
 
@@ -375,11 +525,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public void updateFilteredImages() {
     if (MapillaryLayer.hasInstance()) {
       Predicate<MapillaryAbstractImage> shouldHide = this.getShouldHidePredicate();
-      if (shouldHide != null) {
-        MapillaryLayer.getInstance().getData().getAllImages().parallelStream()
-          .forEach(img -> img.setVisible(!shouldHide.test(img)));
-        MapillaryLayer.invalidateInstance();
-      }
+      MapillaryLayer.getInstance().getData().getAllImages().parallelStream()
+        .forEach(img -> img.setVisible(!shouldHide.test(img)));
+      MapillaryLayer.invalidateInstance();
     }
   }
 
@@ -393,6 +541,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
   }
 
   private static class ImageFilterPredicate implements Predicate<MapillaryAbstractImage> {
+    String cameraModel;
+    String cameraMake;
     String time;
     Number dateRange;
     private boolean layerVisible;
@@ -406,6 +556,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     OrganizationRecord organization;
     boolean smartAdd;
     String user;
+    int qualityScore = Integer.MIN_VALUE;
 
     public ImageFilterPredicate() {
       this.updateLayerVisible();
@@ -417,7 +568,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         return true;
       }
       MainLayerManager layerManager = MainApplication.getLayerManager();
-      if (smartAdd && img instanceof MapillaryImage
+      if (this.smartAdd && img instanceof MapillaryImage
         && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
         Collection<OsmPrimitive> currentSelection = Stream
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
@@ -429,26 +580,23 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
       }
-      if (timeFilter && checkValidTime(img)) {
-        return true;
-      }
-      if (endDateRefresh != null && checkEndDate(img)) {
-        return true;
-      }
-      if (startDateRefresh != null && checkStartDate(img)) {
-        return true;
-      }
-      if (!importedIsSelected && img instanceof MapillaryImportedImage) {
-        return true;
-      }
-      if (onlyPanoIsSelected && !img.isPanorama()) {
+      if (this.timeFilter && checkValidTime(img) || this.endDateRefresh != null && checkEndDate(img)
+        || this.startDateRefresh != null && checkStartDate(img)
+        || !this.importedIsSelected && img instanceof MapillaryImportedImage
+        || this.onlyPanoIsSelected && !img.isPanorama()
+        || this.cameraMake != null && !this.cameraMake.trim().isEmpty()
+          && !this.cameraMake.equals(img.get("camera_make"))
+        || this.cameraModel != null && !this.cameraModel.trim().isEmpty()
+          && !this.cameraModel.equals(img.get("camera_model"))
+        || this.qualityScore != Integer.MIN_VALUE
+          && (img.getQuality() < this.qualityScore || this.qualityScore < 3 && img.getQuality() == Integer.MIN_VALUE)) {
         return true;
       }
       if (img instanceof MapillaryImage) {
-        if (!downloadedIsSelected) {
+        if (!this.downloadedIsSelected) {
           return true;
         }
-        if (onlySignsIsSelected
+        if (this.onlySignsIsSelected
           && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
           return true;
         }
@@ -456,8 +604,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
         if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
-        if (!OrganizationRecord.NULL_RECORD.equals(organization) && img.getSequence() != null
-          && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(organization.getKey())) {
+        if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && img.getSequence() != null
+          && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(this.organization.getKey())) {
           return true;
         }
       }
@@ -601,8 +749,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      this.resetObjects.stream().filter(Destroyable.class::isInstance).map(Destroyable.class::cast)
-        .forEach(Destroyable::destroy);
+      this.destroyable.fireEvent(Destroyable::destroy);
       if (MainApplication.getMap() != null)
         MainApplication.getMap().removeToggleDialog(this);
       // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
