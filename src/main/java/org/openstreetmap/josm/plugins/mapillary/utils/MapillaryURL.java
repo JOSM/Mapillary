@@ -21,7 +21,6 @@ import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
   /** Base URL of the Mapillary API. */
-  private static final String BASE_API_V2_URL = "https://a.mapillary.com/v2/";
   private static final String CLIENT_ID = "UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
   private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
   private static final String POINT_FEATURES_LAYER = "points";
@@ -32,6 +31,9 @@ public final class MapillaryURL {
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
+
+    private static final String IMAGES = "images";
+    private static final String SEQUENCES = "sequences";
 
     private APIv3() {
       // Private constructor to avoid instantiation
@@ -45,9 +47,9 @@ public final class MapillaryURL {
      */
     public static URL getImage(String... key) {
       if (key.length == 1) {
-        return string2URL(baseUrl, "images/", key[0], queryString(null));
+        return string2URL(baseUrl, IMAGES + "/", key[0], queryString(null));
       } else if (key.length > 1) {
-        return string2URL(baseUrl, "images", queryString(null), "&image_keys=", String.join(",", key));
+        return string2URL(baseUrl, IMAGES, queryString(null), "&image_keys=", String.join(",", key));
       }
       return null;
     }
@@ -59,7 +61,7 @@ public final class MapillaryURL {
      * @return The URL to get images with
      */
     public static URL getImagesBySequences(String... key) {
-      return string2URL(baseUrl, "images", queryString(null), "&sequence_keys=", String.join(",", key));
+      return string2URL(baseUrl, IMAGES, queryString(null), "&sequence_keys=", String.join(",", key));
     }
 
     /**
@@ -70,9 +72,9 @@ public final class MapillaryURL {
      */
     public static URL getSequence(String... key) {
       if (key.length == 1) {
-        return string2URL(baseUrl, "sequences/", key[0], queryString(null));
+        return string2URL(baseUrl, SEQUENCES + "/", key[0], queryString(null));
       } else if (key.length > 1) {
-        return string2URL(baseUrl, "sequences", queryString(null), "&sequence_keys=", String.join(",", key));
+        return string2URL(baseUrl, SEQUENCES, queryString(null), "&sequence_keys=", String.join(",", key));
       }
       return null;
     }
@@ -102,8 +104,14 @@ public final class MapillaryURL {
         queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
     }
 
+    /**
+     * Get images inside a bound
+     *
+     * @param bounds The bounds to search
+     * @return A collection of URLs to search
+     */
     public static Collection<URL> searchImages(Bounds bounds) {
-      return Collections.singleton(string2URL(baseUrl, "images", queryString(bounds)));
+      return Collections.singleton(string2URL(baseUrl, IMAGES, queryString(bounds)));
     }
 
     public static URL retrieveOrganizationss(String user) {
@@ -161,11 +169,11 @@ public final class MapillaryURL {
       // If the private=true|false is left out, all images are obtained (as of
       // 2020-02-20).
       if (imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PUBLIC_ONLY)
-        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=false"));
+        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds), "&private=false"));
       else if (MapillaryUser.getUsername() != null && imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PRIVATE_ONLY)
-        urls.add(string2URL(baseUrl, "sequences", queryString(bounds), "&private=true"));
+        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds), "&private=true"));
       else
-        urls.add(string2URL(baseUrl, "sequences", queryString(bounds)));
+        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds)));
       return urls;
     }
 
