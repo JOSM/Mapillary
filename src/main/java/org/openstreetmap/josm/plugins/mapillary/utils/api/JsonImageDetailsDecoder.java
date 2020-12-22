@@ -94,6 +94,7 @@ public final class JsonImageDetailsDecoder {
           if (rSequence.isPresent()) {
             image.setSequence(rSequence.get());
           }
+          image.setKeys(JsonTagMapDecoder.getTagMap(properties));
           return Pair.create(sequence, image);
         }
       }
