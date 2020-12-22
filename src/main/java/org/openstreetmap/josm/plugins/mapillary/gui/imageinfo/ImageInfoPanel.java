@@ -39,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -110,11 +111,11 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     JPanel imgKey = new JPanel();
     imgKey.add(imgKeyValue);
     imgKey.add(copyKeyButton);
-    JPanel imgButtons = new JPanel();
-    imgButtons.add(new MapillaryButton(imgLinkAction, true));
-    imgButtons.add(copyUrlButton);
-    imgButtons.add(new MapillaryButton(addMapillaryTagAction, true));
-    imgButtons.add(colorPickerButton);
+    JPanel imgButtons = new JPanel(new GridBagLayout());
+    imgButtons.add(new MapillaryButton(imgLinkAction, true), GBC.eol());
+    imgButtons.add(copyUrlButton, GBC.eol());
+    imgButtons.add(new MapillaryButton(addMapillaryTagAction, true), GBC.eol());
+    imgButtons.add(colorPickerButton, GBC.eol());
     seqKeyValue = new SelectableLabel();
 
     JPanel root = new JPanel(new GridBagLayout());

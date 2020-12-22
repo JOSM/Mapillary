@@ -112,7 +112,14 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       // on them adds the appropriate layer. Affect hide/show action of layers instead of adding filters?
       DeveloperToggleAction.addVisibilitySwitcher(lbox);
     }
-    add(layers);
+
+    JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
+    smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
+    MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditMode));
+    smartEditMode.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
+    add(smartEditMode, GBC.eol().anchor(GridBagConstraints.WEST));
+
+    add(layers, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
 
     /* Filter signs */
     filterField = new FilterField().filter(this::filterButtons);
@@ -122,9 +129,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     this.toggleVisibleCheckbox.setToolTipText(I18n.tr("Select/Deselect all object detections on the current page"));
     JCheckBox showRelevantObjs = new JCheckBox(I18n.tr("Show Relevant"));
     showRelevantObjs.setToolTipText(I18n.tr("Only show objects on detection layers (\"Relevant objects\")"));
-    JCheckBox smartEditMode = new JCheckBox(I18n.tr("Smart Edit Mode"));
-    smartEditMode.setSelected(Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()));
-    MapillaryProperties.SMART_EDIT.addListener(l -> updateSmartEdit(l, smartEditMode));
     JPanel pagination = new JPanel(new GridBagLayout());
     JButton previousButtonPagination = new JButton(ImageProvider.get("svpLeft"));
     JButton nextButtonPagination = new JButton(ImageProvider.get("svpRight"));
@@ -143,21 +147,20 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     pagination.add(showMax, GBC.std().anchor(GridBagConstraints.CENTER));
     pagination.add(nextButtonPagination, GBC.std().anchor(GridBagConstraints.WEST));
     showRelevantObjs.addItemListener(l -> showRelevantObjects(l.getStateChange() == ItemEvent.SELECTED));
-    smartEditMode.addItemListener(l -> smartEditMode(l.getStateChange() == ItemEvent.SELECTED));
     toggleVisibleCheckbox.addItemListener(l -> toggleVisible(l.getStateChange() == ItemEvent.SELECTED));
-    add(smartEditMode, GBC.std().anchor(GridBagConstraints.WEST));
     add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.WEST));
-    add(toggleVisibleCheckbox, GBC.std().anchor(GridBagConstraints.CENTER));
-    add(pagination, GBC.eol().anchor(GridBagConstraints.EAST));
+    add(toggleVisibleCheckbox, GBC.eol().anchor(GridBagConstraints.CENTER));
+
+    buttons = new ArrayList<>();
+    addButtons();
+
+    add(pagination, GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
 
     this.resetObjects.add(() -> smartEditMode.setSelected(false));
     this.resetObjects.add(() -> showRelevantObjs.setSelected(true));
     this.resetObjects.add(() -> filterField.setText(""));
     this.resetObjects.add(() -> showMaxNumberModel.setValue(100));
     this.resetObjects.add(() -> MapillaryProperties.SMART_EDIT.put(false));
-
-    buttons = new ArrayList<>();
-    addButtons();
 
     if (!showRelevantObjs.isSelected()) {
       showRelevantObjs.doClick();
