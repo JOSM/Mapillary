@@ -9,12 +9,16 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -27,6 +31,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -34,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -46,6 +50,7 @@ import org.openstreetmap.josm.gui.layer.MainLayerManager;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
+import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
@@ -61,8 +66,8 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -88,32 +93,14 @@ public final class MapillaryFilterDialog extends ToggleDialog
     86_400_000 // = 24 * 60 * 60 * 1000 = number of ms in a day
   };
 
-  private final JCheckBox filterByDateCheckbox;
-  /**
-   * Spinner to choose the range of dates.
-   */
-  private final SpinnerNumberModel spinnerModel;
+  private final Collection<ResetListener> resetObjects = new HashSet<>();
 
-  private final JCheckBox imported = new JCheckBox(tr("Imported images"));
-  private final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
-  private final JComboBox<String> time;
-  private final JTextField user;
-
-  final JButton signChooser = new JButton(new SignChooserAction());
-  final JCheckBox downloaded = new JCheckBox(new DownloadCheckBoxAction());
-  final JCheckBox onlySigns = new JCheckBox(new OnlySignsAction());
-
+  private final JLabel organizationLabel = new JLabel(tr("Org"));
   final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
-
-  private final IDatePicker<?> startDate;
-  private final IDatePicker<?> endDate;
 
   private boolean destroyed;
 
-  private final JLabel organizationLabel;
-  private final TrafficSignFilter objectFilter;
-
-  private Predicate<MapillaryAbstractImage> shouldHidePredicate;
+  private final ImageFilterPredicate shouldHidePredicate = new ImageFilterPredicate();
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
@@ -122,35 +109,41 @@ public final class MapillaryFilterDialog extends ToggleDialog
       200, false, MapillaryPreferenceSetting.class);
     MapillaryUser.addListener(this);
 
-    this.signChooser.setEnabled(false);
-    JPanel signChooserPanel = new JPanel();
-    signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    signChooserPanel.add(this.signChooser);
+    final JButton signChooser = new JButton(new SignChooserAction());
+    final JCheckBox downloaded = new JCheckBox(tr("Downloaded images"));
+    final JCheckBox onlySigns = new JCheckBox(tr("Only images with signs"));
+    downloaded.addItemListener(l -> onlySigns.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
+    onlySigns.addItemListener(l -> signChooser.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
 
-    JPanel fromPanel = new JPanel();
+    signChooser.setEnabled(false);
+    final JPanel signChooserPanel = new JPanel();
+    signChooserPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    signChooserPanel.add(signChooser);
+
+    final JPanel fromPanel = new JPanel();
     fromPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
+    final JCheckBox filterByDateCheckbox = new JCheckBox(tr("Not older than: "));
     fromPanel.add(filterByDateCheckbox);
-    this.spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
-    JSpinner spinner = new JSpinner(spinnerModel);
+    final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
+    final JSpinner spinner = new JSpinner(spinnerModel);
     spinner.setEnabled(false);
     fromPanel.add(spinner);
-    time = new JComboBox<>(TIME_LIST);
-    time.setEnabled(false);
-    fromPanel.add(this.time);
 
-    JPanel timePanel;
-    startDate = IDatePicker.getNewDatePicker();
-    endDate = IDatePicker.getNewDatePicker();
-    Consumer<IDatePicker<?>> function = this::updateDates;
+    final JComboBox<String> time = new JComboBox<>(TIME_LIST);
+    time.setEnabled(false);
+    fromPanel.add(time);
+
+    final JPanel timePanel = new JPanel(new GridBagLayout());
+    final IDatePicker<JComponent> startDate = IDatePicker.getNewDatePicker();
+    final IDatePicker<JComponent> endDate = IDatePicker.getNewDatePicker();
+    final Consumer<IDatePicker<?>> function = (modified) -> this.updateDates(startDate, endDate, modified);
     startDate.addEventHandler(function);
     endDate.addEventHandler(function);
-    timePanel = new JPanel(new GridBagLayout());
     timePanel.add(new JLabel(tr("Start")), GBC.std().anchor(GridBagConstraints.LINE_START));
     timePanel.add(new JLabel(tr("End")), GBC.eol().anchor(GridBagConstraints.LINE_END));
     timePanel.add(startDate.getComponent(), GBC.std().anchor(GridBagConstraints.LINE_START));
     timePanel.add(endDate.getComponent(), GBC.eol().anchor(GridBagConstraints.LINE_END));
-    Dimension d = timePanel.getMinimumSize();
+    final Dimension d = timePanel.getMinimumSize();
     d.width = (int) Math.ceil(d.width * 1.15);
     d.height = (int) Math.ceil(d.height * 1.15);
     timePanel.setMinimumSize(d);
@@ -164,13 +157,13 @@ public final class MapillaryFilterDialog extends ToggleDialog
     time.addActionListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
     filterByDateCheckbox.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
 
-    JPanel userSearchPanel = new JPanel();
+    final JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    this.user = new DisableShortcutsOnFocusGainedTextField(10);
-    this.user.addActionListener(new UpdateAction());
+
+    final JosmTextField user = new DisableShortcutsOnFocusGainedTextField(10);
+    user.addActionListener(new UpdateAction());
     userSearchPanel.add(new JLabel(tr("User")));
-    userSearchPanel.add(this.user, GBC.eol());
-    organizationLabel = new JLabel(tr("Org"));
+    userSearchPanel.add(user, GBC.eol());
     organizationLabel.setToolTipText(tr("Organizations"));
     userSearchPanel.add(organizationLabel);
     userSearchPanel.add(this.organizations);
@@ -208,27 +201,94 @@ public final class MapillaryFilterDialog extends ToggleDialog
     // OrganizationRecord.addOrganizationListener(this); // TODO uncomment when API for orgs is available
     OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
-    this.imported.setSelected(true);
-    this.downloaded.setSelected(true);
+    final JCheckBox imported = new JCheckBox(tr("Imported images"));
+    imported.setSelected(true);
+    downloaded.setSelected(true);
 
-    JPanel panel = new JPanel(new GridBagLayout());
-    JPanel imageLine = new JPanel();
-    imageLine.add(this.downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
-    imageLine.add(this.imported, GBC.eol());
+    final JPanel panel = new JPanel(new GridBagLayout());
+    panel.add(new JLabel(tr("Picture Filters")));
+    final JPanel imageLine = new JPanel();
+    imageLine.add(downloaded, GBC.std().anchor(GridBagConstraints.LINE_START));
+    imageLine.add(imported, GBC.eol());
     panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(fromPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(timePanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
-    JPanel signs = new JPanel();
-    signs.add(this.onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
+    final JPanel signs = new JPanel();
+    signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
     signs.add(signChooserPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
     panel.add(signs, GBC.eol().anchor(GridBagConstraints.LINE_START));
+    final JCheckBox onlyPano = new JCheckBox(tr("Panorama only"));
     panel.add(onlyPano, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
     panel.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    objectFilter = new TrafficSignFilter();
+    final TrafficSignFilter objectFilter = new TrafficSignFilter();
+    panel.add(new JLabel(tr("Object Detection Filters")),
+      GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
     panel.add(objectFilter, GBC.eol().fill().anchor(GridBagConstraints.WEST));
     createLayout(panel, true, Arrays.asList(new SideButton(new UpdateAction()), new SideButton(new ResetAction())));
+
+    // Add reset functions
+    this.resetObjects.add(() -> filterByDateCheckbox.setSelected(false));
+    this.resetObjects.add(() -> imported.setSelected(true));
+    this.resetObjects.add(() -> downloaded.setSelected(true));
+    this.resetObjects.add(() -> onlySigns.setEnabled(true));
+    this.resetObjects.add(() -> onlySigns.setSelected(false));
+    this.resetObjects.add(() -> onlyPano.setSelected(false));
+    this.resetObjects.add(() -> user.setText(""));
+    this.resetObjects.add(() -> time.setSelectedItem(TIME_LIST[0]));
+    this.resetObjects.add(() -> signChooser.setEnabled(false));
+    this.resetObjects.add(() -> spinnerModel.setValue(1));
+    this.resetObjects.add(objectFilter::reset);
+    this.resetObjects.add(() -> {
+      if (endDate != null && startDate != null) {
+        endDate.reset();
+        startDate.reset();
+      }
+    });
+    this.resetObjects.add(MapillaryFilterChooseSigns::reset);
+    this.resetObjects.add(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
+
+    // Add listeners for the shouldHidePredicate
+    imported
+      .addItemListener(l -> this.shouldHidePredicate.importedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    downloaded
+      .addItemListener(l -> this.shouldHidePredicate.downloadedIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    filterByDateCheckbox
+      .addItemListener(l -> this.shouldHidePredicate.timeFilter = l.getStateChange() == ItemEvent.SELECTED);
+    onlyPano
+      .addItemListener(l -> this.shouldHidePredicate.onlyPanoIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    onlySigns
+      .addItemListener(l -> this.shouldHidePredicate.onlySignsIsSelected = l.getStateChange() == ItemEvent.SELECTED);
+    endDate.addEventHandler(l -> this.shouldHidePredicate.endDateRefresh = l.getDate());
+    startDate.addEventHandler(l -> this.shouldHidePredicate.startDateRefresh = l.getDate());
+    this.organizations.addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
+    spinnerModel.addChangeListener(l -> this.shouldHidePredicate.dateRange = spinnerModel.getNumber());
+    time.addItemListener(l -> this.shouldHidePredicate.time = (String) l.getItem());
+    user.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        // Do nothing
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        shouldHidePredicate.user = user.getText();
+      }
+    });
+
+    // Set defaults for the shouldHidePredicate
+    this.shouldHidePredicate.importedIsSelected = imported.isSelected();
+    this.shouldHidePredicate.downloadedIsSelected = downloaded.isSelected();
+    this.shouldHidePredicate.timeFilter = filterByDateCheckbox.isSelected();
+    this.shouldHidePredicate.onlyPanoIsSelected = onlyPano.isSelected();
+    this.shouldHidePredicate.onlySignsIsSelected = onlySigns.isSelected();
+    this.shouldHidePredicate.endDateRefresh = endDate.getDate();
+    this.shouldHidePredicate.startDateRefresh = startDate.getDate();
+    this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations.getSelectedItem();
+    this.shouldHidePredicate.dateRange = spinnerModel.getNumber();
+    this.shouldHidePredicate.time = (String) time.getSelectedItem();
+    this.shouldHidePredicate.user = user.getText();
   }
 
   @Override
@@ -261,7 +321,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     return null;
   }
 
-  private void updateDates(IDatePicker<?> modified) {
+  private void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
     LocalDate start = startDate.getDate();
     LocalDate end = endDate.getDate();
     if (start == null || end == null)
@@ -296,23 +356,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
    * Resets the dialog to its default state.
    */
   public void reset() {
-    this.filterByDateCheckbox.setSelected(false);
-    this.imported.setSelected(true);
-    this.downloaded.setSelected(true);
-    this.onlySigns.setEnabled(true);
-    this.onlySigns.setSelected(false);
-    this.onlyPano.setSelected(false);
-    this.user.setText("");
-    this.time.setSelectedItem(TIME_LIST[0]);
-    this.signChooser.setEnabled(false);
-    this.spinnerModel.setValue(1);
-    this.objectFilter.reset();
-    if (this.endDate != null && this.startDate != null) {
-      this.endDate.reset();
-      this.startDate.reset();
-    }
-    MapillaryFilterChooseSigns.reset();
-    organizations.setSelectedItem(OrganizationRecord.NULL_RECORD);
+    this.resetObjects.forEach(ResetListener::reset);
     refresh();
   }
 
@@ -321,10 +365,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
    */
   public synchronized void refresh() {
     // This predicate returns true if the image should be made invisible
-    this.shouldHidePredicate = new ImageFilterPredicate(this.imported, this.downloaded, this.filterByDateCheckbox,
-      this.onlySigns, this.onlyPano, this.endDate, this.startDate, this.spinnerModel, this.time, this.organizations,
-      this.user);
-
+    this.shouldHidePredicate.updateLayerVisible();
     updateFilteredImages();
   }
 
@@ -352,40 +393,22 @@ public final class MapillaryFilterDialog extends ToggleDialog
   }
 
   private static class ImageFilterPredicate implements Predicate<MapillaryAbstractImage> {
-    private final boolean layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
-    private final boolean importedIsSelected;
-    private final boolean downloadedIsSelected;
-    private final boolean timeFilter;
-    private final boolean onlySignsIsSelected;
-    private final boolean onlyPanoIsSelected;
-    private final LocalDate endDateRefresh;
-    private final LocalDate startDateRefresh;
-    private final OrganizationRecord organization;
-    private final boolean smartAdd;
-    private final String user;
-    private JComboBox<String> time;
-    private SpinnerNumberModel spinnerModel;
-    private IDatePicker<?> startDate;
-    private IDatePicker<?> endDate;
+    String time;
+    Number dateRange;
+    private boolean layerVisible;
+    boolean importedIsSelected;
+    boolean downloadedIsSelected;
+    boolean timeFilter;
+    boolean onlySignsIsSelected;
+    boolean onlyPanoIsSelected;
+    LocalDate endDateRefresh;
+    LocalDate startDateRefresh;
+    OrganizationRecord organization;
+    boolean smartAdd;
+    String user;
 
-    public ImageFilterPredicate(JCheckBox imported, JCheckBox downloaded, JCheckBox filterByDateCheckbox,
-      JCheckBox onlySigns, JCheckBox onlyPano, IDatePicker<?> endDate, IDatePicker<?> startDate,
-      SpinnerNumberModel spinnerModel, JComboBox<String> time, JComboBox<OrganizationRecord> organizations,
-      JTextField user) {
-      this.importedIsSelected = imported.isSelected();
-      this.downloadedIsSelected = downloaded.isSelected();
-      this.timeFilter = filterByDateCheckbox.isSelected();
-      this.onlySignsIsSelected = onlySigns.isSelected();
-      this.onlyPanoIsSelected = onlyPano.isSelected();
-      this.endDateRefresh = endDate == null ? null : endDate.getDate();
-      this.startDateRefresh = startDate == null ? convertDateRangeBox(spinnerModel, time) : startDate.getDate();
-      this.organization = (OrganizationRecord) organizations.getSelectedItem();
-      this.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
-      this.user = user.getText();
-      this.time = time;
-      this.spinnerModel = spinnerModel;
-      this.startDate = startDate;
-      this.endDate = endDate;
+    public ImageFilterPredicate() {
+      this.updateLayerVisible();
     }
 
     @Override
@@ -441,11 +464,17 @@ public final class MapillaryFilterDialog extends ToggleDialog
       return false;
     }
 
+    /**
+     * Update the layer visibility
+     */
+    void updateLayerVisible() {
+      this.layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
+    }
+
     private boolean checkValidTime(MapillaryAbstractImage img) {
       final long currentTime = currentTime();
       for (int i = 0; i < 3; i++) {
-        if (TIME_LIST[i].equals(time.getSelectedItem())
-          && img.getCapturedAt() < currentTime - spinnerModel.getNumber().doubleValue() * TIME_FACTOR[i]) {
+        if (TIME_LIST[i].equals(time) && img.getCapturedAt() < currentTime - dateRange.doubleValue() * TIME_FACTOR[i]) {
           return true;
         }
       }
@@ -457,7 +486,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the start date is after the image date
      */
     private boolean checkStartDate(MapillaryAbstractImage img) {
-      LocalDate start = startDate.getDate();
+      LocalDate start = startDateRefresh;
       LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
       return start.isAfter(imgDate);
     }
@@ -467,7 +496,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the end date is before the image date
      */
     private boolean checkEndDate(MapillaryAbstractImage img) {
-      LocalDate end = endDate.getDate();
+      LocalDate end = endDateRefresh;
       LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
       return end.isBefore(imgDate);
     }
@@ -512,20 +541,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     instance = null;
   }
 
-  private class DownloadCheckBoxAction extends AbstractAction {
-
-    private static final long serialVersionUID = 4672634002899519496L;
-
-    DownloadCheckBoxAction() {
-      putValue(NAME, tr("Downloaded images"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      onlySigns.setEnabled(downloaded.isSelected());
-    }
-  }
-
   private static class UpdateAction extends AbstractAction {
 
     private static final long serialVersionUID = -7417238601979689863L;
@@ -552,20 +567,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     @Override
     public void actionPerformed(ActionEvent arg0) {
       MapillaryFilterDialog.getInstance().reset();
-    }
-  }
-
-  private class OnlySignsAction extends AbstractAction {
-
-    private static final long serialVersionUID = -2937440338019185723L;
-
-    OnlySignsAction() {
-      putValue(NAME, tr("Only images with signs"));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-      signChooser.setEnabled(onlySigns.isSelected());
     }
   }
 
@@ -600,7 +601,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public void destroy() {
     if (!destroyed) {
       super.destroy();
-      objectFilter.destroy();
+      this.resetObjects.stream().filter(Destroyable.class::isInstance).map(Destroyable.class::cast)
+        .forEach(Destroyable::destroy);
       if (MainApplication.getMap() != null)
         MainApplication.getMap().removeToggleDialog(this);
       // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
