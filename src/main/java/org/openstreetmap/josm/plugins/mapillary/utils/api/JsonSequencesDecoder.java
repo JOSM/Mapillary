@@ -48,25 +48,30 @@ public final class JsonSequencesDecoder {
       result = new MapillarySequence(properties.getString("key", null), properties.getString("user_key", null),
         properties.getString("organization_key", null), capturedAt);
 
-      final Double[] cas = decodeCoordinateProperty(properties, "cas",
-        val -> val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null, Double.class);
-      final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
-        val -> val instanceof JsonString ? ((JsonString) val).getString() : null, String.class);
-      final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
-      final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
-      boolean pano = properties.getBoolean("pano", false);
-      boolean privateImage = properties.getBoolean("private", false);
-      for (int i = 0; i < sequenceLength; i++) {
-        if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-          final MapillaryImage img = getImage(imageKeys[i], geometry[i], cas[i], pano, privateImage);
-          result.add(img);
-        }
-      }
+      createImages(json, properties, result);
       if (result.getImages().isEmpty()) {
-        result = null;
+        return null;
       }
+      result.setKeys(JsonTagMapDecoder.getTagMap(properties));
     }
     return result;
+  }
+
+  private static void createImages(JsonObject json, JsonObject properties, MapillarySequence result) {
+    final Double[] cas = decodeCoordinateProperty(properties, "cas",
+      val -> val instanceof JsonNumber ? ((JsonNumber) val).doubleValue() : null, Double.class);
+    final String[] imageKeys = decodeCoordinateProperty(properties, "image_keys",
+      val -> val instanceof JsonString ? ((JsonString) val).getString() : null, String.class);
+    final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
+    final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
+    boolean pano = properties.getBoolean("pano", false);
+    boolean privateImage = properties.getBoolean("private", false);
+    for (int i = 0; i < sequenceLength; i++) {
+      if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
+        final MapillaryImage img = getImage(imageKeys[i], geometry[i], cas[i], pano, privateImage);
+        result.add(img);
+      }
+    }
   }
 
   /**
