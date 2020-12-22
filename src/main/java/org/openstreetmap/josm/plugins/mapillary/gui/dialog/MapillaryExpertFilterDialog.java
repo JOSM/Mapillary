@@ -89,6 +89,13 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
     MultikeyActionsHandler.getInstance().addAction(hidingFilterAction);
   }
 
+  @Override
+  public String helpTopic() {
+    String help = getClass().getName();
+    help = help.substring(help.lastIndexOf('.') + 1, help.length() - 6);
+    return "Plugin/Mapillary/Dialog/" + help;
+  }
+
   /**
    * @return The instance for the toggle dialog
    */
