@@ -53,6 +53,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.AbstractImageVie
 import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.MapillaryImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
@@ -485,6 +486,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             pool.execute(() -> updateDetections(this.thumbnailCache, (MapillaryImage) this.image, detections));
           } else {
             this.imageViewer.paintLoadingImage();
+          }
+          if (!mapillaryImage.hasKeys()) {
+            pool.execute(() -> {
+              MapillaryDownloader.downloadImages(mapillaryImage.getKey());
+              if (mapillaryImage.equals(this.image)) {
+                updateTitle();
+              }
+            });
           }
         } catch (IOException e) {
           Logging.error(e);
