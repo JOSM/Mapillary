@@ -440,13 +440,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     setFields.reset();
   }
 
-  @Override
-  public String helpTopic() {
-    String help = getClass().getName();
-    help = help.substring(help.lastIndexOf('.') + 1, help.length() - 6);
-    return "Plugin/Mapillary/Dialog/" + help;
-  }
-
   private static LocalDate convertDateRangeBox(SpinnerNumberModel spinner, JComboBox<String> timeStep) {
     if (timeStep.isEnabled()) {
       LocalDate current = LocalDate.now(ZoneId.systemDefault());
