@@ -15,7 +15,6 @@ import javax.json.Json;
 import javax.json.JsonReader;
 
 import org.openstreetmap.josm.data.osm.TagMap;
-import org.openstreetmap.josm.data.osm.Tagged;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
@@ -30,7 +29,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  * @see MapillaryAbstractImage
  */
-public class MapillarySequence implements Keyed, Serializable, Tagged {
+public class MapillarySequence implements Keyed, MapillaryTagged, Serializable {
 
   private final TagMap tags = new TagMap();
   /**
@@ -222,59 +221,8 @@ public class MapillarySequence implements Keyed, Serializable, Tagged {
     return organization;
   }
 
-  /** Begin Tagged implementation */
   @Override
-  public void put(String key, String value) {
-    if (value != null && !value.trim().isEmpty())
-      this.tags.put(key, value);
-    else
-      this.tags.remove(key);
-  }
-
-  @Override
-  public String get(String key) {
-    return this.tags.get(key);
-  }
-
-  @Override
-  public boolean hasKey(String key) {
-    return this.tags.containsKey(key);
-  }
-
-  @Override
-  public void setKeys(Map<String, String> keys) {
-    this.tags.clear();
-    this.tags.putAll(keys);
-  }
-
-  @Override
-  public Map<String, String> getKeys() {
+  public Map<String, String> getTagMap() {
     return this.tags;
   }
-
-  @Override
-  public void remove(String key) {
-    this.tags.remove(key);
-  }
-
-  @Override
-  public boolean hasKeys() {
-    return !this.tags.isEmpty();
-  }
-
-  @Override
-  public Collection<String> keySet() {
-    return this.tags.keySet();
-  }
-
-  @Override
-  public int getNumKeys() {
-    return this.tags.size();
-  }
-
-  @Override
-  public void removeAll() {
-    this.tags.clear();
-  }
-  /** End Tagged implementation */
 }

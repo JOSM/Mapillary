@@ -9,7 +9,6 @@ import java.awt.Image;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +19,6 @@ import javax.swing.ImageIcon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.data.osm.TagMap;
-import org.openstreetmap.josm.data.osm.Tagged;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -31,7 +29,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
  *
  * @author nokutu
  */
-public abstract class MapillaryAbstractImage extends GpxImageEntry implements Tagged, Serializable {
+public abstract class MapillaryAbstractImage extends GpxImageEntry implements MapillaryTagged, Serializable {
   /** The common directory for the Mapillary image sprites (for Mapillary Images) */
   protected static final String IMAGE_SPRITE_DIR = "josm-ca";
   /** The default sprite for a Mapillary image */
@@ -472,62 +470,10 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ta
     return this.deleted;
   }
 
-  /** Begin Tagged implementation */
   @Override
-  public void put(String key, String value) {
-    if (value != null && !value.trim().isEmpty())
-      this.tags.put(key, value);
-    else
-      this.tags.remove(key);
-  }
-
-  @Override
-  public String get(String key) {
-    return this.tags.get(key);
-  }
-
-  @Override
-  public boolean hasKey(String key) {
-    return this.tags.containsKey(key);
-  }
-
-  @Override
-  public void setKeys(Map<String, String> keys) {
-    this.tags.clear();
-    this.tags.putAll(keys);
-  }
-
-  @Override
-  public Map<String, String> getKeys() {
+  public Map<String, String> getTagMap() {
     return this.tags;
   }
-
-  @Override
-  public void remove(String key) {
-    this.tags.remove(key);
-  }
-
-  @Override
-  public boolean hasKeys() {
-    return !this.tags.isEmpty();
-  }
-
-  @Override
-  public Collection<String> keySet() {
-    return this.tags.keySet();
-  }
-
-  @Override
-  public int getNumKeys() {
-    return this.tags.size();
-  }
-
-  @Override
-  public void removeAll() {
-    this.tags.clear();
-  }
-
-  /** End Tagged implementation */
 
   @Override
   public boolean equals(Object other) {
