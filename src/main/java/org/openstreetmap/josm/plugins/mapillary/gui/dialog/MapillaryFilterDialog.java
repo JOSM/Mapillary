@@ -385,7 +385,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     final JPanel timePanel = new JPanel(new GridBagLayout());
     final IDatePicker<JComponent> startDate = IDatePicker.getNewDatePicker();
     final IDatePicker<JComponent> endDate = IDatePicker.getNewDatePicker();
-    final Consumer<IDatePicker<?>> function = (modified) -> updateDates(startDate, endDate, modified);
+    final Consumer<IDatePicker<?>> function = modified -> updateDates(startDate, endDate, modified);
     startDate.addEventHandler(function);
     endDate.addEventHandler(function);
     timePanel.add(new JLabel(tr("Start")), GBC.std().anchor(GridBagConstraints.LINE_START));

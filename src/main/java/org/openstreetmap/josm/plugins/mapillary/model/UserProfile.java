@@ -1,6 +1,8 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
+import java.util.Objects;
+
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -27,5 +29,19 @@ public class UserProfile extends KeyIndexedObject {
 
   public ImageIcon getAvatar() {
     return avatar;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof UserProfile) {
+      UserProfile other = (UserProfile) o;
+      return super.equals(other) && this.username == other.username && this.avatar == other.avatar;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), this.username, this.avatar);
   }
 }
