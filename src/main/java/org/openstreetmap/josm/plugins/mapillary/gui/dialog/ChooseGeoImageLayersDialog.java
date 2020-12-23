@@ -65,7 +65,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
 
     // Set the import button enabled/disabled depending on if there are selected items in the layer list
     final ListSelectionListener importButtonEnabler = it -> importButton
-      .setEnabled(list.getSelectedValuesList().size() >= 1);
+      .setEnabled(!list.getSelectedValuesList().isEmpty());
     importButtonEnabler.valueChanged(null);
     list.addListSelectionListener(importButtonEnabler);
 
@@ -83,11 +83,9 @@ public class ChooseGeoImageLayersDialog extends JDialog {
             }
             return null;
           }
-        }).filter(Objects::nonNull).sorted((o1, o2) -> (int) Math.signum(o1.getCapturedAt() - o2.getCapturedAt())) // order
-                                                                                                                   // by
-                                                                                                                   // capturedAt
-                                                                                                                   // timestamp
-                                                                                                                   // (ascending)
+        }).filter(Objects::nonNull)
+          // order by capturedAt timestamp (ascending)
+          .sorted((o1, o2) -> (int) Math.signum((double) o1.getCapturedAt() - o2.getCapturedAt()))
           .collect(Collectors.toList()));
         return seq;
       }).forEach(seq -> {
