@@ -328,7 +328,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    * @return The unique instance of the class.
    */
   public static synchronized MapillaryMainDialog getInstance() {
-    if (instance == null)
+    if (instance == null || instance.destroyed)
       instance = new MapillaryMainDialog();
     return instance;
   }
@@ -389,7 +389,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   /**
    * Destroys the unique instance of the class. You should prefer to call the destroy method on the actual instance.
    */
-  public static synchronized void destroyInstance() {
+  private static synchronized void destroyInstance() {
     instance = null;
   }
 
@@ -757,7 +757,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   }
 
   @Override
-  public void destroy() {
+  public synchronized void destroy() {
     if (!destroyed) {
       super.destroy();
       showDetectionOutlinesAction.destroy();
