@@ -218,7 +218,8 @@ public class MapillarySquareDownloadRunnable implements Runnable {
   /** Attempts to cancel a running download midway, it's hash is removed if download was not able to complete. */
   public void finish() {
     state = STATE.STOPPED;
-    thread.interrupt();
+    if (thread != null)
+      thread.interrupt();
   }
 
   /** Set state and update download status in {@link DownloadTableModel}. */

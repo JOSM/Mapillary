@@ -243,7 +243,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
 
   public void getData(DataSource dataSource) {
     if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.submit(() -> getData(dataSource));
+      MainApplication.worker.execute(() -> getData(dataSource));
     } else if (dataSources.add(dataSource)) {
       ObjectDetectionsDownloadRunnable runnable = new ObjectDetectionsDownloadRunnable(data, dataSource.bounds,
         trafficSigns ? MapillaryURL.APIv3::searchMapObjects : MapillaryURL.APIv3::searchMapPointObjects,
@@ -321,14 +321,14 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       }).collect(Collectors.toList());
       if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && MainApplication.getMap().mapView
         .getDist100Pixel() <= MapillaryProperties.SMART_ADD_MIN_DIST_PER_PIXEL.get()) {
-        selectedInView.forEach(p -> paintAdditionalPanel(p, g, mv, box));
+        selectedInView.forEach(p -> paintAdditionalPanel(p, mv));
       }
     } else {
       this.displayedWindows.forEach((o, w) -> hideWindow(w));
     }
   }
 
-  private void paintAdditionalPanel(IPrimitive mapillaryObject, final Graphics2D g, final MapView mv, Bounds box) {
+  private void paintAdditionalPanel(IPrimitive mapillaryObject, final MapView mv) {
     if (!(mapillaryObject instanceof INode)) {
       Logging.error("Mapillary Additional actions does not support {0}", mapillaryObject.getType());
       return;

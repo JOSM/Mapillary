@@ -35,7 +35,8 @@ public class UserProfile extends KeyIndexedObject {
   public boolean equals(Object o) {
     if (o instanceof UserProfile) {
       UserProfile other = (UserProfile) o;
-      return super.equals(other) && this.username == other.username && this.avatar == other.avatar;
+      return super.equals(other) && Objects.equals(this.username, other.username)
+        && Objects.equals(this.avatar, other.avatar);
     }
     return false;
   }

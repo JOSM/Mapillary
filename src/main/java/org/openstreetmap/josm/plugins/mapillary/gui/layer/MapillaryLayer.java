@@ -332,7 +332,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       if (MainApplication.worker.isShutdown()) {
         MapillaryDownloader.stopAll();
       } else {
-        MainApplication.worker.submit(MapillaryDownloader::stopAll);
+        MainApplication.worker.execute(MapillaryDownloader::stopAll);
       }
       if (MapillaryMainDialog.hasInstance()) {
         MapillaryMainDialog.getInstance().setImage(null);
@@ -519,7 +519,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       }
     } else {
       double angle = Math.toRadians(img.getMovingCa());
-      if (selectedImg == img)
+      if (Objects.equals(selectedImg, img))
         angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
       g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
       g.drawImage(i, p.x, p.y, null);

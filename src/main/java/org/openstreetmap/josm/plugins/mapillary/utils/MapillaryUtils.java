@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessControlException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -313,7 +314,9 @@ public final class MapillaryUtils {
    */
   public static Collection<String> getImagesFromDetections(OsmPrimitive osmPrimitive) {
     if (osmPrimitive.hasKey("detections")) {
-      try (ByteArrayInputStream inputStream = new ByteArrayInputStream(osmPrimitive.get("detections").getBytes());
+      try (
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+          osmPrimitive.get("detections").getBytes(StandardCharsets.UTF_8));
         JsonReader reader = Json.createReader(inputStream)) {
         JsonStructure value = reader.read();
         if (value.getValueType() == JsonValue.ValueType.ARRAY) {
@@ -338,7 +341,9 @@ public final class MapillaryUtils {
    */
   public static Collection<String> getDetections(OsmPrimitive osmPrimitive) {
     if (osmPrimitive.hasKey("detections")) {
-      try (ByteArrayInputStream inputStream = new ByteArrayInputStream(osmPrimitive.get("detections").getBytes());
+      try (
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+          osmPrimitive.get("detections").getBytes(StandardCharsets.UTF_8));
         JsonReader reader = Json.createReader(inputStream)) {
         JsonStructure value = reader.read();
         if (value.getValueType() == JsonValue.ValueType.ARRAY) {
