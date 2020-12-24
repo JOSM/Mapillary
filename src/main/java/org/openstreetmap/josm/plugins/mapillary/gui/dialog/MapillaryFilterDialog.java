@@ -573,16 +573,16 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
       }
-      if (this.timeFilter && checkValidTime(img) || this.endDateRefresh != null && checkEndDate(img)
-        || this.startDateRefresh != null && checkStartDate(img)
-        || !this.importedIsSelected && img instanceof MapillaryImportedImage
-        || this.onlyPanoIsSelected && !img.isPanorama()
-        || this.cameraMake != null && !this.cameraMake.trim().isEmpty()
-          && !this.cameraMake.equals(img.get("camera_make"))
-        || this.cameraModel != null && !this.cameraModel.trim().isEmpty()
-          && !this.cameraModel.equals(img.get("camera_model"))
-        || this.qualityScore != Integer.MIN_VALUE
-          && (img.getQuality() < this.qualityScore || this.qualityScore < 3 && img.getQuality() == Integer.MIN_VALUE)) {
+      if ((this.timeFilter && checkValidTime(img)) || (this.endDateRefresh != null && checkEndDate(img))
+        || (this.startDateRefresh != null && checkStartDate(img))
+        || (!this.importedIsSelected && img instanceof MapillaryImportedImage)
+        || (this.onlyPanoIsSelected && !img.isPanorama())
+        || (this.cameraMake != null && !this.cameraMake.trim().isEmpty()
+          && !this.cameraMake.equals(img.get("camera_make")))
+        || (this.cameraModel != null && !this.cameraModel.trim().isEmpty()
+          && !this.cameraModel.equals(img.get("camera_model")))
+        || (this.qualityScore != Integer.MIN_VALUE && (img.getQuality() < this.qualityScore
+          || (this.qualityScore < 3 && img.getQuality() == Integer.MIN_VALUE)))) {
         return true;
       }
       if (img instanceof MapillaryImage) {

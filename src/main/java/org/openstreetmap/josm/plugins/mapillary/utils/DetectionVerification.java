@@ -54,4 +54,8 @@ public final class DetectionVerification {
       client.disconnect();
     }
   }
+
+  private DetectionVerification() {
+    // Don't instantiate
+  }
 }

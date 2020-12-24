@@ -43,7 +43,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
    * Use INT_RGB for faster image mapping
    * See {@link CameraPlane#mapping}.
    */
-  static final int imageType = BufferedImage.TYPE_INT_RGB;
+  static final int IMAGE_TYPE = BufferedImage.TYPE_INT_RGB;
   private boolean mappingChanged = true;
 
   public PanoramicImageViewer() {
@@ -67,7 +67,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
   @Override
   protected void setImage(BufferedImage image) {
     if (image != null) {
-      BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), imageType);
+      BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), IMAGE_TYPE);
       Graphics2D g = newImage.createGraphics();
       g.drawImage(image, 0, 0, null);
       g.dispose();
@@ -85,7 +85,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
       cameraPlane = new CameraPlane(this.getWidth(), getHeight(), cameraPlaneDistance);
     }
     if (offscreenImage == null) {
-      offscreenImage = new BufferedImage(getWidth(), getHeight(), imageType);
+      offscreenImage = new BufferedImage(getWidth(), getHeight(), IMAGE_TYPE);
     }
     if (mappingChanged) {
       cameraPlane.mapping(image, offscreenImage);
@@ -191,15 +191,6 @@ public class PanoramicImageViewer extends AbstractImageViewer {
     }
   }
 
-  private boolean validMousePoint(Point p) {
-    if (0 <= p.x && p.x < offscreenImage.getWidth()) {
-      if (0 <= p.y && p.y < offscreenImage.getHeight()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
   public void viewSizeChanged() {
     int width = getWidth();
@@ -212,7 +203,7 @@ public class PanoramicImageViewer extends AbstractImageViewer {
      * height = (int) Math.round(height * scaleFactor);
      * }
      */
-    offscreenImage = new BufferedImage(width, height, imageType);
+    offscreenImage = new BufferedImage(width, height, IMAGE_TYPE);
     double cameraPlaneDistance = (width / 2d) / Math.tan(PANORAMA_FOV / 2);
     cameraPlane = new CameraPlane(width, height, cameraPlaneDistance);
     mappingChanged = true;

@@ -267,12 +267,13 @@ public final class MapillaryDownloader {
       return Collections.emptyMap();
     }
     JsonObject response = getUrlResponse(MapillaryURL.APIv3.getImage(images));
-    return JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
-      .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new, (rMap, oMap) -> rMap.putAll(oMap),
-        (rMap, oMap) -> {
-          rMap.putAll(oMap);
-          return rMap;
-        }));
+    return Collections
+      .unmodifiableMap(JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
+        .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new,
+          (rMap, oMap) -> rMap.putAll(oMap), (rMap, oMap) -> {
+            rMap.putAll(oMap);
+            return rMap;
+          })));
   }
 
   /**

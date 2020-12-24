@@ -240,7 +240,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MainApplication.worker.submit(() -> {
+      MainApplication.worker.execute(() -> {
         MapillaryDownloader.stopAll();
         MapillaryDownloadDialog.getInstance().updateDownloadInfo();
         GuiHelper.runInEDT(() -> MapillaryDownloadDialog.getInstance().updateButtons());

@@ -357,8 +357,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     toggleSigns.setPreferredSize(buttonDim);
     // Mac OS X won't show background colors if buttons aren't opaque.
     toggleSigns.setOpaque(true);
-    SideButton toggleDetections = null;
-    toggleDetections = new SideButton(showDetectionOutlinesAction);
+    SideButton toggleDetections = new SideButton(showDetectionOutlinesAction);
     showDetectionOutlinesAction.setButton(toggleDetections);
     toggleDetections.setPreferredSize(buttonDim);
     toggleDetections.setOpaque(true);

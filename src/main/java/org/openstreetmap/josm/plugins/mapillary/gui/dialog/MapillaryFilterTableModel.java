@@ -235,7 +235,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
    * @return {@code true} if the cell at (row, column) is enabled
    */
   public boolean isCellEnabled(int row, int column) {
-    return model.getFiltersCount() > row && model.getValue(row).enable || column == 0;
+    return (model.getFiltersCount() > row && model.getValue(row).enable) || column == 0;
   }
 
   @Override
