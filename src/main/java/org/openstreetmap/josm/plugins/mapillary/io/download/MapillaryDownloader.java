@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -212,7 +215,18 @@ public final class MapillaryDownloader {
 
   private static void run(Runnable t) {
     try {
-      executor.execute(t);
+      final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryDownloader.class);
+      executor.execute(() -> {
+        ForkJoinTask<?> future = pool.submit(t);
+        try {
+          future.get();
+        } catch (ExecutionException e) {
+          Logging.error(e);
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
+        }
+      });
       MapillaryDownloadDialog.getInstance().downloadInfoChanged();
     } catch (RejectedExecutionException e) {
       throw new RejectedExecutionException(e);
@@ -379,6 +393,7 @@ public final class MapillaryDownloader {
    */
   public static synchronized void stopAll() {
     List<Runnable> shutdownTasks = executor.shutdownNow();
+    MapillaryUtils.getForkJoinPool(MapillaryDownloader.class).shutdown();
     try {
       executor.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
@@ -387,7 +402,7 @@ public final class MapillaryDownloader {
     }
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100),
       new ThreadPoolExecutor.DiscardPolicy());
-    shutdownTasks.forEach((download) -> {
+    shutdownTasks.forEach(download -> {
       MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) download;
       msdrDownload.getMonitor().finishTask();
       removeHash(msdrDownload);
@@ -407,9 +422,8 @@ public final class MapillaryDownloader {
    * Remove all downloads which haven't started yet
    */
   public static void removeQueued() {
-    executor.getQueue().forEach((download) -> {
-      removeDownload((MapillarySquareDownloadRunnable) download);
-    });
+    executor.getQueue().stream().filter(MapillarySquareDownloadRunnable.class::isInstance)
+      .map(MapillarySquareDownloadRunnable.class::cast).forEach(MapillaryDownloader::removeDownload);
   }
 
   /**
