@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.gpx.GpxImageEntry;
 import org.openstreetmap.josm.data.osm.TagMap;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.LocalDateConverter;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -323,7 +324,8 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ma
    */
   public void setSequence(final MapillarySequence sequence) {
     synchronized (this) {
-      if (sequence != null && !sequence.getImages().contains(this)) {
+      if (sequence != null && !sequence.getImages().contains(this)
+        && MapillaryDownloader.downloadSequences(true, sequence.getKey()).isEmpty()) {
         throw new IllegalArgumentException();
       }
       this.sequence = sequence;
