@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -16,6 +17,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -30,7 +33,9 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.data.image.Keyed;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.DownloadTableModel;
@@ -297,13 +302,33 @@ public final class MapillaryDownloader {
    * @return The downloaded sequences
    */
   public static Collection<MapillarySequence> downloadSequences(String... sequences) {
-    JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(sequences));
-    Collection<MapillarySequence> returnSequences = JsonDecoder.decodeFeatureCollection(response,
-      JsonSequencesDecoder::decodeSequence);
-    JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3
-      .getImagesBySequences(returnSequences.stream().map(MapillarySequence::getKey).distinct().toArray(String[]::new)));
-    JsonDecoder.decodeFeatureCollection(imageResponse, JsonImageDetailsDecoder::decodeImageInfos);
-    return returnSequences;
+    return downloadSequences(true, sequences);
+  }
+
+  /**
+   * Download a specific set of sequences
+   *
+   * @param sequences The sequences to download
+   * @param force Force the download if the sequence has already been downloaded once.
+   * @return The downloaded sequences
+   */
+  public static Collection<MapillarySequence> downloadSequences(boolean force, String... sequences) {
+    String[] toGet = sequences;
+    if (MapillaryLayer.hasInstance() && !force) {
+      MapillaryData data = MapillaryLayer.getInstance().getData();
+      Set<String> previousSequences = data.getSequences().stream().map(Keyed::getKey).collect(Collectors.toSet());
+      toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
+    }
+    if (sequences != null && sequences.length > 0) {
+      JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(sequences));
+      Collection<MapillarySequence> returnSequences = JsonDecoder.decodeFeatureCollection(response,
+        JsonSequencesDecoder::decodeSequence);
+      JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3.getImagesBySequences(
+        returnSequences.stream().map(MapillarySequence::getKey).distinct().toArray(String[]::new)));
+      JsonDecoder.decodeFeatureCollection(imageResponse, JsonImageDetailsDecoder::decodeImageInfos);
+      return returnSequences;
+    }
+    return Collections.emptyList();
   }
 
   private static JsonObject getUrlResponse(URL url) {
