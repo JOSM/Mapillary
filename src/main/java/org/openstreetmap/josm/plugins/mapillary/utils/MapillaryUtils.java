@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.AccessControlException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -379,11 +378,9 @@ public final class MapillaryUtils {
    * @return The default ForkJoin pool
    */
   public static ForkJoinPool getForkJoinPool() {
-    try {
-      return ForkJoinPool.commonPool();
-    } catch (AccessControlException e) {
-      // This will occur when run with Java WebStart.
+    if (Utils.isRunningJavaWebStart()) {
+      return getForkJoinPool(MapillaryUtils.class);
     }
-    return getForkJoinPool(MapillaryUtils.class);
+    return ForkJoinPool.commonPool();
   }
 }
