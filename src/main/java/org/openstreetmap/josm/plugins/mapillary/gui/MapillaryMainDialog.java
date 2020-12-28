@@ -514,11 +514,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     Collection<ImageDetection<?>> currentDetections) {
     Collection<ImageDetection<?>> detections = image.getDetections(true);
     if (detections.containsAll(currentDetections) && currentDetections.containsAll(detections)) {
-      GuiHelper.runInEDT(() -> updateDisplayImage(cache, detections));
+      GuiHelper.runInEDT(() -> updateDisplayImage(cache, image, detections));
     }
   }
 
-  private void updateDisplayImage(MapillaryCache cache, Collection<ImageDetection<?>> detections) {
+  private <T extends MapillaryAbstractImage & Detections> void updateDisplayImage(MapillaryCache cache, T image,
+    Collection<ImageDetection<?>> detections) {
     Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
     synchronized (syncObject) {
       if (this.image != null && this.image.equals(image)) {
