@@ -50,7 +50,11 @@ public class ObjectDetectionsDownloadRunnable extends BoundsDownloadRunnable {
       OAuthUtils.addAuthenticationHeader(client);
     client.connect();
     try (InputStream stream = client.getResponse().getContent()) {
-      DataSet ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
+      DataSet ds;
+      // Fix JOSM-20314 by avoid accidental concurrent calls to {@link Projections#getProjectionByCode}
+      synchronized (ObjectDetectionsDownloadRunnable.class) {
+        ds = GeoJSONReader.parseDataSet(stream, NullProgressMonitor.INSTANCE);
+      }
       ds.allPrimitives().parallelStream().filter(p -> p.hasKey(DETECTIONS))
         .forEach(p -> p.put("detections_num", Integer.toString(p.get(DETECTIONS).split("detection_key").length)));
       ds.allPrimitives().forEach(p -> p.setModified(false));
