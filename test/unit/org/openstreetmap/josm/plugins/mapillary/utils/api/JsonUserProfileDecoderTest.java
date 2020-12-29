@@ -23,14 +23,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class JsonUserProfileDecoderTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().preferences();
+  static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private static Object getFakeAvatar() {
     return TestUtil.getPrivateFieldValue(JsonUserProfileDecoder.class, null, "FAKE_AVATAR");

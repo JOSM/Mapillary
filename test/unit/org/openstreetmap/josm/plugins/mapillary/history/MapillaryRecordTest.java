@@ -29,7 +29,7 @@ import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandMove;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandTurn;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandUnjoin;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.MapillaryCommand;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
@@ -40,7 +40,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 class MapillaryRecordTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().main().projection();
+  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   private MapillaryRecord record;
   private MapillaryImage img1;

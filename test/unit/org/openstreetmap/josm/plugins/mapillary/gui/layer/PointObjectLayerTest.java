@@ -32,15 +32,15 @@ import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 
 class PointObjectLayerTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
+  static JOSMTestRules rules = new MapillaryTestRules().timeout(20000).projection().main();
 
   private static String oldBaseUrl;
 

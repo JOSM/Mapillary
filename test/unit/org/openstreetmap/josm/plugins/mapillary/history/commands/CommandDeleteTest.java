@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
@@ -28,7 +28,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 class CommandDeleteTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new TestUtil.MapillaryTestRules().main().projection();
+  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   private MapillaryData data;
   private MapillaryAbstractImage img1;

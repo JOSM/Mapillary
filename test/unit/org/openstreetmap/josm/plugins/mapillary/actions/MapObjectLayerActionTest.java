@@ -10,13 +10,13 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapObjectLayerActionTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().main().projection();
+  static JOSMTestRules rules = new MapillaryTestRules().main().projection();
 
   @Test
   void testAction() {

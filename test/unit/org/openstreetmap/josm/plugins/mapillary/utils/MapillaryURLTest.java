@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryURLTest {
@@ -30,7 +29,7 @@ class MapillaryURLTest {
 
   static class APIv3 {
     @RegisterExtension
-    JOSMTestRules rules = new MapillaryTestRules().preferences();
+    static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
     @Test
     void testSearchDetections() {
