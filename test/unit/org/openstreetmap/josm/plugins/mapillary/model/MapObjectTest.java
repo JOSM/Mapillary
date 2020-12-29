@@ -23,14 +23,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapObjectTest {
 
   @RegisterExtension
-  public JOSMTestRules rules = new MapillaryTestRules();
+  static JOSMTestRules rules = new MapillaryTestRules();
 
   private WireMockServer wmRule;
 

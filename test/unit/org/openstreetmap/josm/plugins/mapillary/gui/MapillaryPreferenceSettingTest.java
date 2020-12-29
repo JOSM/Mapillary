@@ -27,14 +27,14 @@ import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.I18n;
 
 class MapillaryPreferenceSettingTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().main();
+  static JOSMTestRules rules = new MapillaryTestRules().main();
 
   @Test
   void testAddGui() {

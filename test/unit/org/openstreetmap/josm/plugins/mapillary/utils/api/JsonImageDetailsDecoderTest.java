@@ -22,14 +22,14 @@ import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImag
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class JsonImageDetailsDecoderTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().preferences();
+  static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   @Test
   void testUtilityClass() {

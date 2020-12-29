@@ -20,14 +20,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class JsonMapObjectDecoderTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules();
+  static JOSMTestRules rules = new MapillaryTestRules();
 
   @Test
   void testDecodeMapObjects() throws IOException {

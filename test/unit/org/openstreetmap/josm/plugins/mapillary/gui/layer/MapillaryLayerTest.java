@@ -24,13 +24,13 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryLayerTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().main().preferences().projection();
+  static JOSMTestRules rules = new MapillaryTestRules().main().preferences().projection();
 
   private static Layer getDummyLayer() {
     return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));

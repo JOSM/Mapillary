@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryCacheTest {
 
   @RegisterExtension
-  public JOSMTestRules rules = new MapillaryTestRules().preferences();
+  static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   @Test
   void test() {

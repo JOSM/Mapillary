@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
@@ -23,7 +23,7 @@ import org.openstreetmap.josm.testutils.JOSMTestRules;
 class ImageDisplayTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().preferences();
+  static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   private static final BufferedImage DUMMY_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 

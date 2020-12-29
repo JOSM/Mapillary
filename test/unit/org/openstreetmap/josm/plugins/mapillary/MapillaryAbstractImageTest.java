@@ -19,14 +19,14 @@ import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImag
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryAbstractImageTest {
 
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules();
+  static JOSMTestRules rules = new MapillaryTestRules();
 
   private MapillaryAbstractImage img1;
   private MapillaryAbstractImage img2;

@@ -34,13 +34,13 @@ import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class SequenceDownloadRunnableTest {
   @RegisterExtension
-  JOSMTestRules rules = new MapillaryTestRules().preferences();
+  static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
   /** It takes some time for the first test to fully initialize */
   private static final Duration MINIMUM_INITIALIZATION = Durations.FIVE_SECONDS;
