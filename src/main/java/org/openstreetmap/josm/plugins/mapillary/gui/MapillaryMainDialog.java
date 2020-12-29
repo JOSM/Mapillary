@@ -524,7 +524,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     synchronized (syncObject) {
       if (this.image != null && this.image.equals(image)) {
         try {
-          this.setDisplayImage(cache.get().getImage(), detections, image.isPanorama());
+          // Comprehensively fix Github #165
+          if (cache != null && cache.get() != null && cache.get().getImage() != null) {
+            this.setDisplayImage(cache.get().getImage(), detections, image.isPanorama());
+          }
         } catch (IOException e) {
           // Leave the current image up
           Logging.error(e);
