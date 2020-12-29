@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -384,5 +385,12 @@ public final class MapillaryUtils {
       return getForkJoinPool(MapillaryUtils.class);
     }
     return ForkJoinPool.commonPool();
+  }
+
+  /**
+   * Await quiesience on all ForkJoinPools. This excludes the common pool.
+   */
+  public static void forkJoinPoolsAwaitQuiescence(long timeout, TimeUnit timeUnit) {
+    forkJoinPool.values().parallelStream().forEach(pool -> pool.awaitQuiescence(timeout, timeUnit));
   }
 }
