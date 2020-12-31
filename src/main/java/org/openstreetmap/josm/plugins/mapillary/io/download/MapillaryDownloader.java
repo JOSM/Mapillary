@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
@@ -313,14 +314,16 @@ public final class MapillaryDownloader {
    * @return The downloaded sequences
    */
   public static Collection<MapillarySequence> downloadSequences(boolean force, String... sequences) {
-    String[] toGet = sequences;
+    String[] toGet = sequences != null
+      ? Stream.of(sequences).filter(Objects::nonNull).filter(s -> !s.trim().isEmpty()).toArray(String[]::new)
+      : new String[0];
     if (MapillaryLayer.hasInstance() && !force) {
       MapillaryData data = MapillaryLayer.getInstance().getData();
       Set<String> previousSequences = data.getSequences().stream().map(Keyed::getKey).collect(Collectors.toSet());
       toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
     }
-    if (sequences != null && sequences.length > 0) {
-      JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(sequences));
+    if (toGet.length > 0) {
+      JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(toGet));
       Collection<MapillarySequence> returnSequences = JsonDecoder.decodeFeatureCollection(response,
         JsonSequencesDecoder::decodeSequence);
       JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3.getImagesBySequences(

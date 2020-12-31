@@ -47,12 +47,12 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
    */
   protected boolean completed = Boolean.FALSE;
 
-  public BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
+  protected BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
     ProgressMonitor monitor) {
     this(bounds, urlGen, null, monitor);
   }
 
-  public BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
+  protected BoundsDownloadRunnable(final Bounds bounds, final Function<Bounds, Collection<URL>> urlGen,
     Collection<URL> urls, ProgressMonitor monitor) {
     this.bounds = bounds;
     this.urlGen = urlGen;
@@ -129,7 +129,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       final String message;
       // Limit retries to 504 server timeouts and no more than {@link MAX_DOWNLOAD_ATTEMPTS} (2 attempts).
       if (client.getResponse() != null && client.getResponse().getResponseCode() == 504
-        && attempt < MAX_DOWNLOAD_ATTEMPTS) {
+        && attempt < MAX_DOWNLOAD_ATTEMPTS && pool != null) {
         message = I18n.tr("Server timeout, trying {0} again (attempt {1} of {2})", currentUrl.toString(), attempt + 1,
           MAX_DOWNLOAD_ATTEMPTS);
         pool.execute(() -> this.realRun(currentUrl, attempt + 1));

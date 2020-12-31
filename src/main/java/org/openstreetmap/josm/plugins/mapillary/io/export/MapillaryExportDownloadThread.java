@@ -25,7 +25,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillaryExportManager
  * @see MapillaryExportWriterThread
  */
-public class MapillaryExportDownloadThread extends Thread implements ICachedLoaderListener {
+public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderListener {
 
   private final ArrayBlockingQueue<BufferedImage> queue;
   private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
