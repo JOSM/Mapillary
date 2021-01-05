@@ -30,7 +30,7 @@ class ImportTest {
    * Due to ordering, this also affected many other tests.
    */
   @RegisterExtension
-  JOSMTestRules rule = new JOSMTestRules().preferences();
+  static JOSMTestRules rule = new JOSMTestRules().preferences();
 
   /**
    * Test the importation of images in PNG format.

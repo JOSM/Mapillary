@@ -1,0 +1,22 @@
+{
+  "type": "Feature",
+  "properties": {
+    "ca": 323.0319999999999,
+    "camera_make": "Apple",
+    "camera_model": "iPhone5,4",
+    "captured_at": "2016-03-14T13:44:53.860Z",
+    "key": "LwrHXqFRN_pszCopTKHF_Q",
+    "pano": false,
+    "sequence_key": "LMlIPUNhaj24h_q9v4ArNw",
+    "user_key": "AGfe-07BEJX0-kxpu9J3rA",
+    "username": "pierregeo",
+    "quality_score": 4
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      16.432958,
+      7.246497
+    ]
+  }
+}

@@ -413,7 +413,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if (!MapillaryLayer.hasInstance()) {
         return;
       }
-      if (this.image == null) {
+
+      final MapillaryAbstractImage currentImage = this.image;
+      if (currentImage == null) {
         setDisplayImage(null, null, false);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
@@ -429,8 +431,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       // Enables/disables next/previous buttons
       this.nextButton.setEnabled(false);
       this.previousButton.setEnabled(false);
-      if (this.image.getSequence() != null) {
-        MapillaryAbstractImage tempImage = this.image;
+      if (currentImage.getSequence() != null) {
+        MapillaryAbstractImage tempImage = currentImage;
         while (tempImage.next() != null) {
           tempImage = tempImage.next();
           if (tempImage.isVisible()) {
@@ -439,8 +441,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           }
         }
       }
-      if (this.image.getSequence() != null) {
-        MapillaryAbstractImage tempImage = this.image;
+      if (currentImage.getSequence() != null) {
+        MapillaryAbstractImage tempImage = currentImage;
         while (tempImage.previous() != null) {
           tempImage = tempImage.previous();
           if (tempImage.isVisible()) {
@@ -449,40 +451,46 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           }
         }
       }
-      if (this.image instanceof MapillaryImage) {
-        MapillaryImage mapillaryImage = (MapillaryImage) this.image;
+      if (currentImage instanceof MapillaryImage) {
+        // Use this variable to avoid race conditions
+        MapillaryImage mapillaryImage = (MapillaryImage) currentImage;
         // Downloads the thumbnail.
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
-        this.thumbnailCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.THUMBNAIL);
+        final MapillaryCache imageThumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
+          MapillaryCache.Type.THUMBNAIL);
+        this.thumbnailCache = imageThumbnailCache;
         try {
-          if (this.thumbnailCache.get() == null)
-            this.thumbnailCache.submit(this, false);
+          if (imageThumbnailCache.get() == null)
+            imageThumbnailCache.submit(this, false);
         } catch (IOException e) {
           Logging.error(e);
         }
 
         // Downloads the full resolution image.
-        if (fullQuality || new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE).get() != null) {
+        // Use this variable to avoid race conditions
+        final MapillaryCache imageFullCache = new MapillaryCache(mapillaryImage.getKey(),
+          MapillaryCache.Type.FULL_IMAGE);
+        if (fullQuality || imageFullCache.get() != null) {
           if (this.imageCache != null)
             this.imageCache.cancelOutstandingTasks();
-          this.imageCache = new MapillaryCache(mapillaryImage.getKey(), MapillaryCache.Type.FULL_IMAGE);
+          this.imageCache = imageFullCache;
           try {
-            if (this.imageCache.get() == null)
-              this.imageCache.submit(this, false);
+            if (imageFullCache.get() == null)
+              imageFullCache.submit(this, false);
           } catch (IOException e) {
             Logging.error(e);
           }
         }
         try {
           ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-          List<ImageDetection<?>> detections = ((MapillaryImage) image).getDetections(false);
-          if (this.imageCache != null && this.imageCache.get() != null) {
-            setDisplayImage(imageCache.get().getImage(), detections, image.isPanorama());
-            pool.execute(() -> updateDetections(this.imageCache, (MapillaryImage) this.image, detections));
-          } else if (this.thumbnailCache != null && this.thumbnailCache.get() != null) {
-            setDisplayImage(thumbnailCache.get().getImage(), detections, image.isPanorama());
-            pool.execute(() -> updateDetections(this.thumbnailCache, (MapillaryImage) this.image, detections));
+          List<ImageDetection<?>> detections = mapillaryImage.getDetections(false);
+          if (imageFullCache != null && imageFullCache.get() != null) {
+            setDisplayImage(imageFullCache.get().getImage(), detections, mapillaryImage.isPanorama());
+            pool.execute(() -> updateDetections(imageFullCache, mapillaryImage, detections));
+          } else if (imageThumbnailCache != null && imageThumbnailCache.get() != null) {
+            setDisplayImage(imageThumbnailCache.get().getImage(), detections, mapillaryImage.isPanorama());
+            pool.execute(() -> updateDetections(imageThumbnailCache, mapillaryImage, detections));
           } else {
             this.imageViewer.paintLoadingImage();
           }
@@ -498,8 +506,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           Logging.error(e);
           setDisplayImage(null, null, false);
         }
-      } else if (this.image instanceof MapillaryImportedImage) {
-        final MapillaryImportedImage importedImage = (MapillaryImportedImage) this.image;
+      } else if (currentImage instanceof MapillaryImportedImage) {
+        final MapillaryImportedImage importedImage = (MapillaryImportedImage) currentImage;
         try {
           setDisplayImage(importedImage.getImage(), null, importedImage.isPanorama());
         } catch (IOException e) {
@@ -520,12 +528,15 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private <T extends MapillaryAbstractImage & Detections> void updateDisplayImage(MapillaryCache cache, T image,
     Collection<ImageDetection<?>> detections) {
+    Objects.requireNonNull(image, "Image cannot be null");
+    Objects.requireNonNull(cache, "Cache cannot be null");
+    Objects.requireNonNull(detections, "Detections cannot be null");
     Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
     synchronized (syncObject) {
-      if (this.image != null && this.image.equals(image)) {
+      if (image.equals(this.image)) {
         try {
           // Comprehensively fix Github #165
-          if (cache != null && cache.get() != null && cache.get().getImage() != null) {
+          if (cache.get() != null && cache.get().getImage() != null) {
             this.setDisplayImage(cache.get().getImage(), detections, image.isPanorama());
           }
         } catch (IOException e) {

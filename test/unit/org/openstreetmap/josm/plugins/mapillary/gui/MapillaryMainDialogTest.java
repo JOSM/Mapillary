@@ -12,10 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,6 +45,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -95,30 +96,18 @@ class MapillaryMainDialogTest {
 
   /**
    * Non-regression test for <a href="https://josm.openstreetmap.de/ticket/20309">Bug #20309</a>
-   *
-   * @throws URISyntaxException
-   * @throws IOException
    */
   @Test
-  void testNullPointExceptionTicket20309() throws IOException, URISyntaxException, ReflectiveOperationException {
-    wmRule.addStubMapping(get(urlMatching("/images/.*")).willReturn(notFound().withStatus(404)).build());
-    wmRule
-      .addStubMapping(
-        get(
-          urlMatching("/image_detections.*"))
-            .willReturn(
-              aResponse().withStatus(200)
-                .withBody(Files.readAllBytes(Paths.get(MapillaryMainDialogTest.class
-                  .getResource("/api/v3/responses/image_detections_QEVZ1tp-PmrwtqhSwdW9fQ.geojson").toURI()))))
-            .build());
+  void testNullPointExceptionTicket20309() throws ReflectiveOperationException {
+    addMappings();
     MapillaryData data = MapillaryLayer.getInstance().getData();
+    SequenceDownloadRunnableTest.getSequences(wmRule, new Bounds(7.246497, 16.432955, 7.249027, 16.432976),
+      SequenceDownloadRunnableTest.DEFAULT_SEARCH_SEQUENCE_PATH);
     // The dialog currently uses the default ForkJoinPool
     MapillaryMainDialog dialog = MapillaryMainDialog.getInstance();
     Field imageField = dialog.getClass().getDeclaredField("image");
     Method updateDetectionsMethod = dialog.getClass().getDeclaredMethod("updateDetections", MapillaryCache.class,
       MapillaryAbstractImage.class, Collection.class);
-    SequenceDownloadRunnableTest.getSequences(wmRule, new Bounds(7.246497, 16.432955, 7.249027, 16.432976),
-      SequenceDownloadRunnableTest.DEFAULT_SEARCH_SEQUENCE_PATH);
 
     imageField.setAccessible(true);
     updateDetectionsMethod.setAccessible(true);
@@ -132,11 +121,55 @@ class MapillaryMainDialogTest {
     MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
     assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(() -> {
       try {
-        updateDetectionsMethod.invoke(dialog, null, image, ((Detections) image).getDetections());
+        updateDetectionsMethod.invoke(dialog,
+          new MapillaryCache("LwrHXqFRN_pszCopTKHF_Q", MapillaryCache.Type.THUMBNAIL), image,
+          ((Detections) image).getDetections());
       } catch (ReflectiveOperationException e) {
         fail(e);
       }
     }));
     MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
+  }
+
+  /**
+   * Non-regression test for <a href="https://github.com/JOSM/Mapillary/issues/165">GitHub Bug #165</a>
+   */
+  @Test
+  void testNullPointerExceptionGithub165() throws ReflectiveOperationException {
+    addMappings();
+    MapillaryData data = MapillaryLayer.getInstance().getData();
+    SequenceDownloadRunnableTest.getSequences(wmRule, new Bounds(7.246497, 16.432955, 7.249027, 16.432976),
+      SequenceDownloadRunnableTest.DEFAULT_SEARCH_SEQUENCE_PATH);
+    // The dialog currently uses the default ForkJoinPool
+    MapillaryMainDialog dialog = MapillaryMainDialog.getInstance();
+
+    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(() -> dialog.updateImage()));
+    MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
+    MapillaryAbstractImage image1 = data.getImage("QEVZ1tp-PmrwtqhSwdW9fQ");
+    dialog.setImage(image1);
+    MapillaryAbstractImage image2 = data.getImage("Aufjv2hdCKwg9LySWWVSwg");
+    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(() -> dialog.updateImage()));
+    MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
+    GuiHelper.runInEDT(() -> {
+      throw new JosmRuntimeException("test");
+    });
+    Thread.getDefaultUncaughtExceptionHandler();
+    Awaitility.await().atLeast(Durations.ONE_SECOND).catchUncaughtExceptions().ignoreNoExceptions();
+  }
+
+  private static void addMappings() {
+    wmRule.addStubMapping(get(urlMatching("/images/.*")).willReturn(notFound().withStatus(404)).build());
+    try {
+      wmRule
+        .addStubMapping(
+          get(urlMatching("/image_detections.*"))
+            .willReturn(
+              aResponse().withStatus(200)
+                .withBody(Files.readAllBytes(Paths.get(MapillaryMainDialogTest.class
+                  .getResource("/api/v3/responses/image_detections_QEVZ1tp-PmrwtqhSwdW9fQ.geojson").toURI()))))
+            .build());
+    } catch (Exception e) {
+      fail(e);
+    }
   }
 }
