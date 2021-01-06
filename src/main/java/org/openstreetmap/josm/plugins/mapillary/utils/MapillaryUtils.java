@@ -371,7 +371,7 @@ public final class MapillaryUtils {
   public static synchronized ForkJoinPool getForkJoinPool(Class<?> clazz) {
     ForkJoinPool pool = forkJoinPool.get(clazz.getSimpleName());
     if (pool == null || pool.isShutdown()) {
-      pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-" + clazz.getSimpleName() + "-%d", 4);
+      pool = Utils.newForkJoinPool("mapillary.forkjoinpool", "mapillary-" + clazz.getSimpleName() + "-%d", 2);
       forkJoinPool.put(clazz.getSimpleName(), pool);
     }
     return pool;
