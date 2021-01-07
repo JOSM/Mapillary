@@ -18,6 +18,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
+import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
@@ -90,12 +91,16 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       logConnectionInfo(client,
         String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
-      for (Map.Entry<String, List<ImageDetection<?>>> entry : detections.entrySet()) {
-        data.getImages().parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
-          .filter(img -> img.getKey().equals(entry.getKey()) && !entry.getValue().parallelStream()
-            .allMatch(d -> img.getDetections().parallelStream().anyMatch(d::equals)))
-          .forEach(img -> img.setAllDetections(entry.getValue()));
-      }
+      detections.entrySet().forEach(entry -> {
+        MapillaryAbstractImage image = data.getImage(entry.getKey());
+        if (image instanceof MapillaryImage) {
+          MapillaryImage img = (MapillaryImage) image;
+          boolean allPresent = entry.getValue().parallelStream().allMatch(d -> img.getDetections().contains(d));
+          if (!allPresent) {
+            img.setAllDetections(entry.getValue());
+          }
+        }
+      });
       // Repaint if we set the detections for the current selected image
       Object image = MapillaryLayer.getInstance().getData().getSelectedImage();
       if (image instanceof MapillaryImage) {
