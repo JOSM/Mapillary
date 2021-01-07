@@ -35,7 +35,6 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
 public abstract class BoundsDownloadRunnable extends RecursiveAction {
-
   private static final long serialVersionUID = -3097850570397160069L;
   private static final short MAX_DOWNLOAD_ATTEMPTS = 2;
   protected final Bounds bounds;

@@ -30,6 +30,8 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;
 import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.QuadBuckets;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
@@ -63,6 +65,8 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillarySequence
  */
 public class MapillaryData implements Data, Serializable {
+  // Ideally, this would be MapillaryAbstractImage, but that requires that it implements INode.
+  private final QuadBuckets<Node> imageBucket = new QuadBuckets<>();
   private final ConcurrentHashMap<String, MapillaryAbstractImage> images = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, MapillarySequence> sequences = new ConcurrentHashMap<>();
   /**
@@ -128,7 +132,7 @@ public class MapillaryData implements Data, Serializable {
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
   public void add(MapillaryAbstractImage image, boolean update) {
-    images.put(getImageKey(image), image);
+    this.realAddImage(image);
     if (update) {
       MapillaryLayer.invalidateInstance();
     }
@@ -151,11 +155,21 @@ public class MapillaryData implements Data, Serializable {
    * @param update Whether the map must be updated or not.
    */
   public void addAll(Collection<? extends MapillaryAbstractImage> newImages, boolean update) {
-    newImages.forEach(image -> images.put(getImageKey(image), image));
+    newImages.forEach(this::realAddImage);
+
     if (update) {
       MapillaryLayer.invalidateInstance();
     }
     fireImagesAdded();
+  }
+
+  private void realAddImage(MapillaryAbstractImage image) {
+    String key = getImageKey(image);
+    images.put(key, image);
+    Node node = new Node();
+    node.setCoor(image.getExifCoor());
+    node.put("key", key);
+    this.imageBucket.add(node);
   }
 
   private static String getImageKey(MapillaryAbstractImage image) {
@@ -310,6 +324,28 @@ public class MapillaryData implements Data, Serializable {
    */
   public Set<MapillaryAbstractImage> getImages() {
     return images.values().stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
+  }
+
+  /**
+   * Search images inside the bounds
+   *
+   * @param bound The bounds to search
+   * @return the image set
+   */
+  public Set<MapillaryAbstractImage> searchNodes(Bounds bound) {
+    return this.imageBucket.search(bound.toBBox()).stream().filter(n -> n.hasKey("key")).map(n -> n.get("key"))
+      .map(this.images::get).collect(Collectors.toSet());
+  }
+
+  /**
+   * Search sequences inside the bounds
+   *
+   * @param bound The bounds to search
+   * @return the sequence set
+   */
+  public Set<MapillarySequence> searchWays(Bounds bound) {
+    return this.searchNodes(bound).stream().map(MapillaryAbstractImage::getSequence).distinct()
+      .collect(Collectors.toSet());
   }
 
   /**

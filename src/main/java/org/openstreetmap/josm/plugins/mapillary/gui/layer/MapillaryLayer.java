@@ -417,7 +417,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
     final MapillaryAbstractImage selectedImage = getData().getSelectedImage();
-    for (MapillarySequence seq : getData().getSequences()) {
+    for (MapillarySequence seq : getData().searchWays(box)) {
       if (seq.getImages().contains(selectedImage)) {
         g.setColor(
           seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
@@ -439,7 +439,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       }
       g.setComposite(AlphaComposite.SrcOver);
     }
-    for (MapillaryAbstractImage imageAbs : this.data.getImages()) {
+    for (MapillaryAbstractImage imageAbs : this.getData().searchNodes(box)) {
       if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
         drawImageMarker(g, imageAbs);
       }
