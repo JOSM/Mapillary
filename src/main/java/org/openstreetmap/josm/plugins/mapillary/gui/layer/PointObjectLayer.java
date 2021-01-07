@@ -675,7 +675,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       MapillaryDownloader.downloadImages(missing);
     else
       MainApplication.worker.execute(() -> MapillaryDownloader.downloadImages(missing));
-    return keys.stream().map(data::getImage).collect(Collectors.toList());
+    return keys.stream().map(data::getImage).filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
+      .collect(Collectors.toList());
   }
 
   @Override

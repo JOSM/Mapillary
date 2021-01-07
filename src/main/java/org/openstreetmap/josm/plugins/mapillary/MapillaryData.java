@@ -9,10 +9,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ForkJoinPool;
@@ -61,7 +63,8 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillarySequence
  */
 public class MapillaryData implements Data, Serializable {
-  private final Set<MapillaryAbstractImage> images = ConcurrentHashMap.newKeySet();
+  private final ConcurrentHashMap<String, MapillaryAbstractImage> images = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, MapillarySequence> sequences = new ConcurrentHashMap<>();
   /**
    * The image currently selected, this is the one being shown.
    */
@@ -125,7 +128,7 @@ public class MapillaryData implements Data, Serializable {
    * @throws NullPointerException if parameter <code>image</code> is <code>null</code>
    */
   public void add(MapillaryAbstractImage image, boolean update) {
-    images.add(image);
+    images.put(getImageKey(image), image);
     if (update) {
       MapillaryLayer.invalidateInstance();
     }
@@ -148,11 +151,29 @@ public class MapillaryData implements Data, Serializable {
    * @param update Whether the map must be updated or not.
    */
   public void addAll(Collection<? extends MapillaryAbstractImage> newImages, boolean update) {
-    images.addAll(newImages);
+    newImages.forEach(image -> images.put(getImageKey(image), image));
     if (update) {
       MapillaryLayer.invalidateInstance();
     }
     fireImagesAdded();
+  }
+
+  private static String getImageKey(MapillaryAbstractImage image) {
+    Objects.requireNonNull(image, "image cannot be null");
+    if (image instanceof Keyed) {
+      return ((Keyed) image).getKey();
+    }
+    if (image.getFile() != null && !image.getFile().getAbsolutePath().trim().isEmpty()) {
+      return image.getFile().getAbsolutePath();
+    }
+    return image.toString();
+  }
+
+  private static String getSequenceKey(MapillarySequence sequence) {
+    if (sequence.getKey() != null) {
+      return sequence.getKey();
+    }
+    return sequence.toString();
   }
 
   /**
@@ -224,6 +245,7 @@ public class MapillaryData implements Data, Serializable {
       image.setDeleted(true);
     }
     MapillaryLayer.invalidateInstance();
+    this.regenerateSequences();
   }
 
   /**
@@ -234,6 +256,7 @@ public class MapillaryData implements Data, Serializable {
    */
   public void remove(Collection<MapillaryAbstractImage> images) {
     images.forEach(this::remove);
+    this.regenerateSequences();
   }
 
   /**
@@ -286,7 +309,7 @@ public class MapillaryData implements Data, Serializable {
    * @return A Set object containing all visible images.
    */
   public Set<MapillaryAbstractImage> getImages() {
-    return images.stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
+    return images.values().stream().filter(MapillaryAbstractImage::isVisible).collect(Collectors.toSet());
   }
 
   /**
@@ -295,7 +318,7 @@ public class MapillaryData implements Data, Serializable {
    * @return A Set object containing all images.
    */
   public Set<MapillaryAbstractImage> getAllImages() {
-    return Collections.unmodifiableSet(this.images);
+    return Collections.unmodifiableSet(new TreeSet<>(this.images.values()));
   }
 
   /**
@@ -304,9 +327,12 @@ public class MapillaryData implements Data, Serializable {
    * @param key The key for the MapillaryImage
    * @return The MapillaryImage or {@code null}
    */
-  public MapillaryImage getImage(String key) {
-    return this.images.parallelStream().filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
-      .filter(m -> m.getKey().equals(key)).findAny().orElse(null);
+  public <T extends MapillaryAbstractImage & Keyed> T getImage(String key) {
+    MapillaryAbstractImage image = this.images.get(key);
+    if (image instanceof Keyed) {
+      return (T) image;
+    }
+    return null;
   }
 
   /**
@@ -315,8 +341,13 @@ public class MapillaryData implements Data, Serializable {
    * @return all sequences that are contained in the Mapillary data
    */
   public Set<MapillarySequence> getSequences() {
-    return images.stream().map(MapillaryAbstractImage::getSequence).filter(Objects::nonNull)
-      .collect(Collectors.toSet());
+    return new HashSet<>(this.sequences.values());
+  }
+
+  private void regenerateSequences() {
+    this.sequences.clear();
+    this.images.values().stream().map(MapillaryAbstractImage::getSequence).filter(Objects::nonNull)
+      .forEach(sequence -> this.sequences.put(getSequenceKey(sequence), sequence));
   }
 
   /**
@@ -330,6 +361,7 @@ public class MapillaryData implements Data, Serializable {
 
   private void fireImagesAdded() {
     listeners.stream().filter(Objects::nonNull).forEach(MapillaryDataListener::imagesAdded);
+    this.regenerateSequences();
   }
 
   /**
@@ -460,7 +492,7 @@ public class MapillaryData implements Data, Serializable {
   public void setImages(Collection<MapillaryAbstractImage> newImages) {
     synchronized (this) {
       images.clear();
-      images.addAll(newImages);
+      this.addAll(newImages, true);
     }
   }
 
