@@ -19,6 +19,7 @@ import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.progress.AbstractProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ChildProgress;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
+import org.openstreetmap.josm.gui.progress.ProgressException;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
@@ -66,7 +67,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
     if (pool == null) {
       pool = MapillaryUtils.getForkJoinPool(this.getClass());
     }
-    if (!completed) {
+    if (!completed && !this.isCancelled()) {
       for (URL url : urls) {
         pool.execute(() -> realRun(url));
       }
@@ -124,7 +125,12 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
         if (parentMonitor instanceof DownloadProgressMonitor) {
           DownloadProgressMonitor parentDownloadMonitor = (DownloadProgressMonitor) parentMonitor;
-          parentDownloadMonitor.updateCompleted();
+          // Work around for JOSM-20361 (unknown cause, not reproduced).
+          try {
+            parentDownloadMonitor.updateCompleted();
+          } catch (ProgressException e) {
+            Logging.error(e);
+          }
         }
       }
       monitor.finishTask();
