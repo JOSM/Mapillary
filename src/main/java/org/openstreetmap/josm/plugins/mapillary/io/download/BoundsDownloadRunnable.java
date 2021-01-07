@@ -42,6 +42,7 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
   protected static final int MAXIMUM_URLS = 50;
   private ProgressMonitor monitor;
   private final Function<Bounds, Collection<URL>> urlGen;
+  private BoundsDownloadRunnable next;
   /**
    * Checks if this download has been completed before
    */
@@ -94,6 +95,9 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       if (MapillaryUser.getUsername() != null) {
         OAuthUtils.addAuthenticationHeader(client);
       }
+      if (this.isCancelled()) {
+        return;
+      }
       // HttpClient sets the state to FINISHED, and the subsequent calls to getResponse().getBufferedReader() error out.
       HttpClient.Response response = client.connect(NullProgressMonitor.INSTANCE);
       monitor.beginTask("Download data");
@@ -105,15 +109,17 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         }
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
-      if (nextURL != null && pool != null) {
-        BoundsDownloadRunnable next = getNextUrl(nextURL);
+      if (nextURL != null && pool != null && !this.isCancelled()) {
+        next = getNextUrl(nextURL);
         if (monitor.isCanceled() || next == null || pool.isShutdown()) {
           pool.shutdown();
         } else {
           pool.execute(next);
         }
       }
-      run(client);
+      if (!this.isCancelled()) {
+        run(client);
+      }
       if (monitor instanceof ChildProgress) {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
         if (parentMonitor instanceof DownloadProgressMonitor) {
@@ -132,7 +138,12 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         && attempt < MAX_DOWNLOAD_ATTEMPTS && pool != null) {
         message = I18n.tr("Server timeout, trying {0} again (attempt {1} of {2})", currentUrl.toString(), attempt + 1,
           MAX_DOWNLOAD_ATTEMPTS);
-        pool.execute(() -> this.realRun(currentUrl, attempt + 1));
+        if (next != null) {
+          next.cancel(true);
+        }
+        if (!this.isCancelled()) {
+          pool.execute(() -> this.realRun(currentUrl, attempt + 1));
+        }
       } else {
         message = I18n.tr("Could not read from URL {0}!", currentUrl.toString());
       }
@@ -143,6 +154,15 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         GuiHelper.runInEDT(() -> showNotification(message));
       }
     }
+  }
+
+  @Override
+  public boolean cancel(boolean mayInterruptIfRunning) {
+    boolean canceled = super.cancel(mayInterruptIfRunning);
+    if (mayInterruptIfRunning && this.next != null) {
+      canceled = canceled && this.next.cancel(mayInterruptIfRunning);
+    }
+    return canceled;
   }
 
   protected static void showNotification(String message) {
