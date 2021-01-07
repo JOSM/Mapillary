@@ -109,6 +109,9 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         }
       }
       URL nextURL = APIv3.parseNextFromLinkHeaderValue(response.getHeaderField("Link"));
+      if (!this.isCancelled()) {
+        run(client);
+      }
       if (nextURL != null && pool != null && !this.isCancelled()) {
         next = getNextUrl(nextURL);
         if (monitor.isCanceled() || next == null || pool.isShutdown()) {
@@ -116,9 +119,6 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
         } else {
           pool.execute(next);
         }
-      }
-      if (!this.isCancelled()) {
-        run(client);
       }
       if (monitor instanceof ChildProgress) {
         AbstractProgressMonitor parentMonitor = ((ChildProgress) monitor).getParent();
