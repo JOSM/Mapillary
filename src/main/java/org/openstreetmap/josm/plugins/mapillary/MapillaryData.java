@@ -169,7 +169,9 @@ public class MapillaryData implements Data, Serializable {
     Node node = new Node();
     node.setCoor(image.getExifCoor());
     node.put("key", key);
-    this.imageBucket.add(node);
+    synchronized (this.imageBucket) {
+      this.imageBucket.add(node);
+    }
   }
 
   private static String getImageKey(MapillaryAbstractImage image) {
@@ -333,8 +335,12 @@ public class MapillaryData implements Data, Serializable {
    * @return the image set
    */
   public Set<MapillaryAbstractImage> searchNodes(Bounds bound) {
-    return this.imageBucket.search(bound.toBBox()).stream().filter(n -> n.hasKey("key")).map(n -> n.get("key"))
-      .map(this.images::get).collect(Collectors.toSet());
+    Collection<Node> found;
+    synchronized (this.imageBucket) {
+      found = this.imageBucket.search(bound.toBBox());
+    }
+    return found.stream().filter(n -> n.hasKey("key")).map(n -> n.get("key")).map(this.images::get)
+      .collect(Collectors.toSet());
   }
 
   /**
