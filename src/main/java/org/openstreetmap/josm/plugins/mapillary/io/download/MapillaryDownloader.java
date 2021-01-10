@@ -63,6 +63,33 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public final class MapillaryDownloader {
 
+  private static class ForkJoinTaskRunnable<T extends Runnable> implements Runnable {
+    private final ForkJoinPool pool;
+    private T t;
+
+    public ForkJoinTaskRunnable(ForkJoinPool pool, T t) {
+      this.pool = pool;
+      this.t = t;
+    }
+
+    @Override
+    public void run() {
+      ForkJoinTask<?> future = pool.submit(t);
+      try {
+        future.get();
+      } catch (ExecutionException e) {
+        Logging.error(e);
+      } catch (InterruptedException e) {
+        Logging.error(e);
+        Thread.currentThread().interrupt();
+      }
+    }
+
+    public Runnable getRunnable() {
+      return this.t;
+    }
+  }
+
   /**
    * Possible public/private download options
    */
@@ -222,17 +249,7 @@ public final class MapillaryDownloader {
   private static void run(Runnable t) {
     try {
       final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryDownloader.class);
-      executor.execute(() -> {
-        ForkJoinTask<?> future = pool.submit(t);
-        try {
-          future.get();
-        } catch (ExecutionException e) {
-          Logging.error(e);
-        } catch (InterruptedException e) {
-          Logging.error(e);
-          Thread.currentThread().interrupt();
-        }
-      });
+      executor.execute(new ForkJoinTaskRunnable<>(pool, t));
       MapillaryDownloadDialog.getInstance().downloadInfoChanged();
     } catch (RejectedExecutionException e) {
       throw new RejectedExecutionException(e);
@@ -431,9 +448,13 @@ public final class MapillaryDownloader {
     executor = new ThreadPoolExecutor(3, 5, 100, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100),
       new ThreadPoolExecutor.DiscardPolicy());
     shutdownTasks.forEach(download -> {
-      MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) download;
-      msdrDownload.getMonitor().finishTask();
-      removeHash(msdrDownload);
+      if (download instanceof ForkJoinTaskRunnable
+        && ((ForkJoinTaskRunnable<?>) download).getRunnable() instanceof MapillarySquareDownloadRunnable) {
+        MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) ((ForkJoinTaskRunnable<?>) download)
+          .getRunnable();
+        msdrDownload.getMonitor().finishTask();
+        removeHash(msdrDownload);
+      }
     });
     DownloadTableModel.getInstance().reset();
     MapillaryUtils.updateHelpText();
