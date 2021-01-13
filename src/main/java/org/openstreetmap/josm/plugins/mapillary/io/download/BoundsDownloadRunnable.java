@@ -135,7 +135,12 @@ public abstract class BoundsDownloadRunnable extends RecursiveAction {
       monitor.finishTask();
     } catch (IOException e) {
       // Finish the task and use the nullprogressmonitor instance for future attempts.
-      monitor.finishTask();
+      try {
+        monitor.finishTask();
+      } catch (ProgressException e1) {
+        // I've got to figure out a better way to not throw on monitors...
+        Logging.error(e1);
+      }
       this.monitor = NullProgressMonitor.INSTANCE;
       final String message;
       // Limit retries to 504 server timeouts and no more than {@link MAX_DOWNLOAD_ATTEMPTS} (2 attempts).
