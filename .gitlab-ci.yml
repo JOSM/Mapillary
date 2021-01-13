@@ -1,9 +1,18 @@
-image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin-openjfx:latest
+image: registry.gitlab.com/josm/docker-library/openjdk-8-josmplugin:latest
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+#############################
+# Various additional Checks #
+#############################
 include:
+  - template: Code-Quality.gitlab-ci.yml
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: License-Scanning.gitlab-ci.yml
 
@@ -24,8 +33,10 @@ assemble:
   artifacts:
     paths:
       - build/
+    expire_in: 1 day
+  interruptible: true
 
-java 11 assemble:
+assemble with java 11:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
@@ -33,38 +44,10 @@ java 11 assemble:
   artifacts:
     paths:
       - build/
+    expire_in: 1 day
+  interruptible: true
 
-java 12 assemble:
-  stage: build
-  image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
-  script:
-    - ./gradlew assemble --stacktrace
-  artifacts:
-    paths:
-      - build/
-  allow_failure: true
-
-java 13 assemble:
-  stage: build
-  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
-  script:
-    - ./gradlew assemble --stacktrace
-  artifacts:
-    paths:
-      - build/
-  allow_failure: true
-
-java 14 assemble:
-  stage: build
-  image: registry.gitlab.com/josm/docker-library/openjdk-14-josmplugin:latest
-  script:
-    - ./gradlew assemble --stacktrace
-  artifacts:
-    paths:
-      - build/
-  allow_failure: true
-
-java 15 assemble:
+assemble with java 15:
   stage: build
   image: registry.gitlab.com/josm/docker-library/openjdk-15-josmplugin:latest
   script:
@@ -72,8 +55,31 @@ java 15 assemble:
   artifacts:
     paths:
       - build/
+    expire_in: 1 day
   allow_failure: true
+  interruptible: true
 
+code_navigation:
+  stage: build
+  image: maven:3-openjdk-8
+  script:
+    - cat /etc/os-release
+    - apt update && apt install -y git
+    - git clone https://github.com/sourcegraph/lsif-java
+    - cd lsif-java
+    - ./gradlew installDist
+    - cd ..
+    - ./gradlew generatePomFileForJosmPluginPublication
+    - cp ./build/publications/josmPlugin/pom-default.xml ./pom.xml
+    - $(pwd)/lsif-java/build/install/lsifjava/bin/lsifjava -projectRoot . -out dump.lsif -verbose
+  artifacts:
+    reports:
+      lsif: dump.lsif
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
+  allow_failure: true
+  interruptible: true
 
 ##############
 # Test stage #
@@ -88,6 +94,36 @@ build:
     - build
   needs: ["assemble"]
 
+test:
+  stage: test
+  script:
+  - ./gradlew check --stacktrace --continue #--info
+  - ./gradlew jacocoTestReport
+  - ./gradlew jacocoTestCoverageVerification
+  artifacts:
+    paths:
+    - build
+    reports:
+      junit: build/test-results/**/TEST-*.xml
+  needs: ["assemble"]
+  dependencies:
+    - assemble
+  interruptible: true
+
+coverage:
+  stage: deploy
+  needs: ["test"]
+  dependencies:
+    - test
+  image: haynes/jacoco2cobertura:1.0.3
+  script:
+    - 'python /opt/cover2cover.py build/reports/jacoco/test/jacocoTestReport.xml src/main/java > build/reports/jacoco/test/coverage.xml'
+    - 'python /opt/source2filename.py build/reports/jacoco/test/coverage.xml'
+  artifacts:
+    reports:
+      cobertura: "build/reports/jacoco/test/coverage.xml"
+  interruptible: true
+
 translate:
   stage: test
   script:
@@ -97,56 +133,45 @@ translate:
     - build
   needs: ["assemble"]
 
-min JOSM compile:
+compile against min JOSM:
   stage: test
   script:
     - ./gradlew compileJava_minJosm --stacktrace
   needs: ["assemble"]
+  dependencies:
+    - assemble
+  interruptible: true
 
-latest JOSM compile:
+compile against latest JOSM:
   stage: test
   script:
     - ./gradlew compileJava_latestJosm --stacktrace
   needs: ["assemble"]
+  dependencies:
+    - assemble
+  interruptible: true
 
-java 11 build:
+build with java 11:
   stage: test
   image: registry.gitlab.com/josm/docker-library/openjdk-11-josmplugin:latest
   script:
     - ./gradlew build --stacktrace
-  needs: ["java 11 assemble"]
+  needs: ["assemble with java 11"]
+  dependencies:
+    - assemble with java 11
+  interruptible: true
 
-java 12 build:
+build with java 15:
   stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-12-josmplugin:latest
-  script:
-    - ./gradlew build --stacktrace
-  needs: ["java 12 assemble"]
-  allow_failure: true
-
-java 13 build:
-  stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
-  script:
-    - ./gradlew build --stacktrace
-  needs: ["java 13 assemble"]
-  allow_failure: true
-
-java 14 build:
-  stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
-  script:
-    - ./gradlew build --stacktrace
-  needs: ["java 14 assemble"]
-  allow_failure: true
-
-java 15 build:
-  stage: test
-  image: registry.gitlab.com/josm/docker-library/openjdk-13-josmplugin:latest
+  image: registry.gitlab.com/josm/docker-library/openjdk-15-josmplugin:latest
   script:
     - ./gradlew build --stacktrace
   needs: ["java 15 assemble"]
   allow_failure: true
+  needs: ["assemble with java 15"]
+  dependencies:
+    - assemble with java 15
+  interruptible: true
 
 ################
 # Deploy stage #
@@ -192,8 +217,11 @@ sonarcloud.io:
     name: sonarcloud.io
     url: https://sonarcloud.io/dashboard?id=org.openstreetmap.josm.plugins%3AMapillary
   script:
+    - git fetch --unshallow
     - ./gradlew -Dsonar.login=$SONAR_TOKEN sonarqube
-  needs: ["build"]
+  needs: ["test"]
+  dependencies:
+    - test
   only:
     refs:
       - master
@@ -207,7 +235,7 @@ GitLab Maven repo:
     url: https://gitlab.com/JOSM/plugin/Mapillary/-/packages
   script:
     - ./gradlew publishAllPublicationsToGitlabRepository
-  needs: ["build", "min JOSM compile", "latest JOSM compile"]
+  needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
   only:
     - tags@JOSM/plugin/Mapillary
 
@@ -237,7 +265,7 @@ release:
     git stage .
     git commit -a -m "$commitMessage"
     git push origin pages
-  needs: ["build", "min JOSM compile", "latest JOSM compile"]
+  needs: ["build", "compile against min JOSM", "compile against latest JOSM"]
   only:
     - tags@JOSM/plugin/Mapillary
 
