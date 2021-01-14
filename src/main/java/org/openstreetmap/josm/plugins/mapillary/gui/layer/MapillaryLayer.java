@@ -124,7 +124,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   private static class DataSetSourceListener implements DataSourceListener {
     @Override
     public void dataSourceChange(DataSourceChangeEvent event) {
-      SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
+      if (MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA == DOWNLOAD_MODE
+        .fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get())) {
+        SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
+      }
     }
   }
 
