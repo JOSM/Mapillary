@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -15,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -68,6 +70,11 @@ class ObjectDetectionsTest {
     ObjectDetections fireHydrant = ObjectDetections.OBJECT__FIRE_HYDRANT;
     assertEquals("object--fire-hydrant", fireHydrant.getKey());
     assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(fireHydrant.getKey()).length);
+  }
+
+  @Test
+  void superficialEnumCoverageTest() {
+    assertDoesNotThrow(() -> TestUtils.superficialEnumCodeCoverage(ObjectDetections.class));
   }
 
 }
