@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ItemEvent;
@@ -29,11 +30,11 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryImageDisplay.Painter;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ClipboardAction;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.AbstractImageViewer;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.MapillaryImageViewer;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageViewer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 
@@ -44,7 +45,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
  */
 public class ImageColorPicker extends JPanel {
 
-  private AbstractImageViewer imageViewer;
   private final JPanel colorPanel;
   private final JPanel tempColorPanel;
   private Color color;
@@ -56,10 +56,13 @@ public class ImageColorPicker extends JPanel {
   private boolean mouseIsDragging = false;
   private Point pointInComponent;
   private JToggleButton eyeDropperButton;
+  private Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = (g, i, r) -> drawColorIndicator((Graphics2D) g,
+    i, r, pointInComponent, color, tempColor);
+
+  private Boolean detectionOutlines;
+  private Boolean detectedSigns;
 
   public ImageColorPicker() {
-    setupImageViewer();
-
     colorLabel = new JLabel(tr("No color selected"));
     colorPanel = new JPanel();
     colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -86,7 +89,8 @@ public class ImageColorPicker extends JPanel {
     panel.add(eyeDropperButton, GBC.std().anchor(GridBagConstraints.LINE_END));
 
     setLayout(new GridBagLayout());
-    add(imageViewer, GBC.std().insets(5).weight(1, 1).fill());
+    MapillaryMainDialog.getInstance().imageViewer.setPreferredSize(new Dimension(1000, 1000));
+    add(MapillaryMainDialog.getInstance().imageViewer, GBC.std().insets(5).weight(1, 1).fill());
     add(panel, GBC.eol().insets(5));
   }
 
@@ -101,23 +105,56 @@ public class ImageColorPicker extends JPanel {
   }
 
   public void addEyeDropper() {
+    MapillaryImageDisplay imageViewer = MapillaryMainDialog.hasInstance()
+      ? MapillaryMainDialog.getInstance().imageViewer
+      : null;
     if (imageViewer != null) {
-      imageViewer.disableZoomPan();
+      imageViewer.setZoomPanEnabled(false);
       eyeDropper = new EyeDropper(imageViewer);
       imageViewer.addMouseListener(eyeDropper);
       imageViewer.addMouseMotionListener(eyeDropper);
+      imageViewer.addAdditionalFunction(this.dropperConsumer);
+      // TODO store current in local variables
+      if (MapillaryProperties.SHOW_DETECTED_SIGNS.isSet()) {
+        this.detectedSigns = MapillaryProperties.SHOW_DETECTED_SIGNS.get();
+      }
+      MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(false));
+      if (MapillaryProperties.SHOW_DETECTION_OUTLINES.isSet()) {
+        this.detectionOutlines = MapillaryProperties.SHOW_DETECTION_OUTLINES.get();
+      }
+      MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTION_OUTLINES.put(false));
     }
   }
 
   public void removeEyeDropper() {
+    MapillaryImageDisplay imageViewer = MapillaryMainDialog.hasInstance()
+      ? MapillaryMainDialog.getInstance().imageViewer
+      : null;
     if (imageViewer != null && eyeDropper != null) {
       imageViewer.removeMouseListener(eyeDropper);
       imageViewer.removeMouseMotionListener(eyeDropper);
-      imageViewer.enableZoomPan();
+      imageViewer.setZoomPanEnabled(true);
+      imageViewer.removeAdditionalFunction(this.dropperConsumer);
+      // TODO use store from local variables
+      if (this.detectedSigns != null) {
+        MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTED_SIGNS.put(this.detectedSigns));
+      } else {
+        MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTED_SIGNS::remove);
+      }
+      if (this.detectionOutlines != null) {
+        MainApplication.worker.execute(() -> MapillaryProperties.SHOW_DETECTION_OUTLINES.put(this.detectionOutlines));
+      } else {
+        MainApplication.worker.execute(MapillaryProperties.SHOW_DETECTION_OUTLINES::remove);
+      }
+      this.eyeDropper = null;
     }
   }
 
-  private static void drawColorIndicator(Graphics2D g, Point p, Color current, Color temp) {
+  private void drawColorIndicator(Graphics2D g, BufferedImage i, Rectangle visibleRectangle, Point p, Color current,
+    Color temp) {
+    if (p == null || g == null) {
+      return;
+    }
     // Use floats instead of ints to avoid casting everywhere. Same size as int.
     final float r = 100;
     final float w = r / 5;
@@ -145,30 +182,9 @@ public class ImageColorPicker extends JPanel {
     g.setColor(Color.GRAY);
     g.draw(outerRing);
     g.fill(outerRing);
-  }
-
-  private void setupImageViewer() {
-    if (MapillaryMainDialog.getInstance().imageViewer instanceof PanoramicImageViewer) {
-      imageViewer = new PanoramicImageViewer() {
-        @Override
-        public void paintComponent(Graphics g) {
-          super.paintComponent(g);
-          if (mouseIsDragging)
-            drawColorIndicator((Graphics2D) g, pointInComponent, color, tempColor);
-        }
-      };
-    } else {
-      imageViewer = new MapillaryImageViewer() {
-        @Override
-        public void paintComponent(Graphics g) {
-          super.paintComponent(g);
-          if (mouseIsDragging)
-            drawColorIndicator((Graphics2D) g, pointInComponent, color, tempColor);
-        }
-      };
+    if (this.eyeDropper != null) {
+      this.eyeDropper.updateScreenshot(i, visibleRectangle);
     }
-    imageViewer.setImage(MapillaryMainDialog.getInstance().imageViewer.getImage(), null);
-    imageViewer.setPreferredSize(new Dimension(1000, 1000));
   }
 
   private void setupEyeDropperButton() {
@@ -186,12 +202,10 @@ public class ImageColorPicker extends JPanel {
 
     private boolean inWindow = false;
     private transient BufferedImage screenShot;
+    private Rectangle visibleRectangle;
 
-    public EyeDropper(AbstractImageViewer panel) {
-      if (panel != null && panel.getSize().getHeight() > 0 && panel.getSize().getWidth() > 0) {
-        this.screenShot = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
-        panel.paint(screenShot.getGraphics());
-      }
+    public EyeDropper(MapillaryImageDisplay panel) {
+      this.updateScreenshot(panel.image, panel.visibleRect);
     }
 
     @Override
@@ -241,7 +255,26 @@ public class ImageColorPicker extends JPanel {
       if (getImage() != null && SwingUtilities.isLeftMouseButton(e)) {
         if (inWindow) {
           mouseIsDragging = true;
-          Color c = new Color(getImage().getRGB(e.getX(), e.getY()));
+          long redValue = 0;
+          long greenValue = 0;
+          long blueValue = 0;
+          int buffer = 1;
+          Point p = MapillaryMainDialog.getInstance().imageViewer.comp2imgCoord(visibleRectangle, e.getX(), e.getY());
+          buffer = Math.min(buffer, getImage().getHeight() - p.y);
+          buffer = Math.min(buffer, getImage().getWidth() - p.x);
+          int[] surroundingPixels = getImage().getRGB(p.x, p.y, buffer, buffer, null, 0, buffer);
+          if (surroundingPixels.length == 0)
+            return;
+          for (int rsb : surroundingPixels) {
+            Color c = new Color(rsb);
+            redValue += c.getRed();
+            greenValue += c.getGreen();
+            blueValue += c.getBlue();
+          }
+          int red = (int) (redValue / surroundingPixels.length);
+          int green = (int) (greenValue / surroundingPixels.length);
+          int blue = (int) (blueValue / surroundingPixels.length);
+          Color c = new Color(red, green, blue);
           setColor(color, c, e.getPoint());
         } else {
           mouseIsDragging = false;
@@ -257,7 +290,12 @@ public class ImageColorPicker extends JPanel {
     }
 
     private BufferedImage getImage() {
-      return screenShot;
+      return this.screenShot;
+    }
+
+    void updateScreenshot(BufferedImage i, Rectangle visibleRectangle) {
+      this.screenShot = i;
+      this.visibleRectangle = visibleRectangle;
     }
   }
 }

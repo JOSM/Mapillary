@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
@@ -45,6 +48,7 @@ import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
@@ -59,12 +63,28 @@ public final class MapillaryImageDisplay extends JPanel {
   private static final long serialVersionUID = 3369727203329307716L;
   static final double PANORAMA_FOV = Math.toRadians(110);
 
+  /**
+   * Interface for additional painters (really just a generic TriConsumer)
+   *
+   * @param <T> Typically a Graphics object
+   * @param <U> Typically a buffered image
+   * @param <V> Typically a rectangle
+   */
+  public interface Painter<T, U, V> {
+    void accept(T t, U u, V v);
+  }
+
   private final transient Collection<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
+  private final transient Collection<Painter<Graphics, BufferedImage, Rectangle>> additionalPainters = Collections
+    .synchronizedCollection(new ArrayList<>());
 
   /** The image currently displayed */
   transient BufferedImage image;
 
+  /** {@code true} if the currently visible image is panoramic */
   boolean pano;
+  /** {@code true} if zoom + pan is enabled */
+  private boolean zoomPanEnabled = true;
 
   /**
    * The rectangle (in image coordinates) of the image that is visible. This
@@ -267,7 +287,8 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
+        || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
       Rectangle mouseVisibleRect;
@@ -309,7 +330,8 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
+        || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
       synchronized (MapillaryImageDisplay.this) {
@@ -492,6 +514,7 @@ public final class MapillaryImageDisplay extends JPanel {
     } else {
       paintImage(g, bufferedImage, paintVisibleRect);
       paintDetections(g, paintVisibleRect);
+      this.additionalPainters.forEach(consumer -> consumer.accept(g, bufferedImage, paintVisibleRect));
     }
   }
 
@@ -546,7 +569,7 @@ public final class MapillaryImageDisplay extends JPanel {
       target = calculateDrawImageRectangle(visibleRect);
       g.drawImage(image, target.x, target.y, target.x + target.width, target.y + target.height, visibleRect.x,
         visibleRect.y, visibleRect.x + visibleRect.width, visibleRect.y + visibleRect.height, null);
-      if (this.selectedRect != null) {
+      if (this.selectedRect != null && this.zoomPanEnabled) {
         Point topLeft = img2compCoord(visibleRect, this.selectedRect.x, this.selectedRect.y);
         Point bottomRight = img2compCoord(visibleRect, this.selectedRect.x + this.selectedRect.width,
           this.selectedRect.y + this.selectedRect.height);
@@ -766,5 +789,54 @@ public final class MapillaryImageDisplay extends JPanel {
       this.detections.addAll(detections);
     }
     repaint();
+  }
+
+  /**
+   * @return The detections to be shown.
+   */
+  public Collection<ImageDetection<?>> getShownDetections() {
+    List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
+    return this.detections.stream().filter(d -> !MapillaryUtils.checkIfDetectionIsFiltered(layers, d))
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Enable or disable zoom+pan functionality
+   */
+  public void setZoomPanEnabled(boolean enabled) {
+    this.zoomPanEnabled = enabled;
+  }
+
+  /**
+   * Add additional drawing functions for the image viewer
+   *
+   * @param Additional drawing function
+   * @return If successfully added to the additional painters
+   */
+  public boolean addAdditionalFunction(Painter<Graphics, BufferedImage, Rectangle> painter) {
+    return this.additionalPainters.add(painter);
+  }
+
+  /**
+   * Remove additional drawing functions for the image viewer
+   *
+   * @param Additional drawing function
+   * @return If successfully removed from the additional painters
+   */
+  public boolean removeAdditionalFunction(Painter<Graphics, BufferedImage, Rectangle> painter) {
+    return this.additionalPainters.remove(painter);
+  }
+
+  /**
+   * @return
+   */
+  public double getRotation() {
+    if (this.pano && this.cameraPlane != null) {
+      double[] rotation = this.cameraPlane.getRotation().getAngles(RotationOrder.XYZ,
+        RotationConvention.VECTOR_OPERATOR);
+      return rotation[2];
+    }
+    // Default to 0 for standard images
+    return 0;
   }
 }

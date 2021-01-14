@@ -49,9 +49,6 @@ import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImag
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.AbstractImageViewer;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.MapillaryImageViewer;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageviewer.PanoramicImageViewer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -122,9 +119,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   /**
    * Object containing the shown image and that handles zoom and drag
    */
-  public AbstractImageViewer imageViewer;
-  private final MapillaryImageViewer mapillaryViewer = new MapillaryImageViewer();
-  private final PanoramicImageViewer panoramicViewer = new PanoramicImageViewer();
+  public final MapillaryImageDisplay imageViewer = new MapillaryImageDisplay();
 
   private MapillaryCache imageCache;
   private MapillaryCache thumbnailCache;
@@ -139,7 +134,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
       Shortcut.registerShortcut("mapillary:main", tr("Mapillary main dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       200, true, MapillaryPreferenceSetting.class);
-    this.imageViewer = mapillaryViewer;
 
     this.blueButton.setForeground(Color.BLUE);
     this.redButton.setForeground(Color.RED);
@@ -572,24 +566,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
     if (image != null) {
-      if (Boolean.TRUE.equals(pano)) {
-        if (imageViewer instanceof MapillaryImageViewer) {
-          panel.remove(imageViewer);
-          imageViewer = panoramicViewer;
-          panel.add(imageViewer);
-          repaint();
-        }
-      } else {
-        if (imageViewer instanceof PanoramicImageViewer) {
-          panel.remove(imageViewer);
-          imageViewer = mapillaryViewer;
-          panel.add(imageViewer);
-          repaint();
-        }
-      }
-      imageViewer.setImage(image, detections);
+      imageViewer.setImage(image, detections, Boolean.TRUE.equals(pano));
     } else {
-      imageViewer.setImage(null, null);
+      imageViewer.setImage(null, null, false);
     }
   }
 
