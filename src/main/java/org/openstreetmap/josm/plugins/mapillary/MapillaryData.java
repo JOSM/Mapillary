@@ -30,7 +30,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.Data;
 import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.QuadBuckets;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -65,8 +64,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillarySequence
  */
 public class MapillaryData implements Data, Serializable {
-  // Ideally, this would be MapillaryAbstractImage, but that requires that it implements INode.
-  private final QuadBuckets<Node> imageBucket = new QuadBuckets<>();
+  private final QuadBuckets<MapillaryAbstractImage> imageBucket = new QuadBuckets<>();
   private final ConcurrentHashMap<String, MapillaryAbstractImage> images = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, MapillarySequence> sequences = new ConcurrentHashMap<>();
   /**
@@ -166,11 +164,8 @@ public class MapillaryData implements Data, Serializable {
   private void realAddImage(MapillaryAbstractImage image) {
     String key = getImageKey(image);
     images.put(key, image);
-    Node node = new Node();
-    node.setCoor(image.getExifCoor());
-    node.put("key", key);
     synchronized (this.imageBucket) {
-      this.imageBucket.add(node);
+      this.imageBucket.add(image);
     }
   }
 
@@ -334,13 +329,11 @@ public class MapillaryData implements Data, Serializable {
    * @param bound The bounds to search
    * @return the image set
    */
-  public Set<MapillaryAbstractImage> searchNodes(Bounds bound) {
-    Collection<Node> found;
+  public Collection<MapillaryAbstractImage> searchNodes(Bounds bound) {
+    // Currently synchronized due to adding and drawing at the same time.
     synchronized (this.imageBucket) {
-      found = this.imageBucket.search(bound.toBBox());
+      return this.imageBucket.search(bound.toBBox());
     }
-    return found.stream().filter(n -> n.hasKey("key")).map(n -> n.get("key")).map(this.images::get)
-      .collect(Collectors.toSet());
   }
 
   /**
@@ -369,10 +362,10 @@ public class MapillaryData implements Data, Serializable {
    * @param key The key for the MapillaryImage
    * @return The MapillaryImage or {@code null}
    */
-  public <T extends MapillaryAbstractImage & Keyed> T getImage(String key) {
+  public MapillaryAbstractImage getImage(String key) {
     MapillaryAbstractImage image = this.images.get(key);
     if (image instanceof Keyed) {
-      return (T) image;
+      return image;
     }
     return null;
   }

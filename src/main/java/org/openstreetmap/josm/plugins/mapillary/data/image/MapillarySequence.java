@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonReader;
 
+import org.openstreetmap.josm.data.IQuadBucketType;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
@@ -29,7 +31,7 @@ import org.openstreetmap.josm.tools.Logging;
  * @author nokutu
  * @see MapillaryAbstractImage
  */
-public class MapillarySequence implements Keyed, MapillaryTagged, Serializable {
+public class MapillarySequence implements Keyed, MapillaryTagged, Serializable, IQuadBucketType {
 
   private final TagMap tags = new TagMap();
   /**
@@ -224,5 +226,14 @@ public class MapillarySequence implements Keyed, MapillaryTagged, Serializable {
   @Override
   public Map<String, String> getTagMap() {
     return this.tags;
+  }
+
+  @Override
+  public BBox getBBox() {
+    BBox bbox = new BBox();
+    for (MapillaryAbstractImage i : this.getImages()) {
+      bbox.add(i.getBBox());
+    }
+    return bbox;
   }
 }
