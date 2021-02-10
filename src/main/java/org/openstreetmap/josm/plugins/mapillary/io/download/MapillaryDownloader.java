@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.download;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,7 +66,7 @@ public final class MapillaryDownloader {
 
   private static class ForkJoinTaskRunnable<T extends Runnable> implements Runnable {
     private final ForkJoinPool pool;
-    private T t;
+    private final T t;
 
     public ForkJoinTaskRunnable(ForkJoinPool pool, T t) {
       this.pool = pool;
@@ -286,11 +287,11 @@ public final class MapillaryDownloader {
   /**
    * Checks if the given {@link LatLon} object lies inside the bounds of the image.
    *
-   * @param latlon The coordinates to check.
+   * @param latLon The coordinates to check.
    * @return true if it lies inside the bounds; false otherwise;
    */
-  private static boolean isInBounds(LatLon latlon) {
-    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -> b.contains(latlon));
+  private static boolean isInBounds(LatLon latLon) {
+    return MapillaryLayer.getInstance().getData().getBounds().parallelStream().anyMatch(b -> b.contains(latLon));
   }
 
   /**
@@ -304,13 +305,12 @@ public final class MapillaryDownloader {
       return Collections.emptyMap();
     }
     JsonObject response = getUrlResponse(MapillaryURL.APIv3.getImage(images));
-    return Collections
-      .unmodifiableMap(JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
-        .collect(Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new,
-          (rMap, oMap) -> rMap.putAll(oMap), (rMap, oMap) -> {
-            rMap.putAll(oMap);
-            return rMap;
-          })));
+    return Collections.unmodifiableMap(
+      JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream().collect(
+        Collector.of(HashMap<String, Collection<MapillaryAbstractImage>>::new, HashMap::putAll, (rMap, oMap) -> {
+          rMap.putAll(oMap);
+          return rMap;
+        })));
   }
 
   /**
@@ -331,6 +331,13 @@ public final class MapillaryDownloader {
    * @return The downloaded sequences
    */
   public static Collection<MapillarySequence> downloadSequences(boolean force, String... sequences) {
+    // prevent infinite loops. See #20470.
+    if (Arrays.stream(Thread.currentThread().getStackTrace())
+      .skip(/* getStackTrace, downloadSequences(sequences), downloadSequences(force, sequences) */ 3)
+      .filter(element -> MapillaryDownloader.class.getName().equals(element.getClassName()))
+      .filter(element -> "downloadSequences".equals(element.getMethodName())).count() > 2) {
+      return Collections.emptyList();
+    }
     String[] toGet = sequences != null
       ? Stream.of(sequences).filter(Objects::nonNull).filter(s -> !s.trim().isEmpty()).toArray(String[]::new)
       : new String[0];
@@ -359,7 +366,7 @@ public final class MapillaryDownloader {
       JsonObject returnObject = reader.readObject();
       if (next != null && !next.toExternalForm().trim().isEmpty() && !next.equals(url)) {
         JsonObject nextObject = getUrlResponse(next);
-        if (checkFeaturesIsArray(returnObject) && checkFeaturesIsArray(nextObject)) {
+        if (nextObject != null && checkFeaturesIsArray(returnObject) && checkFeaturesIsArray(nextObject)) {
           JsonArrayBuilder rArray = Json.createArrayBuilder(returnObject.getJsonArray(GEOJSON_FEATURES));
           rArray.addAll(Json.createArrayBuilder(nextObject.getJsonArray(GEOJSON_FEATURES)));
           JsonObjectBuilder rBuilder = Json.createObjectBuilder(returnObject);
@@ -450,10 +457,10 @@ public final class MapillaryDownloader {
     shutdownTasks.forEach(download -> {
       if (download instanceof ForkJoinTaskRunnable
         && ((ForkJoinTaskRunnable<?>) download).getRunnable() instanceof MapillarySquareDownloadRunnable) {
-        MapillarySquareDownloadRunnable msdrDownload = (MapillarySquareDownloadRunnable) ((ForkJoinTaskRunnable<?>) download)
+        MapillarySquareDownloadRunnable mapillarySquareDownloadRunnable = (MapillarySquareDownloadRunnable) ((ForkJoinTaskRunnable<?>) download)
           .getRunnable();
-        msdrDownload.getMonitor().finishTask();
-        removeHash(msdrDownload);
+        mapillarySquareDownloadRunnable.getMonitor().finishTask();
+        removeHash(mapillarySquareDownloadRunnable);
       }
     });
     DownloadTableModel.getInstance().reset();
