@@ -98,7 +98,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
   /** Reset objects (reset done in order added) */
   private final ListenerList<ResetListener> resetObjects = ListenerList.create();
-  private ListenerList<Destroyable> destroyable = ListenerList.create();
+  private final ListenerList<Destroyable> destroyable = ListenerList.create();
 
   private final JLabel organizationLabel = new JLabel(tr("Org"));
   final JComboBox<OrganizationRecord> organizations = new JComboBox<>();
@@ -598,7 +598,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
         if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && img.getSequence() != null
-          && !((MapillaryImage) img).getSequence().getOrganization().getKey().equals(this.organization.getKey())) {
+          && !img.getSequence().getOrganization().getKey().equals(this.organization.getKey())) {
           return true;
         }
       }

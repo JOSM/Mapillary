@@ -101,7 +101,7 @@ public final class JsonSequencesDecoder {
    * Converts a {@link JsonArray} to a java array. The conversion from
    * {@link JsonValue} to a java type is done by the supplied function.
    *
-   * @param T the type that the elements of the resulting array will be
+   * @param <T> the type that the elements of the resulting array will be
    * @param array the array to be converted
    * @param decodeValueFunction the function used for conversion from {@link JsonValue} to the desired type.
    * @param clazz the desired type that the elements of the resulting array should have

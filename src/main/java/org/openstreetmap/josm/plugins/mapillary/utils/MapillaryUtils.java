@@ -51,7 +51,7 @@ import org.openstreetmap.josm.tools.Utils;
 public final class MapillaryUtils {
 
   private static final double MIN_ZOOM_SQUARE_SIDE = 0.002;
-  private static Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
+  private static final Map<String, ForkJoinPool> forkJoinPool = new HashMap<>();
 
   private MapillaryUtils() {
     // Private constructor to avoid instantiation
@@ -288,6 +288,11 @@ public final class MapillaryUtils {
 
   /**
    * Check if the given ImageDetection is filtered out.
+   * This checks if smart edit is enabled, and if so, if any smart edit layers are available.
+   *
+   * @param detectionLayers The layers to check
+   * @param d The image detection to check
+   * @return {@code true} if the detection is filtered
    */
   public static boolean checkIfDetectionIsFiltered(final List<PointObjectLayer> detectionLayers,
     final ImageDetection<?> d) {
@@ -297,6 +302,18 @@ public final class MapillaryUtils {
         .map(PointObjectLayer::getDataSet).flatMap(ds -> ds.getAllSelected().stream())
         .map(MapillaryUtils::getDetections).flatMap(Collection::stream).noneMatch(key -> d.getKey().equals(key));
     }
+    return checkIfDetectionIsFilteredBasic(detectionLayers, d);
+  }
+
+  /**
+   * Check if a detection is filtered based off of {@link MapillaryProperties#SHOW_DETECTED_SIGNS}
+   * and {@link MapillaryProperties#SHOW_DETECTION_OUTLINES}.
+   *
+   * @param detectionLayers The layers to check
+   * @param d The image detection to check
+   * @return {@code true} if the detection is filtered
+   */
+  public static boolean checkIfDetectionIsFilteredBasic(List<PointObjectLayer> detectionLayers, ImageDetection<?> d) {
     if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
       && !"trafficsigns".contains(d.getPackage()))
       || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())

@@ -49,7 +49,7 @@ public class MapObject extends KeyIndexedObject {
   }
 
   /**
-   * @param objectTypeID
+   * @param objectDetection
    *        the {@link String} representing the type of map object. This ID can be retrieved via
    *        {@link #getValue()}
    *        for any given {@link MapObject}.

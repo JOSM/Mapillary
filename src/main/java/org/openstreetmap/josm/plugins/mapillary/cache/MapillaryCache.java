@@ -38,7 +38,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
     private final int width;
 
-    private Type(int dimension) {
+    Type(int dimension) {
       this.width = dimension;
     }
 

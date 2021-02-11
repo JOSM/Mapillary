@@ -76,7 +76,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   private final List<ImageCheckBoxButton> buttons;
   private boolean showRelevant;
   private boolean smartEditMode = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
-  private Boolean[] show = new Boolean[] { showRelevant, smartEditMode };
+  private final Boolean[] show = new Boolean[] { showRelevant, smartEditMode };
   private final FilterField filterField;
   private final SpinnerNumberModel showMaxNumberModel;
   private int detectionPage;
@@ -212,7 +212,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       detectionPage = 0;
     }
     long visible = buttons.parallelStream().filter(b -> checkRelevant(b, filterField.getText())).count();
-    while (detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
+    while ((long) detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
       detectionPage--;
     }
     updateShown(showMaxNumberModel);
@@ -346,7 +346,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
                 .map(OsmDataLayer::getDataSet).flatMap(d -> d.searchPrimitives(searchBBox).stream())
                 .filter(pr -> !pr.isDeleted()).filter(pr -> tagMapIsSubset(pr.getKeys(), tags))
                 .map(o -> o.getOsmPrimitiveId().toString()).collect(Collectors.joining(";"));
-              if (nearby != null && !nearby.trim().isEmpty()) {
+              if (!nearby.trim().isEmpty()) {
                 p.put(NEARBY_KEY, nearby);
               }
             });
@@ -463,7 +463,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param expr An expression to filter buttons with
    */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(() -> buttons.stream().forEach(b -> b.setVisible(this.checkRelevant(b, expr))));
+    SwingUtilities.invokeLater(() -> buttons.forEach(b -> b.setVisible(this.checkRelevant(b, expr))));
     SwingUtilities.invokeLater(this::invalidate);
   }
 
@@ -487,14 +487,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         }
         return null;
       }).filter(Objects::nonNull).findFirst().orElse(ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP));
-      if (icon != null) {
-        GuiHelper.runInEDT(() -> {
-          ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
-            entry.getValue().toArray(new ObjectDetections[0]));
-          buttons.add(button);
-          panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
-        });
-      }
+      GuiHelper.runInEDT(() -> {
+        ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
+          entry.getValue().toArray(new ObjectDetections[0]));
+        buttons.add(button);
+        panel.add(button, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.WEST));
+      });
     }
     Stream.of(showMaxNumberModel.getListeners(ChangeListener.class))
       .forEach(i -> SwingUtilities.invokeLater(() -> i.stateChanged(new ChangeEvent(this))));
@@ -559,7 +557,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       ((IDatePicker<?>) component).reset();
     } else if (component instanceof JSpinner && ((JSpinner) component).getModel() instanceof SpinnerNumberModel
       && !((JSpinner) component).getModel().equals(showMaxNumberModel)) {
-      ((SpinnerNumberModel) ((JSpinner) component).getModel()).setValue(0);
+      ((JSpinner) component).getModel().setValue(0);
     }
     if (component instanceof JComponent) {
       Stream.of(((JComponent) component).getComponents()).forEach(this::resetSubPanels);
@@ -589,7 +587,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   @Override
   public void dataSourceChange(DataSourceChangeEvent event) {
-    if (Stream.of(this.show).anyMatch(Boolean.TRUE::equals)) {
+    if (Arrays.asList(this.show).contains(Boolean.TRUE)) {
       this.updateShownButtons();
     }
   }

@@ -53,8 +53,8 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
   private JPopupMenu menu;
   private PropertiesDialog properties;
-  private Map<JPopupMenu, List<String>> addedValues = new HashMap<>();
-  private Map<JPopupMenu, List<Component>> addedComponents = new HashMap<>();
+  private final Map<JPopupMenu, List<String>> addedValues = new HashMap<>();
+  private final Map<JPopupMenu, List<Component>> addedComponents = new HashMap<>();
 
   private static final String IMAGE_KEY = "image_key";
 
@@ -120,7 +120,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
   private static class MapillaryImageKeyAction extends AbstractAction {
     private static final long serialVersionUID = -4129937925620244251L;
-    private String imageKey;
+    private final String imageKey;
 
     MapillaryImageKeyAction(String imageKey) {
       new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);
@@ -145,7 +145,7 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
   private static class MapillaryDetectionKeyAction extends AbstractAction {
     private static final long serialVersionUID = -4129937925620244252L;
-    private String[] detection;
+    private final String[] detection;
 
     MapillaryDetectionKeyAction(String detection) {
       new ImageProvider("mapillary-logo").getResource().attachImageIcon(this, true);

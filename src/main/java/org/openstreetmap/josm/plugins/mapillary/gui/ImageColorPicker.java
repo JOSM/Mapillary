@@ -49,15 +49,15 @@ public class ImageColorPicker extends JPanel {
   private final JPanel tempColorPanel;
   private Color color;
   private Color tempColor;
-  private static int colorArea = 150;
+  private static final int colorArea = 150;
   private final ClipboardAction copyAction;
   private final JLabel colorLabel;
   private EyeDropper eyeDropper;
   private boolean mouseIsDragging = false;
   private Point pointInComponent;
   private JToggleButton eyeDropperButton;
-  private Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = (g, i, r) -> drawColorIndicator((Graphics2D) g,
-    i, r, pointInComponent, color, tempColor);
+  private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = (g, i,
+    r) -> drawColorIndicator((Graphics2D) g, i, r, pointInComponent, color, tempColor);
 
   private Boolean detectionOutlines;
   private Boolean detectedSigns;

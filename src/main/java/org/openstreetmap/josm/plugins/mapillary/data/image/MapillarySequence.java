@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.mapillary.data.image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillaryAbstractImage
  */
 public class MapillarySequence implements Keyed, MapillaryTagged, Serializable, IQuadBucketType {
-
   private final TagMap tags = new TagMap();
   /**
    * The images in the sequence.
@@ -115,20 +113,16 @@ public class MapillarySequence implements Keyed, MapillaryTagged, Serializable, 
   }
 
   /**
-   * @param imageList
+   * @param imageList The images that this sequence shall have
    */
   public void setImages(List<MapillaryAbstractImage> imageList) {
-    for (MapillaryAbstractImage image : new ArrayList<>(this.images)) {
-      if (!imageList.contains(image)) {
-        this.images.remove(image);
-      }
-    }
+    imageList.removeIf(image -> !imageList.contains(image));
     for (MapillaryAbstractImage image : imageList) {
       if (!this.images.contains(image)) {
         this.add(image);
       }
     }
-    // Clear the list, and then readd for order.
+    // Clear the list, and then re-add for order.
     this.images.clear();
     this.images.addAll(imageList);
   }
@@ -210,7 +204,7 @@ public class MapillarySequence implements Keyed, MapillaryTagged, Serializable, 
   }
 
   /**
-   * @param organizationKey
+   * @param organizationKey The organization key for this sequence
    */
   private void setOrganization(String organizationKey) {
     organization = OrganizationRecord.getOrganization(organizationKey);

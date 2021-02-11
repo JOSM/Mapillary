@@ -12,8 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -276,13 +276,10 @@ public final class MapillaryChangesetDialog extends ToggleDialog
           return;
         }
         List<MapillaryAbstractImage> images = image.getSequence().getImages();
-        images.forEach(img -> {
-          img.turn(turnCa);
-        });
+        images.forEach(img -> img.turn(turnCa));
         double from = MapillaryLayer.getInstance().getData().getSelectedImage().getTempCa();
         double to = MapillaryLayer.getInstance().getData().getSelectedImage().getMovingCa();
-        MapillaryRecord.getInstance()
-          .addCommand(new CommandTurn(images.stream().collect(Collectors.toSet()), to - from));
+        MapillaryRecord.getInstance().addCommand(new CommandTurn(new HashSet<>(images), to - from));
         images.forEach(MapillaryAbstractImage::stopMoving);
         MapillaryLayer.invalidateInstance();
       }

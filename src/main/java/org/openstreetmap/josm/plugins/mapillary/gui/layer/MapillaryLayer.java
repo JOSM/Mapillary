@@ -138,7 +138,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   /** The nearest images to the selected image from different sequences sorted by distance from selection. */
   // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
   // synchronization
-  private final List<MapillaryImage> nearestImages = Collections.synchronizedList(new ArrayList<>());
+  private final List<MapillaryAbstractImage> nearestImages = Collections.synchronizedList(new ArrayList<>());
   /** {@link MapillaryData} object that stores the database. */
   private final MapillaryData data;
 
@@ -297,7 +297,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param n the index for picking from the list of "nearest images", beginning from 1
    * @return the n-nearest image to the currently selected image, or null if no such image can be found
    */
-  public MapillaryImage getNNearestImage(final int n) {
+  public MapillaryAbstractImage getNNearestImage(final int n) {
     synchronized (this.nearestImages) {
       return n >= 1 && n <= this.nearestImages.size() ? this.nearestImages.get(n - 1) : null;
     }
@@ -313,7 +313,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
     if (image != null && ds != null) {
       Set<MapillaryAbstractImage> imageViewedList = imageViewedMap.getOrDefault(ds,
-        Collections.synchronizedSet(new HashSet<MapillaryAbstractImage>()));
+        Collections.synchronizedSet(new HashSet<>()));
       imageViewedMap.putIfAbsent(ds, imageViewedList);
       return imageViewedList.add(image);
     }
@@ -328,7 +328,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       setMode(null);
       MapillaryRecord.getInstance().reset();
       AbstractMode.resetThread();
-      /**
+      /*
        * Stop downloads in a separate thread to avoid a 30s hang. Check if the worker
        * is shutdown first though (so we don't throw an error).
        */
@@ -495,30 +495,28 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     // Paint direction indicator
     g.setColor(directionC);
     if (img.isPanorama()) {
-      Composite currentComposit = g.getComposite();
+      Composite currentComposite = g.getComposite();
       g.setComposite(fadeComposite);
       g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
         2 * CA_INDICATOR_RADIUS);
-      g.setComposite(currentComposit);
+      g.setComposite(currentComposite);
     }
 
     // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
     if (img instanceof MapillaryImage && mode instanceof EditMode) {
       if (!((MapillaryImage) img).toDelete()) {
-        Composite currentComposit = g.getComposite();
+        Composite currentComposite = g.getComposite();
         g.setComposite(fadeComposite.derive(0.25f));
         g.setTransform(getTransform(Math.toRadians(img.getCa()), originalP, getOriginalCentroid(i), backup));
         g.drawImage(img.getActiveSequenceImage(), originalP.x, originalP.y, null);
         g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
-        g.setComposite(currentComposit);
+        g.setComposite(currentComposite);
         g.drawImage(i, p.x, p.y, null);
-        g.setTransform(backup);
       } else {
         g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i), backup));
         g.drawImage(img.getDeletedImage(), p.x, p.y, null);
         g.setComposite(composite);
-        g.setTransform(backup);
       }
     } else {
       double angle = Math.toRadians(img.getMovingCa());
@@ -526,8 +524,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer
         angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
       g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
       g.drawImage(i, p.x, p.y, null);
-      g.setTransform(backup);
     }
+    g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
@@ -718,9 +716,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param limit the maximum length of the returned array
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
-  private MapillaryImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
+  private MapillaryAbstractImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
     if (target.getSequence() == null) {
-      return new MapillaryImage[] {};
+      return new MapillaryAbstractImage[] {};
     }
     // Locked MapillaryLayer, waiting for a java.util.stream.Nodes$CollectorTask$OfRef
     return data.getSequences().parallelStream()
@@ -733,17 +731,17 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       }).filter(img -> // Filters out images too far away from target
       img != null && img.getMovingLatLon()
         .greatCircleDistance(target.getMovingLatLon()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
-      .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(MapillaryImage[]::new);
+      .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(MapillaryAbstractImage[]::new);
   }
 
   private void updateNearestImages() {
     ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
     final MapillaryAbstractImage selected = data.getSelectedImage();
-    MapillaryImage[] newNearestImages;
+    MapillaryAbstractImage[] newNearestImages;
     if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).toDelete())) {
       newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
-      newNearestImages = new MapillaryImage[0];
+      newNearestImages = new MapillaryAbstractImage[0];
     }
     synchronized (this.nearestImages) {
       this.nearestImages.clear();
@@ -752,8 +750,8 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       if (MainApplication.isDisplayingMapView()) {
         GuiHelper.runInEDT(this::updateRedBlueButtons);
       }
-      this.nearestImages.stream().filter(Objects::nonNull)
-        .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
+      this.nearestImages.stream().filter(Objects::nonNull).filter(MapillaryImage.class::isInstance)
+        .map(MapillaryImage.class::cast).forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
     }
   }
 

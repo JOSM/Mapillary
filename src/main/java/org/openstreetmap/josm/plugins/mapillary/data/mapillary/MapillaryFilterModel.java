@@ -63,7 +63,6 @@ public class MapillaryFilterModel extends FilterModel {
   /**
    * Runs the filter on a list of primitives that are part of a specified dataset.
    *
-   * @param ds The dataset to run filters on
    * @param primitives The primitives
    */
   @Override

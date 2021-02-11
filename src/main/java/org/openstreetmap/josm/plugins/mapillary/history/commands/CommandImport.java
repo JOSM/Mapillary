@@ -39,7 +39,7 @@ public class CommandImport extends MapillaryExecutableCommand {
 
   @Override
   public void redo() {
-    this.images.stream().forEach(image -> image.setDeleted(false));
+    this.images.forEach(image -> image.setDeleted(false));
     this.execute();
   }
 

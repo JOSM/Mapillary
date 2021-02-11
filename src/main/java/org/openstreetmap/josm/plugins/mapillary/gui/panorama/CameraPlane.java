@@ -22,7 +22,7 @@ public class CameraPlane {
   private final int height;
   private final double distance;
 
-  private Vector3D[][] vectors;
+  private final Vector3D[][] vectors;
   private double theta;
   private double sinTheta;
   private double cosTheta;
@@ -159,20 +159,19 @@ public class CameraPlane {
   public void mapping(BufferedImage sourceImage, BufferedImage targetImage) {
     DataBuffer sourceBuffer = sourceImage.getRaster().getDataBuffer();
     DataBuffer targetBuffer = targetImage.getRaster().getDataBuffer();
-    if (sourceBuffer.getDataType() == DataBuffer.TYPE_INT && targetBuffer.getDataType() == DataBuffer.TYPE_INT) {// Faster
-                                                                                                                 // mapping
+    // Faster mapping
+    if (sourceBuffer.getDataType() == DataBuffer.TYPE_INT && targetBuffer.getDataType() == DataBuffer.TYPE_INT) {
       int[] sourceImageBuffer = ((DataBufferInt) sourceImage.getRaster().getDataBuffer()).getData();
       int[] targetImageBuffer = ((DataBufferInt) targetImage.getRaster().getDataBuffer()).getData();
-      IntStream.range(0, targetImage.getHeight()).parallel().forEach(y -> {
-        IntStream.range(0, targetImage.getWidth()).forEach(x -> {
+      IntStream.range(0, targetImage.getHeight()).parallel()
+        .forEach(y -> IntStream.range(0, targetImage.getWidth()).forEach(x -> {
           final Vector3D vec = getVector3D(new Point(x, y));
           final Point2D.Double p = UVMapping.getTextureCoordinate(vec);
           int tx = (int) (p.x * (sourceImage.getWidth() - 1));
           int ty = (int) (p.y * (sourceImage.getHeight() - 1));
           int color = sourceImageBuffer[ty * sourceImage.getWidth() + tx];
           targetImageBuffer[y * targetImage.getWidth() + x] = color;
-        });
-      });
+        }));
     } else {
       IntStream.range(0, targetImage.getHeight()).parallel()
         .forEach(y -> IntStream.range(0, targetImage.getWidth()).parallel().forEach(x -> {

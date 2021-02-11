@@ -343,8 +343,7 @@ public class MapillaryData implements Data, Serializable {
    * @return the sequence set
    */
   public Set<MapillarySequence> searchWays(Bounds bound) {
-    return this.searchNodes(bound).stream().map(MapillaryAbstractImage::getSequence).distinct()
-      .collect(Collectors.toSet());
+    return this.searchNodes(bound).stream().map(MapillaryAbstractImage::getSequence).collect(Collectors.toSet());
   }
 
   /**
@@ -472,8 +471,8 @@ public class MapillaryData implements Data, Serializable {
 
       long freeMemory = Runtime.getRuntime().freeMemory();
       // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
-      long estimatedImageSize = Stream.of(MapillaryCache.Type.values()).mapToLong(v -> v.getHeight() * v.getWidth() * 4)
-        .sum();
+      long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
+        .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
 
       for (int i = 0; i < prefetchCount; i++) {
         if (freeMemory - estimatedImageSize < 0) {
@@ -574,6 +573,7 @@ public class MapillaryData implements Data, Serializable {
       Collection<T> imagesToGet = imagesToGetDetections.stream().filter(Objects::nonNull)
         .filter(i -> !fullyDownloadedDetections.contains(i)).collect(Collectors.toList());
       // Keyed::getKey was throwing a LambdaConversionException.
+      // noinspection Convert2MethodRef
       @SuppressWarnings("java:S1612")
       URL nextUrl = MapillaryURL.APIv3
         .retrieveDetections(imagesToGet.stream().map(t -> t.getKey()).collect(Collectors.toList()));

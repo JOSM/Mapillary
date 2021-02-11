@@ -24,7 +24,7 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
   private final double score;
   private final ObjectDetections value;
   private final String originalValue;
-  private boolean rejected;
+  private final boolean rejected;
 
   private DetectionVerification.TYPE approvalType;
 

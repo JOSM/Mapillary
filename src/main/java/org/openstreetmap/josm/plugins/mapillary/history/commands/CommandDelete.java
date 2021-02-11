@@ -57,7 +57,7 @@ public class CommandDelete extends MapillaryExecutableCommand {
 
   @Override
   public void redo() {
-    /** This method is called in {@link #execute()}. Please update execute if necessary. */
+    /* This method is called in {@link #execute()}. Please update execute if necessary. */
     this.images.forEach(image -> image.setDeleted(true));
   }
 }

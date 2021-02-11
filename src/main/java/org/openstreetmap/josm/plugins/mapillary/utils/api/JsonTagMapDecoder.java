@@ -3,7 +3,6 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import java.util.Map;
 
-import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -35,7 +34,7 @@ public class JsonTagMapDecoder {
       } else if (type == JsonValue.ValueType.FALSE) {
         tags.put(entry.getKey(), Boolean.FALSE.toString());
       } else if (type == JsonValue.ValueType.NUMBER) {
-        tags.put(entry.getKey(), ((JsonNumber) entry.getValue()).toString());
+        tags.put(entry.getKey(), entry.getValue().toString());
       }
     }
     return tags;

@@ -35,8 +35,6 @@ public class DownloadTableModel extends AbstractTableModel {
 
   /**
    * Constructs a new {@code DownloadTableModel}.
-   *
-   * @param listSelectionModel selection model
    */
   private DownloadTableModel() {
     // Private to avoid multiple instances.
@@ -67,7 +65,7 @@ public class DownloadTableModel extends AbstractTableModel {
   /**
    * Add a new Download to the list
    *
-   * @param download
+   * @param download Add a new download
    */
   public void addDownload(MapillarySquareDownloadRunnable download) {
     downloadList.add(download);

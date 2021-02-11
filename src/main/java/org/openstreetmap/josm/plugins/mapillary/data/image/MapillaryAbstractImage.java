@@ -438,7 +438,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ma
   /**
    * The quality score for the image
    *
-   * @param qualityScore
+   * @param qualityScore Set the quality score for this image
    */
   public void setQuality(int qualityScore) {
     if (qualityScore > 0 && qualityScore < 6) {
@@ -459,7 +459,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ma
   }
 
   /**
-   * @param Set the image as deleted
+   * @param deleted Set the image as deleted
    */
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;

@@ -74,9 +74,7 @@ public class MapillaryDownloadDialog extends ToggleDialog implements TableModelL
     table.setDefaultRenderer(JProgressBar.class, new ProgressCellRender());
     table.setDefaultRenderer(JLabel.class, new StringRender());
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-      updateButtons();
-    });
+    table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> updateButtons());
     table.getColumnModel().getColumn(0).setMaxWidth(180);
     table.getColumnModel().getColumn(0).setPreferredWidth(180);
     table.getColumnModel().getColumn(1).setMaxWidth(125);

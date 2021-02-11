@@ -18,7 +18,7 @@ public interface MapillaryTagged extends Tagged {
    */
   Map<String, String> getTagMap();
 
-  /** Begin Tagged implementation */
+  /* Begin Tagged implementation */
   @Override
   default void put(String key, String value) {
     if (value != null && !value.trim().isEmpty())
@@ -72,5 +72,5 @@ public interface MapillaryTagged extends Tagged {
   default void removeAll() {
     getTagMap().clear();
   }
-  /** End Tagged implementation */
+  /* End Tagged implementation */
 }

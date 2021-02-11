@@ -32,7 +32,7 @@ public interface AdditionalInstructions {
    */
   Command apply(final OsmPrimitive primitive);
 
-  public static class SnapToRoad implements AdditionalInstructions {
+  class SnapToRoad implements AdditionalInstructions {
 
     @Override
     public Command apply(final OsmPrimitive primitive) {

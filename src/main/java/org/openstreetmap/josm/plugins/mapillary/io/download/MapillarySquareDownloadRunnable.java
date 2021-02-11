@@ -201,7 +201,7 @@ public class MapillarySquareDownloadRunnable implements Runnable {
     setState(STATE.PAUSED);
   }
 
-  /** Resume after paused using {@link pause()} or redownload if failed. */
+  /** Resume after paused using {@link #pause()} or redownload if failed. */
   public void resume() {
     if (state == STATE.PAUSED) {
       synchronized (this) {

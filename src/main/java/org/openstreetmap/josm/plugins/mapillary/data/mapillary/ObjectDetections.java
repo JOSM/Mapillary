@@ -1818,7 +1818,7 @@ public enum ObjectDetections {
    *
    * @param osmKey The OSM key for the object
    * @param taggingPresetType The valid types for the preset
-   * @param detectionType The types that the detection <i>may</i> appear as
+   * @param detectionTypes The types that the detection <i>may</i> appear as
    */
   ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType detectionTypes,
     DataType dataType) {
@@ -1933,7 +1933,7 @@ public enum ObjectDetections {
       Tag parsedTag = Tag.ofString(tag);
       tagMap.put(parsedTag.getKey(), parsedTag.getValue());
     }
-    if (Stream.of(this.detectionTypes).anyMatch(DetectionType.TRAFFIC_SIGN::equals)) {
+    if (Arrays.asList(this.detectionTypes).contains(DetectionType.TRAFFIC_SIGN)) {
       tagMap.put("direction", "");
     }
     return tagMap;

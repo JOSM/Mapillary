@@ -73,7 +73,7 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
    *
    * @param client The client to get data with
    * @param data The location to put data
-   * @return
+   * @return A map of &lt;image key, List&lt;image detection&gt;&gt; objects.
    * @throws IOException If there is an issue with the received data
    */
   public static Map<String, List<ImageDetection<?>>> doRun(final HttpClient client, final MapillaryData data)
@@ -91,13 +91,13 @@ public class DetectionsDownloadRunnable extends BoundsDownloadRunnable {
       logConnectionInfo(client,
         String.format("%d detections in %.2f s", detections.size(), (System.currentTimeMillis() - startTime) / 1000F));
 
-      detections.entrySet().forEach(entry -> {
-        MapillaryAbstractImage image = data.getImage(entry.getKey());
+      detections.forEach((key, value) -> {
+        MapillaryAbstractImage image = data.getImage(key);
         if (image instanceof MapillaryImage) {
           MapillaryImage img = (MapillaryImage) image;
-          boolean allPresent = entry.getValue().parallelStream().allMatch(d -> img.getDetections().contains(d));
+          boolean allPresent = value.parallelStream().allMatch(d -> img.getDetections().contains(d));
           if (!allPresent) {
-            img.setAllDetections(entry.getValue());
+            img.setAllDetections(value);
           }
         }
       });

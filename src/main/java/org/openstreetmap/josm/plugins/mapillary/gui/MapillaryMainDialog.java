@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -127,8 +128,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
   private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
 
-  private VerifyRejectAction approveAction = new VerifyRejectAction(DetectionVerification.TYPE.APPROVE);
-  private VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
+  private final VerifyRejectAction approveAction = new VerifyRejectAction(DetectionVerification.TYPE.APPROVE);
+  private final VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
 
   private MapillaryMainDialog() {
     super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
@@ -373,7 +374,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     }
     createLayout(this.panel, buttons.filter(Objects::nonNull).collect(Collectors.toList()));
     disableAllButtons();
-    if (Stream.of(MODE.WALK, MODE.SMART_EDIT).anyMatch(mode::equals)) {
+    if (Arrays.asList(MODE.WALK, MODE.SMART_EDIT).contains(mode)) {
       updateImage();
     }
     revalidate();

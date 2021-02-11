@@ -103,10 +103,9 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
     }
     mapillarySequences.removeIf(string -> string.trim().isEmpty());
     if (!mapillarySequences.isEmpty()) {
-      List<Node> tNodes = GuiHelper.runInEDTAndWaitAndReturn(
-        () -> MapillaryDownloader.downloadSequences(mapillarySequences.stream().toArray(String[]::new)).stream()
-          .flatMap(seq -> seq.getImages().stream()).map(GpxImageEntry::getExifCoor).filter(Objects::nonNull)
-          .map(Node::new).collect(Collectors.toList()));
+      List<Node> tNodes = GuiHelper.runInEDTAndWaitAndReturn(() -> MapillaryDownloader
+        .downloadSequences(mapillarySequences.toArray(new String[0])).stream().flatMap(seq -> seq.getImages().stream())
+        .map(GpxImageEntry::getExifCoor).filter(Objects::nonNull).map(Node::new).collect(Collectors.toList()));
       if (nodes.isEmpty()) {
         nodes.addAll(tNodes);
       }

@@ -79,12 +79,12 @@ public class MapillaryExportWriterThread extends Thread {
         img = this.queue.take();
         mimg = this.queueImages.take();
         if (this.path == null && mimg instanceof MapillaryImportedImage) {
-          String runPath = ((MapillaryImportedImage) mimg).getFile().getPath();
+          String runPath = mimg.getFile().getPath();
           finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
         } else if (mimg instanceof MapillaryImage) {
           finalPath = this.path + '/' + ((MapillaryImage) mimg).getKey();
         } else if (mimg instanceof MapillaryImportedImage) {
-          finalPath = this.path + '/' + ((MapillaryImportedImage) mimg).getFile().getName();
+          finalPath = this.path + '/' + mimg.getFile().getName();
         }
 
         // Transforms the image into a byte array.
@@ -98,7 +98,7 @@ public class MapillaryExportWriterThread extends Thread {
         TiffOutputDirectory gpsDirectory;
         // If the image is imported, loads the rest of the EXIF data.
         if (mimg instanceof MapillaryImportedImage) {
-          final ImageMetadata metadata = Imaging.getMetadata(((MapillaryImportedImage) mimg).getFile());
+          final ImageMetadata metadata = Imaging.getMetadata(mimg.getFile());
           final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
           if (null != jpegMetadata) {
             final TiffImageMetadata exif = jpegMetadata.getExif();

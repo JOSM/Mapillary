@@ -247,8 +247,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
   }
 
   private void clearMenues(JMenu menu) {
-    final Map<Action, Component> actions = Arrays.asList(menu.getMenuComponents()).stream()
-      .filter(JMenuItem.class::isInstance).map(JMenuItem.class::cast).filter(j -> j.getAction() != null)
+    final Map<Action, Component> actions = Arrays.stream(menu.getMenuComponents()).filter(JMenuItem.class::isInstance)
+      .map(JMenuItem.class::cast).filter(j -> j.getAction() != null)
       .collect(Collectors.toMap(JMenuItem::getAction, component -> component));
     final List<JosmAction> menuEntries = destroyables.parallelStream().filter(JosmAction.class::isInstance)
       .map(JosmAction.class::cast).collect(Collectors.toList());

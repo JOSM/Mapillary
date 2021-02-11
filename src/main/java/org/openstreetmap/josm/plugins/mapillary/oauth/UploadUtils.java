@@ -177,8 +177,6 @@ public final class UploadUtils {
 
   /**
    * Uploads the DONE file to S3, signalling that all images of this seqeunce are uplaoded.
-   *
-   * @param sequenceUUID The UUID used to create the sequence.
    */
   public static void uploadDoneFile() {
     JsonObject secretMap = MapillaryUser.getSecrets();
@@ -237,7 +235,7 @@ public final class UploadUtils {
 
   /**
    * @param file File that is going to be uploaded
-   * @param hash Information attached to the upload
+   * @param secretMap Information attached to the upload
    * @throws IllegalArgumentException if the hash doesn't contain all the needed keys.
    * @throws IOException if an HTTP connection cannot be opened
    */

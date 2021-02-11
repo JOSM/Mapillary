@@ -106,8 +106,8 @@ public class SelectMode extends AbstractMode {
         }
         nothingHighlighted = false;
       } else if (imageHighlighted && !nothingHighlighted && editLayer.data != null) {
-        for (OsmPrimitive primivitive : MainApplication.getLayerManager().getEditLayer().data.allPrimitives()) {
-          primivitive.setHighlighted(false);
+        for (OsmPrimitive primitive : MainApplication.getLayerManager().getEditLayer().data.allPrimitives()) {
+          primitive.setHighlighted(false);
         }
         imageHighlighted = false;
         nothingHighlighted = true;

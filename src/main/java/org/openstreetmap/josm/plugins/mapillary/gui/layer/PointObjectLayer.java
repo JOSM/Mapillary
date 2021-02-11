@@ -375,7 +375,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     private boolean hasContent;
 
     /**
-     * @param mapillaryObject
+     * @param mapillaryObject The Mapillary object which should have additional actions
      */
     public AdditionalActionPanel(IPrimitive mapillaryObject) {
       this.setBackground(UIManager.getColor("ToolTip.background"));
@@ -408,10 +408,10 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   /**
    * @param mv The current MapView
    * @param displayedPanel The panel to display
-   * @param xl left x coord of icon
-   * @param xr right x coord of icon
-   * @param yt top y coord of icon
-   * @param yb bottom y coord of icon
+   * @param xl left x coordinate of icon
+   * @param xr right x coordinate of icon
+   * @param yt top y coordinate of icon
+   * @param yb bottom y coordinate of icon
    * @return A point that will keep the panel in view
    */
   private static Point fixPanelSizeAndLocation(MapView mv, JPanel displayedPanel, int xl, int xr, int yt, int yb) {
@@ -421,9 +421,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     int bottomMaxHeight = (int) (0.95 * mv.getHeight() - yb);
     Dimension d = displayedPanel.getPreferredSize();
     // place tooltip on left or right side of icon, based on its width
-    Point screenloc = mv.getLocationOnScreen();
-    return new Point(screenloc.x + (d.width > rightMaxWidth && d.width <= leftMaxWidth ? xl - d.width : xr),
-      screenloc.y + (d.height > bottomMaxHeight && d.height <= topMaxHeight ? yt - d.height - 10 : yb));
+    Point screenLocation = mv.getLocationOnScreen();
+    return new Point(screenLocation.x + (d.width > rightMaxWidth && d.width <= leftMaxWidth ? xl - d.width : xr),
+      screenLocation.y + (d.height > bottomMaxHeight && d.height <= topMaxHeight ? yt - d.height - 10 : yb));
   }
 
   /**
@@ -478,7 +478,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   }
 
   /**
-   * Get a decent image to look at a primiitive
+   * Get a decent image to look at a primitive
    *
    * @param <T> The type of images
    * @param primitive The primitive to get the best image for
@@ -502,7 +502,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
    * Add a Mapillary Object Detection Primitive to OSM
    *
    * @param mapillaryObject The primitive to add to OSM
-   * @param detection
+   * @param detection The detections for the primitive
    */
   void addMapillaryPrimitiveToOsm(final IPrimitive mapillaryObject, final ObjectDetections detection) {
     hideWindow(this.displayedWindows.get(mapillaryObject));
@@ -535,9 +535,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       UndoRedoHandler.getInstance().add(add);
       // preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
       this.showingPresetWindow = true;
-      int userSelection = TaggingPreset.DIALOG_ANSWER_CANCEL;
       basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
-      Command updateTagsCommand = null;
+      final int userSelection;
+      final Command updateTagsCommand;
       try {
         userSelection = preset.showDialog(Collections.singleton(basePrimitive), false);
         updateTagsCommand = TaggingPreset.createCommand(Collections.singleton(basePrimitive), preset.getChangedTags());
@@ -730,11 +730,11 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     }
     int nodes = counter.nodes - counter.deletedNodes;
     int ways = counter.ways - counter.deletedWays;
-    int rels = counter.relations - counter.deletedRelations;
+    int relations = counter.relations - counter.deletedRelations;
 
     StringBuilder tooltip = new StringBuilder("<html>").append(trn("{0} node", "{0} nodes", nodes, nodes))
       .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
-      .append(trn("{0} relation", "{0} relations", rels, rels));
+      .append(trn("{0} relation", "{0} relations", relations, relations));
 
     File f = getAssociatedFile();
     if (f != null) {
@@ -758,7 +758,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
         fromData.lock();
         data.lock();
         monitor.close();
-        ((PointObjectLayer) from).destroy();
+        from.destroy();
       }
     }
   }
@@ -891,7 +891,6 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     Collection<OsmPrimitive> currentSelection = data.getSelected();
     if (newImage instanceof Detections) {
       Detections newImageDetections = (Detections) newImage;
-      this.data.getNodes();
       String key = (newImage instanceof Keyed) ? ((Keyed) newImage).getKey() : null;
       Collection<IPrimitive> nodes = newImageDetections.getDetections(false).parallelStream()
         .map(ImageDetection::getKey).flatMap(
