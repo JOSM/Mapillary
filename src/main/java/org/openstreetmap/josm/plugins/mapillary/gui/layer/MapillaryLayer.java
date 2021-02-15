@@ -80,6 +80,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
 import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
 import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
@@ -161,6 +162,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     this.data = new MapillaryData();
     data.addListener(this);
     UploadAction.registerUploadHook(this, true);
+    SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
   }
 
   /**
