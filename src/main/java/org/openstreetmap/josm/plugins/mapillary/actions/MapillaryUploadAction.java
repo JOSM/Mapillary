@@ -14,6 +14,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryUploadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.UploadUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -61,7 +62,8 @@ public class MapillaryUploadAction extends JosmAction implements MapillaryDataLi
   @Override
   protected void updateEnabledState() {
     super.updateEnabledState();
-    setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
+    setEnabled(MapillaryUser.getUsername() != null && MapillaryLayer.hasInstance()
+      && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
   }
 
   @Override
