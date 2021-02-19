@@ -33,8 +33,8 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
-  private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages = new ArrayBlockingQueue<>(10);
+  private final ArrayBlockingQueue<BufferedImage> queue;
+  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
 
   private int amount;
   private final Set<MapillaryAbstractImage> images;
@@ -54,6 +54,8 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
     this.images = images == null ? new HashSet<>() : images;
     this.path = path;
     this.amount = this.images.size();
+    this.queue = new ArrayBlockingQueue<>(images.size());
+    this.queueImages = new ArrayBlockingQueue<>(images.size());
   }
 
   /**
