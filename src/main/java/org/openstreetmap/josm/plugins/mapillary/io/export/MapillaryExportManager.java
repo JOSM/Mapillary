@@ -33,8 +33,8 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class MapillaryExportManager extends PleaseWaitRunnable {
 
-  private final ArrayBlockingQueue<BufferedImage> queue;
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
+  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages = new ArrayBlockingQueue<>(10);
 
   private int amount;
   private final Set<MapillaryAbstractImage> images;
@@ -54,8 +54,6 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
     this.images = images == null ? new HashSet<>() : images;
     this.path = path;
     this.amount = this.images.size();
-    this.queue = new ArrayBlockingQueue<>(images.size());
-    this.queueImages = new ArrayBlockingQueue<>(images.size());
   }
 
   /**
@@ -69,11 +67,7 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    *         doesn't contain a picture.
    */
   public MapillaryExportManager(List<MapillaryImportedImage> images) throws IOException {
-    this(null, null);
-    for (MapillaryImportedImage image : images) {
-      this.queue.add(image.getImage());
-      this.queueImages.add(image);
-    }
+    this(new HashSet<>(images), null);
     this.amount = images.size();
   }
 
@@ -108,8 +102,16 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
         }
       } else if (image instanceof MapillaryImportedImage) {
         try {
-          this.queue.put(((MapillaryImportedImage) image).getImage());
-          this.queueImages.put(image);
+          boolean q1 = false;
+          boolean q2 = false;
+          do {
+            if (!q1) {
+              q1 = this.queue.offer(((MapillaryImportedImage) image).getImage(), 30, TimeUnit.SECONDS);
+            }
+            if (!q2) {
+              q2 = this.queueImages.offer(image, 30, TimeUnit.SECONDS);
+            }
+          } while (!q1 || !q2);
         } catch (InterruptedException e) {
           Logging.error(e);
           Thread.currentThread().interrupt();
