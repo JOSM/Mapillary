@@ -93,6 +93,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ma
    * @param pano The property to indicate whether image is panorama or not.
    */
   protected MapillaryAbstractImage(final LatLon latLon, final double ca, final boolean pano) {
+    super.setPos(latLon);
     super.setExifCoor(latLon);
     this.tempLatLon = latLon;
     this.movingLatLon = latLon;
@@ -175,7 +176,7 @@ public abstract class MapillaryAbstractImage extends GpxImageEntry implements Ma
    * @return The LatLon object with the position of the object.
    */
   public LatLon getLatLon() {
-    return this.getExifCoor();
+    return this.getPos();
   }
 
   /**

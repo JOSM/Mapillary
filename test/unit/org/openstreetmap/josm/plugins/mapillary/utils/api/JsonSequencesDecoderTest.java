@@ -53,13 +53,18 @@ class JsonSequencesDecoderTest {
       assertEquals(333.62239999999997, seq.getImages().get(2).getCa(), 1e-10);
       assertEquals(329.94820000000004, seq.getImages().get(3).getCa(), 1e-10);
 
-      assertEquals(new LatLon(7.246497, 16.432958), seq.getImages().get(0).getLatLon());
-      assertEquals(new LatLon(7.246567, 16.432955), seq.getImages().get(1).getLatLon());
-      assertEquals(new LatLon(7.248372, 16.432971), seq.getImages().get(2).getLatLon());
-      assertEquals(new LatLon(7.249027, 16.432976), seq.getImages().get(3).getLatLon());
+      assertEqualsLatLon(new LatLon(7.246497, 16.432958), seq.getImages().get(0).getLatLon());
+      assertEqualsLatLon(new LatLon(7.246567, 16.432955), seq.getImages().get(1).getLatLon());
+      assertEqualsLatLon(new LatLon(7.248372, 16.432971), seq.getImages().get(2).getLatLon());
+      assertEqualsLatLon(new LatLon(7.249027, 16.432976), seq.getImages().get(3).getLatLon());
 
       assertEquals(1_457_963_093_860L, seq.getCapturedAt()); // 2016-03-14T13:44:53.860 UTC
     }
+  }
+
+  private void assertEqualsLatLon(LatLon expected, LatLon actual) {
+    assertEquals(expected.lat(), actual.lat(), 0.000_000_1);
+    assertEquals(expected.lon(), actual.lon(), 0.000_000_1);
   }
 
   @Test

@@ -124,7 +124,7 @@ public class MapillaryImportedImage extends MapillaryAbstractImage {
   @Override
   public String toString() {
     return String.format("Image[filename=%s,lat=%f,lon=%f,ca=%f,capturedAt=%d]",
-      getFile() == null ? "null" : getFile().getName(), getExifCoor().lat(), getExifCoor().lon(), ca, capturedAt);
+      getFile() == null ? "null" : getFile().getName(), getPos().lat(), getPos().lon(), ca, capturedAt);
   }
 
   @Override

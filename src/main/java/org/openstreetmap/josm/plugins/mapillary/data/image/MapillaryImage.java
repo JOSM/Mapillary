@@ -112,8 +112,8 @@ public class MapillaryImage extends MapillaryAbstractImage implements Detections
 
   @Override
   public String toString() {
-    return String.format("Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]", key, getExifCoor().lat(),
-      getExifCoor().lon(), ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt);
+    return String.format("Image[key=%s,lat=%f,lon=%f,ca=%f,user=%s,capturedAt=%d]", key, getPos().lat(), getPos().lon(),
+      ca, getUser() == null ? "null" : getUser().getUsername(), capturedAt);
   }
 
   @Override
@@ -154,7 +154,7 @@ public class MapillaryImage extends MapillaryAbstractImage implements Detections
     if (MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().getDeletionChangeset().add(this);
       toDelete = Boolean.TRUE;
-      this.setMovingLatLon(getExifCoor());
+      this.setMovingLatLon(getPos());
     }
   }
 
