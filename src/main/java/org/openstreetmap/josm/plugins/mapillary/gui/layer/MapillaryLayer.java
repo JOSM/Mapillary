@@ -449,6 +449,13 @@ public final class MapillaryLayer extends AbstractModifiableLayer
         drawImageMarker(g, imageAbs);
       }
     }
+    // Paint selected images last. Not particularly worried about painting too much, since most people don't select
+    // thousands of images.
+    for (MapillaryAbstractImage imageAbs : this.getData().getMultiSelectedImages()) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
+        drawImageMarker(g, imageAbs);
+      }
+    }
     if (this.mode instanceof JoinMode) {
       this.mode.paint(g, mv, box);
     }
