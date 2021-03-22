@@ -231,17 +231,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     }
     MapFrame frame = MainApplication.getMap();
     if (frame != null) {
-      frame.removeToggleDialog(MapillaryMainDialog.getInstance());
-      frame.removeToggleDialog(MapillaryHistoryDialog.getInstance());
-      frame.removeToggleDialog(MapillaryChangesetDialog.getInstance());
-      frame.removeToggleDialog(MapillaryFilterDialog.getInstance());
+      toggleDialog.forEach(frame::removeToggleDialog);
     }
-    MapillaryMainDialog.getInstance().destroy();
-    MapillaryHistoryDialog.getInstance().destroy();
-    MapillaryDownloadDialog.getInstance().destroy();
-    MapillaryChangesetDialog.getInstance().destroy();
-    MapillaryFilterDialog.getInstance().destroy();
-    ImageInfoPanel.getInstance().destroy();
     destroyables.forEach(Destroyable::destroy);
     toggleDialog.forEach(ToggleDialog::destroy);
   }

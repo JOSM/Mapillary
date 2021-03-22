@@ -136,8 +136,8 @@ public class MapillarySquareDownloadRunnable implements Runnable {
 
     MapillaryUtils.updateHelpText();
     MapillaryLayer.invalidateInstance();
-    MapillaryFilterDialog.getInstance().refresh();
-    MapillaryMainDialog.getInstance().updateImage();
+    GuiHelper.runInEDT(() -> MapillaryFilterDialog.getInstance().refresh());
+    GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().updateImage());
   }
 
   /**

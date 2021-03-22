@@ -33,6 +33,7 @@ import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.osm.QuadBuckets;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
@@ -106,9 +107,9 @@ public class MapillaryData implements Data, Serializable {
     // Adds the basic set of listeners.
     Arrays.stream(MapillaryPlugin.getMapillaryDataListeners()).forEach(this::addListener);
     if (MainApplication.getMainFrame() != null) {
-      addListener(MapillaryMainDialog.getInstance());
-      addListener(ImageInfoPanel.getInstance());
-      addListener(MapillaryChangesetDialog.getInstance());
+      GuiHelper.runInEDT(() -> addListener(MapillaryMainDialog.getInstance()));
+      GuiHelper.runInEDT(() -> addListener(ImageInfoPanel.getInstance()));
+      GuiHelper.runInEDT(() -> addListener(MapillaryChangesetDialog.getInstance()));
     }
   }
 
