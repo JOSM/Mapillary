@@ -36,7 +36,8 @@ public class OldVersionDialog {
     final PluginInformation plugin = PluginHandler.getPlugins().stream()
       .filter(pluginInformation -> "mapillary".equalsIgnoreCase(pluginInformation.getName())).findAny().orElse(null);
     final String version = latestMapillaryVersion();
-    final Boolean newMapillaryVersionAvailable = Objects.nonNull(version) ? !Objects.equals(version, plugin.version)
+    final Boolean newMapillaryVersionAvailable = Objects.nonNull(version) && plugin != null
+      ? !Objects.equals(version, plugin.version)
       : null;
     if (Boolean.TRUE.equals(newMapillaryVersionAvailable)
       && ((Version.getInstance().getVersion() < currentVersion && SHOWN_OLD.get() < 5)

@@ -143,18 +143,18 @@ class MapillaryMainDialogTest {
     // The dialog currently uses the default ForkJoinPool
     MapillaryMainDialog dialog = MapillaryMainDialog.getInstance();
 
-    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(() -> dialog.updateImage()));
+    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(dialog::updateImage));
     MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
     MapillaryAbstractImage image1 = data.getImage("QEVZ1tp-PmrwtqhSwdW9fQ");
     dialog.setImage(image1);
     MapillaryAbstractImage image2 = data.getImage("Aufjv2hdCKwg9LySWWVSwg");
-    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(() -> dialog.updateImage()));
+    assertDoesNotThrow(() -> GuiHelper.runInEDTAndWaitWithException(dialog::updateImage));
     MapillaryUtils.forkJoinPoolsAwaitQuiescence(100, TimeUnit.MILLISECONDS);
     GuiHelper.runInEDT(() -> {
       throw new JosmRuntimeException("test");
     });
-    Thread.getDefaultUncaughtExceptionHandler();
     Awaitility.await().atLeast(Durations.ONE_SECOND).catchUncaughtExceptions().ignoreNoExceptions();
+    Logging.clearLastErrorAndWarnings();
   }
 
   private static void addMappings() {
