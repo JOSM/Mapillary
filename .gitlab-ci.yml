@@ -61,17 +61,11 @@ assemble with java 15:
 
 code_navigation:
   stage: build
-  image: maven:3-openjdk-8
   script:
-    - cat /etc/os-release
-    - apt update && apt install -y git
-    - git clone https://github.com/sourcegraph/lsif-java
-    - cd lsif-java
-    - ./gradlew installDist
-    - cd ..
-    - ./gradlew generatePomFileForJosmPluginPublication
-    - cp ./build/publications/josmPlugin/pom-default.xml ./pom.xml
-    - $(pwd)/lsif-java/build/install/lsifjava/bin/lsifjava -projectRoot . -out dump.lsif -verbose
+    - apk add --update curl
+    - curl -fLo coursier https://git.io/coursier-cli
+    - chmod +x coursier \
+    - ./coursier launch com.sourcegraph:lsif-java_2.13:0.4.0 -- index --build-tool gradle
   artifacts:
     reports:
       lsif: dump.lsif
