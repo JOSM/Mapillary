@@ -62,17 +62,13 @@ assemble with java 15:
 code_navigation:
   stage: build
   script:
-    - apk add --update curl
+    - apk add --update curl bash
     - curl -fLo coursier https://git.io/coursier-cli
     - chmod +x coursier
     - ./coursier launch com.sourcegraph:lsif-java_2.13:0.4.0 -- index --build-tool gradle
   artifacts:
     reports:
       lsif: dump.lsif
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: always
-  allow_failure: true
   interruptible: true
 
 ##############
