@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,7 +88,8 @@ public final class SequenceDownloadRunnable extends BoundsDownloadRunnable {
             }
           }
         } else {
-          if (seq.getImages().stream().anyMatch(image -> bounds.contains(image.getLatLon()))) {
+          if (seq.getImages().stream().map(MapillaryAbstractImage::getLatLon).filter(Objects::nonNull)
+            .anyMatch(bounds::contains)) {
             data.addAll(seq.getImages(), true);
           }
         }
