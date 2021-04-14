@@ -64,7 +64,7 @@ code_navigation:
   script:
     - apk add --update curl
     - curl -fLo coursier https://git.io/coursier-cli
-    - chmod +x coursier \
+    - chmod +x coursier
     - ./coursier launch com.sourcegraph:lsif-java_2.13:0.4.0 -- index --build-tool gradle
   artifacts:
     reports:
