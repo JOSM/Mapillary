@@ -31,6 +31,8 @@ public class DoubleSpinner extends JSpinner {
 
   /**
    * Returns the current value as a Double
+   *
+   * @return The current value
    */
   public Double getDouble() {
     return (Double) getValue();

@@ -8,10 +8,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.Filter;
-import org.openstreetmap.josm.data.osm.FilterMatcher;
-import org.openstreetmap.josm.data.osm.FilterWorker;
+import org.openstreetmap.josm.data.osm.*;
 import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.Layer;
@@ -26,10 +23,10 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class FilterEventListener implements TableModelListener {
   private final Layer layer;
-  private final DataSet data;
+  private final OsmData<?, ?, ?, ?> data;
   public final FilterMatcher matcher;
 
-  public FilterEventListener(Layer layer, DataSet data) {
+  public FilterEventListener(Layer layer, OsmData<?, ?, ?, ?> data) {
     this.layer = layer;
     this.data = data;
     matcher = new FilterMatcher();
@@ -42,9 +39,8 @@ public class FilterEventListener implements TableModelListener {
 
   public synchronized void updateAndRunFilters() {
     matcher.reset();
-    for (List<Filter> filters : Arrays.asList(
-      MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
-        MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
+    for (List<Filter> filters : Arrays.asList(MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters(),
+      MainApplication.getMap().filterDialog.getFilterModel().getFilters())) {
       for (Filter filter : filters) {
         try {
           matcher.add(filter);
@@ -53,7 +49,8 @@ public class FilterEventListener implements TableModelListener {
         }
       }
     }
-    FilterWorker.executeFilters(data.allNonDeletedPrimitives(), matcher);
+    // FilterWorker.executeFilters(data.allPrimitives(), matcher); // TODO update filterworker for IPrimitive
     SwingUtilities.invokeLater(layer::invalidate);
+    throw new UnsupportedOperationException("Filters aren't currently supported");
   }
 }

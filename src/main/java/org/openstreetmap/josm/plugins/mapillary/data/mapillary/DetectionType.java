@@ -17,6 +17,8 @@ public enum DetectionType {
   private final String imageLocationString;
 
   /**
+   * Create a new detection type
+   *
    * @param imageLocationString {@code "mapillary_sprite_source/package_" + imageLocationString}
    */
   DetectionType(String imageLocationString) {
@@ -24,6 +26,8 @@ public enum DetectionType {
   }
 
   /**
+   * The directory for the image location
+   *
    * @return A path to be used as a directory when getting an image
    */
   public String getImageLocationString() {

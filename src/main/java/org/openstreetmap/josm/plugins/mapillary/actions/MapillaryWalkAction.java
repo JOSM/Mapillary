@@ -1,33 +1,40 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryWalkDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.Shortcut;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Walks forward at a given interval.
  *
  * @author nokutu
  */
-public class MapillaryWalkAction extends JosmAction implements MapillaryDataListener {
+public class MapillaryWalkAction extends JosmAction implements VectorDataSelectionListener {
 
   private static final long serialVersionUID = 3454223919402245818L;
 
@@ -35,8 +42,10 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
   private final List<WalkListener> listeners = new ArrayList<>();
 
   public MapillaryWalkAction() {
-    super(tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT), tr("Walk mode"), null,
-      false, "mapillaryWalk", true);
+    super(
+      tr("Walk mode"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT), tr("Walk mode"), Shortcut
+        .registerShortcut("mapillary:mapillaryWalk", tr("Mapillary walk mode"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      false, "mapillary:mapillaryWalk", true);
   }
 
   @Override
@@ -48,16 +57,12 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
     dlg.setVisible(true);
     if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION) {
       this.thread = new WalkThread((int) dialog.spin.getValue(), dialog.waitForPicture.isSelected(),
-        dialog.followSelection.isSelected(), dialog.goForward.isSelected());
+        dialog.followSelection.isSelected(), dialog.goForward.isSelected() ? MapillarySequenceUtils.NextOrPrevious.NEXT
+          : MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
       fireWalkStarted();
       this.thread.start();
       MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.WALK);
     }
-  }
-
-  @Override
-  public void imagesAdded() {
-    // Nothing
   }
 
   /**
@@ -94,22 +99,19 @@ public class MapillaryWalkAction extends JosmAction implements MapillaryDataList
     return false;
   }
 
-  @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    if (oldImage == null && newImage != null) {
-      setEnabled(true);
-    } else if (oldImage != null && newImage == null) {
-      setEnabled(false);
-    }
-  }
-
   /**
    * Enabled when a mapillary image is selected.
    */
   @Override
   protected void updateEnabledState() {
     super.updateEnabledState();
-    setEnabled(MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().getData().getSelectedImage() != null);
+    setEnabled(MapillaryLayer.hasInstance()
+      && MapillaryLayer.getInstance().getData().getSelectedNodes().stream().anyMatch(MapillaryImageUtils.IS_IMAGE));
   }
 
+  @Override
+  public void selectionChanged(
+    SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    updateEnabledState();
+  }
 }

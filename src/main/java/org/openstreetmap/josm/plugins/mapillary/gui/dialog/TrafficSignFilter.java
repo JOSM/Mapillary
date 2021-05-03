@@ -33,13 +33,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
-import org.openstreetmap.josm.data.osm.DataSourceListener;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeEvent;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
@@ -56,6 +55,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog.MODE;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
@@ -70,7 +70,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author Taylor Smock
  */
-public class TrafficSignFilter extends JPanel implements Destroyable, LayerChangeListener, DataSourceListener {
+public class TrafficSignFilter extends JPanel implements Destroyable, LayerChangeListener, TileAddListener<MVTTile> {
   private static final long serialVersionUID = 1177890183422385423L;
   private boolean destroyed;
   private final List<ImageCheckBoxButton> buttons;
@@ -332,10 +332,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         .filter(obj -> !obj.getOsmKeys().isEmpty()).collect(Collectors.toList());
       final double distance = Config.getPref().getDouble("mapillary.nearby_osm_objects", 15.0); // meters
       MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
-        DataSet dataSet = layer.getDataSet();
+        VectorDataSet dataSet = layer.getData();
         boolean locked = dataSet.isLocked();
         try {
-          dataSet.beginUpdate();
           dataSet.unlock();
           dataSet.allNonDeletedPrimitives().stream().filter(p -> !p.hasKey(NEARBY_KEY)
             && osmEquivalentPossible.contains(ObjectDetections.valueOfMapillaryValue(p.get("value")))).forEach(p -> {
@@ -354,7 +353,6 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
           if (locked) {
             dataSet.lock();
           }
-          dataSet.endUpdate();
         }
       });
       filter.enable = true;
@@ -537,14 +535,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
     // Remove the NEARBY_KEY tag
     MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).forEach(layer -> {
-      DataSet dataSet = layer.getDataSet();
+      VectorDataSet dataSet = layer.getData();
       boolean locked = dataSet.isLocked();
       try {
         dataSet.unlock();
-        dataSet.beginUpdate();
         dataSet.allPrimitives().stream().filter(p -> p.hasKey(NEARBY_KEY)).forEach(p -> p.remove(NEARBY_KEY));
       } finally {
-        dataSet.endUpdate();
         if (locked) {
           dataSet.lock();
         }
@@ -568,7 +564,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   public void layerAdded(LayerAddEvent e) {
     if (e.getAddedLayer() instanceof PointObjectLayer) {
       PointObjectLayer layer = (PointObjectLayer) e.getAddedLayer();
-      layer.getDataSet().addDataSourceListener(this);
+      layer.addListener(this);
     }
   }
 
@@ -576,7 +572,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   public void layerRemoving(LayerRemoveEvent e) {
     if (e.getRemovedLayer() instanceof PointObjectLayer) {
       PointObjectLayer layer = (PointObjectLayer) e.getRemovedLayer();
-      layer.getDataSet().removeDataSourceListener(this);
+      layer.removeListener(this);
     }
   }
 
@@ -586,7 +582,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   }
 
   @Override
-  public void dataSourceChange(DataSourceChangeEvent event) {
+  public void tileAdded(MVTTile tile) {
     if (Arrays.asList(this.show).contains(Boolean.TRUE)) {
       this.updateShownButtons();
     }

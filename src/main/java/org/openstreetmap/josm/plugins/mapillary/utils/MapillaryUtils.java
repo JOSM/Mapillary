@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,10 +33,9 @@ import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -68,15 +68,6 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Returns current time in Epoch format (milliseconds since 1970-01-01T00:00:00+0000)
-   *
-   * @return The current date in Epoch format.
-   */
-  public static long currentTime() {
-    return Calendar.getInstance().getTimeInMillis();
-  }
-
-  /**
    * Parses a string with a given format and returns the Epoch time.
    * If no timezone information is given, the default timezone of the JVM is used
    * ({@link java.util.TimeZone#getDefault()}).
@@ -86,8 +77,8 @@ public final class MapillaryUtils {
    * @return The date in Epoch format.
    * @throws ParseException if the date cannot be parsed with the given format
    */
-  public static long getEpoch(String date, String format) throws ParseException {
-    return new SimpleDateFormat(format, Locale.UK).parse(date).getTime();
+  public static Instant getEpoch(String date, String format) throws ParseException {
+    return new SimpleDateFormat(format, Locale.UK).parse(date).toInstant();
   }
 
   /**
@@ -147,48 +138,21 @@ public final class MapillaryUtils {
   }
 
   /**
-   * Joins two images into the same sequence. One of them must be the last image of a sequence, the other one the
-   * beginning of a different one.
-   *
-   * @param imgA the first image, into whose sequence the images from the sequence of the second image are merged
-   * @param imgB the second image, whose sequence is merged into the sequence of the first image
-   */
-  public static synchronized void join(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
-    if (imgA == null || imgB == null) {
-      throw new IllegalArgumentException("Both images must be non-null for joining.");
-    }
-    if (imgA.getSequence() == imgB.getSequence() || imgB.getSequence() == null || imgA.getSequence() == null) {
-      throw new IllegalArgumentException("You can only join images of different sequences.");
-    }
-    if ((imgA.next() != null || imgB.previous() != null) && (imgB.next() != null || imgA.previous() != null)) {
-      throw new IllegalArgumentException(
-        "You can only join an image at the end of a sequence with one at the beginning of another sequence.");
-    }
-    if (imgA.next() != null || imgB.previous() != null) {
-      join(imgB, imgA);
-    } else {
-      for (MapillaryAbstractImage img : imgB.getSequence().getImages()) {
-        imgA.getSequence().add(img);
-      }
-      MapillaryLayer.invalidateInstance();
-    }
-  }
-
-  /**
-   * Zooms to fit all the {@link MapillaryAbstractImage} objects stored in the
+   * Zooms to fit all the {@link INode} objects stored in the
    * database.
    */
   public static void showAllPictures() {
-    showPictures(MapillaryLayer.getInstance().getData().getImages(), false);
+    showPictures(MapillaryLayer.getInstance().getData().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+      .collect(Collectors.toSet()), false);
   }
 
   /**
-   * Zooms to fit all the given {@link MapillaryAbstractImage} objects.
+   * Zooms to fit all the given {@link INode} objects.
    *
    * @param images The images your are zooming to.
    * @param select Whether the added images must be selected or not.
    */
-  public static void showPictures(final Set<MapillaryAbstractImage> images, final boolean select) {
+  public static void showPictures(final Set<INode> images, final boolean select) {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(() -> showPictures(images, select));
     } else {
@@ -196,10 +160,10 @@ public final class MapillaryUtils {
       if (images.isEmpty()) {
         zoomBounds = new Bounds(new LatLon(0, 0));
       } else {
-        zoomBounds = new Bounds(images.iterator().next().getMovingLatLon());
-        for (MapillaryAbstractImage img : images) {
-          if (img != null && img.getMovingLatLon() != null) {
-            zoomBounds.extend(img.getMovingLatLon());
+        zoomBounds = new Bounds(images.iterator().next().getCoor());
+        for (INode img : images) {
+          if (img != null && img.getCoor() != null) {
+            zoomBounds.extend(img.getCoor());
           }
         }
       }
@@ -210,54 +174,13 @@ public final class MapillaryUtils {
       zoomBounds = new Bounds(zoomBounds.getCenter(), latExtent, lonExtent);
 
       MainApplication.getMap().mapView.zoomTo(zoomBounds);
-      MapillaryLayer.getInstance().getData().setSelectedImage(null);
+      MapillaryLayer.getInstance().getData().clearSelection();
       if (select) {
-        MapillaryLayer.getInstance().getData().addMultiSelectedImage(images);
+        MapillaryLayer.getInstance().getData().addSelected(images);
       }
       MapillaryLayer.invalidateInstance();
     }
 
-  }
-
-  /**
-   * Separates two images belonging to the same sequence. The two images have to be consecutive in the same sequence.
-   * Two new sequences are created and all images up to (and including) either {@code imgA} or {@code imgB} (whichever
-   * appears first in the sequence) are put into the first of the two sequences.
-   * All others are put into the second new sequence.
-   *
-   * @param imgA one of the images marking where to split the sequence
-   * @param imgB the other image marking where to split the sequence, needs to be a direct neighbour of {@code imgA} in
-   *        the sequence.
-   */
-  public static synchronized void unjoin(MapillaryAbstractImage imgA, MapillaryAbstractImage imgB) {
-    if (imgA == null || imgB == null) {
-      throw new IllegalArgumentException("Both images must be non-null for unjoining.");
-    }
-    if (imgA.getSequence() != imgB.getSequence() || imgA.getSequence() == null) {
-      throw new IllegalArgumentException("You can only unjoin with two images from the same sequence.");
-    }
-    if (imgB.equals(imgA.next()) && imgA.equals(imgB.next())) {
-      throw new IllegalArgumentException("When unjoining with two images these must be consecutive in one sequence.");
-    }
-
-    if (imgA.equals(imgB.next())) {
-      unjoin(imgB, imgA);
-    } else {
-      MapillarySequence seqA = new MapillarySequence();
-      MapillarySequence seqB = new MapillarySequence();
-      boolean insideFirstHalf = true;
-      for (MapillaryAbstractImage img : imgA.getSequence().getImages()) {
-        if (insideFirstHalf) {
-          seqA.add(img);
-        } else {
-          seqB.add(img);
-        }
-        if (img.equals(imgA)) {
-          insideFirstHalf = false;
-        }
-      }
-      MapillaryLayer.invalidateInstance();
-    }
   }
 
   /**
@@ -268,20 +191,11 @@ public final class MapillaryUtils {
       return;
     }
     StringBuilder ret = new StringBuilder();
-    if (PluginState.isDownloading()) {
-      ret.append(I18n.tr("Downloading Mapillary images"));
-    } else if (MapillaryLayer.hasInstance() && !MapillaryLayer.getInstance().getData().getImages().isEmpty()) {
+    if (MapillaryLayer.hasInstance()
+      && MapillaryLayer.getInstance().getData().getNodes().stream().anyMatch(MapillaryImageUtils.IS_IMAGE)) {
       ret.append(I18n.tr("Total Mapillary images: {0}", MapillaryLayer.getInstance().getToolTipText()));
-    } else if (PluginState.isSubmittingChangeset()) {
-      ret.append(I18n.tr("Submitting Mapillary Changeset"));
     } else {
       ret.append(I18n.tr("No images found"));
-    }
-    if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().mode != null) {
-      ret.append(" — ").append(I18n.tr(MapillaryLayer.getInstance().mode.toString()));
-    }
-    if (PluginState.isUploading()) {
-      ret.append(" — ").append(PluginState.getUploadString());
     }
     MainApplication.getMap().statusLine.setHelpText(ret.toString());
   }
@@ -299,8 +213,8 @@ public final class MapillaryUtils {
     if (Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get())
       && !MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).isEmpty()) {
       return MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).stream()
-        .map(PointObjectLayer::getDataSet).flatMap(ds -> ds.getAllSelected().stream())
-        .map(MapillaryUtils::getDetections).flatMap(Collection::stream).noneMatch(key -> d.getKey().equals(key));
+        .map(PointObjectLayer::getData).flatMap(ds -> ds.getAllSelected().stream()).map(MapillaryUtils::getDetections)
+        .flatMap(Collection::stream).noneMatch(key -> d.getKey().equals(key));
     }
     return checkIfDetectionIsFilteredBasic(detectionLayers, d);
   }
@@ -319,9 +233,10 @@ public final class MapillaryUtils {
       || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
         && "trafficsigns".contains(d.getPackage())))
       return true;
-    OsmPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getDataSet)
+    IPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getData)
       .flatMap(data -> data.allPrimitives().parallelStream())
-      .filter(p -> p.hasKey("detections") && p.get("detections").contains(d.getKey())).findAny().orElse(null);
+      .filter(p -> p.hasKey(MapillaryKeys.DETECTIONS) && p.get(MapillaryKeys.DETECTIONS).contains(d.getKey())).findAny()
+      .orElse(null);
     return prim != null && prim.isDisabled();
   }
 
@@ -331,11 +246,11 @@ public final class MapillaryUtils {
    * @param osmPrimitive The primitive to get the detection from
    * @return A collection of image keys
    */
-  public static Collection<String> getImagesFromDetections(OsmPrimitive osmPrimitive) {
-    if (osmPrimitive.hasKey("detections")) {
+  public static Collection<String> getImagesFromDetections(IPrimitive osmPrimitive) {
+    if (osmPrimitive.hasKey(MapillaryKeys.DETECTIONS)) {
       try (
         ByteArrayInputStream inputStream = new ByteArrayInputStream(
-          osmPrimitive.get("detections").getBytes(StandardCharsets.UTF_8));
+          osmPrimitive.get(MapillaryKeys.DETECTIONS).getBytes(StandardCharsets.UTF_8));
         JsonReader reader = Json.createReader(inputStream)) {
         JsonStructure value = reader.read();
         if (value.getValueType() == JsonValue.ValueType.ARRAY) {
@@ -356,13 +271,14 @@ public final class MapillaryUtils {
    * Get keys from detections
    *
    * @param osmPrimitive The primitive to get the detection from
+   * @param <T> The primitive type
    * @return A collection of detection keys
    */
-  public static Collection<String> getDetections(OsmPrimitive osmPrimitive) {
-    if (osmPrimitive.hasKey("detections")) {
+  public static <T extends IPrimitive> Collection<String> getDetections(T osmPrimitive) {
+    if (osmPrimitive.hasKey(MapillaryKeys.DETECTIONS)) {
       try (
         ByteArrayInputStream inputStream = new ByteArrayInputStream(
-          osmPrimitive.get("detections").getBytes(StandardCharsets.UTF_8));
+          osmPrimitive.get(MapillaryKeys.DETECTIONS).getBytes(StandardCharsets.UTF_8));
         JsonReader reader = Json.createReader(inputStream)) {
         JsonStructure value = reader.read();
         if (value.getValueType() == JsonValue.ValueType.ARRAY) {
@@ -395,6 +311,8 @@ public final class MapillaryUtils {
   }
 
   /**
+   * This is a "known good" fork join pool that can be used with WebStart or non-webstart installs.
+   *
    * @return The default ForkJoin pool
    */
   public static ForkJoinPool getForkJoinPool() {
@@ -406,6 +324,9 @@ public final class MapillaryUtils {
 
   /**
    * Await quiesience on all ForkJoinPools. This excludes the common pool.
+   *
+   * @param timeout The amount of time units to wait
+   * @param timeUnit The unit of time to wait
    */
   public static void forkJoinPoolsAwaitQuiescence(long timeout, TimeUnit timeUnit) {
     forkJoinPool.values().parallelStream().forEach(pool -> pool.awaitQuiescence(timeout, timeUnit));

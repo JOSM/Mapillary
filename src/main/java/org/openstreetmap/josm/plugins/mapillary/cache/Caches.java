@@ -12,7 +12,6 @@ import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
@@ -53,14 +52,14 @@ public final class Caches {
   public static class ImageCache {
     private static ImageCache instance;
     private final CacheAccess<String, BufferedImageCacheEntry> thumbnailCache = JCSCacheManager.getCache(
-      "mapillary:thumbnailImage",
-      Math.max(3 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get(), 10), 10000, getCacheDirectory().getPath());
-    private final CacheAccess<String, BufferedImageCacheEntry> imageCache = JCSCacheManager
-      .getCache("mapillary:fullImage", Math.max(2 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get() + 4, 10), 10_000,
-        getCacheDirectory().getPath());
+      "mapillary:thumbnailImage", Math.max(3 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get(), 10), 10000,
+      getCacheDirectory().getPath());
+    private final CacheAccess<String, BufferedImageCacheEntry> imageCache = JCSCacheManager.getCache(
+      "mapillary:fullImage", Math.max(2 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get() + 4, 10), 10_000,
+      getCacheDirectory().getPath());
 
-    public CacheAccess<String, BufferedImageCacheEntry> getCache(Type type) {
-      if (Type.THUMBNAIL.equals(type)) {
+    public CacheAccess<String, BufferedImageCacheEntry> getCache(MapillaryCache.Type type) {
+      if (MapillaryCache.Type.THUMBNAIL.equals(type)) {
         return thumbnailCache;
       }
       return imageCache;

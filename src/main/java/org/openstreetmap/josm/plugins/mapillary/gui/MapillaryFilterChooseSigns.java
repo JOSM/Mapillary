@@ -5,6 +5,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trc;
 
 import java.awt.Dimension;
+import java.util.Arrays;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -51,13 +52,22 @@ public final class MapillaryFilterChooseSigns extends JPanel {
    */
   public final JCheckBox[] signCheckboxes = new JCheckBox[] { maxSpeed, stop, giveWay, roundabout, access, intersection,
     direction, uneven, noParking, noOvertaking, crossing, noTurn };
-  public static final String[] SIGN_TAGS = { "(complementary)|(regulatory)--maximum-speed-limit",
+  private static final String[] SIGN_TAGS = { "(complementary)|(regulatory)--maximum-speed-limit",
     "(regulatory)|(warning)--stop", "(regulatory)|(warning)--yield", "(warning)|(regulatory)--roundabout",
     "regulatory--no-entry", "warning--(crossroads)|(junction)", "regulatory--(turn)|(go-straight)",
     "warning--(uneven)|(slippery)", "regulatory--no-parking", "regulatory--no-overtaking",
     "information--pedestrians-crossing", "regulatory--no-.+-turn" };
 
   private static MapillaryFilterChooseSigns instance;
+
+  /**
+   * Get the sign tags to filter on
+   *
+   * @return The sign tags
+   */
+  public static String[] getSignTags() {
+    return Arrays.copyOf(SIGN_TAGS, SIGN_TAGS.length);
+  }
 
   private MapillaryFilterChooseSigns() {
     // i18n: traffic sign

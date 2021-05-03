@@ -1,16 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.export;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.ArrayBlockingQueue;
-
-import javax.imageio.ImageIO;
-
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.Imaging;
@@ -23,13 +13,17 @@ import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
 import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputDirectory;
 import org.apache.commons.imaging.formats.tiff.write.TiffOutputSet;
-
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.Logging;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Writes the images from the queue in the file system.
@@ -41,7 +35,7 @@ public class MapillaryExportWriterThread extends Thread {
 
   private final String path;
   private final ArrayBlockingQueue<BufferedImage> queue;
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<INode> queueImages;
   private final int amount;
   private final ProgressMonitor monitor;
 
@@ -51,7 +45,7 @@ public class MapillaryExportWriterThread extends Thread {
    * @param path
    *        Path to write the pictures.
    * @param queue
-   *        Queue of {@link MapillaryAbstractImage} objects.
+   *        Queue of {@link INode} objects.
    * @param queueImages
    *        Queue of {@link BufferedImage} objects.
    * @param amount
@@ -60,7 +54,7 @@ public class MapillaryExportWriterThread extends Thread {
    *        Progress monitor.
    */
   public MapillaryExportWriterThread(String path, ArrayBlockingQueue<BufferedImage> queue,
-    ArrayBlockingQueue<MapillaryAbstractImage> queueImages, int amount, ProgressMonitor monitor) {
+    ArrayBlockingQueue<INode> queueImages, int amount, ProgressMonitor monitor) {
     this.path = path;
     this.queue = queue;
     this.queueImages = queueImages;
@@ -72,19 +66,19 @@ public class MapillaryExportWriterThread extends Thread {
   public void run() {
     this.monitor.setCustomText("Downloaded 0/" + this.amount);
     BufferedImage img;
-    MapillaryAbstractImage mimg;
+    INode mimg;
     String finalPath = "";
     for (int i = 0; i < this.amount; i++) {
       try {
         img = this.queue.take();
         mimg = this.queueImages.take();
-        if (this.path == null && mimg instanceof MapillaryImportedImage) {
-          String runPath = mimg.getFile().getPath();
+        if (this.path == null && mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+          String runPath = new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)).getPath();
           finalPath = runPath.substring(0, runPath.lastIndexOf('.'));
-        } else if (mimg instanceof MapillaryImage) {
-          finalPath = this.path + '/' + ((MapillaryImage) mimg).getKey();
-        } else if (mimg instanceof MapillaryImportedImage) {
-          finalPath = this.path + '/' + mimg.getFile().getName();
+        } else if (mimg.hasKey(MapillaryImageUtils.KEY)) {
+          finalPath = this.path + '/' + mimg.get(MapillaryImageUtils.KEY);
+        } else if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+          finalPath = this.path + '/' + mimg.get(MapillaryImageUtils.IMPORTED_KEY);
         }
 
         // Transforms the image into a byte array.
@@ -97,10 +91,10 @@ public class MapillaryExportWriterThread extends Thread {
         TiffOutputDirectory exifDirectory;
         TiffOutputDirectory gpsDirectory;
         // If the image is imported, loads the rest of the EXIF data.
-        if (mimg instanceof MapillaryImportedImage) {
-          final ImageMetadata metadata = Imaging.getMetadata(mimg.getFile());
-          final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-          if (null != jpegMetadata) {
+        if (mimg.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+          final ImageMetadata metadata = Imaging.getMetadata(new File(mimg.get(MapillaryImageUtils.IMPORTED_KEY)));
+          if (metadata instanceof JpegImageMetadata) {
+            final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
             final TiffImageMetadata exif = jpegMetadata.getExif();
             if (null != exif) {
               outputSet = exif.getOutputSet();
@@ -118,15 +112,16 @@ public class MapillaryExportWriterThread extends Thread {
           GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_TRUE_NORTH);
 
         gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION, RationalNumber.valueOf(mimg.getMovingCa()));
+        gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+          RationalNumber.valueOf(Float.parseFloat(mimg.get(MapillaryImageUtils.CAMERA_ANGLE))));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
-        if (mimg instanceof MapillaryImportedImage) {
-          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, mimg.getDate("yyyy/MM/dd HH:mm:ss"));
-        } else if (mimg instanceof MapillaryImage) {
-          exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, mimg.getDate("yyyy/MM/dd HH/mm/ss"));
-        }
-        outputSet.setGPSInDegrees(mimg.getMovingLatLon().lon(), mimg.getMovingLatLon().lat());
+        // TODO this might need some fixes
+        // "yyyy/MM/dd HH:mm:ss" for imported
+        // "yyyy/MM/dd HH/mm/ss" for Mapillary
+        exifDirectory.add(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL, mimg.get(MapillaryKeys.CAPTURED_AT));
+
+        outputSet.setGPSInDegrees(mimg.getCoor().lon(), mimg.getCoor().lat());
         try (OutputStream os = new BufferedOutputStream(new FileOutputStream(finalPath + ".jpg"))) {
           new ExifRewriter().updateExifMetadataLossless(imageBytes, os, outputSet);
         }

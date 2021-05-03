@@ -26,6 +26,10 @@ public final class JsonImageDetectionDecoder {
   }
 
   public static ImageDetection<Path2D.Double> decodeImageDetection(final JsonObject json) {
+    return decodeImageDetection(json, null);
+  }
+
+  public static ImageDetection<Path2D.Double> decodeImageDetection(final JsonObject json, String layer) {
     if (json == null || !"Feature".equals(json.getString("type", null))) {
       return null;
     }
@@ -34,7 +38,7 @@ public final class JsonImageDetectionDecoder {
     if (properties instanceof JsonObject) {
       JsonObject jsonObject = (JsonObject) properties;
       final String key = jsonObject.getString("key", null);
-      final String packag = jsonObject.getString("layer", null);
+      final String packag = jsonObject.getString("layer", layer);
       final String imageKey = jsonObject.getString("image_key", null);
       final String value = jsonObject.getString("value", null);
       final JsonValue scoreVal = jsonObject.get("score");

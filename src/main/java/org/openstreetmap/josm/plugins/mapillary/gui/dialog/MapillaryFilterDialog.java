@@ -1,29 +1,41 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.openstreetmap.josm.actions.ExpertToggleAction;
+import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListener;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
+import org.openstreetmap.josm.gui.layer.MainLayerManager;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
+import org.openstreetmap.josm.gui.widgets.JosmTextField;
+import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
+import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.Destroyable;
+import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ListenerList;
+import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
@@ -39,41 +51,31 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.openstreetmap.josm.actions.ExpertToggleAction;
-import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListener;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.SideButton;
-import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
-import org.openstreetmap.josm.gui.layer.MainLayerManager;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
-import org.openstreetmap.josm.gui.widgets.JosmTextField;
-import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-import org.openstreetmap.josm.tools.Destroyable;
-import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.ListenerList;
-import org.openstreetmap.josm.tools.Shortcut;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * ToggleDialog that lets you filter the images that are being shown.
@@ -82,7 +84,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  * @see MapillaryFilterChooseSigns
  */
 public final class MapillaryFilterDialog extends ToggleDialog
-  implements MapillaryDataListener, MapillaryLoginListener, OrganizationRecordListener {
+  implements MapillaryLoginListener, OrganizationRecordListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -105,7 +107,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
   private boolean destroyed;
 
-  private final ImageFilterPredicate shouldHidePredicate = new ImageFilterPredicate();
+  private final transient ImageFilterPredicate shouldHidePredicate = new ImageFilterPredicate();
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
@@ -476,22 +478,14 @@ public final class MapillaryFilterDialog extends ToggleDialog
   }
 
   /**
+   * Get the instantiated instance of the dialog
+   *
    * @return the unique instance of the class.
    */
   public static synchronized MapillaryFilterDialog getInstance() {
     if (instance == null)
       instance = new MapillaryFilterDialog();
     return instance;
-  }
-
-  @Override
-  public void imagesAdded() {
-    refresh();
-  }
-
-  @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    // Do nothing when image selection changed
   }
 
   /**
@@ -517,8 +511,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
    */
   public void updateFilteredImages() {
     if (MapillaryLayer.hasInstance()) {
-      Predicate<MapillaryAbstractImage> shouldHide = this.getShouldHidePredicate();
-      MapillaryLayer.getInstance().getData().getAllImages().parallelStream()
+      Predicate<INode> shouldHide = this.getShouldHidePredicate();
+      MapillaryLayer.getInstance().getData().getNodes().parallelStream().filter(MapillaryImageUtils.IS_IMAGE)
         .forEach(img -> img.setVisible(!shouldHide.test(img)));
       MapillaryLayer.invalidateInstance();
     }
@@ -529,11 +523,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
    *
    * @return The image filtering predicate
    */
-  public Predicate<MapillaryAbstractImage> getShouldHidePredicate() {
+  public Predicate<INode> getShouldHidePredicate() {
     return this.shouldHidePredicate;
   }
 
-  private static class ImageFilterPredicate implements Predicate<MapillaryAbstractImage> {
+  private static class ImageFilterPredicate implements Predicate<INode> {
     String cameraModel;
     String cameraMake;
     String time;
@@ -556,49 +550,55 @@ public final class MapillaryFilterDialog extends ToggleDialog
     }
 
     @Override
-    public boolean test(MapillaryAbstractImage img) {
+    public boolean test(INode img) {
       if (!layerVisible) {
         return true;
       }
       MainLayerManager layerManager = MainApplication.getLayerManager();
-      if (this.smartAdd && img instanceof MapillaryImage
+      if (this.smartAdd && img.hasKey(MapillaryKeys.KEY)
         && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
-        Collection<OsmPrimitive> currentSelection = Stream
+        Collection<IPrimitive> currentSelection = Stream
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
-            layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getDataSet))
+            layerManager.getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData))
           .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
         Collection<String> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
           .flatMap(Collection::stream).collect(Collectors.toSet());
-        if (!keys.contains(((MapillaryImage) img).getKey())) {
+        if (!keys.contains(img.get(MapillaryKeys.KEY))) {
           return true;
         }
       }
       if ((this.timeFilter && checkValidTime(img)) || (this.endDateRefresh != null && checkEndDate(img))
         || (this.startDateRefresh != null && checkStartDate(img))
-        || (!this.importedIsSelected && img instanceof MapillaryImportedImage)
-        || (this.onlyPanoIsSelected && !img.isPanorama())
+        || (!this.importedIsSelected && img.hasKey(MapillaryImageUtils.IMPORTED_KEY))
+        || (this.onlyPanoIsSelected && !MapillaryImageUtils.IS_PANORAMIC.test(img))
         || (this.cameraMake != null && !this.cameraMake.trim().isEmpty()
           && !this.cameraMake.equals(img.get("camera_make")))
         || (this.cameraModel != null && !this.cameraModel.trim().isEmpty()
           && !this.cameraModel.equals(img.get("camera_model")))
-        || (this.qualityScore != Integer.MIN_VALUE && (img.getQuality() < this.qualityScore
-          || (this.qualityScore < 3 && img.getQuality() == Integer.MIN_VALUE)))) {
+        || (this.qualityScore != Integer.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
+          // The following line is to ensure that any images that *don't* have a quality score are shown when low
+          // quality is OK.
+          || (this.qualityScore < 3 && MapillaryImageUtils.getQuality(img) == Integer.MIN_VALUE)))) {
         return true;
       }
-      if (img instanceof MapillaryImage) {
+      if (img.hasKey(MapillaryKeys.KEY)) {
         if (!this.downloadedIsSelected) {
           return true;
         }
-        if (this.onlySignsIsSelected
-          && (((MapillaryImage) img).getDetections().isEmpty() || !checkSigns((MapillaryImage) img))) {
+        if (this.onlySignsIsSelected && (ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false).isEmpty()
+          || !checkSigns(ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false)))) {
           return true;
         }
-        UserProfile userProfile = ((MapillaryImage) img).getUser();
+        UserProfile userProfile = Caches.UserProfileCache.getInstance().get(img.get(MapillaryKeys.USER_KEY));
         if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
-        if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && img.getSequence() != null
-          && !img.getSequence().getOrganization().getKey().equals(this.organization.getKey())) {
+        if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && img.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
+          && !this.organization.getKey()
+            .equals(OrganizationRecord.getOrganization(img.getDataSet().getWays().stream()
+              .filter(seq -> img.get(MapillaryImageUtils.SEQUENCE_KEY).equals(seq.get(MapillaryKeys.KEY))
+                && seq.hasKey(MapillarySequenceUtils.OWNED_BY))
+              .map(seq -> seq.get(MapillarySequenceUtils.OWNED_BY)).findAny().orElse("")).getKey())) {
           return true;
         }
       }
@@ -612,10 +612,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
       this.layerVisible = MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().isVisible();
     }
 
-    private boolean checkValidTime(MapillaryAbstractImage img) {
+    private boolean checkValidTime(INode img) {
       final long currentTime = currentTime();
       for (int i = 0; i < 3; i++) {
-        if (TIME_LIST[i].equals(time) && img.getCapturedAt() < currentTime - dateRange.doubleValue() * TIME_FACTOR[i]) {
+        if (TIME_LIST[i].equals(time) && Long.parseLong(img.get(MapillaryKeys.CAPTURED_AT)) < currentTime
+          - dateRange.doubleValue() * TIME_FACTOR[i]) {
           return true;
         }
       }
@@ -626,9 +627,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @param img The image to check
      * @return {@code true} if the start date is after the image date
      */
-    private boolean checkStartDate(MapillaryAbstractImage img) {
-      LocalDate start = startDateRefresh;
-      LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+    private boolean checkStartDate(INode img) {
+      Instant start = startDateRefresh.atStartOfDay().toInstant(ZoneOffset.UTC);
+      Instant imgDate = MapillaryImageUtils.getDate(img);
       return start.isAfter(imgDate);
     }
 
@@ -636,34 +637,38 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @param img The image to check
      * @return {@code true} if the end date is before the image date
      */
-    private boolean checkEndDate(MapillaryAbstractImage img) {
-      LocalDate end = endDateRefresh;
-      LocalDate imgDate = LocalDate.parse(img.getDate("yyyy-MM-dd"));
+    private boolean checkEndDate(INode img) {
+      LocalDate nextDate = endDateRefresh.plusDays(1);
+      Instant end = nextDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+      Instant imgDate = MapillaryImageUtils.getDate(img);
       return end.isBefore(imgDate);
     }
 
     /**
      * Checks if the image fulfills the sign conditions.
      *
-     * @param img The {@link MapillaryAbstractImage} object that is going to be
+     * @param imageDetections The {@code Collection<ImageDetection<?>>} object that is going to be
      *        checked.
      * @return {@code true} if it fulfills the conditions; {@code false}
      *         otherwise.
      */
-    private static boolean checkSigns(MapillaryImage img) {
-      for (int i = 0; i < MapillaryFilterChooseSigns.SIGN_TAGS.length; i++) {
-        if (checkSign(img, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i],
-          MapillaryFilterChooseSigns.SIGN_TAGS[i]))
+    private static boolean checkSigns(Collection<ImageDetection<?>> imageDetections) {
+      final String[] signTags = MapillaryFilterChooseSigns.getSignTags();
+      for (int i = 0; i < signTags.length; i++) {
+        if (checkSign(imageDetections, MapillaryFilterChooseSigns.getInstance().signCheckboxes[i], signTags[i])) {
           return true;
+        }
       }
       return false;
     }
 
-    private static boolean checkSign(MapillaryImage img, JCheckBox signCheckBox, String signTag) {
+    private static boolean checkSign(Collection<ImageDetection<?>> detections, JCheckBox signCheckBox, String signTag) {
       boolean contains = false;
-      for (ImageDetection<?> detection : img.getDetections()) {
-        if (Pattern.compile(signTag).matcher(detection.getValue().getKey()).find()) {
+      final Pattern pattern = Pattern.compile(signTag);
+      for (ImageDetection<?> detection : detections) {
+        if (pattern.matcher(detection.getValue().getKey()).find()) {
           contains = true;
+          break;
         }
       }
       return contains == signCheckBox.isSelected() && contains;

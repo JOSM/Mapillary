@@ -1,44 +1,66 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
-import static org.openstreetmap.josm.tools.I18n.trn;
-
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.TexturePaint;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.geom.Area;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.openstreetmap.josm.actions.RenameLayerAction;
+import org.openstreetmap.josm.command.AddPrimitivesCommand;
+import org.openstreetmap.josm.command.Command;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.UndoRedoHandler;
+import org.openstreetmap.josm.data.imagery.ImageryInfo;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
+import org.openstreetmap.josm.data.osm.DataSelectionListener;
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.IRelation;
+import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.Way;
+import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
+import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
+import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
+import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
+import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
+import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
+import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
+import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
+import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.GBC;
+import org.openstreetmap.josm.tools.Geometry;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.ListenerList;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Pair;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -59,111 +81,49 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.openstreetmap.josm.actions.RenameLayerAction;
-import org.openstreetmap.josm.command.AddPrimitivesCommand;
-import org.openstreetmap.josm.command.Command;
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.Data;
-import org.openstreetmap.josm.data.DataSource;
-import org.openstreetmap.josm.data.UndoRedoHandler;
-import org.openstreetmap.josm.data.coor.EastNorth;
-import org.openstreetmap.josm.data.osm.DataSelectionListener;
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
-import org.openstreetmap.josm.data.osm.DataSourceListener;
-import org.openstreetmap.josm.data.osm.DownloadPolicy;
-import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
-import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.IPrimitive;
-import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.data.osm.UploadPolicy;
-import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter;
-import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
-import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
-import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
-import org.openstreetmap.josm.data.osm.visitor.paint.relations.MultipolygonCache;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.MapViewState.MapViewPoint;
-import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
-import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
-import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
-import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
-import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
-import org.openstreetmap.josm.gui.layer.LayerManager.LayerOrderChangeEvent;
-import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer.DataCountVisitor;
-import org.openstreetmap.josm.gui.mappaint.MapPaintStyles;
-import org.openstreetmap.josm.gui.mappaint.loader.MapPaintStyleLoader;
-import org.openstreetmap.josm.gui.mappaint.mapcss.MapCSSStyleSource;
-import org.openstreetmap.josm.gui.preferences.display.DrawingPreference;
-import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
-import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
-import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
-import org.openstreetmap.josm.plugins.mapillary.data.image.Keyed;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
-import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.io.download.ObjectDetectionsDownloadRunnable;
-import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.Geometry;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Pair;
+import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trn;
 
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends AbstractOsmDataLayer implements DataSourceListener, MouseListener, Listener,
-  HighlightUpdateListener, DataSelectionListener, MapillaryDataListener, LayerChangeListener {
-  private final Collection<DataSource> dataSources = new HashSet<>();
-  private static final String[] NAMES = new String[] { marktr("Mapillary point features"),
-    marktr("Mapillary traffic signs") };
-  private static final int HATCHED_SIZE = 15;
-  public final DataSet followDataSet;
+public class PointObjectLayer extends MVTLayer implements MouseListener, Listener, HighlightUpdateListener,
+  DataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
-  private final DataSet data;
-  private final DataSetListenerAdapter dataSetListenerAdapter;
-  /** If true, display traffic signs. If false, display point objects. */
-  private final boolean trafficSigns;
   private final Map<IPrimitive, JWindow> displayedWindows = new HashMap<>();
-  private static final String DETECTIONS = "detections";
 
   private boolean showingPresetWindow;
-
-  /**
-   * a texture for non-downloaded area Copied from OsmDataLayer
-   */
-  private static volatile BufferedImage hatched;
-
-  static {
-    createHatchTexture();
-  }
+  private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
 
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
@@ -174,34 +134,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     return mapcss;
   }
 
-  /**
-   * Initialize the hatch pattern used to paint the non-downloaded area
-   */
-  public static void createHatchTexture() {
-    BufferedImage bi = new BufferedImage(HATCHED_SIZE, HATCHED_SIZE, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D big = bi.createGraphics();
-    big.setColor(OsmDataLayer.getBackgroundColor());
-    Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
-    big.setComposite(comp);
-    big.fillRect(0, 0, HATCHED_SIZE, HATCHED_SIZE);
-    big.setColor(OsmDataLayer.getOutsideColor());
-    big.drawLine(-1, 6, 6, -1);
-    big.drawLine(4, 16, 16, 4);
-    hatched = bi;
-  }
-
-  public PointObjectLayer(boolean trafficSigns) {
-    super(tr(trafficSigns ? NAMES[1] : NAMES[0]));
-    String name = trafficSigns ? NAMES[1] : NAMES[0];
-    this.trafficSigns = trafficSigns;
-    data = new DataSet();
-    data.setUploadPolicy(UploadPolicy.BLOCKED);
-    data.setDownloadPolicy(DownloadPolicy.BLOCKED);
-    data.lock();
-    followDataSet = MainApplication.getLayerManager().getActiveDataSet();
-    followDataSet.addDataSourceListener(this);
-    this.setName(name + ": " + followDataSet.getName());
-    MainApplication.worker.execute(() -> followDataSet.getDataSources().forEach(this::getData));
+  public PointObjectLayer(ImageryInfo info) {
+    super(info);
     getMapCSSStyle();
     if (!MapPaintStyles.getStyles().getStyleSources().contains(mapcss)) {
       MapPaintStyles.addStyle(mapcss);
@@ -209,55 +143,24 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
       MapPaintStyleLoader.reloadStyle(mapcss);
       MapPaintStyles.fireMapPaintStyleEntryUpdated(MapPaintStyles.getStyles().getStyleSources().indexOf(mapcss));
     }
-    tableModelListener = new FilterEventListener(this, data);
+    tableModelListener = new FilterEventListener(this, this.getData());
     MapillaryExpertFilterDialog.getInstance().getFilterModel().addTableModelListener(tableModelListener);
     MainApplication.getMap().filterDialog.getFilterModel().addTableModelListener(tableModelListener);
     tableModelListener.tableChanged(null);
 
-    this.data.setName(name);
-    this.dataSetListenerAdapter = new DataSetListenerAdapter(this);
-    data.addDataSetListener(dataSetListenerAdapter);
-    data.addDataSetListener(MultipolygonCache.getInstance());
+    VectorDataSet data = this.getData();
     data.addHighlightUpdateListener(this);
     data.addSelectionListener(this);
     if (MapillaryLayer.hasInstance()) {
-      MapillaryLayer.getInstance().getData().addListener(this);
+      MapillaryLayer.getInstance().getData().addSelectionListener(this);
     }
     MainApplication.getLayerManager().addLayerChangeListener(this);
   }
 
   @Override
-  public void dataSourceChange(DataSourceChangeEvent event) {
-    if (MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA
-      .equals(MapillaryDownloader.DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()))) {
-      if (SwingUtilities.isEventDispatchThread()) {
-        MainApplication.worker.execute(() -> event.getAdded().forEach(this::getData));
-      } else {
-        event.getAdded().forEach(this::getData);
-      }
-    }
-    String name = trafficSigns ? NAMES[1] : NAMES[0];
-    this.setName(name + ": " + followDataSet.getName());
-    this.data.setName(name);
-  }
-
-  public void getData(DataSource dataSource) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      MainApplication.worker.execute(() -> getData(dataSource));
-    } else if (dataSources.add(dataSource)) {
-      ObjectDetectionsDownloadRunnable runnable = new ObjectDetectionsDownloadRunnable(data, dataSource.bounds,
-        trafficSigns ? MapillaryURL.APIv3::searchMapObjects : MapillaryURL.APIv3::searchMapPointObjects,
-        NullProgressMonitor.INSTANCE);
-      try {
-        data.unlock();
-        runnable.run();
-        data.addDataSource(dataSource);
-      } finally {
-        data.lock();
-        if (this.tableModelListener != null)
-          this.tableModelListener.updateAndRunFilters();
-      }
-    }
+  public void finishedLoading(MVTTile tile) {
+    super.finishedLoading(tile);
+    this.listeners.fireEvent(listener -> listener.tileAdded(tile));
   }
 
   @Override
@@ -267,55 +170,17 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
 
   @Override
   public void paint(final Graphics2D g, final MapView mv, Bounds box) {
-    boolean active = mv.getLayerManager().getActiveLayer() == this;
-    boolean inactive = false;
     boolean virtual = mv.isVirtualNodesEnabled();
 
-    // draw the hatched area for non-downloaded region. only draw if we're the active
-    // and bounds are defined; don't draw for inactive layers or loaded GPX files etc
-    if (active && Boolean.TRUE.equals(DrawingPreference.SOURCE_BOUNDS_PROP.get()) && !data.getDataSources().isEmpty()) {
-      // initialize area with current viewport
-      Rectangle b = mv.getBounds();
-      // on some platforms viewport bounds seem to be offset from the left,
-      // over-grow it just to be sure
-      b.grow(100, 100);
-      Path2D p = new Path2D.Double();
-
-      // combine successively downloaded areas
-      for (Bounds bounds : data.getDataSourceBounds()) {
-        if (bounds.isCollapsed()) {
-          continue;
-        }
-        p.append(mv.getState().getArea(bounds), false);
-      }
-      // subtract combined areas
-      Area a = new Area(b);
-      a.subtract(new Area(p));
-
-      // paint remainder
-      MapViewPoint anchor = mv.getState().getPointFor(new EastNorth(0, 0));
-      Rectangle2D anchorRect = new Rectangle2D.Double(anchor.getInView().getX() % HATCHED_SIZE,
-        anchor.getInView().getY() % HATCHED_SIZE, HATCHED_SIZE, HATCHED_SIZE);
-      if (hatched != null) {
-        g.setPaint(new TexturePaint(hatched, anchorRect));
-      }
-      try {
-        g.fill(a);
-      } catch (ArrayIndexOutOfBoundsException e) {
-        // #16686 - AIOOBE in java.awt.TexturePaintContext$Int.setRaster
-        Logging.error(e);
-      }
-    }
-
-    AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, inactive);
+    AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, false);
     boolean slowOperations = mv.getMapMover() == null || !mv.getMapMover().movementInProgress()
       || !OsmDataLayer.PROPERTY_HIDE_LABELS_WHILE_DRAGGING.get();
     painter.enableSlowOperations(slowOperations);
-    painter.render(data, virtual, box);
+    painter.render(this.getData(), virtual, box);
     MainApplication.getMap().conflictDialog.paintConflicts(g, mv);
     if (slowOperations) {
       // TODO is the box the same thing?
-      List<OsmPrimitive> selectedInView = this.getDataSet().getSelected().parallelStream().filter(p -> {
+      List<IPrimitive> selectedInView = this.getData().getSelected().parallelStream().filter(p -> {
         Point point = mv.getPoint(p.getBBox().getCenter());
         return mv.contains(point);
       }).collect(Collectors.toList());
@@ -371,6 +236,22 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     }
   }
 
+  @Override
+  public <L extends TileAddListener<MVTTile>> boolean addListener(L listener) {
+    if (!this.listeners.containsListener(listener)) {
+      this.listeners.addListener(listener);
+    }
+    return this.listeners.containsListener(listener);
+  }
+
+  @Override
+  public <L extends TileAddListener<MVTTile>> boolean removeListener(L listener) {
+    if (this.listeners.containsListener(listener)) {
+      this.listeners.removeListener(listener);
+    }
+    return this.listeners.containsListener(listener);
+  }
+
   private class AdditionalActionPanel extends JPanel {
     private boolean hasContent;
 
@@ -397,6 +278,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     }
 
     /**
+     * Check if there is content in the layer
+     *
      * @return {@code true} if there is content to show
      */
     public boolean hasContent() {
@@ -446,8 +329,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
     Collection<OsmPrimitive> selection = event.getSelection();
-    OsmPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(DETECTIONS)).findFirst()
-      .orElse(null);
+    OsmPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(MapillaryKeys.DETECTIONS))
+      .findFirst().orElse(null);
     this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
       .forEach(e -> hideWindow(e.getValue()));
     Map<IPrimitive, JWindow> temporaryWindows = this.displayedWindows.entrySet().parallelStream()
@@ -456,21 +339,19 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     this.displayedWindows.putAll(temporaryWindows);
 
     if (prim != null && (MapillaryLayer.hasInstance() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()))) {
-      List<Map<String, String>> detections = parseDetections(prim.get(DETECTIONS));
+      List<Map<String, String>> detections = parseDetections(prim.get(MapillaryKeys.DETECTIONS));
 
-      MapillaryData mapillaryData = MapillaryLayer.getInstance().getData();
+      VectorDataSet mapillaryData = MapillaryLayer.getInstance().getData();
       if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
         MapillaryDownloadAction.addLayer();
       }
-      MapillaryImage selectedImage = mapillaryData.getSelectedImage() instanceof MapillaryImage
-        ? (MapillaryImage) mapillaryData.getSelectedImage()
-        : null;
-      List<MapillaryImage> images = getImagesForDetections(mapillaryData, detections);
-      MapillaryImage toSelect = images.isEmpty() ? null : getBestImage(prim, images);
+      INode selectedImage = mapillaryData.getSelectedNodes().stream().findFirst().orElse(null);
+      List<INode> images = getImagesForDetections(mapillaryData, detections);
+      INode toSelect = images.isEmpty() ? null : getBestImage(prim, images);
       boolean inDetections = selectedImage != null && images.contains(selectedImage);
 
       if (!inDetections && (selectedImage == null || !selectedImage.equals(toSelect))) {
-        mapillaryData.setSelectedImage(toSelect);
+        mapillaryData.setSelected(toSelect);
       }
     }
     GuiHelper.runInEDT(() -> MapillaryMainDialog.getInstance().imageViewer.repaint());
@@ -485,12 +366,15 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
    * @param images The images to look through
    * @return The best image (hopefully)
    */
-  private static <T extends MapillaryAbstractImage> T getBestImage(OsmPrimitive primitive, Collection<T> images) {
+  private static <T extends INode> T getBestImage(OsmPrimitive primitive, Collection<T> images) {
     List<Pair<T, Double>> distance = images.stream().filter(Objects::nonNull)
-      .map(image -> new Pair<>(image, Geometry.getDistance(primitive, new Node(image.getExifCoor()))))
+      .map(image -> new Pair<>(image, Geometry.getDistance(primitive, new Node(image.getCoor()))))
       .sorted(Comparator.comparing(p -> p.b)).collect(Collectors.toList());
     for (int i : new int[] { 5, 4, 3, Integer.MIN_VALUE, 2, 1 }) {
-      Optional<T> imageOptional = distance.stream().map(p -> p.a).filter(image -> image.getQuality() == i).findFirst();
+      Optional<T> imageOptional = distance.stream().map(p -> p.a)
+        .filter(image -> !image.hasKey(MapillaryImageUtils.QUALITY_SCORE)
+          || Integer.parseInt(image.get(MapillaryImageUtils.QUALITY_SCORE)) == i)
+        .findFirst();
       if (imageOptional.isPresent()) {
         return imageOptional.get();
       }
@@ -595,7 +479,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
             }
           }
         };
-        String detections = mapillaryObject.get("detections");
+        String detections = mapillaryObject.get(MapillaryKeys.DETECTIONS);
         UndoRedoHandler.getInstance().add(deleteOriginal);
         if (updateTagsCommand != null) {
           UndoRedoHandler.getInstance().add(updateTagsCommand);
@@ -641,7 +525,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
    * Parse detections
    *
    * @param detectionsValue The value from the detections key
-   * @return A list of Map<String, String> of detections. Keys usually include detection_key, image_key, and user_key.
+   * @return A list of {@code Map<String, String>} of detections. Keys usually include detection_key, image_key, and
+   *         user_key.
    */
   public static List<Map<String, String>> parseDetections(String detectionsValue) {
     List<Map<String, String>> detections = new ArrayList<>();
@@ -667,16 +552,19 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     return detections;
   }
 
-  private static List<MapillaryImage> getImagesForDetections(MapillaryData data, List<Map<String, String>> detections) {
-    List<String> keys = detections.stream().filter(m -> m.containsKey("image_key")).map(m -> m.get("image_key"))
-      .collect(Collectors.toList());
-    String[] missing = keys.stream().filter(image -> data.getImage(image) == null).toArray(String[]::new);
+  private static List<INode> getImagesForDetections(VectorDataSet data, List<Map<String, String>> detections) {
+    List<String> keys = detections.stream().filter(m -> m.containsKey(MapillaryKeys.IMAGE_KEY))
+      .map(m -> m.get(MapillaryKeys.IMAGE_KEY)).collect(Collectors.toList());
+    Set<String> keySet = data.getNodes().stream().filter(img -> img.hasKey(MapillaryKeys.KEY))
+      .map(img -> img.get(MapillaryKeys.KEY)).collect(Collectors.toSet());
+    String[] missing = keys.stream().filter(key -> !keySet.contains(key)).toArray(String[]::new);
     if (keys.isEmpty())
       MapillaryDownloader.downloadImages(missing);
     else
       MainApplication.worker.execute(() -> MapillaryDownloader.downloadImages(missing));
-    return keys.stream().map(data::getImage).filter(MapillaryImage.class::isInstance).map(MapillaryImage.class::cast)
-      .collect(Collectors.toList());
+    Map<String, INode> nodeMap = data.getNodes().stream().filter(img -> img.hasKey(MapillaryKeys.KEY))
+      .collect(Collectors.toMap(i -> i.get(MapillaryKeys.KEY), i -> i));
+    return keys.stream().map(nodeMap::get).collect(Collectors.toList());
   }
 
   @Override
@@ -694,43 +582,52 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   @Override
   public synchronized void destroy() {
     super.destroy();
-    followDataSet.removeDataSourceListener(this);
     MainApplication.getMap().filterDialog.getFilterModel().removeTableModelListener(tableModelListener);
     MainApplication.getMap().mapView.removeMouseListener(this);
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
       MapPaintStyles.removeStyle(mapcss);
-    data.removeDataSetListener(dataSetListenerAdapter);
-    data.removeDataSetListener(MultipolygonCache.getInstance());
+    VectorDataSet data = this.getData();
     data.removeHighlightUpdateListener(this);
     data.removeSelectionListener(this);
     this.displayedWindows.forEach((i, w) -> hideWindow(w));
     this.displayedWindows.clear();
     if (MapillaryLayer.hasInstance()) {
-      MapillaryLayer.getInstance().getData().removeListener(this);
+      MapillaryLayer.getInstance().getData().removeSelectionListener(this);
     }
     MainApplication.getLayerManager().removeLayerChangeListener(this);
   }
 
-  @Override
-  public DataSet getDataSet() {
-    return data;
-  }
+  private static class DataCountVisitor implements PrimitiveVisitor {
+    int nodes;
+    int ways;
+    int relations;
 
-  @Override
-  public Data getData() {
-    return getDataSet();
+    @Override
+    public void visit(INode n) {
+      nodes++;
+    }
+
+    @Override
+    public void visit(IWay<?> w) {
+      ways++;
+    }
+
+    @Override
+    public void visit(IRelation<?> r) {
+      relations++;
+    }
   }
 
   @Override
   public String getToolTipText() {
     DataCountVisitor counter = new DataCountVisitor();
-    for (final OsmPrimitive osm : data.allPrimitives()) {
+    for (final IPrimitive osm : this.getData().allPrimitives()) {
       osm.accept(counter);
     }
-    int nodes = counter.nodes - counter.deletedNodes;
-    int ways = counter.ways - counter.deletedWays;
-    int relations = counter.relations - counter.deletedRelations;
+    int nodes = counter.nodes;
+    int ways = counter.ways;
+    int relations = counter.relations;
 
     StringBuilder tooltip = new StringBuilder("<html>").append(trn("{0} node", "{0} nodes", nodes, nodes))
       .append("<br>").append(trn("{0} way", "{0} ways", ways, ways)).append("<br>")
@@ -745,33 +642,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   }
 
   @Override
-  public void mergeFrom(Layer from) {
-    if (isMergable(from)) {
-      DataSet fromData = ((PointObjectLayer) from).getDataSet();
-      final PleaseWaitProgressMonitor monitor = new PleaseWaitProgressMonitor(tr("Merging layers"));
-      monitor.setCancelable(false);
-      try {
-        fromData.unlock();
-        data.unlock();
-        data.mergeFrom(fromData, monitor);
-      } finally {
-        fromData.lock();
-        data.lock();
-        monitor.close();
-        from.destroy();
-      }
-    }
-  }
-
-  @Override
-  public boolean isMergable(Layer other) {
-    return other instanceof PointObjectLayer && this.trafficSigns == ((PointObjectLayer) other).trafficSigns;
-  }
-
-  @Override
   public Object getInfoComponent() {
     final DataCountVisitor counter = new DataCountVisitor();
-    for (final OsmPrimitive osm : data.allPrimitives()) {
+    for (final IPrimitive osm : this.getData().allPrimitives()) {
       osm.accept(counter);
     }
     final JPanel p = new JPanel(new GridBagLayout());
@@ -801,8 +674,9 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     double snapDistance = ImageProvider.ImageSizes.MAP.getAdjustedHeight();
     double minDistance = Double.MAX_VALUE;
     final int iconHeight = ImageProvider.ImageSizes.SMALLICON.getAdjustedHeight();
-    Node closestNode = null;
-    for (Node node : data.getNodes().parallelStream().filter(n -> !n.isDisabled()).collect(Collectors.toList())) {
+    INode closestNode = null;
+    for (INode node : this.getData().getNodes().parallelStream().filter(n -> !n.isDisabled())
+      .collect(Collectors.toList())) {
       Point notePoint = MainApplication.getMap().mapView.getPoint(node.getCoor());
       // move the note point to the center of the icon where users are most likely to click when selecting
       notePoint.setLocation(notePoint.getX(), notePoint.getY() - iconHeight / 2d);
@@ -814,7 +688,7 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     }
     if (closestNode != null || Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())
       || e.getClickCount() == MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
-      data.setSelected(closestNode);
+      this.getData().setSelected(closestNode);
     }
   }
 
@@ -839,13 +713,8 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
   }
 
   @Override
-  public boolean isModified() {
-    return false;
-  }
-
-  @Override
   public void visitBoundingBox(BoundingXYVisitor v) {
-    for (final Node n : data.getNodes()) {
+    for (final INode n : this.getData().getNodes()) {
       if (n.isUsable()) {
         v.visit(n);
       }
@@ -864,15 +733,17 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
 
   @Override
   public void layerAdded(LayerAddEvent e) {
-    if (e.getAddedLayer() instanceof MapillaryLayer) {
-      ((MapillaryLayer) e.getAddedLayer()).getData().addListener(this);
+    if (e.getAddedLayer() instanceof MVTLayer
+      && ((MVTLayer) e.getAddedLayer()).getInfo().equals(MapillaryKeys.MAPILLARY_IMAGES)) {
+      ((MVTLayer) e.getAddedLayer()).getData().addSelectionListener(this);
     }
   }
 
   @Override
   public void layerRemoving(LayerRemoveEvent e) {
-    if (e.getRemovedLayer() instanceof MapillaryLayer) {
-      ((MapillaryLayer) e.getRemovedLayer()).getData().removeListener(this);
+    if (e.getRemovedLayer() instanceof MVTLayer
+      && ((MVTLayer) e.getRemovedLayer()).getInfo().equals(MapillaryKeys.MAPILLARY_IMAGES)) {
+      ((MVTLayer) e.getRemovedLayer()).getData().removeSelectionListener(this);
     }
   }
 
@@ -881,44 +752,28 @@ public class PointObjectLayer extends AbstractOsmDataLayer implements DataSource
     // Don't care
   }
 
-  @Override
-  public void imagesAdded() {
-    // Don't care
-  }
-
-  @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    Collection<OsmPrimitive> currentSelection = data.getSelected();
-    if (newImage instanceof Detections) {
-      Detections newImageDetections = (Detections) newImage;
-      String key = (newImage instanceof Keyed) ? ((Keyed) newImage).getKey() : null;
-      Collection<IPrimitive> nodes = newImageDetections.getDetections(false).parallelStream()
-        .map(ImageDetection::getKey).flatMap(
-          // Create a new ArrayList to avoid a ConcurrentModificationException
-          d -> new ArrayList<>(data.getNodes()).parallelStream()
-            .filter(n -> n.hasKey(DETECTIONS) && n.get(DETECTIONS).contains(d)))
-        .collect(Collectors.toList());
-      if (!nodes.containsAll(currentSelection) && !newImageDetections.getDetections().isEmpty()
-        && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && currentSelection.stream()
-          .filter(i -> i.hasKey(DETECTIONS)).anyMatch(i -> !i.get(DETECTIONS).contains(key))) {
-        data.setSelected(nodes);
-      }
-    } else {
-      data.clearSelection();
-    }
-  }
-
-  /**
-   * @return true if this layer has traffic signs
+  /*
+   * TODO finish porting
+   * @Override
+   * public void selectedImageChanged(INode oldImage, INode newImage) {
+   * final VectorDataSet data = this.getData();
+   * Collection<VectorPrimitive> currentSelection = data.getSelected();
+   * if (newImage.hasKey(MapillaryKeys.DETECTIONS)) {
+   * String key = newImage.hasKey(MapillaryKeys.KEY) ? newImage.get(MapillaryKeys.KEY) : null;
+   * Collection<IPrimitive> nodes = newImage.get(MapillaryKeys.DETECTIONS).getDetections(false).parallelStream()
+   * .map(ImageDetection::getKey).flatMap(
+   * // Create a new ArrayList to avoid a ConcurrentModificationException
+   * d -> new ArrayList<>(data.getNodes()).parallelStream()
+   * .filter(n -> n.hasKey(MapillaryKeys.DETECTIONS) && n.get(MapillaryKeys.DETECTIONS).contains(d)))
+   * .collect(Collectors.toList());
+   * if (!nodes.containsAll(currentSelection) && !newImageDetections.getDetections().isEmpty()
+   * && !Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) && currentSelection.stream()
+   * .filter(i -> i.hasKey(MapillaryKeys.DETECTIONS)).anyMatch(i -> !i.get(MapillaryKeys.DETECTIONS).contains(key))) {
+   * data.setSelected(nodes);
+   * }
+   * } else {
+   * data.clearSelection();
+   * }
+   * }
    */
-  public boolean hasTrafficSigns() {
-    return this.trafficSigns;
-  }
-
-  /**
-   * @return true if this layer has point features (does not include traffic signs)
-   */
-  public boolean hasPointFeatures() {
-    return !this.trafficSigns;
-  }
 }

@@ -1,15 +1,20 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
@@ -22,19 +27,18 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionListener;
-
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.Notification;
-import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
@@ -71,10 +75,31 @@ public class ChooseGeoImageLayersDialog extends JDialog {
 
     importButton.addActionListener(e -> {
       list.getSelectedValuesList().parallelStream().map(gil -> {
-        MapillarySequence seq = new MapillarySequence();
-        seq.add(gil.getImages().parallelStream().map(img -> {
+        VectorWay seq = new VectorWay(MapillaryKeys.IMPORTED_LAYER);
+        seq.setNodes(gil.getImages().parallelStream().map(img -> {
           try {
-            return MapillaryImportedImage.createInstance(img);
+            if (img == null) {
+              return null;
+            }
+            if (img.getFile() == null) {
+              throw new IllegalArgumentException(
+                "Can't create an imported image from an ImageEntry without associated file.");
+            }
+            VectorNode node = new VectorNode(MapillaryKeys.IMPORTED_LAYER);
+            node.setCoor(img.getPos());
+            final double ca = img.getExifImgDir() == null ? 0 : img.getExifImgDir();
+            final Instant time = img.hasGpsTime() ? img.getGpsInstant()
+              : img.hasExifTime() ? img.getExifInstant() : Instant.now();
+            boolean pano = false;
+            try (FileInputStream fis = new FileInputStream(img.getFile())) {
+              pano = ImageMetaDataUtil.isPanorama(fis);
+            } catch (IOException ex) {
+              Logging.trace(ex);
+            }
+            node.put(MapillaryImageUtils.CAMERA_ANGLE, Double.toString(ca));
+            node.put(MapillaryKeys.CAPTURED_AT, Long.toString(time.toEpochMilli()));
+            node.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+            return node;
           } catch (IllegalArgumentException iae) {
             final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");
             Logging.log(Logging.LEVEL_WARN, message, iae);
@@ -85,12 +110,12 @@ public class ChooseGeoImageLayersDialog extends JDialog {
           }
         }).filter(Objects::nonNull)
           // order by capturedAt timestamp (ascending)
-          .sorted((o1, o2) -> (int) Math.signum((double) o1.getCapturedAt() - o2.getCapturedAt()))
+          .sorted((o1, o2) -> (int) Math.signum(Double.parseDouble(o1.get(MapillaryKeys.CAPTURED_AT))
+            - Double.parseDouble(o2.get(MapillaryKeys.CAPTURED_AT))))
           .collect(Collectors.toList()));
         return seq;
       }).forEach(seq -> {
-        MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
-        MapillaryImportAction.recordChanges(seq.getImages());
+        seq.getNodes().forEach(img -> MapillaryLayer.getInstance().getData().addPrimitive(img));
         if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
           MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
         }

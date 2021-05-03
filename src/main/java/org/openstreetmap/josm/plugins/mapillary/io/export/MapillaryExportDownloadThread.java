@@ -3,19 +3,24 @@ package org.openstreetmap.josm.plugins.mapillary.io.export;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.Logging;
+
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * This is the thread that downloads one of the images that are going to be
@@ -28,9 +33,9 @@ import org.openstreetmap.josm.tools.Logging;
 public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderListener {
 
   private final ArrayBlockingQueue<BufferedImage> queue;
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages;
+  private final ArrayBlockingQueue<INode> queueImages;
 
-  private final MapillaryImage image;
+  private final INode image;
 
   /**
    * Main constructor.
@@ -41,11 +46,11 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
    *        Queue of {@link BufferedImage} objects for the
    *        {@link MapillaryExportWriterThread}.
    * @param queueImages
-   *        Queue of {@link MapillaryAbstractImage} objects for the
+   *        Queue of {@link INode} objects for the
    *        {@link MapillaryExportWriterThread}.
    */
-  public MapillaryExportDownloadThread(MapillaryImage image, ArrayBlockingQueue<BufferedImage> queue,
-    ArrayBlockingQueue<MapillaryAbstractImage> queueImages) {
+  public MapillaryExportDownloadThread(INode image, ArrayBlockingQueue<BufferedImage> queue,
+    ArrayBlockingQueue<INode> queueImages) {
     this.queue = queue;
     this.image = image;
     this.queueImages = queueImages;
@@ -53,7 +58,24 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
 
   @Override
   public void run() {
-    CacheUtils.submit(this.image.getKey(), MapillaryCache.Type.FULL_IMAGE, this);
+    if (this.image.hasKey(MapillaryKeys.KEY)) {
+      CacheUtils.submit(this.image.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE, this);
+    } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+      synchronized (MapillaryExportDownloadThread.class) {
+        try {
+          this.queue.put(ImageIO.read(new FileInputStream(this.image.get(MapillaryImageUtils.IMPORTED_KEY))));
+          this.queueImages.put(this.image);
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
+        } catch (IOException e) {
+          Logging.error(e);
+        }
+      }
+    } else {
+      throw new UnsupportedOperationException(tr("We cannot export {0}", image.getInterestingTags().entrySet().stream()
+        .map(entry -> String.join("=", entry.getKey(), entry.getValue())).collect(Collectors.joining(", "))));
+    }
   }
 
   @Override

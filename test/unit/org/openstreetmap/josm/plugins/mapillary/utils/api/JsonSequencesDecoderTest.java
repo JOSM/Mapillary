@@ -1,13 +1,20 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 
-import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
-
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,19 +23,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.function.Function;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
-import org.junit.jupiter.api.Test;
-
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
 
 class JsonSequencesDecoderTest {
 
@@ -36,29 +35,30 @@ class JsonSequencesDecoderTest {
   void testDecodeSequences() throws IOException {
     try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/searchSequences.json");
       JsonReader reader = Json.createReader(stream)) {
-      Collection<MapillarySequence> exampleSequences = JsonDecoder.decodeFeatureCollection(reader.readObject(),
+      Collection<VectorWay> exampleSequences = JsonDecoder.decodeFeatureCollection(reader.readObject(),
         JsonSequencesDecoder::decodeSequence);
       assertNotNull(exampleSequences);
       assertEquals(1, exampleSequences.size());
-      MapillarySequence seq = exampleSequences.iterator().next();
-      assertEquals(4, seq.getImages().size());
+      IWay<?> seq = exampleSequences.iterator().next();
+      assertEquals(4, seq.getNodes().size());
 
-      assertEquals("LwrHXqFRN_pszCopTKHF_Q", ((MapillaryImage) seq.getImages().get(0)).getKey());
-      assertEquals("Aufjv2hdCKwg9LySWWVSwg", ((MapillaryImage) seq.getImages().get(1)).getKey());
-      assertEquals("QEVZ1tp-PmrwtqhSwdW9fQ", ((MapillaryImage) seq.getImages().get(2)).getKey());
-      assertEquals("G_SIwxNcioYeutZuA8Rurw", ((MapillaryImage) seq.getImages().get(3)).getKey());
+      assertEquals("LwrHXqFRN_pszCopTKHF_Q", MapillaryImageUtils.getKey(seq.getNodes().get(0)));
+      assertEquals("Aufjv2hdCKwg9LySWWVSwg", MapillaryImageUtils.getKey(seq.getNodes().get(1)));
+      assertEquals("QEVZ1tp-PmrwtqhSwdW9fQ", MapillaryImageUtils.getKey(seq.getNodes().get(2)));
+      assertEquals("G_SIwxNcioYeutZuA8Rurw", MapillaryImageUtils.getKey(seq.getNodes().get(3)));
 
-      assertEquals(323.0319999999999, seq.getImages().get(0).getCa(), 1e-10);
-      assertEquals(320.8918, seq.getImages().get(1).getCa(), 1e-10);
-      assertEquals(333.62239999999997, seq.getImages().get(2).getCa(), 1e-10);
-      assertEquals(329.94820000000004, seq.getImages().get(3).getCa(), 1e-10);
+      assertEquals(323.0319999999999, MapillaryImageUtils.getAngle(seq.getNodes().get(0)), 1e-10);
+      assertEquals(320.8918, MapillaryImageUtils.getAngle(seq.getNodes().get(1)), 1e-10);
+      assertEquals(333.62239999999997, MapillaryImageUtils.getAngle(seq.getNodes().get(2)), 1e-10);
+      assertEquals(329.94820000000004, MapillaryImageUtils.getAngle(seq.getNodes().get(3)), 1e-10);
 
-      assertEqualsLatLon(new LatLon(7.246497, 16.432958), seq.getImages().get(0).getLatLon());
-      assertEqualsLatLon(new LatLon(7.246567, 16.432955), seq.getImages().get(1).getLatLon());
-      assertEqualsLatLon(new LatLon(7.248372, 16.432971), seq.getImages().get(2).getLatLon());
-      assertEqualsLatLon(new LatLon(7.249027, 16.432976), seq.getImages().get(3).getLatLon());
+      assertEqualsLatLon(new LatLon(7.246497, 16.432958), seq.getNodes().get(0).getCoor());
+      assertEqualsLatLon(new LatLon(7.246567, 16.432955), seq.getNodes().get(1).getCoor());
+      assertEqualsLatLon(new LatLon(7.248372, 16.432971), seq.getNodes().get(2).getCoor());
+      assertEqualsLatLon(new LatLon(7.249027, 16.432976), seq.getNodes().get(3).getCoor());
 
-      assertEquals(1_457_963_093_860L, seq.getCapturedAt()); // 2016-03-14T13:44:53.860 UTC
+      assertEquals(1_457_963_093_860L, MapillarySequenceUtils.getCreatedAt(seq).toEpochMilli()); // 2016-03-14T13:44:53.860
+                                                                                                 // UTC
     }
   }
 
@@ -102,16 +102,16 @@ class JsonSequencesDecoderTest {
   void testDecodeSequence() throws IOException {
     try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/sequence.json");
       JsonReader reader = Json.createReader(stream)) {
-      MapillarySequence exampleSequence = JsonSequencesDecoder.decodeSequence(reader.readObject());
-      assertEquals("cHBf9e8n0pG8O0ZVQHGFBQ", exampleSequence.getKey());
-      assertEquals(1_457_963_077_206L, exampleSequence.getCapturedAt()); // 2016-03-14T13:44:37.206 UTC
-      assertEquals(2, exampleSequence.getImages().size());
+      IWay<?> exampleSequence = JsonSequencesDecoder.decodeSequence(reader.readObject());
+      assertEquals("cHBf9e8n0pG8O0ZVQHGFBQ", MapillarySequenceUtils.getKey(exampleSequence));
+      // 1_457_963_077_206L -> 2016-03-14T13:44:37.206 UTC
+      assertEquals(1_457_963_077_206L, MapillarySequenceUtils.getCreatedAt(exampleSequence).toEpochMilli());
+      assertEquals(2, exampleSequence.getNodes().size());
 
-      assertEquals(new MapillaryImage("76P0YUrlDD_lF6J7Od3yoA", new LatLon(16.43279, 7.246085), 96.71454, false, false),
-        exampleSequence.getImages().get(0));
-      assertEquals(
-        new MapillaryImage("Ap_8E0BwoAqqewhJaEbFyQ", new LatLon(16.432799, 7.246082), 96.47705000000002, false, false),
-        exampleSequence.getImages().get(1));
+      assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("76P0YUrlDD_lF6J7Od3yoA",
+        new LatLon(16.43279, 7.246085), 96.71454, false), exampleSequence.getNodes().get(0));
+      assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("Ap_8E0BwoAqqewhJaEbFyQ",
+        new LatLon(16.432799, 7.246082), 96.47705000000002, false), exampleSequence.getNodes().get(1));
     }
   }
 

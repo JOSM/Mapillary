@@ -90,6 +90,8 @@ public class MapillaryExpertFilterDialog extends ToggleDialog implements DataSet
   }
 
   /**
+   * Get the current instance
+   *
    * @return The instance for the toggle dialog
    */
   public static MapillaryExpertFilterDialog getInstance() {

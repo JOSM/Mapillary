@@ -1,10 +1,46 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
-import static org.openstreetmap.josm.tools.I18n.trc;
+import com.github.tomakehurst.wiremock.extension.requestfilter.StopAction;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntry;
+import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
+import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
+import org.openstreetmap.josm.data.osm.DataSelectionListener;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
+import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
+import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Shortcut;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -13,6 +49,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,51 +59,16 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
-import org.openstreetmap.josm.data.cache.CacheEntry;
-import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
-import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.SideButton;
-import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
-import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
-import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
-import org.openstreetmap.josm.tools.Shortcut;
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trc;
 
 /**
  * Toggle dialog that shows an image and some buttons.
  *
  * @author nokutu
  */
-public final class MapillaryMainDialog extends ToggleDialog implements ICachedLoaderListener, MapillaryDataListener {
+public final class MapillaryMainDialog extends ToggleDialog implements ICachedLoaderListener, IDataSelectionListener {
 
   private static final long serialVersionUID = 6856496736429480600L;
 
@@ -77,7 +79,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private boolean destroyed;
 
-  private transient MapillaryAbstractImage image;
+  private transient INode image;
 
   private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
   private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);
@@ -94,8 +96,6 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   private final SideButton pauseButton = new SideButton(new PauseAction());
   private final SideButton stopButton = new SideButton(new StopAction());
   private final JPanel panel = new JPanel();
-
-  private ImageInfoHelpPopup imageInfoHelp;
 
   /**
    * Buttons mode.
@@ -203,23 +203,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     private final DetectionVerification.TYPE type;
     private VerifyRejectAction other;
     private boolean listenerAdded;
-    private final transient MapillaryDataListener mapillaryDataListener = new MapillaryDataListener() {
-
-      @Override
-      public void imagesAdded() {
-        // Do nothing
-      }
-
-      @Override
-      public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-        updateEnabledState();
-      }
-    };
+    private final transient DataSelectionListener mapillaryDataListener = event -> updateEnabledState();
 
     VerifyRejectAction(DetectionVerification.TYPE type) {
-      super(tr("Vote: {0}", type.toString()), getIcon(type),
-        tr("Tell Mapillary that you {0} this detection", type.toString()),
-        Shortcut.registerShortcut("mapillary:vote:" + type.toString(), tr("Mapillary: Vote {0}", type.toString()),
+      super(tr("Vote: {0}", type.toString()), getIcon(type), tr("Tell Mapillary that you {0} this detection", type),
+        Shortcut.registerShortcut("mapillary:vote:" + type, tr("Mapillary: Vote {0}", type.toString()),
           KeyEvent.VK_UNDEFINED, Shortcut.NONE),
         false, null, false);
       this.type = type;
@@ -228,13 +216,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     @Override
     public void actionPerformed(ActionEvent e) {
       if (!this.listenerAdded) {
-        MapillaryLayer.getInstance().getData().addListener(mapillaryDataListener);
+        MapillaryLayer.getInstance().getData().addSelectionListener(mapillaryDataListener);
         this.listenerAdded = true;
       }
       ImageDetection<?> detection = getDetection();
       if (detection != null) {
-        MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
-        if (image instanceof MapillaryImage && detection.getImageKey().equals(((MapillaryImage) image).getKey())
+        INode image = MapillaryMainDialog.getInstance().getImage();
+        if (detection.getImageKey().equals(image.get(MapillaryKeys.KEY))
           && DetectionVerification.vote(detection, this.type)) {
           detection.setApprovalType(this.type);
           this.updateEnabledState();
@@ -247,13 +235,13 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
     @Override
     public void updateEnabledState() {
-      MapillaryAbstractImage image = MapillaryMainDialog.getInstance().getImage();
+      INode image = MapillaryMainDialog.getInstance().getImage();
       ImageDetection<?> detection = getDetection();
-      if (!(image instanceof MapillaryImage) || detection == null) {
+      if (!image.hasKey(MapillaryKeys.KEY) || detection == null) {
         this.setEnabled(false);
       } else {
         if (this.type != detection.getApprovalType())
-          this.setEnabled(((MapillaryImage) image).getKey().equals(detection.getImageKey()));
+          this.setEnabled(image.get(MapillaryKeys.KEY).equals(detection.getImageKey()));
         else
           this.setEnabled(false);
       }
@@ -329,14 +317,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   }
 
   /**
+   * Check if there is an instance of the dialog
+   *
    * @return true, iff the singleton instance is present
    */
   public static boolean hasInstance() {
     return instance != null;
-  }
-
-  public synchronized void setImageInfoHelp(ImageInfoHelpPopup popup) {
-    this.imageInfoHelp = popup;
   }
 
   /**
@@ -409,7 +395,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         return;
       }
 
-      final MapillaryAbstractImage currentImage = this.image;
+      final INode currentImage = this.image;
       if (currentImage == null) {
         setDisplayImage(null, null, false);
         setTitle(tr(BASE_TITLE));
@@ -417,42 +403,32 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         return;
       }
 
-      if (imageInfoHelp != null && MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() > 0
-        && imageInfoHelp.showPopup()) {
-        // Count down the number of times the popup will be displayed
-        MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.put(MapillaryProperties.IMAGEINFO_HELP_COUNTDOWN.get() - 1);
-      }
-
       // Enables/disables next/previous buttons
       this.nextButton.setEnabled(false);
       this.previousButton.setEnabled(false);
-      if (currentImage.getSequence() != null) {
-        MapillaryAbstractImage tempImage = currentImage;
-        while (tempImage.next() != null) {
-          tempImage = tempImage.next();
+      if (currentImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+        INode tempImage = currentImage;
+        while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
+          MapillarySequenceUtils.NextOrPrevious.NEXT)) != null) {
           if (tempImage.isVisible()) {
             this.nextButton.setEnabled(true);
             break;
           }
         }
-      }
-      if (currentImage.getSequence() != null) {
-        MapillaryAbstractImage tempImage = currentImage;
-        while (tempImage.previous() != null) {
-          tempImage = tempImage.previous();
+        tempImage = currentImage;
+        while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
+          MapillarySequenceUtils.NextOrPrevious.PREVIOUS)) != null) {
           if (tempImage.isVisible()) {
             this.previousButton.setEnabled(true);
             break;
           }
         }
       }
-      if (currentImage instanceof MapillaryImage) {
-        // Use this variable to avoid race conditions
-        MapillaryImage mapillaryImage = (MapillaryImage) currentImage;
+      if (currentImage.hasKey(MapillaryKeys.KEY)) {
         // Downloads the thumbnail.
         if (this.thumbnailCache != null)
           this.thumbnailCache.cancelOutstandingTasks();
-        final MapillaryCache imageThumbnailCache = new MapillaryCache(mapillaryImage.getKey(),
+        final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
           MapillaryCache.Type.THUMBNAIL);
         this.thumbnailCache = imageThumbnailCache;
         try {
@@ -464,7 +440,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
         // Downloads the full resolution image.
         // Use this variable to avoid race conditions
-        final MapillaryCache imageFullCache = new MapillaryCache(mapillaryImage.getKey(),
+        final MapillaryCache imageFullCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
           MapillaryCache.Type.FULL_IMAGE);
         if (fullQuality || imageFullCache.get() != null) {
           if (this.imageCache != null)
@@ -477,22 +453,31 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             Logging.error(e);
           }
         }
+        MapillaryCache.cacheSurroundingImages(currentImage);
         try {
           ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-          List<ImageDetection<?>> detections = mapillaryImage.getDetections(false);
+          ImageDetection.getDetections(image.get(MapillaryKeys.KEY), (key, detections) -> {
+            INode tImage = this.image;
+            if (tImage != null && key.equals(tImage.get(MapillaryKeys.KEY))) {
+              this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
+            }
+          });
+          List<ImageDetection<?>> detections = ImageDetection.getDetections(image.get(MapillaryImageUtils.KEY), false);
           if (imageFullCache != null && imageFullCache.get() != null) {
-            setDisplayImage(imageFullCache.get().getImage(), detections, mapillaryImage.isPanorama());
-            pool.execute(() -> updateDetections(imageFullCache, mapillaryImage, detections));
+            setDisplayImage(imageFullCache.get().getImage(), detections,
+              MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
+            pool.execute(() -> updateDetections(imageFullCache, currentImage, detections));
           } else if (imageThumbnailCache != null && imageThumbnailCache.get() != null) {
-            setDisplayImage(imageThumbnailCache.get().getImage(), detections, mapillaryImage.isPanorama());
-            pool.execute(() -> updateDetections(imageThumbnailCache, mapillaryImage, detections));
+            setDisplayImage(imageThumbnailCache.get().getImage(), detections,
+              MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
+            pool.execute(() -> updateDetections(imageThumbnailCache, currentImage, detections));
           } else {
             this.imageViewer.paintLoadingImage();
           }
-          if (!mapillaryImage.hasKeys()) {
+          if (!currentImage.hasKeys()) {
             pool.execute(() -> {
-              MapillaryDownloader.downloadImages(mapillaryImage.getKey());
-              if (mapillaryImage.equals(this.image)) {
+              MapillaryDownloader.downloadImages(currentImage.get(MapillaryKeys.KEY));
+              if (currentImage.equals(this.image)) {
                 updateTitle();
               }
             });
@@ -501,10 +486,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           Logging.error(e);
           setDisplayImage(null, null, false);
         }
-      } else if (currentImage instanceof MapillaryImportedImage) {
-        final MapillaryImportedImage importedImage = (MapillaryImportedImage) currentImage;
+      } else if (currentImage.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+        final INode importedImage = currentImage;
         try {
-          setDisplayImage(importedImage.getImage(), null, importedImage.isPanorama());
+          setDisplayImage(ImageIO.read(new File(importedImage.get(MapillaryImageUtils.IMPORTED_KEY))), null,
+            MapillaryImageUtils.IS_PANORAMIC.test(importedImage));
         } catch (IOException e) {
           Logging.error(e);
         }
@@ -513,26 +499,24 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
     }
   }
 
-  private <T extends MapillaryAbstractImage & Detections> void updateDetections(MapillaryCache cache, T image,
-    Collection<ImageDetection<?>> currentDetections) {
-    Collection<ImageDetection<?>> detections = image.getDetections(true);
-    if (detections.containsAll(currentDetections) && currentDetections.containsAll(detections)) {
-      GuiHelper.runInEDT(() -> updateDisplayImage(cache, image, detections));
-    }
+  private <T extends INode> void updateDetections(MapillaryCache cache, T image,
+    Collection<ImageDetection<?>> detections) {
+    GuiHelper.runInEDT(() -> updateDisplayImage(cache, image, detections));
   }
 
-  private <T extends MapillaryAbstractImage & Detections> void updateDisplayImage(MapillaryCache cache, T image,
+  private <T extends INode> void updateDisplayImage(MapillaryCache cache, T image,
     Collection<ImageDetection<?>> detections) {
     Objects.requireNonNull(image, "Image cannot be null");
     Objects.requireNonNull(cache, "Cache cannot be null");
     Objects.requireNonNull(detections, "Detections cannot be null");
-    Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
+    final Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
     synchronized (syncObject) {
       if (image.equals(this.image)) {
         try {
           // Comprehensively fix Github #165
           if (cache.get() != null && cache.get().getImage() != null) {
-            this.setDisplayImage(cache.get().getImage(), detections, image.isPanorama());
+            this.setDisplayImage(cache.get().getImage(), detections,
+              MapillaryKeys.PANORAMIC_TRUE.equals(image.get(MapillaryKeys.PANORAMIC)));
           }
         } catch (IOException e) {
           // Leave the current image up
@@ -558,11 +542,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    * @param image
    *        The image to be shown.
    */
-  public synchronized void setImage(MapillaryAbstractImage image) {
+  public void setImage(INode image) {
     this.image = image;
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
+    this.updateImage(true);
   }
 
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
@@ -581,31 +566,31 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       SwingUtilities.invokeLater(this::updateTitle);
     } else if (this.image != null) {
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
-      if (this.image instanceof MapillaryImage) {
-        MapillaryImage mapillaryImage = (MapillaryImage) this.image;
-        UserProfile user = mapillaryImage.getUser();
+      if (this.image.hasKey(MapillaryKeys.KEY)) {
+        INode mapillaryImage = this.image;
+        UserProfile user = Caches.UserProfileCache.getInstance().get(mapillaryImage.get(MapillaryKeys.USER_KEY));
         if (user != null) {
           title.append(MESSAGE_SEPARATOR).append(user.getUsername());
         }
-        if (mapillaryImage.getCapturedAt() != 0) {
-          title.append(MESSAGE_SEPARATOR).append(mapillaryImage.getDate());
+        if (mapillaryImage.hasKey(MapillaryKeys.CAPTURED_AT)) {
+          title.append(MESSAGE_SEPARATOR).append(mapillaryImage.get(MapillaryKeys.CAPTURED_AT));
         }
         setTitle(title.toString());
-      } else if (this.image instanceof MapillaryImportedImage) {
-        MapillaryImportedImage mapillaryImportedImage = (MapillaryImportedImage) this.image;
-        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.getFile().getName());
-        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.getDate());
+      } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+        INode mapillaryImportedImage = this.image;
+        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.get(MapillaryImageUtils.IMPORTED_KEY));
+        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.get(MapillaryKeys.CAPTURED_AT));
         setTitle(title.toString());
       }
     }
   }
 
   /**
-   * Returns the {@link MapillaryAbstractImage} object which is being shown.
+   * Returns the {@link INode} object which is being shown.
    *
-   * @return The {@link MapillaryAbstractImage} object which is being shown.
+   * @return The {@link INode} object which is being shown.
    */
-  public synchronized MapillaryAbstractImage getImage() {
+  public synchronized INode getImage() {
     return this.image;
   }
 
@@ -712,9 +697,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
         || data.equals(thumbnailCache.get()))
         && (imageViewer.getImage() == null || img.getHeight() >= this.imageViewer.getImage().getHeight())) {
-        final MapillaryAbstractImage mai = getImage();
-        setDisplayImage(img, mai instanceof MapillaryImage ? ((MapillaryImage) getImage()).getDetections() : null,
-          mai != null && mai.isPanorama());
+        final INode mai = getImage();
+        setDisplayImage(img, ImageDetection.getDetections(mai.get(MapillaryImageUtils.KEY), false),
+          mai != null && MapillaryImageUtils.IS_PANORAMIC.test(mai));
+        ImageDetection.getDetections(mai.get(MapillaryImageUtils.KEY),
+          (key, detections) -> this.updateDetections(this.imageCache, mai, detections));
       }
     } catch (IOException e) {
       Logging.error(e);
@@ -737,14 +724,11 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
   }
 
   @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
+  public void selectionChanged(SelectionChangeEvent event) {
+    INode newImage = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
     setImage(newImage);
     updateImage();
-  }
-
-  @Override
-  public void imagesAdded() {
-    // This method is enforced by MapillaryDataListener, but only selectedImageChanged() is needed
   }
 
   @Override

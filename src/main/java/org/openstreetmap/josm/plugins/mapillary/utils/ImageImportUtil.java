@@ -1,6 +1,22 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
+
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,24 +27,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.swing.filechooser.FileFilter;
-
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.ImageMetadata;
-import org.apache.commons.imaging.common.RationalNumber;
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
-import org.apache.commons.imaging.formats.tiff.TiffField;
-import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
-import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
-
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.Logging;
 
 public final class ImageImportUtil {
   public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();
@@ -45,8 +43,8 @@ public final class ImageImportUtil {
    * @return all images that were found within the given file or directory
    * @throws IOException if the content of the file could not be read
    */
-  public static List<MapillaryImportedImage> readImagesFrom(final File f, final LatLon defaultLL) throws IOException {
-    List<MapillaryImportedImage> images = new ArrayList<>();
+  public static List<INode> readImagesFrom(final File f, final LatLon defaultLL) throws IOException {
+    List<INode> images = new ArrayList<>();
     if (!f.exists() || !f.canRead()) {
       throw new IOException(f.getAbsolutePath() + " not found or not readable!");
     } else if (f.isDirectory()) {
@@ -67,19 +65,18 @@ public final class ImageImportUtil {
       }
     }
     // Sort by time captured at prior to returning. This fixes #144 on JOSM/Mapillary GitHub.
-    return images.stream().sorted(Comparator.comparing(MapillaryAbstractImage::getCapturedAt))
+    return images.stream().sorted(Comparator.comparing(image -> image.get(MapillaryKeys.CAPTURED_AT)))
       .collect(Collectors.toList());
   }
 
   /**
    * @param is the input stream to read the metadata from
-   * @param f the file that will be set as a field to the returned {@link MapillaryImportedImage}
+   * @param f the file that will be set as a field to the returned {@link INode}
    * @param defaultLL the coordinates that the image should get, if no coordinates are found in metadata
-   * @return the {@link MapillaryImportedImage} with the read metadata and the given file set
+   * @return the {@link INode} with the read metadata and the given file set
    * @throws IOException if an IOException occurs while reading from the input stream
    */
-  private static MapillaryImportedImage readImageFrom(final InputStream is, final File f, final LatLon defaultLL)
-    throws IOException {
+  private static INode readImageFrom(final InputStream is, final File f, final LatLon defaultLL) throws IOException {
     Object latRef = null;
     Object lonRef = null;
     Object lat = null;
@@ -116,10 +113,15 @@ public final class ImageImportUtil {
       ca = 0;
     }
     boolean pano = ImageMetaDataUtil.isPanorama(f);
-    if (dateTime == null) {
-      return new MapillaryImportedImage(latLon, ca, f, pano);
+    VectorNode image = new VectorNode(MapillaryKeys.IMPORTED_LAYER);
+    image.setCoor(latLon);
+    image.put(MapillaryImageUtils.CAMERA_ANGLE, Double.toString(ca));
+    image.put(MapillaryImageUtils.IMPORTED_KEY, f.getAbsolutePath());
+    image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+    if (dateTime != null) {
+      image.put(MapillaryKeys.CAPTURED_AT, dateTime.toString());
     }
-    return new MapillaryImportedImage(latLon, ca, f, pano, dateTime.toString());
+    return image;
   }
 
   private static Object getTiffFieldValue(JpegImageMetadata meta, TagInfo tag) {

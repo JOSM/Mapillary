@@ -66,12 +66,11 @@ public class OldVersionDialog {
    */
   static String latestMapillaryVersion() {
     try (CachedFile latestMapillary = new CachedFile("https://api.github.com/repos/JOSM/Mapillary/releases/latest");
-      final JsonReader reader = Json.createReader(latestMapillary.getContentReader());) {
+      final JsonReader reader = Json.createReader(latestMapillary.getContentReader())) {
       latestMapillary.setMaxAge(60L * 15); // 15 minutes
       final JsonValue value = reader.read();
       final JsonObject object = value.asJsonObject();
-      final String version = object.getString("tag_name");
-      return version;
+      return object.getString("tag_name");
     } catch (IOException | JsonException | IllegalStateException e) {
       Logging.error(e);
     }

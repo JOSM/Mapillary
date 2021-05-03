@@ -6,20 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryURLTest {
@@ -32,70 +27,8 @@ class MapillaryURLTest {
     static JOSMTestRules rules = new MapillaryTestRules().preferences();
 
     @Test
-    void testSearchDetections() {
-      final String expectedLayerParameter = "layers=trafficsigns";
-      assertUrlEquals(MapillaryURL.APIv3.searchDetections(null), "https://a.mapillary.com/v3/image_detections",
-        CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY);
-    }
-
-    @Test
     void testSearchImages() {
       assertUrlEquals(MapillaryURL.APIv3.searchImages(null), "https://a.mapillary.com/v3/images", CLIENT_ID_QUERY_PART);
-    }
-
-    @Test
-    void testSearchSequences() throws UnsupportedEncodingException {
-      assertUrlEquals(MapillaryURL.APIv3.searchSequences(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
-        "https://a.mapillary.com/v3/sequences", CLIENT_ID_QUERY_PART,
-        "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name()));
-
-      assertUrlEquals(MapillaryURL.APIv3.searchSequences(null), "https://a.mapillary.com/v3/sequences",
-        CLIENT_ID_QUERY_PART);
-    }
-
-    @Test
-    void testSearchMapObjects() throws UnsupportedEncodingException {
-      final String expectedBaseUrl = "https://a.mapillary.com/v3/map_features";
-      final String expectedLayerParameter = "layers=" + URLEncoder.encode("trafficsigns", "UTF-8");
-      assertUrlEquals(MapillaryURL.APIv3.searchMapObjects(new Bounds(new LatLon(1, 2), new LatLon(3, 4), true)),
-        expectedBaseUrl, CLIENT_ID_QUERY_PART, expectedLayerParameter, SORT_BY_KEY,
-        "bbox=" + URLEncoder.encode("2.0,1.0,4.0,3.0", StandardCharsets.UTF_8.name()));
-
-      assertUrlEquals(MapillaryURL.APIv3.searchMapObjects(null), expectedBaseUrl, CLIENT_ID_QUERY_PART,
-        expectedLayerParameter, SORT_BY_KEY);
-    }
-
-    @Test
-    void testSubmitChangeset() throws MalformedURLException {
-      assertEquals(new URL("https://a.mapillary.com/v3/changesets?" + CLIENT_ID_QUERY_PART),
-        MapillaryURL.APIv3.submitChangeset());
-    }
-
-    @Test
-    void testParseNextFromHeaderValue() throws MalformedURLException {
-      String headerVal = "<https://a.mapillary.com/v3/sequences?page=1&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"first\", "
-        + "<https://a.mapillary.com/v3/sequences?page=2&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"prev\", "
-        + "<https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm>; rel=\"next\"";
-      assertEquals(new URL(
-        "https://a.mapillary.com/v3/sequences?page=4&per_page=200&client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"),
-        MapillaryURL.APIv3.parseNextFromLinkHeaderValue(headerVal));
-    }
-
-    @Test
-    void testParseNextFromHeaderValue2() throws MalformedURLException {
-      String headerVal = "<https://urlFirst>; rel=\"first\", " + "rel = \"next\" ; < ; , "
-        + "rel = \"next\" ; <https://urlNext> , " + "<https://urlPrev>; rel=\"prev\"";
-      assertEquals(new URL("https://urlNext"), MapillaryURL.APIv3.parseNextFromLinkHeaderValue(headerVal));
-    }
-
-    @Test
-    void testParseNextFromHeaderValueNull() {
-      assertNull(MapillaryURL.APIv3.parseNextFromLinkHeaderValue(null));
-    }
-
-    @Test
-    void testParseNextFromHeaderValueMalformed() {
-      assertNull(MapillaryURL.APIv3.parseNextFromLinkHeaderValue("<###>; rel=\"next\", blub"));
     }
   }
 
@@ -180,7 +113,7 @@ class MapillaryURLTest {
         parameterIsPresent = actualParams[acIndex].equals(expectedParam);
       }
       assertTrue(parameterIsPresent,
-        expectedParam + " was expected in the query string of " + actualUrl.toString() + " but wasn't there.");
+        expectedParam + " was expected in the query string of " + actualUrl + " but wasn't there.");
     }
   }
 }

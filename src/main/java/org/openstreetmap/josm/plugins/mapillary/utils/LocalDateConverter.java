@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
 /**
- *
+ * Convert strings/local dates to local dates/strings
  */
 public class LocalDateConverter {
 
@@ -22,9 +22,11 @@ public class LocalDateConverter {
   }
 
   /**
+   * Get the date format for the UI
+   *
    * @return The date format for Mapillary UI
    */
   public static String getDateFormat() {
-    return DateUtils.PROP_ISO_DATES.get() ? "yyyy-MM-dd" : "dd/MM/yyyy";
+    return Boolean.TRUE.equals(DateUtils.PROP_ISO_DATES.get()) ? "yyyy-MM-dd" : "dd/MM/yyyy";
   }
 }

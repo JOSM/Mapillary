@@ -2,7 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 /**
- *
+ * A listener for resetting state
  */
 public interface ResetListener {
   /**

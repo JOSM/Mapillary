@@ -1,6 +1,28 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Utils;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -11,28 +33,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.layer.geoimage.GeoImageLayer;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.ImageProvider;
 
 public class ImportMethodDialog extends JDialog {
   private static final long serialVersionUID = -1654848887884375567L;
@@ -97,13 +99,13 @@ public class ImportMethodDialog extends JDialog {
           final MapView mv = MapillaryPlugin.getMapView();
           final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
           try {
-            final MapillarySequence seq = new MapillarySequence();
-            seq.add(ImageImportUtil.readImagesFrom(f, center));
-            MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
+            final VectorWay seq = new VectorWay(MapillaryKeys.IMPORTED_LAYER);
+            seq.setNodes(
+              new ArrayList<>(Utils.filteredCollection(ImageImportUtil.readImagesFrom(f, center), VectorNode.class)));
+            seq.getNodes().forEach(node -> MapillaryLayer.getInstance().getData().addPrimitive(node));
             if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
               MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
             }
-            MapillaryImportAction.recordChanges(seq.getImages());
           } catch (IOException e1) {
             JOptionPane.showMessageDialog(this, I18n.tr("Could not import the image ''{0}''!", f.getAbsolutePath(),
               I18n.tr("Import exception"), JOptionPane.ERROR_MESSAGE));
@@ -119,13 +121,13 @@ public class ImportMethodDialog extends JDialog {
         final MapView mv = MapillaryPlugin.getMapView();
         final LatLon center = mv == null ? new LatLon(0, 0) : mv.getProjection().eastNorth2latlon(mv.getCenter());
         try {
-          final MapillarySequence seq = new MapillarySequence();
-          seq.add(ImageImportUtil.readImagesFrom(DIRECTORY_CHOOSER.getSelectedFile(), center));
-          MapillaryLayer.getInstance().getData().addAll(seq.getImages(), false);
+          final VectorWay seq = new VectorWay(MapillaryKeys.IMPORTED_LAYER);
+          seq.setNodes(new ArrayList<>(Utils.filteredCollection(
+            ImageImportUtil.readImagesFrom(DIRECTORY_CHOOSER.getSelectedFile(), center), VectorNode.class)));
+          seq.getNodes().forEach(node -> MapillaryLayer.getInstance().getData().addPrimitive(node));
           if (!MainApplication.getLayerManager().containsLayer(MapillaryLayer.getInstance())) {
             MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance());
           }
-          MapillaryImportAction.recordChanges(seq.getImages());
         } catch (IOException e1) {
           JOptionPane.showMessageDialog(this,
             I18n.tr("Could not import the directory ''{0}''!", DIRECTORY_CHOOSER.getSelectedFile().getAbsolutePath(),

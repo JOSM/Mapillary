@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -21,14 +21,9 @@ public class MapObjectLayerAction extends JosmAction {
     .marktr("Displays the layer displaying the traffic sign objects detected by Mapillary");
 
   public MapObjectLayerAction() {
-    super(
-      I18n.tr(ACTION_NAME),
-      MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT),
-      I18n.tr(DESCRIPTION),
+    super(I18n.tr(ACTION_NAME), MapillaryPlugin.LOGO.setSize(ImageSizes.DEFAULT), I18n.tr(DESCRIPTION),
       Shortcut.registerShortcut("mapillary:trafficSignLayer", ACTION_NAME, KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      false,
-      "mapillary:trafficSignLayer",
-      true);
+      false, "mapillary:trafficSignLayer", true);
   }
 
   @Override
@@ -37,12 +32,11 @@ public class MapObjectLayerAction extends JosmAction {
       // Synchronization lock must be held by EDT thread
       // See {@link LayerManager#addLayer(org.openstreetmap.josm.gui.layer.Layer, boolean)}.
       synchronized (MainApplication.getLayerManager()) {
-        DataSet followDataSet = MainApplication.getLayerManager().getActiveDataSet();
         if (MainApplication.getLayerManager().getActiveDataSet() != null
           && MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
-            .filter(PointObjectLayer::hasTrafficSigns)
-            .noneMatch(p -> p.followDataSet != null && p.followDataSet.equals(followDataSet))) {
-          MainApplication.getLayerManager().addLayer(new PointObjectLayer(true), false);
+            .noneMatch(p -> MapillaryKeys.MAPILLARY_TRAFFIC_SIGNS.equals(p.getInfo()))) {
+          MainApplication.getLayerManager().addLayer(new PointObjectLayer(MapillaryKeys.MAPILLARY_TRAFFIC_SIGNS),
+            false);
         }
       }
     });

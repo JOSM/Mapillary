@@ -1819,6 +1819,7 @@ public enum ObjectDetections {
    * @param osmKey The OSM key for the object
    * @param taggingPresetType The valid types for the preset
    * @param detectionTypes The types that the detection <i>may</i> appear as
+   * @param dataType The type of the data (AKA, how ready the detection is)
    */
   ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType detectionTypes,
     DataType dataType) {
@@ -1831,6 +1832,7 @@ public enum ObjectDetections {
    * @param osmKey The OSM key for the object
    * @param taggingPresetType The valid types for the preset
    * @param detectionTypes The types that the detection <i>may</i> appear as
+   * @param dataType The type of the data (AKA, how ready the detection is)
    */
   ObjectDetections(String osmKey, TaggingPresetType taggingPresetType, DetectionType[] detectionTypes,
     DataType dataType) {
@@ -1843,6 +1845,7 @@ public enum ObjectDetections {
    * @param osmKey The OSM key for the object
    * @param taggingPresetType The valid types for the preset
    * @param detectionTypes The types that the detection <i>may</i> appear as
+   * @param dataType The type of the data (AKA, how ready the detection is)
    */
   ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType, DetectionType[] detectionTypes,
     DataType dataType) {
@@ -1856,6 +1859,7 @@ public enum ObjectDetections {
    * @param taggingPresetType The valid types for the preset
    * @param additionalCommands Additional commands to run
    * @param detectionTypes The types that the detection <i>may</i> appear as
+   * @param dataType The type of the data (AKA, how ready the detection is)
    */
   ObjectDetections(String osmKey, TaggingPresetType[] taggingPresetType,
     Supplier<AdditionalInstructions> additionalCommands, DetectionType[] detectionTypes, DataType dataType) {
@@ -1994,6 +1998,8 @@ public enum ObjectDetections {
   }
 
   /**
+   * Get the base key
+   *
    * @return The base key without subcategories (specifically, without "--gNUMBER")
    */
   public String getBaseKey() {
@@ -2001,6 +2007,8 @@ public enum ObjectDetections {
   }
 
   /**
+   * Check if the object is addable
+   *
    * @return {@code true} if the object should be addable
    */
   public boolean shouldBeAddable() {

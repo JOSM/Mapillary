@@ -6,7 +6,8 @@ import java.io.IOException;
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -39,7 +40,7 @@ public final class CacheUtils {
    * @param img
    *        The image whose picture is going to be downloaded.
    */
-  public static void downloadPicture(MapillaryImage img) {
+  public static void downloadPicture(INode img) {
     downloadPicture(img, PICTURE.BOTH);
   }
 
@@ -53,15 +54,15 @@ public final class CacheUtils {
    *        The picture type to be downloaded (full quality, thumbnail or
    *        both.)
    */
-  public static void downloadPicture(MapillaryImage img, PICTURE pic) {
-    boolean thumbnail = new MapillaryCache(img.getKey(), MapillaryCache.Type.THUMBNAIL).get() == null
+  public static void downloadPicture(INode img, PICTURE pic) {
+    boolean thumbnail = new MapillaryCache(img.get(MapillaryKeys.KEY), MapillaryCache.Type.THUMBNAIL).get() == null
       && (PICTURE.BOTH.equals(pic) || PICTURE.THUMBNAIL.equals(pic));
-    boolean fullImage = new MapillaryCache(img.getKey(), MapillaryCache.Type.FULL_IMAGE).get() == null
+    boolean fullImage = new MapillaryCache(img.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE).get() == null
       && (PICTURE.BOTH.equals(pic) || PICTURE.FULL_IMAGE.equals(pic));
     if (thumbnail)
-      submit(img.getKey(), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
+      submit(img.get(MapillaryKeys.KEY), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
     if (fullImage)
-      submit(img.getKey(), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
+      submit(img.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
   }
 
   /**
@@ -77,7 +78,7 @@ public final class CacheUtils {
    */
   public static void submit(String key, MapillaryCache.Type type, ICachedLoaderListener lis) {
     try {
-      new MapillaryCache(key, type).submit(lis, false);
+      new MapillaryCache(key, type).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
     } catch (IOException e) {
       Logging.error(e);
     }

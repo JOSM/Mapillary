@@ -26,6 +26,8 @@ public class WebLinkAction extends AbstractAction {
   }
 
   /**
+   * Set the URL to be opened
+   *
    * @param url the url to set
    */
   public final void setURL(URL url) {
@@ -33,7 +35,8 @@ public class WebLinkAction extends AbstractAction {
     setEnabled(url != null);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override

@@ -49,6 +49,8 @@ public class MapObject extends KeyIndexedObject {
   }
 
   /**
+   * Get the icon for a detection
+   *
    * @param objectDetection
    *        the {@link String} representing the type of map object. This ID can be retrieved via
    *        {@link #getValue()}
@@ -60,10 +62,10 @@ public class MapObject extends KeyIndexedObject {
   }
 
   /**
+   * Get the icon for an object id
+   *
    * @param objectTypeID
-   *        the {@link String} representing the type of map object. This ID can be retrieved via
-   *        {@link #getValue().getKey()}
-   *        for any given {@link MapObject}.
+   *        the {@link String} representing the type of map object.
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {

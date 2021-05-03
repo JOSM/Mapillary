@@ -15,7 +15,7 @@ import org.openstreetmap.josm.data.osm.OsmDataManager;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 
 /**
- *
+ * A model to filter data
  */
 public class MapillaryFilterModel extends FilterModel {
   private final FilterMatcher filterMatcher = new FilterMatcher();
@@ -73,6 +73,7 @@ public class MapillaryFilterModel extends FilterModel {
   /**
    * Runs the filter on a list of primitives that are part of the edit data set.
    *
+   * @param ds The dataset with the primitives
    * @param primitives The primitives
    */
   public void executeFilters(DataSet ds, Collection<? extends OsmPrimitive> primitives) {

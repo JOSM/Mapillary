@@ -17,6 +17,8 @@ public class KeyIndexedObject implements Serializable {
   }
 
   /**
+   * Get the key for the object
+   *
    * @return the unique key that identifies this object among other instances of the same class
    */
   public String getKey() {

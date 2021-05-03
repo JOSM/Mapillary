@@ -32,6 +32,7 @@ import org.openstreetmap.josm.data.DataSource;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -66,7 +67,7 @@ class PointObjectLayerTest {
     TestUtil.setAPIv3BaseUrl("http://localhost:" + wmRule.port() + "/");
     osm = new OsmDataLayer(new DataSet(), "Test", null);
     MainApplication.getLayerManager().addLayer(osm);
-    instance = new PointObjectLayer(false);
+    instance = new PointObjectLayer(MapillaryKeys.MAPILLARY_POINT_OBJECTS);
   }
 
   @AfterEach
@@ -89,8 +90,8 @@ class PointObjectLayerTest {
 
     osm.getDataSet().addDataSource(new DataSource(new Bounds(1, 1, 1, 1), "1/1/1/1"));
     // Wait for a maximum of 5 sec for a result
-    Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> instance.getDataSet().allPrimitives().size() != 0);
-    assertEquals(1, instance.getDataSet().allPrimitives().size());
+    Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> instance.getData().allPrimitives().size() != 0);
+    assertEquals(1, instance.getData().allPrimitives().size());
   }
 
   @Test

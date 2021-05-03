@@ -8,23 +8,22 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.ImageryLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoderTest;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryLayerTest {
@@ -56,21 +55,25 @@ class MapillaryLayerTest {
   @Test
   void testSetVisible() {
     MapillaryLayer.getInstance().getData()
-      .add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false));
+      .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
     MapillaryLayer.getInstance().getData()
-      .add(new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false));
-    MapillaryImportedImage invisibleImage = new MapillaryImportedImage(new LatLon(0.0, 0.0), 0.0, new File(""), false);
+      .addPrimitive(JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false));
+    VectorNode invisibleImage = JsonImageDetailsDecoderTest.createImportedImage("", new LatLon(0.0, 0.0), 0.0, false);
     invisibleImage.setVisible(false);
-    MapillaryLayer.getInstance().getData().add(invisibleImage);
+    MapillaryLayer.getInstance().getData().addPrimitive(invisibleImage);
 
     MapillaryLayer.getInstance().setVisible(false);
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      assertFalse(img.isVisible());
+    for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
+      if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+        assertFalse(img.isVisible());
+      }
     }
 
     MapillaryLayer.getInstance().setVisible(true);
-    for (MapillaryAbstractImage img : MapillaryLayer.getInstance().getData().getImages()) {
-      assertTrue(img.isVisible());
+    for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
+      if (MapillaryImageUtils.IS_IMAGE.test(img)) {
+        assertTrue(img.isVisible());
+      }
     }
   }
 
@@ -83,7 +86,7 @@ class MapillaryLayerTest {
 
   @Test
   void testSetImageViewed() {
-    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false, false);
+    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("0", LatLon.ZERO, 0, false);
     assertFalse(MapillaryLayer.getInstance().setImageViewed(null),
       "An image should not be set as viewed if there is no image or dataset");
     assertFalse(MapillaryLayer.getInstance().setImageViewed(image),
@@ -104,7 +107,7 @@ class MapillaryLayerTest {
     Node node = new Node(LatLon.ZERO);
     ds.addPrimitive(node);
     node.setModified(true);
-    MapillaryImage image = new MapillaryImage("0", LatLon.ZERO, 0, false, false);
+    INode image = JsonImageDetailsDecoderTest.createDownloadedImage("0", LatLon.ZERO, 0, false);
     MainApplication.getLayerManager().addLayer(new OsmDataLayer(ds, "Test Layer", null));
     MapillaryLayer.getInstance().setImageViewed(image);
     actualChangesetSourceTag = MapillaryLayer.getInstance().getChangesetSourceTag();

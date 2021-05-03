@@ -8,22 +8,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExportDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.export.MapillaryExportManager;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
@@ -45,9 +46,9 @@ public class MapillaryExportAction extends JosmAction {
    */
   public MapillaryExportAction() {
     super(tr("Export Mapillary images"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Export Mapillary images"), Shortcut.registerShortcut("Export Mapillary", tr("Export Mapillary images"),
-        KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
-      false, "mapillaryExport", true);
+      tr("Export Mapillary images"), Shortcut.registerShortcut("mapillary:exportMapillaryImages",
+        tr("Export Mapillary images"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+      false, "mapillary:exportMapillaryImages", true);
     this.setEnabled(false);
   }
 
@@ -71,14 +72,19 @@ public class MapillaryExportAction extends JosmAction {
     // Checks if the inputs are correct and starts the export process.
     if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION && this.dialog.chooser != null) {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
-        export(MapillaryLayer.getInstance().getData().getImages());
+        export(MapillaryLayer.getInstance().getData().getSelectedNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+          .collect(Collectors.toSet()));
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
-        Set<MapillaryAbstractImage> images = new ConcurrentSkipListSet<>();
-        for (MapillaryAbstractImage image : MapillaryLayer.getInstance().getData().getMultiSelectedImages()) {
-          if (image instanceof MapillaryImage) {
+        Set<INode> images = new ConcurrentSkipListSet<>();
+        for (INode image : MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+          .filter(MapillaryImageUtils.IS_IMAGE).collect(Collectors.toSet())) {
+          if (image.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
             if (!images.contains(image)) {
-              if (image.getSequence() != null) {
-                images.addAll(image.getSequence().getImages());
+              if (image.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+                String sequence = image.get(MapillaryImageUtils.SEQUENCE_KEY);
+                Set<INode> tImages = image.getDataSet().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+                  .filter(i -> sequence.equals(i.get(MapillaryImageUtils.SEQUENCE_KEY))).collect(Collectors.toSet());
+                images.addAll(tImages);
               } else {
                 images.add(image);
               }
@@ -89,15 +95,15 @@ public class MapillaryExportAction extends JosmAction {
         }
         export(images);
       } else if (this.dialog.group.isSelected(this.dialog.selected.getModel())) {
-        export(MapillaryLayer.getInstance().getData().getMultiSelectedImages());
+        export(MapillaryLayer.getInstance().getData().getSelectedNodes());
       }
       // This option ignores the selected directory.
     } else if (this.dialog.group.isSelected(this.dialog.rewrite.getModel())) {
-      ArrayList<MapillaryImportedImage> images = new ArrayList<>();
-      MapillaryLayer.getInstance().getData().getImages().stream().filter(img -> img instanceof MapillaryImportedImage)
-        .forEach(img -> images.add((MapillaryImportedImage) img));
+      ArrayList<INode> images = new ArrayList<>();
+      MapillaryLayer.getInstance().getData().getNodes().stream()
+        .filter(img -> img.hasKey(MapillaryImageUtils.IMPORTED_KEY)).forEach(images::add);
       try {
-        MainApplication.worker.execute(new MapillaryExportManager(images));
+        MainApplication.worker.execute(new MapillaryExportManager<>(images));
       } catch (IOException e1) {
         Logging.error(e1);
       }
@@ -111,9 +117,9 @@ public class MapillaryExportAction extends JosmAction {
    * @param images
    *        The set of images to be exported.
    */
-  public void export(Set<MapillaryAbstractImage> images) {
+  public void export(Collection<? extends INode> images) {
     MainApplication.worker
-      .execute(new MapillaryExportManager(images, this.dialog.chooser.getSelectedFile().toString()));
+      .execute(new MapillaryExportManager<>(images, this.dialog.chooser.getSelectedFile().toString()));
   }
 
   @Override

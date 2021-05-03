@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -24,27 +25,37 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Tag;
+import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.preferences.AbstractProperty.ValueChangeListener;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.Utils;
 
-public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataListener, DataSelectionListener {
+public final class ImageInfoPanel extends ToggleDialog implements DataSelectionListener,
+  IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
   private static final long serialVersionUID = 1320443250226377651L;
   private static ImageInfoPanel instance;
   private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(
@@ -188,32 +199,24 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
-   */
   @Override
-  public void imagesAdded() {
-    // Method is not needed, but enforcesd by the interface MapillaryDataListener
+  public synchronized void selectionChanged(
+    final IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> selectionChanged) {
+    final INode oldImage = Utils.filteredCollection(selectionChanged.getOldSelection(), VectorNode.class).stream()
+      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+    final INode newImage = Utils.filteredCollection(selectionChanged.getSelection(), VectorNode.class).stream()
+      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+    selectedImageChanged(oldImage, newImage);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see
-   * org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.
-   * mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
-   */
-  @Override
-  public synchronized void selectedImageChanged(final MapillaryAbstractImage oldImage,
-    final MapillaryAbstractImage newImage) {
+  private void selectedImageChanged(INode oldImage, INode newImage) {
+    final Predicate<INode> hasKey = node -> node != null && node.hasKey(MapillaryKeys.KEY);
     Logging.debug(String.format("Selected Mapillary image changed from %s to %s.",
-      oldImage instanceof MapillaryImage ? ((MapillaryImage) oldImage).getKey() : "‹none›",
-      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : "‹none›"));
+      hasKey.test(oldImage) ? oldImage.get(MapillaryKeys.KEY) : "‹none›",
+      hasKey.test(newImage) && newImage.hasKey(MapillaryKeys.KEY) ? newImage.get(MapillaryKeys.KEY) : "‹none›"));
 
-    numDetectionsLabel.setText(tr("{0} detections",
-      newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getDetections().size() : 0));
-    imgKeyValue.setEnabled(newImage instanceof MapillaryImage);
-    final String newImageKey = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getKey() : null;
+    imgKeyValue.setEnabled(newImage != null);
+    final String newImageKey = hasKey.test(newImage) ? newImage.get(MapillaryKeys.KEY) : null;
     if (newImageKey != null) {
       final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
         ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
@@ -225,6 +228,14 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       copyImgUrlAction.setContents(new StringSelection(newImageUrl.toString()));
 
       imgKeyValue.setText(newImageKey);
+
+      ImageDetection.getDetections(newImage.get(MapillaryKeys.KEY), (key, detections) -> {
+        // This avoids having the wrong detection count when the image is changed quickly
+        if (key.equals(imgKeyValue.getText())) {
+          numDetectionsLabel
+            .setText(tr("{0} detections", detections.stream().filter(ImageDetection::isTrafficSign).count()));
+        }
+      });
       copyImgKeyAction.setContents(new StringSelection(newImageKey));
       addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
     } else {
@@ -240,7 +251,9 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       addMapillaryTagAction.setTag(null);
     }
 
-    final UserProfile user = newImage instanceof MapillaryImage ? ((MapillaryImage) newImage).getUser() : null;
+    final UserProfile user = newImage != null && newImage.hasKey(MapillaryKeys.USER_KEY)
+      ? Caches.UserProfileCache.getInstance().get(newImage.get(MapillaryKeys.USER_KEY))
+      : null;
     usernameLabel.setEnabled(user != null);
     if (user != null) {
       usernameLabel.setText(user.getUsername());
@@ -250,11 +263,10 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
       usernameLabel.setIcon(EMPTY_USER_AVATAR);
     }
 
-    final boolean partOfSequence = newImage != null && newImage.getSequence() != null
-      && newImage.getSequence().getKey() != null;
+    final boolean partOfSequence = newImage != null && newImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY);
     seqKeyValue.setEnabled(partOfSequence);
     if (partOfSequence) {
-      seqKeyValue.setText(newImage.getSequence().getKey());
+      seqKeyValue.setText(newImage.get(MapillaryImageUtils.SEQUENCE_KEY));
     } else {
       seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
     }
@@ -266,7 +278,7 @@ public final class ImageInfoPanel extends ToggleDialog implements MapillaryDataL
    * @see org.openstreetmap.josm.data.SelectionChangedListener#selectionChanged(java.util.Collection)
    */
   @Override
-  public synchronized void selectionChanged(final SelectionChangeEvent event) {
+  public synchronized void selectionChanged(final DataSelectionListener.SelectionChangeEvent event) {
     final Collection<OsmPrimitive> sel = event.getSelection();
     Logging.debug(String.format("Selection changed. %d primitives are selected.", sel == null ? 0 : sel.size()));
     addMapillaryTagAction.setTarget(sel != null && sel.size() == 1 ? sel.iterator().next() : null);

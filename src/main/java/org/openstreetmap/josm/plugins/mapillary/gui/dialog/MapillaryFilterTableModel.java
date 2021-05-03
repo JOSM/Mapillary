@@ -21,6 +21,8 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.MapillaryFilterMo
 import org.openstreetmap.josm.tools.Logging;
 
 /**
+ * A model for arbitrary filters
+ *
  * @author Taylor Smock
  */
 public class MapillaryFilterTableModel extends AbstractTableModel implements SortableTableModel<Filter> {

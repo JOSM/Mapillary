@@ -1,35 +1,29 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.openstreetmap.josm.data.preferences.BooleanProperty;
+import org.openstreetmap.josm.data.preferences.StringProperty;
+import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.tools.I18n;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpinnerNumberModel;
+import java.awt.GraphicsEnvironment;
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import static org.openstreetmap.josm.plugins.mapillary.utils.TestUtil.getPrivateFieldValue;
-
-import java.awt.GraphicsEnvironment;
-import java.time.Duration;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpinnerNumberModel;
-
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
-import org.openstreetmap.josm.data.preferences.BooleanProperty;
-import org.openstreetmap.josm.data.preferences.StringProperty;
-import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
-import org.openstreetmap.josm.testutils.JOSMTestRules;
-import org.openstreetmap.josm.tools.I18n;
 
 class MapillaryPreferenceSettingTest {
 
@@ -143,26 +137,6 @@ class MapillaryPreferenceSettingTest {
     assertEquals(
       String.valueOf(((SpinnerNumberModel) getPrivateFieldValue(settings, "preFetchSize")).getNumber().intValue()),
       new StringProperty("mapillary.prefetch-image-count", defaultValue).get());
-
-    // Test combobox
-    for (int i = 0; i < ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox"))
-      .getItemCount(); i++) {
-      ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).setSelectedIndex(i);
-      settings.ok();
-      assertEquals(new StringProperty("mapillary.download-mode", defaultValue).get(),
-        DOWNLOAD_MODE
-          .fromLabel(
-            ((JComboBox<String>) getPrivateFieldValue(settings, "downloadModeComboBox")).getSelectedItem().toString())
-          .getPrefId());
-    }
-    for (int i = 0; i < ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages"))
-      .getItemCount(); i++) {
-      ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings, "privateImages")).setSelectedIndex(i);
-      settings.ok();
-      assertEquals(new StringProperty("mapillary.imageMode", defaultValue).get(),
-        ((PRIVATE_IMAGE_DOWNLOAD_MODE) ((JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE>) getPrivateFieldValue(settings,
-          "privateImages")).getSelectedItem()).getPrefId());
-    }
   }
 
   /**

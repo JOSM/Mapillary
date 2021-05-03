@@ -1,7 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.remotecontrol;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.actions.AutoScaleAction;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
+import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,22 +20,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.openstreetmap.josm.actions.AutoScaleAction;
-import org.openstreetmap.josm.data.gpx.GpxImageEntry;
-import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
-import org.openstreetmap.josm.io.remotecontrol.handler.RequestHandler;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Remote Control handler for Mapillary
  */
 public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHandler {
+  private static final String[] EMPTY_STRING_ARRAY = new String[0];
   private static final PermissionPrefWithDefault PERMISSION_PREF_WITH_DEFAULT = new PermissionPrefWithDefault(
     "mapillary.remote_control", true, tr("Mapillary"));
 
@@ -40,7 +39,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
 
   @Override
   public String[] getMandatoryParams() {
-    return new String[] {};
+    return EMPTY_STRING_ARRAY;
   }
 
   @Override
@@ -87,25 +86,26 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
       throw new RequestHandlerBadRequestException(tr("No known image provider used"));
     }
     // This will create a mapillary layer if one does not already exist
-    Collection<Node> nodes = new HashSet<>();
+    Collection<INode> nodes = new HashSet<>();
     if (mapillaryImages.length > 0) {
-      Map<String, Collection<MapillaryAbstractImage>> images = GuiHelper
+      Map<String, Collection<INode>> images = GuiHelper
         .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadImages(mapillaryImages));
       mapillarySequences.addAll(images.keySet());
-      nodes.addAll(images.entrySet().stream().flatMap(e -> e.getValue().stream()).map(GpxImageEntry::getExifCoor)
+      nodes.addAll(images.entrySet().stream().flatMap(e -> e.getValue().stream()).map(INode::getCoor)
         .filter(Objects::nonNull).map(Node::new).collect(Collectors.toList()));
-      List<MapillaryAbstractImage> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
+      List<INode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
         .collect(Collectors.toList());
       if (addedImages.size() == 1) {
-        GuiHelper.runInEDTAndWait(
-          () -> MapillaryLayer.getInstance().getData().setSelectedImage(addedImages.iterator().next(), true));
+        GuiHelper
+          .runInEDTAndWait(() -> MapillaryLayer.getInstance().getData().setSelected(addedImages.iterator().next()));
+        // TODO zoom to selected image?
       }
     }
     mapillarySequences.removeIf(string -> string.trim().isEmpty());
     if (!mapillarySequences.isEmpty()) {
-      List<Node> tNodes = GuiHelper.runInEDTAndWaitAndReturn(() -> MapillaryDownloader
-        .downloadSequences(mapillarySequences.toArray(new String[0])).stream().flatMap(seq -> seq.getImages().stream())
-        .map(GpxImageEntry::getExifCoor).filter(Objects::nonNull).map(Node::new).collect(Collectors.toList()));
+      List<INode> tNodes = GuiHelper
+        .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadSequences(mapillarySequences.toArray(new String[0]))
+          .stream().flatMap(seq -> seq.getNodes().stream()).collect(Collectors.toList()));
       if (nodes.isEmpty()) {
         nodes.addAll(tNodes);
       }
@@ -114,7 +114,6 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
     if (!nodes.isEmpty()) {
       if (MainApplication.getLayerManager().getLayersOfType(MapillaryLayer.class).isEmpty()) {
         GuiHelper.runInEDTAndWait(() -> MainApplication.getLayerManager().addLayer(MapillaryLayer.getInstance()));
-        MapillaryLayer.getInstance().setMode(new SelectMode());
       }
       GuiHelper.runInEDT(() -> AutoScaleAction.zoomTo(nodes));
     }

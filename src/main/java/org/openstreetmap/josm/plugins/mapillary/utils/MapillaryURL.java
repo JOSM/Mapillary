@@ -6,28 +6,43 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.tools.Logging;
 
 public final class MapillaryURL {
   /** Base URL of the Mapillary API. */
   private static final String CLIENT_ID = "UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
-  private static final String TRAFFIC_SIGN_LAYER = "trafficsigns";
-  private static final String POINT_FEATURES_LAYER = "points";
-  private static final String LINE_FEATURES_LAYER = "lines";
 
-  /** Without this sort param, the pagination of /map_features and /image_detections does not behave correctly */
-  private static final String SORT_BY_KEY = "&sort_by=key";
+  public static final class APIv4 {
+    static String baseUrl = "https://a.mapillary.com/v3/";
+
+    public static String getTrafficSigns() {
+      return basePointDetection() + "&layers=trafficsigns";
+    }
+
+    public static String getObjectDetections() {
+      return basePointDetection() + "&layers=points";
+    }
+
+    private static String basePointDetection() {
+      // TODO Update to actual v4 API
+      return baseUrl + "map_features?tile={z}/{x}/{y}&per_page=1000&client_id=" + CLIENT_ID;
+    }
+
+    public static String getImages() {
+      // TODO Update to actual v4 API
+      // This currently does not require the CLIENT_ID (and will actually return an empty response, if the CLIENT_ID is
+      // given)
+      return "https://tiles3.mapillary.com/v0.1/{z}/{x}/{y}.mvt";
+    }
+  }
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
@@ -84,27 +99,6 @@ public final class MapillaryURL {
     }
 
     /**
-     * @return the URL where you can create, get and approve changesets
-     */
-    public static URL submitChangeset() {
-      return string2URL(baseUrl, "changesets", queryString(null));
-    }
-
-    public static Collection<URL> searchDetections(Bounds bounds) {
-      return Collections
-        .singleton(string2URL(baseUrl, "image_detections", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
-    }
-
-    public static URL retrieveDetections(String imageKey) {
-      return retrieveDetections(Collections.singleton(imageKey));
-    }
-
-    public static URL retrieveDetections(Collection<String> imageKeys) {
-      return string2URL(baseUrl, "image_detections/",
-        queryString(null, getDetectionLayers()) + SORT_BY_KEY + "&image_keys=" + String.join(",", imageKeys));
-    }
-
-    /**
      * Get images inside a bound
      *
      * @param bounds The bounds to search
@@ -133,103 +127,12 @@ public final class MapillaryURL {
     }
 
     /**
-     * Get the URL for Traffic Sign map features
+     * Get the upload secrets URL
      *
-     * @param bounds The bounds to search
-     * @return A URL to use to get traffic sign map features
-     */
-    public static Collection<URL> searchMapObjects(final Bounds bounds) {
-      return Collections
-        .singleton(string2URL(baseUrl, "map_features", queryString(bounds, TRAFFIC_SIGN_LAYER) + SORT_BY_KEY));
-    }
-
-    /**
-     * Get the URL for point object map features
-     *
-     * @param bounds The bounds to search
-     * @return A URL to use to get point object map features
-     */
-    public static Collection<URL> searchMapPointObjects(final Bounds bounds) {
-      return Collections
-        .singleton(string2URL(baseUrl, "map_features", queryString(bounds, getEnabledLayers()) + SORT_BY_KEY));
-    }
-
-    private static String getEnabledLayers() {
-      return String.join(",", Arrays.asList(POINT_FEATURES_LAYER, LINE_FEATURES_LAYER));
-    }
-
-    private static String getDetectionLayers() {
-      return String.join(",", Arrays.asList(TRAFFIC_SIGN_LAYER, POINT_FEATURES_LAYER));
-    }
-
-    public static Collection<URL> searchSequences(final Bounds bounds) {
-      List<URL> urls = new ArrayList<>();
-      PRIVATE_IMAGE_DOWNLOAD_MODE imageMode = PRIVATE_IMAGE_DOWNLOAD_MODE
-        .getFromId(MapillaryProperties.IMAGE_MODE.get());
-      // If the private=true|false is left out, all images are obtained (as of
-      // 2020-02-20).
-      if (imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PUBLIC_ONLY)
-        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds), "&private=false"));
-      else if (MapillaryUser.getUsername() != null && imageMode == PRIVATE_IMAGE_DOWNLOAD_MODE.PRIVATE_ONLY)
-        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds), "&private=true"));
-      else
-        urls.add(string2URL(baseUrl, SEQUENCES, queryString(bounds)));
-      return urls;
-    }
-
-    /**
      * @return the URL where you'll find the upload secrets as JSON
      */
     public static URL uploadSecretsURL() {
       return string2URL(baseUrl, "me/uploads", queryString(null));
-    }
-
-    /**
-     * @return A url to indicate an upload is finished. You <i>must</i>
-     *         call {@code String.format(returnValue, key)}.
-     *         May return {@code null}.
-     */
-    public static String uploadFinish() {
-      final URL toReturn = string2URL(baseUrl, "me/uploads/%s/closed", MapillaryURL.queryString(null));
-      if (toReturn == null) {
-        return null;
-      }
-      return toReturn.toExternalForm();
-    }
-
-    /**
-     * The APIv3 returns a Link header for each request. It contains a URL for requesting more results.
-     * If you supply the value of the Link header, this method returns the next URL,
-     * if such a URL is defined in the header.
-     *
-     * @param value the value of the HTTP-header with key "Link"
-     * @return the {@link URL} for the next result page, or <code>null</code> if no such URL could be found
-     */
-    public static URL parseNextFromLinkHeaderValue(String value) {
-      if (value != null) {
-        // Iterate over the different entries of the Link header
-        for (String link : value.split(",", Integer.MAX_VALUE)) {
-          boolean isNext = false;
-          URL url = null;
-          // Iterate over the parts of each entry (typically it's one `rel="‹linkType›"` and one like `<https://URL>`)
-          for (String linkPart : link.split(";", Integer.MAX_VALUE)) {
-            linkPart = linkPart.trim();
-            isNext |= linkPart.matches("rel\\s*=\\s*\"next\"");
-            if (linkPart.length() >= 1 && linkPart.charAt(0) == '<' && linkPart.endsWith(">")) {
-              try {
-                url = new URL(linkPart.substring(1, linkPart.length() - 1));
-              } catch (MalformedURLException e) {
-                Logging.log(Logging.LEVEL_WARN, "Mapillary API v3 returns a malformed URL in the Link header.", e);
-              }
-            }
-          }
-          // If both a URL and the rel=next attribute are present, return the URL. Otherwise null is returned
-          if (url != null && isNext) {
-            return url;
-          }
-        }
-      }
-      return null;
     }
 
     static String queryString(final Bounds bounds) {
@@ -241,20 +144,9 @@ public final class MapillaryURL {
       return MapillaryURL.queryString(null);
     }
 
-    static String queryString(final Bounds bounds, final String layer) {
-      if (layer == null) {
-        throw new IllegalArgumentException("layer cannot be null");
-      }
-      final Map<String, String> parts = new HashMap<>();
-      if (bounds != null) {
-        parts.put("bbox", bounds.toBBox().toStringCSV(","));
-      }
-      parts.put("layers", layer);
-      return MapillaryURL.queryString(parts);
-
-    }
-
     /**
+     * Get the URL for the current user information
+     *
      * @return the URL where you'll find information about the user account as JSON
      */
     public static URL userURL() {
@@ -262,12 +154,32 @@ public final class MapillaryURL {
     }
 
     /**
+     * Vote for a detection
+     *
      * @param layer The object layer
      * @param key The object key
      * @return A URL to vote for the detection
      */
     public static URL vote(String layer, String key) {
       return string2URL(baseUrl, String.format("object_detections/%s/%s/votes", layer, key),
+        MapillaryURL.queryString(null));
+    }
+
+    /**
+     * Get the detections for an image
+     *
+     * @param key The image key
+     * @param layer The layer to retrieve (should be one of {@code trafficsigns}, {@code segmentations}, or
+     *        {@code instances})
+     * @return The url for detections
+     */
+    public static URL getDetections(String key, String layer) {
+      Objects.requireNonNull(key);
+      Objects.requireNonNull(layer);
+      if (!Arrays.asList("trafficsigns", "segmentations", "instances").contains(layer)) {
+        throw new UnsupportedOperationException("Mapillary is unknown: " + layer);
+      }
+      return string2URL(baseUrl, String.format("images/%s/object_detections/%s", key, layer),
         MapillaryURL.queryString(null));
     }
   }

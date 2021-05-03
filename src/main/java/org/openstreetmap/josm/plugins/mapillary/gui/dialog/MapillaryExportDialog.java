@@ -16,9 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 
 /**
  * GUI for exporting images.
@@ -36,7 +37,7 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
   public final JRadioButton sequence;
   /**
    * Button to export all images belonging to the selected
-   * {@link MapillaryImage} objects.
+   * {@link INode} objects.
    */
   public final JRadioButton selected;
   /** Button to rewrite all imported images. */
@@ -76,12 +77,11 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     this.group.add(this.selected);
     this.group.add(this.rewrite);
     // Some options are disabled depending on the circumstances
-    this.sequence.setEnabled(MapillaryLayer.getInstance().getData().getSelectedImage() instanceof MapillaryImage);
-    if (MapillaryLayer.getInstance().getData().getMultiSelectedImages().isEmpty()) {
-      this.selected.setEnabled(false);
-    }
-    this.rewrite.setEnabled(MapillaryLayer.getInstance().getData().getImages().parallelStream()
-      .anyMatch(img -> img instanceof MapillaryImportedImage));
+    VectorDataSet data = MapillaryLayer.getInstance().getData();
+    this.sequence.setEnabled(data.getNodes().stream().anyMatch(node -> node.hasKey(MapillaryImageUtils.SEQUENCE_KEY)));
+    this.selected.setEnabled(data.getNodes().isEmpty());
+    this.rewrite
+      .setEnabled(data.getNodes().parallelStream().anyMatch(img -> img.hasKey(MapillaryImageUtils.IMPORTED_KEY)));
 
     this.path = new JLabel(tr("Select a directory"));
     this.choose = new JButton(tr("Explore"));

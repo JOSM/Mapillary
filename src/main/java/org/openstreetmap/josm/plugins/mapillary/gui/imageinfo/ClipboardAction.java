@@ -59,6 +59,8 @@ public class ClipboardAction extends AbstractAction {
   }
 
   /**
+   * Set the potential contents of the clipboard
+   *
    * @param contents the contents, which should be copied to the clipboard when the {@link Action} is executed
    */
   public void setContents(Transferable contents) {
@@ -68,13 +70,15 @@ public class ClipboardAction extends AbstractAction {
 
   /**
    * Sets the component, under which the popup will be shown, which indicates that the text was copied to the clipboard.
+   *
    * @param popupParent the component to set as parent of the popup
    */
   public void setPopupParent(Component popupParent) {
     this.popupParent = popupParent;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   @Override
@@ -83,7 +87,8 @@ public class ClipboardAction extends AbstractAction {
       Toolkit.getDefaultToolkit().getSystemClipboard().setContents(contents, null);
       if (popupParent != null && lastCopyTime + POPUP_DURATION < System.currentTimeMillis()) {
         final PopupFactory popupFactory = new PopupFactory();
-        final Popup popup = popupFactory.getPopup(popupParent, popupContent, popupParent.getLocationOnScreen().x, popupParent.getLocationOnScreen().y + popupParent.getHeight() + 2);
+        final Popup popup = popupFactory.getPopup(popupParent, popupContent, popupParent.getLocationOnScreen().x,
+          popupParent.getLocationOnScreen().y + popupParent.getHeight() + 2);
         popup.show();
         new Thread(() -> {
           try {

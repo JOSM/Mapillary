@@ -44,6 +44,8 @@ public class CameraPlane {
   }
 
   /**
+   * Get the point for a vector
+   *
    * @param vector the vector for which the corresponding point on the camera plane will be returned
    * @return the point on the camera plane to which the given vector is mapped, nullable
    */

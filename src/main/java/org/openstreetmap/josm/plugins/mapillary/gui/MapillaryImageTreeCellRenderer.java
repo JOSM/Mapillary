@@ -7,11 +7,11 @@ import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
- * Renders an item in a {@link JTree} that represents a {@link MapillaryAbstractImage}.
+ * Renders an item in a {@link JTree} that represents a {@link INode}.
  */
 public class MapillaryImageTreeCellRenderer extends DefaultTreeCellRenderer {
   private static final long serialVersionUID = 5359276673450659572L;

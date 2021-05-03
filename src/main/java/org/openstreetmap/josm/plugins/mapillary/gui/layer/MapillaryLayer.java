@@ -1,61 +1,21 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.TexturePaint;
-import java.awt.event.ActionEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.DataSourceChangeEvent;
-import org.openstreetmap.josm.data.osm.DataSourceListener;
-import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.*;
+import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.gui.NavigatableComponent;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
-import org.openstreetmap.josm.gui.layer.AbstractModifiableLayer;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerAddEvent;
 import org.openstreetmap.josm.gui.layer.LayerManager.LayerChangeListener;
@@ -64,35 +24,16 @@ import org.openstreetmap.josm.gui.layer.LayerManager.LayerRemoveEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeEvent;
 import org.openstreetmap.josm.gui.layer.MainLayerManager.ActiveLayerChangeListener;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.gui.mappaint.Range;
 import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryData;
-import org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
-import org.openstreetmap.josm.plugins.mapillary.data.image.Detections;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillarySequence;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.changeset.MapillaryChangeset;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
-import org.openstreetmap.josm.plugins.mapillary.history.MapillaryRecord;
-import org.openstreetmap.josm.plugins.mapillary.history.commands.CommandDelete;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.mode.AbstractMode;
-import org.openstreetmap.josm.plugins.mapillary.mode.EditMode;
-import org.openstreetmap.josm.plugins.mapillary.mode.JoinMode;
-import org.openstreetmap.josm.plugins.mapillary.mode.SelectMode;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapViewGeometryUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.*;
 import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
@@ -100,14 +41,29 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.Logging;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.locks.Lock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils.KEY;
+
 /**
  * This class represents the layer shown in JOSM. There can only exist one
  * instance of this object.
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends AbstractModifiableLayer
-  implements ActiveLayerChangeListener, LayerChangeListener, MapillaryDataListener, UploadHook {
+public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
+  UploadHook, IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -122,45 +78,36 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   private static final Image YIELD_SIGN = new ImageProvider("josm-ca", "sign-detection").setMaxSize(TRAFFIC_SIGN_SIZE)
     .get().getImage();
 
-  private static class DataSetSourceListener implements DataSourceListener {
-    @Override
-    public void dataSourceChange(DataSourceChangeEvent event) {
-      if (MapillaryDownloader.DOWNLOAD_MODE.OSM_AREA == DOWNLOAD_MODE
-        .fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get())) {
-        SwingUtilities.invokeLater(MapillaryDownloader::downloadOSMArea);
-      }
-    }
-  }
-
-  private static final DataSourceListener DATASET_LISTENER = new DataSetSourceListener();
+  private static final String IMAGE_SPRITE_DIR = "josm-ca";
+  /** The default sprite for a Mapillary image */
+  private static final ImageIcon DEFAULT_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "default-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+  /** The sprite to use for the active Mapillary sequence */
+  private static final ImageIcon ACTIVE_SEQUENCE_SPRITE = new ImageProvider(IMAGE_SPRITE_DIR, "sequence-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+  /** The sprite to use for the currently selected image */
+  private static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
+    .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
   /** The nearest images to the selected image from different sequences sorted by distance from selection. */
   // Use ArrayList instead of an array, since there will not be thousands of instances, and allows for better
   // synchronization
-  private final List<MapillaryAbstractImage> nearestImages = Collections.synchronizedList(new ArrayList<>());
-  /** {@link MapillaryData} object that stores the database. */
-  private final MapillaryData data;
+  private final List<INode> nearestImages = Collections.synchronizedList(new ArrayList<>());
 
   /** The images that have been viewed since the last upload */
-  private final ConcurrentHashMap<DataSet, Set<MapillaryAbstractImage>> imageViewedMap = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<DataSet, Set<INode>> imageViewedMap = new ConcurrentHashMap<>();
 
-  /** Mode of the layer. */
-  public AbstractMode mode;
-
-  private volatile TexturePaint hatched;
-  private final MapillaryChangeset locationChangeset = new MapillaryChangeset();
-  private final MapillaryChangeset deletionChangeset = new MapillaryChangeset();
   private boolean destroyed;
   private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
     MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
 
   private MapillaryLayer() {
-    super(I18n.tr("Mapillary Images"));
-    this.data = new MapillaryData();
-    data.addListener(this);
+    super(MapillaryKeys.MAPILLARY_IMAGES);
+    this.getData().addListener(this);
+    Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(listener -> this.getData().addListener(listener));
     UploadAction.registerUploadHook(this, true);
     SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
   }
@@ -169,69 +116,21 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * Initializes the Layer.
    */
   private void init() {
-    final DataSet ds = MainApplication.getLayerManager().getEditDataSet();
-    if (ds != null) {
-      ds.addDataSourceListener(DATASET_LISTENER);
-    }
     MainApplication.getLayerManager().addActiveLayerChangeListener(this);
-    if (!GraphicsEnvironment.isHeadless()) {
-      setMode(new SelectMode());
-      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.OSM_AREA) {
-        MainApplication.worker.execute(MapillaryDownloader::downloadOSMArea);
-      }
-      if (MapillaryDownloader.getMode() == DOWNLOAD_MODE.VISIBLE_AREA) {
-        this.mode.zoomChanged();
-      }
-    }
+
     // Does not execute when in headless mode
     if (MainApplication.getMainFrame() != null && !MapillaryMainDialog.getInstance().isShowing()) {
       MapillaryMainDialog.getInstance().showDialog();
     }
     if (MapillaryPlugin.getMapView() != null) {
       MapillaryMainDialog.getInstance().imageViewer.repaint();
-      MapillaryMainDialog.getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("DELETE"), "MapillaryDel");
-      MapillaryMainDialog.getInstance().getActionMap().put("MapillaryDel", new DeleteImageAction());
-
-      getLocationChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
-      getDeletionChangeset().addChangesetListener(MapillaryChangesetDialog.getInstance());
     }
-    createHatchTexture();
     invalidate();
   }
 
   public static void invalidateInstance() {
     if (hasInstance()) {
       getInstance().invalidate();
-    }
-  }
-
-  /**
-   * Changes the mode to the given one.
-   *
-   * @param mode The mode that is going to be activated.
-   */
-  public void setMode(AbstractMode mode) {
-    final MapView mv = MapillaryPlugin.getMapView();
-    if (this.mode != null && mv != null) {
-      mv.removeMouseListener(this.mode);
-      mv.removeMouseMotionListener(this.mode);
-      try {
-        this.mode.exitMode();
-      } catch (IllegalArgumentException e) {
-        if (!e.getMessage().contains("was not registered before or already removed")) {
-          throw e;
-        }
-      }
-      NavigatableComponent.removeZoomChangeListener(this.mode);
-    }
-    this.mode = mode;
-    if (mode != null && mv != null) {
-      mode.enterMode();
-      mv.addMouseListener(mode);
-      mv.addMouseMotionListener(mode);
-      NavigatableComponent.addZoomChangeListener(mode);
-      MapillaryUtils.updateHelpText();
     }
   }
 
@@ -255,40 +154,12 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   }
 
   /**
+   * Check if there is a {@link MapillaryLayer} instance
+   *
    * @return if the unique instance of this layer is currently instantiated
    */
   public static boolean hasInstance() {
     return instance != null;
-  }
-
-  /**
-   * Returns the {@link MapillaryData} object, which acts as the database of the
-   * Layer.
-   *
-   * @return The {@link MapillaryData} object that stores the database.
-   */
-  // @Override -- depends upon JOSM 16548+
-  @Override
-  public MapillaryData getData() {
-    return this.data;
-  }
-
-  /**
-   * Returns the {@link MapillaryChangeset} object, which acts as the list of changed images.
-   *
-   * @return The {@link MapillaryChangeset} object that stores the changed images.
-   */
-  public MapillaryChangeset getLocationChangeset() {
-    return locationChangeset;
-  }
-
-  /**
-   * Returns the {@link MapillaryChangeset} object, which acts as the list of deleted images.
-   *
-   * @return The {@link MapillaryChangeset} object that stores the deleted images.
-   */
-  public MapillaryChangeset getDeletionChangeset() {
-    return deletionChangeset;
   }
 
   /**
@@ -299,7 +170,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param n the index for picking from the list of "nearest images", beginning from 1
    * @return the n-nearest image to the currently selected image, or null if no such image can be found
    */
-  public MapillaryAbstractImage getNNearestImage(final int n) {
+  public INode getNNearestImage(final int n) {
     synchronized (this.nearestImages) {
       return n >= 1 && n <= this.nearestImages.size() ? this.nearestImages.get(n - 1) : null;
     }
@@ -311,11 +182,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param image The image that has been viewed
    * @return {@code true} if the image wasn't viewed before in the current editing session.
    */
-  public boolean setImageViewed(MapillaryAbstractImage image) {
+  public boolean setImageViewed(INode image) {
     DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
     if (image != null && ds != null) {
-      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap.getOrDefault(ds,
-        Collections.synchronizedSet(new HashSet<>()));
+      Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.synchronizedSet(new HashSet<>()));
       imageViewedMap.putIfAbsent(ds, imageViewedList);
       return imageViewedList.add(image);
     }
@@ -325,37 +195,11 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   @Override
   public synchronized void destroy() {
     if (!destroyed) {
-      data.setSelectedImage(null);
+      this.getData().clearSelection();
       clearInstance();
-      setMode(null);
-      MapillaryRecord.getInstance().reset();
-      AbstractMode.resetThread();
-      /*
-       * Stop downloads in a separate thread to avoid a 30s hang. Check if the worker
-       * is shutdown first though (so we don't throw an error).
-       */
-      if (MainApplication.worker.isShutdown()) {
-        MapillaryDownloader.stopAll();
-      } else {
-        MainApplication.worker.execute(MapillaryDownloader::stopAll);
-      }
       if (MapillaryMainDialog.hasInstance()) {
         MapillaryMainDialog.getInstance().setImage(null);
         MapillaryMainDialog.getInstance().updateImage();
-      }
-      final MapView mv = MapillaryPlugin.getMapView();
-      if (mv != null) {
-        mv.removeMouseListener(this.mode);
-        mv.removeMouseMotionListener(this.mode);
-      }
-      try {
-        MainApplication.getLayerManager().removeActiveLayerChangeListener(this);
-        if (MainApplication.getLayerManager().getEditDataSet() != null) {
-          MainApplication.getLayerManager().getEditDataSet().removeDataSourceListener(DATASET_LISTENER);
-        }
-      } catch (IllegalArgumentException e) {
-        // TODO: It would be ideal, to fix this properly. But for the moment let's catch
-        // this, for when a listener has already been removed.
       }
       UploadAction.unregisterUploadHook(this);
     }
@@ -364,100 +208,83 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   }
 
   @Override
-  public boolean isModified() {
-    return this.data.getImages().parallelStream().anyMatch(MapillaryAbstractImage::isModified);
-  }
-
-  @Override
   public void setVisible(boolean visible) {
     super.setVisible(visible);
-    getData().getImages().parallelStream().forEach(img -> img.setVisible(visible));
+    // Avoid an NPE during initialization
+    if (this.getData() == null) {
+      return;
+    }
+    this.getData().getNodes().parallelStream().filter(node -> node.hasKey(KEY)).forEach(img -> img.setVisible(visible));
     if (MainApplication.getMap() != null) {
       MapillaryFilterDialog.getInstance().refresh();
     }
   }
 
-  /**
-   * Initialize the hatch pattern used to paint the non-downloaded area.
-   */
-  private void createHatchTexture() {
-    BufferedImage bi = new BufferedImage(15, 15, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D big = bi.createGraphics();
-    big.setColor(MapillaryProperties.BACKGROUND.get());
-    Composite comp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
-    big.setComposite(comp);
-    big.fillRect(0, 0, 15, 15);
-    big.setColor(MapillaryProperties.OUTSIDE_DOWNLOADED_AREA.get());
-    big.drawLine(0, 15, 15, 0);
-    Rectangle r = new Rectangle(0, 0, 15, 15);
-    this.hatched = new TexturePaint(bi, r);
-  }
-
   @Override
   public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
+    final Lock lock = this.getData().getReadLock();
+    try {
+      lock.lockInterruptibly();
+      this.paintWithLock(g, mv, box);
+    } catch (InterruptedException e) {
+      Logging.error(e);
+      Thread.currentThread().interrupt();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  private void paintWithLock(final Graphics2D g, final MapView mv, final Bounds box) {
+    this.getData().setZoom(this.getZoomLevel());
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
       MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
-    if (MainApplication.getLayerManager().getActiveLayer() == this) {
-      // paint remainder
-      g.setPaint(this.hatched);
-      g.fill(MapViewGeometryUtil.getNonDownloadedArea(mv, this.data.getBounds()));
-    }
 
     // Draw the blue and red line
+    final INode selectedImage = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     synchronized (this) {
-      final MapillaryAbstractImage selectedImg = data.getSelectedImage();
-      for (int i = 0; i < this.nearestImages.size() && selectedImg != null; i++) {
+      for (int i = 0; i < this.nearestImages.size() && selectedImage != null; i++) {
         if (i == 0) {
           g.setColor(Color.RED);
         } else {
           g.setColor(Color.BLUE);
         }
-        final Point selected = mv.getPoint(selectedImg.getMovingLatLon());
-        final Point p = mv.getPoint(this.nearestImages.get(i).getMovingLatLon());
-        g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
+        if (selectedImage != null) {
+          final Point selected = mv.getPoint(selectedImage.getCoor());
+          final Point p = mv.getPoint(this.nearestImages.get(i).getCoor());
+          g.draw(new Line2D.Double(p.getX(), p.getY(), selected.getX(), selected.getY()));
+        }
       }
     }
 
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
-    final MapillaryAbstractImage selectedImage = getData().getSelectedImage();
-    for (MapillarySequence seq : getData().searchWays(box)) {
-      if (seq.getImages().contains(selectedImage)) {
-        g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
+    final String sequenceKey = MapillarySequenceUtils.getKey(MapillaryImageUtils.getSequence(selectedImage));
+    for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
+      if (seq.getNodes().contains(selectedImage) || sequenceKey.equals(MapillarySequenceUtils.getKey(seq))) {
+        g.setColor(!seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
       } else if (selectedImage == null) {
         g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
+          !seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
       } else {
         g.setColor(
-          seq.getKey() == null ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
+          !seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
         g.setComposite(fadeComposite);
       }
       g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
-      if (this.mode instanceof EditMode) {
-        Composite backup = g.getComposite();
-        g.setComposite(fadeComposite.derive(0.25f));
-        g.draw(MapViewGeometryUtil.getImageChangesPath(mv, seq));
-        g.draw(MapViewGeometryUtil.getOriginalSequencePath(mv, seq));
-        g.setComposite(backup);
-      }
       g.setComposite(AlphaComposite.SrcOver);
     }
-    for (MapillaryAbstractImage imageAbs : this.getData().searchNodes(box)) {
-      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
+    for (INode imageAbs : this.getData().searchNodes(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
         drawImageMarker(g, imageAbs);
       }
     }
     // Paint selected images last. Not particularly worried about painting too much, since most people don't select
     // thousands of images.
-    for (MapillaryAbstractImage imageAbs : this.getData().getMultiSelectedImages()) {
-      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getMovingLatLon()))) {
+    for (INode imageAbs : this.getData().getSelectedNodes()) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
         drawImageMarker(g, imageAbs);
       }
-    }
-    if (this.mode instanceof JoinMode) {
-      this.mode.paint(g, mv, box);
     }
   }
 
@@ -467,43 +294,42 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param g the Graphics context
    * @param img the image to be drawn onto the Graphics context
    */
-  private void drawImageMarker(final Graphics2D g, final MapillaryAbstractImage img) {
-    if (img == null || img.getLatLon() == null) {
+  private void drawImageMarker(final Graphics2D g, final INode img) {
+    if (img == null || img.getCoor() == null) {
       Logging.warn("An image is not painted, because it is null or has no LatLon!");
       return;
     }
-    final MapillaryAbstractImage selectedImg = getData().getSelectedImage();
+    final INode selectedImg = getData().getSelectedNodes().stream().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
-      && !getData().getMultiSelectedImages().contains(img)
-      && (selectedImg == null || (img.getSequence() != null && !img.getSequence().equals(selectedImg.getSequence())))) {
+      && !getData().getSelectedNodes().contains(img)
+      && (selectedImg == null || (img.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
+        && !img.get(MapillaryImageUtils.SEQUENCE_KEY).equals(selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
       return;
     }
-    final Point p = MainApplication.getMap().mapView.getPoint(
-      img instanceof MapillaryImage && ((MapillaryImage) img).toDelete() ? img.getLatLon() : img.getMovingLatLon());
-    final Point originalP = MainApplication.getMap().mapView.getPoint(img.getLatLon());
+    final Point p = MainApplication.getMap().mapView.getPoint(img.getCoor());
     Composite composite = g.getComposite();
-    if (selectedImg != null && selectedImg.getSequence() != null
-      && !selectedImg.getSequence().equals(img.getSequence())) {
+    if (selectedImg != null && selectedImg.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
+      && !selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY).equals(img.get(MapillaryImageUtils.SEQUENCE_KEY))) {
       g.setComposite(fadeComposite);
     }
     // Determine colors
     final Color directionC;
     final Image i;
-    if (selectedImg != null && getData().getMultiSelectedImages().contains(img)) {
-      i = img.getSelectedImage();
-      directionC = img.paintHighlightedAngleColour();
-    } else if (selectedImg != null && selectedImg.getSequence() != null
-      && selectedImg.getSequence().equals(img.getSequence())) {
-      directionC = img.paintSelectedAngleColour();
-      i = img.getActiveSequenceImage();
+    if (selectedImg != null && getData().getSelectedNodes().contains(img)) {
+      i = SELECTED_IMAGE.getImage();
+      directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
+    } else if (selectedImg != null && selectedImg.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
+      && selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY).equals(img.get(MapillaryImageUtils.SEQUENCE_KEY))) {
+      directionC = MapillaryColorScheme.SEQ_SELECTED_CA;
+      i = ACTIVE_SEQUENCE_SPRITE.getImage();
     } else {
-      i = img.getDefaultImage();
-      directionC = img.paintUnselectedAngleColour();
+      i = DEFAULT_SPRITE.getImage();
+      directionC = MapillaryColorScheme.SEQ_UNSELECTED_CA;
     }
     // Paint direction indicator
     g.setColor(directionC);
-    if (img.isPanorama()) {
+    if (img.hasKey(MapillaryKeys.PANORAMIC) && MapillaryKeys.PANORAMIC_TRUE.equals(img.get(MapillaryKeys.PANORAMIC))) {
       Composite currentComposite = g.getComposite();
       g.setComposite(fadeComposite);
       g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
@@ -513,42 +339,28 @@ public final class MapillaryLayer extends AbstractModifiableLayer
 
     // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
-    if (img instanceof MapillaryImage && mode instanceof EditMode) {
-      if (!((MapillaryImage) img).toDelete()) {
-        Composite currentComposite = g.getComposite();
-        g.setComposite(fadeComposite.derive(0.25f));
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), originalP, getOriginalCentroid(i), backup));
-        g.drawImage(img.getActiveSequenceImage(), originalP.x, originalP.y, null);
-        g.setTransform(getTransform(Math.toRadians(img.getMovingCa()), p, getOriginalCentroid(i), backup));
-        g.setComposite(currentComposite);
-        g.drawImage(i, p.x, p.y, null);
-      } else {
-        g.setTransform(getTransform(Math.toRadians(img.getCa()), p, getOriginalCentroid(i), backup));
-        g.drawImage(img.getDeletedImage(), p.x, p.y, null);
-        g.setComposite(composite);
-      }
-    } else {
-      double angle = Math.toRadians(img.getMovingCa());
-      if (Objects.equals(selectedImg, img))
-        angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
-      g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
-      g.drawImage(i, p.x, p.y, null);
-    }
+    double angle = MapillaryImageUtils.getAngle(img);
+    angle = Double.isNaN(angle) ? 0 : angle;
+    if (Objects.equals(selectedImg, img))
+      angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
+    g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
+    g.drawImage(i, p.x, p.y, null);
     g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
-    if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
-      || getData().getMultiSelectedImages().contains(img)) {
-      g.setColor(Color.WHITE);
-      g.setStroke(new BasicStroke(2));
-      g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
-
-    }
-
-    if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
-      g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
-        null);
-    }
+    // TODO get the following working
+    /*
+     * if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
+     * || getData().getSelectedNodes().contains(img)) {
+     * g.setColor(Color.WHITE);
+     * g.setStroke(new BasicStroke(2));
+     * g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+     * }
+     * if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
+     * g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
+     * null);
+     * }
+     */
     g.setComposite(composite);
   }
 
@@ -588,15 +400,15 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     if (ds != null) {
       Collection<OsmPrimitive> primitives = ds.allModifiedPrimitives();
       final double maxDistance = Config.getPref().getDouble("mapillary.source.maxdistance", 30.0);
-      Set<MapillaryAbstractImage> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.emptySet());
+      Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.emptySet());
       synchronized (imageViewedList) {
-        for (MapillaryAbstractImage image : imageViewedList) {
+        for (INode image : imageViewedList) {
           BBox bbox = new BBox();
-          bbox.addLatLon(image.getLatLon(), 0.005); // 96m-556m, depending upon N/S location (low at 80 degrees, high at
-                                                    // 0)
+          // 96m-556m, depending upon N/S location (low at 80 degrees, high at 0)
+          bbox.addLatLon(image.getCoor(), 0.005);
           List<OsmPrimitive> searchPrimitives = ds.searchPrimitives(bbox);
           if (primitives.parallelStream().filter(searchPrimitives::contains)
-            .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getLatLon())))
+            .mapToDouble(prim -> Geometry.getDistance(prim, new Node(image.getCoor())))
             .anyMatch(d -> d < maxDistance)) {
             isApplicable = true;
             break;
@@ -630,44 +442,27 @@ public final class MapillaryLayer extends AbstractModifiableLayer
 
   @Override
   public Object getInfoComponent() {
-    IntSummaryStatistics seqSizeStats = getData().getSequences().stream().mapToInt(seq -> seq.getImages().size())
-      .summaryStatistics();
-    final long numImported = getData().getImages().stream().filter(i -> i instanceof MapillaryImportedImage).count();
-    final long numDownloaded = getData().getImages().stream().filter(i -> i instanceof MapillaryImage).count();
-    final int numTotal = getData().getImages().size();
+    Map<String, List<VectorNode>> nodeCollection = getData().getNodes().stream().filter(node -> node.hasKey(KEY))
+      .collect(Collectors.groupingBy(node -> node.get(MapillaryImageUtils.SEQUENCE_KEY)));
+    IntSummaryStatistics seqSizeStats = nodeCollection.values().stream().mapToInt(List::size).summaryStatistics();
+    final long numTotal = seqSizeStats.getSum();
     return new StringBuilder(I18n.tr("Mapillary layer")).append('\n')
       .append(I18n.trn("{0} sequence, containing between {1} and {2} images (ø {3})",
-        "{0} sequences, each containing between {1} and {2} images (ø {3})", getData().getSequences().size(),
-        getData().getSequences().size(), seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
+        "{0} sequences, each containing between {1} and {2} images (ø {3})", getData().getWays().size(),
+        getData().getWays().size(), seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMin(),
         seqSizeStats.getCount() <= 0 ? 0 : seqSizeStats.getMax(), seqSizeStats.getAverage()))
-      .append("\n\n").append(I18n.trn("{0} imported image", "{0} imported images", numImported, numImported))
-      .append("\n+ ").append(I18n.trn("{0} downloaded image", "{0} downloaded images", numDownloaded, numDownloaded))
       .append("\n= ").append(I18n.trn("{0} image in total", "{0} images in total", numTotal, numTotal)).toString();
   }
 
   @Override
   public String getToolTipText() {
-    return I18n.tr("{0} images in {1} sequences", getData().getImages().size(), getData().getSequences().size());
+    return I18n.tr("{0} images in {1} sequences", getData().getNodes().size(), getData().getWays().size());
   }
 
   @Override
   public void activeOrEditLayerChanged(ActiveLayerChangeEvent e) {
     if (MainApplication.getLayerManager().getActiveLayer() == this) {
       MapillaryUtils.updateHelpText();
-    }
-
-    if (MainApplication.getLayerManager().getEditLayer() != e.getPreviousDataLayer()) {
-      if (MainApplication.getLayerManager().getEditLayer() != null) {
-        MainApplication.getLayerManager().getEditLayer().getDataSet().addDataSourceListener(DATASET_LISTENER);
-      }
-      if (e.getPreviousDataLayer() != null) {
-        try {
-          e.getPreviousDataSet().removeDataSourceListener(DATASET_LISTENER);
-        } catch (IllegalArgumentException exception) {
-          // Do nothing -- there wasn't a data source listener
-          Logging.trace(exception);
-        }
-      }
     }
   }
 
@@ -680,7 +475,7 @@ public final class MapillaryLayer extends AbstractModifiableLayer
   public void layerRemoving(LayerRemoveEvent e) {
     List<DataSet> currentDataSets = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
       .map(OsmDataLayer::getDataSet).collect(Collectors.toList());
-    for (Map.Entry<DataSet, Set<MapillaryAbstractImage>> entry : imageViewedMap.entrySet()) {
+    for (Map.Entry<DataSet, Set<INode>> entry : imageViewedMap.entrySet()) {
       if (!currentDataSets.contains(entry.getKey())) {
         imageViewedMap.remove(entry.getKey());
       }
@@ -697,24 +492,19 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     // Don't care about this
   }
 
-  /*
-   * (non-Javadoc)
-   * @see org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#imagesAdded()
-   */
   @Override
-  public void imagesAdded() {
-    updateNearestImages();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see
-   * org.openstreetmap.josm.plugins.mapillary.MapillaryDataListener#selectedImageChanged(org.openstreetmap.josm.plugins.
-   * mapillary.MapillaryAbstractImage, org.openstreetmap.josm.plugins.mapillary.MapillaryAbstractImage)
-   */
-  @Override
-  public void selectedImageChanged(MapillaryAbstractImage oldImage, MapillaryAbstractImage newImage) {
-    updateNearestImages();
+  public void selectionChanged(
+    IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    // Fix a RejectedExecutionException on JOSM shutdown
+    if (!MainApplication.worker.isShutdown()) {
+      MainApplication.worker.execute(this::updateNearestImages);
+    }
+    if (MapillaryMainDialog.hasInstance()) {
+      VectorNode image = event.getSelection().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast)
+        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      MapillaryMainDialog.getInstance().setImage(image);
+    }
+    this.invalidate();
   }
 
   /**
@@ -725,32 +515,34 @@ public final class MapillaryLayer extends AbstractModifiableLayer
    * @param limit the maximum length of the returned array
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
-  private MapillaryAbstractImage[] getNearestImagesFromDifferentSequences(MapillaryAbstractImage target, int limit) {
-    if (target.getSequence() == null) {
-      return new MapillaryAbstractImage[] {};
+  private INode[] getNearestImagesFromDifferentSequences(INode target, int limit) {
+    if (!target.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+      return new INode[] {};
     }
+    BBox searchBBox = new BBox();
+    searchBBox.addPrimitive(target, 0.0001);
     // Locked MapillaryLayer, waiting for a java.util.stream.Nodes$CollectorTask$OfRef
-    return data.getSequences().parallelStream()
-      .filter(seq -> seq.getKey() != null && !seq.getKey().equals(target.getSequence().getKey())).map(seq -> {
+    return getData().searchWays(searchBBox).parallelStream()
+      .filter(seq -> seq.get(KEY) != null && !seq.get(KEY).equals(target.get(MapillaryImageUtils.SEQUENCE_KEY)))
+      .map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
-        Optional<MapillaryAbstractImage> resImg = seq.getImages().parallelStream()
-          .filter(img -> img instanceof MapillaryImage && !((MapillaryImage) img).toDelete() && img.isVisible())
+        Optional<VectorNode> resImg = seq.getNodes().parallelStream().filter(img -> img.hasKey(KEY))
           .min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
       }).filter(img -> // Filters out images too far away from target
-      img != null && img.getMovingLatLon()
-        .greatCircleDistance(target.getMovingLatLon()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
-      .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(MapillaryAbstractImage[]::new);
+      img != null
+        && img.getCoor().greatCircleDistance(target.getCoor()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
+      .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(INode[]::new);
   }
 
   private void updateNearestImages() {
     ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-    final MapillaryAbstractImage selected = data.getSelectedImage();
-    MapillaryAbstractImage[] newNearestImages;
-    if (selected != null && !(selected instanceof MapillaryImage && ((MapillaryImage) selected).toDelete())) {
+    final INode selected = getData().getSelectedNodes().stream().findFirst().orElse(null);
+    INode[] newNearestImages;
+    if (selected != null && selected.hasKey(KEY)) {
       newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
-      newNearestImages = new MapillaryAbstractImage[0];
+      newNearestImages = new INode[0];
     }
     synchronized (this.nearestImages) {
       this.nearestImages.clear();
@@ -759,9 +551,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
       if (MainApplication.isDisplayingMapView()) {
         GuiHelper.runInEDT(this::updateRedBlueButtons);
       }
-      this.nearestImages.stream().filter(Objects::nonNull).filter(MapillaryImage.class::isInstance)
-        .map(MapillaryImage.class::cast).forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
+      this.nearestImages.stream().filter(Objects::nonNull)
+        .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
     }
+    this.invalidate();
   }
 
   private void updateRedBlueButtons() {
@@ -771,26 +564,10 @@ public final class MapillaryLayer extends AbstractModifiableLayer
     }
   }
 
-  /**
-   * Action used to delete images.
-   *
-   * @author nokutu
-   */
-  class DeleteImageAction extends AbstractAction {
+  private static class NearestImgToTargetComparator implements Comparator<INode> {
+    private final INode target;
 
-    private static final long serialVersionUID = -982809854631863962L;
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (hasInstance() && !getData().getMultiSelectedImages().isEmpty())
-        MapillaryRecord.getInstance().addCommand(new CommandDelete(getData().getMultiSelectedImages()));
-    }
-  }
-
-  private static class NearestImgToTargetComparator implements Comparator<MapillaryAbstractImage> {
-    private final MapillaryAbstractImage target;
-
-    public NearestImgToTargetComparator(MapillaryAbstractImage target) {
+    public NearestImgToTargetComparator(INode target) {
       this.target = target;
     }
 
@@ -799,18 +576,9 @@ public final class MapillaryLayer extends AbstractModifiableLayer
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
-    public int compare(MapillaryAbstractImage img1, MapillaryAbstractImage img2) {
-      return (int) Math.signum(img1.getMovingLatLon().greatCircleDistance(target.getMovingLatLon())
-        - img2.getMovingLatLon().greatCircleDistance(target.getMovingLatLon()));
+    public int compare(INode img1, INode img2) {
+      return (int) Math.signum(
+        img1.getCoor().greatCircleDistance(target.getCoor()) - img2.getCoor().greatCircleDistance(target.getCoor()));
     }
-  }
-
-  @Override
-  public void modifyChangesetTags(Map<String, String> tags) {
-    // This is used to clear the viewed image list
-    Set<MapillaryAbstractImage> imageViewedList = imageViewedMap
-      .get(MainApplication.getLayerManager().getActiveDataSet());
-    if (imageViewedList != null)
-      imageViewedList.clear();
   }
 }

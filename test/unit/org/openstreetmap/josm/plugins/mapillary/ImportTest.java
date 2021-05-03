@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.IIOException;
 
@@ -15,8 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageImportUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 /**
@@ -38,22 +41,25 @@ class ImportTest {
   @Test
   void importNoTagsTest() throws IOException {
     File image = new File(getClass().getResource("/exifTestImages/untagged.jpg").getFile());
-    MapillaryImportedImage img = ImageImportUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
-    assertEquals(0, img.getMovingCa(), 0.01);
-    assertTrue(new LatLon(0, 0).equalsEpsilon(img.getMovingLatLon()));
+    INode img = ImageImportUtil.readImagesFrom(image, new LatLon(0, 0)).get(0);
+    assertEquals(0, MapillaryImageUtils.getAngle(img), 0.01);
+    assertTrue(new LatLon(0, 0).equalsEpsilon(img.getCoor()));
   }
 
   /**
    * Test if provided an invalid file, the proper exception is thrown.
    */
   @Test
-  void testInvalidFiles() throws IOException {
-    MapillaryImportedImage img = new MapillaryImportedImage(new LatLon(0, 0), 0, null, false);
-    assertNull(img.getImage());
-    assertNull(img.getFile());
+  void testInvalidFiles() throws IOException, ExecutionException, InterruptedException {
+    INode img = new VectorNode("test");
+    img.setCoor(new LatLon(0, 0));
+    assertNull(MapillaryImageUtils.getImage(img).get());
+    assertNull(MapillaryImageUtils.getFile(img));
 
-    MapillaryImportedImage img2 = new MapillaryImportedImage(new LatLon(0, 0), 0, new File(""), false);
-    assertEquals(new File(""), img2.getFile());
-    assertThrows(IIOException.class, () -> img2.getImage());
+    INode img2 = new VectorNode("test");
+    img2.setCoor(new LatLon(0, 0));
+    img2.put(MapillaryImageUtils.IMPORTED_KEY, "///////////");
+    assertEquals(new File("///////////"), MapillaryImageUtils.getFile(img2));
+    assertThrows(IIOException.class, () -> MapillaryImageUtils.getImage(img2));
   }
 }

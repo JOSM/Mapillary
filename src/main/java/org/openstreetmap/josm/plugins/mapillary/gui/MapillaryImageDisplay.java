@@ -281,7 +281,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
+      if ((!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
@@ -324,7 +324,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
+      if ((!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
         || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
@@ -653,17 +653,17 @@ public final class MapillaryImageDisplay extends JPanel {
       drawRect.y + ((yImg - visibleRect.y) * drawRect.height) / visibleRect.height);
   }
 
-  protected Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
+  Point comp2imgCoord(Rectangle visibleRect, int xComp, int yComp) {
     Rectangle drawRect = calculateDrawImageRectangle(visibleRect);
     return new Point(visibleRect.x + ((xComp - drawRect.x) * visibleRect.width) / drawRect.width,
       visibleRect.y + ((yComp - drawRect.y) * visibleRect.height) / drawRect.height);
   }
 
-  protected static Point getCenterImgCoord(Rectangle visibleRect) {
+  static Point getCenterImgCoord(Rectangle visibleRect) {
     return new Point(visibleRect.x + visibleRect.width / 2, visibleRect.y + visibleRect.height / 2);
   }
 
-  protected Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
+  Rectangle calculateDrawImageRectangle(Rectangle visibleRect) {
     return ImageViewUtil.calculateDrawImageRectangle(visibleRect,
       new Rectangle(0, 0, getSize().width, getSize().height));
   }
@@ -720,6 +720,8 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   /**
+   * Set the detections to be shown
+   *
    * @param detections The detections to set. Triggers a repaint.
    */
   public void setAllDetections(List<ImageDetection<?>> detections) {
@@ -731,6 +733,8 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   /**
+   * Get the detections to be shown
+   *
    * @return The detections to be shown.
    */
   public Collection<ImageDetection<?>> getShownDetections() {
@@ -741,6 +745,8 @@ public final class MapillaryImageDisplay extends JPanel {
 
   /**
    * Enable or disable zoom+pan functionality
+   *
+   * @param enabled {@code true} to enable zoom+pan functionality
    */
   public void setZoomPanEnabled(boolean enabled) {
     this.zoomPanEnabled = enabled;
@@ -767,6 +773,8 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   /**
+   * Get the rotation of the current image (mostly used by 360 images)
+   *
    * @return The current rotation for the image view
    */
   public double getRotation() {

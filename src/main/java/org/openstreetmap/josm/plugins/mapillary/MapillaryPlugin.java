@@ -29,23 +29,16 @@ import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapPointObjectLayerAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadViewAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryEditAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryExportAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryImportAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryJoinAction;
-import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryUploadAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryWalkAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryZoomAction;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
+import org.openstreetmap.josm.plugins.mapillary.gui.DataMouseListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryChangesetDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryDownloadDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryHistoryDialog;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoHelpPopup;
-import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
@@ -66,12 +59,12 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
   private static final MapillaryZoomAction ZOOM_ACTION = new MapillaryZoomAction();
   /** Walk action */
   private static final MapillaryWalkAction WALK_ACTION = new MapillaryWalkAction();
-  /** Upload action */
-  private static final MapillaryUploadAction UPLOAD_ACTION = new MapillaryUploadAction();
 
   private final List<ToggleDialog> toggleDialog = new ArrayList<>();
 
   private final List<Destroyable> destroyables = new ArrayList<>();
+
+  private DataMouseListener dataMouseListener;
 
   private MapillaryKeyListener popupHandler;
 
@@ -105,23 +98,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     MainMenu.add(menu.viewMenu, ZOOM_ACTION, false, 15);
     destroyables.add(ZOOM_ACTION);
 
-    MapillaryDownloadViewAction mapillaryDownloadViewAction = new MapillaryDownloadViewAction();
-    MainMenu.add(menu.fileMenu, mapillaryDownloadViewAction, false, 14);
-    destroyables.add(mapillaryDownloadViewAction);
-
-    MapillaryJoinAction mapillaryJoinAction = new MapillaryJoinAction();
-    MainMenu.add(menu.dataMenu, mapillaryJoinAction, false);
-    destroyables.add(mapillaryJoinAction);
-
-    MapillaryEditAction mapillaryEditAction = new MapillaryEditAction();
-    MainMenu.add(menu.dataMenu, mapillaryEditAction, false);
-    destroyables.add(mapillaryEditAction);
-
     MainMenu.add(menu.moreToolsMenu, WALK_ACTION, false);
     destroyables.add(WALK_ACTION);
-
-    MainMenu.add(menu.fileMenu, UPLOAD_ACTION, false, 14);
-    destroyables.add(UPLOAD_ACTION);
 
     MapObjectLayerAction mapObjectLayerAction = new MapObjectLayerAction();
     MainMenu.add(menu.imagerySubMenu, mapObjectLayerAction, false);
@@ -141,11 +119,13 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     mapFrameInitialized(null, MainApplication.getMap());
   }
 
-  static MapillaryDataListener[] getMapillaryDataListeners() {
-    return new MapillaryDataListener[] { UPLOAD_ACTION, WALK_ACTION, ZOOM_ACTION };
+  public static VectorDataSelectionListener[] getMapillaryDataListeners() {
+    return new VectorDataSelectionListener[] { WALK_ACTION, ZOOM_ACTION };
   }
 
   /**
+   * Get the walk action
+   *
    * @return the {@link MapillaryWalkAction} for the plugin
    */
   public static MapillaryWalkAction getWalkAction() {
@@ -162,14 +142,6 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       toggleDialog.clear();
       toggleDialog.add(MapillaryMainDialog.getInstance());
       newFrame.addToggleDialog(MapillaryMainDialog.getInstance(), false);
-      MapillaryMainDialog.getInstance()
-        .setImageInfoHelp(new ImageInfoHelpPopup(newFrame.addToggleDialog(ImageInfoPanel.getInstance(), false)));
-      toggleDialog.add(MapillaryHistoryDialog.getInstance());
-      newFrame.addToggleDialog(MapillaryHistoryDialog.getInstance(), false);
-      toggleDialog.add(MapillaryDownloadDialog.getInstance());
-      newFrame.addToggleDialog(MapillaryDownloadDialog.getInstance(), false);
-      toggleDialog.add(MapillaryChangesetDialog.getInstance());
-      newFrame.addToggleDialog(MapillaryChangesetDialog.getInstance(), false);
       toggleDialog.add(MapillaryFilterDialog.getInstance());
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
@@ -191,7 +163,13 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       } catch (ReflectiveOperationException e) {
         Logging.debug(e);
       }
+
+      this.dataMouseListener = new DataMouseListener();
+      this.destroyables.add(this.dataMouseListener);
     } else if (oldFrame != null && newFrame == null) { // map frame removed
+      this.destroyables.remove(this.dataMouseListener);
+      this.dataMouseListener.destroy();
+      this.dataMouseListener = null;
       if (this.popupHandler != null) {
         this.destroyables.remove(this.popupHandler);
         this.popupHandler.destroy();
@@ -208,6 +186,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
   }
 
   /**
+   * Get the current mapview
+   *
    * @return the current {@link MapView} without throwing a {@link NullPointerException}
    */
   public static MapView getMapView() {

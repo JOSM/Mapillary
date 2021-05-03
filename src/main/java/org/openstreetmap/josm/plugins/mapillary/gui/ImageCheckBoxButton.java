@@ -28,6 +28,8 @@ import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
 
 /**
+ * Buttons for filtering detections
+ *
  * @author Taylor Smock
  */
 public class ImageCheckBoxButton extends JPanel implements Destroyable, TableModelListener {
@@ -148,6 +150,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   }
 
   /**
+   * Check if the button is filtered
+   *
    * @param searchString The string
    * @return true if the button shouldn't be visible
    */
@@ -158,6 +162,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   }
 
   /**
+   * Set the box as selected
+   *
    * @param selected Set the checkbox state to the selected boolean
    * @return A future to indicate if the call finished
    */
@@ -173,6 +179,8 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   }
 
   /**
+   * Check if the box is selected
+   *
    * @return {@code true} if selected (see {@link JCheckBox#isSelected}).
    */
   public boolean isSelected() {
@@ -180,12 +188,14 @@ public class ImageCheckBoxButton extends JPanel implements Destroyable, TableMod
   }
 
   /**
+   * Check if the button is relevant
+   *
    * @return {@code true} if a point object layer has it. Or if there are no point object layers.
    */
   public boolean isRelevant() {
     List<PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class);
     return layers.isEmpty()
-      || layers.parallelStream().map(PointObjectLayer::getDataSet).flatMap(ds -> ds.allPrimitives().parallelStream())
+      || layers.parallelStream().map(PointObjectLayer::getData).flatMap(ds -> ds.allPrimitives().parallelStream())
         .filter(p -> p.hasKey("value")).map(p -> p.get("value")).anyMatch(p -> p.contains(detection));
   }
 }

@@ -1,23 +1,22 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.export;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.gui.PleaseWaitRunnable;
+import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.tools.Logging;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.openstreetmap.josm.gui.PleaseWaitRunnable;
-import org.openstreetmap.josm.gui.progress.swing.PleaseWaitProgressMonitor;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImage;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryImportedImage;
-import org.openstreetmap.josm.tools.Logging;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Export main thread. Exportation works by creating a
@@ -31,13 +30,13 @@ import org.openstreetmap.josm.tools.Logging;
  * @see MapillaryExportWriterThread
  * @see MapillaryExportDownloadThread
  */
-public class MapillaryExportManager extends PleaseWaitRunnable {
+public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable {
 
   private final ArrayBlockingQueue<BufferedImage> queue = new ArrayBlockingQueue<>(10);
-  private final ArrayBlockingQueue<MapillaryAbstractImage> queueImages = new ArrayBlockingQueue<>(10);
+  private final ArrayBlockingQueue<INode> queueImages = new ArrayBlockingQueue<>(10);
 
   private int amount;
-  private final Set<MapillaryAbstractImage> images;
+  private final Set<T> images;
   private final String path;
 
   private Thread writer;
@@ -46,12 +45,12 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
   /**
    * Main constructor.
    *
-   * @param images Set of {@link MapillaryAbstractImage} objects to be exported.
+   * @param images Set of {@link INode} objects to be exported.
    * @param path Export path.
    */
-  public MapillaryExportManager(Set<MapillaryAbstractImage> images, String path) {
+  public MapillaryExportManager(Collection<T> images, String path) {
     super(tr("Downloading…"), new PleaseWaitProgressMonitor(tr("Exporting Mapillary Images…")), true);
-    this.images = images == null ? new HashSet<>() : images;
+    this.images = images == null ? new HashSet<>() : new HashSet<>(images);
     this.path = path;
     this.amount = this.images.size();
   }
@@ -60,13 +59,13 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
    * Constructor used to rewrite imported images.
    *
    * @param images
-   *        The set of {@link MapillaryImportedImage} object that is going to
-   *        be rewritten.
+   *        The set of {@link INode} object that is going to
+   *        be rewritten. (see {@link MapillaryImageUtils#IMPORTED_KEY}
    * @throws IOException
-   *         If the file of one of the {@link MapillaryImportedImage} objects
+   *         If the file of one of the {@link INode} objects
    *         doesn't contain a picture.
    */
-  public MapillaryExportManager(List<MapillaryImportedImage> images) throws IOException {
+  public MapillaryExportManager(Collection<T> images) throws IOException {
     this(new HashSet<>(images), null);
     this.amount = images.size();
   }
@@ -93,38 +92,13 @@ public class MapillaryExportManager extends PleaseWaitRunnable {
       return;
     }
     this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
-    for (MapillaryAbstractImage image : this.images) {
-      if (image instanceof MapillaryImage) {
+    for (INode image : this.images) {
+      if (image.hasKey(MapillaryImageUtils.KEY) || image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
         try {
-          this.ex.execute(new MapillaryExportDownloadThread((MapillaryImage) image, this.queue, this.queueImages));
+          this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
         } catch (Exception e) {
           Logging.error(e);
         }
-      } else if (image instanceof MapillaryImportedImage) {
-        try {
-          boolean q1 = false;
-          boolean q2 = false;
-          do {
-            if (!q1) {
-              q1 = this.queue.offer(((MapillaryImportedImage) image).getImage(), 30, TimeUnit.SECONDS);
-            }
-            if (!q2) {
-              q2 = this.queueImages.offer(image, 30, TimeUnit.SECONDS);
-            }
-          } while (!q1 || !q2);
-        } catch (InterruptedException e) {
-          Logging.error(e);
-          Thread.currentThread().interrupt();
-        }
-      }
-      try {
-        // If the queue is full, waits for it to have more space
-        // available before executing anything else.
-        while (this.ex.getQueue().remainingCapacity() == 0) {
-          Thread.sleep(100);
-        }
-      } catch (Exception e) {
-        Logging.error(e);
       }
     }
     try {

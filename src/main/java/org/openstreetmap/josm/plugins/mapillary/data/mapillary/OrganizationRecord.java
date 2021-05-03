@@ -114,6 +114,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get the avatar for the organization
+   *
    * @return The avatar for the organization
    */
   public ImageIcon getAvatar() {
@@ -121,6 +123,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get the description for the organization
+   *
    * @return The organization description
    */
   public String getDescription() {
@@ -128,6 +132,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get the unique key for the organization
+   *
    * @return The organization key
    */
   public String getKey() {
@@ -135,6 +141,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get the machine-readable name for an organization
+   *
    * @return The name of the organization
    * @see OrganizationRecord#getNiceName
    */
@@ -143,6 +151,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get the human-readable name for an organization
+   *
    * @return The nice-looking name of the organization
    */
   public String getNiceName() {
@@ -150,6 +160,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Check if an organization has a private repository
+   *
    * @return {@code true} if the organization has a private repository
    */
   public boolean hasPrivateRepository() {
@@ -157,6 +169,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Check if an organization has a public repository
+   *
    * @return {@code true} if the organization has a public repository
    */
   public boolean hasPublicRepository() {
@@ -176,6 +190,8 @@ public final class OrganizationRecord implements Serializable {
   }
 
   /**
+   * Get all current organizations
+   *
    * @return Get all the organizations
    */
   public static Collection<OrganizationRecord> getOrganizations() {

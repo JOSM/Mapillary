@@ -1,17 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import java.awt.Color;
-
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
-import org.openstreetmap.josm.data.preferences.NamedColorProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 
 public final class MapillaryProperties {
   public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty("mapillary.delete-after-upload", true);
@@ -35,18 +29,6 @@ public final class MapillaryProperties {
   public static final BooleanProperty SHOW_DETECTION_OUTLINES = new BooleanProperty("mapillary.show-detection-outlines",
     true);
 
-  /**
-   * @see OsmDataLayer#PROPERTY_BACKGROUND_COLOR
-   */
-  public static final NamedColorProperty BACKGROUND = new NamedColorProperty("background", Color.BLACK);
-  /**
-   * @see OsmDataLayer#PROPERTY_OUTSIDE_COLOR
-   */
-  public static final NamedColorProperty OUTSIDE_DOWNLOADED_AREA = new NamedColorProperty("outside downloaded area",
-    Color.YELLOW);
-
-  public static final DoubleProperty MAX_DOWNLOAD_AREA = new DoubleProperty("mapillary.max-download-area", 0.015);
-
   public static final IntegerProperty PICTURE_DRAG_BUTTON = new IntegerProperty("mapillary.picture-drag-button", 3);
   public static final IntegerProperty PICTURE_OPTION_BUTTON = new IntegerProperty("mapillary.picture-option-button", 2);
   public static final IntegerProperty PICTURE_ZOOM_BUTTON = new IntegerProperty("mapillary.picture-zoom-button", 1);
@@ -54,8 +36,6 @@ public final class MapillaryProperties {
     "mapillary.sequence-max-jump-distance", 100);
 
   public static final StringProperty ACCESS_TOKEN = new StringProperty("mapillary.access-token", null);
-  public static final StringProperty DOWNLOAD_MODE = new StringProperty("mapillary.download-mode",
-    MapillaryDownloader.DOWNLOAD_MODE.DEFAULT.getPrefId());
   public static final StringProperty START_DIR = new StringProperty("mapillary.start-directory",
     System.getProperty("user.home"));
 
@@ -73,13 +53,6 @@ public final class MapillaryProperties {
   public static final IntegerProperty PRE_FETCH_IMAGE_COUNT = new IntegerProperty("mapillary.prefetch-image-count", 2);
 
   /**
-   * Download all images, private images, or public images
-   *
-   * @see MapillaryPreferenceSetting#privateImages
-   */
-  public static final StringProperty IMAGE_MODE = new StringProperty("mapillary.imageMode", "all");
-
-  /**
    * Download point features (fire hydrants, trees, and so on)
    */
   public static final BooleanProperty POINT_FEATURES = new BooleanProperty("mapillary.pointfeatures", false);
@@ -88,11 +61,6 @@ public final class MapillaryProperties {
    * The opacity for unselected images when an image is selected
    */
   public static final DoubleProperty UNSELECTED_OPACITY = new DoubleProperty("mapillary.unselectedimageopacity", 0.50);
-
-  /**
-   * The timeout for downloading additional data (should not be used for image downloads)
-   */
-  public static final IntegerProperty TIMEOUT = new IntegerProperty("mapillary.download.timeout", 50_000);
 
   /**
    * The minimum distance per pixel in order to show the smart add panel

@@ -1,8 +1,30 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.OsmData;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.tools.Destroyable;
+import org.openstreetmap.josm.tools.ImageProvider;
+import org.openstreetmap.josm.tools.Logging;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
+import javax.json.JsonStructure;
+import javax.json.JsonValue;
+import javax.swing.AbstractAction;
+import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
@@ -22,27 +44,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.swing.AbstractAction;
-import javax.swing.JPopupMenu;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
-import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.dialogs.properties.PropertiesDialog;
-import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
-import org.openstreetmap.josm.tools.Destroyable;
-import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Logging;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  * Listen for Mapillary keys
@@ -132,14 +134,20 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryData data = MapillaryLayer.getInstance().getData();
-      Collection<String> missingImages = Stream.of(this.imageKey.split(";", 0)).filter(i -> data.getImage(i) == null)
+      VectorDataSet data = MapillaryLayer.getInstance().getData();
+      Map<String, VectorNode> map = data.getNodes().stream().filter(image -> image.hasKey(MapillaryKeys.KEY))
+        .collect(Collectors.toMap(image -> image.get(MapillaryKeys.KEY), i -> i));
+      Collection<String> missingImages = Stream.of(this.imageKey.split(";", 0)).filter(i -> !map.containsKey(i))
         .collect(Collectors.toList());
+      map.clear(); // deallocate map
       if (!missingImages.isEmpty()) {
         MapillaryDownloader.downloadSequences(
           MapillaryDownloader.downloadImages(missingImages.toArray(new String[0])).keySet().toArray(new String[0]));
       }
-      GuiHelper.runInEDT(() -> data.setSelectedImage(data.getImage(this.imageKey)));
+      Map<String, VectorNode> newMap = data.getNodes().stream().filter(image -> image.hasKey(MapillaryKeys.KEY))
+        .collect(Collectors.toMap(image -> image.get(MapillaryKeys.KEY), i -> i));
+      GuiHelper.runInEDT(
+        () -> data.setSelected(Stream.of(this.imageKey.split(";", 0)).map(newMap::get).collect(Collectors.toSet())));
     }
   }
 
@@ -156,23 +164,26 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      MapillaryData data = MapillaryLayer.getInstance().getData();
-      Collection<OsmPrimitive> detections = MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class)
-        .stream().map(PointObjectLayer::getDataSet).flatMap(d -> d.allNonDeletedPrimitives().stream())
+      final VectorDataSet data = MapillaryLayer.getInstance().getData();
+      final Collection<IPrimitive> detections = MainApplication.getLayerManager()
+        .getLayersOfType(PointObjectLayer.class).stream().map(PointObjectLayer::getData)
+        .flatMap(d -> d.allNonDeletedPrimitives().stream())
         .filter(p -> p.hasKey("key") && Stream.of(this.detection).anyMatch(d -> d.equals(p.get("key"))))
         .collect(Collectors.toSet());
-      Collection<String> images = detections.stream().flatMap(d -> detectionsKeyToImages(d.get("detections")).stream())
-        .collect(Collectors.toList());
-      Collection<String> missingImages = images.stream().filter(i -> data.getImage(i) == null)
+      final Collection<String> images = detections.stream()
+        .flatMap(d -> detectionsKeyToImages(d.get("detections")).stream()).collect(Collectors.toList());
+      final Map<String, VectorNode> dataImages = data.getNodes().stream().filter(i -> i.hasKey(MapillaryKeys.KEY))
+        .collect(Collectors.toMap(i -> i.get(MapillaryKeys.KEY), i -> i));
+      Collection<String> missingImages = images.stream().filter(i -> !dataImages.containsKey(i))
         .collect(Collectors.toList());
       if (!missingImages.isEmpty()) {
         MapillaryDownloader.downloadSequences(
           MapillaryDownloader.downloadImages(missingImages.toArray(new String[0])).keySet().toArray(new String[0]));
       }
-      Map<DataSet, List<OsmPrimitive>> selections = detections.stream()
-        .collect(Collectors.groupingBy(OsmPrimitive::getDataSet));
+      Map<OsmData<?, ?, ?, ?>, List<IPrimitive>> selections = detections.stream()
+        .collect(Collectors.groupingBy(IPrimitive::getDataSet));
       GuiHelper.runInEDT(() -> {
-        for (Map.Entry<DataSet, List<OsmPrimitive>> selection : selections.entrySet()) {
+        for (Map.Entry<OsmData<?, ?, ?, ?>, List<IPrimitive>> selection : selections.entrySet()) {
           selection.getKey().setSelected(selection.getValue());
         }
       });

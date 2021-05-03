@@ -8,9 +8,11 @@ import java.io.Serializable;
 import java.util.function.Supplier;
 
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.plugins.mapillary.data.image.MapillaryAbstractImage;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
 public class SelectNextImageAction extends JosmAction {
@@ -22,9 +24,11 @@ public class SelectNextImageAction extends JosmAction {
     tr("Next picture"), tr("Shows the next picture in the sequence"), DIALOGS_SUBDIR + "/next", Shortcut
       .registerShortcut("mapillary:jump_to_next", tr("Jump to next image"), KeyEvent.VK_PAGE_DOWN, Shortcut.DIRECT),
     () -> {
-      final MapillaryAbstractImage curImg = MapillaryLayer.getInstance().getData().getSelectedImage();
+      final INode curImg = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
       if (curImg != null) {
-        final MapillaryAbstractImage nextImg = curImg.next();
+        final INode nextImg = MapillarySequenceUtils.getNextOrPrevious(curImg,
+          MapillarySequenceUtils.NextOrPrevious.NEXT);
         if (nextImg != null && nextImg.isVisible()) {
           return nextImg;
         }
@@ -36,9 +40,11 @@ public class SelectNextImageAction extends JosmAction {
     tr("Shows the previous picture in the sequence"), DIALOGS_SUBDIR + "/previous", Shortcut.registerShortcut(
       "mapillary:jump_to_previous", tr("Jump to previous image"), KeyEvent.VK_PAGE_UP, Shortcut.DIRECT),
     () -> {
-      final MapillaryAbstractImage curImg = MapillaryLayer.getInstance().getData().getSelectedImage();
+      final INode curImg = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
+        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
       if (curImg != null) {
-        final MapillaryAbstractImage prevImg = curImg.previous();
+        final INode prevImg = MapillarySequenceUtils.getNextOrPrevious(curImg,
+          MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
         if (prevImg != null && prevImg.isVisible()) {
           return prevImg;
         }
@@ -56,10 +62,10 @@ public class SelectNextImageAction extends JosmAction {
     Shortcut.registerShortcut("mapillary:jump_to_blue", tr("Jump to blue image"), KeyEvent.VK_PAGE_UP, Shortcut.CTRL),
     () -> MapillaryLayer.getInstance().getNNearestImage(2));
 
-  private final SerializableSupplier<MapillaryAbstractImage> destinationImgSupplier;
+  private final SerializableSupplier<INode> destinationImgSupplier;
 
   private SelectNextImageAction(final String name, final String description, final String icon, final Shortcut sc,
-    final SerializableSupplier<MapillaryAbstractImage> destinationImgSupplier) {
+    final SerializableSupplier<INode> destinationImgSupplier) {
     super(name, icon, description, sc, false, "mapillary:" + name.replace(" ", "_"), false);
     putValue(SHORT_DESCRIPTION, description);
     this.destinationImgSupplier = destinationImgSupplier;
@@ -67,9 +73,10 @@ public class SelectNextImageAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    final MapillaryAbstractImage newSelectedImage = destinationImgSupplier.get();
+    final INode newSelectedImage = destinationImgSupplier.get();
     if (newSelectedImage != null) {
-      MapillaryLayer.getInstance().getData().setSelectedImage(newSelectedImage, MapillaryProperties.MOVE_TO_IMG.get());
+      MapillaryLayer.getInstance().getData().setSelected(newSelectedImage);
+      MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
     }
   }
 

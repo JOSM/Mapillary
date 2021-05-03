@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.json.Json;
@@ -49,6 +48,8 @@ public final class MapillaryUser {
   }
 
   /**
+   * Get the username of the current user
+   *
    * @return The username of the logged in user.
    */
   public static synchronized String getUsername() {
@@ -64,6 +65,8 @@ public final class MapillaryUser {
   }
 
   /**
+   * Get the information for the currently logged in user
+   *
    * @return The user information of the logged in user.
    */
   public static synchronized Map<String, String> getUserInformation() {
@@ -74,7 +77,7 @@ public final class MapillaryUser {
       try {
         userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv3.userURL()).entrySet().parallelStream()
           .filter(e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType()))
-          .collect(Collectors.toMap(Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
+          .collect(Collectors.toMap(Map.Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
       } catch (IOException e) {
         Logging.log(Logging.LEVEL_WARN, "Invalid Mapillary token, resetting field", e);
         reset();
@@ -84,6 +87,8 @@ public final class MapillaryUser {
   }
 
   /**
+   * Get the secrets needed to upload data
+   *
    * @return A JsonObject containing secrets for upload
    */
   public static synchronized JsonObject getSecrets() {

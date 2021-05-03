@@ -14,11 +14,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -30,8 +28,6 @@ import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.plugin.PluginPreference;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.DOWNLOAD_MODE;
-import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader.PRIVATE_IMAGE_DOWNLOAD_MODE;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthPortListener;
@@ -50,8 +46,6 @@ import org.openstreetmap.josm.tools.OpenBrowser;
  * @author nokutu
  */
 public class MapillaryPreferenceSetting implements SubPreferenceSetting, MapillaryLoginListener {
-  private final JComboBox<String> downloadModeComboBox = new JComboBox<>(new String[] {
-    DOWNLOAD_MODE.VISIBLE_AREA.getLabel(), DOWNLOAD_MODE.OSM_AREA.getLabel(), DOWNLOAD_MODE.MANUAL_ONLY.getLabel() });
 
   private final JCheckBox displayHour =
     // i18n: Checkbox label in JOSM settings
@@ -78,8 +72,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     I18n.tr("When opening Mapillary image in web browser, show the blur editor instead of the image viewer"),
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get());
   private final JPanel requiresLogin = new JPanel(new GridBagLayout());
-  private final JComboBox<PRIVATE_IMAGE_DOWNLOAD_MODE> privateImages = new JComboBox<>(
-    PRIVATE_IMAGE_DOWNLOAD_MODE.values());
   private final JCheckBox developer =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Enable experimental beta-features (might be unstable)"),
@@ -118,13 +110,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.setLayout(new GridBagLayout());
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    downloadModeComboBox.setSelectedItem(DOWNLOAD_MODE.fromPrefId(MapillaryProperties.DOWNLOAD_MODE.get()).getLabel());
-
-    JPanel downloadModePanel = new JPanel();
-    downloadModePanel.add(new JLabel(I18n.tr("Download mode")));
-    downloadModePanel.add(downloadModeComboBox);
-    mainPanel.add(downloadModePanel, GBC.eol());
-
     mainPanel.add(displayHour, GBC.eol());
     mainPanel.add(format24, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
@@ -143,14 +128,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     preFetchPanel.add(spinner);
     mainPanel.add(preFetchPanel, GBC.eol());
 
-    privateImages.setSelectedItem(PRIVATE_IMAGE_DOWNLOAD_MODE.getFromId(MapillaryProperties.IMAGE_MODE.get()));
-    requiresLogin.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    requiresLogin.add(new JLabel(I18n.tr("{0}Options requiring login{1}", "<html><h3>", "</h3></html>")), GBC.eol());
-    requiresLogin.add(new JLabel(I18n.tr("Image selection")));
-    requiresLogin.add(privateImages, GBC.eol());
-    requiresLogin.add(new JSeparator(), GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-    mainPanel.add(requiresLogin, GBC.eol().fill(GridBagConstraints.HORIZONTAL));
-
     developer.addActionListener(e -> DeveloperToggleAction.getInstance().actionPerformed(null));
 
     ExpertToggleAction.addVisibilitySwitcher(developer);
@@ -158,8 +135,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       developer.setVisible(true);
     }
-    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, downloadModePanel, displayHour, format24, moveTo, hoverEnabled,
-      darkMode, cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
+    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, format24, moveTo, hoverEnabled, darkMode,
+      cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     container.add(mainPanel, BorderLayout.CENTER);
@@ -209,8 +186,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   @Override
   public boolean ok() {
     DeveloperToggleAction.getInstance().setDeveloper(developer.isSelected());
-    MapillaryProperties.DOWNLOAD_MODE
-      .put(DOWNLOAD_MODE.fromLabel((String) downloadModeComboBox.getSelectedItem()).getPrefId());
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
     MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
@@ -219,7 +194,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.CUT_OFF_SEQUENCES_AT_BOUNDS.put(cutOffSeq.isSelected());
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
-    MapillaryProperties.IMAGE_MODE.put(((PRIVATE_IMAGE_DOWNLOAD_MODE) privateImages.getSelectedItem()).getPrefId());
 
     // Restart is never required
     return false;
