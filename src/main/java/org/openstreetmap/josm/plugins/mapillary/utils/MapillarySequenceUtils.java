@@ -1,10 +1,27 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import org.apache.commons.jcs3.access.CacheAccess;
+import org.openstreetmap.josm.data.cache.JCSCacheManager;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Utils;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +36,7 @@ public class MapillarySequenceUtils {
     PREVIOUS;
   }
 
-  private MapillarySequenceUtils() {
-    // No-op
-  }
+  private static final CacheAccess<String, IWay<?>> SEQUENCE_CACHE = JCSCacheManager.getCache("mapillary:sequences");
 
   public static final String KEY = "key";
   public static final String ID = "id";
@@ -40,12 +55,27 @@ public class MapillarySequenceUtils {
    * @return The expected node, if it exists
    */
   public static INode getNextOrPrevious(INode node, NextOrPrevious next) {
-    IWay<?> way = node.getReferrers().stream().filter(IWay.class::isInstance).map(IWay.class::cast).findFirst()
-      .orElse(null);
-    if (way == null) {
+    Collection<IWay> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance).map(IWay.class::cast)
+      .distinct().collect(Collectors.toList());
+    if (connectedWays.isEmpty() || connectedWays.size() > 2) {
       return null;
     }
-    List<? extends INode> nodes = way.getNodes();
+
+    List<INode> nodes = new ArrayList<>(connectedWays.stream().mapToInt(IWay::getRealNodesCount).sum() - 1);
+    for (IWay<?> way : connectedWays) {
+      if (nodes.isEmpty()) {
+        nodes.addAll(way.getNodes());
+      } else if (way.firstNode().equals(nodes.get(nodes.size() - 1))) {
+        List<INode> newNodes = new ArrayList<>(way.getNodes());
+        newNodes.removeIf(node::equals);
+        nodes.addAll(newNodes);
+      } else if (way.lastNode().equals(nodes.get(0))) {
+        List<INode> newNodes = new ArrayList<>(way.getNodes());
+        newNodes.removeIf(node::equals);
+        nodes.addAll(newNodes);
+        nodes.addAll(0, newNodes);
+      }
+    }
     final INode nodeOnCurrentSequence;
     int index = nodes.indexOf(node);
     if (next == NextOrPrevious.NEXT && index + 1 < nodes.size()) {
@@ -55,10 +85,22 @@ public class MapillarySequenceUtils {
     } else {
       nodeOnCurrentSequence = null;
     }
-    if (nodeOnCurrentSequence != null && !MapillaryImageUtils.IS_IMAGE.test(nodeOnCurrentSequence)
+    final IWay<?> way;
+    if (connectedWays.size() == 1) {
+      way = connectedWays.iterator().next();
+    } else if (next == NextOrPrevious.NEXT) {
+      way = connectedWays.stream().filter(way2 -> way2.firstNode().equals(node)).findFirst().orElse(null);
+    } else if (next == NextOrPrevious.PREVIOUS) {
+      way = connectedWays.stream().filter(way2 -> way2.lastNode().equals(node)).findFirst().orElse(null);
+    } else {
+      way = null;
+    }
+    if (nodeOnCurrentSequence != null && !MapillaryImageUtils.IS_IMAGE.test(nodeOnCurrentSequence) && way != null
       && way.isFirstLastNode(nodeOnCurrentSequence)) {
       // We are probably on a tile boundary.
-      List<IWay<?>> ways = new ArrayList<>(node.getDataSet().searchWays(nodeOnCurrentSequence.getBBox()));
+      final BBox searchBBox = new BBox();
+      searchBBox.addLatLon(nodeOnCurrentSequence.getCoor(), 0.001);
+      List<IWay<?>> ways = new ArrayList<>(node.getDataSet().searchWays(searchBBox));
       String sequenceKey = node.hasKey(MapillaryImageUtils.SEQUENCE_KEY) ? node.get(MapillaryImageUtils.SEQUENCE_KEY)
         : "";
       ways.removeIf(tWay -> !tWay.hasKeys());
@@ -89,8 +131,68 @@ public class MapillarySequenceUtils {
   public static String getKey(IWay<?> sequence) {
     if (sequence != null && sequence.hasKey(KEY)) {
       return sequence.get(KEY);
+    } else if (sequence != null && sequence.getReferrers().size() == 1 && sequence.getReferrers().get(0).hasKey(KEY)) {
+      return sequence.getReferrers().get(0).get(KEY);
     }
     return "";
+  }
+
+  /**
+   * Check if the sequence has a sequence key
+   *
+   * @param sequence The sequence to check
+   * @return {@code true} if the sequence has a sequence key
+   */
+  public static boolean hasKey(IWay<?> sequence) {
+    return !"".equals(getKey(sequence));
+  }
+
+  /**
+   * Get the sequence for a key
+   *
+   * @param key The sequence key
+   * @return The sequence (full)
+   */
+  public static IWay<?> getSequence(String key) {
+    if (key == null || Utils.isStripEmpty(key)) {
+      return null;
+    }
+    // There should be a method to get a sequence in v4
+    IWay<?> sequence = SEQUENCE_CACHE.get(key);
+    if (sequence == null) {
+      sequence = downloadSequence(key);
+      // Ensure that we don't cache a null sequence -- this will throw an InvalidArgumentException if the sequence is
+      // null
+      // which is why we cannot use {@link CacheAccess#get(Object, Supplier)}
+      if (sequence != null) {
+        SEQUENCE_CACHE.put(key, sequence);
+      }
+    }
+    return sequence;
+  }
+
+  private static IWay<?> downloadSequence(String key) {
+    URL sequenceUrl = MapillaryURL.APIv3.getSequence(key);
+    HttpClient client = HttpClient.create(sequenceUrl);
+    HttpClient.Response response;
+    try {
+      response = client.connect();
+    } catch (IOException e) {
+      Logging.error(e);
+      return null;
+    }
+    try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+      JsonObject json = jsonReader.readObject();
+      Collection<VectorWay> seq = JsonDecoder.decodeFeatureCollection(json, JsonSequencesDecoder::decodeSequence);
+      VectorWay sequence = seq.stream().findFirst().orElse(null);
+      if (sequence != null && MapillaryLayer.hasInstance()) {
+        MapillaryLayer.getInstance().getData().addPrimitive(sequence);
+      }
+      return sequence;
+    } catch (IOException e) {
+      Logging.error(e);
+    }
+    return null;
   }
 
   /**
@@ -104,5 +206,9 @@ public class MapillarySequenceUtils {
       return Instant.parse(sequence.get(CREATED_AT));
     }
     return Instant.EPOCH;
+  }
+
+  private MapillarySequenceUtils() {
+    // No-op
   }
 }

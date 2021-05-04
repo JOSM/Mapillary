@@ -37,7 +37,8 @@ public final class MapillaryImageUtils {
   public static final Predicate<INode> IS_IMAGE = node -> node.hasKey(MapillaryKeys.KEY)
     || node.hasKey(MapillaryImageUtils.IMPORTED_KEY);
   /** Check if the node is for a panoramic image */
-  public static final Predicate<INode> IS_PANORAMIC = node -> MapillaryKeys.PANORAMIC_TRUE.equals(node.get(PANORAMIC));
+  public static final Predicate<INode> IS_PANORAMIC = node -> node != null
+    && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(PANORAMIC));
   public static final String CAMERA_ANGLE = "ca";
   public static final String QUALITY_SCORE = "quality_score";
   public static final String SEQUENCE_KEY = "skey";
@@ -150,9 +151,22 @@ public final class MapillaryImageUtils {
    * @return The key, or {@code ""} if no key exists
    */
   public static String getKey(INode image) {
-    if (image.hasKey(KEY)) {
+    if (image != null && image.hasKey(KEY)) {
       return image.get(KEY);
     }
     return "";
+  }
+
+  /**
+   * Get the sequence key
+   *
+   * @param image The image with a sequence key
+   * @return The sequence key
+   */
+  public static String getSequenceKey(INode image) {
+    if (image != null && image.hasKey(SEQUENCE_KEY)) {
+      return image.get(SEQUENCE_KEY);
+    }
+    return null;
   }
 }

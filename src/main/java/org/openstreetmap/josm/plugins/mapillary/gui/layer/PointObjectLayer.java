@@ -8,7 +8,6 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
-import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
@@ -25,6 +24,10 @@ import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
 import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.data.vector.VectorPrimitive;
+import org.openstreetmap.josm.data.vector.VectorRelation;
+import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
@@ -44,6 +47,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.data.osm.event.FilterEventListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
@@ -55,7 +59,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.GBC;
-import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.ListenerList;
@@ -87,8 +90,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.ByteArrayInputStream;
@@ -115,8 +116,8 @@ import static org.openstreetmap.josm.tools.I18n.trn;
 /**
  * Mapillary Point Object layer
  */
-public class PointObjectLayer extends MVTLayer implements MouseListener, Listener, HighlightUpdateListener,
-  DataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
+public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpdateListener,
+  VectorDataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
@@ -327,9 +328,10 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
   }
 
   @Override
-  public void selectionChanged(SelectionChangeEvent event) {
-    Collection<OsmPrimitive> selection = event.getSelection();
-    OsmPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(MapillaryKeys.DETECTIONS))
+  public void selectionChanged(
+    SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> event) {
+    Collection<VectorPrimitive> selection = event.getSelection();
+    VectorPrimitive prim = selection.parallelStream().filter(p -> !p.isDeleted() && p.hasKey(MapillaryKeys.DETECTIONS))
       .findFirst().orElse(null);
     this.displayedWindows.entrySet().parallelStream().filter(e -> !selection.contains(e.getKey()))
       .forEach(e -> hideWindow(e.getValue()));
@@ -366,17 +368,19 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
    * @param images The images to look through
    * @return The best image (hopefully)
    */
-  private static <T extends INode> T getBestImage(OsmPrimitive primitive, Collection<T> images) {
-    List<Pair<T, Double>> distance = images.stream().filter(Objects::nonNull)
-      .map(image -> new Pair<>(image, Geometry.getDistance(primitive, new Node(image.getCoor()))))
-      .sorted(Comparator.comparing(p -> p.b)).collect(Collectors.toList());
-    for (int i : new int[] { 5, 4, 3, Integer.MIN_VALUE, 2, 1 }) {
-      Optional<T> imageOptional = distance.stream().map(p -> p.a)
-        .filter(image -> !image.hasKey(MapillaryImageUtils.QUALITY_SCORE)
-          || Integer.parseInt(image.get(MapillaryImageUtils.QUALITY_SCORE)) == i)
-        .findFirst();
-      if (imageOptional.isPresent()) {
-        return imageOptional.get();
+  private static <T extends INode> T getBestImage(IPrimitive primitive, Collection<T> images) {
+    if (primitive instanceof INode) {
+      List<Pair<T, Double>> distance = images.stream().filter(Objects::nonNull)
+        .map(image -> new Pair<>(image, ((INode) primitive).getCoor().distanceSq(image.getCoor())))
+        .sorted(Comparator.comparing(p -> p.b)).collect(Collectors.toList());
+      for (int i : new int[] { 5, 4, 3, Integer.MIN_VALUE, 2, 1 }) {
+        Optional<T> imageOptional = distance.stream().map(p -> p.a)
+          .filter(image -> !image.hasKey(MapillaryImageUtils.QUALITY_SCORE)
+            || Integer.parseInt(image.get(MapillaryImageUtils.QUALITY_SCORE)) == i)
+          .findFirst();
+        if (imageOptional.isPresent()) {
+          return imageOptional.get();
+        }
       }
     }
     return null;
@@ -417,7 +421,7 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
       AddPrimitivesCommand add = new AddPrimitivesCommand(
         toAdd.stream().map(OsmPrimitive::save).collect(Collectors.toList()), dataSet);
       UndoRedoHandler.getInstance().add(add);
-      // preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
+      preset.showAndApply(new HashSet<>(add.getParticipatingPrimitives()));
       this.showingPresetWindow = true;
       basePrimitive = dataSet.getPrimitiveById(basePrimitive.getPrimitiveId());
       final int userSelection;
@@ -515,12 +519,6 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
     }
   }
 
-  @Override
-  public void hookUpMapView() {
-    super.hookUpMapView();
-    MainApplication.getMap().mapView.addMouseListener(this);
-  }
-
   /**
    * Parse detections
    *
@@ -583,7 +581,6 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
   public synchronized void destroy() {
     super.destroy();
     MainApplication.getMap().filterDialog.getFilterModel().removeTableModelListener(tableModelListener);
-    MainApplication.getMap().mapView.removeMouseListener(this);
     List<? extends PointObjectLayer> layers = MainApplication.getLayerManager().getLayersOfType(this.getClass());
     if (layers.isEmpty() || (layers.size() == 1 && this.equals(layers.get(0))))
       MapPaintStyles.removeStyle(mapcss);
@@ -662,54 +659,6 @@ public class PointObjectLayer extends MVTLayer implements MouseListener, Listene
       GBC.eop().insets(15, 0, 0, 0));
 
     return p;
-  }
-
-  @Override
-  public void mouseClicked(MouseEvent e) {
-    if (!SwingUtilities.isLeftMouseButton(e) || this.equals(MainApplication.getLayerManager().getActiveLayer())
-      || e.isConsumed()) {
-      return;
-    }
-    Point clickPoint = e.getPoint();
-    double snapDistance = ImageProvider.ImageSizes.MAP.getAdjustedHeight();
-    double minDistance = Double.MAX_VALUE;
-    final int iconHeight = ImageProvider.ImageSizes.SMALLICON.getAdjustedHeight();
-    INode closestNode = null;
-    for (INode node : this.getData().getNodes().parallelStream().filter(n -> !n.isDisabled())
-      .collect(Collectors.toList())) {
-      Point notePoint = MainApplication.getMap().mapView.getPoint(node.getCoor());
-      // move the note point to the center of the icon where users are most likely to click when selecting
-      notePoint.setLocation(notePoint.getX(), notePoint.getY() - iconHeight / 2d);
-      double dist = clickPoint.distanceSq(notePoint);
-      if (minDistance > dist && clickPoint.distance(notePoint) < snapDistance) {
-        minDistance = dist;
-        closestNode = node;
-      }
-    }
-    if (closestNode != null || Boolean.FALSE.equals(MapillaryProperties.SMART_EDIT.get())
-      || e.getClickCount() == MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
-      this.getData().setSelected(closestNode);
-    }
-  }
-
-  @Override
-  public void mousePressed(MouseEvent e) {
-    // Do nothing
-  }
-
-  @Override
-  public void mouseReleased(MouseEvent e) {
-    // Do nothing
-  }
-
-  @Override
-  public void mouseEntered(MouseEvent e) {
-    // Do nothing
-  }
-
-  @Override
-  public void mouseExited(MouseEvent e) {
-    // Do nothing
   }
 
   @Override

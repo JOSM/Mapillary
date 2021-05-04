@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
@@ -92,12 +93,23 @@ public final class JsonSequencesDecoder {
     if (MapillaryLayer.hasInstance()) {
       VectorNode image = MapillaryLayer.getInstance().getData().getNodes().stream()
         .filter(node -> key.equals(node.get(MapillaryKeys.KEY))).findAny().orElse(null);
-      if (image.isDeleted()) {
-        image.setDeleted(false);
+      if (image != null) {
+        if (image.isDeleted()) {
+          image.setDeleted(false);
+        }
+        if (!image.getReferrers().isEmpty()) {
+          for (IPrimitive p : image.getReferrers()) {
+            if (p instanceof VectorWay) {
+              List<VectorNode> nodes = new ArrayList<>(((VectorWay) p).getNodes());
+              nodes.removeIf(image::equals);
+              ((VectorWay) p).setNodes(nodes);
+            }
+          }
+        }
+        image.setCoor(location);
+        image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
+        return image;
       }
-      image.setCoor(location);
-      image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
-      return image;
     }
     VectorNode image = new VectorNode(MapillaryKeys.IMAGE_LAYER);
     image.put(MapillaryImageUtils.KEY, key);

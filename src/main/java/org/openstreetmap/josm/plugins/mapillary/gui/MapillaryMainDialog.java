@@ -9,6 +9,7 @@ import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -79,7 +80,10 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private boolean destroyed;
 
+  private transient IWay<?> sequence;
   private transient INode image;
+  /** The key for the current image -- used for when there are multiple images with the same MVT id */
+  private String imageKey;
 
   private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
   private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);
@@ -501,6 +505,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private <T extends INode> void updateDetections(MapillaryCache cache, T image,
     Collection<ImageDetection<?>> detections) {
+    Objects.requireNonNull(cache);
+    Objects.requireNonNull(image);
+    Objects.requireNonNull(detections);
     GuiHelper.runInEDT(() -> updateDisplayImage(cache, image, detections));
   }
 
@@ -544,6 +551,22 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    */
   public void setImage(INode image) {
     this.image = image;
+    String imageKey = MapillaryImageUtils.getKey(image);
+    this.imageKey = imageKey;
+    // Avoid blocking on HTTP GET
+    MainApplication.worker.execute(() -> {
+      IWay<?> tSequence = MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
+      // Don't set the sequence if the image has changed
+      if (this.image != image) {
+        return;
+      }
+      // Avoid potential NPEs
+      this.sequence = tSequence;
+      if (tSequence != null) {
+        this.image = tSequence.getNodes().stream().filter(Objects::nonNull).map(INode.class::cast)
+          .filter(tImage -> imageKey.equals(MapillaryImageUtils.getKey(tImage))).findFirst().orElse(image);
+      }
+    });
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
@@ -698,9 +721,9 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         || data.equals(thumbnailCache.get()))
         && (imageViewer.getImage() == null || img.getHeight() >= this.imageViewer.getImage().getHeight())) {
         final INode mai = getImage();
-        setDisplayImage(img, ImageDetection.getDetections(mai.get(MapillaryImageUtils.KEY), false),
-          mai != null && MapillaryImageUtils.IS_PANORAMIC.test(mai));
-        ImageDetection.getDetections(mai.get(MapillaryImageUtils.KEY),
+        setDisplayImage(img, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
+          MapillaryImageUtils.IS_PANORAMIC.test(mai));
+        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai),
           (key, detections) -> this.updateDetections(this.imageCache, mai, detections));
       }
     } catch (IOException e) {

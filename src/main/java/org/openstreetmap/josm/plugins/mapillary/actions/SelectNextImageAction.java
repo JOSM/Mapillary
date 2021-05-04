@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.Shortcut;
 
@@ -24,8 +24,7 @@ public class SelectNextImageAction extends JosmAction {
     tr("Next picture"), tr("Shows the next picture in the sequence"), DIALOGS_SUBDIR + "/next", Shortcut
       .registerShortcut("mapillary:jump_to_next", tr("Jump to next image"), KeyEvent.VK_PAGE_DOWN, Shortcut.DIRECT),
     () -> {
-      final INode curImg = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      final INode curImg = MapillaryMainDialog.getInstance().getImage();
       if (curImg != null) {
         final INode nextImg = MapillarySequenceUtils.getNextOrPrevious(curImg,
           MapillarySequenceUtils.NextOrPrevious.NEXT);
@@ -40,8 +39,7 @@ public class SelectNextImageAction extends JosmAction {
     tr("Shows the previous picture in the sequence"), DIALOGS_SUBDIR + "/previous", Shortcut.registerShortcut(
       "mapillary:jump_to_previous", tr("Jump to previous image"), KeyEvent.VK_PAGE_UP, Shortcut.DIRECT),
     () -> {
-      final INode curImg = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      final INode curImg = MapillaryMainDialog.getInstance().getImage();
       if (curImg != null) {
         final INode prevImg = MapillarySequenceUtils.getNextOrPrevious(curImg,
           MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
@@ -78,6 +76,15 @@ public class SelectNextImageAction extends JosmAction {
       MapillaryLayer.getInstance().getData().setSelected(newSelectedImage);
       MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
     }
+  }
+
+  /**
+   * Get the image supplier
+   *
+   * @return The supplier
+   */
+  public Supplier<INode> getDestinationImageSupplier() {
+    return this.destinationImgSupplier;
   }
 
   @FunctionalInterface

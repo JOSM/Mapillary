@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
-import java.awt.Image;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.ForkJoinPool;
@@ -73,6 +72,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
 
   /**
    * Cache images. The caching function is run in a separate thread.
+   *
    * @param currentImage The image to cache around
    */
   public static void cacheSurroundingImages(INode currentImage) {
@@ -83,13 +83,16 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
     final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue();
     final long freeMemory = Runtime.getRuntime().freeMemory();
-    final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance().getCache(Type.FULL_IMAGE);
+    final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance()
+      .getCache(Type.FULL_IMAGE);
     // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
     long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
       .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
 
-    INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
-    INode prevImage = MapillarySequenceUtils.getNextOrPrevious(currentImage, MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
+    INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
+      MapillarySequenceUtils.NextOrPrevious.NEXT);
+    INode prevImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
+      MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
     for (int i = 0; i < prefetchCount; i++) {
       if (freeMemory - estimatedImageSize < 0) {
         break; // It doesn't make sense to try to cache images that won't be kept.

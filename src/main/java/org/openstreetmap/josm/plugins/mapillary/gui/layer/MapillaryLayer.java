@@ -29,6 +29,7 @@ import org.openstreetmap.josm.gui.mappaint.Range;
 import org.openstreetmap.josm.gui.mappaint.mapcss.Selector;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
+import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
@@ -106,8 +107,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   private MapillaryLayer() {
     super(MapillaryKeys.MAPILLARY_IMAGES);
-    this.getData().addListener(this);
-    Stream.of(MapillaryPlugin.getMapillaryDataListeners()).forEach(listener -> this.getData().addListener(listener));
+    this.getData().addSelectionListener(this);
+    Stream.of(MapillaryPlugin.getMapillaryDataListeners())
+      .forEach(listener -> this.getData().addSelectionListener(listener));
     UploadAction.registerUploadHook(this, true);
     SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
   }
@@ -260,24 +262,26 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
     final String sequenceKey = MapillarySequenceUtils.getKey(MapillaryImageUtils.getSequence(selectedImage));
+    Collection<IWay<?>> selectedSequences = new ArrayList<>();
     for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
       if (seq.getNodes().contains(selectedImage) || sequenceKey.equals(MapillarySequenceUtils.getKey(seq))) {
-        g.setColor(!seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
-      } else if (selectedImage == null) {
-        g.setColor(
-          !seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
+        selectedSequences.add(seq);
       } else {
-        g.setColor(
-          !seq.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED : MapillaryColorScheme.SEQ_UNSELECTED);
-        g.setComposite(fadeComposite);
+        drawSequence(g, mv, seq, false, selectedImage != null);
       }
-      g.draw(MapViewGeometryUtil.getSequencePath(mv, seq));
-      g.setComposite(AlphaComposite.SrcOver);
     }
-    for (INode imageAbs : this.getData().searchNodes(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
-      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
-        drawImageMarker(g, imageAbs);
+    final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
+      .collect(Collectors.toList());
+    if (images.size() < Config.getPref().getInt("mapillary.images.max_draw", 1000)) {
+      for (INode imageAbs : images) {
+        if (imageAbs.isVisible()) {
+          drawImageMarker(g, imageAbs);
+        }
       }
+    }
+    // Paint the selected sequences
+    for (IWay<?> sequence : selectedSequences) {
+      drawSequence(g, mv, sequence, true, selectedImage != null);
     }
     // Paint selected images last. Not particularly worried about painting too much, since most people don't select
     // thousands of images.
@@ -286,6 +290,23 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         drawImageMarker(g, imageAbs);
       }
     }
+  }
+
+  private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, boolean selected,
+    boolean selectedImage) {
+    if (selected) {
+      g.setColor(
+        !sequence.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
+    } else if (!selectedImage) {
+      g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
+        : MapillaryColorScheme.SEQ_UNSELECTED);
+    } else {
+      g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
+        : MapillaryColorScheme.SEQ_UNSELECTED);
+      g.setComposite(fadeComposite);
+    }
+    g.draw(MapViewGeometryUtil.getSequencePath(mv, sequence));
+    g.setComposite(AlphaComposite.SrcOver);
   }
 
   /**
@@ -500,8 +521,23 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       MainApplication.worker.execute(this::updateNearestImages);
     }
     if (MapillaryMainDialog.hasInstance()) {
-      VectorNode image = event.getSelection().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast)
-        .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      INode image = null;
+      for (SelectNextImageAction action : Arrays.asList(SelectNextImageAction.NEXT_ACTION,
+        SelectNextImageAction.PREVIOUS_ACTION, SelectNextImageAction.BLUE_ACTION, SelectNextImageAction.RED_ACTION)) {
+        INode possible = action.getDestinationImageSupplier().get();
+        // possible is always null initially
+        if (possible != null) {
+          Optional<INode> node = event.getSelection().stream().filter(INode.class::isInstance).map(INode.class::cast)
+            .filter(possible::equals).findFirst();
+          if (node.isPresent()) {
+            image = node.get();
+          }
+        }
+      }
+      if (image == null) {
+        image = event.getSelection().stream().filter(INode.class::isInstance).map(INode.class::cast)
+          .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      }
       MapillaryMainDialog.getInstance().setImage(image);
     }
     this.invalidate();
@@ -537,7 +573,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   private void updateNearestImages() {
     ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-    final INode selected = getData().getSelectedNodes().stream().findFirst().orElse(null);
+    final INode selected;
+    if (MapillaryMainDialog.hasInstance()) {
+      selected = MapillaryMainDialog.getInstance().getImage();
+    } else {
+      selected = getData().getSelectedNodes().stream().findFirst().orElse(null);
+    }
     INode[] newNearestImages;
     if (selected != null && selected.hasKey(KEY)) {
       newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);

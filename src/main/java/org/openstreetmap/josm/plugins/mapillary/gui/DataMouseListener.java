@@ -36,7 +36,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
       return;
     }
     for (MVTLayer layer : MainApplication.getLayerManager().getLayersOfType(MVTLayer.class)) {
-      if (!(layer instanceof MapillaryLayer || layer instanceof PointObjectLayer)) {
+      if (!(layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) || !layer.isVisible()) {
         continue;
       }
       Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
@@ -91,7 +91,9 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
 
   @Override
   public void destroy() {
-    MainApplication.getMap().mapView.removeMouseListener(this);
-    MainApplication.getMap().mapView.removeMouseMotionListener(this);
+    if (MainApplication.getMap().mapView != null) {
+      MainApplication.getMap().mapView.removeMouseListener(this);
+      MainApplication.getMap().mapView.removeMouseMotionListener(this);
+    }
   }
 }

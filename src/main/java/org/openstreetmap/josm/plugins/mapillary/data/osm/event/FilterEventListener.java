@@ -23,10 +23,10 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public class FilterEventListener implements TableModelListener {
   private final Layer layer;
-  private final OsmData<?, ?, ?, ?> data;
+  private final OsmData<? extends IFilterablePrimitive, ?, ?, ?> data;
   public final FilterMatcher matcher;
 
-  public FilterEventListener(Layer layer, OsmData<?, ?, ?, ?> data) {
+  public FilterEventListener(Layer layer, OsmData<? extends IFilterablePrimitive, ?, ?, ?> data) {
     this.layer = layer;
     this.data = data;
     matcher = new FilterMatcher();
@@ -49,8 +49,7 @@ public class FilterEventListener implements TableModelListener {
         }
       }
     }
-    // FilterWorker.executeFilters(data.allPrimitives(), matcher); // TODO update filterworker for IPrimitive
+    FilterWorker.executeFilters(data.allPrimitives(), matcher);
     SwingUtilities.invokeLater(layer::invalidate);
-    throw new UnsupportedOperationException("Filters aren't currently supported");
   }
 }
