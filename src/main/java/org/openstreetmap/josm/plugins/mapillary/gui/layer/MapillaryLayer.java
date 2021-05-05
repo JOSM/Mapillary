@@ -1,9 +1,13 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import org.openstreetmap.gui.jmapviewer.TileXY;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileJob;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.actions.upload.UploadHook;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.ILatLon;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.*;
 import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
@@ -369,14 +373,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
+    if (getData().getHighlighted().contains(img.getPrimitiveId())) {
+      g.setColor(Color.WHITE);
+      g.setStroke(new BasicStroke(2));
+      g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+    }
     // TODO get the following working
     /*
-     * if (getData().getHighlightedImages().contains(img) || img.equals(getData().getHighlightedImage())
-     * || getData().getSelectedNodes().contains(img)) {
-     * g.setColor(Color.WHITE);
-     * g.setStroke(new BasicStroke(2));
-     * g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
-     * }
      * if (img instanceof Detections && !((Detections) img).getDetections().isEmpty()) {
      * g.drawImage(YIELD_SIGN, (int) (p.getX() - TRAFFIC_SIGN_SIZE / 3d), (int) (p.getY() - TRAFFIC_SIGN_SIZE / 3d),
      * null);
@@ -603,6 +606,36 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       MapillaryMainDialog.getInstance().redButton.setEnabled(!nearestImages.isEmpty());
       MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.size() >= 2);
     }
+  }
+
+  /**
+   * The the tile for a location
+   *
+   * @param location The location to load the tile for
+   * @return {@code true} if the tile has finished loading and was actually loaded in the method.
+   */
+  public boolean loadTileFor(ILatLon location) {
+    TileXY tileXY = this.tileSource.latLonToTileXY(location.lat(), location.lon(), this.getZoomLevel());
+    if (this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel()) != null) {
+      return false;
+    }
+    MVTTile tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
+      this.getZoomLevel());
+    TileJob job = this.tileLoader.createTileLoaderJob(tile);
+    synchronized (job) {
+      job.submit();
+      try {
+        // Typically < 700 ms
+        job.wait(1000);
+      } catch (InterruptedException e) {
+        Logging.error(e);
+        Thread.currentThread().interrupt();
+      }
+    }
+    this.tileCache.addTile(tile);
+    this.tileLoadingFinished(tile, tile.isLoaded());
+    this.getData().addTileData(tile);
+    return tile.isLoaded();
   }
 
   private static class NearestImgToTargetComparator implements Comparator<INode> {

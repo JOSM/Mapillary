@@ -39,6 +39,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
@@ -115,6 +116,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     RequestProcessor.addRequestHandlerClass("photo", MapillaryRemoteControl.class);
     // instantiate to get action into Remote Control Preferences
     new MapillaryRemoteControl();
+    destroyables.add(new MapillaryLayerListener(MainApplication.getLayerManager()));
 
     mapFrameInitialized(null, MainApplication.getMap());
   }
@@ -146,6 +148,8 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
       newFrame.addToggleDialog(MapillaryFilterDialog.getInstance(), false);
       newFrame.addToggleDialog(MapillaryExpertFilterDialog.getInstance(), true);
       toggleDialog.add(MapillaryExpertFilterDialog.getInstance());
+      newFrame.addToggleDialog(ImageInfoPanel.getInstance());
+      toggleDialog.add(ImageInfoPanel.getInstance());
 
       // This fixes a UI issue -- for whatever reason, the tab pane is occasionally unusable when the expert filter
       // dialog is added.

@@ -187,6 +187,10 @@ public class MapillarySequenceUtils {
       VectorWay sequence = seq.stream().findFirst().orElse(null);
       if (sequence != null && MapillaryLayer.hasInstance()) {
         MapillaryLayer.getInstance().getData().addPrimitive(sequence);
+        if (sequence.getDataSet() != null) {
+          sequence.getNodes().stream().filter(node -> node.getDataSet() == null)
+            .forEach(node -> sequence.getDataSet().addPrimitive(node));
+        }
       }
       return sequence;
     } catch (IOException e) {

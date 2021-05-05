@@ -24,6 +24,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -57,6 +58,7 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
   private static final List<CacheAccess<String, List<ImageDetection<?>>>> searchDetections = new ArrayList<>(3);
 
   private static void setSearchDetections() {
+    // segmentations take awhile to get (10+ seconds on my machine), so default off
     BooleanProperty segmentationProperty = new BooleanProperty("mapillary.image.detections.segmentation", false);
     segmentationProperty.addWeakListener(value -> {
       if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
@@ -65,9 +67,26 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
         searchDetections.remove(SEGMENTATIONS);
       }
     });
-    searchDetections.add(TRAFFIC_SIGN);
-    searchDetections.add(INSTANCES);
-    // segmentations take awhile to get (10+ seconds on my machine)
+    MapillaryProperties.SHOW_DETECTED_SIGNS.addWeakListener(value -> {
+      if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
+        searchDetections.add(TRAFFIC_SIGN);
+      } else {
+        searchDetections.remove(TRAFFIC_SIGN);
+      }
+    });
+    MapillaryProperties.SHOW_DETECTION_OUTLINES.addWeakListener(value -> {
+      if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
+        searchDetections.add(INSTANCES);
+      } else {
+        searchDetections.remove(INSTANCES);
+      }
+    });
+    if (Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())) {
+      searchDetections.add(TRAFFIC_SIGN);
+    }
+    if (Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())) {
+      searchDetections.add(INSTANCES);
+    }
     if (Boolean.TRUE.equals(segmentationProperty.get())) {
       searchDetections.add(SEGMENTATIONS);
     }
@@ -84,7 +103,7 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
    * @param listener The consumer to notify when the detections are downloaded
    */
   public static void getDetections(String key, BiConsumer<String, List<ImageDetection<?>>> listener) {
-    MainApplication.worker.submit(() -> {
+    MapillaryUtils.getForkJoinPool().execute(() -> {
       List<ImageDetection<?>> detections = getDetections(key, true);
       listener.accept(key, detections);
     });

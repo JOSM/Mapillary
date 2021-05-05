@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
-import com.github.tomakehurst.wiremock.extension.requestfilter.StopAction;
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -9,8 +8,6 @@ import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.DataSelectionListener;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.osm.IWay;
-import org.openstreetmap.josm.data.osm.event.IDataSelectionListener;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.SideButton;
@@ -22,6 +19,7 @@ import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -69,7 +67,8 @@ import static org.openstreetmap.josm.tools.I18n.trc;
  *
  * @author nokutu
  */
-public final class MapillaryMainDialog extends ToggleDialog implements ICachedLoaderListener, IDataSelectionListener {
+public final class MapillaryMainDialog extends ToggleDialog
+  implements ICachedLoaderListener, VectorDataSelectionListener {
 
   private static final long serialVersionUID = 6856496736429480600L;
 
@@ -80,10 +79,8 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
 
   private boolean destroyed;
 
-  private transient IWay<?> sequence;
   private transient INode image;
   /** The key for the current image -- used for when there are multiple images with the same MVT id */
-  private String imageKey;
 
   private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
   private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);
@@ -407,56 +404,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         return;
       }
 
-      // Enables/disables next/previous buttons
-      this.nextButton.setEnabled(false);
-      this.previousButton.setEnabled(false);
-      if (currentImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
-        INode tempImage = currentImage;
-        while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
-          MapillarySequenceUtils.NextOrPrevious.NEXT)) != null) {
-          if (tempImage.isVisible()) {
-            this.nextButton.setEnabled(true);
-            break;
-          }
-        }
-        tempImage = currentImage;
-        while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
-          MapillarySequenceUtils.NextOrPrevious.PREVIOUS)) != null) {
-          if (tempImage.isVisible()) {
-            this.previousButton.setEnabled(true);
-            break;
-          }
-        }
-      }
-      if (currentImage.hasKey(MapillaryKeys.KEY)) {
-        // Downloads the thumbnail.
-        if (this.thumbnailCache != null)
-          this.thumbnailCache.cancelOutstandingTasks();
-        final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
-          MapillaryCache.Type.THUMBNAIL);
-        this.thumbnailCache = imageThumbnailCache;
-        try {
-          if (imageThumbnailCache.get() == null)
-            imageThumbnailCache.submit(this, false);
-        } catch (IOException e) {
-          Logging.error(e);
-        }
+      this.updateButtonStates(currentImage);
 
-        // Downloads the full resolution image.
-        // Use this variable to avoid race conditions
-        final MapillaryCache imageFullCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
-          MapillaryCache.Type.FULL_IMAGE);
-        if (fullQuality || imageFullCache.get() != null) {
-          if (this.imageCache != null)
-            this.imageCache.cancelOutstandingTasks();
-          this.imageCache = imageFullCache;
-          try {
-            if (imageFullCache.get() == null)
-              imageFullCache.submit(this, false);
-          } catch (IOException e) {
-            Logging.error(e);
-          }
-        }
+      if (currentImage.hasKey(MapillaryKeys.KEY)) {
+        final MapillaryCache imageThumbnailCache = this.cacheThumbnail(currentImage);
+
+        // Use this to avoid race conditions
+        final MapillaryCache imageFullCache = fullQuality ? this.cacheFullImage(currentImage) : null;
+
         MapillaryCache.cacheSurroundingImages(currentImage);
         try {
           ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
@@ -471,7 +426,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
             setDisplayImage(imageFullCache.get().getImage(), detections,
               MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
             pool.execute(() -> updateDetections(imageFullCache, currentImage, detections));
-          } else if (imageThumbnailCache != null && imageThumbnailCache.get() != null) {
+          } else if (imageThumbnailCache.get() != null) {
             setDisplayImage(imageThumbnailCache.get().getImage(), detections,
               MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
             pool.execute(() -> updateDetections(imageThumbnailCache, currentImage, detections));
@@ -491,15 +446,71 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
           setDisplayImage(null, null, false);
         }
       } else if (currentImage.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
-        final INode importedImage = currentImage;
         try {
-          setDisplayImage(ImageIO.read(new File(importedImage.get(MapillaryImageUtils.IMPORTED_KEY))), null,
-            MapillaryImageUtils.IS_PANORAMIC.test(importedImage));
+          setDisplayImage(ImageIO.read(new File(currentImage.get(MapillaryImageUtils.IMPORTED_KEY))), null,
+            MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
         } catch (IOException e) {
           Logging.error(e);
         }
       }
       updateTitle();
+    }
+  }
+
+  private MapillaryCache cacheThumbnail(INode currentImage) {
+    // Downloads the thumbnail.
+    if (this.thumbnailCache != null)
+      this.thumbnailCache.cancelOutstandingTasks();
+    final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
+      MapillaryCache.Type.THUMBNAIL);
+    this.thumbnailCache = imageThumbnailCache;
+    try {
+      if (imageThumbnailCache.get() == null)
+        imageThumbnailCache.submit(this, false);
+    } catch (IOException e) {
+      Logging.error(e);
+    }
+    return imageThumbnailCache;
+  }
+
+  private MapillaryCache cacheFullImage(INode currentImage) {
+    // Downloads the full resolution image.
+    final MapillaryCache imageFullCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
+      MapillaryCache.Type.FULL_IMAGE);
+    // Use this variable to avoid race conditions
+    if (this.imageCache != null)
+      this.imageCache.cancelOutstandingTasks();
+    this.imageCache = imageFullCache;
+    try {
+      if (imageFullCache.get() == null)
+        imageFullCache.submit(this, false);
+    } catch (IOException e) {
+      Logging.error(e);
+    }
+    return imageFullCache;
+  }
+
+  private void updateButtonStates(INode currentImage) {
+    // Enables/disables next/previous buttons
+    this.nextButton.setEnabled(false);
+    this.previousButton.setEnabled(false);
+    if (currentImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+      INode tempImage = currentImage;
+      while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
+        MapillarySequenceUtils.NextOrPrevious.NEXT)) != null) {
+        if (tempImage.isVisible()) {
+          this.nextButton.setEnabled(true);
+          break;
+        }
+      }
+      tempImage = currentImage;
+      while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
+        MapillarySequenceUtils.NextOrPrevious.PREVIOUS)) != null) {
+        if (tempImage.isVisible()) {
+          this.previousButton.setEnabled(true);
+          break;
+        }
+      }
     }
   }
 
@@ -551,22 +562,14 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
    */
   public void setImage(INode image) {
     this.image = image;
-    String imageKey = MapillaryImageUtils.getKey(image);
-    this.imageKey = imageKey;
-    // Avoid blocking on HTTP GET
-    MainApplication.worker.execute(() -> {
-      IWay<?> tSequence = MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
-      // Don't set the sequence if the image has changed
-      if (this.image != image) {
-        return;
-      }
-      // Avoid potential NPEs
-      this.sequence = tSequence;
-      if (tSequence != null) {
-        this.image = tSequence.getNodes().stream().filter(Objects::nonNull).map(INode.class::cast)
-          .filter(tImage -> imageKey.equals(MapillaryImageUtils.getKey(tImage))).findFirst().orElse(image);
-      }
-    });
+    // Avoid blocking on HTTP GET -- this replaces the sequences across tiles
+    if (!MapillaryUtils.getForkJoinPool().isShutdown()) {
+      MapillaryUtils.getForkJoinPool().execute(() -> {
+        MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
+        this.updateImage(true);
+        this.invalidate();
+      });
+    }
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
@@ -591,7 +594,7 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
       if (this.image.hasKey(MapillaryKeys.KEY)) {
         INode mapillaryImage = this.image;
-        UserProfile user = Caches.UserProfileCache.getInstance().get(mapillaryImage.get(MapillaryKeys.USER_KEY));
+        UserProfile user = Caches.UserProfileCache.getInstance().get(MapillaryImageUtils.getUser(mapillaryImage));
         if (user != null) {
           title.append(MESSAGE_SEPARATOR).append(user.getUsername());
         }
@@ -718,13 +721,12 @@ public final class MapillaryMainDialog extends ToggleDialog implements ICachedLo
         return;
       }
       if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
-        || data.equals(thumbnailCache.get()))
-        && (imageViewer.getImage() == null || img.getHeight() >= this.imageViewer.getImage().getHeight())) {
+        || data.equals(thumbnailCache.get()))) {
         final INode mai = getImage();
         setDisplayImage(img, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
           MapillaryImageUtils.IS_PANORAMIC.test(mai));
-        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai),
-          (key, detections) -> this.updateDetections(this.imageCache, mai, detections));
+        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
+          .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
       }
     } catch (IOException e) {
       Logging.error(e);

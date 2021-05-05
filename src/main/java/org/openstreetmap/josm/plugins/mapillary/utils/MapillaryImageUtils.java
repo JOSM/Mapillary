@@ -2,12 +2,19 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
+import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 
 import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.JsonReader;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +49,7 @@ public final class MapillaryImageUtils {
   public static final String CAMERA_ANGLE = "ca";
   public static final String QUALITY_SCORE = "quality_score";
   public static final String SEQUENCE_KEY = "skey";
+  public static final String SEQUENCE_KEY_OLD = "sequence_key";
   public static final String IMPORTED_KEY = "import_file";
 
   public static IWay<?> getSequence(INode image) {
@@ -164,9 +172,52 @@ public final class MapillaryImageUtils {
    * @return The sequence key
    */
   public static String getSequenceKey(INode image) {
-    if (image != null && image.hasKey(SEQUENCE_KEY)) {
-      return image.get(SEQUENCE_KEY);
+    if (image != null) {
+      for (String key : new String[] { SEQUENCE_KEY, SEQUENCE_KEY_OLD }) {
+        if (image.hasKey(key)) {
+          return image.get(key);
+        }
+      }
     }
     return null;
+  }
+
+  /**
+   * Get the user key
+   *
+   * @param mapillaryImage The image with the user key
+   * @return The user key, or an empty string
+   */
+  public static String getUser(INode mapillaryImage) {
+    if (mapillaryImage != null && mapillaryImage.hasKey(MapillaryKeys.USER_KEY)) {
+      return mapillaryImage.get(MapillaryKeys.USER_KEY);
+    }
+    return "";
+  }
+
+  /**
+   * Download additional image details
+   *
+   * @param image The image to get additional details for
+   */
+  public static void downloadImageDetails(VectorNode image) {
+    MapillaryUtils.getForkJoinPool().execute(() -> {
+      if (!"".equals(getKey(image))) {
+        java.net.URL imageUrl = MapillaryURL.APIv3.getImage(getKey(image));
+        HttpClient client = HttpClient.create(imageUrl);
+        final HttpClient.Response response;
+        try {
+          response = client.connect();
+        } catch (IOException e) {
+          Logging.error(e);
+          return;
+        }
+        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+          JsonDecoder.decodeFeatureCollection(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
+        } catch (IOException e) {
+          Logging.error(e);
+        }
+      }
+    });
   }
 }

@@ -10,8 +10,8 @@ import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.tools.Destroyable;
-import org.openstreetmap.josm.tools.Logging;
 
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -39,9 +39,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
       if (!(layer instanceof MapillaryLayer || layer instanceof PointObjectLayer) || !layer.isVisible()) {
         continue;
       }
-      Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
+      Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox).stream().distinct()
+        .collect(Collectors.toList());
       if (!nodes.isEmpty()) {
         layer.getData().setSelected(nodes);
+        if (nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
+          SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
+        }
         continue;
       }
       Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
@@ -54,8 +58,6 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
   @Override
   public void mouseMoved(MouseEvent e) {
     super.mouseMoved(e);
-    if (true)
-      return; // TODO remove
     final BBox searchBBox = getSmallBBox(e.getPoint());
     for (MVTLayer layer : MainApplication.getLayerManager().getLayersOfType(MVTLayer.class)) {
       if (!(layer instanceof MapillaryLayer || layer instanceof PointObjectLayer)) {
@@ -64,11 +66,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
       Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox);
       if (!nodes.isEmpty()) {
         layer.getData().setHighlighted(nodes.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+        layer.invalidate();
         continue;
       }
       Collection<VectorWay> ways = layer.getData().searchWays(searchBBox);
       if (!ways.isEmpty()) {
         layer.getData().setHighlighted(ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
+        layer.invalidate();
       }
     }
   }
@@ -84,14 +88,13 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
     final BBox bbox = new BBox();
     // TODO fiddle with the scale
     // ~.07 at z12
-    Logging.error("Scale: {0}", MainApplication.getMap().mapView.getScale());
     bbox.addLatLon(latLon, 0.0001 * scale);
     return bbox;
   }
 
   @Override
   public void destroy() {
-    if (MainApplication.getMap().mapView != null) {
+    if (MainApplication.getMap() != null && MainApplication.getMap().mapView != null) {
       MainApplication.getMap().mapView.removeMouseListener(this);
       MainApplication.getMap().mapView.removeMouseMotionListener(this);
     }

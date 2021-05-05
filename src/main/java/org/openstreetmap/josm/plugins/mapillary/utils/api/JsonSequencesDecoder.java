@@ -2,7 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
@@ -18,6 +18,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -78,8 +79,16 @@ public final class JsonSequencesDecoder {
         newNodes.add(img);
       }
     }
+    newNodes.stream().flatMap(node -> node.getReferrers().stream()).distinct().filter(IWay.class::isInstance)
+      .map(IWay.class::cast).forEach(way -> {
+        synchronized (way) {
+          way.setNodes(Collections.emptyList());
+        }
+        way.setDeleted(true);
+      });
     newNodes.addAll(0, result.getNodes());
     result.setNodes(newNodes);
+    result.setDeleted(false);
   }
 
   /**
@@ -91,31 +100,30 @@ public final class JsonSequencesDecoder {
    */
   private static VectorNode getImage(String key, LatLon location, Double cameraAngle, boolean pano) {
     if (MapillaryLayer.hasInstance()) {
-      VectorNode image = MapillaryLayer.getInstance().getData().getNodes().stream()
+      BBox searchBBox = new BBox();
+      searchBBox.addLatLon(location, 0.001);
+      VectorNode image = MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream()
         .filter(node -> key.equals(node.get(MapillaryKeys.KEY))).findAny().orElse(null);
       if (image != null) {
         if (image.isDeleted()) {
           image.setDeleted(false);
         }
-        if (!image.getReferrers().isEmpty()) {
-          for (IPrimitive p : image.getReferrers()) {
-            if (p instanceof VectorWay) {
-              List<VectorNode> nodes = new ArrayList<>(((VectorWay) p).getNodes());
-              nodes.removeIf(image::equals);
-              ((VectorWay) p).setNodes(nodes);
-            }
-          }
-        }
+        // Update the location to the actual location, instead of the "near" location from MVT
         image.setCoor(location);
         image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
         return image;
       }
+    }
+    // Attempt to load the missing tile(s)
+    if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().loadTileFor(location)) {
+      return getImage(key, location, cameraAngle, pano);
     }
     VectorNode image = new VectorNode(MapillaryKeys.IMAGE_LAYER);
     image.put(MapillaryImageUtils.KEY, key);
     image.setCoor(location);
     image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+    MapillaryImageUtils.downloadImageDetails(image);
     return image;
   }
 

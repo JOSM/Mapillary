@@ -39,6 +39,7 @@ import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
@@ -54,8 +55,7 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 import org.openstreetmap.josm.tools.Utils;
 
-public final class ImageInfoPanel extends ToggleDialog implements DataSelectionListener,
-  IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
+public final class ImageInfoPanel extends ToggleDialog implements DataSelectionListener, VectorDataSelectionListener {
   private static final long serialVersionUID = 1320443250226377651L;
   private static ImageInfoPanel instance;
   private static final ImageIcon EMPTY_USER_AVATAR = new ImageIcon(

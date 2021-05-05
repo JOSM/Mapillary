@@ -58,3 +58,10 @@ node[layer=points] {
 node|z18-[value][is_prop_set(imagepath)] {
     icon-image: concat("mapillary_sprite_source/", prop(imagepath), "/", tag("value"));
 }
+
+node[layer=~/trafficsigns|points/]:selected::selected_layer {
+    symbol-shape: square;
+    symbol-size: +4;
+    symbol-stroke-color: red;
+    symbol-stroke-opacity: 0.7;
+}

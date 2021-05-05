@@ -74,6 +74,11 @@ public class SelectNextImageAction extends JosmAction {
     final INode newSelectedImage = destinationImgSupplier.get();
     if (newSelectedImage != null) {
       MapillaryLayer.getInstance().getData().setSelected(newSelectedImage);
+      // TODO remove if it turns out to be unneeded -- due to ids, unintended images
+      // may be selected.
+      if (MapillaryMainDialog.hasInstance() && !newSelectedImage.equals(MapillaryMainDialog.getInstance().getImage())) {
+        MapillaryMainDialog.getInstance().setImage(newSelectedImage);
+      }
       MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
     }
   }

@@ -14,7 +14,6 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
@@ -76,15 +75,14 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    * @param currentImage The image to cache around
    */
   public static void cacheSurroundingImages(INode currentImage) {
-    MainApplication.worker.submit(() -> runnableCacheSurroundingImages(currentImage));
+    MapillaryUtils.getForkJoinPool().execute(() -> runnableCacheSurroundingImages(currentImage));
   }
 
   private static void runnableCacheSurroundingImages(INode currentImage) {
     final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-    final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get().intValue();
+    final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
     final long freeMemory = Runtime.getRuntime().freeMemory();
-    final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getInstance()
-      .getCache(Type.FULL_IMAGE);
+    final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getCache(Type.THUMBNAIL);
     // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
     long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
       .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
@@ -126,7 +124,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *        FULL_IMAGE).
    */
   public MapillaryCache(final String key, final Type type) {
-    super(Caches.ImageCache.getInstance().getCache(type),
+    super(Caches.ImageCache.getCache(type),
       new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
     if (key == null || type == null) {
       this.key = null;

@@ -13,7 +13,6 @@ import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
 public final class Caches {
 
@@ -32,7 +31,7 @@ public final class Caches {
   public abstract static class CacheProxy<K, V extends Serializable> {
     private final CacheAccess<K, V> cache;
 
-    public CacheProxy() {
+    protected CacheProxy() {
       cache = createNewCache();
     }
 
@@ -49,29 +48,32 @@ public final class Caches {
     }
   }
 
+  /**
+   * Caches for images
+   */
   public static class ImageCache {
-    private static ImageCache instance;
-    private final CacheAccess<String, BufferedImageCacheEntry> thumbnailCache = JCSCacheManager.getCache(
-      "mapillary:thumbnailImage", Math.max(3 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get(), 10), 10000,
-      getCacheDirectory().getPath());
-    private final CacheAccess<String, BufferedImageCacheEntry> imageCache = JCSCacheManager.getCache(
-      "mapillary:fullImage", Math.max(2 * MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get() + 4, 10), 10_000,
-      getCacheDirectory().getPath());
+    private static final short MAX_DISK_IMAGES_SIZE = 10_000; // kb, ~50 full size images (average ~200 kb/image)
+    private static final byte MAX_MEMORY_OBJECTS = 2;
+    private static final CacheAccess<String, BufferedImageCacheEntry> THUMBNAIL_IMAGE_CACHE = JCSCacheManager.getCache(
+      "mapillary:image:thumbnailImage", MAX_MEMORY_OBJECTS * 10, MAX_DISK_IMAGES_SIZE, getCacheDirectory().getPath());
+    private static final CacheAccess<String, BufferedImageCacheEntry> FULL_IMAGE_CACHE = JCSCacheManager
+      .getCache("mapillary:image:fullImage", MAX_MEMORY_OBJECTS, MAX_DISK_IMAGES_SIZE, getCacheDirectory().getPath());
 
-    public CacheAccess<String, BufferedImageCacheEntry> getCache(MapillaryCache.Type type) {
+    /**
+     * Get the cache for the image type
+     *
+     * @param type The image type
+     * @return The cache
+     */
+    public static CacheAccess<String, BufferedImageCacheEntry> getCache(MapillaryCache.Type type) {
       if (MapillaryCache.Type.THUMBNAIL.equals(type)) {
-        return thumbnailCache;
+        return THUMBNAIL_IMAGE_CACHE;
       }
-      return imageCache;
+      return FULL_IMAGE_CACHE;
     }
 
-    public static ImageCache getInstance() {
-      synchronized (ImageCache.class) {
-        if (instance == null) {
-          instance = new ImageCache();
-        }
-        return instance;
-      }
+    private ImageCache() {
+      // No-op
     }
   }
 
