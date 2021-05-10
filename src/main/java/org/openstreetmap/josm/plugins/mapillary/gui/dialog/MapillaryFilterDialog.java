@@ -111,7 +111,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
   private MapillaryFilterDialog() {
     super(tr("Mapillary filter"), "mapillary-filter", tr("Open Mapillary filter dialog"),
-      Shortcut.registerShortcut("mapillary:filter<dialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
+      Shortcut.registerShortcut("mapillary:filter:dialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
         Shortcut.NONE),
       200, false, MapillaryPreferenceSetting.class);
     MapillaryUser.addListener(this);
