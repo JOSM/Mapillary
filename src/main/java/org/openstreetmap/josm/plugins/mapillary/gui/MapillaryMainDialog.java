@@ -494,7 +494,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     // Enables/disables next/previous buttons
     this.nextButton.setEnabled(false);
     this.previousButton.setEnabled(false);
-    if (currentImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+    if (MapillaryImageUtils.getSequenceKey(currentImage) != null) {
       INode tempImage = currentImage;
       while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
         MapillarySequenceUtils.NextOrPrevious.NEXT)) != null) {

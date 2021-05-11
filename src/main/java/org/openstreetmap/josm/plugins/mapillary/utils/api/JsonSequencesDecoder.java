@@ -1,8 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
@@ -10,6 +13,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.tools.Logging;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -20,7 +24,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Decodes the JSON returned by {@link APIv3} into Java objects.
@@ -81,9 +90,7 @@ public final class JsonSequencesDecoder {
     }
     newNodes.stream().flatMap(node -> node.getReferrers().stream()).distinct().filter(IWay.class::isInstance)
       .map(IWay.class::cast).forEach(way -> {
-        synchronized (way) {
-          way.setNodes(Collections.emptyList());
-        }
+        way.setNodes(Collections.emptyList());
         way.setDeleted(true);
       });
     newNodes.addAll(0, result.getNodes());
@@ -99,32 +106,58 @@ public final class JsonSequencesDecoder {
    * @return The node for the image
    */
   private static VectorNode getImage(String key, LatLon location, Double cameraAngle, boolean pano) {
+    VectorNode image = null;
     if (MapillaryLayer.hasInstance()) {
       BBox searchBBox = new BBox();
       searchBBox.addLatLon(location, 0.001);
-      VectorNode image = MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream()
-        .filter(node -> key.equals(node.get(MapillaryKeys.KEY))).findAny().orElse(null);
-      if (image != null) {
-        if (image.isDeleted()) {
-          image.setDeleted(false);
+      image = findImage(key, MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream());
+      // Attempt to load the missing tile(s)
+      if (image == null) {
+        Future<Tile> future = MapillaryLayer.getInstance().loadTileFor(location);
+        try {
+          Tile tile = future.get(30, TimeUnit.SECONDS);
+          if (tile instanceof MVTTile) {
+            image = findImage(key, ((MVTTile) tile).getData().getStore().searchNodes(searchBBox).stream());
+          }
+        } catch (InterruptedException e) {
+          Logging.error(e);
+          Thread.currentThread().interrupt();
+        } catch (ExecutionException | TimeoutException e) {
+          Logging.error(e);
         }
-        // Update the location to the actual location, instead of the "near" location from MVT
-        image.setCoor(location);
-        image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
-        return image;
       }
     }
-    // Attempt to load the missing tile(s)
-    if (MapillaryLayer.hasInstance() && MapillaryLayer.getInstance().loadTileFor(location)) {
-      return getImage(key, location, cameraAngle, pano);
+    final boolean newNode;
+    if (image == null) {
+      image = new VectorNode(MapillaryKeys.IMAGE_LAYER);
+      newNode = true;
+    } else {
+      newNode = false;
     }
-    VectorNode image = new VectorNode(MapillaryKeys.IMAGE_LAYER);
+    if (image.isDeleted()) {
+      image.setDeleted(false);
+    }
+    // Update the location to the actual location, instead of the "near" location from MVT
     image.put(MapillaryImageUtils.KEY, key);
     image.setCoor(location);
     image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
-    MapillaryImageUtils.downloadImageDetails(image);
+    if (newNode) {
+      MapillaryImageUtils.downloadImageDetails(image);
+    }
     return image;
+  }
+
+  /**
+   * Find an image from a primitive stream
+   *
+   * @param key The image key
+   * @param primitiveStream The stream of primitives
+   * @param <N> The generic node type
+   * @return The image, or {@code null}
+   */
+  private static <N extends INode> N findImage(String key, Stream<N> primitiveStream) {
+    return primitiveStream.filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElse(null);
   }
 
   /**

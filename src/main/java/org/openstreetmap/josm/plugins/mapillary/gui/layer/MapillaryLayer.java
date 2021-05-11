@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileXY;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileJob;
 import org.openstreetmap.josm.actions.UploadAction;
@@ -53,8 +54,10 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -249,8 +252,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     // Draw the blue and red line
     final INode selectedImage = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
     synchronized (this) {
-      for (int i = 0; i < this.nearestImages.size() && selectedImage != null; i++) {
-        if (i == 0) {
+      for (int i = 0; i < this.nearestImages.size(); i++) {
+        if (i % 2 == 0) {
           g.setColor(Color.RED);
         } else {
           g.setColor(Color.BLUE);
@@ -299,8 +302,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   private void drawSequence(final Graphics2D g, final MapView mv, final IWay<?> sequence, boolean selected,
     boolean selectedImage) {
     if (selected) {
-      g.setColor(
-        !MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
+      g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
+        : MapillaryColorScheme.SEQ_SELECTED);
     } else if (!selectedImage) {
       g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
         : MapillaryColorScheme.SEQ_UNSELECTED);
@@ -334,8 +337,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
     final Point p = MainApplication.getMap().mapView.getPoint(img.getCoor());
     Composite composite = g.getComposite();
-    if (selectedImg != null && selectedImg.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
-      && !selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY).equals(img.get(MapillaryImageUtils.SEQUENCE_KEY))) {
+    if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
+      && !MapillaryImageUtils.getSequenceKey(selectedImg).equals(MapillaryImageUtils.getSequenceKey(img))) {
       g.setComposite(fadeComposite);
     }
     // Determine colors
@@ -344,8 +347,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (selectedImg != null && getData().getSelectedNodes().contains(img)) {
       i = SELECTED_IMAGE.getImage();
       directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
-    } else if (selectedImg != null && selectedImg.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
-      && selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY).equals(img.get(MapillaryImageUtils.SEQUENCE_KEY))) {
+    } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
+      && MapillaryImageUtils.getSequenceKey(selectedImg).equals(MapillaryImageUtils.getSequenceKey(img))) {
       directionC = MapillaryColorScheme.SEQ_SELECTED_CA;
       i = ACTIVE_SEQUENCE_SPRITE.getImage();
     } else {
@@ -354,7 +357,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
     // Paint direction indicator
     g.setColor(directionC);
-    if (img.hasKey(MapillaryKeys.PANORAMIC) && MapillaryKeys.PANORAMIC_TRUE.equals(img.get(MapillaryKeys.PANORAMIC))) {
+    if (MapillaryImageUtils.IS_PANORAMIC.test(img)) {
       Composite currentComposite = g.getComposite();
       g.setComposite(fadeComposite);
       g.fillOval(p.x - CA_INDICATOR_RADIUS, p.y - CA_INDICATOR_RADIUS, 2 * CA_INDICATOR_RADIUS,
@@ -555,22 +558,21 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
    * @return An array containing the closest images belonging to different sequences sorted by distance from target.
    */
   private INode[] getNearestImagesFromDifferentSequences(INode target, int limit) {
-    if (!target.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+    if (MapillaryImageUtils.getSequenceKey(target) == null) {
       return new INode[] {};
     }
     BBox searchBBox = new BBox();
     searchBBox.addPrimitive(target, 0.0001);
     // Locked MapillaryLayer, waiting for a java.util.stream.Nodes$CollectorTask$OfRef
-    return getData().searchWays(searchBBox).parallelStream()
-      .filter(seq -> seq.get(KEY) != null && !seq.get(KEY).equals(target.get(MapillaryImageUtils.SEQUENCE_KEY)))
-      .map(seq -> {
+    return getData().searchWays(searchBBox).parallelStream().filter(seq -> MapillarySequenceUtils.hasKey(seq)
+      && !MapillarySequenceUtils.getKey(seq).equals(MapillaryImageUtils.getSequenceKey(target))).map(seq -> {
         // Maps sequence to image from sequence that is nearest to target
-        Optional<VectorNode> resImg = seq.getNodes().parallelStream().filter(img -> img.hasKey(KEY))
-          .min(new NearestImgToTargetComparator(target));
+        Optional<VectorNode> resImg = seq.getNodes().parallelStream()
+          .filter(img -> !"".equals(MapillaryImageUtils.getKey(img))).min(new NearestImgToTargetComparator(target));
         return resImg.orElse(null);
       }).filter(img -> // Filters out images too far away from target
-      img != null
-        && img.getCoor().greatCircleDistance(target.getCoor()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
+    img != null
+      && img.getCoor().greatCircleDistance(target.getCoor()) < MapillaryProperties.SEQUENCE_MAX_JUMP_DISTANCE.get())
       .sorted(new NearestImgToTargetComparator(target)).limit(limit).toArray(INode[]::new);
   }
 
@@ -608,34 +610,47 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
   }
 
+  @Override
+  public boolean isSavable() {
+    // This layer can change at any time, so it isn't worth trying to save
+    return false;
+  }
+
   /**
    * The the tile for a location
    *
    * @param location The location to load the tile for
-   * @return {@code true} if the tile has finished loading and was actually loaded in the method.
+   * @return A future indicating if loading finished
    */
-  public boolean loadTileFor(ILatLon location) {
+  public Future<Tile> loadTileFor(ILatLon location) {
     TileXY tileXY = this.tileSource.latLonToTileXY(location.lat(), location.lon(), this.getZoomLevel());
+    final MVTTile tile;
+    final boolean first;
     if (this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel()) != null) {
-      return false;
+      tile = (MVTTile) this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
+        this.getZoomLevel());
+      first = true;
+    } else {
+      tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel());
+      first = false;
     }
-    MVTTile tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
-      this.getZoomLevel());
+    if (tile.isLoaded()) {
+      return CompletableFuture.completedFuture(tile);
+    }
     TileJob job = this.tileLoader.createTileLoaderJob(tile);
-    synchronized (job) {
-      job.submit();
-      try {
-        // Typically < 700 ms
-        job.wait(1000);
-      } catch (InterruptedException e) {
-        Logging.error(e);
-        Thread.currentThread().interrupt();
+    CompletableFuture<Tile> futureTile = new CompletableFuture<>();
+    tile.addTileLoaderFinisher(t -> {
+      if (first) {
+        this.tileLoadingFinished(tile, tile.isLoaded());
+        this.getData().addTileData(tile);
+        this.tileCache.addTile(tile);
       }
+      futureTile.complete(tile);
+    });
+    if (first) {
+      job.submit();
     }
-    this.tileCache.addTile(tile);
-    this.tileLoadingFinished(tile, tile.isLoaded());
-    this.getData().addTileData(tile);
-    return tile.isLoaded();
+    return futureTile;
   }
 
   private static class NearestImgToTargetComparator implements Comparator<INode> {
