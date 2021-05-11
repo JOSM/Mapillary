@@ -300,7 +300,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     boolean selectedImage) {
     if (selected) {
       g.setColor(
-        !sequence.hasKey(KEY) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
+        !MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED : MapillaryColorScheme.SEQ_SELECTED);
     } else if (!selectedImage) {
       g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
         : MapillaryColorScheme.SEQ_UNSELECTED);
