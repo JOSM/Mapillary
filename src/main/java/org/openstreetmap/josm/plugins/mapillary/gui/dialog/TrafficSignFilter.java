@@ -7,7 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -272,26 +272,26 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
 
   private static void updateDates(String position, IDatePicker<?> modified, IDatePicker<?> firstSeen,
     IDatePicker<?> lastSeen) {
-    LocalDate start = firstSeen.getDate();
-    LocalDate end = lastSeen.getDate();
+    Instant start = firstSeen.getInstant();
+    Instant end = lastSeen.getInstant();
     if (start != null && end != null) {
       if (firstSeen.equals(modified) && start.compareTo(end) > 0) {
-        lastSeen.setDate(start);
+        lastSeen.setInstant(start);
       } else if (lastSeen.equals(modified) && start.compareTo(end) > 0) {
-        lastSeen.setDate(end);
+        lastSeen.setInstant(end);
       }
     }
     Filter dateFilter = MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().parallelStream()
       .filter(p -> p.text.contains(position + "_seen_at")).findFirst().orElseGet(Filter::new);
     StringBuilder filterText = new StringBuilder();
     if (start != null) {
-      filterText.append(position).append("_seen_at > ").append(start.format(DateTimeFormatter.ISO_LOCAL_DATE));
+      filterText.append(position).append("_seen_at > ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(start));
     }
     if (start != null && end != null) {
       filterText.append(" && ");
     }
     if (end != null) {
-      filterText.append(position).append("_seen_at < ").append(end.format(DateTimeFormatter.ISO_LOCAL_DATE));
+      filterText.append(position).append("_seen_at < ").append(DateTimeFormatter.ISO_LOCAL_DATE.format(end));
     }
     dateFilter.text = filterText.toString();
     dateFilter.inverted = true;

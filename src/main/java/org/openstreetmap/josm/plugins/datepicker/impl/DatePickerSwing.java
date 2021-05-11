@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.datepicker.impl;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
@@ -17,7 +17,7 @@ import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
  * @author Taylor Smock
  */
 public class DatePickerSwing implements IDatePicker<JosmTextField> {
-  private LocalDate date;
+  private Instant date;
   private final JosmTextField component = new JosmTextField("", 12);
 
   public DatePickerSwing() {
@@ -26,18 +26,18 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
   }
 
   @Override
-  public void setDate(LocalDate date) {
+  public void setInstant(Instant date) {
     this.date = date;
     if (date != null) {
-      component.setText(date.format(DateTimeFormatter.ISO_DATE));
+      this.component.setText(DateTimeFormatter.ISO_DATE.format(this.date));
     } else {
       component.setText("");
     }
   }
 
   @Override
-  public LocalDate getDate() {
-    return date;
+  public Instant getInstant() {
+    return this.date;
   }
 
   @Override
@@ -61,7 +61,7 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
 
       @Override
       public void focusLost(FocusEvent e) {
-        setDate(null);
+        setInstant(null);
         function.accept(DatePickerSwing.this);
       }
     });

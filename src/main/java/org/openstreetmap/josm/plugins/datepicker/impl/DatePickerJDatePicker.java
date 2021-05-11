@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.datepicker.impl;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Properties;
@@ -43,23 +44,21 @@ public class DatePickerJDatePicker implements IDatePicker<JDatePickerImpl> {
   }
 
   @Override
-  public void setDate(LocalDate date) {
+  public void setInstant(Instant date) {
     if (date != null) {
       Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.YEAR, date.getYear());
-      cal.set(Calendar.MONTH, date.getMonthValue() - 1);
-      cal.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth());
+      cal.setTimeInMillis(date.toEpochMilli());
       model.setValue(cal);
     } else
       reset();
   }
 
   @Override
-  public LocalDate getDate() {
+  public Instant getInstant() {
     Calendar value = model.getValue();
     if (value == null)
       return null;
-    return LocalDate.of(value.get(Calendar.YEAR), value.get(Calendar.MONTH) + 1, value.get(Calendar.DAY_OF_MONTH));
+    return value.toInstant();
   }
 
   @Override

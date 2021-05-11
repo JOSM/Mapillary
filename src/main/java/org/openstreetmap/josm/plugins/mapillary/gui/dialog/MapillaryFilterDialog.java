@@ -36,6 +36,7 @@ import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
@@ -61,10 +62,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -406,12 +410,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
       time.setEnabled(filterByDateCheckbox.isSelected());
     });
 
-    spinner.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
-    time.addActionListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
-    filterByDateCheckbox.addChangeListener(l -> startDate.setDate(convertDateRangeBox(spinnerModel, time)));
+    spinner.addChangeListener(l -> startDate.setInstant(convertDateRangeBox(spinnerModel, time)));
+    time.addActionListener(l -> startDate.setInstant(convertDateRangeBox(spinnerModel, time)));
+    filterByDateCheckbox.addChangeListener(l -> startDate.setInstant(convertDateRangeBox(spinnerModel, time)));
 
-    endDate.addEventHandler(l -> this.shouldHidePredicate.endDateRefresh = l.getDate());
-    startDate.addEventHandler(l -> this.shouldHidePredicate.startDateRefresh = l.getDate());
+    endDate.addEventHandler(l -> this.shouldHidePredicate.endDateRefresh = l.getInstant());
+    startDate.addEventHandler(l -> this.shouldHidePredicate.startDateRefresh = l.getInstant());
     filterByDateCheckbox
       .addItemListener(l -> this.shouldHidePredicate.timeFilter = l.getStateChange() == ItemEvent.SELECTED);
     spinnerModel.addChangeListener(l -> this.shouldHidePredicate.dateRange = spinnerModel.getNumber());
@@ -433,8 +437,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     ResetListener setFields = () -> {
       this.shouldHidePredicate.timeFilter = filterByDateCheckbox.isSelected();
-      this.shouldHidePredicate.endDateRefresh = endDate.getDate();
-      this.shouldHidePredicate.startDateRefresh = startDate.getDate();
+      this.shouldHidePredicate.endDateRefresh = endDate.getInstant();
+      this.shouldHidePredicate.startDateRefresh = startDate.getInstant();
       this.shouldHidePredicate.dateRange = spinnerModel.getNumber();
       this.shouldHidePredicate.time = (String) time.getSelectedItem();
     };
@@ -442,9 +446,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
     setFields.reset();
   }
 
-  private static LocalDate convertDateRangeBox(SpinnerNumberModel spinner, JComboBox<String> timeStep) {
+  private static Instant convertDateRangeBox(SpinnerNumberModel spinner, JComboBox<String> timeStep) {
     if (timeStep.isEnabled()) {
-      LocalDate current = LocalDate.now(ZoneId.systemDefault());
+      ZonedDateTime current = LocalDate.now(ZoneOffset.UTC).atStartOfDay(ZoneOffset.UTC);
       String type = (String) timeStep.getSelectedItem();
       Number start = spinner.getNumber();
       int[] difference = new int[] { 0, 0, 0 }; // Year, Month, Day
@@ -458,22 +462,21 @@ public final class MapillaryFilterDialog extends ToggleDialog
       } else if (TIME_LIST[2].contentEquals(type)) {
         difference[2] = start.intValue();
       }
-      LocalDate year = current.minusYears(difference[0]);
-      LocalDate month = year.minusMonths(difference[1]);
-      return month.minusDays(difference[2]);
+      return current.minus(difference[0], ChronoUnit.YEARS).minus(difference[1], ChronoUnit.MONTHS)
+        .minus(difference[2], ChronoUnit.DAYS).toInstant();
     }
     return null;
   }
 
   private static void updateDates(IDatePicker<?> startDate, IDatePicker<?> endDate, IDatePicker<?> modified) {
-    LocalDate start = startDate.getDate();
-    LocalDate end = endDate.getDate();
+    Instant start = startDate.getInstant();
+    Instant end = endDate.getInstant();
     if (start == null || end == null)
       return;
     if (startDate.equals(modified) && start.compareTo(end) > 0) {
-      endDate.setDate(start);
+      endDate.setInstant(start);
     } else if (endDate.equals(modified) && start.compareTo(end) > 0) {
-      startDate.setDate(end);
+      startDate.setInstant(end);
     }
   }
 
@@ -538,8 +541,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     boolean timeFilter;
     boolean onlySignsIsSelected;
     boolean onlyPanoIsSelected;
-    LocalDate endDateRefresh;
-    LocalDate startDateRefresh;
+    Instant endDateRefresh;
+    Instant startDateRefresh;
     OrganizationRecord organization;
     boolean smartAdd;
     String user;
@@ -613,9 +616,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
     }
 
     private boolean checkValidTime(INode img) {
-      final long currentTime = currentTime();
+      final long currentTime = Instant.now().toEpochMilli();
       for (int i = 0; i < 3; i++) {
-        if (TIME_LIST[i].equals(time) && Long.parseLong(img.get(MapillaryKeys.CAPTURED_AT)) < currentTime
+        if (TIME_LIST[i].equals(time) && MapillaryImageUtils.getCapturedAt(img).toEpochMilli() < currentTime
           - dateRange.doubleValue() * TIME_FACTOR[i]) {
           return true;
         }
@@ -628,7 +631,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the start date is after the image date
      */
     private boolean checkStartDate(INode img) {
-      Instant start = startDateRefresh.atStartOfDay().toInstant(ZoneOffset.UTC);
+      Instant start = LocalDate.from(startDateRefresh).atStartOfDay(ZoneOffset.UTC).toInstant();
       Instant imgDate = MapillaryImageUtils.getDate(img);
       return start.isAfter(imgDate);
     }
@@ -638,8 +641,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the end date is before the image date
      */
     private boolean checkEndDate(INode img) {
-      LocalDate nextDate = endDateRefresh.plusDays(1);
-      Instant end = nextDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+      LocalDate nextDate = LocalDate.from(endDateRefresh.plus(1, ChronoUnit.DAYS));
+      Instant end = nextDate.atStartOfDay(ZoneOffset.UTC).toInstant();
       Instant imgDate = MapillaryImageUtils.getDate(img);
       return end.isBefore(imgDate);
     }
@@ -672,11 +675,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         }
       }
       return contains == signCheckBox.isSelected() && contains;
-    }
-
-    private static long currentTime() {
-      Calendar cal = Calendar.getInstance();
-      return cal.getTimeInMillis();
     }
   }
 

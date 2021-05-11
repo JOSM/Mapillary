@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.datepicker;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.function.Consumer;
 
@@ -23,14 +24,14 @@ public interface IDatePicker<T extends JComponent> {
    *
    * @param date The date to set
    */
-  void setDate(LocalDate date);
+  void setInstant(Instant date);
 
   /**
    * Get the date
    *
    * @return The date
    */
-  LocalDate getDate();
+  Instant getInstant();
 
   /**
    * Get the component

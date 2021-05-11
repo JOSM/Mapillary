@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.datepicker.impl;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ class GenericDateImplementationTest {
   @ParameterizedTest
   void testSetGetDate(IDatePicker<?> datePicker, LocalDate expected) {
     // This check does not test for set text listeners.
-    assertDoesNotThrow(() -> datePicker.setDate(expected));
-    assertEquals(expected, datePicker.getDate());
+    assertDoesNotThrow(() -> datePicker.setInstant(Instant.from(expected)));
+    assertEquals(Instant.from(expected), datePicker.getInstant());
   }
 }
