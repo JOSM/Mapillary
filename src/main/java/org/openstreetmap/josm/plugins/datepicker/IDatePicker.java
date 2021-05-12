@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.datepicker;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;

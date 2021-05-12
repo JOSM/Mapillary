@@ -4,7 +4,6 @@ package org.openstreetmap.josm.plugins.datepicker.impl;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Properties;
 import java.util.function.Consumer;

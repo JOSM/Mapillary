@@ -77,7 +77,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
     }
   }
 
-  private BBox getSmallBBox(Point point) {
+  private static BBox getSmallBBox(Point point) {
     double scale = MainApplication.getMap().mapView.getScale();
     // This is ~z5
     if (scale > 10) {

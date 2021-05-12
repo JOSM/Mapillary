@@ -8,10 +8,13 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.function.Function;
 
-import javax.json.*;
-
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.tools.Logging;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public final class JsonDecoder {
   private JsonDecoder() {

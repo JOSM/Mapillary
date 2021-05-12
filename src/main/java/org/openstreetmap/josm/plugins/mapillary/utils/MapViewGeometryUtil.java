@@ -7,7 +7,9 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.NavigatableComponent;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
 import java.awt.geom.Path2D;
 
 /**

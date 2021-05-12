@@ -8,7 +8,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.openstreetmap.josm.data.osm.*;
+import org.openstreetmap.josm.data.osm.Filter;
+import org.openstreetmap.josm.data.osm.FilterMatcher;
+import org.openstreetmap.josm.data.osm.FilterWorker;
+import org.openstreetmap.josm.data.osm.IFilterablePrimitive;
+import org.openstreetmap.josm.data.osm.OsmData;
 import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.Layer;

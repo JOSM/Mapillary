@@ -92,4 +92,8 @@ public class OldVersionDialog {
       return -1;
     }
   }
+
+  private OldVersionDialog() {
+    // Prevent instantiation
+  }
 }

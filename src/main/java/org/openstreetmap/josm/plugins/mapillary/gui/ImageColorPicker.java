@@ -44,20 +44,28 @@ import org.openstreetmap.josm.tools.ImageProvider;
  * @author Kishan
  */
 public class ImageColorPicker extends JPanel {
+  /**
+   * A class for painting the image color picker
+   */
+  private final class ImageColorPickerPainter implements Painter<Graphics, BufferedImage, Rectangle> {
+    @Override
+    public void accept(Graphics graphics, BufferedImage bufferedImage, Rectangle rectangle) {
+      drawColorIndicator((Graphics2D) graphics, bufferedImage, rectangle, pointInComponent, color, tempColor);
+    }
+  }
 
   private final JPanel colorPanel;
   private final JPanel tempColorPanel;
   private Color color;
   private Color tempColor;
-  private static final int colorArea = 150;
+  private static final int COLOR_AREA = 150;
   private final ClipboardAction copyAction;
   private final JLabel colorLabel;
   private EyeDropper eyeDropper;
   private boolean mouseIsDragging = false;
   private Point pointInComponent;
   private JToggleButton eyeDropperButton;
-  private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = (g, i,
-    r) -> drawColorIndicator((Graphics2D) g, i, r, pointInComponent, color, tempColor);
+  private final Painter<Graphics, BufferedImage, Rectangle> dropperConsumer = new ImageColorPickerPainter();
 
   private Boolean detectionOutlines;
   private Boolean detectedSigns;
@@ -68,8 +76,8 @@ public class ImageColorPicker extends JPanel {
     colorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     tempColorPanel = new JPanel();
     tempColorPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-    colorPanel.setPreferredSize(new Dimension(colorArea, colorArea));
-    tempColorPanel.setPreferredSize(new Dimension(colorArea, colorArea));
+    colorPanel.setPreferredSize(new Dimension(COLOR_AREA, COLOR_AREA));
+    tempColorPanel.setPreferredSize(new Dimension(COLOR_AREA, COLOR_AREA));
 
     copyAction = new ClipboardAction(tr("Copy color"), tr("Copied color to clipboard"), null);
     final MapillaryButton copyButton = new MapillaryButton(copyAction, true);
