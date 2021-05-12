@@ -9,6 +9,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.UncheckedParseException;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
 import javax.imageio.ImageIO;
 import javax.json.Json;
@@ -22,6 +24,7 @@ import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * Keys and utility methods for Mapillary Images
@@ -52,6 +55,14 @@ public final class MapillaryImageUtils {
   public static final String SEQUENCE_KEY_OLD = "sequence_key";
   public static final String IMPORTED_KEY = "import_file";
 
+  /**
+   * A pattern to look for strings that are only numbers -- mostly used during switchover from v3 to v4 API
+   *
+   * @deprecated Figure out if this needs to be kept
+   */
+  @Deprecated
+  private static final Pattern NUMBERS = Pattern.compile("\\d+");
+
   public static IWay<?> getSequence(INode image) {
     if (image == null) {
       return null;
@@ -66,16 +77,16 @@ public final class MapillaryImageUtils {
    * @return The instant the image was created
    */
   public static Instant getDate(INode img) {
-    if (img.hasKey(CREATED_AT) && Instant.EPOCH.equals(img.getInstant())) {
+    if (Instant.EPOCH.equals(img.getInstant()) && !Instant.EPOCH.equals(getCapturedAt(img))) {
       try {
-        Instant instant = Instant.ofEpochSecond(Long.parseLong(img.get(CREATED_AT)));
+        Instant instant = getCapturedAt(img);
         img.setInstant(instant);
         return instant;
       } catch (NumberFormatException e) {
         Logging.error(e);
       }
     }
-    return Instant.EPOCH;
+    return img.getInstant();
   }
 
   /**
@@ -144,10 +155,24 @@ public final class MapillaryImageUtils {
    *
    * @param image The image to get the captured at time
    * @return The time the image was captured at, or {@link Instant#EPOCH} if not known.
+   * @deprecated Use {{@link #getDate(INode)}} instead -- it caches the date (make this private)
    */
+  @Deprecated
   public static Instant getCapturedAt(INode image) {
-    if (image.hasKey(CREATED_AT)) {
-      return Instant.parse(image.get(CREATED_AT));
+    // TODO did this change (captured_at -> created_at)?
+    String time = "";
+    if (image.hasKey("captured_at")) {
+      time = image.get("captured_at");
+    } else if (image.hasKey(CREATED_AT)) {
+      time = image.get(CREATED_AT);
+    }
+    if (NUMBERS.matcher(time).matches()) {
+      return Instant.ofEpochMilli(Long.parseLong(time));
+    }
+    try {
+      return DateUtils.parseInstant(time);
+    } catch (UncheckedParseException e) {
+      Logging.error(e);
     }
     return Instant.EPOCH;
   }
