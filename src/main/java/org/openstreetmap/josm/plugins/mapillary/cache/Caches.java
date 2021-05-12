@@ -38,7 +38,7 @@ public final class Caches {
     protected abstract CacheAccess<K, V> createNewCache();
 
     public V get(final K key) {
-      return cache == null ? null : cache.get(key);
+      return cache == null || key == null ? null : cache.get(key);
     }
 
     public void put(final K key, final V value) {
