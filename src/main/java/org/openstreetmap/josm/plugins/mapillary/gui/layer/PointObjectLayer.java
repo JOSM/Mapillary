@@ -702,6 +702,12 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     // Don't care
   }
 
+  @Override
+  public void zoomChanged() {
+    super.zoomChanged();
+    this.getData().setZoom(this.getZoomLevel());
+  }
+
   /*
    * TODO finish porting
    * @Override
