@@ -623,6 +623,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
    * @return A future indicating if loading finished
    */
   public Future<Tile> loadTileFor(ILatLon location) {
+    if (this.tileSource == null) {
+      return CompletableFuture.completedFuture(null);
+    }
     TileXY tileXY = this.tileSource.latLonToTileXY(location.lat(), location.lon(), this.getZoomLevel());
     final MVTTile tile;
     final boolean first;
