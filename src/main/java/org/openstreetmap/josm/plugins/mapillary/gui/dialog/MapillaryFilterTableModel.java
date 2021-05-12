@@ -12,7 +12,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 
 import org.openstreetmap.josm.data.osm.Filter;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.FilterWorker;
+import org.openstreetmap.josm.data.osm.IFilterablePrimitive;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.autofilter.AutoFilterManager;
 import org.openstreetmap.josm.gui.dialogs.FilterTableModel;
 import org.openstreetmap.josm.gui.util.GuiHelper;
@@ -84,7 +87,7 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
    *
    * @param primitives The primitives
    */
-  public void executeFilters(Collection<? extends OsmPrimitive> primitives) {
+  public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(Collection<O> primitives) {
     executeFilters(primitives, false);
   }
 
@@ -103,14 +106,19 @@ public class MapillaryFilterTableModel extends AbstractTableModel implements Sor
   /**
    * Runs the filter on a list of primitives that are part of the edit data set, if any.
    *
+   * @param <O> The base primitive type
    * @param force force execution of filters even if no filter is enabled. Useful to reset state after change of
    *        filters
    * @param primitives The primitives
    * @since 14206
    */
-  public void executeFilters(Collection<? extends OsmPrimitive> primitives, boolean force) {
+  public <O extends IPrimitive & IFilterablePrimitive> void executeFilters(Collection<O> primitives, boolean force) {
     if (AutoFilterManager.getInstance().getCurrentAutoFilter() == null && (force || model.hasFilters())) {
-      model.executeFilters(primitives);
+      try {
+        FilterWorker.executeFilters(primitives, model.getFilters().toArray(new Filter[0]));
+      } catch (SearchParseError searchParseError) {
+        Logging.error(searchParseError);
+      }
     }
   }
 
