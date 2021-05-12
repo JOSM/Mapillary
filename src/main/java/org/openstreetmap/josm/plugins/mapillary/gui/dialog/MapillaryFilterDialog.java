@@ -36,7 +36,6 @@ import org.openstreetmap.josm.tools.GBC;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Shortcut;
-import org.openstreetmap.josm.tools.date.DateUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
@@ -62,7 +61,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,7 +68,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -584,7 +581,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           || (this.qualityScore < 3 && MapillaryImageUtils.getQuality(img) == Integer.MIN_VALUE)))) {
         return true;
       }
-      if (img.hasKey(MapillaryKeys.KEY)) {
+      if (!"".equals(MapillaryImageUtils.getKey(img))) {
         if (!this.downloadedIsSelected) {
           return true;
         }
@@ -596,7 +593,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
-        if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && img.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
+        if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && MapillaryImageUtils.getSequenceKey(img) != null
           && !this.organization.getKey()
             .equals(OrganizationRecord.getOrganization(img.getDataSet().getWays().stream()
               .filter(seq -> img.get(MapillaryImageUtils.SEQUENCE_KEY).equals(seq.get(MapillaryKeys.KEY))
@@ -631,8 +628,9 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the start date is after the image date
      */
     private boolean checkStartDate(INode img) {
-      Instant start = LocalDate.from(startDateRefresh).atStartOfDay(ZoneOffset.UTC).toInstant();
-      Instant imgDate = MapillaryImageUtils.getDate(img);
+      final Instant start = LocalDateTime.ofInstant(startDateRefresh, ZoneOffset.UTC).toLocalDate()
+        .atStartOfDay(ZoneOffset.UTC).toInstant();
+      final Instant imgDate = MapillaryImageUtils.getDate(img);
       return start.isAfter(imgDate);
     }
 
@@ -641,9 +639,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
      * @return {@code true} if the end date is before the image date
      */
     private boolean checkEndDate(INode img) {
-      LocalDate nextDate = LocalDate.from(endDateRefresh.plus(1, ChronoUnit.DAYS));
-      Instant end = nextDate.atStartOfDay(ZoneOffset.UTC).toInstant();
-      Instant imgDate = MapillaryImageUtils.getDate(img);
+      final ZonedDateTime nextDate = LocalDateTime.ofInstant(endDateRefresh, ZoneOffset.UTC).toLocalDate()
+        .atStartOfDay(ZoneOffset.UTC).plus(1, ChronoUnit.DAYS);
+      final Instant end = nextDate.toInstant();
+      final Instant imgDate = MapillaryImageUtils.getDate(img);
       return end.isBefore(imgDate);
     }
 
