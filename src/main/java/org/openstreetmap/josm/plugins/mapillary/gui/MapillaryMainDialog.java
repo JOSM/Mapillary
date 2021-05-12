@@ -725,8 +725,10 @@ public final class MapillaryMainDialog extends ToggleDialog
         final INode mai = getImage();
         setDisplayImage(img, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
           MapillaryImageUtils.IS_PANORAMIC.test(mai));
-        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
-          .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
+        if (mai != null) {
+          ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
+            .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
+        }
       }
     } catch (IOException e) {
       Logging.error(e);
