@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -120,6 +121,8 @@ public final class ImageImportUtil {
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     if (dateTime != null) {
       image.put(MapillaryKeys.CAPTURED_AT, dateTime.toString());
+    } else {
+      image.put(MapillaryKeys.CAPTURED_AT, Long.toString(Instant.now().toEpochMilli()));
     }
     return image;
   }

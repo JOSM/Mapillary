@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,7 +50,8 @@ class GenericDateImplementationTest {
   @ParameterizedTest
   void testSetGetDate(final IDatePicker<?> datePicker, final LocalDate expected) {
     // This check does not test for set text listeners.
-    final Instant expectedInstant = expected != null ? Instant.from(expected.atStartOfDay(ZoneOffset.UTC)) : Instant.EPOCH;
+    final Instant expectedInstant = expected != null ? Instant.from(expected.atStartOfDay(ZoneOffset.UTC))
+      : Instant.EPOCH;
     assertDoesNotThrow(() -> datePicker.setInstant(expectedInstant));
     assertEquals(expectedInstant, datePicker.getInstant());
   }

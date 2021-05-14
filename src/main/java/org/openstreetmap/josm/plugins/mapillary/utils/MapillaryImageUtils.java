@@ -111,10 +111,10 @@ public final class MapillaryImageUtils {
    * Get the angle for an image
    *
    * @param img The image to get the angle for
-   * @return The angle, or {@link Double#NaN}.
+   * @return The angle (degrees), or {@link Double#NaN}.
    */
   public static double getAngle(INode img) {
-    return img.hasKey(CAMERA_ANGLE) ? Math.toRadians(Double.parseDouble(img.get(CAMERA_ANGLE))) : Double.NaN;
+    return img.hasKey(CAMERA_ANGLE) ? Double.parseDouble(img.get(CAMERA_ANGLE)) : Double.NaN;
   }
 
   /**
@@ -171,11 +171,12 @@ public final class MapillaryImageUtils {
     }
     if (NUMBERS.matcher(time).matches()) {
       return Instant.ofEpochMilli(Long.parseLong(time));
-    }
-    try {
-      return DateUtils.parseInstant(time);
-    } catch (UncheckedParseException e) {
-      Logging.error(e);
+    } else if (!"".equals(time)) {
+      try {
+        return DateUtils.parseInstant(time);
+      } catch (UncheckedParseException e) {
+        Logging.error(e);
+      }
     }
     return Instant.EPOCH;
   }

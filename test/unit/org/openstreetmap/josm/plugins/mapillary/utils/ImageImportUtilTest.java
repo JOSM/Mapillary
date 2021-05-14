@@ -34,7 +34,7 @@ class ImageImportUtilTest {
     assertEquals(defaultLL, images.get(0).getCoor());
     assertEquals(untaggedFile, MapillaryImageUtils.getFile(images.get(0)));
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
-    Instant capturedAt = MapillaryImageUtils.getCapturedAt(images.get(0));
+    Instant capturedAt = MapillaryImageUtils.getDate(images.get(0));
     assertTrue(
       capturedAt.toEpochMilli() / 1000 * 1000 >= startTime && capturedAt.toEpochMilli() / 1000 * 1000 <= endTime);
   }
@@ -51,7 +51,7 @@ class ImageImportUtilTest {
     assertEquals(13.0001388888, images.get(0).getCoor().lon(), 1e-9);
     assertEquals(untaggedFile, MapillaryImageUtils.getFile(images.get(0)));
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
-    long capturedAt = MapillaryImageUtils.getCapturedAt(images.get(0)).toEpochMilli();
+    long capturedAt = MapillaryImageUtils.getDate(images.get(0)).toEpochMilli();
     assertTrue(capturedAt >= startTime && capturedAt <= endTime);
   }
 
@@ -67,7 +67,7 @@ class ImageImportUtilTest {
     assertEquals(defaultLL, images.get(0).getCoor());
     assertEquals(untaggedFile, MapillaryImageUtils.getFile(images.get(0)));
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second
-    long capturedAt = MapillaryImageUtils.getCapturedAt(images.get(0)).toEpochMilli();
+    long capturedAt = MapillaryImageUtils.getDate(images.get(0)).toEpochMilli();
     assertTrue(capturedAt >= startTime && capturedAt <= endTime);
   }
 
@@ -82,13 +82,13 @@ class ImageImportUtilTest {
     assertEquals(defaultLL, images.get(0).getCoor());
     assertEquals(untaggedFile, MapillaryImageUtils.getFile(images.get(0)));
     /* http://www.wolframalpha.com/input/?i=convert+2015-12-24T01%3A02%3A03%2B0000+to+unixtime */
-    long capturedAt = MapillaryImageUtils.getCapturedAt(images.get(0)).toEpochMilli();
+    long capturedAt = MapillaryImageUtils.getDate(images.get(0)).toEpochMilli();
     assertEquals(1_450_918_923_000L /* 2015-12-24 01:02:03+0000 */, capturedAt);
 
     TimeZone.setDefault(TimeZone.getTimeZone("GMT+3:00"));
     images = ImageImportUtil.readImagesFrom(untaggedFile, defaultLL);
     /* http://www.wolframalpha.com/input/?i=convert+2015-12-24T01%3A02%3A03%2B0300+to+unixtime */
-    capturedAt = MapillaryImageUtils.getCapturedAt(images.get(0)).toEpochMilli();
+    capturedAt = MapillaryImageUtils.getDate(images.get(0)).toEpochMilli();
     assertEquals(1_450_908_123_000L /* 2015-12-24 01:02:03+0300 */, capturedAt);
   }
 
