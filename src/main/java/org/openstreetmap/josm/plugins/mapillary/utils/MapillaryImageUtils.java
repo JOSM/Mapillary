@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -146,6 +147,8 @@ public final class MapillaryImageUtils {
         }
       });
       return completableFuture;
+    } else if (image.hasKey(IMPORTED_KEY)) {
+      return MainApplication.worker.submit(() -> ImageIO.read(new File(image.get(IMPORTED_KEY))));
     }
     return CompletableFuture.completedFuture(null);
   }

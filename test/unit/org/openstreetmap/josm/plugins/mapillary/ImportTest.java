@@ -60,6 +60,8 @@ class ImportTest {
     img2.setCoor(new LatLon(0, 0));
     img2.put(MapillaryImageUtils.IMPORTED_KEY, "///////////");
     assertEquals(new File("///////////"), MapillaryImageUtils.getFile(img2));
-    assertThrows(IIOException.class, () -> MapillaryImageUtils.getImage(img2));
+    ExecutionException executionException = assertThrows(ExecutionException.class,
+      () -> MapillaryImageUtils.getImage(img2).get());
+    assertTrue(executionException.getCause() instanceof IIOException);
   }
 }
