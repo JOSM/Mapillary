@@ -4,6 +4,8 @@ package org.openstreetmap.josm.plugins.datepicker.impl;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
@@ -29,7 +31,7 @@ public class DatePickerSwing implements IDatePicker<JosmTextField> {
   public void setInstant(Instant date) {
     this.date = date;
     if (date != null) {
-      this.component.setText(DateTimeFormatter.ISO_DATE.format(this.date));
+      this.component.setText(DateTimeFormatter.ISO_DATE.format(ZonedDateTime.ofInstant(this.date, ZoneOffset.UTC)));
     } else {
       component.setText("");
     }
