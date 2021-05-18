@@ -52,7 +52,7 @@ public interface AdditionalInstructions {
       final Command moveCommand = new MoveCommand((Node) primitive,
         ProjectionRegistry.getProjection().eastNorth2latlon(nearestPointSegment));
       final List<Node> nodes = nearest.getNodes();
-      nodes.add(nearestSegment.lowerIndex + 1, (Node) primitive);
+      nodes.add(nearestSegment.getUpperIndex(), (Node) primitive);
       final Command addToWayCommand = new ChangeNodesCommand(nearest, nodes);
       return SequenceCommand.wrapIfNeeded(tr("Snap to highway"), moveCommand, addToWayCommand);
     }
