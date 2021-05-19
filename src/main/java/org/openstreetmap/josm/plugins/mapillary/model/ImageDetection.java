@@ -123,7 +123,7 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
       if (wait) {
         layerDetections = cache.get(key,
           () -> getDetections(key, cache.getCacheAttributes().getCacheName().replaceFirst(CACHE_NAME_PREFIX, "")));
-      } else if (cache.get(key) != null) {
+      } else if (key != null && cache.get(key) != null) {
         layerDetections = cache.get(key);
       } else {
         layerDetections = Collections.emptyList();

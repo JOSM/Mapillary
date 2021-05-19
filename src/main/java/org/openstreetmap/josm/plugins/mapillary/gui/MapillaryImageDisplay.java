@@ -708,7 +708,8 @@ public final class MapillaryImageDisplay extends JPanel {
     @Override
     public void componentResized(ComponentEvent e) {
       final Component component = e.getComponent();
-      if (component instanceof MapillaryImageDisplay) {
+      if (component instanceof MapillaryImageDisplay && e.getComponent().getWidth() > 0
+        && e.getComponent().getHeight() > 0) {
         final MapillaryImageDisplay imgDisplay = (MapillaryImageDisplay) component;
         imgDisplay.offscreenImage = new BufferedImage(e.getComponent().getWidth(), e.getComponent().getHeight(),
           BufferedImage.TYPE_3BYTE_BGR);

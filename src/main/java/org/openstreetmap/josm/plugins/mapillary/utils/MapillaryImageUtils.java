@@ -45,8 +45,9 @@ public final class MapillaryImageUtils {
   public static final String PANORAMIC = "pano";
   // Image specific
   /** Check if the node has one of the Mapillary keys */
-  public static final Predicate<INode> IS_IMAGE = node -> node.hasKey(MapillaryKeys.KEY)
-    || node.hasKey(MapillaryImageUtils.IMPORTED_KEY);
+  public static final Predicate<INode> IS_IMAGE = node -> node != null
+    && (node.hasKey(MapillaryKeys.KEY) || node.hasKey("key") // TODO drop "key" check (when v4 API transition is done)
+      || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
   /** Check if the node is for a panoramic image */
   public static final Predicate<INode> IS_PANORAMIC = node -> node != null
     && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(PANORAMIC));
@@ -188,8 +189,13 @@ public final class MapillaryImageUtils {
    * @return The key, or {@code ""} if no key exists
    */
   public static String getKey(INode image) {
-    if (image != null && image.hasKey(KEY)) {
-      return image.get(KEY);
+    if (image != null) {
+      if (image.hasKey(KEY)) {
+        return image.get(KEY);
+      } else if (image.hasKey("key")) {
+        // TODO remove once v4 API transition is done
+        return image.get("key");
+      }
     }
     return "";
   }

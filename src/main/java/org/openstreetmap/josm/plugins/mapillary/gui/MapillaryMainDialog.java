@@ -35,10 +35,12 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,12 +52,12 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
@@ -82,21 +84,9 @@ public final class MapillaryMainDialog extends ToggleDialog
   private transient INode image;
   /** The key for the current image -- used for when there are multiple images with the same MVT id */
 
-  private final SideButton nextButton = new SideButton(SelectNextImageAction.NEXT_ACTION);
-  private final SideButton previousButton = new SideButton(SelectNextImageAction.PREVIOUS_ACTION);
-  /**
-   * Button used to jump to the image following the red line
-   */
-  public final SideButton redButton = new SideButton(SelectNextImageAction.RED_ACTION);
-  /**
-   * Button used to jump to the image following the blue line
-   */
-  public final SideButton blueButton = new SideButton(SelectNextImageAction.BLUE_ACTION);
-
-  private final SideButton playButton = new SideButton(new PlayAction());
-  private final SideButton pauseButton = new SideButton(new PauseAction());
-  private final SideButton stopButton = new SideButton(new StopAction());
-  private final JPanel panel = new JPanel();
+  private final PlayAction playAction = new PlayAction();
+  private final PauseAction pauseAction = new PauseAction();
+  private final StopAction stopAction = new StopAction();
 
   /**
    * Buttons mode.
@@ -128,20 +118,29 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   private final ShowDetectionOutlinesAction showDetectionOutlinesAction = new ShowDetectionOutlinesAction();
   private final ShowSignDetectionsAction showSignDetectionsAction = new ShowSignDetectionsAction();
+  private final Collection<AbstractButton> buttonCollection = new ArrayList<>();
 
   private final VerifyRejectAction approveAction = new VerifyRejectAction(DetectionVerification.TYPE.APPROVE);
   private final VerifyRejectAction rejectAction = new VerifyRejectAction(DetectionVerification.TYPE.REJECT);
+
+  /**
+   * This is copied from {@link ImageViewerDialog#createNaviationButton}
+   *
+   * @param action The action to put in a {@link JButton}
+   * @param buttonDim The dimensions of the button
+   * @return A new button, appropriately sized
+   */
+  private static JButton createNavigationButton(JosmAction action, Dimension buttonDim) {
+    JButton btn = new JButton(action);
+    btn.setPreferredSize(buttonDim);
+    btn.setEnabled(false);
+    return btn;
+  }
 
   private MapillaryMainDialog() {
     super(tr(BASE_TITLE), "mapillary-main", tr("Open Mapillary window"),
       Shortcut.registerShortcut("mapillary:main", tr("Mapillary main dialog"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       200, true, MapillaryPreferenceSetting.class);
-
-    this.blueButton.setForeground(Color.BLUE);
-    this.redButton.setForeground(Color.RED);
-
-    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-    panel.add(imageViewer);
     // Ensure that selecting one enables the other.
     this.approveAction.setOther(this.rejectAction);
     this.rejectAction.setOther(this.approveAction);
@@ -287,8 +286,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     private static final long serialVersionUID = -3743322064323002656L;
 
     ShowSignDetectionsAction() {
-      super(null,
-        new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
+      super(null, new ImageProvider("dialogs", "regulatory--go-straight-or-turn-left--g2"),
         tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections",
           tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
         false, null, false);
@@ -333,33 +331,68 @@ public final class MapillaryMainDialog extends ToggleDialog
    *        The mode to be set. Must not be {@code null}.
    */
   public void setMode(MODE mode) {
-    Dimension buttonDim = new Dimension(52, 34);
-    SideButton toggleSigns = new SideButton(showSignDetectionsAction);
-    showSignDetectionsAction.setButton(toggleSigns);
+    final Dimension buttonDim = ImageProvider.ImageSizes.CURSOR.getImageDimension();
+    JToggleButton toggleSigns = new JToggleButton(showSignDetectionsAction);
     toggleSigns.setPreferredSize(buttonDim);
     // Mac OS X won't show background colors if buttons aren't opaque.
     toggleSigns.setOpaque(true);
-    SideButton toggleDetections = new SideButton(showDetectionOutlinesAction);
-    showDetectionOutlinesAction.setButton(toggleDetections);
+    JToggleButton toggleDetections = new JToggleButton(showDetectionOutlinesAction);
     toggleDetections.setPreferredSize(buttonDim);
     toggleDetections.setOpaque(true);
 
-    Stream<SideButton> buttons;
+    toggleSigns.setSelected(Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get()));
+    toggleDetections.setSelected(Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get()));
+
+    final JButton nextButton = createNavigationButton(SelectNextImageAction.NEXT_ACTION, buttonDim);
+    final JButton previousButton = createNavigationButton(SelectNextImageAction.PREVIOUS_ACTION, buttonDim);
+    final JButton redButton = createNavigationButton(SelectNextImageAction.RED_ACTION, buttonDim);
+    final JButton blueButton = createNavigationButton(SelectNextImageAction.BLUE_ACTION, buttonDim);
+    final JButton jumpToCurrent = createNavigationButton(new JosmAction(null,
+      new ImageProvider("dialogs/autoscale", "selection"), tr("Center view"), null, false, null, false) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        INode currentImage = MapillaryMainDialog.getInstance().getImage();
+        if (MapillaryImageUtils.IS_IMAGE.test(currentImage)) {
+          MainApplication.getMap().mapView.zoomTo(currentImage.getCoor());
+        }
+      }
+    }, buttonDim);
+    blueButton.setForeground(Color.BLUE);
+    redButton.setForeground(Color.RED);
+
+    Stream<AbstractButton> buttons;
     switch (mode) {
     case WALK:
-      buttons = Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton);
+      final JButton playButton = createNavigationButton(this.playAction, buttonDim);
+      final JButton pauseButton = createNavigationButton(this.pauseAction, buttonDim);
+      final JButton stopButton = createNavigationButton(this.stopAction, buttonDim);
+      buttons = Stream.of(toggleSigns, toggleDetections, playButton, pauseButton, stopButton, jumpToCurrent);
       break;
     case SMART_EDIT:
-      SideButton verify = new SideButton(approveAction);
-      SideButton reject = new SideButton(rejectAction);
-      buttons = Stream.of(blueButton, previousButton, verify, reject, nextButton, redButton);
+      JButton verify = createNavigationButton(this.approveAction, buttonDim);
+      JButton reject = createNavigationButton(this.rejectAction, buttonDim);
+      buttons = Stream.of(blueButton, previousButton, verify, reject, nextButton, redButton, jumpToCurrent);
       break;
     case NORMAL:
     default:
-      buttons = Stream.of(blueButton, previousButton, toggleSigns, toggleDetections, nextButton, redButton);
+      final JButton lastButton = createNavigationButton(SelectNextImageAction.LAST_ACTION, buttonDim);
+      final JButton firstButton = createNavigationButton(SelectNextImageAction.FIRST_ACTION, buttonDim);
+      buttons = Stream.of(firstButton, previousButton, nextButton, lastButton, jumpToCurrent, blueButton, redButton,
+        toggleSigns, toggleDetections);
       break;
     }
-    createLayout(this.panel, buttons.filter(Objects::nonNull).collect(Collectors.toList()));
+    final JPanel content = new JPanel(new BorderLayout());
+    final JPanel buttonsPanel = new JPanel();
+
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+    panel.add(imageViewer, BorderLayout.CENTER);
+    content.add(panel);
+    this.buttonCollection.clear();
+    buttons.forEach(this.buttonCollection::add);
+    this.buttonCollection.forEach(buttonsPanel::add);
+    content.add(buttonsPanel, BorderLayout.SOUTH);
+    createLayout(content, false, null);
     disableAllButtons();
     if (Arrays.asList(MODE.WALK, MODE.SMART_EDIT).contains(mode)) {
       updateImage();
@@ -490,26 +523,22 @@ public final class MapillaryMainDialog extends ToggleDialog
     return imageFullCache;
   }
 
-  private void updateButtonStates(INode currentImage) {
+  /**
+   * Update button states
+   *
+   * @param currentImage The current image
+   */
+  public void updateButtonStates(INode currentImage) {
     // Enables/disables next/previous buttons
-    this.nextButton.setEnabled(false);
-    this.previousButton.setEnabled(false);
-    if (MapillaryImageUtils.getSequenceKey(currentImage) != null) {
-      INode tempImage = currentImage;
-      while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
-        MapillarySequenceUtils.NextOrPrevious.NEXT)) != null) {
-        if (tempImage.isVisible()) {
-          this.nextButton.setEnabled(true);
-          break;
-        }
-      }
-      tempImage = currentImage;
-      while ((tempImage = MapillarySequenceUtils.getNextOrPrevious(tempImage,
-        MapillarySequenceUtils.NextOrPrevious.PREVIOUS)) != null) {
-        if (tempImage.isVisible()) {
-          this.previousButton.setEnabled(true);
-          break;
-        }
+    final boolean isImage = MapillaryImageUtils.IS_IMAGE.test(currentImage);
+    for (AbstractButton jButton : this.buttonCollection) {
+      Action action = jButton.getAction();
+      if (action instanceof SelectNextImageAction) {
+        SelectNextImageAction josmAction = (SelectNextImageAction) action;
+        INode actionNode = josmAction.getDestinationImageSupplier().get();
+        jButton.setEnabled(actionNode != null && !actionNode.equals(currentImage));
+      } else {
+        jButton.setEnabled(isImage);
       }
     }
   }
@@ -548,10 +577,9 @@ public final class MapillaryMainDialog extends ToggleDialog
    * Disables all the buttons in the dialog
    */
   private void disableAllButtons() {
-    this.nextButton.setEnabled(false);
-    this.previousButton.setEnabled(false);
-    this.blueButton.setEnabled(false);
-    this.redButton.setEnabled(false);
+    for (AbstractButton jButton : this.buttonCollection) {
+      jButton.setEnabled(false);
+    }
   }
 
   /**
@@ -620,7 +648,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     return this.image;
   }
 
-  private static class StopAction extends AbstractAction implements WalkListener {
+  private static class StopAction extends JosmAction implements WalkListener {
 
     private static final long serialVersionUID = -6561451575815789198L;
 
@@ -630,9 +658,10 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal StopAction
      */
     StopAction() {
-      putValue(NAME, trc("as synonym to halt or stand still", "Stop"));
-      putValue(SHORT_DESCRIPTION, tr("Stops the walk."));
-      new ImageProvider("dialogs/mapillaryStop").getResource().attachImageIcon(this, true);
+      super(trc("as synonym to halt or stand still", "Stop"), tr("Stop the walk."), "dialogs/mapillaryStop",
+        Shortcut.registerShortcut("mapillary:image:walk_stop", tr("Mapillary: {0}", tr("Stop Image Walk")),
+          KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        false, false);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -648,7 +677,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     }
   }
 
-  private static class PlayAction extends AbstractAction implements WalkListener {
+  private static class PlayAction extends JosmAction implements WalkListener {
 
     private static final long serialVersionUID = -17943404752082788L;
     private transient WalkThread thread;
@@ -657,9 +686,10 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal PlayAction
      */
     PlayAction() {
-      putValue(NAME, tr("Play"));
-      putValue(SHORT_DESCRIPTION, tr("Continues with the paused walk."));
-      new ImageProvider("dialogs/mapillaryPlay").getResource().attachImageIcon(this, true);
+      super(tr("Play"), tr("Continues with the paused walk."), "dialogs/mapillaryPlay",
+        Shortcut.registerShortcut("mapillary:image:walk", tr("Mapillary: {0}", tr("Image Walk")),
+          KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        false, false);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -676,7 +706,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     }
   }
 
-  private static class PauseAction extends AbstractAction implements WalkListener {
+  private static class PauseAction extends JosmAction implements WalkListener {
 
     private static final long serialVersionUID = 4400240686337741192L;
 
@@ -686,9 +716,10 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal PauseAction
      */
     PauseAction() {
-      putValue(NAME, tr("Pause"));
-      putValue(SHORT_DESCRIPTION, tr("Pauses the walk."));
-      new ImageProvider("dialogs/mapillaryPause").getResource().attachImageIcon(this, true);
+      super(tr("Pause"), tr("Pause the walk."), "dialogs/mapillaryPause",
+        Shortcut.registerShortcut("mapillary:image:walk_pause", tr("Mapillary: {0}", tr("Pause Image Walk")),
+          KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+        false, false);
       MapillaryPlugin.getWalkAction().addListener(this);
     }
 
@@ -771,9 +802,9 @@ public final class MapillaryMainDialog extends ToggleDialog
       super.destroy();
       showDetectionOutlinesAction.destroy();
       showSignDetectionsAction.destroy();
-      playButton.destroy();
-      pauseButton.destroy();
-      stopButton.destroy();
+      playAction.destroy();
+      pauseAction.destroy();
+      stopAction.destroy();
       if (MainApplication.getMap() != null)
         MainApplication.getMap().removeToggleDialog(this);
       destroyed = true;

@@ -636,8 +636,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   private void updateRedBlueButtons() {
     synchronized (this.nearestImages) {
-      MapillaryMainDialog.getInstance().redButton.setEnabled(!nearestImages.isEmpty());
-      MapillaryMainDialog.getInstance().blueButton.setEnabled(nearestImages.size() >= 2);
+      MapillaryMainDialog.getInstance().updateButtonStates(MapillaryMainDialog.getInstance().getImage());
     }
   }
 
