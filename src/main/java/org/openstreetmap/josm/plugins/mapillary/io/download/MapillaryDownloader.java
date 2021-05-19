@@ -51,7 +51,7 @@ public final class MapillaryDownloader {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
-    JsonObject response = getUrlResponse(MapillaryURL.APIv3.getImage(images));
+    JsonObject response = getUrlResponse(MapillaryURL.APIv4.getImageInformation(images));
     return Collections
       .unmodifiableMap(JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
         .collect(Collector.of(HashMap<String, Collection<INode>>::new, HashMap::putAll, (rMap, oMap) -> {

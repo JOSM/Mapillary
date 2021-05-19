@@ -67,7 +67,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
         }
         try {
           // Wait for picture for 1 minute.
-          final MapillaryCache cache = new MapillaryCache(curImage.get(MapillaryKeys.KEY),
+          final MapillaryCache cache = new MapillaryCache(curImage,
             waitForFullQuality ? MapillaryCache.Type.FULL_IMAGE : MapillaryCache.Type.THUMBNAIL);
           int limit = 240; // 240 * 250 = 60000 ms
           while (cache.get() == null) {

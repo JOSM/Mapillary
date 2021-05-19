@@ -13,10 +13,10 @@ import org.openstreetmap.josm.command.MoveCommand;
 import org.openstreetmap.josm.command.SequenceCommand;
 import org.openstreetmap.josm.data.coor.EastNorth;
 import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.IWaySegment;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.data.osm.WaySegment;
 import org.openstreetmap.josm.data.projection.ProjectionRegistry;
 import org.openstreetmap.josm.tools.Geometry;
 
@@ -46,7 +46,7 @@ public interface AdditionalInstructions {
       if (highways.isEmpty())
         return null;
       final Way nearest = Geometry.getClosestPrimitive(primitive, highways);
-      final WaySegment nearestSegment = Geometry.getClosestWaySegment(nearest, primitive);
+      final IWaySegment<?, ?> nearestSegment = Geometry.getClosestWaySegment(nearest, primitive);
       final EastNorth nearestPointSegment = Geometry.closestPointToSegment(nearestSegment.getFirstNode().getEastNorth(),
         nearestSegment.getSecondNode().getEastNorth(), ((Node) primitive).getEastNorth());
       final Command moveCommand = new MoveCommand((Node) primitive,

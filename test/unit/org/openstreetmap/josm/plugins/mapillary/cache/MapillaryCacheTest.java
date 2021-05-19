@@ -8,7 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
@@ -19,13 +22,15 @@ class MapillaryCacheTest {
 
   @Test
   void test() {
-    MapillaryCache cache = new MapillaryCache("00000", Type.FULL_IMAGE);
+    INode image = new Node();
+    image.put(MapillaryImageUtils.KEY, "00000");
+    MapillaryCache cache = new MapillaryCache(image, Type.FULL_IMAGE);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());
 
     assertFalse(cache.isObjectLoadable());
 
-    cache = new MapillaryCache("00000", Type.THUMBNAIL);
+    cache = new MapillaryCache(image, Type.THUMBNAIL);
     assertNotNull(cache.getCacheKey());
     assertNotNull(cache.getUrl());
 

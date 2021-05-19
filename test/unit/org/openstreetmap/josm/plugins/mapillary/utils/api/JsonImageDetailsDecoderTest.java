@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class JsonImageDetailsDecoderTest {
 
@@ -54,6 +55,7 @@ public class JsonImageDetailsDecoderTest {
       data.addPrimitive(img4);
       JsonImageDetailsDecoder.decodeImageInfos(searchImagesResponse, data);
       assertEquals(Instant.ofEpochMilli(1_491_803_490_334L), MapillaryImageUtils.getDate(img1)); // 2017-04-10T05:51:30.334Z
+      assertSame(img1.getInstant(), MapillaryImageUtils.getDate(img1));
       assertEquals(Instant.ofEpochMilli(1_491_803_486_853L), MapillaryImageUtils.getDate(img2)); // 2017-04-10T05:51:26.853Z
       assertEquals(Instant.ofEpochMilli(0L), MapillaryImageUtils.getDate(img3));
       assertEquals(Instant.ofEpochMilli(1L), MapillaryImageUtils.getDate(img4));

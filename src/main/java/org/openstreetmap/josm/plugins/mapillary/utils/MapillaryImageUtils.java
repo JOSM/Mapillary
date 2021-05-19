@@ -39,7 +39,7 @@ public final class MapillaryImageUtils {
     /* No op */}
 
   // Documented
-  public static final String KEY = "key";
+  public static final String KEY = "id";
   public static final String CREATED_AT = "created_at";
   public static final String UPDATED_AT = "updated_at";
   public static final String CREATED_BY = "created_by";
@@ -47,6 +47,8 @@ public final class MapillaryImageUtils {
   public static final String URL = "url";
   // Undocumented (from v3)
   public static final String PANORAMIC = "pano";
+  /** The base image url key (v3 sizes are 320, 640, 1024, 2048) */
+  public static final String BASE_IMAGE_KEY = "image_url_";
   // Image specific
   /** Check if the node has one of the Mapillary keys */
   public static final Predicate<INode> IS_IMAGE = node -> node != null
@@ -55,7 +57,10 @@ public final class MapillaryImageUtils {
   /** Check if the node is for a panoramic image */
   public static final Predicate<INode> IS_PANORAMIC = node -> node != null
     && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(PANORAMIC));
-  public static final String CAMERA_ANGLE = "ca";
+
+  public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
+    && node.getKeys().keySet().stream().anyMatch(key -> key.startsWith(BASE_IMAGE_KEY));
+  public static final String CAMERA_ANGLE = "compass_angle";
   public static final String QUALITY_SCORE = "quality_score";
   public static final String SEQUENCE_KEY = "skey";
   public static final String SEQUENCE_KEY_OLD = "sequence_key";
@@ -116,10 +121,10 @@ public final class MapillaryImageUtils {
    * Get the angle for an image
    *
    * @param img The image to get the angle for
-   * @return The angle (degrees), or {@link Double#NaN}.
+   * @return The angle (radians), or {@link Double#NaN}.
    */
   public static double getAngle(INode img) {
-    return img.hasKey(CAMERA_ANGLE) ? Double.parseDouble(img.get(CAMERA_ANGLE)) : Double.NaN;
+    return img.hasKey(CAMERA_ANGLE) ? Math.toRadians(Double.parseDouble(img.get(CAMERA_ANGLE))) : Double.NaN;
   }
 
   /**
@@ -140,9 +145,9 @@ public final class MapillaryImageUtils {
    */
   public static Future<BufferedImage> getImage(INode image) {
     // TODO use URL field in v4
-    if (image.hasKey(KEY)) {
+    if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
       CompletableFuture<BufferedImage> completableFuture = new CompletableFuture<>();
-      CacheUtils.submit(image.get(KEY), MapillaryCache.Type.FULL_IMAGE, (entry, attributes, result) -> {
+      CacheUtils.submit(image, MapillaryCache.Type.FULL_IMAGE, (entry, attributes, result) -> {
         try {
           BufferedImage realImage = ImageIO.read(new ByteArrayInputStream(entry.getContent()));
           completableFuture.complete(realImage);
@@ -206,11 +211,11 @@ public final class MapillaryImageUtils {
    * Get the sequence key
    *
    * @param image The image with a sequence key
-   * @return The sequence key
+   * @return The sequence key or {@code null} if no sequence key exists
    */
   public static String getSequenceKey(INode image) {
     if (image != null) {
-      for (String key : new String[] { SEQUENCE_KEY, SEQUENCE_KEY_OLD }) {
+      for (String key : new String[] { SEQUENCE_KEY, SEQUENCE_KEY_OLD, "sequence_id" }) {
         if (image.hasKey(key)) {
           return image.get(key);
         }

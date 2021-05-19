@@ -1,8 +1,11 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +20,9 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.Cloudfront;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  * Stores the downloaded pictures locally.
@@ -117,21 +121,46 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
   /**
    * Main constructor.
    *
-   * @param key
-   *        The key of the image.
+   * @param image
+   *        The image.
    * @param type
    *        The type of image that must be downloaded (THUMBNAIL or
    *        FULL_IMAGE).
    */
-  public MapillaryCache(final String key, final Type type) {
+  public MapillaryCache(final INode image, final Type type) {
     super(Caches.ImageCache.getCache(type),
       new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
-    if (key == null || type == null) {
-      this.key = null;
-      this.url = null;
-    } else {
-      this.key = key + (type == Type.FULL_IMAGE ? ".FULL_IMAGE" : ".THUMBNAIL");
-      this.url = Cloudfront.thumbnail(key, type == Type.FULL_IMAGE);
+    try {
+      if (image == null || type == null) {
+        this.key = null;
+        this.url = null;
+      } else if (image.hasKey(MapillaryImageUtils.BASE_IMAGE_KEY + type.width)) {
+        this.key = MapillaryImageUtils.getKey(image) + '.' + type.width;
+        this.url = new URL(image.get(MapillaryImageUtils.BASE_IMAGE_KEY + type.width));
+      } else {
+        // Iterate through the keys, maybe there is another image url?
+        String tKey = null;
+        URL tUrl = null;
+        for (Map.Entry<String, String> entry : image.getKeys().entrySet()) {
+          if (entry.getKey().startsWith(MapillaryImageUtils.BASE_IMAGE_KEY)) {
+            String width = entry.getKey().replace(MapillaryImageUtils.BASE_IMAGE_KEY, "");
+            tKey = MapillaryImageUtils.getKey(image) + '.' + width;
+            tUrl = new URL(entry.getValue());
+            break;
+          }
+        }
+        // Fallback to v3 URLs (TODO remove)
+        if (tKey == null) {
+          tKey = MapillaryImageUtils.getKey(image) + '.' + type.width;
+          tUrl = new URL(MessageFormat.format("https://images.mapillary.com/{0}/thumb-{1}.jpg",
+            MapillaryImageUtils.getKey(image), type.width));
+        }
+        this.key = tKey;
+        this.url = tUrl;
+      }
+    } catch (MalformedURLException e) {
+      Logging.error(e);
+      throw new JosmRuntimeException(e);
     }
   }
 

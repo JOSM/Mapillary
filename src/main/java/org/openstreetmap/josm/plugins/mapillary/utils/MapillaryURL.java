@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +22,20 @@ public final class MapillaryURL {
   public static final class APIv4 {
     static String baseUrl = "https://a.mapillary.com/v3/";
 
+    /**
+     * Get the Traffic Sign Tile URL
+     *
+     * @return A URL (String)
+     */
     public static String getTrafficSigns() {
       return basePointDetection() + "&layers=trafficsigns";
     }
 
+    /**
+     * Get the Object Detection Tile URL
+     *
+     * @return A URL (String)
+     */
     public static String getObjectDetections() {
       return basePointDetection() + "&layers=points";
     }
@@ -36,11 +45,54 @@ public final class MapillaryURL {
       return baseUrl + "map_features?tile={z}/{x}/{y}&per_page=1000&client_id=" + CLIENT_ID;
     }
 
+    /**
+     * Get the Sequence/Image Tile URL
+     *
+     * @return A URL (String)
+     */
     public static String getImages() {
       // TODO Update to actual v4 API
       // This currently does not require the CLIENT_ID (and will actually return an empty response, if the CLIENT_ID is
       // given)
       return "https://tiles3.mapillary.com/v0.1/{z}/{x}/{y}.mvt";
+    }
+
+    /**
+     * Get more image information
+     *
+     * @param images The image(s) to get more information for
+     * @return The URL for image information
+     */
+    public static URL getImageInformation(String... images) {
+      return string2URL(baseUrl, "images", queryString(Collections.singletonMap("ids", String.join(",", images))));
+    }
+
+    /**
+     * Get all image detections
+     *
+     * @param image The image to get detections for
+     * @return The URL to get detections
+     */
+    public static String getImageDetections(String image) {
+      return baseUrl + image + "/detections?client_id=" + CLIENT_ID;
+    }
+
+    /**
+     * Get user information for the current user
+     *
+     * @return The URL to get user information (logged in user only)
+     */
+    public static URL getUserInformation() {
+      return string2URL(baseUrl, "me", queryString(null));
+    }
+
+    /**
+     * Get the user's organizations
+     *
+     * @return The URL to get user orgs from
+     */
+    public static URL getUserOrganizations() {
+      return string2URL(baseUrl, "me", "organizations", queryString(null));
     }
   }
 
@@ -52,21 +104,6 @@ public final class MapillaryURL {
 
     private APIv3() {
       // Private constructor to avoid instantiation
-    }
-
-    /**
-     * Retrieve specific images
-     *
-     * @param key The image key(s)
-     * @return The URL for the image(s)
-     */
-    public static URL getImage(String... key) {
-      if (key.length == 1) {
-        return string2URL(baseUrl, IMAGES + "/", key[0], queryString(null));
-      } else if (key.length > 1) {
-        return string2URL(baseUrl, IMAGES, queryString(null), "&image_keys=", String.join(",", key));
-      }
-      return null;
     }
 
     /**
@@ -96,16 +133,6 @@ public final class MapillaryURL {
 
     public static URL getUser(String key) {
       return string2URL(baseUrl, "users/", key, MapillaryURL.queryString(null));
-    }
-
-    /**
-     * Get images inside a bound
-     *
-     * @param bounds The bounds to search
-     * @return A collection of URLs to search
-     */
-    public static Collection<URL> searchImages(Bounds bounds) {
-      return Collections.singleton(string2URL(baseUrl, IMAGES, queryString(bounds)));
     }
 
     public static URL retrieveOrganizationss(String user) {
@@ -145,15 +172,6 @@ public final class MapillaryURL {
     }
 
     /**
-     * Get the URL for the current user information
-     *
-     * @return the URL where you'll find information about the user account as JSON
-     */
-    public static URL userURL() {
-      return string2URL(baseUrl, "me", MapillaryURL.queryString(null));
-    }
-
-    /**
      * Vote for a detection
      *
      * @param layer The object layer
@@ -181,18 +199,6 @@ public final class MapillaryURL {
       }
       return string2URL(baseUrl, String.format("images/%s/object_detections/%s", key, layer),
         MapillaryURL.queryString(null));
-    }
-  }
-
-  public static final class Cloudfront {
-    private static final String BASE_URL = "https://d1cuyjsrcm0gby.cloudfront.net/";
-
-    private Cloudfront() {
-      // Private constructor to avoid instantiation
-    }
-
-    public static URL thumbnail(final String key, final boolean large) {
-      return string2URL(BASE_URL, key, "/thumb-", large ? "2048" : "320", ".jpg");
     }
   }
 

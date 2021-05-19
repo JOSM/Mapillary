@@ -304,10 +304,11 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     // Draw sequence line
     g.setStroke(new BasicStroke(2));
-    final String sequenceKey = MapillarySequenceUtils.getKey(MapillaryImageUtils.getSequence(selectedImage));
+    final String sequenceKey = MapillaryImageUtils.getSequenceKey(selectedImage);
     Collection<IWay<?>> selectedSequences = new ArrayList<>();
     for (IWay<?> seq : getData().searchWays(box.toBBox()).stream().distinct().collect(Collectors.toList())) {
-      if (seq.getNodes().contains(selectedImage) || sequenceKey.equals(MapillarySequenceUtils.getKey(seq))) {
+      if (seq.getNodes().contains(selectedImage)
+        || (sequenceKey != null && sequenceKey.equals(MapillarySequenceUtils.getKey(seq)))) {
         selectedSequences.add(seq);
       } else {
         drawSequence(g, mv, seq, false, selectedImage != null);
@@ -366,8 +367,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     final INode selectedImg = getData().getSelectedNodes().stream().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
       && !getData().getSelectedNodes().contains(img)
-      && (selectedImg == null || (img.hasKey(MapillaryImageUtils.SEQUENCE_KEY)
-        && !img.get(MapillaryImageUtils.SEQUENCE_KEY).equals(selectedImg.get(MapillaryImageUtils.SEQUENCE_KEY))))) {
+      && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null
+        && !MapillaryImageUtils.getSequenceKey(img).equals(MapillaryImageUtils.getSequenceKey(selectedImg))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
       return;
     }

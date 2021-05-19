@@ -75,7 +75,7 @@ public final class MapillaryUser {
     }
     if (userInformation == null) {
       try {
-        userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv3.userURL()).entrySet().parallelStream()
+        userInformation = OAuthUtils.getWithHeader(MapillaryURL.APIv4.getUserInformation()).entrySet().parallelStream()
           .filter(e -> JsonValue.ValueType.STRING.equals(e.getValue().getValueType()))
           .collect(Collectors.toMap(Map.Entry::getKey, e -> ((JsonString) e.getValue()).getString()));
       } catch (IOException e) {

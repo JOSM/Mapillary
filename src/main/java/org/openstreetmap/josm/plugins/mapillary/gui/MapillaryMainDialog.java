@@ -511,8 +511,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     // Downloads the thumbnail.
     if (this.thumbnailCache != null)
       this.thumbnailCache.cancelOutstandingTasks();
-    final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
-      MapillaryCache.Type.THUMBNAIL);
+    final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage, MapillaryCache.Type.THUMBNAIL);
     this.thumbnailCache = imageThumbnailCache;
     try {
       if (imageThumbnailCache.get() == null)

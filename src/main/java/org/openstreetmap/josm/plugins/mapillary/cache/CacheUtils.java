@@ -7,7 +7,6 @@ import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -55,30 +54,30 @@ public final class CacheUtils {
    *        both.)
    */
   public static void downloadPicture(INode img, PICTURE pic) {
-    boolean thumbnail = new MapillaryCache(img.get(MapillaryKeys.KEY), MapillaryCache.Type.THUMBNAIL).get() == null
+    boolean thumbnail = new MapillaryCache(img, MapillaryCache.Type.THUMBNAIL).get() == null
       && (PICTURE.BOTH.equals(pic) || PICTURE.THUMBNAIL.equals(pic));
-    boolean fullImage = new MapillaryCache(img.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE).get() == null
+    boolean fullImage = new MapillaryCache(img, MapillaryCache.Type.FULL_IMAGE).get() == null
       && (PICTURE.BOTH.equals(pic) || PICTURE.FULL_IMAGE.equals(pic));
     if (thumbnail)
-      submit(img.get(MapillaryKeys.KEY), MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
+      submit(img, MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
     if (fullImage)
-      submit(img.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
+      submit(img, MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
   }
 
   /**
    * Requests the picture with the given key and quality and uses the given
    * listener.
    *
-   * @param key
-   *        The key of the picture to be requested.
+   * @param image
+   *        The picture to be requested.
    * @param type
    *        The quality of the picture to be requested.
    * @param lis
    *        The listener that is going to receive the picture.
    */
-  public static void submit(String key, MapillaryCache.Type type, ICachedLoaderListener lis) {
+  public static void submit(INode image, MapillaryCache.Type type, ICachedLoaderListener lis) {
     try {
-      new MapillaryCache(key, type).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+      new MapillaryCache(image, type).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
     } catch (IOException e) {
       Logging.error(e);
     }

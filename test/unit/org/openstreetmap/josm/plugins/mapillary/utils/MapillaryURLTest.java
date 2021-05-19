@@ -13,34 +13,13 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
-import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryURLTest {
 
   private static final String CLIENT_ID_QUERY_PART = "client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
   private static final String SORT_BY_KEY = "sort_by=key";
 
-  static class APIv3 {
-    @RegisterExtension
-    static JOSMTestRules rules = new MapillaryTestRules().preferences();
-
-    @Test
-    void testSearchImages() {
-      assertUrlEquals(MapillaryURL.APIv3.searchImages(null), "https://a.mapillary.com/v3/images", CLIENT_ID_QUERY_PART);
-    }
-  }
-
-  static class Cloudfront {
-    @Test
-    void testThumbnail() {
-      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key", true),
-        "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key/thumb-2048.jpg");
-      assertUrlEquals(MapillaryURL.Cloudfront.thumbnail("arbitrary_key2", false),
-        "https://d1cuyjsrcm0gby.cloudfront.net/arbitrary_key2/thumb-320.jpg");
-    }
-  }
+  // TODO Test APIv4 when actually available
 
   @Test
   void testBrowseImageURL() throws MalformedURLException {
@@ -74,7 +53,8 @@ class MapillaryURLTest {
 
   @Test
   void testUserURL() throws MalformedURLException {
-    assertEquals(new URL("https://a.mapillary.com/v3/me?" + CLIENT_ID_QUERY_PART), MapillaryURL.APIv3.userURL());
+    assertEquals(new URL("https://a.mapillary.com/v3/me?" + CLIENT_ID_QUERY_PART),
+      MapillaryURL.APIv4.getUserInformation());
   }
 
   @Test
@@ -91,7 +71,7 @@ class MapillaryURLTest {
   void testUtilityClass() {
     TestUtil.testUtilityClass(MapillaryURL.class);
     TestUtil.testUtilityClass(MapillaryURL.APIv3.class);
-    TestUtil.testUtilityClass(MapillaryURL.Cloudfront.class);
+    TestUtil.testUtilityClass(MapillaryURL.APIv4.class);
     TestUtil.testUtilityClass(MapillaryURL.MainWebsite.class);
   }
 

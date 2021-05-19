@@ -38,8 +38,8 @@ public class MapillarySequenceUtils {
 
   private static final CacheAccess<String, IWay<?>> SEQUENCE_CACHE = JCSCacheManager.getCache("mapillary:sequences");
 
-  public static final String KEY = "key";
-  public static final String ID = "id";
+  /** The unique identifier for the sequence */
+  public static final String KEY = "id";
   /** The user who created the sequence */
   public static final String CREATED_BY = "created_by";
   /** The group that owns the sequence */

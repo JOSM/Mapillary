@@ -59,7 +59,7 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
   @Override
   public void run() {
     if (this.image.hasKey(MapillaryKeys.KEY)) {
-      CacheUtils.submit(this.image.get(MapillaryKeys.KEY), MapillaryCache.Type.FULL_IMAGE, this);
+      CacheUtils.submit(this.image, MapillaryCache.Type.FULL_IMAGE, this);
     } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
       synchronized (MapillaryExportDownloadThread.class) {
         try {
