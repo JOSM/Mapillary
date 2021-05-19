@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -91,12 +92,23 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
       }
       return;
     }
-    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+    ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(10);
+    this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
     for (INode image : this.images) {
       if (image.hasKey(MapillaryImageUtils.KEY) || image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
         try {
+          while (this.ex.getQueue().remainingCapacity() == 0) {
+            synchronized (this.queue) {
+              try {
+                this.queue.wait(1000);
+              } catch (InterruptedException e) {
+                Logging.error(e);
+                Thread.currentThread().interrupt();
+              }
+            }
+          }
           this.ex.execute(new MapillaryExportDownloadThread(image, this.queue, this.queueImages));
-        } catch (Exception e) {
+        } catch (RejectedExecutionException e) {
           Logging.error(e);
         }
       }

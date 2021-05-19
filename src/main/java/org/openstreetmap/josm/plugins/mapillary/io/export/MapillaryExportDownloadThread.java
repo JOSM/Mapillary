@@ -81,9 +81,10 @@ public class MapillaryExportDownloadThread implements Runnable, ICachedLoaderLis
   @Override
   public synchronized void loadingFinished(CacheEntry data, CacheEntryAttributes attributes, LoadResult result) {
     try {
-      synchronized (MapillaryExportDownloadThread.class) {
+      synchronized (this.queue) {
         this.queue.put(ImageIO.read(new ByteArrayInputStream(data.getContent())));
         this.queueImages.put(this.image);
+        this.queue.notifyAll();
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

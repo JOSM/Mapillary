@@ -78,8 +78,10 @@ public class MapillaryExportDialog extends JPanel implements ActionListener {
     this.group.add(this.rewrite);
     // Some options are disabled depending on the circumstances
     VectorDataSet data = MapillaryLayer.getInstance().getData();
-    this.sequence.setEnabled(data.getNodes().stream().anyMatch(node -> node.hasKey(MapillaryImageUtils.SEQUENCE_KEY)));
-    this.selected.setEnabled(data.getNodes().isEmpty());
+    this.sequence.setEnabled(data.getAllSelected().stream().filter(INode.class::isInstance).map(INode.class::cast)
+      .anyMatch(node -> MapillaryImageUtils.getSequenceKey(node) != null));
+    this.selected.setEnabled(data.getAllSelected().stream().filter(INode.class::isInstance).map(INode.class::cast)
+      .anyMatch(MapillaryImageUtils.IS_IMAGE));
     this.rewrite
       .setEnabled(data.getNodes().parallelStream().anyMatch(img -> img.hasKey(MapillaryImageUtils.IMPORTED_KEY)));
 

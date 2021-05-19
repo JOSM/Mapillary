@@ -13,6 +13,7 @@ import org.openstreetmap.josm.tools.Pair;
 
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -93,6 +94,10 @@ public final class JsonImageDetailsDecoder {
           }
           String sequence = properties.getString(MapillaryImageUtils.SEQUENCE_KEY, "");
           image.setKeys(JsonTagMapDecoder.getTagMap(properties));
+          // Reset the instant
+          image.setInstant(Instant.EPOCH);
+          // Recache the instant
+          MapillaryImageUtils.getDate(image);
           return Pair.create(sequence, image);
         }
       }

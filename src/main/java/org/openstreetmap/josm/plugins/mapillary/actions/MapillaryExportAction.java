@@ -72,7 +72,7 @@ public class MapillaryExportAction extends JosmAction {
     // Checks if the inputs are correct and starts the export process.
     if (pane.getValue() != null && (int) pane.getValue() == JOptionPane.OK_OPTION && this.dialog.chooser != null) {
       if (this.dialog.group.isSelected(this.dialog.all.getModel())) {
-        export(MapillaryLayer.getInstance().getData().getSelectedNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+        export(MapillaryLayer.getInstance().getData().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
           .collect(Collectors.toSet()));
       } else if (this.dialog.group.isSelected(this.dialog.sequence.getModel())) {
         Set<INode> images = new ConcurrentSkipListSet<>();
