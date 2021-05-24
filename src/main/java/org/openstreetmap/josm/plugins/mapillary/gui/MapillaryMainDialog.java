@@ -347,16 +347,23 @@ public final class MapillaryMainDialog extends ToggleDialog
     final JButton previousButton = createNavigationButton(SelectNextImageAction.PREVIOUS_ACTION, buttonDim);
     final JButton redButton = createNavigationButton(SelectNextImageAction.RED_ACTION, buttonDim);
     final JButton blueButton = createNavigationButton(SelectNextImageAction.BLUE_ACTION, buttonDim);
-    final JButton jumpToCurrent = createNavigationButton(new JosmAction(null,
+    final JToggleButton jumpToCurrent = new JToggleButton(new JosmAction(null,
       new ImageProvider("dialogs/autoscale", "selection"), tr("Center view"), null, false, null, false) {
       @Override
       public void actionPerformed(ActionEvent e) {
         INode currentImage = MapillaryMainDialog.getInstance().getImage();
-        if (MapillaryImageUtils.IS_IMAGE.test(currentImage)) {
+        if (MapillaryImageUtils.IS_IMAGE.test(currentImage)
+          && Boolean.TRUE.equals(MapillaryProperties.MOVE_TO_IMG.get())) {
           MainApplication.getMap().mapView.zoomTo(currentImage.getCoor());
         }
       }
-    }, buttonDim);
+    });
+    jumpToCurrent.setPreferredSize(buttonDim);
+
+    jumpToCurrent.setSelected(Boolean.TRUE.equals(MapillaryProperties.MOVE_TO_IMG.get()));
+    jumpToCurrent.addChangeListener(l -> {
+      MapillaryProperties.MOVE_TO_IMG.put(jumpToCurrent.isSelected());
+    });
     blueButton.setForeground(Color.BLUE);
     redButton.setForeground(Color.RED);
 

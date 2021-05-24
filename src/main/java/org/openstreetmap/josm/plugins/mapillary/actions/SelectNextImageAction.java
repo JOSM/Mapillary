@@ -14,6 +14,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -111,7 +112,9 @@ public class SelectNextImageAction extends JosmAction {
       if (MapillaryMainDialog.hasInstance() && !newSelectedImage.equals(MapillaryMainDialog.getInstance().getImage())) {
         MapillaryMainDialog.getInstance().setImage(newSelectedImage);
       }
-      MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
+      if (Boolean.TRUE.equals(MapillaryProperties.MOVE_TO_IMG.get())) {
+        MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
+      }
     }
   }
 
