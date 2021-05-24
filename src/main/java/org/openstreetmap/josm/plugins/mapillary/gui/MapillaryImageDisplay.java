@@ -207,7 +207,8 @@ public final class MapillaryImageDisplay extends JPanel {
                 offscreenImage.getHeight(null));
               MapillaryImageDisplay.this.repaint();
             }
-          } else if (e.getButton() == MapillaryProperties.PICTURE_DRAG_BUTTON.get()) {
+          } else if (e.getButton() == MapillaryProperties.PICTURE_DRAG_BUTTON.get()
+            && MapillaryImageDisplay.this.cameraPlane != null) {
             cameraPlane.setRotation(comp2imgCoord(mouseVisibleRect, e.getX(), e.getY()));
             MapillaryImageDisplay.this.repaint();
           }
@@ -304,7 +305,7 @@ public final class MapillaryImageDisplay extends JPanel {
           synchronized (MapillaryImageDisplay.this) {
             MapillaryImageDisplay.this.visibleRect = mouseVisibleRect;
           }
-        } else {
+        } else if (MapillaryImageDisplay.this.cameraPlane != null) {
           cameraPlane.setRotationFromDelta(mousePointInImg, p);
           // Set the current mouse point to where the pointer is now.
           mousePointInImg = p;
@@ -554,8 +555,8 @@ public final class MapillaryImageDisplay extends JPanel {
 
   private void paintImage(Graphics g, BufferedImage image, Rectangle visibleRect) {
     final Rectangle target;
-    if (this.pano) {
-      cameraPlane.mapping(image, offscreenImage);
+    if (this.pano && this.cameraPlane != null) {
+      this.cameraPlane.mapping(image, offscreenImage);
       target = new Rectangle(0, 0, offscreenImage.getWidth(null), offscreenImage.getHeight(null));
       g.drawImage(offscreenImage, target.x, target.y, target.x + target.width, target.y + target.height, visibleRect.x,
         visibleRect.y, visibleRect.x + visibleRect.width, visibleRect.y + visibleRect.height, null);
@@ -595,6 +596,9 @@ public final class MapillaryImageDisplay extends JPanel {
   }
 
   private void paintPano(Graphics2D g2d, List<PointObjectLayer> detectionLayers) {
+    if (this.cameraPlane == null) {
+      return;
+    }
     List<ImageDetection<?>> paintDetections = detections.parallelStream()
       .filter(d -> !MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, d)).collect(Collectors.toList());
     for (final ImageDetection<?> d : paintDetections) {
