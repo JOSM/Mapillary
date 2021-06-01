@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
 import org.openstreetmap.josm.actions.ExpertToggleAction.ExpertModeChangeListener;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -82,7 +83,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public final class MapillaryFilterDialog extends ToggleDialog implements OrganizationRecordListener {
+public final class MapillaryFilterDialog extends ToggleDialog
+  implements OrganizationRecordListener, MVTTile.TileListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -302,7 +304,6 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Organiz
     organizations.addItem(OrganizationRecord.NULL_RECORD);
     for (Component comp : Arrays.asList(organizationLabel, organizations)) {
       comp.setEnabled(false);
-      comp.setVisible(false);
     }
     organizations.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = -1650696801628131389L;
@@ -506,16 +507,25 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Organiz
    */
   public void updateFilteredImages() {
     if (MapillaryLayer.hasInstance()) {
-      Predicate<INode> shouldHide = this.getShouldHidePredicate();
-      if (System.getSecurityManager() != null) {
-        // Ensure that we aren't initializing the cache in a secure context -- this fails, and throws exceptions.
-        // See JOSM #20951
-        Caches.UserProfileCache.getInstance();
-      }
-      MapillaryLayer.getInstance().getData().getNodes().parallelStream().filter(MapillaryImageUtils.IS_IMAGE)
-        .forEach(img -> img.setVisible(!shouldHide.test(img)));
-      MapillaryLayer.invalidateInstance();
+      updateFilteredImages(MapillaryLayer.getInstance().getData().getNodes().parallelStream());
     }
+  }
+
+  /**
+   * Update filtered images
+   *
+   * @param nodeStream The nodes to update
+   * @param <N> The node type
+   */
+  private <N extends INode> void updateFilteredImages(Stream<N> nodeStream) {
+    Predicate<INode> shouldHide = this.getShouldHidePredicate();
+    if (System.getSecurityManager() != null) {
+      // Ensure that we aren't initializing the cache in a secure context -- this fails, and throws exceptions.
+      // See JOSM #20951
+      Caches.UserProfileCache.getInstance();
+    }
+    nodeStream.filter(MapillaryImageUtils.IS_IMAGE).forEach(img -> img.setVisible(!shouldHide.test(img)));
+    MapillaryLayer.invalidateInstance();
   }
 
   /**
@@ -525,6 +535,12 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Organiz
    */
   public Predicate<INode> getShouldHidePredicate() {
     return this.shouldHidePredicate;
+  }
+
+  @Override
+  public void finishedLoading(MVTTile tile) {
+    updateFilteredImages(
+      tile.getData().getAllPrimitives().parallelStream().filter(INode.class::isInstance).map(INode.class::cast));
   }
 
   private static class ImageFilterPredicate implements Predicate<INode> {
@@ -759,11 +775,11 @@ public final class MapillaryFilterDialog extends ToggleDialog implements Organiz
       }
     }
     if (add) {
-      GuiHelper.runInEDTAndWait(() -> organizations.addItem(organization));
+      GuiHelper.runInEDT(() -> organizations.addItem(organization));
     }
     for (Component comp : Arrays.asList(organizationLabel, organizations)) {
-      GuiHelper.runInEDT(() -> comp.setEnabled(organizations.getItemCount() > 1));
-      GuiHelper.runInEDT(() -> comp.setVisible(organizations.getItemCount() > 1));
+      GuiHelper.runInEDT(
+        () -> comp.setEnabled(organizations.getItemCount() > 1 || organization != OrganizationRecord.NULL_RECORD));
     }
   }
 }

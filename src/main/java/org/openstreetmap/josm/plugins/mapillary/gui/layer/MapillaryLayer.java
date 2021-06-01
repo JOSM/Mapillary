@@ -154,6 +154,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
 
     this.addTileDownloadListener(OrganizationRecord::addFromTile);
+    this.addTileDownloadListener(MapillaryFilterDialog.getInstance());
   }
 
   /**
