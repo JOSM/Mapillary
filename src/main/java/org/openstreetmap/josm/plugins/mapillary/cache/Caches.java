@@ -9,10 +9,10 @@ import javax.swing.ImageIcon;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
 
-import org.openstreetmap.josm.data.Preferences;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCacheManager;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
+import org.openstreetmap.josm.spi.preferences.Config;
 
 public final class Caches {
 
@@ -21,7 +21,7 @@ public final class Caches {
   }
 
   public static File getCacheDirectory() {
-    final File f = new File(Preferences.main().getPluginsDirectory().getPath() + "/Mapillary/cache");
+    final File f = new File(Config.getDirs().getCacheDirectory(true) + "/Mapillary");
     if (!f.exists()) {
       f.mkdirs();
     }
