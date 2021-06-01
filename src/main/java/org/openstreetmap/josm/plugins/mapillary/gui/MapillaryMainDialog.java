@@ -332,6 +332,7 @@ public final class MapillaryMainDialog extends ToggleDialog
    */
   public void setMode(MODE mode) {
     final Dimension buttonDim = ImageProvider.ImageSizes.CURSOR.getImageDimension();
+    final Dimension nextPrevButtonDim = new Dimension(2 * buttonDim.width, buttonDim.height);
     JToggleButton toggleSigns = new JToggleButton(showSignDetectionsAction);
     toggleSigns.setPreferredSize(buttonDim);
     // Mac OS X won't show background colors if buttons aren't opaque.
@@ -343,8 +344,8 @@ public final class MapillaryMainDialog extends ToggleDialog
     toggleSigns.setSelected(Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get()));
     toggleDetections.setSelected(Boolean.TRUE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get()));
 
-    final JButton nextButton = createNavigationButton(SelectNextImageAction.NEXT_ACTION, buttonDim);
-    final JButton previousButton = createNavigationButton(SelectNextImageAction.PREVIOUS_ACTION, buttonDim);
+    final JButton nextButton = createNavigationButton(SelectNextImageAction.NEXT_ACTION, nextPrevButtonDim);
+    final JButton previousButton = createNavigationButton(SelectNextImageAction.PREVIOUS_ACTION, nextPrevButtonDim);
     final JButton redButton = createNavigationButton(SelectNextImageAction.RED_ACTION, buttonDim);
     final JButton blueButton = createNavigationButton(SelectNextImageAction.BLUE_ACTION, buttonDim);
     final JToggleButton jumpToCurrent = new JToggleButton(new JosmAction(null,
