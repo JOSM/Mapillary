@@ -9,6 +9,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
 
 import javax.swing.SwingUtilities;
@@ -45,6 +46,11 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         layer.getData().setSelected(nodes);
         if (nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
           SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
+        }
+        continue;
+      } else if (layer instanceof MapillaryLayer) {
+        if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
+          layer.getData().clearSelection();
         }
         continue;
       }

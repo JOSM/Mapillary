@@ -173,6 +173,7 @@ public class MapillarySequenceUtils {
 
   /**
    * Download a specific sequence
+   *
    * @implNote This is synchronized to avoid a CME (JOSM #20948).
    * @param key The key to download
    * @return The downloaded sequence
