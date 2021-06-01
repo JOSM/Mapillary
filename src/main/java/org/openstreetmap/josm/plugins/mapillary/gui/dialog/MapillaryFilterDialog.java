@@ -505,8 +505,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
    */
   public synchronized void refresh() {
     // This predicate returns true if the image should be made invisible
-    this.shouldHidePredicate.updateLayerVisible();
-    this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
     updateFilteredImages();
   }
 
@@ -526,6 +524,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
    * @param <N> The node type
    */
   private <N extends INode> void updateFilteredImages(Stream<N> nodeStream) {
+    this.shouldHidePredicate.updateLayerVisible();
+    this.shouldHidePredicate.smartAdd = Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get());
     Predicate<INode> shouldHide = this.getShouldHidePredicate();
     if (System.getSecurityManager() != null) {
       // Ensure that we aren't initializing the cache in a secure context -- this fails, and throws exceptions.
