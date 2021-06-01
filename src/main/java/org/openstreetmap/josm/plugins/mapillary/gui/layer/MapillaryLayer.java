@@ -41,6 +41,7 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.OldVersionDialog;
@@ -56,6 +57,7 @@ import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
+import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 
 import javax.swing.Action;
@@ -142,14 +144,16 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
     MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
+  private final ListenerList<MVTTile.TileListener> tileListeners = ListenerList.create();
 
   private MapillaryLayer() {
     super(MapillaryKeys.MAPILLARY_IMAGES);
-    this.getData().addSelectionListener(this);
     Stream.of(MapillaryPlugin.getMapillaryDataListeners())
       .forEach(listener -> this.getData().addSelectionListener(listener));
     UploadAction.registerUploadHook(this, true);
     SwingUtilities.invokeLater(OldVersionDialog::showOldVersion);
+
+    this.addTileDownloadListener(OrganizationRecord::addFromTile);
   }
 
   /**
@@ -684,6 +688,25 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       job.submit();
     }
     return futureTile;
+  }
+
+  @Override
+  public void finishedLoading(final MVTTile tile) {
+    super.finishedLoading(tile);
+    this.tileListeners.fireEvent(l -> l.finishedLoading(tile));
+  }
+
+  /**
+   * Add a tile listener
+   *
+   * @param tileListener The listener to add
+   */
+  public void addTileDownloadListener(final MVTTile.TileListener tileListener) {
+    this.tileListeners.addListener(tileListener);
+  }
+
+  public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
+    this.tileListeners.removeListener(tileListener);
   }
 
   private static class NearestImgToTargetComparator implements Comparator<INode> {

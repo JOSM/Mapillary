@@ -6,6 +6,7 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -254,5 +255,21 @@ public final class MapillaryImageUtils {
         }
       }
     });
+  }
+
+  /**
+   * Get the organization for an image
+   *
+   * @param img The image to get an organization for
+   * @return The organization (never null, may be {@link OrganizationRecord#NULL_RECORD}).
+   */
+  public static OrganizationRecord getOrganization(INode img) {
+    final String organizationKey = "organization_key";
+    if (img.hasKey(organizationKey)) {
+      return OrganizationRecord.getOrganization(img.get(organizationKey));
+    } else if (getSequence(img) != null && getSequence(img).hasKey(organizationKey)) {
+      return OrganizationRecord.getOrganization(getSequence(img).get(organizationKey));
+    }
+    return OrganizationRecord.NULL_RECORD;
   }
 }

@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,12 +8,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.json.Json;
-import javax.json.JsonReader;
 import javax.swing.ImageIcon;
 
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
@@ -39,6 +40,10 @@ public final class OrganizationRecord implements Serializable {
   private static final Map<String, OrganizationRecord> CACHE = new ConcurrentHashMap<>();
 
   public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "", "", false, false);
+
+  static {
+    CACHE.put("", NULL_RECORD);
+  }
 
   private OrganizationRecord(String avatar, String description, String key, String name, String niceName,
     boolean privateRepository, boolean publicRepository) {
@@ -93,24 +98,21 @@ public final class OrganizationRecord implements Serializable {
   // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
   @SuppressWarnings("resource")
   private static OrganizationRecord getNewOrganization(String key) {
-    // TODO Fix
-    try (
-      CachedFile file = OAuthUtils
-        .addAuthenticationHeader(new CachedFile(MapillaryURL.APIv3.retrieveOrganization(key).toString()));
-      BufferedReader br = file.getContentReader();
-      JsonReader reader = Json.createReader(br)) {
-      String line = br.readLine();
-      Logging.error(line);
-      while (line != null) {
-        line = br.readLine();
-        Logging.error(line);
-      }
-    } catch (IOException e) {
-      Logging.error(e);
-    }
+    // TODO check for API in v4 (preferably one that doesn't need user auth)
     OrganizationRecord gr = new OrganizationRecord("", "", key, "", "", false, false);
-    LISTENERS.fireEvent(l -> l.organizationAdded(gr));
+    // Ensure that we aren't blocking the main EDT thread
+    MainApplication.worker.submit(() -> LISTENERS.fireEvent(l -> l.organizationAdded(gr)));
     return gr;
+  }
+
+  /**
+   * Read organizations from a tile and add them to the list
+   *
+   * @param tile The tile to read
+   */
+  public static void addFromTile(MVTTile tile) {
+    tile.getData().getAllPrimitives().stream().filter(INode.class::isInstance).map(INode.class::cast)
+      .forEach(MapillaryImageUtils::getOrganization);
   }
 
   /**

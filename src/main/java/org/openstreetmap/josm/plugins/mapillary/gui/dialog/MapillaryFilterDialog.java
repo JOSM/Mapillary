@@ -24,12 +24,9 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryLoginListener;
-import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.GBC;
@@ -39,6 +36,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -56,6 +54,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -69,7 +68,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -84,8 +82,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  * @author nokutu
  * @see MapillaryFilterChooseSigns
  */
-public final class MapillaryFilterDialog extends ToggleDialog
-  implements MapillaryLoginListener, OrganizationRecordListener {
+public final class MapillaryFilterDialog extends ToggleDialog implements OrganizationRecordListener {
 
   private static final long serialVersionUID = -4192029663670922103L;
 
@@ -115,7 +112,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
       Shortcut.registerShortcut("mapillary:filter:dialog", tr("Mapillary images Filter"), KeyEvent.CHAR_UNDEFINED,
         Shortcut.NONE),
       200, false, MapillaryPreferenceSetting.class);
-    MapillaryUser.addListener(this);
 
     final JButton signChooser = new JButton(new SignChooserAction());
     final JCheckBox downloaded = new JCheckBox(tr("Downloaded images"));
@@ -323,7 +319,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
             comp.setText(organization.getKey());
           }
           if (organization.getAvatar() != null) {
-            comp.setIcon(organization.getAvatar());
+            final ImageProvider.ImageSizes size = ImageProvider.ImageSizes.DEFAULT;
+            final Image scaledImage = organization.getAvatar().getImage().getScaledInstance(size.getAdjustedWidth(),
+              size.getAdjustedHeight(), Image.SCALE_SMOOTH);
+            comp.setIcon(new ImageIcon(scaledImage));
           }
         }
         return comp;
@@ -332,11 +331,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     });
     panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
-    if (MapillaryUser.getUsername() != null) {
-      onLogin(null);
-    }
-
-    // OrganizationRecord.addOrganizationListener(this); // TODO uncomment when API for orgs is available
+    OrganizationRecord.addOrganizationListener(this);
     OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
     // Listeners
@@ -599,11 +594,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           return true;
         }
         if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && MapillaryImageUtils.getSequenceKey(img) != null
-          && !this.organization.getKey()
-            .equals(OrganizationRecord.getOrganization(img.getDataSet().getWays().stream()
-              .filter(seq -> img.get(MapillaryImageUtils.SEQUENCE_KEY).equals(seq.get(MapillaryKeys.KEY))
-                && seq.hasKey(MapillarySequenceUtils.OWNED_BY))
-              .map(seq -> seq.get(MapillarySequenceUtils.OWNED_BY)).findAny().orElse("")).getKey())) {
+          && !this.organization.getKey().equals(MapillaryImageUtils.getOrganization(img).getKey())) {
           return true;
         }
       }
@@ -620,8 +611,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     private boolean checkValidTime(INode img) {
       final long currentTime = Instant.now().toEpochMilli();
       for (int i = 0; i < 3; i++) {
-        if (TIME_LIST[i].equals(time) && MapillaryImageUtils.getCapturedAt(img).toEpochMilli() < currentTime
-          - dateRange.doubleValue() * TIME_FACTOR[i]) {
+        if (TIME_LIST[i].equals(time)
+          && MapillaryImageUtils.getDate(img).toEpochMilli() < currentTime - dateRange.doubleValue() * TIME_FACTOR[i]) {
           return true;
         }
       }
@@ -752,24 +743,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
       this.destroyable.fireEvent(Destroyable::destroy);
       if (MainApplication.getMap() != null)
         MainApplication.getMap().removeToggleDialog(this);
-      // OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
-      MapillaryUser.removeListener(this);
+      OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
       destroyed = true;
     }
     destroyInstance();
-  }
-
-  @Override
-  public void onLogin(String username) {
-    List<OrganizationRecord> userOrganizations = MapillaryUser.getOrganizations();
-    userOrganizations.forEach(this::organizationAdded);
-  }
-
-  @Override
-  public void onLogout() {
-    // TODO Only remove user organizations, not all organizations
-    organizations.removeAllItems();
-    organizationAdded(OrganizationRecord.NULL_RECORD);
   }
 
   @Override
