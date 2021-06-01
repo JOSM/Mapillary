@@ -512,6 +512,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
   public void updateFilteredImages() {
     if (MapillaryLayer.hasInstance()) {
       Predicate<INode> shouldHide = this.getShouldHidePredicate();
+      if (System.getSecurityManager() != null) {
+        // Ensure that we aren't initializing the cache in a secure context -- this fails, and throws exceptions.
+        // See JOSM #20951
+        Caches.UserProfileCache.getInstance();
+      }
       MapillaryLayer.getInstance().getData().getNodes().parallelStream().filter(MapillaryImageUtils.IS_IMAGE)
         .forEach(img -> img.setVisible(!shouldHide.test(img)));
       MapillaryLayer.invalidateInstance();
