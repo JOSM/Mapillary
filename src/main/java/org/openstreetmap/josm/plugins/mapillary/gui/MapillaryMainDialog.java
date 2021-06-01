@@ -531,11 +531,11 @@ public final class MapillaryMainDialog extends ToggleDialog
   }
 
   /**
-   * Update button states
+   * Update button states. Synchronized to avoid locks.
    *
    * @param currentImage The current image
    */
-  public void updateButtonStates(INode currentImage) {
+  public synchronized void updateButtonStates(INode currentImage) {
     // Enables/disables next/previous buttons
     final boolean isImage = MapillaryImageUtils.IS_IMAGE.test(currentImage);
     for (AbstractButton jButton : this.buttonCollection) {
