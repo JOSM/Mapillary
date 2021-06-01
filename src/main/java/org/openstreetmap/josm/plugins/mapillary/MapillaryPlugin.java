@@ -204,6 +204,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
 
   @Override
   public void destroy() {
+    this.mapFrameInitialized(MainApplication.getMap(), null);
     MainMenu menu = MainApplication.getMenu();
     for (JMenu jmenu : Arrays.asList(menu.dataMenu, menu.viewMenu, menu.imagerySubMenu, menu.moreToolsMenu,
       menu.editMenu, menu.fileMenu, menu.windowMenu)) {
