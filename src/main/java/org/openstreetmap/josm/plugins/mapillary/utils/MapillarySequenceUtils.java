@@ -171,7 +171,13 @@ public class MapillarySequenceUtils {
     return sequence;
   }
 
-  private static IWay<?> downloadSequence(String key) {
+  /**
+   * Download a specific sequence
+   * @implNote This is synchronized to avoid a CME (JOSM #20948).
+   * @param key The key to download
+   * @return The downloaded sequence
+   */
+  private static synchronized IWay<?> downloadSequence(String key) {
     URL sequenceUrl = MapillaryURL.APIv3.getSequence(key);
     HttpClient client = HttpClient.create(sequenceUrl);
     HttpClient.Response response;
