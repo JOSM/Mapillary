@@ -3,9 +3,11 @@ package org.openstreetmap.josm.plugins.mapillary.actions;
 import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.openstreetmap.josm.actions.JosmAction;
@@ -21,12 +23,62 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 public class SelectNextImageAction extends JosmAction {
+  private static final class SelectNextImageRememberAction extends SelectNextImageAction {
+    private INode previousImage;
+    private final ImageProvider originalIcon;
+    private final Supplier<INode> getPreviousImage = () -> this.previousImage;
+
+    private SelectNextImageRememberAction(String name, String description, ImageProvider icon, Shortcut sc,
+      SerializableSupplier<INode> destinationImgSupplier) {
+      super(name, description, icon, sc, destinationImgSupplier);
+      this.originalIcon = icon;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      final INode current = MapillaryMainDialog.getInstance().getImage();
+      final INode expected = this.getDestinationImageSupplier().get();
+      super.actionPerformed(e);
+      if (!Objects.equals(current, expected)) {
+        this.previousImage = current;
+      } else {
+        this.previousImage = null;
+      }
+    }
+
+    @Override
+    public void updateEnabled(final Component component, final INode currentImage) {
+      super.updateEnabled(component, currentImage);
+      if (!Objects.equals(currentImage, this.previousImage)
+        && !Objects.equals(currentImage, super.getDestinationImageSupplier().get())) {
+        this.previousImage = null;
+      }
+      if (component.isEnabled()) {
+        if (!Objects.equals(this.getDestinationImageSupplier(), super.getDestinationImageSupplier())) {
+          // history or refresh
+          new ImageProvider("dialogs", "history").getResource().attachImageIcon(this, true);
+        } else {
+          this.originalIcon.getResource().attachImageIcon(this, true);
+        }
+      }
+    }
+
+    @Override
+    public Supplier<INode> getDestinationImageSupplier() {
+      if (this.previousImage != null) {
+        return this.getPreviousImage;
+      }
+      return super.getDestinationImageSupplier();
+    }
+
+  }
+
   private static final long serialVersionUID = -2106549590908822237L;
   private static final String MAPILLARY_PREF_PREFIX = marktr("Mapillary: {0}");
 
   private static final String DIALOGS_SUBDIR = "dialogs";
 
-  public static final SelectNextImageAction FIRST_ACTION = new SelectNextImageAction(tr("First picture"),
+  public static final SelectNextImageAction FIRST_ACTION = new SelectNextImageRememberAction(tr("First picture"),
     tr("Show first Image"), new ImageProvider(DIALOGS_SUBDIR, "first"),
     Shortcut.registerShortcut("mapillary:jump_to_first", tr(MAPILLARY_PREF_PREFIX, tr("Show first Image")),
       KeyEvent.VK_HOME, Shortcut.DIRECT),
@@ -41,7 +93,7 @@ public class SelectNextImageAction extends JosmAction {
       return null;
     });
 
-  public static final SelectNextImageAction LAST_ACTION = new SelectNextImageAction(tr("Last picture"),
+  public static final SelectNextImageAction LAST_ACTION = new SelectNextImageRememberAction(tr("Last picture"),
     tr("Show last Image"), new ImageProvider(DIALOGS_SUBDIR, "last"),
     Shortcut.registerShortcut("mapillary:jump_to_last", tr(MAPILLARY_PREF_PREFIX, tr("Show last Image")),
       KeyEvent.VK_END, Shortcut.DIRECT),
@@ -111,7 +163,7 @@ public class SelectNextImageAction extends JosmAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    final INode newSelectedImage = destinationImgSupplier.get();
+    final INode newSelectedImage = this.getDestinationImageSupplier().get();
     if (newSelectedImage != null) {
       MapillaryLayer.getInstance().getData().setSelected(newSelectedImage);
       // TODO remove if it turns out to be unneeded -- due to ids, unintended images
@@ -123,6 +175,17 @@ public class SelectNextImageAction extends JosmAction {
         MainApplication.getMap().mapView.zoomTo(newSelectedImage.getCoor());
       }
     }
+  }
+
+  /**
+   * Check if this action should be enabled
+   *
+   * @param currentImage The image to check against
+   * @return {@code true} if this button should be enabled
+   */
+  public void updateEnabled(final Component component, final INode currentImage) {
+    final INode actionNode = this.getDestinationImageSupplier().get();
+    component.setEnabled(actionNode != null && !actionNode.equals(currentImage));
   }
 
   /**

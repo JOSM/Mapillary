@@ -542,8 +542,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       Action action = jButton.getAction();
       if (action instanceof SelectNextImageAction) {
         SelectNextImageAction josmAction = (SelectNextImageAction) action;
-        INode actionNode = josmAction.getDestinationImageSupplier().get();
-        jButton.setEnabled(actionNode != null && !actionNode.equals(currentImage));
+        josmAction.updateEnabled(jButton, currentImage);
       } else {
         jButton.setEnabled(isImage);
       }
