@@ -49,7 +49,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
+import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -296,6 +298,12 @@ public final class MapillaryFilterDialog extends ToggleDialog
 
     final JosmTextField user = new DisableShortcutsOnFocusGainedTextField(10);
     user.addActionListener(new UpdateAction());
+    // TODO remove with v4 API release
+    user.setEnabled(false);
+    // TODO remove next two lines
+    final LookAndFeel lookFeel = UIManager.getLookAndFeel();
+    user.setHint(tr("Disabled"));
+    user.setToolTipText(tr("No known API exists. This may be removed."));
     userSearchPanel.add(new JLabel(tr("User")));
     userSearchPanel.add(user, GBC.eol());
     organizationLabel.setToolTipText(tr("Organizations"));
