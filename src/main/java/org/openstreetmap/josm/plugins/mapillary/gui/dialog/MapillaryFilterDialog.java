@@ -37,15 +37,12 @@ import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Shortcut;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -58,7 +55,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -315,31 +311,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     for (Component comp : Arrays.asList(organizationLabel, organizations)) {
       comp.setEnabled(false);
     }
-    organizations.setRenderer(new DefaultListCellRenderer() {
-      private static final long serialVersionUID = -1650696801628131389L;
-
-      @Override
-      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-        boolean cellHasFocus) {
-        JLabel comp = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (value instanceof OrganizationRecord) {
-          OrganizationRecord organization = (OrganizationRecord) value;
-          if (organization.getNiceName() != null && !organization.getNiceName().isEmpty()) {
-            comp.setText(organization.getNiceName());
-          } else {
-            comp.setText(organization.getKey());
-          }
-          if (organization.getAvatar() != null) {
-            final ImageProvider.ImageSizes size = ImageProvider.ImageSizes.DEFAULT;
-            final Image scaledImage = organization.getAvatar().getImage().getScaledInstance(size.getAdjustedWidth(),
-              size.getAdjustedHeight(), Image.SCALE_SMOOTH);
-            comp.setIcon(new ImageIcon(scaledImage));
-          }
-        }
-        return comp;
-      }
-
-    });
+    organizations.setRenderer(new OrganizationListCellRenderer());
     panel.add(userSearchPanel, GBC.eol().anchor(GridBagConstraints.LINE_START));
 
     OrganizationRecord.addOrganizationListener(this);

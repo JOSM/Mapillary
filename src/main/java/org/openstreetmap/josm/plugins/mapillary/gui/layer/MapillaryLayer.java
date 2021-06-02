@@ -432,6 +432,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   /**
    * Get the transformation of an angle and point
+   *
    * @param angle The angle to rotate (radians)
    * @param p The point to transform around
    * @param origin The origin of the transform
