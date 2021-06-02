@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
+import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 
@@ -20,7 +21,7 @@ import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
  */
 public class DatePickerSwing implements IDatePicker<JosmTextField> {
   private Instant date;
-  private final JosmTextField component = new JosmTextField("", 12);
+  private final JosmTextField component = new DisableShortcutsOnFocusGainedTextField("", 12);
 
   public DatePickerSwing() {
     super();

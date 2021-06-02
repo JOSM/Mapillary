@@ -23,6 +23,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryPreferenceSetting;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShorcutsOnFocusGainedJSpinnerEditor;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
@@ -197,11 +198,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
   private void addCameraMakeModelFilters(JPanel panel) {
     JLabel cameraMakeLabel = new JLabel(tr("Camera Make"));
     panel.add(cameraMakeLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
-    final JosmTextField cameraMake = new JosmTextField();
+    final JosmTextField cameraMake = new DisableShortcutsOnFocusGainedTextField();
     panel.add(cameraMake, GBC.std().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
     JLabel cameraModelLabel = new JLabel("Model");
     panel.add(cameraModelLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
-    final JosmTextField cameraModel = new JosmTextField();
+    final JosmTextField cameraModel = new DisableShortcutsOnFocusGainedTextField();
     panel.add(cameraModel, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
 
     cameraMake.addFocusListener(new FocusListener() {
@@ -261,6 +262,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     final JCheckBox qualityCheck = new JCheckBox(tr("Image Quality"));
     final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(3, 1, 5, 1);
     final JSpinner spinnerQuality = new JSpinner(spinnerQualityModel);
+    DisableShorcutsOnFocusGainedJSpinnerEditor.disableShortcutsOnFocusGained(spinnerQuality);
     qualityCheck.addItemListener(l -> spinnerQuality.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
     spinnerQuality.setEnabled(qualityCheck.isSelected());
     panel.add(qualityCheck, GBC.std().anchor(GridBagConstraints.LINE_START));
@@ -380,6 +382,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
     fromPanel.add(filterByDateCheckbox);
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1.0, 0, 10000, .1);
     final JSpinner spinner = new JSpinner(spinnerModel);
+    // Set the editor such that we aren't zooming all over the place.
+    DisableShorcutsOnFocusGainedJSpinnerEditor.disableShortcutsOnFocusGained(spinner);
     spinner.setEnabled(false);
     fromPanel.add(spinner);
 
