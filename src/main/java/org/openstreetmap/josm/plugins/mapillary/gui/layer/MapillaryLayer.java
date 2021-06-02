@@ -403,7 +403,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
-    double angle = MapillaryImageUtils.getAngle(img);
+    // convert the angle to radians from degrees
+    // TODO check after v4 transition
+    double angle = Math.toRadians(MapillaryImageUtils.getAngle(img));
+
     angle = Double.isNaN(angle) ? 0 : angle;
     if (Objects.equals(selectedImg, img))
       angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
@@ -427,6 +430,14 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     g.setComposite(composite);
   }
 
+  /**
+   * Get the transformation of an angle and point
+   * @param angle The angle to rotate (radians)
+   * @param p The point to transform around
+   * @param origin The origin of the transform
+   * @param original the original affine transform
+   * @return An affine transform to rotate around an arbitrary point
+   */
   public static AffineTransform getTransform(double angle, Point p, Point2D origin, AffineTransform original) {
     AffineTransform move = AffineTransform.getRotateInstance(angle, p.getX(), p.getY());
     move.preConcatenate(original);
