@@ -55,7 +55,8 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
     .getCache(CACHE_NAME_PREFIX + "instances");
   private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
-  private static final List<CacheAccess<String, List<ImageDetection<?>>>> searchDetections = new ArrayList<>(3);
+  private static final List<CacheAccess<String, List<ImageDetection<?>>>> searchDetections = Collections
+    .synchronizedList(new ArrayList<>(3));
 
   private static void setSearchDetections() {
     // segmentations take awhile to get (10+ seconds on my machine), so default off
@@ -118,17 +119,19 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
    */
   public static List<ImageDetection<?>> getDetections(String key, boolean wait) {
     List<ImageDetection<?>> detections = new ArrayList<>();
-    for (CacheAccess<String, List<ImageDetection<?>>> cache : searchDetections) {
-      final List<ImageDetection<?>> layerDetections;
-      if (wait) {
-        layerDetections = cache.get(key,
-          () -> getDetections(key, cache.getCacheAttributes().getCacheName().replaceFirst(CACHE_NAME_PREFIX, "")));
-      } else if (key != null && cache.get(key) != null) {
-        layerDetections = cache.get(key);
-      } else {
-        layerDetections = Collections.emptyList();
+    synchronized (searchDetections) {
+      for (CacheAccess<String, List<ImageDetection<?>>> cache : searchDetections) {
+        final List<ImageDetection<?>> layerDetections;
+        if (wait) {
+          layerDetections = cache.get(key,
+            () -> getDetections(key, cache.getCacheAttributes().getCacheName().replaceFirst(CACHE_NAME_PREFIX, "")));
+        } else if (key != null && cache.get(key) != null) {
+          layerDetections = cache.get(key);
+        } else {
+          layerDetections = Collections.emptyList();
+        }
+        detections.addAll(layerDetections);
       }
-      detections.addAll(layerDetections);
     }
     return detections.isEmpty() ? Collections.emptyList() : detections;
   }
