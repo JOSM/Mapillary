@@ -53,10 +53,10 @@ public class JsonImageDetailsDecoderTest {
       data.addPrimitive(img3);
       data.addPrimitive(img4);
       JsonImageDetailsDecoder.decodeImageInfos(searchImagesResponse, data);
-      assertEquals(Instant.ofEpochMilli(1_491_803_490_334L), MapillaryImageUtils.getCapturedAt(img1)); // 2017-04-10T05:51:30.334Z
-      assertEquals(Instant.ofEpochMilli(1_491_803_486_853L), MapillaryImageUtils.getCapturedAt(img2)); // 2017-04-10T05:51:26.853Z
-      assertEquals(Instant.ofEpochMilli(0L), MapillaryImageUtils.getCapturedAt(img3));
-      assertEquals(Instant.ofEpochMilli(1L), MapillaryImageUtils.getCapturedAt(img4));
+      assertEquals(Instant.ofEpochMilli(1_491_803_490_334L), MapillaryImageUtils.getDate(img1)); // 2017-04-10T05:51:30.334Z
+      assertEquals(Instant.ofEpochMilli(1_491_803_486_853L), MapillaryImageUtils.getDate(img2)); // 2017-04-10T05:51:26.853Z
+      assertEquals(Instant.ofEpochMilli(0L), MapillaryImageUtils.getDate(img3));
+      assertEquals(Instant.ofEpochMilli(1L), MapillaryImageUtils.getDate(img4));
     }
   }
 

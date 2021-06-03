@@ -679,10 +679,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel()) != null) {
       tile = (MVTTile) this.tileCache.getTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(),
         this.getZoomLevel());
-      first = true;
+      first = false;
     } else {
       tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel());
-      first = false;
+      first = true;
     }
     if (tile.isLoaded()) {
       return CompletableFuture.completedFuture(tile);

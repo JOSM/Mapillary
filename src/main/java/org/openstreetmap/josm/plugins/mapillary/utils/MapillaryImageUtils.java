@@ -23,10 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Keys and utility methods for Mapillary Images
@@ -160,10 +163,8 @@ public final class MapillaryImageUtils {
    *
    * @param image The image to get the captured at time
    * @return The time the image was captured at, or {@link Instant#EPOCH} if not known.
-   * @deprecated Use {{@link #getDate(INode)}} instead -- it caches the date (make this private)
    */
-  @Deprecated
-  public static Instant getCapturedAt(INode image) {
+  private static Instant getCapturedAt(INode image) {
     // TODO did this change (captured_at -> created_at)?
     String time = "";
     if (image.hasKey("captured_at")) {
@@ -231,30 +232,45 @@ public final class MapillaryImageUtils {
     return "";
   }
 
+  public static void downloadImageDetails(Collection<VectorNode> images) {
+    downloadImageDetails(images.toArray(new VectorNode[0]));
+  }
+
   /**
    * Download additional image details
    *
-   * @param image The image to get additional details for
+   * @param images The image(s) to get additional details for
    */
-  public static void downloadImageDetails(VectorNode image) {
+  public static void downloadImageDetails(VectorNode... images) {
     MapillaryUtils.getForkJoinPool().execute(() -> {
-      if (!"".equals(getKey(image))) {
-        java.net.URL imageUrl = MapillaryURL.APIv3.getImage(getKey(image));
-        HttpClient client = HttpClient.create(imageUrl);
-        final HttpClient.Response response;
-        try {
-          response = client.connect();
-        } catch (IOException e) {
-          Logging.error(e);
-          return;
-        }
-        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
-          JsonDecoder.decodeFeatureCollection(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
-        } catch (IOException e) {
-          Logging.error(e);
-        }
-      }
+      final String[] keys = Stream.of(images).filter(Objects::nonNull).map(MapillaryImageUtils::getKey)
+        .filter(key -> !"".equals(key)).toArray(String[]::new);
+      downloadImageDetails(keys);
     });
+  }
+
+  /**
+   * Get image details for some specific keys
+   *
+   * @param keys the keys to get details for
+   */
+  private static void downloadImageDetails(String... keys) {
+    if (keys.length > 0) {
+      java.net.URL imageUrl = MapillaryURL.APIv3.getImage(keys);
+      HttpClient client = HttpClient.create(imageUrl);
+      final HttpClient.Response response;
+      try {
+        response = client.connect();
+      } catch (IOException e) {
+        Logging.error(e);
+        return;
+      }
+      try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+        JsonDecoder.decodeFeatureCollection(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
+      } catch (IOException e) {
+        Logging.error(e);
+      }
+    }
   }
 
   /**

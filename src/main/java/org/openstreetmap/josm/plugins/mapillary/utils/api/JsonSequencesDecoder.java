@@ -14,6 +14,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
 import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.Pair;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -29,6 +30,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -81,20 +83,24 @@ public final class JsonSequencesDecoder {
     final LatLon[] geometry = decodeLatLons(json.getJsonObject("geometry"));
     final int sequenceLength = Math.min(Math.min(cas.length, imageKeys.length), geometry.length);
     boolean pano = properties.getBoolean("pano", false);
-    List<VectorNode> newNodes = new ArrayList<>(imageKeys.length);
+    List<Pair<VectorNode, Boolean>> nodesIfNew = new ArrayList<>(imageKeys.length);
     for (int i = 0; i < sequenceLength; i++) {
       if (cas[i] != null && imageKeys[i] != null && geometry[i] != null) {
-        final VectorNode img = getImage(imageKeys[i], geometry[i], cas[i], pano);
-        newNodes.add(img);
+        nodesIfNew.add(getImage(imageKeys[i], geometry[i], cas[i], pano));
       }
     }
-    newNodes.stream().flatMap(node -> node.getReferrers().stream()).distinct().filter(IWay.class::isInstance)
-      .map(IWay.class::cast).forEach(way -> {
+    nodesIfNew.stream().map(pair -> pair.a).flatMap(node -> node.getReferrers().stream()).distinct()
+      .filter(IWay.class::isInstance).map(IWay.class::cast).forEach(way -> {
         way.setNodes(Collections.emptyList());
         way.setDeleted(true);
       });
-    newNodes.addAll(0, result.getNodes());
+    List<VectorNode> newNodes = new ArrayList<>(result.getNodes().size() + nodesIfNew.size());
+    newNodes.addAll(result.getNodes());
+    nodesIfNew.stream().map(pair -> pair.a).forEach(newNodes::add);
     result.setNodes(newNodes);
+
+    MapillaryImageUtils.downloadImageDetails(
+      nodesIfNew.stream().filter(pair -> Boolean.TRUE.equals(pair.b)).map(pair -> pair.a).collect(Collectors.toSet()));
     result.setDeleted(false);
   }
 
@@ -105,7 +111,7 @@ public final class JsonSequencesDecoder {
    * @param pano If the image is a panoramic image
    * @return The node for the image
    */
-  private static VectorNode getImage(String key, LatLon location, Double cameraAngle, boolean pano) {
+  private static Pair<VectorNode, Boolean> getImage(String key, LatLon location, Double cameraAngle, boolean pano) {
     VectorNode image = null;
     if (MapillaryLayer.hasInstance()) {
       BBox searchBBox = new BBox();
@@ -115,7 +121,7 @@ public final class JsonSequencesDecoder {
       if (image == null) {
         Future<Tile> future = MapillaryLayer.getInstance().loadTileFor(location);
         try {
-          Tile tile = future.get(30, TimeUnit.SECONDS);
+          Tile tile = future.get(5, TimeUnit.SECONDS);
           if (tile instanceof MVTTile) {
             image = findImage(key, ((MVTTile) tile).getData().getStore().searchNodes(searchBBox).stream());
           }
@@ -142,10 +148,7 @@ public final class JsonSequencesDecoder {
     image.setCoor(location);
     image.put(MapillaryImageUtils.CAMERA_ANGLE, cameraAngle.toString());
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
-    if (newNode) {
-      MapillaryImageUtils.downloadImageDetails(image);
-    }
-    return image;
+    return new Pair<>(image, newNode);
   }
 
   /**
