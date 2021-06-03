@@ -45,6 +45,7 @@ import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.AdditionalInstructions;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
@@ -560,7 +561,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     if (keys.isEmpty())
       MapillaryDownloader.downloadImages(missing);
     else
-      MapillaryUtils.getForkJoinPool().execute(() -> MapillaryDownloader.downloadImages(missing));
+      MapillaryUtils.getForkJoinPool(MapillaryCache.class).execute(() -> MapillaryDownloader.downloadImages(missing));
     Map<String, INode> nodeMap = data.getNodes().stream().filter(img -> img.hasKey(MapillaryKeys.KEY))
       .collect(Collectors.toMap(i -> i.get(MapillaryKeys.KEY), i -> i));
     return keys.stream().map(nodeMap::get).collect(Collectors.toList());

@@ -75,11 +75,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    * @param currentImage The image to cache around
    */
   public static void cacheSurroundingImages(INode currentImage) {
-    MapillaryUtils.getForkJoinPool().execute(() -> runnableCacheSurroundingImages(currentImage));
+    MapillaryUtils.getForkJoinPool(MapillaryCache.class).execute(() -> runnableCacheSurroundingImages(currentImage));
   }
 
   private static void runnableCacheSurroundingImages(INode currentImage) {
-    final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
+    final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
     final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
     final long freeMemory = Runtime.getRuntime().freeMemory();
     final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getCache(Type.THUMBNAIL);

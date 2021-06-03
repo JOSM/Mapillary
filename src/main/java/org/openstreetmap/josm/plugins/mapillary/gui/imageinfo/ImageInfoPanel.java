@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -229,13 +230,9 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
 
       imgKeyValue.setText(newImageKey);
 
-      ImageDetection.getDetections(newImage.get(MapillaryKeys.KEY), (key, detections) -> {
-        // This avoids having the wrong detection count when the image is changed quickly
-        if (key.equals(imgKeyValue.getText())) {
-          numDetectionsLabel
-            .setText(tr("{0} detections", detections.stream().filter(ImageDetection::isTrafficSign).count()));
-        }
-      });
+      List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(newImage), false);
+      numDetectionsLabel
+        .setText(tr("{0} detections", detections.stream().filter(ImageDetection::isTrafficSign).count()));
       copyImgKeyAction.setContents(new StringSelection(newImageKey));
       addMapillaryTagAction.setTag(new Tag("mapillary", newImageKey));
     } else {

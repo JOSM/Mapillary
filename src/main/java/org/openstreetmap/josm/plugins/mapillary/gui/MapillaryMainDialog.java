@@ -87,6 +87,7 @@ public final class MapillaryMainDialog extends ToggleDialog
   private final PlayAction playAction = new PlayAction();
   private final PauseAction pauseAction = new PauseAction();
   private final StopAction stopAction = new StopAction();
+  private ImageDetection.ImageDetectionForkJoinTask futureDetections;
 
   /**
    * Buttons mode.
@@ -456,12 +457,20 @@ public final class MapillaryMainDialog extends ToggleDialog
         MapillaryCache.cacheSurroundingImages(currentImage);
         try {
           ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-          ImageDetection.getDetections(image.get(MapillaryKeys.KEY), (key, detections) -> {
-            INode tImage = this.image;
-            if (tImage != null && key.equals(tImage.get(MapillaryKeys.KEY))) {
-              this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
-            }
-          });
+          if (this.futureDetections != null && !this.futureDetections.isDone()
+            && !MapillaryImageUtils.getKey(image).equals(this.futureDetections.key)) {
+            this.futureDetections.cancel(false);
+          }
+          // Only get detections if we are getting a non-thumbnail image.
+          if (fullQuality) {
+            this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
+              (key, detections) -> {
+                INode tImage = this.image;
+                if (tImage != null && key.equals(tImage.get(MapillaryKeys.KEY))) {
+                  this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
+                }
+              });
+          }
           List<ImageDetection<?>> detections = ImageDetection.getDetections(image.get(MapillaryImageUtils.KEY), false);
           if (imageFullCache != null && imageFullCache.get() != null) {
             setDisplayImage(imageFullCache.get().getImage(), detections,
@@ -604,11 +613,12 @@ public final class MapillaryMainDialog extends ToggleDialog
         this.updateImage(true);
         this.invalidate();
       });
+    } else {
+      this.updateImage(true);
     }
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
-    this.updateImage(true);
   }
 
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
@@ -793,7 +803,6 @@ public final class MapillaryMainDialog extends ToggleDialog
     INode newImage = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
       .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
     setImage(newImage);
-    updateImage();
   }
 
   @Override

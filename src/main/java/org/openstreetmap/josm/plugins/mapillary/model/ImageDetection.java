@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinTask;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.jcs3.access.CacheAccess;
@@ -28,6 +30,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetectionDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
@@ -39,6 +42,52 @@ import javax.json.JsonReader;
  * A store for ImageDetection information
  */
 public class ImageDetection<T extends Shape & Serializable> extends SpecialImageArea<T> {
+  /**
+   * A ForkJoinTask that can be cancelled
+   */
+  public static class ImageDetectionForkJoinTask extends ForkJoinTask<List<ImageDetection<?>>> {
+    private final BiConsumer<String, List<ImageDetection<?>>> listener;
+    public final String key;
+    private List<ImageDetection<?>> results;
+
+    public ImageDetectionForkJoinTask(String key, BiConsumer<String, List<ImageDetection<?>>> listener) {
+      this.key = key;
+      this.listener = listener;
+    }
+
+    @Override
+    public List<ImageDetection<?>> getRawResult() {
+      return this.results;
+    }
+
+    @Override
+    protected void setRawResult(List<ImageDetection<?>> value) {
+      this.results = value;
+    }
+
+    @Override
+    protected boolean exec() {
+      if (!this.isCancelled()) {
+        List<ImageDetection<?>> detections = new ArrayList<>();
+        // Use new ArrayList<>() (despite allocations) since this avoids an expensive synchronization
+        for (CacheAccess<String, List<ImageDetection<?>>> cache : new ArrayList<>(searchDetections)) {
+          if (this.isCancelled()) {
+            break;
+          }
+          final List<ImageDetection<?>> layerDetections = cache.get(key,
+            () -> getDetections(key, cache.getCacheAttributes().getCacheName().replaceFirst(CACHE_NAME_PREFIX, "")));
+          detections.addAll(layerDetections);
+        }
+        if (listener != null) {
+          listener.accept(key, detections);
+        }
+        this.complete(detections);
+        return true;
+      }
+      return false;
+    }
+  }
+
   /**
    * This is used to dynamically get the layer name (so it is CRITICAL that the caches use
    * {@code CACHE_NAME_PREFIX + "layer_name"})
@@ -55,28 +104,27 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
     .getCache(CACHE_NAME_PREFIX + "instances");
   private static final String PACKAGE_TRAFFIC_SIGNS = "trafficsign";
 
-  private static final List<CacheAccess<String, List<ImageDetection<?>>>> searchDetections = Collections
-    .synchronizedList(new ArrayList<>(3));
+  private static final List<CacheAccess<String, List<ImageDetection<?>>>> searchDetections = new ArrayList<>(3);
 
   private static void setSearchDetections() {
     // segmentations take awhile to get (10+ seconds on my machine), so default off
     BooleanProperty segmentationProperty = new BooleanProperty("mapillary.image.detections.segmentation", false);
     segmentationProperty.addWeakListener(value -> {
-      if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
+      if (Boolean.TRUE.equals(value.getProperty().get())) {
         searchDetections.add(SEGMENTATIONS);
       } else {
         searchDetections.remove(SEGMENTATIONS);
       }
     });
     MapillaryProperties.SHOW_DETECTED_SIGNS.addWeakListener(value -> {
-      if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
+      if (Boolean.TRUE.equals(value.getProperty().get())) {
         searchDetections.add(TRAFFIC_SIGN);
       } else {
         searchDetections.remove(TRAFFIC_SIGN);
       }
     });
     MapillaryProperties.SHOW_DETECTION_OUTLINES.addWeakListener(value -> {
-      if (Boolean.TRUE.equals(value.getBaseEvent().getNewValue().getValue())) {
+      if (Boolean.TRUE.equals(value.getProperty().get())) {
         searchDetections.add(INSTANCES);
       } else {
         searchDetections.remove(INSTANCES);
@@ -102,12 +150,12 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
    *
    * @param key The image key
    * @param listener The consumer to notify when the detections are downloaded
+   * @return A ForkJoinTask (just in case it needs to be cancelled)
    */
-  public static void getDetections(String key, BiConsumer<String, List<ImageDetection<?>>> listener) {
-    MapillaryUtils.getForkJoinPool().execute(() -> {
-      List<ImageDetection<?>> detections = getDetections(key, true);
-      listener.accept(key, detections);
-    });
+  public static ImageDetectionForkJoinTask getDetections(String key,
+    BiConsumer<String, List<ImageDetection<?>>> listener) {
+    return (ImageDetectionForkJoinTask) MapillaryUtils.getForkJoinPool()
+      .submit(new ImageDetectionForkJoinTask(key, listener));
   }
 
   /**
@@ -118,22 +166,25 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
    * @return The image detections
    */
   public static List<ImageDetection<?>> getDetections(String key, boolean wait) {
-    List<ImageDetection<?>> detections = new ArrayList<>();
-    synchronized (searchDetections) {
-      for (CacheAccess<String, List<ImageDetection<?>>> cache : searchDetections) {
-        final List<ImageDetection<?>> layerDetections;
-        if (wait) {
-          layerDetections = cache.get(key,
-            () -> getDetections(key, cache.getCacheAttributes().getCacheName().replaceFirst(CACHE_NAME_PREFIX, "")));
-        } else if (key != null && cache.get(key) != null) {
-          layerDetections = cache.get(key);
-        } else {
-          layerDetections = Collections.emptyList();
-        }
-        detections.addAll(layerDetections);
+    if (wait) {
+      try {
+        return new ImageDetectionForkJoinTask(key, null).get();
+      } catch (InterruptedException e) {
+        Logging.error(e);
+        Thread.currentThread().interrupt();
+        return Collections.emptyList();
+      } catch (ExecutionException e) {
+        throw new JosmRuntimeException(e.getCause());
       }
+    } else {
+      final List<ImageDetection<?>> detections = new ArrayList<>();
+      for (CacheAccess<String, List<ImageDetection<?>>> cache : new ArrayList<>(searchDetections)) {
+        if (key != null && cache.get(key) != null) {
+          detections.addAll(cache.get(key));
+        }
+      }
+      return detections;
     }
-    return detections.isEmpty() ? Collections.emptyList() : detections;
   }
 
   /**

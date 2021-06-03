@@ -684,9 +684,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       tile = (MVTTile) this.createTile(this.tileSource, tileXY.getXIndex(), tileXY.getYIndex(), this.getZoomLevel());
       first = true;
     }
-    if (tile.isLoaded()) {
-      return CompletableFuture.completedFuture(tile);
-    }
     TileJob job = this.tileLoader.createTileLoaderJob(tile);
     CompletableFuture<Tile> futureTile = new CompletableFuture<>();
     tile.addTileLoaderFinisher(t -> {
@@ -697,6 +694,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       }
       futureTile.complete(tile);
     });
+    // If not first, the first job may have already finished.
+    if (tile.isLoaded()) {
+      return CompletableFuture.completedFuture(tile);
+    }
     if (first) {
       job.submit();
     }
