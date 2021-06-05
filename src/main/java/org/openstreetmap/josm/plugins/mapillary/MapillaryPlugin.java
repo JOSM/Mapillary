@@ -45,6 +45,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.remotecontrol.MapillaryRemoteControl;
 import org.openstreetmap.josm.plugins.mapillary.oauth.MapillaryUser;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.SecurityManagerUtils;
 import org.openstreetmap.josm.tools.Destroyable;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -118,6 +119,7 @@ public class MapillaryPlugin extends Plugin implements Destroyable {
     new MapillaryRemoteControl();
     destroyables.add(new MapillaryLayerListener(MainApplication.getLayerManager()));
 
+    SecurityManagerUtils.doInitializations();
     mapFrameInitialized(null, MainApplication.getMap());
   }
 

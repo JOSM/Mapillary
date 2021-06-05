@@ -316,7 +316,7 @@ public final class MapillaryUtils {
    * @return The default ForkJoin pool
    */
   public static ForkJoinPool getForkJoinPool() {
-    if (Utils.isRunningJavaWebStart()) {
+    if (Utils.isRunningJavaWebStart() || System.getSecurityManager() != null) {
       return getForkJoinPool(MapillaryUtils.class);
     }
     return ForkJoinPool.commonPool();

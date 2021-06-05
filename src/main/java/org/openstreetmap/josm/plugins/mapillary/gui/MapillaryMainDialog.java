@@ -287,7 +287,7 @@ public final class MapillaryMainDialog extends ToggleDialog
     private static final long serialVersionUID = -3743322064323002656L;
 
     ShowSignDetectionsAction() {
-      super(null, new ImageProvider("dialogs", "regulatory--go-straight-or-turn-left--g2"),
+      super(null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
         tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections",
           tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
         false, null, false);
@@ -525,7 +525,7 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   private MapillaryCache cacheFullImage(INode currentImage) {
     // Downloads the full resolution image.
-    final MapillaryCache imageFullCache = new MapillaryCache(currentImage.get(MapillaryKeys.KEY),
+    final MapillaryCache imageFullCache = new MapillaryCache(MapillaryImageUtils.getKey(currentImage),
       MapillaryCache.Type.FULL_IMAGE);
     // Use this variable to avoid race conditions
     if (this.imageCache != null)
