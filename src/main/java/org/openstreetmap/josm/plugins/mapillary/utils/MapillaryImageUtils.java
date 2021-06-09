@@ -1,10 +1,12 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
+import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -18,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.json.Json;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -25,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
@@ -254,21 +258,30 @@ public final class MapillaryImageUtils {
    */
   private static void downloadImageDetails(@Nonnull String... keys) {
     Objects.requireNonNull(keys, "Image keys cannot be null");
+    final CacheAccess<String, String> cache = Caches.metaDataCache;
     for (String key : keys) {
       final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
-      final HttpClient client;
-      final HttpClient.Response response;
-      try {
-        client = HttpClient.create(new URL(imageUrl));
-        response = client.connect();
-      } catch (IOException e) {
-        Logging.error(e);
-        return;
-      }
-      try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
-        JsonDecoder.decodeData(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
-      } catch (IOException e) {
-        Logging.error(e);
+      final String cacheData = cache.get(imageUrl, () -> {
+        final HttpClient client;
+        final HttpClient.Response response;
+        try {
+          client = HttpClient.create(new URL(imageUrl));
+          response = client.connect();
+        } catch (IOException e) {
+          Logging.error(e);
+          return null;
+        }
+        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+          JsonObject object = jsonReader.readObject();
+          return object.toString();
+        } catch (IOException e) {
+          Logging.error(e);
+        }
+        return null;
+      });
+      try (
+        JsonReader reader = Json.createReader(new ByteArrayInputStream(cacheData.getBytes(StandardCharsets.UTF_8)))) {
+        JsonDecoder.decodeData(reader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
       }
     }
   }

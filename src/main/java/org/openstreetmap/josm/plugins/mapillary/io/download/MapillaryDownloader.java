@@ -1,13 +1,15 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
+import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
@@ -18,9 +20,11 @@ import org.openstreetmap.josm.tools.Logging;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,8 +59,10 @@ public final class MapillaryDownloader {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
+    final CacheAccess<String, String> metaDataCache = Caches.metaDataCache;
     return Stream.of(images).map(MapillaryURL.APIv4::getImageInformation).parallel()
-      .map(MapillaryDownloader::getUrlResponse)
+      .map(image -> metaDataCache.get(image, () -> getUrlResponse(image).toString())).filter(Objects::nonNull)
+      .map(string -> Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8))).readObject())
       .map(data -> JsonDecoder.decodeData(data, JsonImageDetailsDecoder::decodeImageInfos)).flatMap(Collection::stream)
       .sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
       .collect(Collector.of(
@@ -98,13 +104,18 @@ public final class MapillaryDownloader {
       : new String[0];
     if (MapillaryLayer.hasInstance() && !force) {
       VectorDataSet data = MapillaryLayer.getInstance().getData();
-      Set<String> previousSequences = data.getWays().stream().map(way -> way.get(MapillaryKeys.KEY))
+      Set<String> previousSequences = data.getWays().stream().map(MapillarySequenceUtils::getKey)
         .collect(Collectors.toSet());
       toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
     }
     if (toGet.length > 0) {
-      return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences).map(MapillaryDownloader::getUrlResponse)
-        .flatMap(jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
+      return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences)
+        .map(url -> Caches.metaDataCache.get(url, () -> getUrlResponse(url).toString())).map(string -> {
+          try (
+            JsonReader reader = Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
+            return reader.readObject();
+          }
+        }).flatMap(jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
         .collect(Collectors.toSet());
     }
     return Collections.emptyList();

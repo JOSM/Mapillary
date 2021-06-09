@@ -98,7 +98,7 @@ class MapObjectTest {
 
     final String mapIconKey = "iconkey";
     assertNotNull(MapObject.getIcon(mapIconKey));
-    assertNotNull(Caches.MapObjectIconCache.getInstance().get(mapIconKey));
+    assertNotNull(Caches.mapObjectIconCache.get(mapIconKey));
     assertNotNull(MapObject.getIcon(mapIconKey)); // To test a cache hit
 
     assertEquals(iconUnknownType, MapObject.getIcon("not-in-set"));

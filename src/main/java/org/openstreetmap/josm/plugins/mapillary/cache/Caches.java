@@ -2,7 +2,6 @@
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.io.File;
-import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 
@@ -28,32 +27,12 @@ public final class Caches {
     return f;
   }
 
-  public abstract static class CacheProxy<K, V extends Serializable> {
-    private final CacheAccess<K, V> cache;
-
-    protected CacheProxy() {
-      cache = createNewCache();
-    }
-
-    protected abstract CacheAccess<K, V> createNewCache();
-
-    public V get(final K key) {
-      return cache == null || key == null ? null : cache.get(key);
-    }
-
-    public void put(final K key, final V value) {
-      if (cache != null) {
-        cache.put(key, value);
-      }
-    }
-  }
-
   /**
    * Caches for images
    */
   public static class ImageCache {
-    private static final short MAX_DISK_IMAGES_SIZE = 10_000; // kb, ~50 full size images (average ~200 kb/image)
-    private static final byte MAX_MEMORY_OBJECTS = 2;
+    private static final int MAX_DISK_IMAGES_SIZE = 100_000; // kb, ~500 full size images (average ~200 kb/image)
+    private static final byte MAX_MEMORY_OBJECTS = 4;
     private static final CacheAccess<String, BufferedImageCacheEntry> THUMBNAIL_IMAGE_CACHE = JCSCacheManager.getCache(
       "mapillary:image:thumbnailImage", MAX_MEMORY_OBJECTS * 10, MAX_DISK_IMAGES_SIZE, getCacheDirectory().getPath());
     private static final CacheAccess<String, BufferedImageCacheEntry> FULL_IMAGE_CACHE = JCSCacheManager
@@ -77,75 +56,21 @@ public final class Caches {
     }
   }
 
-  public static class MapObjectIconCache extends CacheProxy<String, ImageIcon> {
-    private static CacheProxy<String, ImageIcon> instance;
-
-    public static CacheProxy<String, ImageIcon> getInstance() {
-      synchronized (MapObjectIconCache.class) {
-        if (instance == null) {
-          instance = new MapObjectIconCache();
-        }
-        return instance;
-      }
-    }
-
-    @Override
-    protected CacheAccess<String, ImageIcon> createNewCache() {
-      return JCSCacheManager.getCache("mapillary:objectIcons", 100, 1000, getCacheDirectory().getPath());
-    }
-  }
-
-  public static class UserProfileCache extends CacheProxy<String, UserProfile> {
-    private static CacheProxy<String, UserProfile> instance;
-
-    public static CacheProxy<String, UserProfile> getInstance() {
-      synchronized (UserProfileCache.class) {
-        if (instance == null) {
-          instance = new UserProfileCache();
-        }
-        return instance;
-      }
-    }
-
-    @Override
-    protected CacheAccess<String, UserProfile> createNewCache() {
-      CacheAccess<String, UserProfile> cache = JCSCacheManager.getCache("mapillary:userProfile", 100, 1000,
-        getCacheDirectory().getPath());
-      IElementAttributes atts = cache.getDefaultElementAttributes();
-      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
-      cache.setDefaultElementAttributes(atts);
-      return cache;
-    }
-  }
-
   /**
-   * A cache for metadata objects
+   * The cache for map object icons
    */
-  public static class MetaDataCache extends CacheProxy<String, String> {
-    private static MetaDataCache instance;
-
-    /**
-     * Get the singleton instance of the cache
-     *
-     * @return The cache object
-     */
-    public static CacheProxy<String, String> getInstance() {
-      synchronized (MetaDataCache.class) {
-        if (instance == null) {
-          instance = new MetaDataCache();
-        }
-      }
-      return instance;
-    }
-
-    @Override
-    protected CacheAccess<String, String> createNewCache() {
-      final CacheAccess<String, String> cache = JCSCacheManager.getCache("mapillary:metadata", 100, 100000,
-        getCacheDirectory().getPath());
-      IElementAttributes atts = cache.getDefaultElementAttributes();
-      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
-      cache.setDefaultElementAttributes(atts);
-      return cache;
-    }
+  public static final CacheAccess<String, ImageIcon> mapObjectIconCache = JCSCacheManager
+    .getCache("mapillary:objectIcons", 100, 1000, getCacheDirectory().getPath());
+  /** The cache for user profiles */
+  public static final CacheAccess<String, UserProfile> userProfileCache = JCSCacheManager
+    .getCache("mapillary:userProfile", 100, 1000, getCacheDirectory().getPath());
+  /** The cache for metadata objects */
+  public static final CacheAccess<String, String> metaDataCache = JCSCacheManager.getCache("mapillary:metadata", 100,
+    100000, getCacheDirectory().getPath());
+  static {
+    final IElementAttributes userProfileCacheAttributes = userProfileCache.getDefaultElementAttributes();
+    userProfileCacheAttributes.setMaxLife(604_800_000);
+    userProfileCache.setDefaultElementAttributes(userProfileCacheAttributes);
+    metaDataCache.setDefaultElementAttributes(userProfileCacheAttributes);
   }
 }

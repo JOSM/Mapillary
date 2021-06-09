@@ -217,8 +217,10 @@ public final class MapillaryURL {
      * @param image The image to get detections for
      * @return The URL to get detections
      */
-    public static String getImageDetections(String image) {
-      return baseMetaDataUrl + image + "/detections?client_id=" + CLIENT_ID;
+    private static String getImageDetections(String image) {
+      // TODO get the geometry?
+      return baseMetaDataUrl + image + "/detections"
+        + queryString(Collections.singletonMap("fields", "value,created_at"));
     }
 
     /**
@@ -235,16 +237,13 @@ public final class MapillaryURL {
      *
      * @return The URL to get user orgs from
      */
-    public static URL getUserOrganizations() {
+    private static URL getUserOrganizations() {
       return string2URL(baseMetaDataUrl, "me", "organizations", queryString(null));
     }
   }
 
   public static final class APIv3 {
     static String baseUrl = "https://a.mapillary.com/v3/";
-
-    private static final String IMAGES = "images";
-    private static final String SEQUENCES = "sequences";
 
     private APIv3() {
       // Private constructor to avoid instantiation

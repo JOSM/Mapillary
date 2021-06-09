@@ -58,6 +58,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.openstreetmap.josm.tools.I18n.marktr;
@@ -88,6 +91,7 @@ public final class MapillaryMainDialog extends ToggleDialog
   private final PauseAction pauseAction = new PauseAction();
   private final StopAction stopAction = new StopAction();
   private ImageDetection.ImageDetectionForkJoinTask futureDetections;
+  private Future<?> imagePainter;
 
   /**
    * Buttons mode.
@@ -441,7 +445,7 @@ public final class MapillaryMainDialog extends ToggleDialog
 
       final INode currentImage = this.image;
       if (currentImage == null) {
-        setDisplayImage(null, null, false);
+        setDisplayImage((BufferedImage) null, null, false);
         setTitle(tr(BASE_TITLE));
         disableAllButtons();
         return;
@@ -463,46 +467,51 @@ public final class MapillaryMainDialog extends ToggleDialog
         final MapillaryCache imageFullCache = fullQuality ? this.cacheFullImage(currentImage) : null;
 
         MapillaryCache.cacheSurroundingImages(currentImage);
-        try {
-          ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
-          if (this.futureDetections != null && !this.futureDetections.isDone()
-            && !MapillaryImageUtils.getKey(image).equals(this.futureDetections.key)) {
-            this.futureDetections.cancel(false);
+        Function<BufferedImageCacheEntry, BufferedImage> getImage = cache -> {
+          try {
+            return cache.getImage();
+          } catch (IOException e) {
+            Logging.error(e);
           }
-          // Only get detections if we are getting a non-thumbnail image.
-          if (fullQuality) {
-            this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
-              (key, detections) -> {
-                INode tImage = this.image;
-                if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
-                  this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
-                }
-              });
-          }
-          List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image), false);
-          if (imageFullCache != null && imageFullCache.get() != null) {
-            setDisplayImage(imageFullCache.get().getImage(), detections,
-              MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
-            pool.execute(() -> updateDetections(imageFullCache, currentImage, detections));
-          } else if (imageThumbnailCache.get() != null) {
-            setDisplayImage(imageThumbnailCache.get().getImage(), detections,
-              MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
-            pool.execute(() -> updateDetections(imageThumbnailCache, currentImage, detections));
-          } else {
-            this.imageViewer.paintLoadingImage();
-          }
-          if (!currentImage.hasKeys()) {
-            pool.execute(() -> {
-              MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
-              if (currentImage.equals(this.image)) {
-                updateTitle();
+          return null;
+        };
+
+        ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
+        if (this.futureDetections != null && !this.futureDetections.isDone()
+          && !MapillaryImageUtils.getKey(image).equals(this.futureDetections.key)) {
+          this.futureDetections.cancel(false);
+        }
+        // Only get detections if we are getting a non-thumbnail image.
+        if (fullQuality) {
+          this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
+            (key, detections) -> {
+              INode tImage = this.image;
+              if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
+                this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
               }
             });
-          }
-        } catch (IOException e) {
-          Logging.error(e);
-          setDisplayImage(null, null, false);
         }
+        List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image), false);
+        if (imageFullCache != null && imageFullCache.get() != null) {
+          setDisplayImage(() -> getImage.apply(imageFullCache.get()), detections,
+            MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
+          pool.execute(() -> updateDetections(imageFullCache, currentImage, detections));
+        } else if (imageThumbnailCache.get() != null) {
+          setDisplayImage(() -> getImage.apply(imageThumbnailCache.get()), detections,
+            MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
+          pool.execute(() -> updateDetections(imageThumbnailCache, currentImage, detections));
+        } else {
+          this.imageViewer.paintLoadingImage();
+        }
+        if (!currentImage.hasKeys()) {
+          pool.execute(() -> {
+            MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
+            if (currentImage.equals(this.image)) {
+              updateTitle();
+            }
+          });
+        }
+
       } else if (currentImage.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
         try {
           setDisplayImage(ImageIO.read(new File(currentImage.get(MapillaryImageUtils.IMPORTED_KEY))), null,
@@ -581,15 +590,16 @@ public final class MapillaryMainDialog extends ToggleDialog
     final Object syncObject = this.image != null ? this.image : MapillaryMainDialog.class;
     synchronized (syncObject) {
       if (image.equals(this.image)) {
-        try {
-          // Comprehensively fix Github #165
-          if (cache.get() != null && cache.get().getImage() != null) {
-            this.setDisplayImage(cache.get().getImage(), detections,
-              MapillaryKeys.PANORAMIC_TRUE.equals(image.get(MapillaryKeys.PANORAMIC)));
-          }
-        } catch (IOException e) {
-          // Leave the current image up
-          Logging.error(e);
+        // Comprehensively fix Github #165
+        if (cache.get() != null) {
+          this.setDisplayImage(() -> {
+            try {
+              return cache.get().getImage();
+            } catch (IOException e) {
+              Logging.error(e);
+            }
+            return null;
+          }, detections, MapillaryKeys.PANORAMIC_TRUE.equals(image.get(MapillaryKeys.PANORAMIC)));
         }
       }
     }
@@ -625,6 +635,25 @@ public final class MapillaryMainDialog extends ToggleDialog
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
     }
+  }
+
+  public void setDisplayImage(Supplier<BufferedImage> imageSupplier, Collection<ImageDetection<?>> detections,
+    Boolean pano) {
+    if (this.imagePainter != null) {
+      this.imagePainter.cancel(false);
+      this.imagePainter = null;
+    }
+    if (SwingUtilities.isEventDispatchThread()) {
+      this.imagePainter = MainApplication.worker.submit(() -> setDisplayImageNonEdt(imageSupplier, detections, pano));
+    } else {
+      setDisplayImageNonEdt(imageSupplier, detections, pano);
+    }
+  }
+
+  private void setDisplayImageNonEdt(Supplier<BufferedImage> imageSupplier, Collection<ImageDetection<?>> detections,
+    Boolean pano) {
+    final BufferedImage bufferedImage = imageSupplier.get();
+    GuiHelper.runInEDT(() -> setDisplayImage(bufferedImage, detections, pano));
   }
 
   public void setDisplayImage(BufferedImage image, Collection<ImageDetection<?>> detections, Boolean pano) {
@@ -681,7 +710,7 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal StopAction
      */
     StopAction() {
-      super(trc("as synonym to halt or stand still", "Stop"), tr("Stop the walk."), "dialogs/mapillaryStop",
+      super(trc("as synonym to halt or stand still", "Stop"), "dialogs/mapillaryStop", tr("Stop the walk."),
         Shortcut.registerShortcut("mapillary:image:walk_stop", tr("Mapillary: {0}", tr("Stop Image Walk")),
           KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
         false, false);
@@ -709,7 +738,7 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal PlayAction
      */
     PlayAction() {
-      super(tr("Play"), tr("Continues with the paused walk."), "dialogs/mapillaryPlay",
+      super(tr("Play"), "dialogs/mapillaryPlay", tr("Continues with the paused walk."),
         Shortcut.registerShortcut("mapillary:image:walk", tr("Mapillary: {0}", tr("Image Walk")),
           KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
         false, false);
@@ -739,7 +768,7 @@ public final class MapillaryMainDialog extends ToggleDialog
      * Constructs a normal PauseAction
      */
     PauseAction() {
-      super(tr("Pause"), tr("Pause the walk."), "dialogs/mapillaryPause",
+      super(tr("Pause"), "dialogs/mapillaryPause", tr("Pause the walk."),
         Shortcut.registerShortcut("mapillary:image:walk_pause", tr("Mapillary: {0}", tr("Pause Image Walk")),
           KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
         false, false);
@@ -768,24 +797,23 @@ public final class MapillaryMainDialog extends ToggleDialog
   }
 
   private void realLoadingFinished(final CacheEntry data) {
-    try {
-      BufferedImage img = data instanceof BufferedImageCacheEntry ? ((BufferedImageCacheEntry) data).getImage()
-        : ImageIO.read(new ByteArrayInputStream(data.getContent()));
-      if (img == null) {
-        return;
-      }
-      if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
-        || data.equals(thumbnailCache.get()))) {
-        final INode mai = getImage();
-        setDisplayImage(img, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
-          MapillaryImageUtils.IS_PANORAMIC.test(mai));
-        if (mai != null) {
-          ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
-            .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
+    if ((imageCache == null || data.equals(imageCache.get()) || thumbnailCache == null
+      || data.equals(thumbnailCache.get()))) {
+      final INode mai = getImage();
+      setDisplayImage(() -> {
+        try {
+          return data instanceof BufferedImageCacheEntry ? ((BufferedImageCacheEntry) data).getImage()
+            : ImageIO.read(new ByteArrayInputStream(data.getContent()));
+        } catch (IOException e) {
+          Logging.error(e);
         }
+        return null;
+      }, ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), false),
+        MapillaryImageUtils.IS_PANORAMIC.test(mai));
+      if (mai != null) {
+        ImageDetection.getDetections(MapillaryImageUtils.getKey(mai), (key, detections) -> this
+          .updateDetections(this.imageCache != null ? this.imageCache : this.thumbnailCache, mai, detections));
       }
-    } catch (IOException e) {
-      Logging.error(e);
     }
   }
 

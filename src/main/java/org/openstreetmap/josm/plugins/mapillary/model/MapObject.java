@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.io.CachedFile;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches.MapObjectIconCache;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.MainWebsite;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -69,34 +69,35 @@ public class MapObject extends KeyIndexedObject {
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {
-    final ImageIcon cachedIcon = MapObjectIconCache.getInstance().get(objectTypeID);
+    final ImageIcon cachedIcon = Caches.mapObjectIconCache.get(objectTypeID);
     if ("not-in-set".equals(objectTypeID)) {
       return ICON_UNKNOWN_TYPE;
     } else if (cachedIcon == null) {
-      ImageIcon downloadedIcon = null;
-      for (String directory : Arrays.asList("package_objects", "package_signs")) {
-        try {
-          downloadedIcon = ImageProvider.get("mapillary_sprite_source/" + directory, objectTypeID);
-        } catch (RuntimeException e) {
-          Logging.trace(e);
+      return Caches.mapObjectIconCache.get(objectTypeID, () -> {
+        ImageIcon downloadedIcon = null;
+        for (String directory : Arrays.asList("package_objects", "package_signs")) {
+          try {
+            downloadedIcon = ImageProvider.get("mapillary_sprite_source/" + directory, objectTypeID);
+          } catch (RuntimeException e) {
+            Logging.trace(e);
+          }
+          if (downloadedIcon != null)
+            break;
         }
-        if (downloadedIcon != null)
-          break;
-      }
-      if (downloadedIcon == null) {
-        try (CachedFile image = new CachedFile(iconUrlGen.apply(objectTypeID).toExternalForm());
-          InputStream inputStream = image.getInputStream()) {
-          downloadedIcon = new ImageIcon(ImageIO.read(inputStream));
-          Logging.warn("Downloaded icon. ID known to the icon list: " + objectTypeID);
-        } catch (IOException e) {
-          Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
+        if (downloadedIcon == null) {
+          try (CachedFile image = new CachedFile(iconUrlGen.apply(objectTypeID).toExternalForm());
+            InputStream inputStream = image.getInputStream()) {
+            downloadedIcon = new ImageIcon(ImageIO.read(inputStream));
+            Logging.warn("Downloaded icon. ID known to the icon list: " + objectTypeID);
+          } catch (IOException e) {
+            Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
+          }
         }
-      }
-      if (downloadedIcon == null) {
-        downloadedIcon = ICON_NULL_TYPE;
-      }
-      MapObjectIconCache.getInstance().put(objectTypeID, downloadedIcon);
-      return downloadedIcon;
+        if (downloadedIcon == null) {
+          downloadedIcon = ICON_NULL_TYPE;
+        }
+        return downloadedIcon;
+      });
     }
     return cachedIcon;
   }

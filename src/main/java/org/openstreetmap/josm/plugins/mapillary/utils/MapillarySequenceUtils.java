@@ -6,6 +6,7 @@ import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
@@ -19,8 +20,10 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -184,16 +187,29 @@ public class MapillarySequenceUtils {
    */
   private static synchronized IWay<?> downloadSequence(final String key) {
     final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
-    final HttpClient client;
-    final HttpClient.Response response;
-    try {
-      client = HttpClient.create(new URL(sequenceUrl));
-      response = client.connect();
-    } catch (IOException e) {
-      Logging.error(e);
+    final String data = Caches.metaDataCache.get(sequenceUrl, () -> {
+      HttpClient client = null;
+      final HttpClient.Response response;
+      try {
+        client = HttpClient.create(new URL(sequenceUrl));
+        response = client.connect();
+        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+          return jsonReader.readObject().toString();
+        }
+      } catch (IOException e) {
+        Logging.error(e);
+      } finally {
+        if (client != null) {
+          client.disconnect();
+        }
+      }
+      return null;
+    });
+    if (data == null) {
       return null;
     }
-    try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
+
+    try (JsonReader jsonReader = Json.createReader(new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8)))) {
       JsonObject json = jsonReader.readObject();
       Collection<VectorWay> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
       VectorWay sequence = seq.stream().findFirst().orElse(null);
@@ -205,10 +221,7 @@ public class MapillarySequenceUtils {
         }
       }
       return sequence;
-    } catch (IOException e) {
-      Logging.error(e);
     }
-    return null;
   }
 
   /**

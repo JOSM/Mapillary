@@ -2,6 +2,7 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
@@ -89,8 +90,10 @@ public final class JsonImageDetailsDecoder {
         json.getJsonObject(useComputedData ? MapillaryURL.APIv4.ImageProperties.COMPUTED_GEOMETRY.toString()
           : MapillaryURL.APIv4.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
       if (key != null) {
-        VectorNode image = data.getNodes().stream().filter(node -> key.equals(MapillaryImageUtils.getKey(node)))
-          .findAny().orElseGet(() -> {
+        final BBox searchBBox = new BBox(coordinates);
+        searchBBox.addLatLon(coordinates, 0.005);
+        VectorNode image = data.searchNodes(searchBBox).stream()
+          .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
             VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
             for (final MapillaryURL.APIv4.ImageProperties property : MapillaryURL.APIv4.ImageProperties.values()) {
               final String propertyKey = property.toString();
