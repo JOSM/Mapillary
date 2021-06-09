@@ -1,0 +1,49 @@
+{
+  "data": {
+    "altitude": 1362.421,
+    "atomic_scale": 1,
+    "camera_parameters": [
+      0.85,
+      0,
+      0
+    ],
+    "camera_type": "perspective",
+    "captured_at": 1563721062971,
+    "compass_angle": 335.83,
+    "computed_altitude": 1399.2187248701,
+    "computed_compass_angle": 338.04298879857,
+    "computed_geometry": {
+      "type": "Point",
+      "coordinates": [
+        -108.57081497264,
+        39.067357000697
+      ]
+    },
+    "computed_rotation": [
+      1.5496206827148,
+      0.30062622625581,
+      -0.30065559861764
+    ],
+    "exif_orientation": 1,
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -108.57081497222,
+        39.067357
+      ]
+    },
+    "height": 3120,
+    "thumb_256_url": "thumb_256_filler_url",
+    "thumb_1024_url": "thumb_1024_filler_url",
+    "thumb_2048_url": "thumb_2048_filler_url",
+    "merge_cc": 4013805280981600000,
+    "quality_score": 0.95078612716763,
+    "sequence": "7nfcwfvjdtphz7yj6zat6a",
+    "sfm_cluster": {
+      "id": "298750828608649",
+      "url": "sfm_cluster_filler_url"
+    },
+    "width": 4160,
+    "id": "464249047982277"
+  }
+}
