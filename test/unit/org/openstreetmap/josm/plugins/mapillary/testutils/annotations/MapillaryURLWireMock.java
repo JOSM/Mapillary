@@ -143,13 +143,17 @@ public @interface MapillaryURLWireMock {
           .withHeader("Content-Type", "application/json")));
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*")).withQueryParams(potentialParameters)
         .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}.json")
-          .withHeader("Content-Type", "appication/json")));
+          .withHeader("Content-Type", "application/json")));
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/coverageTiles/.*"))
         .withQueryParams(potentialParameters)
         .willReturn(WireMock.aResponse().withBodyFile(
           "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
           .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
             "application/x-protobuf", "application/protobuf")));
+      server.stubFor(
+        WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*?/detections")).withQueryParams(potentialParameters)
+          .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}/detections.json")
+            .withHeader("Content-Type", "application/json")));
       context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
       // Only allow real Mapillary API calls in integration tests.
       if (context.getElement().isPresent()
