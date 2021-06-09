@@ -91,7 +91,7 @@ public final class Caches {
 
     @Override
     protected CacheAccess<String, ImageIcon> createNewCache() {
-      return JCSCacheManager.getCache("mapillaryObjectIcons", 100, 1000, getCacheDirectory().getPath());
+      return JCSCacheManager.getCache("mapillary:objectIcons", 100, 1000, getCacheDirectory().getPath());
     }
   }
 
@@ -109,7 +109,7 @@ public final class Caches {
 
     @Override
     protected CacheAccess<String, UserProfile> createNewCache() {
-      CacheAccess<String, UserProfile> cache = JCSCacheManager.getCache("userProfile", 100, 1000,
+      CacheAccess<String, UserProfile> cache = JCSCacheManager.getCache("mapillary:userProfile", 100, 1000,
         getCacheDirectory().getPath());
       IElementAttributes atts = cache.getDefaultElementAttributes();
       atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
@@ -140,7 +140,7 @@ public final class Caches {
 
     @Override
     protected CacheAccess<String, String> createNewCache() {
-      final CacheAccess<String, String> cache = JCSCacheManager.getCache("metadata", 100, 100000,
+      final CacheAccess<String, String> cache = JCSCacheManager.getCache("mapillary:metadata", 100, 100000,
         getCacheDirectory().getPath());
       IElementAttributes atts = cache.getDefaultElementAttributes();
       atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
