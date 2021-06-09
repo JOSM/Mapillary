@@ -375,10 +375,10 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       List<Pair<T, Double>> distance = images.stream().filter(Objects::nonNull)
         .map(image -> new Pair<>(image, ((INode) primitive).getCoor().distanceSq(image.getCoor())))
         .sorted(Comparator.comparing(p -> p.b)).collect(Collectors.toList());
-      for (int i : new int[] { 5, 4, 3, Integer.MIN_VALUE, 2, 1 }) {
+      for (float i : new float[] { 0.8f, 0.6f, 0.4f, 0.2f, 0.0f }) {
         Optional<T> imageOptional = distance.stream().map(p -> p.a)
-          .filter(image -> !image.hasKey(MapillaryImageUtils.QUALITY_SCORE)
-            || Integer.parseInt(image.get(MapillaryImageUtils.QUALITY_SCORE)) == i)
+          .filter(image -> MapillaryImageUtils.getQuality(image) == Float.MIN_VALUE
+            || MapillaryImageUtils.getQuality(image) == i)
           .findFirst();
         if (imageOptional.isPresent()) {
           return imageOptional.get();

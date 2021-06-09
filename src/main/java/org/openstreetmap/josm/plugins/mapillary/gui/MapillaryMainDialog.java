@@ -17,13 +17,12 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -223,7 +222,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       ImageDetection<?> detection = getDetection();
       if (detection != null) {
         INode image = MapillaryMainDialog.getInstance().getImage();
-        if (detection.getImageKey().equals(image.get(MapillaryKeys.KEY))
+        if (detection.getImageKey().equals(MapillaryImageUtils.getKey(image))
           && DetectionVerification.vote(detection, this.type)) {
           detection.setApprovalType(this.type);
           this.updateEnabledState();
@@ -238,11 +237,11 @@ public final class MapillaryMainDialog extends ToggleDialog
     public void updateEnabledState() {
       INode image = MapillaryMainDialog.getInstance().getImage();
       ImageDetection<?> detection = getDetection();
-      if (!image.hasKey(MapillaryKeys.KEY) || detection == null) {
+      if (MapillaryImageUtils.getKey(image) != null || detection == null) {
         this.setEnabled(false);
       } else {
         if (this.type != detection.getApprovalType())
-          this.setEnabled(image.get(MapillaryKeys.KEY).equals(detection.getImageKey()));
+          this.setEnabled(MapillaryImageUtils.getKey(image).equals(detection.getImageKey()));
         else
           this.setEnabled(false);
       }
@@ -287,7 +286,8 @@ public final class MapillaryMainDialog extends ToggleDialog
     private static final long serialVersionUID = -3743322064323002656L;
 
     ShowSignDetectionsAction() {
-      super(null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
+      super(null,
+        new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
         tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections",
           tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
         false, null, false);
@@ -448,7 +448,14 @@ public final class MapillaryMainDialog extends ToggleDialog
 
       this.updateButtonStates(currentImage);
 
-      if (currentImage.hasKey(MapillaryKeys.KEY)) {
+      if (MapillaryImageUtils.getKey(currentImage) != null) {
+        if (currentImage.getNumKeys() < 5) {
+          MainApplication.worker.submit(() -> {
+            MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
+            this.updateImage(fullQuality);
+          });
+          return;
+        }
         final MapillaryCache imageThumbnailCache = this.cacheThumbnail(currentImage);
 
         // Use this to avoid race conditions
@@ -466,12 +473,12 @@ public final class MapillaryMainDialog extends ToggleDialog
             this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
               (key, detections) -> {
                 INode tImage = this.image;
-                if (tImage != null && key.equals(tImage.get(MapillaryKeys.KEY))) {
+                if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
                   this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
                 }
               });
           }
-          List<ImageDetection<?>> detections = ImageDetection.getDetections(image.get(MapillaryImageUtils.KEY), false);
+          List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image), false);
           if (imageFullCache != null && imageFullCache.get() != null) {
             setDisplayImage(imageFullCache.get().getImage(), detections,
               MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
@@ -485,7 +492,7 @@ public final class MapillaryMainDialog extends ToggleDialog
           }
           if (!currentImage.hasKeys()) {
             pool.execute(() -> {
-              MapillaryDownloader.downloadImages(currentImage.get(MapillaryKeys.KEY));
+              MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
               if (currentImage.equals(this.image)) {
                 updateTitle();
               }
@@ -524,8 +531,7 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   private MapillaryCache cacheFullImage(INode currentImage) {
     // Downloads the full resolution image.
-    final MapillaryCache imageFullCache = new MapillaryCache(MapillaryImageUtils.getKey(currentImage),
-      MapillaryCache.Type.FULL_IMAGE);
+    final MapillaryCache imageFullCache = new MapillaryCache(currentImage, MapillaryCache.Type.FULL_IMAGE);
     // Use this variable to avoid race conditions
     if (this.imageCache != null)
       this.imageCache.cancelOutstandingTasks();
@@ -636,11 +642,11 @@ public final class MapillaryMainDialog extends ToggleDialog
       SwingUtilities.invokeLater(this::updateTitle);
     } else if (this.image != null) {
       StringBuilder title = new StringBuilder(tr(BASE_TITLE));
-      if (this.image.hasKey(MapillaryKeys.KEY)) {
+      if (MapillaryImageUtils.getKey(this.image) != null) {
         INode mapillaryImage = this.image;
-        UserProfile user = Caches.UserProfileCache.getInstance().get(MapillaryImageUtils.getUser(mapillaryImage));
-        if (user != null) {
-          title.append(MESSAGE_SEPARATOR).append(user.getUsername());
+        OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(mapillaryImage);
+        if (organizationRecord != OrganizationRecord.NULL_RECORD) {
+          title.append(MESSAGE_SEPARATOR).append(organizationRecord.getNiceName());
         }
         if (mapillaryImage.hasKey(MapillaryKeys.CAPTURED_AT)) {
           title.append(MESSAGE_SEPARATOR).append(mapillaryImage.get(MapillaryKeys.CAPTURED_AT));
@@ -799,8 +805,8 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   @Override
   public void selectionChanged(SelectionChangeEvent event) {
-    INode newImage = MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
-      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+    INode newImage = MapillaryLayer.getInstance().getSelectedImages().filter(MapillaryImageUtils.IS_IMAGE).findFirst()
+      .orElse(null);
     setImage(newImage);
   }
 

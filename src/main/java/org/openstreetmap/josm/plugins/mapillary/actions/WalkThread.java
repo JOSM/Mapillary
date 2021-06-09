@@ -29,6 +29,7 @@ import org.openstreetmap.josm.tools.Logging;
 public class WalkThread extends Thread implements Serializable, DataSelectionListener {
   private final int interval;
   private final OsmData<?, ?, ?, ?> data;
+  private final MapillaryLayer layer;
   private boolean endWalk;
   private final boolean waitForFullQuality;
   private final MapillarySequenceUtils.NextOrPrevious goForward;
@@ -48,7 +49,8 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
     this.interval = interval;
     this.waitForFullQuality = waitForPicture;
     this.goForward = goForward;
-    this.data = MapillaryLayer.getInstance().getData();
+    this.layer = MapillaryLayer.getInstance();
+    this.data = this.layer.getData();
     this.data.addSelectionListener(this);
   }
 
@@ -92,7 +94,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
             && selectedImage.getReferrers().stream().filter(IWay.class::isInstance).count() == 1) {
             final INode nextSelectedImg = MapillarySequenceUtils.getNextOrPrevious(selectedImage, this.goForward);
             if (nextSelectedImg != null && nextSelectedImg.isVisible()) {
-              this.data.setSelected(nextSelectedImg);
+              this.layer.setSelected(nextSelectedImg);
             }
           }
         } catch (InterruptedException e) {

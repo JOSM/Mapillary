@@ -4,13 +4,16 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.tools.Logging;
 
+import javax.annotation.Nonnull;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
@@ -32,7 +35,9 @@ public final class JsonDecoder {
    * @return a {@link Collection} which is parsed from the given {@link JsonObject}, which contains GeoJSON.
    *         Currently a {@link HashSet} is used, but please don't rely on it, this could change at any time without
    *         prior notice. The return value will not be <code>null</code>.
+   * @deprecated The v4 API does not use feature collections at all. See {@link #decodeData}.
    */
+  @Deprecated
   public static <T> Collection<T> decodeFeatureCollection(final JsonObject json,
     Function<JsonObject, T> featureDecoder) {
     final Collection<T> result = new HashSet<>();
@@ -54,6 +59,37 @@ public final class JsonDecoder {
       }
     }
     return result;
+  }
+
+  /**
+   * Parses a given {@link JsonObject} as a data entity into a {@link Collection}
+   * of the desired Java objects. The method, which converts the data features into Java objects
+   * is given as a parameter to this method.
+   *
+   * @param <T> feature type
+   * @param json the {@link JsonObject} to be parsed
+   * @param featureDecoder feature decoder which transforms JSON objects to Java objects
+   * @return a {@link Collection} which is parsed from the given {@link JsonValue}, which contains the data object.
+   *         The return value will not be <code>null</code>.
+   */
+  @Nonnull
+  public static <T> Collection<T> decodeData(@Nonnull final JsonObject json,
+    @Nonnull final Function<JsonValue, Collection<T>> featureDecoder) {
+    Objects.requireNonNull(json, "JSON cannot be null");
+    Objects.requireNonNull(featureDecoder, "The features must be decoded into something.");
+    if (json.containsKey("data")) {
+      final JsonValue data = json.get("data");
+      if (data.getValueType() != JsonValue.ValueType.ARRAY && data.getValueType() != JsonValue.ValueType.OBJECT) {
+        throw new IllegalArgumentException("Mapillary v4 json data objects must either be an object or an array.");
+      }
+      return Collections.unmodifiableCollection(featureDecoder.apply(data));
+    }
+    return Collections.unmodifiableCollection(featureDecoder.apply(json));
+    /*
+     * Note: Apparently this is not the case. TODO remove once clarified.
+     * throw new IllegalArgumentException(
+     * "Mapillary v4 json must have a data object." + System.lineSeparator() + json.toString());
+     */
   }
 
   /**

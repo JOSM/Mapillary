@@ -95,7 +95,7 @@ public class MapillaryExportManager<T extends INode> extends PleaseWaitRunnable 
     ArrayBlockingQueue<Runnable> executionQueue = new ArrayBlockingQueue<>(10);
     this.ex = new ThreadPoolExecutor(20, 35, 25, TimeUnit.SECONDS, executionQueue);
     for (INode image : this.images) {
-      if (image.hasKey(MapillaryImageUtils.KEY) || image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
+      if (MapillaryImageUtils.IS_IMAGE.test(image)) {
         try {
           while (this.ex.getQueue().remainingCapacity() == 0) {
             synchronized (this.queue) {

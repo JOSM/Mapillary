@@ -1,11 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
@@ -18,10 +19,13 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,17 +51,21 @@ public final class MapillaryDownloader {
    * @param images The images to download
    * @return The downloaded images
    */
-  public static Map<String, Collection<INode>> downloadImages(String... images) {
+  public static Map<String, Collection<VectorNode>> downloadImages(String... images) {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
-    JsonObject response = getUrlResponse(MapillaryURL.APIv4.getImageInformation(images));
-    return Collections
-      .unmodifiableMap(JsonDecoder.decodeFeatureCollection(response, JsonImageDetailsDecoder::decodeImageInfos).stream()
-        .collect(Collector.of(HashMap<String, Collection<INode>>::new, HashMap::putAll, (rMap, oMap) -> {
+    return Stream.of(images).map(MapillaryURL.APIv4::getImageInformation).parallel()
+      .map(MapillaryDownloader::getUrlResponse)
+      .map(data -> JsonDecoder.decodeData(data, JsonImageDetailsDecoder::decodeImageInfos)).flatMap(Collection::stream)
+      .sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
+      .collect(Collector.of(
+        HashMap<String, Collection<VectorNode>>::new, (map, node) -> map
+          .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
+        (rMap, oMap) -> {
           rMap.putAll(oMap);
           return rMap;
-        })));
+        }));
   }
 
   /**
@@ -95,13 +103,9 @@ public final class MapillaryDownloader {
       toGet = Stream.of(toGet).filter(seq -> !previousSequences.contains(seq)).toArray(String[]::new);
     }
     if (toGet.length > 0) {
-      JsonObject response = getUrlResponse(MapillaryURL.APIv3.getSequence(toGet));
-      Collection<VectorWay> returnSequences = JsonDecoder.decodeFeatureCollection(response,
-        JsonSequencesDecoder::decodeSequence);
-      JsonObject imageResponse = getUrlResponse(MapillaryURL.APIv3.getImagesBySequences(
-        returnSequences.stream().map(way -> way.get(MapillaryKeys.KEY)).distinct().toArray(String[]::new)));
-      JsonDecoder.decodeFeatureCollection(imageResponse, JsonImageDetailsDecoder::decodeImageInfos);
-      return returnSequences;
+      return Stream.of(toGet).map(MapillaryURL.APIv4::getImagesBySequences).map(MapillaryDownloader::getUrlResponse)
+        .flatMap(jsonObject -> JsonDecoder.decodeData(jsonObject, JsonSequencesDecoder::decodeSequence).stream())
+        .collect(Collectors.toSet());
     }
     return Collections.emptyList();
   }
@@ -116,5 +120,14 @@ public final class MapillaryDownloader {
     } finally {
       client.disconnect();
     }
+  }
+
+  private static JsonObject getUrlResponse(String url) {
+    try {
+      return getUrlResponse(new URL(url));
+    } catch (MalformedURLException e) {
+      Logging.error(e);
+    }
+    return null;
   }
 }

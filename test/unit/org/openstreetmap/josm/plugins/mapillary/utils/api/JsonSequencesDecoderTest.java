@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
@@ -29,14 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
 
+@MapillaryURLWireMock
 class JsonSequencesDecoderTest {
 
   @Test
   void testDecodeSequences() throws IOException {
-    try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/searchSequences.json");
+    try (InputStream stream = this.getClass().getResourceAsStream("/api/v4/responses/searchSequences.json");
       JsonReader reader = Json.createReader(stream)) {
-      Collection<VectorWay> exampleSequences = JsonDecoder.decodeFeatureCollection(reader.readObject(),
-        JsonSequencesDecoder::decodeSequence);
+      // TODO fix
+      Collection<VectorWay> exampleSequences = null; // JsonDecoder.decodeFeatureCollection(reader.readObject(),
+                                                     // JsonSequencesDecoder::decodeSequence);
       assertNotNull(exampleSequences);
       assertEquals(1, exampleSequences.size());
       IWay<?> seq = exampleSequences.iterator().next();
@@ -102,7 +105,7 @@ class JsonSequencesDecoderTest {
   void testDecodeSequence() throws IOException {
     try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/sequence.json");
       JsonReader reader = Json.createReader(stream)) {
-      IWay<?> exampleSequence = JsonSequencesDecoder.decodeSequence(reader.readObject());
+      IWay<?> exampleSequence = JsonSequencesDecoder.decodeSequence(reader.readObject()).get(0);
       assertEquals("cHBf9e8n0pG8O0ZVQHGFBQ", MapillarySequenceUtils.getKey(exampleSequence));
       // 1_457_963_077_206L -> 2016-03-14T13:44:37.206 UTC
       assertEquals(1_457_963_077_206L, MapillarySequenceUtils.getCreatedAt(exampleSequence).toEpochMilli());

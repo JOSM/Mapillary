@@ -76,6 +76,9 @@ public final class MapillaryProperties {
    */
   public static final IntegerProperty DESELECT_CLICK_COUNT = new IntegerProperty("mapillary.image.deselect.click.count",
     3);
+  /** Use computed locations instead of the original locations */
+  public static final BooleanProperty USE_COMPUTED_LOCATIONS = new BooleanProperty("mapillary.computed_locations",
+    true);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation

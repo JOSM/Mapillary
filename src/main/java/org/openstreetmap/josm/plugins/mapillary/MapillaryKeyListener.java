@@ -146,8 +146,8 @@ public class MapillaryKeyListener implements PopupMenuListener, Destroyable {
       }
       Map<String, VectorNode> newMap = data.getNodes().stream().filter(image -> image.hasKey(MapillaryKeys.KEY))
         .collect(Collectors.toMap(image -> image.get(MapillaryKeys.KEY), i -> i));
-      GuiHelper.runInEDT(
-        () -> data.setSelected(Stream.of(this.imageKey.split(";", 0)).map(newMap::get).collect(Collectors.toSet())));
+      GuiHelper.runInEDT(() -> MapillaryLayer.getInstance()
+        .setSelected(Stream.of(this.imageKey.split(";", 0)).map(newMap::get).collect(Collectors.toSet())));
     }
   }
 

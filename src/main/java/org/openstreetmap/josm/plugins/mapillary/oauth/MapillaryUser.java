@@ -2,24 +2,19 @@
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
-import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonOrganizationDecoderUtils;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
@@ -115,26 +110,6 @@ public final class MapillaryUser {
    */
   public static synchronized void clearSecrets() {
     uploadSession = null;
-  }
-
-  public static synchronized List<OrganizationRecord> getOrganizations() {
-    if (isTokenValid && organizations == null) {
-      HttpClient client = HttpClient
-        .create(APIv3.retrieveOrganizationss(getUserInformation().getOrDefault("key", username)));
-      OAuthUtils.addAuthenticationHeader(client);
-      try {
-        client.connect();
-        try (InputStream inputStream = client.getResponse().getContent();
-          JsonReader reader = Json.createReader(inputStream)) {
-          organizations = JsonOrganizationDecoderUtils.decodeOrganizations(reader.readValue());
-        }
-      } catch (IOException e) {
-        Logging.error(e);
-      } finally {
-        client.disconnect();
-      }
-    }
-    return organizations == null ? Collections.emptyList() : Collections.unmodifiableList(organizations);
   }
 
   /**

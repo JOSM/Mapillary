@@ -3,12 +3,14 @@ package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.apache.commons.jcs3.access.CacheAccess;
@@ -20,6 +22,7 @@ import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -44,14 +47,19 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    */
   public enum Type {
     /** Full quality image */
-    FULL_IMAGE(2048),
+    FULL_IMAGE(MapillaryURL.APIv4.ImageProperties.BEST_IMAGE),
     /** Low quality image */
-    THUMBNAIL(320);
+    THUMBNAIL(MapillaryURL.APIv4.ImageProperties.WORST_IMAGE);
 
     private final int width;
+    private final String imageUrl;
 
-    Type(int dimension) {
-      this.width = dimension;
+    Type(final MapillaryURL.APIv4.ImageProperties properties) {
+      this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
+      final Pattern pattern = Pattern.compile("thumb_([0-9]+)_url");
+      final Matcher matcher = pattern.matcher(this.imageUrl);
+      matcher.matches();
+      this.width = Integer.parseInt(matcher.group(1));
     }
 
     /**
@@ -70,6 +78,15 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
      */
     public int getHeight() {
       return width;
+    }
+
+    /**
+     * Get the key for this image type
+     *
+     * @return The key to look for in the image node
+     */
+    public String getKey() {
+      return this.imageUrl;
     }
   }
 
@@ -100,7 +117,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         break; // It doesn't make sense to try to cache images that won't be kept.
       }
       if (nextImage != null) {
-        if (nextImage.hasKey(MapillaryImageUtils.KEY)
+        if (MapillaryImageUtils.getKey(nextImage) != null
           && (imageCache.get(MapillaryImageUtils.getKey(nextImage)) == null)) {
           INode current = nextImage;
           pool.execute(() -> CacheUtils.downloadPicture(current));
@@ -108,7 +125,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
       }
       if (prevImage != null) {
-        if (prevImage.hasKey(MapillaryImageUtils.KEY)
+        if (MapillaryImageUtils.getKey(prevImage) != null
           && (imageCache.get(MapillaryImageUtils.getKey(prevImage)) == null)) {
           INode current = prevImage;
           pool.execute(() -> CacheUtils.downloadPicture(current));
@@ -134,26 +151,20 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
       if (image == null || type == null) {
         this.key = null;
         this.url = null;
-      } else if (image.hasKey(MapillaryImageUtils.BASE_IMAGE_KEY + type.width)) {
+      } else if (image.hasKey(type.getKey())) {
         this.key = MapillaryImageUtils.getKey(image) + '.' + type.width;
-        this.url = new URL(image.get(MapillaryImageUtils.BASE_IMAGE_KEY + type.width));
+        this.url = new URL(image.get(type.getKey()));
       } else {
         // Iterate through the keys, maybe there is another image url?
         String tKey = null;
         URL tUrl = null;
         for (Map.Entry<String, String> entry : image.getKeys().entrySet()) {
-          if (entry.getKey().startsWith(MapillaryImageUtils.BASE_IMAGE_KEY)) {
-            String width = entry.getKey().replace(MapillaryImageUtils.BASE_IMAGE_KEY, "");
+          if (MapillaryImageUtils.BASE_IMAGE_KEY.matcher(entry.getKey()).matches()) {
+            String width = MapillaryImageUtils.BASE_IMAGE_KEY.matcher(entry.getKey()).group(1);
             tKey = MapillaryImageUtils.getKey(image) + '.' + width;
             tUrl = new URL(entry.getValue());
             break;
           }
-        }
-        // Fallback to v3 URLs (TODO remove)
-        if (tKey == null) {
-          tKey = MapillaryImageUtils.getKey(image) + '.' + type.width;
-          tUrl = new URL(MessageFormat.format("https://images.mapillary.com/{0}/thumb-{1}.jpg",
-            MapillaryImageUtils.getKey(image), type.width));
         }
         this.key = tKey;
         this.url = tUrl;

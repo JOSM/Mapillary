@@ -165,7 +165,7 @@ public class SelectNextImageAction extends JosmAction {
   public void actionPerformed(ActionEvent e) {
     final INode newSelectedImage = this.getDestinationImageSupplier().get();
     if (newSelectedImage != null) {
-      MapillaryLayer.getInstance().getData().setSelected(newSelectedImage);
+      MapillaryLayer.getInstance().setSelected(newSelectedImage);
       // TODO remove if it turns out to be unneeded -- due to ids, unintended images
       // may be selected.
       if (MapillaryMainDialog.hasInstance() && !newSelectedImage.equals(MapillaryMainDialog.getInstance().getImage())) {

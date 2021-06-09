@@ -128,7 +128,7 @@ public class MapillaryExportWriterThread extends Thread {
 
         gpsDirectory.removeField(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
         gpsDirectory.add(GpsTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-          RationalNumber.valueOf(Float.parseFloat(mimg.get(MapillaryImageUtils.CAMERA_ANGLE))));
+          RationalNumber.valueOf(MapillaryImageUtils.getAngle(mimg)));
 
         exifDirectory.removeField(ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
         // TODO this might need some fixes

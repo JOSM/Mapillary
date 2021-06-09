@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -39,15 +40,13 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.ExtendedDialog;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.GBC;
@@ -143,7 +142,7 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     root.add(new JLabel(tr("Image detections")), gbc);
     gbc.gridy += 2;
     gbc.gridheight = 1;
-    root.add(new JLabel(tr("User")), gbc);
+    root.add(new JLabel(tr("Organization")), gbc);
     gbc.gridy++;
     root.add(new JLabel(tr("Image actions")), gbc);
     gbc.gridy++;
@@ -210,14 +209,14 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     selectedImageChanged(oldImage, newImage);
   }
 
-  private void selectedImageChanged(INode oldImage, INode newImage) {
-    final Predicate<INode> hasKey = node -> node != null && node.hasKey(MapillaryKeys.KEY);
+  private void selectedImageChanged(@Nullable INode oldImage, @Nullable INode newImage) {
+    final Predicate<INode> hasKey = node -> node != null && MapillaryImageUtils.getKey(node) != null;
     Logging.debug(String.format("Selected Mapillary image changed from %s to %s.",
-      hasKey.test(oldImage) ? oldImage.get(MapillaryKeys.KEY) : "‹none›",
-      hasKey.test(newImage) && newImage.hasKey(MapillaryKeys.KEY) ? newImage.get(MapillaryKeys.KEY) : "‹none›"));
+      hasKey.test(oldImage) ? MapillaryImageUtils.getKey(oldImage) : "‹none›",
+      hasKey.test(newImage) ? MapillaryImageUtils.getKey(newImage) : "‹none›"));
 
     imgKeyValue.setEnabled(newImage != null);
-    final String newImageKey = hasKey.test(newImage) ? newImage.get(MapillaryKeys.KEY) : null;
+    final String newImageKey = hasKey.test(newImage) ? MapillaryImageUtils.getKey(newImage) : null;
     if (newImageKey != null) {
       final URL newImageUrl = MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.get()
         ? MapillaryURL.MainWebsite.blurEditImage(newImageKey)
@@ -248,22 +247,21 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
       addMapillaryTagAction.setTag(null);
     }
 
-    final UserProfile user = newImage != null && newImage.hasKey(MapillaryKeys.USER_KEY)
-      ? Caches.UserProfileCache.getInstance().get(newImage.get(MapillaryKeys.USER_KEY))
-      : null;
-    usernameLabel.setEnabled(user != null);
-    if (user != null) {
-      usernameLabel.setText(user.getUsername());
-      usernameLabel.setIcon(new ImageIcon(user.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+    final OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(newImage);
+    usernameLabel.setEnabled(organizationRecord != null);
+    if (organizationRecord != null) {
+      usernameLabel.setText(organizationRecord.getNiceName());
+      usernameLabel.setIcon(
+        new ImageIcon(organizationRecord.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
     } else {
-      usernameLabel.setText("‹" + tr("unknown user") + "›");
+      usernameLabel.setText("‹" + tr("unknown organization") + "›");
       usernameLabel.setIcon(EMPTY_USER_AVATAR);
     }
 
-    final boolean partOfSequence = newImage != null && newImage.hasKey(MapillaryImageUtils.SEQUENCE_KEY);
+    final boolean partOfSequence = MapillaryImageUtils.getSequenceKey(newImage) != null;
     seqKeyValue.setEnabled(partOfSequence);
     if (partOfSequence) {
-      seqKeyValue.setText(newImage.get(MapillaryImageUtils.SEQUENCE_KEY));
+      seqKeyValue.setText(MapillaryImageUtils.getSequenceKey(newImage));
     } else {
       seqKeyValue.setText('‹' + tr("sequence has no key") + '›');
     }

@@ -10,8 +10,8 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -90,15 +90,17 @@ public class ChooseGeoImageLayersDialog extends JDialog {
             final double ca = img.getExifImgDir() == null ? 0 : img.getExifImgDir();
             final Instant time = img.hasGpsTime() ? img.getGpsInstant()
               : img.hasExifTime() ? img.getExifInstant() : Instant.now();
+            node.setInstant(time);
             boolean pano = false;
             try (FileInputStream fis = new FileInputStream(img.getFile())) {
               pano = ImageMetaDataUtil.isPanorama(fis);
             } catch (IOException ex) {
               Logging.trace(ex);
             }
-            node.put(MapillaryImageUtils.CAMERA_ANGLE, Double.toString(ca));
-            node.put(MapillaryKeys.CAPTURED_AT, Long.toString(time.toEpochMilli()));
-            node.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+            node.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
+            node.put(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString(), Long.toString(time.toEpochMilli()));
+            node.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+              pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
             return node;
           } catch (IllegalArgumentException iae) {
             final String message = I18n.tr("Could not import a geotagged image to the Mapillary layer!");

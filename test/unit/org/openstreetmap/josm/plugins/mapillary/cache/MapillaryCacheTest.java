@@ -8,11 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import org.openstreetmap.josm.TestUtils;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache.Type;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 class MapillaryCacheTest {
@@ -23,7 +24,7 @@ class MapillaryCacheTest {
   @Test
   void test() {
     INode image = new Node();
-    image.put(MapillaryImageUtils.KEY, "00000");
+    image.put(MapillaryURL.APIv4.ImageProperties.ID.toString(), "00000");
     MapillaryCache cache = new MapillaryCache(image, Type.FULL_IMAGE);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());
@@ -37,5 +38,10 @@ class MapillaryCacheTest {
     cache = new MapillaryCache(null, null);
     assertNull(cache.getCacheKey());
     assertNull(cache.getUrl());
+  }
+
+  @Test
+  void testMapillaryCacheTypes() {
+    TestUtils.superficialEnumCodeCoverage(MapillaryCache.Type.class);
   }
 }

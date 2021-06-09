@@ -17,6 +17,7 @@ import javax.swing.event.MouseInputAdapter;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,10 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
       Collection<VectorNode> nodes = layer.getData().searchNodes(searchBBox).stream().distinct()
         .collect(Collectors.toList());
       if (!nodes.isEmpty()) {
+        // This is needed since Mapillary ids are only unique within a tile.
+        if (layer instanceof MapillaryLayer) {
+          ((MapillaryLayer) layer).setSelected(nodes);
+        }
         layer.getData().setSelected(nodes);
         if (nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
           SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
@@ -50,6 +55,7 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         continue;
       } else if (layer instanceof MapillaryLayer) {
         if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
+          ((MapillaryLayer) layer).setSelected(Collections.emptyList());
           layer.getData().clearSelection();
         }
         continue;

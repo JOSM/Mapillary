@@ -3,29 +3,36 @@ package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
+import org.openstreetmap.josm.tools.HttpClient;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
+@MapillaryURLWireMock
 public class JsonImageDetailsDecoderTest {
 
   @RegisterExtension
@@ -36,38 +43,54 @@ public class JsonImageDetailsDecoderTest {
     TestUtil.testUtilityClass(JsonImageDetailsDecoder.class);
   }
 
-  @Test
-  void testDecodeImageInfos() throws IOException {
-    try (
-      InputStream stream = JsonImageDetailsDecoderTest.class.getResourceAsStream("/api/v3/responses/searchImages.json");
-      JsonReader reader = Json.createReader(stream)) {
-      JsonObject searchImagesResponse = reader.readObject();
-      VectorDataSet data = new VectorDataMock();
-      VectorNode img1 = createDownloadedImage("_yA5uXuSNugmsK5VucU6Bg", new LatLon(0, 0), 0, false);
-      VectorNode img2 = createDownloadedImage("nmF-Wq4EvVTgAUmBicSCCg", new LatLon(0, 0), 0, false);
-      VectorNode img3 = createDownloadedImage("arbitrary_key", new LatLon(0, 0), 0, false);
-      VectorNode img4 = createImportedImage(null, new LatLon(0, 0), 0, false);
-      img4.put(MapillaryImageUtils.CREATED_AT, "1");
+  @ParameterizedTest(name = "{index}: using computed locations: {0}")
+  @ValueSource(booleans = { true, false })
+  void testDecodeImageInfos(boolean computedLocations) throws IOException {
+    MapillaryProperties.USE_COMPUTED_LOCATIONS.put(computedLocations);
+    final String[] images = new String[] { "135511895288847" };
 
-      data.addPrimitive(img1);
-      data.addPrimitive(img2);
-      data.addPrimitive(img3);
-      data.addPrimitive(img4);
-      JsonImageDetailsDecoder.decodeImageInfos(searchImagesResponse, data);
-      assertEquals(Instant.ofEpochMilli(1_491_803_490_334L), MapillaryImageUtils.getDate(img1)); // 2017-04-10T05:51:30.334Z
-      assertSame(img1.getInstant(), MapillaryImageUtils.getDate(img1));
-      assertEquals(Instant.ofEpochMilli(1_491_803_486_853L), MapillaryImageUtils.getDate(img2)); // 2017-04-10T05:51:26.853Z
-      assertEquals(Instant.ofEpochMilli(0L), MapillaryImageUtils.getDate(img3));
-      assertEquals(Instant.ofEpochMilli(1L), MapillaryImageUtils.getDate(img4));
+    final VectorDataSet data = new VectorDataMock();
+    Stream.of(images).map(image -> createDownloadedImage(image, LatLon.ZERO, 0, false)).forEach(data::addPrimitive);
+
+    for (String image : images) {
+      final URL url = new URL(
+        MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
+      final HttpClient client = HttpClient.create(url);
+      final HttpClient.Response response = client.connect();
+      JsonReader reader = Json.createReader(response.getContentReader());
+      JsonDecoder.decodeData(reader.readObject(), value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
+    }
+
+    final VectorNode i_135511895288847 = data.getNodes().stream()
+      .filter(image -> "135511895288847".equals(MapillaryImageUtils.getKey(image))).findFirst().get();
+    // JOSM currently (2021-06-09) only stores timestamps to the second level, not millisecond level
+    assertEquals(Instant.ofEpochMilli(1_563_721_072_184L).getEpochSecond(),
+      MapillaryImageUtils.getDate(i_135511895288847).getEpochSecond());
+    assertEquals(i_135511895288847.getInstant(), MapillaryImageUtils.getDate(i_135511895288847));
+    assertEquals("135511895288847", MapillaryImageUtils.getKey(i_135511895288847));
+    final double delta = 0.000_000_000_1;
+    assertEquals(1399.5043095825, Double.parseDouble(i_135511895288847.get("computed_altitude")), delta);
+    assertEquals(1364.617, Double.parseDouble(i_135511895288847.get("altitude")), delta);
+    assertEquals(0.7561310782241f, MapillaryImageUtils.getQuality(i_135511895288847), delta);
+    assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillaryImageUtils.getSequenceKey(i_135511895288847));
+    if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
+      assertEquals(Math.toRadians(1.2865829255371), MapillaryImageUtils.getAngle(i_135511895288847), delta);
+      assertEquals(-108.57081597085, i_135511895288847.lon(), delta);
+      assertEquals(39.068354912098, i_135511895288847.lat(), delta);
+    } else {
+      assertEquals(Math.toRadians(336.74), MapillaryImageUtils.getAngle(i_135511895288847), delta);
+      assertEquals(-108.57081597222, i_135511895288847.lon(), delta);
+      assertEquals(39.068354972222, i_135511895288847.lat(), delta);
     }
   }
 
   public static VectorNode createDownloadedImage(String key, LatLon latLon, double cameraAngle, boolean pano) {
     VectorNode image = new VectorNode("test");
-    image.put(MapillaryImageUtils.KEY, key);
+    image.put(MapillaryURL.APIv4.ImageProperties.ID.toString(), key);
     image.setCoor(latLon);
-    image.put(MapillaryImageUtils.CAMERA_ANGLE, Double.toString(cameraAngle));
-    image.put(MapillaryImageUtils.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+    image.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+    image.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+      pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     return image;
   }
 
@@ -75,8 +98,9 @@ public class JsonImageDetailsDecoderTest {
     VectorNode image = new VectorNode("test");
     image.put(MapillaryImageUtils.IMPORTED_KEY, file);
     image.setCoor(latLon);
-    image.put(MapillaryImageUtils.CAMERA_ANGLE, Double.toString(cameraAngle));
-    image.put(MapillaryImageUtils.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+    image.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+    image.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+      pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     return image;
   }
 

@@ -14,6 +14,7 @@ public final class MapillaryKeys {
 
   // Common
   public static final String CAPTURED_AT = "captured_at";
+  @Deprecated
   public static final String KEY = "key";
   public static final String PANORAMIC = "pano";
   public static final String USER_KEY = "userkey";

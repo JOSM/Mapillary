@@ -5,6 +5,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 /**
  * This class exists to help initialize some items that fail when a security manager is installed
+ *
  * @author Taylor Smock
  */
 public class SecurityManagerUtils {
@@ -24,6 +25,7 @@ public class SecurityManagerUtils {
       Caches.ImageCache.getCache(MapillaryCache.Type.FULL_IMAGE);
       Caches.ImageCache.getCache(MapillaryCache.Type.THUMBNAIL);
       Caches.MapObjectIconCache.getInstance();
+      Caches.MetaDataCache.getInstance();
       // Ensure that the ForkJoin pools are already initialized
       MapillaryUtils.getForkJoinPool();
       MapillaryUtils.getForkJoinPool(MapillaryCache.class);

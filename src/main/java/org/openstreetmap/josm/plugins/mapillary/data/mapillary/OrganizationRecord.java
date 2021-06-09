@@ -33,27 +33,23 @@ public final class OrganizationRecord implements Serializable {
   private final String key;
   private String name;
   private String niceName;
-  private boolean privateRepository;
-  private boolean publicRepository;
   private ImageIcon avatar;
 
   private static final Map<String, OrganizationRecord> CACHE = new ConcurrentHashMap<>();
 
-  public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "", "", false, false);
+  public static final OrganizationRecord NULL_RECORD = new OrganizationRecord("", "", "", "");
 
   static {
     CACHE.put("", NULL_RECORD);
   }
 
-  private OrganizationRecord(String avatar, String description, String key, String name, String niceName,
-    boolean privateRepository, boolean publicRepository) {
-    this.avatar = createAvatarIcon(avatar, key);
+  private OrganizationRecord(String key, String slug, String name, String description) {
+    // TODO actually get the avatar icon
+    this.avatar = createAvatarIcon(null, key);
     this.description = description;
     this.key = key;
-    this.name = name;
-    this.niceName = niceName;
-    this.privateRepository = privateRepository;
-    this.publicRepository = publicRepository;
+    this.name = slug;
+    this.niceName = name;
   }
 
   // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
@@ -73,18 +69,14 @@ public final class OrganizationRecord implements Serializable {
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
 
-  public static OrganizationRecord getOrganization(String avatar, String description, String key, String name,
-    String niceName, boolean privateRepository, boolean publicRepository) {
+  public static OrganizationRecord getOrganization(String key, String slug, String name, String description) {
     boolean newRecord = !CACHE.containsKey(key);
-    OrganizationRecord record = CACHE.computeIfAbsent(key,
-      k -> new OrganizationRecord(avatar, description, key, name, niceName, privateRepository, publicRepository));
+    OrganizationRecord record = CACHE.computeIfAbsent(key, k -> new OrganizationRecord(k, slug, name, description));
     // TODO remove when getNewOrganization is done, and make vars final again
-    record.avatar = createAvatarIcon(avatar, key);
+    record.avatar = createAvatarIcon(null, key);
     record.description = description;
-    record.name = name;
-    record.niceName = niceName;
-    record.privateRepository = privateRepository;
-    record.publicRepository = publicRepository;
+    record.name = slug;
+    record.niceName = name;
     if (newRecord) {
       LISTENERS.fireEvent(l -> l.organizationAdded(record));
     }
@@ -96,12 +88,11 @@ public final class OrganizationRecord implements Serializable {
   }
 
   // OAuthUtils.addAuthenticationHeader returns the resource passed into it.
-  @SuppressWarnings("resource")
   private static OrganizationRecord getNewOrganization(String key) {
     // TODO check for API in v4 (preferably one that doesn't need user auth)
-    OrganizationRecord gr = new OrganizationRecord("", "", key, "", "", false, false);
+    OrganizationRecord gr = new OrganizationRecord(key, "", "", "");
     // Ensure that we aren't blocking the main EDT thread
-    MainApplication.worker.submit(() -> LISTENERS.fireEvent(l -> l.organizationAdded(gr)));
+    MainApplication.worker.execute(() -> LISTENERS.fireEvent(l -> l.organizationAdded(gr)));
     return gr;
   }
 
@@ -121,7 +112,7 @@ public final class OrganizationRecord implements Serializable {
    * @return The avatar for the organization
    */
   public ImageIcon getAvatar() {
-    return avatar;
+    return avatar != null ? avatar : ImageProvider.createBlankIcon(ImageSizes.DEFAULT);
   }
 
   /**
@@ -159,24 +150,6 @@ public final class OrganizationRecord implements Serializable {
    */
   public String getNiceName() {
     return niceName;
-  }
-
-  /**
-   * Check if an organization has a private repository
-   *
-   * @return {@code true} if the organization has a private repository
-   */
-  public boolean hasPrivateRepository() {
-    return privateRepository;
-  }
-
-  /**
-   * Check if an organization has a public repository
-   *
-   * @return {@code true} if the organization has a public repository
-   */
-  public boolean hasPublicRepository() {
-    return publicRepository;
   }
 
   public static void addOrganizationListener(OrganizationRecordListener listener) {

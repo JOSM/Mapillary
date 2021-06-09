@@ -16,7 +16,6 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
 import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
-import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryFilterChooseSigns;
@@ -25,7 +24,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShorcutsOnFocusGainedJSpinnerEditor;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.UserProfile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -47,9 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
-import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -256,7 +252,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
    */
   private void addImageQualityFilters(JPanel panel) {
     final JCheckBox qualityCheck = new JCheckBox(tr("Image Quality"));
-    final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(3, 1, 5, 1);
+    final SpinnerNumberModel spinnerQualityModel = new SpinnerNumberModel(0.6, 0, 1, 0.1);
     final JSpinner spinnerQuality = new JSpinner(spinnerQualityModel);
     DisableShorcutsOnFocusGainedJSpinnerEditor.disableShortcutsOnFocusGained(spinnerQuality);
     qualityCheck.addItemListener(l -> spinnerQuality.setEnabled(l.getStateChange() == ItemEvent.SELECTED));
@@ -265,11 +261,11 @@ public final class MapillaryFilterDialog extends ToggleDialog
     panel.add(spinnerQuality, GBC.eol());
 
     spinnerQualityModel
-      .addChangeListener(l -> this.shouldHidePredicate.qualityScore = spinnerQualityModel.getNumber().intValue());
+      .addChangeListener(l -> this.shouldHidePredicate.qualityScore = spinnerQualityModel.getNumber().floatValue());
     this.resetObjects.addListener(() -> spinnerQualityModel.setValue(3));
     this.resetObjects.addListener(() -> qualityCheck.setSelected(false));
     this.resetObjects.addListener(() -> spinnerQuality.setEnabled(false));
-    ResetListener setFields = () -> this.shouldHidePredicate.qualityScore = Integer.MIN_VALUE;
+    ResetListener setFields = () -> this.shouldHidePredicate.qualityScore = Float.MIN_VALUE;
     this.resetObjects.addListener(setFields);
     setFields.reset();
 
@@ -294,16 +290,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     final JPanel userSearchPanel = new JPanel();
     userSearchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-    final JosmTextField user = new DisableShortcutsOnFocusGainedTextField(10);
-    user.addActionListener(new UpdateAction());
-    // TODO remove with v4 API release
-    user.setEnabled(false);
-    // TODO remove next two lines
-    final LookAndFeel lookFeel = UIManager.getLookAndFeel();
-    user.setHint(tr("Disabled"));
-    user.setToolTipText(tr("No known API exists. This may be removed."));
-    userSearchPanel.add(new JLabel(tr("User")));
-    userSearchPanel.add(user, GBC.eol());
     organizationLabel.setToolTipText(tr("Organizations"));
     userSearchPanel.add(organizationLabel);
     userSearchPanel.add(this.organizations);
@@ -317,24 +303,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
     OrganizationRecord.addOrganizationListener(this);
     OrganizationRecord.getOrganizations().forEach(this::organizationAdded);
 
-    // Listeners
-    user.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        // Do nothing
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        shouldHidePredicate.user = user.getText();
-      }
-    });
     this.organizations.addItemListener(l -> this.shouldHidePredicate.organization = (OrganizationRecord) l.getItem());
 
-    this.resetObjects.addListener(() -> user.setText(""));
     this.resetObjects.addListener(() -> organizations.setSelectedItem(OrganizationRecord.NULL_RECORD));
     ResetListener setListener = () -> {
-      this.shouldHidePredicate.user = user.getText();
       this.shouldHidePredicate.organization = (OrganizationRecord) this.organizations.getSelectedItem();
     };
     this.resetObjects.addListener(setListener);
@@ -537,8 +509,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
     Instant startDateRefresh;
     OrganizationRecord organization;
     boolean smartAdd;
-    String user;
-    int qualityScore = Integer.MIN_VALUE;
+    float qualityScore = Float.MIN_VALUE;
 
     public ImageFilterPredicate() {
       this.updateLayerVisible();
@@ -570,10 +541,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
           && !this.cameraMake.equals(img.get("camera_make")))
         || (this.cameraModel != null && !this.cameraModel.trim().isEmpty()
           && !this.cameraModel.equals(img.get("camera_model")))
-        || (this.qualityScore != Integer.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
+        || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
           // The following line is to ensure that any images that *don't* have a quality score are shown when low
           // quality is OK.
-          || (this.qualityScore < 3 && MapillaryImageUtils.getQuality(img) == Integer.MIN_VALUE)))) {
+          || (this.qualityScore < 0.6f && MapillaryImageUtils.getQuality(img) == Float.MIN_VALUE)))) {
         return true;
       }
       if (!"".equals(MapillaryImageUtils.getKey(img))) {
@@ -582,10 +553,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         }
         if (this.onlySignsIsSelected && (ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false).isEmpty()
           || !checkSigns(ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false)))) {
-          return true;
-        }
-        UserProfile userProfile = Caches.UserProfileCache.getInstance().get(img.get(MapillaryKeys.USER_KEY));
-        if (!"".equals(this.user) && (userProfile == null || !this.user.equals(userProfile.getUsername()))) {
           return true;
         }
         if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && MapillaryImageUtils.getSequenceKey(img) != null

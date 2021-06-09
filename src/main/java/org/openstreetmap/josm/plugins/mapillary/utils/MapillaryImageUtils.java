@@ -14,6 +14,8 @@ import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.UncheckedParseException;
 import org.openstreetmap.josm.tools.date.DateUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.json.Json;
 import javax.json.JsonReader;
@@ -22,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
@@ -38,32 +41,18 @@ public final class MapillaryImageUtils {
   private MapillaryImageUtils() {
     /* No op */}
 
-  // Documented
-  public static final String KEY = "id";
-  public static final String CREATED_AT = "created_at";
-  public static final String UPDATED_AT = "updated_at";
-  public static final String CREATED_BY = "created_by";
-  public static final String OWNED_BY = "owned_by";
-  public static final String URL = "url";
-  // Undocumented (from v3)
-  public static final String PANORAMIC = "pano";
-  /** The base image url key (v3 sizes are 320, 640, 1024, 2048) */
-  public static final String BASE_IMAGE_KEY = "image_url_";
+  /** The base image url key pattern (v4 sizes are 256, 1024, 2048) */
+  public static final Pattern BASE_IMAGE_KEY = Pattern.compile("^thumb_([0-9]+)_url$");
   // Image specific
   /** Check if the node has one of the Mapillary keys */
   public static final Predicate<INode> IS_IMAGE = node -> node != null
-    && (node.hasKey(MapillaryKeys.KEY) || node.hasKey("key") // TODO drop "key" check (when v4 API transition is done)
-      || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
+    && (node.hasKey(MapillaryURL.APIv4.ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
   /** Check if the node is for a panoramic image */
   public static final Predicate<INode> IS_PANORAMIC = node -> node != null
-    && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(PANORAMIC));
+    && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString()));
 
   public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
-    && node.getKeys().keySet().stream().anyMatch(key -> key.startsWith(BASE_IMAGE_KEY));
-  public static final String CAMERA_ANGLE = "compass_angle";
-  public static final String QUALITY_SCORE = "quality_score";
-  public static final String SEQUENCE_KEY = "skey";
-  public static final String SEQUENCE_KEY_OLD = "sequence_key";
+    && node.getKeys().keySet().stream().anyMatch(key -> BASE_IMAGE_KEY.matcher(key).matches());
   public static final String IMPORTED_KEY = "import_file";
 
   /**
@@ -74,7 +63,14 @@ public final class MapillaryImageUtils {
   @Deprecated
   private static final Pattern NUMBERS = Pattern.compile("\\d+");
 
-  public static IWay<?> getSequence(INode image) {
+  /**
+   * Get the sequence for an image
+   *
+   * @param image the image to get a sequence for
+   * @return The sequence, if it exists
+   */
+  @Nullable
+  public static IWay<?> getSequence(@Nullable INode image) {
     if (image == null) {
       return null;
     }
@@ -87,7 +83,8 @@ public final class MapillaryImageUtils {
    * @param img The image
    * @return The instant the image was created
    */
-  public static Instant getDate(INode img) {
+  @Nonnull
+  public static Instant getDate(@Nonnull INode img) {
     if (Instant.EPOCH.equals(img.getInstant()) && !Instant.EPOCH.equals(getCapturedAt(img))) {
       try {
         Instant instant = getCapturedAt(img);
@@ -104,17 +101,17 @@ public final class MapillaryImageUtils {
    * Get the quality score for an image
    *
    * @param img The image to get the quality score for
-   * @return The quality score (1, 2, 3, 4, 5, or {@link Integer#MIN_VALUE})
+   * @return The quality score (1, 2, 3, 4, 5, or {@link Float#MIN_VALUE})
    */
-  public static int getQuality(INode img) {
-    if (img.hasKey(MapillaryImageUtils.QUALITY_SCORE)) {
+  public static float getQuality(@Nonnull INode img) {
+    if (img.hasKey(MapillaryURL.APIv4.ImageProperties.QUALITY_SCORE.toString())) {
       try {
-        return Integer.parseInt(img.get(MapillaryImageUtils.QUALITY_SCORE));
+        return Float.parseFloat(img.get(MapillaryURL.APIv4.ImageProperties.QUALITY_SCORE.toString()));
       } catch (final NumberFormatException e) {
         Logging.error(e);
       }
     }
-    return Integer.MIN_VALUE;
+    return Float.MIN_VALUE;
   }
 
   /**
@@ -123,8 +120,15 @@ public final class MapillaryImageUtils {
    * @param img The image to get the angle for
    * @return The angle (radians), or {@link Double#NaN}.
    */
-  public static double getAngle(INode img) {
-    return img.hasKey(CAMERA_ANGLE) ? Math.toRadians(Double.parseDouble(img.get(CAMERA_ANGLE))) : Double.NaN;
+  public static double getAngle(@Nonnull INode img) {
+    if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())
+      && img.hasKey(MapillaryURL.APIv4.ImageProperties.COMPUTED_COMPASS_ANGLE.toString())) {
+      return Math
+        .toRadians(Double.parseDouble(img.get(MapillaryURL.APIv4.ImageProperties.COMPUTED_COMPASS_ANGLE.toString())));
+    }
+    return img.hasKey(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString())
+      ? Math.toRadians(Double.parseDouble(img.get(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString())))
+      : Double.NaN;
   }
 
   /**
@@ -133,7 +137,8 @@ public final class MapillaryImageUtils {
    * @param img The image to get the file for
    * @return The image file. May be {@code null}.
    */
-  public static File getFile(INode img) {
+  @Nullable
+  public static File getFile(@Nonnull INode img) {
     return img.hasKey(IMPORTED_KEY) ? new File(img.get(IMPORTED_KEY)) : null;
   }
 
@@ -143,7 +148,8 @@ public final class MapillaryImageUtils {
    * @param image The node with image information
    * @return The future with a potential image (image may be {@code null})
    */
-  public static Future<BufferedImage> getImage(INode image) {
+  @Nonnull
+  public static Future<BufferedImage> getImage(@Nonnull INode image) {
     // TODO use URL field in v4
     if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
       CompletableFuture<BufferedImage> completableFuture = new CompletableFuture<>();
@@ -169,13 +175,11 @@ public final class MapillaryImageUtils {
    * @param image The image to get the captured at time
    * @return The time the image was captured at, or {@link Instant#EPOCH} if not known.
    */
-  private static Instant getCapturedAt(INode image) {
-    // TODO did this change (captured_at -> created_at)?
+  @Nonnull
+  private static Instant getCapturedAt(@Nonnull INode image) {
     String time = "";
-    if (image.hasKey("captured_at")) {
-      time = image.get("captured_at");
-    } else if (image.hasKey(CREATED_AT)) {
-      time = image.get(CREATED_AT);
+    if (image.hasKey(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString())) {
+      time = image.get(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString());
     }
     if (NUMBERS.matcher(time).matches()) {
       return Instant.ofEpochMilli(Long.parseLong(time));
@@ -193,18 +197,14 @@ public final class MapillaryImageUtils {
    * Get The key for a node
    *
    * @param image The image
-   * @return The key, or {@code ""} if no key exists
+   * @return The key, or {@code null} if no key exists
    */
-  public static String getKey(INode image) {
-    if (image != null) {
-      if (image.hasKey(KEY)) {
-        return image.get(KEY);
-      } else if (image.hasKey("key")) {
-        // TODO remove once v4 API transition is done
-        return image.get("key");
-      }
+  @Nullable
+  public static String getKey(@Nullable INode image) {
+    if (image != null && image.hasKey(MapillaryURL.APIv4.ImageProperties.ID.toString())) {
+      return image.get(MapillaryURL.APIv4.ImageProperties.ID.toString());
     }
-    return "";
+    return null;
   }
 
   /**
@@ -213,31 +213,24 @@ public final class MapillaryImageUtils {
    * @param image The image with a sequence key
    * @return The sequence key or {@code null} if no sequence key exists
    */
-  public static String getSequenceKey(INode image) {
+  @Nullable
+  public static String getSequenceKey(@Nullable INode image) {
     if (image != null) {
-      for (String key : new String[] { SEQUENCE_KEY, SEQUENCE_KEY_OLD, "sequence_id" }) {
-        if (image.hasKey(key)) {
-          return image.get(key);
-        }
+      if (image.hasKey(MapillaryURL.APIv4.ImageProperties.SEQUENCE.toString())) {
+        return image.get(MapillaryURL.APIv4.ImageProperties.SEQUENCE.toString());
+      } else if (image.hasKey(MapillaryURL.APIv4.ImageProperties.SEQUENCE_ID.toString())) {
+        return image.get(MapillaryURL.APIv4.ImageProperties.SEQUENCE_ID.toString());
       }
     }
     return null;
   }
 
   /**
-   * Get the user key
+   * Download image details
    *
-   * @param mapillaryImage The image with the user key
-   * @return The user key, or an empty string
+   * @param images The image details to download
    */
-  public static String getUser(INode mapillaryImage) {
-    if (mapillaryImage != null && mapillaryImage.hasKey(MapillaryKeys.USER_KEY)) {
-      return mapillaryImage.get(MapillaryKeys.USER_KEY);
-    }
-    return "";
-  }
-
-  public static void downloadImageDetails(Collection<VectorNode> images) {
+  public static void downloadImageDetails(@Nonnull Collection<VectorNode> images) {
     downloadImageDetails(images.toArray(new VectorNode[0]));
   }
 
@@ -246,7 +239,7 @@ public final class MapillaryImageUtils {
    *
    * @param images The image(s) to get additional details for
    */
-  public static void downloadImageDetails(VectorNode... images) {
+  public static void downloadImageDetails(@Nonnull VectorNode... images) {
     MapillaryUtils.getForkJoinPool().execute(() -> {
       final String[] keys = Stream.of(images).filter(Objects::nonNull).map(MapillaryImageUtils::getKey)
         .filter(key -> !"".equals(key)).toArray(String[]::new);
@@ -259,19 +252,21 @@ public final class MapillaryImageUtils {
    *
    * @param keys the keys to get details for
    */
-  private static void downloadImageDetails(String... keys) {
-    if (keys.length > 0) {
-      java.net.URL imageUrl = MapillaryURL.APIv3.getImage(keys);
-      HttpClient client = HttpClient.create(imageUrl);
+  private static void downloadImageDetails(@Nonnull String... keys) {
+    Objects.requireNonNull(keys, "Image keys cannot be null");
+    for (String key : keys) {
+      final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
+      final HttpClient client;
       final HttpClient.Response response;
       try {
+        client = HttpClient.create(new URL(imageUrl));
         response = client.connect();
       } catch (IOException e) {
         Logging.error(e);
         return;
       }
       try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
-        JsonDecoder.decodeFeatureCollection(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
+        JsonDecoder.decodeData(jsonReader.readObject(), JsonImageDetailsDecoder::decodeImageInfos);
       } catch (IOException e) {
         Logging.error(e);
       }
@@ -284,12 +279,17 @@ public final class MapillaryImageUtils {
    * @param img The image to get an organization for
    * @return The organization (never null, may be {@link OrganizationRecord#NULL_RECORD}).
    */
-  public static OrganizationRecord getOrganization(INode img) {
-    final String organizationKey = "organization_key";
-    if (img.hasKey(organizationKey)) {
-      return OrganizationRecord.getOrganization(img.get(organizationKey));
-    } else if (getSequence(img) != null && getSequence(img).hasKey(organizationKey)) {
-      return OrganizationRecord.getOrganization(getSequence(img).get(organizationKey));
+  @Nonnull
+  public static OrganizationRecord getOrganization(@Nullable INode img) {
+    if (img != null) {
+      final String organizationKey = MapillaryURL.APIv4.ImageProperties.ORGANIZATION_ID.toString();
+      if (img.hasKey(organizationKey)) {
+        return OrganizationRecord.getOrganization(img.get(organizationKey));
+      }
+      IWay<?> sequence = getSequence(img);
+      if (sequence != null && sequence.hasKey(organizationKey)) {
+        return OrganizationRecord.getOrganization(sequence.get(organizationKey));
+      }
     }
     return OrganizationRecord.NULL_RECORD;
   }

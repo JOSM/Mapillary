@@ -13,6 +13,8 @@ import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -54,9 +56,10 @@ public class MapillarySequenceUtils {
    * @param next {@code true} for next, {@code false} for previous
    * @return The expected node, if it exists
    */
-  public static INode getNextOrPrevious(INode node, NextOrPrevious next) {
-    Collection<IWay> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance).map(IWay.class::cast)
-      .distinct().collect(Collectors.toList());
+  @Nullable
+  public static INode getNextOrPrevious(@Nonnull INode node, @Nullable NextOrPrevious next) {
+    Collection<IWay<?>> connectedWays = node.getReferrers().stream().filter(IWay.class::isInstance)
+      .map(IWay.class::cast).map(way -> (IWay<?>) way).distinct().collect(Collectors.toList());
     if (connectedWays.isEmpty() || connectedWays.size() > 2) {
       return null;
     }
@@ -101,7 +104,8 @@ public class MapillarySequenceUtils {
       final BBox searchBBox = new BBox();
       searchBBox.addLatLon(nodeOnCurrentSequence.getCoor(), 0.001);
       List<IWay<?>> ways = new ArrayList<>(node.getDataSet().searchWays(searchBBox));
-      String sequenceKey = node.hasKey(MapillaryImageUtils.SEQUENCE_KEY) ? node.get(MapillaryImageUtils.SEQUENCE_KEY)
+      final String sequenceKey = MapillaryImageUtils.getSequenceKey(node) != null
+        ? MapillaryImageUtils.getSequenceKey(node)
         : "";
       ways.removeIf(tWay -> !tWay.hasKeys());
       ways.removeIf(tWay -> !sequenceKey.equals(tWay.get(KEY)));
@@ -178,11 +182,12 @@ public class MapillarySequenceUtils {
    * @param key The key to download
    * @return The downloaded sequence
    */
-  private static synchronized IWay<?> downloadSequence(String key) {
-    URL sequenceUrl = MapillaryURL.APIv3.getSequence(key);
-    HttpClient client = HttpClient.create(sequenceUrl);
-    HttpClient.Response response;
+  private static synchronized IWay<?> downloadSequence(final String key) {
+    final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
+    final HttpClient client;
+    final HttpClient.Response response;
     try {
+      client = HttpClient.create(new URL(sequenceUrl));
       response = client.connect();
     } catch (IOException e) {
       Logging.error(e);
@@ -190,7 +195,7 @@ public class MapillarySequenceUtils {
     }
     try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
       JsonObject json = jsonReader.readObject();
-      Collection<VectorWay> seq = JsonDecoder.decodeFeatureCollection(json, JsonSequencesDecoder::decodeSequence);
+      Collection<VectorWay> seq = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
       VectorWay sequence = seq.stream().findFirst().orElse(null);
       if (sequence != null && MapillaryLayer.hasInstance()) {
         MapillaryLayer.getInstance().getData().addPrimitive(sequence);

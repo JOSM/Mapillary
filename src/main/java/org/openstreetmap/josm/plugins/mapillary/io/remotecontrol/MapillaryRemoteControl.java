@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.io.remotecontrol;
 import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.remotecontrol.PermissionPrefWithDefault;
@@ -88,7 +89,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
     // This will create a mapillary layer if one does not already exist
     Collection<INode> nodes = new HashSet<>();
     if (mapillaryImages.length > 0) {
-      Map<String, Collection<INode>> images = GuiHelper
+      Map<String, Collection<VectorNode>> images = GuiHelper
         .runInEDTAndWaitAndReturn(() -> MapillaryDownloader.downloadImages(mapillaryImages));
       mapillarySequences.addAll(images.keySet());
       nodes.addAll(images.entrySet().stream().flatMap(e -> e.getValue().stream()).map(INode::getCoor)
@@ -96,8 +97,7 @@ public class MapillaryRemoteControl extends RequestHandler.RawURLParseRequestHan
       List<INode> addedImages = images.entrySet().stream().flatMap(entry -> entry.getValue().stream())
         .collect(Collectors.toList());
       if (addedImages.size() == 1) {
-        GuiHelper
-          .runInEDTAndWait(() -> MapillaryLayer.getInstance().getData().setSelected(addedImages.iterator().next()));
+        GuiHelper.runInEDTAndWait(() -> MapillaryLayer.getInstance().setSelected(addedImages.iterator().next()));
         // TODO zoom to selected image?
       }
     }

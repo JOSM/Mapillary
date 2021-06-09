@@ -117,4 +117,35 @@ public final class Caches {
       return cache;
     }
   }
+
+  /**
+   * A cache for metadata objects
+   */
+  public static class MetaDataCache extends CacheProxy<String, String> {
+    private static MetaDataCache instance;
+
+    /**
+     * Get the singleton instance of the cache
+     *
+     * @return The cache object
+     */
+    public static CacheProxy<String, String> getInstance() {
+      synchronized (MetaDataCache.class) {
+        if (instance == null) {
+          instance = new MetaDataCache();
+        }
+      }
+      return instance;
+    }
+
+    @Override
+    protected CacheAccess<String, String> createNewCache() {
+      final CacheAccess<String, String> cache = JCSCacheManager.getCache("metadata", 100, 100000,
+        getCacheDirectory().getPath());
+      IElementAttributes atts = cache.getDefaultElementAttributes();
+      atts.setMaxLife(604_800_000); // Sets lifetime to 7 days (604800000=1000*60*60*24*7)
+      cache.setDefaultElementAttributes(atts);
+      return cache;
+    }
+  }
 }

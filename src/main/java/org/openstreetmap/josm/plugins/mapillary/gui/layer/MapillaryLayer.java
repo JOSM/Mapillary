@@ -60,6 +60,7 @@ import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 
+import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -94,8 +95,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils.KEY;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -140,7 +139,13 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   /** The images that have been viewed since the last upload */
   private final ConcurrentHashMap<DataSet, Set<INode>> imageViewedMap = new ConcurrentHashMap<>();
 
+  /** {@code true} if this layer is destroyed */
   private boolean destroyed;
+
+  /** Selected node ids */
+  @Nonnull
+  private List<String> selected = Collections.emptyList();
+
   private static AlphaComposite fadeComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
     MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
   private static Point2D standardImageCentroid = null;
@@ -259,7 +264,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (this.getData() == null) {
       return;
     }
-    this.getData().getNodes().parallelStream().filter(node -> node.hasKey(KEY)).forEach(img -> img.setVisible(visible));
+    this.getData().getNodes().parallelStream().filter(node -> MapillaryImageUtils.getKey(node) != null)
+      .forEach(img -> img.setVisible(visible));
     if (MainApplication.getMap() != null) {
       MapillaryFilterDialog.getInstance().refresh();
     }
@@ -286,7 +292,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
     // Draw the blue and red line
-    final INode selectedImage = this.getData().getSelectedNodes().stream().findFirst().orElse(null);
+    final INode selectedImage = this.getSelectedImages().findFirst().orElse(null);
     synchronized (this) {
       for (int i = 0; i < this.nearestImages.size(); i++) {
         if (i % 2 == 0) {
@@ -329,8 +335,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
     // Paint selected images last. Not particularly worried about painting too much, since most people don't select
     // thousands of images.
-    for (INode imageAbs : this.getData().getSelectedNodes()) {
-      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))) {
+    for (INode imageAbs : this.getSelectedImages().collect(Collectors.toList())) {
+      if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))
+        && this.selected.contains(MapillaryImageUtils.getKey(imageAbs))) {
         drawImageMarker(g, imageAbs);
       }
     }
@@ -364,9 +371,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       Logging.warn("An image is not painted, because it is null or has no LatLon!");
       return;
     }
-    final INode selectedImg = getData().getSelectedNodes().stream().findFirst().orElse(null);
+    final INode selectedImg = this.getSelectedImages().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
-      && !getData().getSelectedNodes().contains(img)
+      && this.getSelectedImages().noneMatch(img::equals)
       && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null
         && !MapillaryImageUtils.getSequenceKey(img).equals(MapillaryImageUtils.getSequenceKey(selectedImg))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
@@ -381,7 +388,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     // Determine colors
     final Color directionC;
     final Image i;
-    if (selectedImg != null && getData().getSelectedNodes().contains(img)) {
+    if (selectedImg != null && this.getSelectedImages().anyMatch(img::equals)) {
       i = SELECTED_IMAGE.getImage();
       directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
     } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
@@ -405,8 +412,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     // This _must_ be set after operations complete (see JOSM 19516 for more information)
     AffineTransform backup = g.getTransform();
     // convert the angle to radians from degrees
-    // TODO check after v4 transition
-    double angle = Math.toRadians(MapillaryImageUtils.getAngle(img));
+    double angle = MapillaryImageUtils.getAngle(img);
 
     angle = Double.isNaN(angle) ? 0 : angle;
     if (Objects.equals(selectedImg, img))
@@ -518,8 +524,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   @Override
   public Object getInfoComponent() {
-    Map<String, List<VectorNode>> nodeCollection = getData().getNodes().stream().filter(node -> node.hasKey(KEY))
-      .collect(Collectors.groupingBy(node -> node.get(MapillaryImageUtils.SEQUENCE_KEY)));
+    Map<String, List<VectorNode>> nodeCollection = getData().getNodes().stream()
+      .filter(node -> MapillaryImageUtils.getKey(node) != null)
+      .collect(Collectors.groupingBy(MapillaryImageUtils::getSequenceKey));
     IntSummaryStatistics seqSizeStats = nodeCollection.values().stream().mapToInt(List::size).summaryStatistics();
     final long numTotal = seqSizeStats.getSum();
     return new StringBuilder(I18n.tr("Mapillary layer")).append('\n')
@@ -631,10 +638,10 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (MapillaryMainDialog.hasInstance()) {
       selected = MapillaryMainDialog.getInstance().getImage();
     } else {
-      selected = getData().getSelectedNodes().stream().findFirst().orElse(null);
+      selected = this.getSelectedImages().findFirst().orElse(null);
     }
     INode[] newNearestImages;
-    if (selected != null && selected.hasKey(KEY)) {
+    if (MapillaryImageUtils.getKey(selected) != null) {
       newNearestImages = getNearestImagesFromDifferentSequences(selected, 2);
     } else {
       newNearestImages = new INode[0];
@@ -722,6 +729,44 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
   public void removeTileDownloadListener(final MVTTile.TileListener tileListener) {
     this.tileListeners.removeListener(tileListener);
+  }
+
+  /**
+   * Set the selected nodes. This is needed since Mapillary tile entities only have unique ids within a tile (this is
+   * arguable a spec violation,
+   * depending upon how it is read).
+   *
+   * @see #getSelectedImages()
+   * @param <N> The node type
+   * @param nodes The nodes that are actually selected.
+   */
+  public <N extends INode> void setSelected(Collection<N> nodes) {
+    this.selected = nodes.stream().map(MapillaryImageUtils::getKey).collect(Collectors.toList());
+    this.getData().setSelected(nodes);
+  }
+
+  /**
+   * Set the selected nodes. This is needed since Mapillary tile entities only have unique ids within a tile (this is
+   * arguable a spec violation,
+   * depending upon how it is read).
+   *
+   * @see #getSelectedImages()
+   * @param <N> The node type
+   * @param nodes The nodes that are actually selected.
+   */
+  public <N extends INode> void setSelected(N... nodes) {
+    this.setSelected(Arrays.asList(nodes));
+  }
+
+  /**
+   * Get the selected images.
+   *
+   * @see #setSelected for an explanation why this is necessary.
+   * @return The selected images.
+   */
+  public Stream<VectorNode> getSelectedImages() {
+    return this.getData().getSelectedNodes().stream()
+      .filter(node -> this.selected.contains(MapillaryImageUtils.getKey(node)));
   }
 
   private static class NearestImgToTargetComparator implements Comparator<INode> {

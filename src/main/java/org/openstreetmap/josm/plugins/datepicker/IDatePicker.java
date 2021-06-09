@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.datepicker;
 import java.time.Instant;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
 import org.openstreetmap.josm.plugins.datepicker.impl.DatePickerSwing;
@@ -23,13 +24,14 @@ public interface IDatePicker<T extends JComponent> {
    *
    * @param date The date to set
    */
-  void setInstant(Instant date);
+  void setInstant(@Nonnull Instant date);
 
   /**
    * Get the date
    *
    * @return The date
    */
+  @Nonnull
   Instant getInstant();
 
   /**
@@ -37,6 +39,7 @@ public interface IDatePicker<T extends JComponent> {
    *
    * @return The component to be added to a UI
    */
+  @Nonnull
   T getComponent();
 
   /**
@@ -49,7 +52,7 @@ public interface IDatePicker<T extends JComponent> {
    *
    * @param function The function to call when the date changes
    */
-  void addEventHandler(Consumer<IDatePicker<?>> function);
+  void addEventHandler(@Nonnull Consumer<IDatePicker<?>> function);
 
   /**
    * Get a new date picker. The implementation may change. Only rely on this
@@ -58,6 +61,7 @@ public interface IDatePicker<T extends JComponent> {
    * @return A new date picker
    */
   @SuppressWarnings("unchecked")
+  @Nonnull
   static IDatePicker<JComponent> getNewDatePicker() {
     String datePicker = Config.getPref().get("datepicker.classname",
       "org.openstreetmap.josm.plugins.datepicker.impl.DatePickerJDatePicker");

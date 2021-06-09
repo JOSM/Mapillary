@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.actions;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Dimension;
@@ -38,6 +39,7 @@ import org.openstreetmap.josm.tools.Shortcut;
 public class MapillaryExportAction extends JosmAction {
 
   private static final long serialVersionUID = 6009490043174837948L;
+  private static final String EXPORT_MAPILLARY_IMAGES = marktr("Export Mapillary images");
 
   private MapillaryExportDialog dialog;
 
@@ -45,9 +47,9 @@ public class MapillaryExportAction extends JosmAction {
    * Main constructor.
    */
   public MapillaryExportAction() {
-    super(tr("Export Mapillary images"), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
-      tr("Export Mapillary images"), Shortcut.registerShortcut("mapillary:exportMapillaryImages",
-        tr("Export Mapillary images"), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
+    super(tr(EXPORT_MAPILLARY_IMAGES), new ImageProvider(MapillaryPlugin.LOGO).setSize(ImageSizes.DEFAULT),
+      tr(EXPORT_MAPILLARY_IMAGES), Shortcut.registerShortcut("mapillary:exportMapillaryImages",
+        tr(EXPORT_MAPILLARY_IMAGES), KeyEvent.CHAR_UNDEFINED, Shortcut.NONE),
       false, "mapillary:exportMapillaryImages", true);
     this.setEnabled(false);
   }
@@ -78,16 +80,12 @@ public class MapillaryExportAction extends JosmAction {
         Set<INode> images = new ConcurrentSkipListSet<>();
         for (INode image : MapillaryLayer.getInstance().getData().getSelectedNodes().stream()
           .filter(MapillaryImageUtils.IS_IMAGE).collect(Collectors.toSet())) {
-          if (image.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
+          if (MapillaryImageUtils.getSequenceKey(image) != null) {
             if (!images.contains(image)) {
-              if (image.hasKey(MapillaryImageUtils.SEQUENCE_KEY)) {
-                String sequence = image.get(MapillaryImageUtils.SEQUENCE_KEY);
-                Set<INode> tImages = image.getDataSet().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
-                  .filter(i -> sequence.equals(i.get(MapillaryImageUtils.SEQUENCE_KEY))).collect(Collectors.toSet());
-                images.addAll(tImages);
-              } else {
-                images.add(image);
-              }
+              String sequence = MapillaryImageUtils.getSequenceKey(image);
+              Set<INode> tImages = image.getDataSet().getNodes().stream().filter(MapillaryImageUtils.IS_IMAGE)
+                .filter(i -> sequence.equals(MapillaryImageUtils.getSequenceKey(i))).collect(Collectors.toSet());
+              images.addAll(tImages);
             }
           } else {
             images.add(image);
