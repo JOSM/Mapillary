@@ -2,11 +2,14 @@
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import org.openstreetmap.josm.data.cache.CacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntryAttributes;
 import org.openstreetmap.josm.data.cache.ICachedLoaderListener;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -16,6 +19,11 @@ import org.openstreetmap.josm.tools.Logging;
  */
 public final class CacheUtils {
 
+  /**
+   * Get the default number of keys in a Mapillary image node.
+   */
+  public static final byte MAPILLARY_DEFAULT_KEY_LENGTH = (byte) Stream
+    .of("captured_at", "id", "sequence_id", "organization_id", "is_pano").count();
   private static final IgnoreDownload IGNORE_DOWNLOAD = new IgnoreDownload();
 
   /** Picture quality */
@@ -54,6 +62,14 @@ public final class CacheUtils {
    *        both.)
    */
   public static void downloadPicture(INode img, PICTURE pic) {
+    if (img.getNumKeys() <= MAPILLARY_DEFAULT_KEY_LENGTH) {
+      MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(img));
+      if (img.getNumKeys() <= MAPILLARY_DEFAULT_KEY_LENGTH) {
+        return;
+      }
+      downloadPicture(img, pic);
+      return;
+    }
     boolean thumbnail = new MapillaryCache(img, MapillaryCache.Type.THUMBNAIL).get() == null
       && (PICTURE.BOTH.equals(pic) || PICTURE.THUMBNAIL.equals(pic));
     boolean fullImage = new MapillaryCache(img, MapillaryCache.Type.FULL_IMAGE).get() == null

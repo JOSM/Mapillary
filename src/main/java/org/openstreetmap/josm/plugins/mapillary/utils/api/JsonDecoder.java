@@ -77,6 +77,11 @@ public final class JsonDecoder {
     @Nonnull final Function<JsonValue, Collection<T>> featureDecoder) {
     Objects.requireNonNull(json, "JSON cannot be null");
     Objects.requireNonNull(featureDecoder, "The features must be decoded into something.");
+    // Check if there was an error -- this could be due to API key limits, or some other issue.
+    if (json.containsKey("error")) {
+      Logging.error("Mapillary API error: {0}", json);
+      return Collections.emptyList();
+    }
     if (json.containsKey("data")) {
       final JsonValue data = json.get("data");
       if (data.getValueType() != JsonValue.ValueType.ARRAY && data.getValueType() != JsonValue.ValueType.OBJECT) {

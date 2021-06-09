@@ -19,6 +19,7 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
@@ -120,7 +121,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         if (MapillaryImageUtils.getKey(nextImage) != null
           && (imageCache.get(MapillaryImageUtils.getKey(nextImage)) == null)) {
           INode current = nextImage;
-          pool.execute(() -> CacheUtils.downloadPicture(current));
+          pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
         }
         nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
       }
@@ -128,7 +129,39 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         if (MapillaryImageUtils.getKey(prevImage) != null
           && (imageCache.get(MapillaryImageUtils.getKey(prevImage)) == null)) {
           INode current = prevImage;
-          pool.execute(() -> CacheUtils.downloadPicture(current));
+          pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
+        }
+        prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage, MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
+      }
+    }
+    prefetchImageDetails(10 * prefetchCount, currentImage);
+  }
+
+  /**
+   * Prefetch image details forward and behind
+   *
+   * @param prefetchCount The number of images to prefetch ahead and behind
+   * @param currentImage The current image
+   */
+  private static void prefetchImageDetails(final int prefetchCount, final INode currentImage) {
+    // Prefetch
+    final ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
+    INode nextImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
+      MapillarySequenceUtils.NextOrPrevious.NEXT);
+    INode prevImage = MapillarySequenceUtils.getNextOrPrevious(currentImage,
+      MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
+    for (int i = 0; i < prefetchCount; i++) {
+      if (nextImage != null) {
+        if (MapillaryImageUtils.getKey(nextImage) != null) {
+          INode current = nextImage;
+          pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
+        }
+        nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
+      }
+      if (prevImage != null) {
+        if (MapillaryImageUtils.getKey(prevImage) != null) {
+          INode current = prevImage;
+          pool.execute(() -> MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(current)));
         }
         prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage, MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
       }

@@ -9,6 +9,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
@@ -30,6 +31,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MapillaryURLWireMock
@@ -81,6 +83,26 @@ public class JsonImageDetailsDecoderTest {
       assertEquals(Math.toRadians(336.74), MapillaryImageUtils.getAngle(i_135511895288847), delta);
       assertEquals(-108.57081597222, i_135511895288847.lon(), delta);
       assertEquals(39.068354972222, i_135511895288847.lat(), delta);
+    }
+  }
+
+  @Test
+  @MapillaryURLWireMockErrors(MapillaryURLWireMockErrors.Type.APPLICATION_REQUEST_LIMIT_REACHED)
+  void testDecodeImageInfosWithFetchErrorsApplicationRequestLimitReached() throws IOException {
+    final String[] images = new String[] { "148137757289079", "311799370533334", "4235112816526838", "464249047982277",
+      "308609047601518", "135511895288847", "311681117131457", };
+
+    final VectorDataSet data = new VectorDataMock();
+    Stream.of(images).map(image -> createDownloadedImage(image, LatLon.ZERO, 0, false)).forEach(data::addPrimitive);
+
+    for (String image : images) {
+      final URL url = new URL(
+        MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
+      final HttpClient client = HttpClient.create(url);
+      final HttpClient.Response response = client.connect();
+      JsonReader reader = Json.createReader(response.getContentReader());
+      assertDoesNotThrow(() -> JsonDecoder.decodeData(reader.readObject(),
+        value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
     }
   }
 

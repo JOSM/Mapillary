@@ -17,6 +17,7 @@ import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.actions.SelectNextImageAction;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkListener;
 import org.openstreetmap.josm.plugins.mapillary.actions.WalkThread;
+import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
@@ -449,7 +450,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       this.updateButtonStates(currentImage);
 
       if (MapillaryImageUtils.getKey(currentImage) != null) {
-        if (currentImage.getNumKeys() < 5) {
+        if (currentImage.getNumKeys() <= CacheUtils.MAPILLARY_DEFAULT_KEY_LENGTH) {
           MainApplication.worker.submit(() -> {
             MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
             this.updateImage(fullQuality);

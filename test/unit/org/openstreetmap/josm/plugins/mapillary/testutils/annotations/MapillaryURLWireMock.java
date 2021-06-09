@@ -11,6 +11,7 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.matching.AnythingPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -113,7 +114,9 @@ public @interface MapillaryURLWireMock {
         fail(unmatched.stream().map(request -> request.getUrl())
           .collect(Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
       }
-      server.resetRequests();
+      server.resetAll();
+      List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
+      stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast).forEach(server::addStubMapping);
     }
 
     @Override
@@ -147,6 +150,7 @@ public @interface MapillaryURLWireMock {
           "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
           .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
             "application/x-protobuf", "application/protobuf")));
+      context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
       // Only allow real Mapillary API calls in integration tests.
       if (context.getElement().isPresent()
         && AnnotationSupport.findAnnotation(context.getElement().get(), MapillaryURLWireMock.class)
