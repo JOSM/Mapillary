@@ -134,7 +134,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         prevImage = MapillarySequenceUtils.getNextOrPrevious(prevImage, MapillarySequenceUtils.NextOrPrevious.PREVIOUS);
       }
     }
-    prefetchImageDetails(10 * prefetchCount, currentImage);
+    prefetchImageDetails(2 * prefetchCount, currentImage);
   }
 
   /**
