@@ -28,7 +28,7 @@ public final class MapillaryURL {
    * The API key for v4 -- cannot be final since tests need to change it (the '|' characters kill WireMock's pattern
    * replacement)
    */
-  private static String ACCESS_ID = "MLY|4280585711960869|80f129f78b6052f608d172c467b1d047";
+  private static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
 
   /**
    * Mapillary v4 API
