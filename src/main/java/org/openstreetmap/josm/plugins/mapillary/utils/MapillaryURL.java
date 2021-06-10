@@ -43,7 +43,7 @@ public final class MapillaryURL {
     /** The base URL to get metadata */
     private static String baseMetaDataUrl = "https://graph.mapillary.com/";
     /** The base URL for tiles */
-    private static String baseTileUrl = "https://facebook.com/maps/vtp/";
+    private static String baseTileUrl = "https://tiles.mapillary.com/maps/vtp/";
 
     /**
      * Properties for images
@@ -145,7 +145,7 @@ public final class MapillaryURL {
      * @return A URL (String)
      */
     public static String getTrafficSigns() {
-      return baseTileUrl + "mly_map_feature_traffic_sign/12/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly_map_feature_traffic_sign/2/{z}/{x}/{y}" + queryString(null);
     }
 
     /**
@@ -154,7 +154,7 @@ public final class MapillaryURL {
      * @return A URL (String)
      */
     public static String getObjectDetections() {
-      return baseTileUrl + "mly_map_feature_point/12/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly_map_feature_point/2/{z}/{x}/{y}" + queryString(null);
     }
 
     /**
@@ -164,9 +164,9 @@ public final class MapillaryURL {
      */
     public static String getImages() {
       if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
-        return baseTileUrl + "mly1_computed_public/12/{z}/{x}/{y}" + queryString(null);
+        return baseTileUrl + "mly1_computed_public/2/{z}/{x}/{y}" + queryString(null);
       }
-      return baseTileUrl + "mly1_public/12/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly1_public/2/{z}/{x}/{y}" + queryString(null);
     }
 
     /**
