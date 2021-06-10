@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.model;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -86,8 +87,13 @@ public class MapObject extends KeyIndexedObject {
       if (downloadedIcon == null) {
         try (CachedFile image = new CachedFile(iconUrlGen.apply(objectTypeID).toExternalForm());
           InputStream inputStream = image.getInputStream()) {
-          downloadedIcon = new ImageIcon(ImageIO.read(inputStream));
-          Logging.warn("Downloaded icon. ID known to the icon list: " + objectTypeID);
+          final BufferedImage imageBuffer = ImageIO.read(inputStream);
+          if (imageBuffer != null) {
+            downloadedIcon = new ImageIcon(imageBuffer);
+            Logging.warn("Downloaded icon. ID known to the icon list: {0}", objectTypeID);
+          } else {
+            Logging.warn("Could not download icon: {0}", objectTypeID);
+          }
         } catch (IOException e) {
           Logging.log(Logging.LEVEL_WARN, "Failed to download icon. ID unknown to the icon list: " + objectTypeID, e);
         }
