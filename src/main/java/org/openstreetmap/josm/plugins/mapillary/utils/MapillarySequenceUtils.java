@@ -60,8 +60,8 @@ public class MapillarySequenceUtils {
     if (connectedWays.isEmpty() || connectedWays.size() > 2) {
       return null;
     }
-
-    List<INode> nodes = new ArrayList<>(connectedWays.stream().mapToInt(IWay::getRealNodesCount).sum() - 1);
+    final int initialSize = connectedWays.stream().mapToInt(IWay::getRealNodesCount).sum() - 1;
+    List<INode> nodes = new ArrayList<>(Math.min(initialSize, 0));
     for (IWay<?> way : connectedWays) {
       if (nodes.isEmpty()) {
         nodes.addAll(way.getNodes());
