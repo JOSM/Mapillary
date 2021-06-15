@@ -24,11 +24,6 @@ import javax.annotation.Nullable;
 public final class MapillaryURL {
   /** The API key for v3 */
   private static final String CLIENT_ID = "UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
-  /**
-   * The API key for v4 -- cannot be final since tests need to change it (the '|' characters kill WireMock's pattern
-   * replacement)
-   */
-  private static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
 
   /**
    * Mapillary v4 API
@@ -36,6 +31,11 @@ public final class MapillaryURL {
    * @author Taylor Smock
    */
   public static final class APIv4 {
+    /**
+     * The API key for v4 -- cannot be final since tests need to change it (the '|' characters kill WireMock's pattern
+     * replacement). Please don't write to this, except in unit tests.
+     */
+    public static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
     private APIv4() {
       // Hide constructor
     }
@@ -145,7 +145,7 @@ public final class MapillaryURL {
      * @return A URL (String)
      */
     public static String getTrafficSigns() {
-      return baseTileUrl + "mly_map_feature_traffic_sign/2/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly_map_feature_traffic_sign/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
     }
 
     /**
@@ -154,7 +154,7 @@ public final class MapillaryURL {
      * @return A URL (String)
      */
     public static String getObjectDetections() {
-      return baseTileUrl + "mly_map_feature_point/2/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly_map_feature_point/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
     }
 
     /**
@@ -164,9 +164,9 @@ public final class MapillaryURL {
      */
     public static String getImages() {
       if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())) {
-        return baseTileUrl + "mly1_computed_public/2/{z}/{x}/{y}" + queryString(null);
+        return baseTileUrl + "mly1_computed_public/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
       }
-      return baseTileUrl + "mly1_public/2/{z}/{x}/{y}" + queryString(null);
+      return baseTileUrl + "mly1_public/2/{z}/{x}/{y}?access_token=" + ACCESS_ID;
     }
 
     /**
@@ -395,18 +395,17 @@ public final class MapillaryURL {
    * @return the constructed query string (including a leading ?)
    */
   static String queryString(Map<String, String> parts) {
-    StringBuilder ret = new StringBuilder("?access_token=").append(ACCESS_ID);
     if (parts != null) {
-      for (Map.Entry<String, String> entry : parts.entrySet()) {
+      return parts.entrySet().stream().map(entry -> {
         try {
-          ret.append('&').append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name())).append('=')
-            .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
+          return String.join("=", URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()), URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
           Logging.error(e); // This should not happen, as the encoding is hard-coded
+          return null;
         }
-      }
+      }).filter(Objects::nonNull).collect(Collectors.joining("&", "?", ""));
     }
-    return ret.toString();
+    return "";
   }
 
   /**

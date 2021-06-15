@@ -183,7 +183,7 @@ public final class Caches {
         returnObject = this.cacheAccess.get(url) == null ? supplier.get() : this.cacheAccess.get(url);
         if (returnObject != null && this.validators.stream().allMatch(p -> p.test(returnObject))) {
           this.cacheAccess.put(url, returnObject);
-        } else {
+        } else if (returnObject != null) {
           this.rateLimited = true;
           GuiHelper.runInEDT(() -> {
             Notification notification = new Notification();

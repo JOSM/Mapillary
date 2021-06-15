@@ -7,6 +7,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -259,22 +260,12 @@ public final class MapillaryImageUtils {
     for (String key : keys) {
       final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
       final String cacheData = Caches.metaDataCache.get(imageUrl, () -> {
-        final HttpClient client;
-        final HttpClient.Response response;
         try {
-          client = HttpClient.create(new URL(imageUrl));
-          response = client.connect();
+          return OAuthUtils.getWithHeader(new URL(imageUrl)).toString();
         } catch (IOException e) {
           Logging.error(e);
           return null;
         }
-        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
-          JsonObject object = jsonReader.readObject();
-          return object.toString();
-        } catch (IOException e) {
-          Logging.error(e);
-        }
-        return null;
       });
       try (
         JsonReader reader = Json.createReader(new ByteArrayInputStream(cacheData.getBytes(StandardCharsets.UTF_8)))) {

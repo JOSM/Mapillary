@@ -8,6 +8,7 @@ import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -188,22 +189,12 @@ public class MapillarySequenceUtils {
   private static synchronized IWay<?> downloadSequence(final String key) {
     final String sequenceUrl = MapillaryURL.APIv4.getImagesBySequences(key);
     final String data = Caches.metaDataCache.get(sequenceUrl, () -> {
-      HttpClient client = null;
-      final HttpClient.Response response;
       try {
-        client = HttpClient.create(new URL(sequenceUrl));
-        response = client.connect();
-        try (BufferedReader reader = response.getContentReader(); JsonReader jsonReader = Json.createReader(reader)) {
-          return jsonReader.readObject().toString();
-        }
+        return OAuthUtils.getWithHeader(new URL(sequenceUrl)).toString();
       } catch (IOException e) {
         Logging.error(e);
-      } finally {
-        if (client != null) {
-          client.disconnect();
-        }
+        return null;
       }
-      return null;
     });
     if (data == null) {
       return null;

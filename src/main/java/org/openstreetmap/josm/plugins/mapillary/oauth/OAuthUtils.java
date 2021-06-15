@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
 
 /**
@@ -27,7 +28,7 @@ import org.openstreetmap.josm.tools.HttpClient;
 public final class OAuthUtils {
 
   private static final String AUTHORIZATION = "Authorization";
-  private static final String BEARER = "Bearer ";
+  private static final String BEARER = "OAuth ";
 
   private OAuthUtils() {
     // Private constructor to avoid instantiation
@@ -79,7 +80,7 @@ public final class OAuthUtils {
    * @return The URLConnection for easy chaining
    */
   public static URLConnection addAuthenticationHeader(URLConnection con) {
-    con.setRequestProperty(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
+    con.setRequestProperty(AUTHORIZATION, getAuthorizationToken());
     return con;
   }
 
@@ -91,11 +92,7 @@ public final class OAuthUtils {
    * @return The CachedFile for easy chaining
    */
   public static CachedFile addAuthenticationHeader(CachedFile file) {
-    if (MapillaryProperties.ACCESS_TOKEN.get() != null) {
-      return file
-        .setHttpHeaders(Collections.singletonMap(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get()));
-    }
-    return file;
+    return file.setHttpHeaders(Collections.singletonMap(AUTHORIZATION, getAuthorizationToken()));
   }
 
   /**
@@ -106,7 +103,7 @@ public final class OAuthUtils {
    * @return The HttpClient for easy chaining
    */
   public static HttpClient addAuthenticationHeader(HttpClient client) {
-    return client.setHeader(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
+    return client.setHeader(AUTHORIZATION, getAuthorizationToken());
   }
 
   /**
@@ -117,7 +114,14 @@ public final class OAuthUtils {
    * @return The HttpEntity for easy chaining
    */
   public static HttpEntityEnclosingRequestBase addAuthenticationHeader(HttpEntityEnclosingRequestBase httpEntity) {
-    httpEntity.addHeader(AUTHORIZATION, BEARER + MapillaryProperties.ACCESS_TOKEN.get());
+    httpEntity.addHeader(AUTHORIZATION, getAuthorizationToken());
     return httpEntity;
+  }
+
+  private static String getAuthorizationToken() {
+    if (MapillaryProperties.ACCESS_TOKEN.isSet()) {
+      return BEARER + MapillaryProperties.ACCESS_TOKEN.get();
+    }
+    return BEARER + MapillaryURL.APIv4.ACCESS_ID;
   }
 }
