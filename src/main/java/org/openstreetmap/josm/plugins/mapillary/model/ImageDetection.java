@@ -195,6 +195,10 @@ public class ImageDetection<T extends Shape & Serializable> extends SpecialImage
    * @return The detections
    */
   private static List<ImageDetection<?>> getDetections(String key, String layer) {
+    // Object detections currently don't have geometry. TODO fixme
+    if (true) {
+      return Collections.emptyList();
+    }
     URL layerUrl = MapillaryURL.APIv3.getDetections(key, layer);
     HttpClient client = HttpClient.create(layerUrl);
     try {
