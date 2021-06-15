@@ -422,7 +422,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     g.setTransform(backup);
 
     // Paint highlight for selected or highlighted images
-    if (getData().getHighlighted().contains(img.getPrimitiveId())) {
+    if (getData().getHighlighted().contains(img.getPrimitiveId())
+      || (selectedImg != null && this.getSelectedImages().anyMatch(img::equals))) {
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
