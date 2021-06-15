@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
@@ -21,7 +20,6 @@ import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -105,7 +103,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
     final ForkJoinPool pool = MapillaryUtils.getForkJoinPool(MapillaryCache.class);
     final int prefetchCount = MapillaryProperties.PRE_FETCH_IMAGE_COUNT.get();
     final long freeMemory = Runtime.getRuntime().freeMemory();
-    final CacheAccess<String, BufferedImageCacheEntry> imageCache = Caches.ImageCache.getCache(Type.THUMBNAIL);
+    final Caches.MapillaryCacheAccess<BufferedImageCacheEntry> imageCache = Caches.FULL_IMAGE_CACHE;
     // 3 bytes for RGB (jpg doesn't support the Alpha channel). I'm using 4 bytes instead of 3 for a buffer.
     long estimatedImageSize = Stream.of(MapillaryCache.Type.values())
       .mapToLong(v -> (long) v.getHeight() * v.getWidth() * 4).sum();
@@ -119,8 +117,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         break; // It doesn't make sense to try to cache images that won't be kept.
       }
       if (nextImage != null) {
-        if (MapillaryImageUtils.getKey(nextImage) != null
-          && (imageCache.get(MapillaryImageUtils.getKey(nextImage)) == null)) {
+        if (MapillaryImageUtils.getKey(nextImage) != null) {
           INode current = nextImage;
           pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
         }
@@ -178,10 +175,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    *        The type of image that must be downloaded (THUMBNAIL or
    *        FULL_IMAGE).
    */
-  public MapillaryCache(final INode image, final Type type) {
-    super(Caches.ImageCache.getCache(type),
+  public MapillaryCache(final INode image) {
+    super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
       new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
     MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(image));
+    final Type type = Type.FULL_IMAGE;
     try {
       if (image == null || type == null) {
         this.key = null;

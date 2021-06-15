@@ -70,7 +70,7 @@ public class MapObject extends KeyIndexedObject {
    * @return the icon, which represents the given objectTypeID
    */
   public static ImageIcon getIcon(final String objectTypeID) {
-    final ImageIcon cachedIcon = Caches.mapObjectIconCache.get(objectTypeID);
+    final ImageIcon cachedIcon = Caches.mapObjectIconCache.get(objectTypeID, () -> null);
     if ("not-in-set".equals(objectTypeID)) {
       return ICON_UNKNOWN_TYPE;
     } else if (cachedIcon == null) {

@@ -21,8 +21,7 @@ public class SecurityManagerUtils {
       // Ensure that we aren't initializing the caches in a secure context (specifically, ForkJoin pools)
       // -- this fails, and throws exceptions. See JOSM #20951.
       // Ensure that the image caches are initialized
-      Caches.ImageCache.getCache(MapillaryCache.Type.FULL_IMAGE);
-      Caches.ImageCache.getCache(MapillaryCache.Type.THUMBNAIL);
+      Caches.FULL_IMAGE_CACHE.hashCode();
       // Ensure that the ForkJoin pools are already initialized
       MapillaryUtils.getForkJoinPool();
       MapillaryUtils.getForkJoinPool(MapillaryCache.class);

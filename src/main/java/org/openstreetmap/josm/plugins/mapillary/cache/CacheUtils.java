@@ -70,14 +70,8 @@ public final class CacheUtils {
       downloadPicture(img, pic);
       return;
     }
-    boolean thumbnail = new MapillaryCache(img, MapillaryCache.Type.THUMBNAIL).get() == null
-      && (PICTURE.BOTH.equals(pic) || PICTURE.THUMBNAIL.equals(pic));
-    boolean fullImage = new MapillaryCache(img, MapillaryCache.Type.FULL_IMAGE).get() == null
-      && (PICTURE.BOTH.equals(pic) || PICTURE.FULL_IMAGE.equals(pic));
-    if (thumbnail)
-      submit(img, MapillaryCache.Type.THUMBNAIL, IGNORE_DOWNLOAD);
-    if (fullImage)
-      submit(img, MapillaryCache.Type.FULL_IMAGE, IGNORE_DOWNLOAD);
+    if (new MapillaryCache(img).get() == null)
+      submit(img, IGNORE_DOWNLOAD);
   }
 
   /**
@@ -91,9 +85,9 @@ public final class CacheUtils {
    * @param lis
    *        The listener that is going to receive the picture.
    */
-  public static void submit(INode image, MapillaryCache.Type type, ICachedLoaderListener lis) {
+  public static void submit(INode image, ICachedLoaderListener lis) {
     try {
-      new MapillaryCache(image, type).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+      new MapillaryCache(image).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
     } catch (IOException e) {
       Logging.error(e);
     }

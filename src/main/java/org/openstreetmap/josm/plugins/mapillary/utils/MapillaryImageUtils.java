@@ -1,13 +1,11 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
-import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
@@ -157,7 +155,7 @@ public final class MapillaryImageUtils {
     // TODO use URL field in v4
     if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
       CompletableFuture<BufferedImage> completableFuture = new CompletableFuture<>();
-      CacheUtils.submit(image, MapillaryCache.Type.FULL_IMAGE, (entry, attributes, result) -> {
+      CacheUtils.submit(image, (entry, attributes, result) -> {
         try {
           BufferedImage realImage = ImageIO.read(new ByteArrayInputStream(entry.getContent()));
           completableFuture.complete(realImage);
@@ -258,10 +256,9 @@ public final class MapillaryImageUtils {
    */
   private static void downloadImageDetails(@Nonnull String... keys) {
     Objects.requireNonNull(keys, "Image keys cannot be null");
-    final CacheAccess<String, String> cache = Caches.metaDataCache;
     for (String key : keys) {
       final String imageUrl = MapillaryURL.APIv4.getImageInformation(key);
-      final String cacheData = cache.get(imageUrl, () -> {
+      final String cacheData = Caches.metaDataCache.get(imageUrl, () -> {
         final HttpClient client;
         final HttpClient.Response response;
         try {

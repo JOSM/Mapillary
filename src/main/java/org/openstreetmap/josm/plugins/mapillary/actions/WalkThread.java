@@ -16,6 +16,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.CacheUtils;
 import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.I18n;
@@ -31,7 +32,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
   private final OsmData<?, ?, ?, ?> data;
   private final MapillaryLayer layer;
   private boolean endWalk;
-  private final boolean waitForFullQuality;
+  private final boolean waitForPicture;
   private final MapillarySequenceUtils.NextOrPrevious goForward;
   private final AtomicBoolean paused = new AtomicBoolean();
 
@@ -47,7 +48,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
   public WalkThread(int interval, boolean waitForPicture, boolean followSelected,
     MapillarySequenceUtils.NextOrPrevious goForward) {
     this.interval = interval;
-    this.waitForFullQuality = waitForPicture;
+    this.waitForPicture = waitForPicture;
     this.goForward = goForward;
     this.layer = MapillaryLayer.getInstance();
     this.data = this.layer.getData();
@@ -60,17 +61,16 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
       INode curSelection;
       INode curImage;
       while (!this.endWalk && (curSelection = this.data.getSelectedNodes().stream().findFirst().orElse(null)) != null
-        && (curImage = curSelection.hasKey(MapillaryKeys.KEY) ? curSelection : null) != null) {
+        && (curImage = MapillaryImageUtils.getKey(curSelection) != null ? curSelection : null) != null) {
         // Predownload next 10 thumbnails.
         preDownloadImages(curImage, 10, CacheUtils.PICTURE.THUMBNAIL, goForward);
-        if (this.waitForFullQuality) {
+        if (this.waitForPicture) {
           // Start downloading 3 next full images.
           preDownloadImages(curImage, 3, CacheUtils.PICTURE.FULL_IMAGE, goForward);
         }
         try {
           // Wait for picture for 1 minute.
-          final MapillaryCache cache = new MapillaryCache(curImage,
-            waitForFullQuality ? MapillaryCache.Type.FULL_IMAGE : MapillaryCache.Type.THUMBNAIL);
+          final MapillaryCache cache = new MapillaryCache(curImage);
           int limit = 240; // 240 * 250 = 60000 ms
           while (cache.get() == null) {
             Thread.sleep(250);

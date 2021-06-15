@@ -1,7 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.io.download;
 
-import org.apache.commons.jcs3.access.CacheAccess;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
@@ -59,7 +58,7 @@ public final class MapillaryDownloader {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
-    final CacheAccess<String, String> metaDataCache = Caches.metaDataCache;
+    final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.metaDataCache;
     return Stream.of(images).map(MapillaryURL.APIv4::getImageInformation).parallel()
       .map(image -> metaDataCache.get(image, () -> getUrlResponse(image).toString())).filter(Objects::nonNull)
       .map(string -> Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8))).readObject())

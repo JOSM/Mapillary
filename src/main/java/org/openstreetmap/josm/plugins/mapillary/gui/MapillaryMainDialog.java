@@ -426,18 +426,8 @@ public final class MapillaryMainDialog extends ToggleDialog
    * Downloads the full quality picture of the selected MapillaryImage and sets in the MapillaryImageDisplay object.
    */
   public synchronized void updateImage() {
-    updateImage(true);
-  }
-
-  /**
-   * Downloads the picture of the selected MapillaryImage and sets in the MapillaryImageDisplay object.
-   *
-   * @param fullQuality
-   *        If the full quality picture must be downloaded or just the thumbnail.
-   */
-  public synchronized void updateImage(boolean fullQuality) {
     if (!SwingUtilities.isEventDispatchThread()) {
-      SwingUtilities.invokeLater(this::updateImage);
+      GuiHelper.runInEDT(this::updateImage);
     } else {
       if (!MapillaryLayer.hasInstance()) {
         return;
@@ -457,14 +447,12 @@ public final class MapillaryMainDialog extends ToggleDialog
         if (currentImage.getNumKeys() <= CacheUtils.MAPILLARY_DEFAULT_KEY_LENGTH) {
           MainApplication.worker.submit(() -> {
             MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(currentImage));
-            this.updateImage(fullQuality);
+            this.updateImage();
           });
           return;
         }
-        final MapillaryCache imageThumbnailCache = this.cacheThumbnail(currentImage);
-
         // Use this to avoid race conditions
-        final MapillaryCache imageFullCache = fullQuality ? this.cacheFullImage(currentImage) : null;
+        final MapillaryCache imageFullCache = this.cacheFullImage(currentImage);
 
         MapillaryCache.cacheSurroundingImages(currentImage);
         Function<BufferedImageCacheEntry, BufferedImage> getImage = cache -> {
@@ -481,25 +469,18 @@ public final class MapillaryMainDialog extends ToggleDialog
           && !MapillaryImageUtils.getKey(image).equals(this.futureDetections.key)) {
           this.futureDetections.cancel(false);
         }
-        // Only get detections if we are getting a non-thumbnail image.
-        if (fullQuality) {
-          this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
-            (key, detections) -> {
-              INode tImage = this.image;
-              if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
-                this.updateDetections(fullQuality ? imageFullCache : thumbnailCache, tImage, detections);
-              }
-            });
-        }
+        this.futureDetections = ImageDetection.getDetections(MapillaryImageUtils.getKey(this.image),
+          (key, detections) -> {
+            INode tImage = this.image;
+            if (tImage != null && key.equals(MapillaryImageUtils.getKey(tImage))) {
+              this.updateDetections(imageFullCache, tImage, detections);
+            }
+          });
         List<ImageDetection<?>> detections = ImageDetection.getDetections(MapillaryImageUtils.getKey(image), false);
-        if (imageFullCache != null && imageFullCache.get() != null) {
+        if (imageFullCache.get() != null) {
           setDisplayImage(() -> getImage.apply(imageFullCache.get()), detections,
             MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
           pool.execute(() -> updateDetections(imageFullCache, currentImage, detections));
-        } else if (imageThumbnailCache.get() != null) {
-          setDisplayImage(() -> getImage.apply(imageThumbnailCache.get()), detections,
-            MapillaryImageUtils.IS_PANORAMIC.test(currentImage));
-          pool.execute(() -> updateDetections(imageThumbnailCache, currentImage, detections));
         } else {
           this.imageViewer.paintLoadingImage();
         }
@@ -524,24 +505,9 @@ public final class MapillaryMainDialog extends ToggleDialog
     }
   }
 
-  private MapillaryCache cacheThumbnail(INode currentImage) {
-    // Downloads the thumbnail.
-    if (this.thumbnailCache != null)
-      this.thumbnailCache.cancelOutstandingTasks();
-    final MapillaryCache imageThumbnailCache = new MapillaryCache(currentImage, MapillaryCache.Type.THUMBNAIL);
-    this.thumbnailCache = imageThumbnailCache;
-    try {
-      if (imageThumbnailCache.get() == null)
-        imageThumbnailCache.submit(this, false);
-    } catch (IOException e) {
-      Logging.error(e);
-    }
-    return imageThumbnailCache;
-  }
-
   private MapillaryCache cacheFullImage(INode currentImage) {
     // Downloads the full resolution image.
-    final MapillaryCache imageFullCache = new MapillaryCache(currentImage, MapillaryCache.Type.FULL_IMAGE);
+    final MapillaryCache imageFullCache = new MapillaryCache(currentImage);
     // Use this variable to avoid race conditions
     if (this.imageCache != null)
       this.imageCache.cancelOutstandingTasks();
@@ -626,11 +592,11 @@ public final class MapillaryMainDialog extends ToggleDialog
     if (!MapillaryUtils.getForkJoinPool().isShutdown()) {
       MapillaryUtils.getForkJoinPool().execute(() -> {
         MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
-        this.updateImage(true);
+        this.updateImage();
         this.invalidate();
       });
     } else {
-      this.updateImage(true);
+      this.updateImage();
     }
     if (this.isVisible() && MapillaryLayer.hasInstance()) {
       MapillaryLayer.getInstance().setImageViewed(this.image);
