@@ -68,7 +68,7 @@ public class MapillarySequenceUtils {
       return null;
     }
     final int initialSize = connectedWays.stream().mapToInt(IWay::getRealNodesCount).sum() - 1;
-    List<INode> nodes = new ArrayList<>(Math.min(initialSize, 0));
+    List<INode> nodes = new ArrayList<>(Math.max(initialSize, 0));
     for (IWay<?> way : connectedWays) {
       if (nodes.isEmpty()) {
         nodes.addAll(way.getNodes());
