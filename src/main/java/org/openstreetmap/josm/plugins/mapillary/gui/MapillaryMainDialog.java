@@ -287,7 +287,8 @@ public final class MapillaryMainDialog extends ToggleDialog
     private static final long serialVersionUID = -3743322064323002656L;
 
     ShowSignDetectionsAction() {
-      super(null, new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
+      super(null,
+        new ImageProvider("mapillary_sprite_source/package_signs", "regulatory--go-straight-or-turn-left--g2"),
         tr("Toggle sign detection outlines"), Shortcut.registerShortcut("mapillary:showsigndetections",
           tr("Mapillary: toggle sign detections"), KeyEvent.VK_UNDEFINED, Shortcut.NONE),
         false, null, false);

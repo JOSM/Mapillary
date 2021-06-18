@@ -5,6 +5,7 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 
 /**
  * This class exists to help initialize some items that fail when a security manager is installed
+ *
  * @author Taylor Smock
  */
 public class SecurityManagerUtils {
