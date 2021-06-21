@@ -82,7 +82,7 @@ public @interface MapillaryURLWireMock {
       try {
         baseMetaDataUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl");
         baseTileUrl = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl");
-        accessKey = (String) TestUtils.getPrivateStaticField(MapillaryURL.class, "ACCESS_KEY");
+        accessKey = (String) TestUtils.getPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID");
       } catch (ReflectiveOperationException e) {
         Logging.error(e);
         baseMetaDataUrl = null;
@@ -102,7 +102,7 @@ public @interface MapillaryURLWireMock {
       // Ensure things throw if this isn't called
       TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", null);
       TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", null);
-      TestUtils.setPrivateStaticField(MapillaryURL.class, "ACCESS_ID", null);
+      TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", null);
     }
 
     @Override
@@ -110,11 +110,15 @@ public @interface MapillaryURLWireMock {
       final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);
       final WireMockServer server = context.getStore(namespace).get(WireMockServer.class, WireMockServer.class);
       final List<LoggedRequest> unmatched = server.findAllUnmatchedRequests();
-      if (!unmatched.isEmpty()) {
-        fail(unmatched.stream().map(request -> request.getUrl())
-          .collect(Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
+      try {
+        if (!unmatched.isEmpty()) {
+          fail(unmatched.stream().map(LoggedRequest::getUrl)
+            .collect(Collectors.joining(System.lineSeparator(), "Failing URLs:" + System.lineSeparator(), "")));
+        }
+      } finally {
+        // We want to reset it all regardless for future tests
+        server.resetAll();
       }
-      server.resetAll();
       List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
       stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast).forEach(server::addStubMapping);
     }
@@ -136,7 +140,6 @@ public @interface MapillaryURLWireMock {
       server.start();
       final Map<String, StringValuePattern> potentialParameters = new HashMap<>();
       potentialParameters.put("fields", new AnythingPattern());
-      potentialParameters.put("access_token", new AnythingPattern());
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/image_ids.*"))
         .withQueryParams(potentialParameters).withQueryParam("sequence_id", new AnythingPattern())
         .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/image_ids/{{request.path.[4]}}.json")
@@ -162,14 +165,14 @@ public @interface MapillaryURLWireMock {
         && context.getTags().contains(IntegrationTest.TAG)) {
         TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl", defaultBaseMetaDataUrl);
         TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl", defaultBaseTileUrl);
-        TestUtils.setPrivateStaticField(MapillaryURL.class, "ACCESS_ID", defaultAccessKey);
+        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", defaultAccessKey);
       } else {
         TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseMetaDataUrl",
           server.baseUrl() + "/api/v4/graph/");
         TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "baseTileUrl",
           server.baseUrl() + "/api/v4/coverageTiles/");
         // Wiremock pattern matching has issues with the actual key. So replace it with a "test_key".
-        TestUtils.setPrivateStaticField(MapillaryURL.class, "ACCESS_ID", "test_key");
+        TestUtils.setPrivateStaticField(MapillaryURL.APIv4.class, "ACCESS_ID", "test_key");
       }
     }
 

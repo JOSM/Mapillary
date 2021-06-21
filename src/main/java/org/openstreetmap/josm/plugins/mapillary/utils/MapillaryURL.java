@@ -178,11 +178,14 @@ public final class MapillaryURL {
      */
     @Nonnull
     public static String getImageInformation(String[] images) {
-      Map<String, String> queryFields = new HashMap<>(2);
-      queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(ImageProperties::name)
-        .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
-      queryFields.put("image_ids", Stream.of(images).collect(Collectors.joining(",")));
-      return new StringBuilder(baseMetaDataUrl).append("images").append(queryString(queryFields)).toString();
+      if (images.length > 1) {
+        Map<String, String> queryFields = new HashMap<>(2);
+        queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(ImageProperties::name)
+          .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
+        queryFields.put("image_ids", Stream.of(images).collect(Collectors.joining(",")));
+        return new StringBuilder(baseMetaDataUrl).append("images").append(queryString(queryFields)).toString();
+      }
+      return getImageInformation(images[0]);
     }
 
     /**

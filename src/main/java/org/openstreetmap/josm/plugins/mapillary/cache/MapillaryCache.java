@@ -18,6 +18,7 @@ import org.openstreetmap.josm.data.cache.JCSCachedTileLoaderJob;
 import org.openstreetmap.josm.data.imagery.TMSCachedTileLoader;
 import org.openstreetmap.josm.data.imagery.TileJobOptions;
 import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -178,7 +179,11 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
   public MapillaryCache(final INode image) {
     super(Caches.FULL_IMAGE_CACHE.getICacheAccess(),
       new TileJobOptions(50_000, 50_000, new HashMap<>(), TimeUnit.HOURS.toSeconds(4)), DEFAULT_JOB_EXECUTOR);
-    MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(image));
+    if (image instanceof VectorNode) {
+      MapillaryDownloader.downloadImages((VectorNode) image);
+    } else {
+      MapillaryDownloader.downloadImages(MapillaryImageUtils.getKey(image));
+    }
     final Type type = Type.FULL_IMAGE;
     try {
       if (image == null || type == null) {

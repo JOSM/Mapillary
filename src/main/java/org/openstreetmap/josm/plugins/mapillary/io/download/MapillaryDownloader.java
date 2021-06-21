@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -57,28 +58,44 @@ public final class MapillaryDownloader {
    * @return The downloaded images
    */
   public static Map<String, Collection<VectorNode>> downloadImages(String... images) {
+    return realDownloadImages(MapillaryLayer.getInstance().getData(), images);
+  }
+
+  /**
+   * Download a specific set of images
+   *
+   * @param images The images to download and update
+   * @return The downloaded images
+   */
+  public static void downloadImages(final VectorNode... images) {
+    final Map<VectorDataSet, List<VectorNode>> groups = Stream.of(images)
+      .collect(Collectors.groupingBy(VectorNode::getDataSet));
+    for (Map.Entry<VectorDataSet, List<VectorNode>> entry : groups.entrySet()) {
+      realDownloadImages(entry.getKey(),
+        entry.getValue().stream().map(MapillaryImageUtils::getKey).toArray(String[]::new));
+    }
+  }
+
+  private static Map<String, Collection<VectorNode>> realDownloadImages(final VectorDataSet dataSet,
+    final String... images) {
     if (images.length == 0) {
       return Collections.emptyMap();
     }
     final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.metaDataCache;
     String url = MapillaryURL.APIv4.getImageInformation(images);
-    String stringJson = metaDataCache.get(url, () -> getUrlResponse(url).toString());
+    String stringJson = metaDataCache.get(url, () -> {
+      final JsonObject jsonObject = getUrlResponse(url);
+      return jsonObject != null ? jsonObject.toString() : null;
+    });
     final Collection<VectorNode> nodes;
     if (stringJson != null) {
       try (JsonReader jsonReader = Json
         .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
         final JsonObject jsonObject = jsonReader.readObject();
-        nodes = JsonDecoder.decodeData(jsonObject, JsonImageDetailsDecoder::decodeImageInfos);
+        nodes = JsonDecoder.decodeData(jsonObject, json -> JsonImageDetailsDecoder.decodeImageInfos(json, dataSet));
         // OK. Cache each image separately as well.
         if (images.length > 1) {
-          final String dataString = "data";
-          if (jsonObject.containsKey(dataString)
-            && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
-            for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
-              final String entryUrl = MapillaryURL.APIv4.getImageInformation(entry.getString("id"));
-              metaDataCache.getICacheAccess().put(entryUrl, entry.toString());
-            }
-          }
+          separatelyCacheDownloadedImages(jsonObject);
         }
       }
     } else {
@@ -92,6 +109,16 @@ public final class MapillaryDownloader {
           rMap.putAll(oMap);
           return rMap;
         }));
+  }
+
+  private static void separatelyCacheDownloadedImages(final JsonObject jsonObject) {
+    final String dataString = "data";
+    if (jsonObject.containsKey(dataString) && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
+      for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
+        final String entryUrl = MapillaryURL.APIv4.getImageInformation(entry.getString("id"));
+        Caches.metaDataCache.getICacheAccess().put(entryUrl, entry.toString());
+      }
+    }
   }
 
   /**

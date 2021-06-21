@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.MessageFormat;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -65,7 +67,8 @@ class MapillaryLayerTest {
     MapillaryLayer.getInstance().setVisible(false);
     for (INode img : MapillaryLayer.getInstance().getData().getNodes()) {
       if (MapillaryImageUtils.IS_IMAGE.test(img)) {
-        assertFalse(img.isVisible());
+        assertFalse(img.isVisible(), MessageFormat.format("Failed on image {0}/{1}", MapillaryImageUtils.getKey(img),
+          MapillaryImageUtils.getFile(img)));
       }
     }
 

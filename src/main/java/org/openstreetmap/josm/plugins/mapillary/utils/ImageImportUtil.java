@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,7 +122,13 @@ public final class ImageImportUtil {
     image.put(MapillaryImageUtils.IMPORTED_KEY, f.getAbsolutePath());
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     if (dateTime != null) {
-      image.put(MapillaryKeys.CAPTURED_AT, dateTime.toString());
+      try {
+        image.put(MapillaryKeys.CAPTURED_AT,
+          new SimpleDateFormat("yyyy:MM:dd HH:mm:ss").parse(dateTime.toString()).toInstant().toString());
+      } catch (ParseException e) {
+        Logging.error(e);
+        image.put(MapillaryKeys.CAPTURED_AT, Long.toString(Instant.now().toEpochMilli()));
+      }
     } else {
       image.put(MapillaryKeys.CAPTURED_AT, Long.toString(Instant.now().toEpochMilli()));
     }

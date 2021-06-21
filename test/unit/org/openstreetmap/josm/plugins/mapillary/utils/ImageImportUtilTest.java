@@ -63,7 +63,7 @@ class ImageImportUtilTest {
     LatLon defaultLL = new LatLon(42, -73);
     List<INode> images = ImageImportUtil.readImagesFrom(untaggedFile, defaultLL);
     assertEquals(1, images.size());
-    assertEquals(42.73, MapillaryImageUtils.getAngle(images.get(0)), 1e-9);
+    assertEquals(Math.toRadians(42.73), MapillaryImageUtils.getAngle(images.get(0)), 1e-9);
     assertEquals(defaultLL, images.get(0).getCoor());
     assertEquals(untaggedFile, MapillaryImageUtils.getFile(images.get(0)));
     long endTime = System.currentTimeMillis() / 1000 * 1000 + 1000; // Rounding to next full second

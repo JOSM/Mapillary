@@ -102,8 +102,6 @@ class MapillaryPreferenceSettingTest {
     settings.ok();
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "displayHour"),
       "mapillary.display-hour");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"),
-      "mapillary.format-24");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"),
       "mapillary.move-to-picture");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"),
@@ -116,7 +114,6 @@ class MapillaryPreferenceSettingTest {
 
     // Toggle state of the checkboxes
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "displayHour"));
-    toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "format24"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "moveTo"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"));
     toggleCheckbox((JCheckBox) getPrivateFieldValue(settings, "darkMode"));
