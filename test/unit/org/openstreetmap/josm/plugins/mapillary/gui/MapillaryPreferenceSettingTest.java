@@ -32,14 +32,13 @@ class MapillaryPreferenceSettingTest {
 
   @Test
   void testAddGui() {
-    assumeTrue(!GraphicsEnvironment.isHeadless());
     PreferenceTabbedPane tabs = new PreferenceTabbedPane();
     tabs.buildGui();
-    int displayTabs = tabs.getDisplayPreference().getTabPane().getTabCount();
+    int displayTabs = tabs.getPluginPreference().getTabPane().getTabCount();
     MapillaryPreferenceSetting setting = new MapillaryPreferenceSetting();
     setting.addGui(tabs);
-    assertEquals(displayTabs + 1, tabs.getDisplayPreference().getTabPane().getTabCount());
-    assertEquals(tabs.getDisplayPreference(), setting.getTabPreferenceSetting(tabs));
+    assertEquals(displayTabs + 1, tabs.getPluginPreference().getTabPane().getTabCount());
+    assertEquals(tabs.getPluginPreference(), setting.getTabPreferenceSetting(tabs));
   }
 
   @Test
@@ -123,8 +122,6 @@ class MapillaryPreferenceSettingTest {
     settings.ok();
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "displayHour"),
       "mapillary.display-hour");
-    assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "format24"),
-      "mapillary.format-24");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "moveTo"),
       "mapillary.move-to-picture");
     assertPropertyMatchesCheckboxSelection((JCheckBox) getPrivateFieldValue(settings, "hoverEnabled"),
