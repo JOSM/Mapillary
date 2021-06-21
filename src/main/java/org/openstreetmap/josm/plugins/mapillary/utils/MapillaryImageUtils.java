@@ -10,7 +10,6 @@ import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecor
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
-import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.UncheckedParseException;
 import org.openstreetmap.josm.tools.date.DateUtils;
@@ -19,10 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -161,6 +158,9 @@ public final class MapillaryImageUtils {
           BufferedImage realImage = ImageIO.read(new ByteArrayInputStream(entry.getContent()));
           completableFuture.complete(realImage);
         } catch (IOException e) {
+          // Remove the key from the metadata cache -- this way we can try again later if the image URL became stale.
+          Caches.metaDataCache.getICacheAccess()
+            .remove(MapillaryURL.APIv4.getImageInformation(new String[] { MapillaryImageUtils.getKey(image) }));
           Logging.error(e);
           completableFuture.complete(null);
         }

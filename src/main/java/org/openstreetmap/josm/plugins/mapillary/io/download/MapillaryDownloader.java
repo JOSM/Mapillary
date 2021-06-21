@@ -13,12 +13,14 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonImageDetailsDecoder;
 import org.openstreetmap.josm.plugins.mapillary.utils.api.JsonSequencesDecoder;
-import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.Logging;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -59,11 +61,30 @@ public final class MapillaryDownloader {
       return Collections.emptyMap();
     }
     final Caches.MapillaryCacheAccess<String> metaDataCache = Caches.metaDataCache;
-    return Stream.of(images).map(MapillaryURL.APIv4::getImageInformation).parallel()
-      .map(image -> metaDataCache.get(image, () -> getUrlResponse(image).toString())).filter(Objects::nonNull)
-      .map(string -> Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8))).readObject())
-      .map(data -> JsonDecoder.decodeData(data, JsonImageDetailsDecoder::decodeImageInfos)).flatMap(Collection::stream)
-      .sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
+    String url = MapillaryURL.APIv4.getImageInformation(images);
+    String stringJson = metaDataCache.get(url, () -> getUrlResponse(url).toString());
+    final Collection<VectorNode> nodes;
+    if (stringJson != null) {
+      try (JsonReader jsonReader = Json
+        .createReader(new ByteArrayInputStream(stringJson.getBytes(StandardCharsets.UTF_8)))) {
+        final JsonObject jsonObject = jsonReader.readObject();
+        nodes = JsonDecoder.decodeData(jsonObject, JsonImageDetailsDecoder::decodeImageInfos);
+        // OK. Cache each image separately as well.
+        if (images.length > 1) {
+          final String dataString = "data";
+          if (jsonObject.containsKey(dataString)
+            && jsonObject.get(dataString).getValueType() == JsonValue.ValueType.ARRAY) {
+            for (JsonObject entry : jsonObject.get(dataString).asJsonArray().getValuesAs(JsonObject.class)) {
+              final String entryUrl = MapillaryURL.APIv4.getImageInformation(entry.getString("id"));
+              metaDataCache.getICacheAccess().put(entryUrl, entry.toString());
+            }
+          }
+        }
+      }
+    } else {
+      nodes = Collections.emptyList();
+    }
+    return nodes.stream().sorted(Comparator.comparingLong(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
       .collect(Collector.of(
         HashMap<String, Collection<VectorNode>>::new, (map, node) -> map
           .computeIfAbsent(MapillaryImageUtils.getSequenceKey(node), key -> new ArrayList<>()).add(node),
@@ -120,19 +141,18 @@ public final class MapillaryDownloader {
     return Collections.emptyList();
   }
 
-  private static JsonObject getUrlResponse(URL url) {
-    HttpClient client = OAuthUtils.addAuthenticationHeader(HttpClient.create(url));
-    try (JsonReader reader = Json.createReader(client.connect().getContentReader())) {
-      return reader.readObject();
+  @Nullable
+  private static JsonObject getUrlResponse(@Nonnull URL url) {
+    try {
+      return OAuthUtils.getWithHeader(url);
     } catch (IOException e) {
       Logging.trace(e);
       return null;
-    } finally {
-      client.disconnect();
     }
   }
 
-  private static JsonObject getUrlResponse(String url) {
+  @Nullable
+  private static JsonObject getUrlResponse(@Nonnull String url) {
     try {
       return getUrlResponse(new URL(url));
     } catch (MalformedURLException e) {

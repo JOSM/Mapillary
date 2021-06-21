@@ -36,6 +36,7 @@ public final class MapillaryURL {
      * replacement). Please don't write to this, except in unit tests.
      */
     public static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
+
     private APIv4() {
       // Hide constructor
     }
@@ -172,6 +173,21 @@ public final class MapillaryURL {
     /**
      * Get specific image information
      *
+     * @param images The image
+     * @return A URL to get for more image information (default properties ONLY)
+     */
+    @Nonnull
+    public static String getImageInformation(String[] images) {
+      Map<String, String> queryFields = new HashMap<>(2);
+      queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(ImageProperties::name)
+        .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
+      queryFields.put("image_ids", Stream.of(images).collect(Collectors.joining(",")));
+      return new StringBuilder(baseMetaDataUrl).append("images").append(queryString(queryFields)).toString();
+    }
+
+    /**
+     * Get specific image information
+     *
      * @param image The image
      * @param properties The specific properties to get -- default properties will be used if {@code null}.
      *        Default properties:
@@ -182,14 +198,7 @@ public final class MapillaryURL {
     public static String getImageInformation(@Nonnull String image, @Nullable ImageProperties... properties) {
       final ImageProperties[] imageProperties;
       if (properties == null || properties.length == 0) {
-        final boolean getComputed = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
-        return getImageInformation(image, ImageProperties.ID, ImageProperties.CAPTURED_AT,
-          getComputed ? ImageProperties.COMPUTED_ALTITUDE : ImageProperties.ALTITUDE,
-          getComputed ? ImageProperties.COMPUTED_COMPASS_ANGLE : ImageProperties.COMPASS_ANGLE,
-          getComputed ? ImageProperties.COMPUTED_GEOMETRY : ImageProperties.GEOMETRY,
-          getComputed ? ImageProperties.COMPUTED_ROTATION : ImageProperties.EXIF_ORIENTATION,
-          ImageProperties.WORST_IMAGE, ImageProperties.BEST_IMAGE, ImageProperties.QUALITY_SCORE,
-          ImageProperties.SEQUENCE);
+        return getImageInformation(image, getDefaultImageInformation());
 
       } else {
         imageProperties = properties;
@@ -198,6 +207,21 @@ public final class MapillaryURL {
         .append(image).append(queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
           .map(ImageProperties::name).map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")))))
         .toString();
+    }
+
+    /**
+     * Get the default image properties
+     *
+     * @return The default image properties to get
+     */
+    private static ImageProperties[] getDefaultImageInformation() {
+      final boolean getComputed = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
+      return new ImageProperties[] { ImageProperties.ID, ImageProperties.CAPTURED_AT,
+        getComputed ? ImageProperties.COMPUTED_ALTITUDE : ImageProperties.ALTITUDE,
+        getComputed ? ImageProperties.COMPUTED_COMPASS_ANGLE : ImageProperties.COMPASS_ANGLE,
+        getComputed ? ImageProperties.COMPUTED_GEOMETRY : ImageProperties.GEOMETRY,
+        getComputed ? ImageProperties.COMPUTED_ROTATION : ImageProperties.EXIF_ORIENTATION, ImageProperties.WORST_IMAGE,
+        ImageProperties.BEST_IMAGE, ImageProperties.QUALITY_SCORE, ImageProperties.SEQUENCE };
     }
 
     /**
@@ -398,7 +422,8 @@ public final class MapillaryURL {
     if (parts != null) {
       return parts.entrySet().stream().map(entry -> {
         try {
-          return String.join("=", URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()), URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
+          return String.join("=", URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()),
+            URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
           Logging.error(e); // This should not happen, as the encoding is hard-coded
           return null;

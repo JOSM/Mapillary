@@ -613,14 +613,8 @@ public final class MapillaryMainDialog extends ToggleDialog
 
   public void setDisplayImage(Supplier<BufferedImage> imageSupplier, Collection<ImageDetection<?>> detections,
     Boolean pano) {
-    if (this.imagePainter != null) {
-      if (!this.imagePainter.isDone() && !this.imagePainter.isCancelled()) {
-        this.imagePainter.cancel(false);
-      }
-      this.imagePainter = null;
-    }
     if (SwingUtilities.isEventDispatchThread()) {
-      this.imagePainter = MainApplication.worker.submit(() -> setDisplayImageNonEdt(imageSupplier, detections, pano));
+      MainApplication.worker.execute(() -> setDisplayImageNonEdt(imageSupplier, detections, pano));
     } else {
       setDisplayImageNonEdt(imageSupplier, detections, pano);
     }

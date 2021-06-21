@@ -374,8 +374,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     final INode selectedImg = this.getSelectedImages().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
       && this.getSelectedImages().noneMatch(img::equals)
-      && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null
-        && !MapillaryImageUtils.getSequenceKey(img).equals(MapillaryImageUtils.getSequenceKey(selectedImg))))) {
+      && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
+        .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
       return;
     }

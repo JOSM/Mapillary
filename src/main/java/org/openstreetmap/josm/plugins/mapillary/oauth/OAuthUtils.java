@@ -1,10 +1,12 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import javax.json.Json;
@@ -19,6 +21,7 @@ import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Utils;
 
 /**
  * A set of utilities related to OAuth.
@@ -61,9 +64,23 @@ public final class OAuthUtils {
   public static JsonObject getWithHeader(HttpClient client) throws IOException {
     addAuthenticationHeader(client);
     client.connect();
-    try (InputStream inputStream = client.getResponse().getContent();
-      JsonReader reader = Json.createReader(inputStream)) {
-      JsonStructure structure = reader.read();
+    final HttpClient.Response response = client.getResponse();
+    final String appUsage = response.getHeaderField("x-app-usage");
+    final int percentageUsed;
+    if (appUsage != null && !Utils.isStripEmpty(appUsage)) {
+      try (JsonReader reader = Json.createReader(new ByteArrayInputStream(appUsage.getBytes(StandardCharsets.UTF_8)))) {
+        final JsonObject appUsageJson = reader.readObject();
+        percentageUsed = appUsageJson.getInt("call_volume", appUsageJson.getInt("call_count", 0));
+      }
+    } else {
+      percentageUsed = 0;
+    }
+
+    try (InputStream inputStream = response.getContent(); final JsonReader reader = Json.createReader(inputStream)) {
+      final JsonStructure structure = reader.read();
+      if (percentageUsed > 95) {
+        throw new IOException("API Limits reached");
+      }
       return structure.asJsonObject();
     } catch (JsonException e) {
       throw new IOException(e);

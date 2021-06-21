@@ -60,7 +60,7 @@ public final class Caches {
     JCSCacheManager.getCache("mapillary:metadata", 100, 100000, getCacheDirectory().getPath()), string -> {
       try (JsonReader reader = Json.createReader(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)))) {
         JsonObject object = reader.readObject();
-        if (object.containsKey("error")) {
+        if (object.containsKey("error") || object.containsKey("call_volume") || object.containsKey("call_count")) {
           Logging.error(object.toString());
           return false;
         }
@@ -188,7 +188,8 @@ public final class Caches {
           GuiHelper.runInEDT(() -> {
             Notification notification = new Notification();
             notification.setContent(
-              "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.");
+              "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+                + returnObject.toString());
             notification.setDuration(Notification.TIME_LONG);
             notification.setIcon(JOptionPane.ERROR_MESSAGE);
             notification.show();
