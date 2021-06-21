@@ -150,7 +150,6 @@ public final class MapillaryImageUtils {
    */
   @Nonnull
   public static Future<BufferedImage> getImage(@Nonnull INode image) {
-    // TODO use URL field in v4
     if (MapillaryImageUtils.IS_DOWNLOADABLE.test(image)) {
       CompletableFuture<BufferedImage> completableFuture = new CompletableFuture<>();
       CacheUtils.submit(image, (entry, attributes, result) -> {

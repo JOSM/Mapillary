@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.time.Instant;
 import java.util.Collection;
@@ -86,47 +87,50 @@ public final class JsonImageDetailsDecoder {
     if (json != null && data != null) {
       final boolean useComputedData = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
       final String key = json.getString(MapillaryURL.APIv4.ImageProperties.ID.toString(), null);
+      if (key == null) {
+        return null;
+      }
       final LatLon coordinates = JsonDecoder.decodeLatLon(
         json.getJsonObject(useComputedData ? MapillaryURL.APIv4.ImageProperties.COMPUTED_GEOMETRY.toString()
           : MapillaryURL.APIv4.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
-      if (key != null) {
-        final BBox searchBBox = new BBox(coordinates);
-        searchBBox.addLatLon(coordinates, 0.005);
-        VectorNode image = data.searchNodes(searchBBox).stream()
-          .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
-            VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
-            for (final MapillaryURL.APIv4.ImageProperties property : MapillaryURL.APIv4.ImageProperties.values()) {
-              final String propertyKey = property.toString();
-              if (json.containsKey(propertyKey)) {
-                JsonValue value = json.get(propertyKey);
-                if (value.getValueType() == JsonValue.ValueType.NUMBER) {
-                  tImage.put(propertyKey, ((JsonNumber) value).toString());
-                } else {
-                  tImage.put(propertyKey, value.toString());
-                }
+      final BBox searchBBox = new BBox(coordinates);
+      searchBBox.addLatLon(coordinates, 0.005);
+      VectorNode image = data.searchNodes(searchBBox).stream()
+        .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
+          VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
+          for (final MapillaryURL.APIv4.ImageProperties property : MapillaryURL.APIv4.ImageProperties.values()) {
+            final String propertyKey = property.toString();
+            if (json.containsKey(propertyKey)) {
+              JsonValue value = json.get(propertyKey);
+              if (value.getValueType() == JsonValue.ValueType.NUMBER) {
+                tImage.put(propertyKey, ((JsonNumber) value).toString());
+              } else if (value.getValueType() == JsonValue.ValueType.STRING) {
+                tImage.put(propertyKey, ((JsonString) value).getString());
+              } else {
+                tImage.put(propertyKey, value.toString());
               }
             }
-            if (coordinates != null) {
-              tImage.setCoor(coordinates);
-            }
-            data.addPrimitive(tImage);
-            return tImage;
-          });
-        image.setCoor(coordinates);
-        image.setKeys(JsonTagMapDecoder.getTagMap(json));
-        TagMap map = image.getKeys();
-        // Clean up bad key value combinations
-        image.setKeys(map.entrySet().stream()
-          .filter(entry -> entry.getKey() != null && entry.getValue() != null && !Utils.isStripEmpty(entry.getKey())
-            && !Utils.isStripEmpty(entry.getValue()))
-          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        final String sequence = MapillaryImageUtils.getSequenceKey(image);
-        // Reset the instant
-        image.setInstant(Instant.EPOCH);
-        // Recache the instant
-        MapillaryImageUtils.getDate(image);
-        return Pair.create(sequence, image);
-      }
+          }
+          if (coordinates != null) {
+            tImage.setCoor(coordinates);
+          }
+          data.addPrimitive(tImage);
+          return tImage;
+        });
+      image.setCoor(coordinates);
+      image.setKeys(JsonTagMapDecoder.getTagMap(json));
+      TagMap map = image.getKeys();
+      // Clean up bad key value combinations
+      image.setKeys(map
+        .entrySet().stream().filter(entry -> entry.getKey() != null && entry.getValue() != null
+          && !Utils.isStripEmpty(entry.getKey()) && !Utils.isStripEmpty(entry.getValue()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+      final String sequence = MapillaryImageUtils.getSequenceKey(image);
+      // Reset the instant
+      image.setInstant(Instant.EPOCH);
+      // Recache the instant
+      MapillaryImageUtils.getDate(image);
+      return Pair.create(sequence, image);
     }
     return null;
   }

@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
 import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
@@ -18,11 +19,8 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
-import org.openstreetmap.josm.tools.HttpClient;
 
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -52,15 +50,15 @@ public class JsonImageDetailsDecoderTest {
     final String[] images = new String[] { "135511895288847" };
 
     final VectorDataSet data = new VectorDataMock();
-    Stream.of(images).map(image -> createDownloadedImage(image, LatLon.ZERO, 0, false)).forEach(data::addPrimitive);
+    Stream.of(images)
+      .map(image -> createDownloadedImage(image, new LatLon(39.068354912098, -108.57081597085), 0, false))
+      .forEach(data::addPrimitive);
 
     for (String image : images) {
       final URL url = new URL(
         MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
-      final HttpClient client = HttpClient.create(url);
-      final HttpClient.Response response = client.connect();
-      JsonReader reader = Json.createReader(response.getContentReader());
-      JsonDecoder.decodeData(reader.readObject(), value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
+      JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
+        value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
     }
 
     final VectorNode i_135511895288847 = data.getNodes().stream()
@@ -98,10 +96,7 @@ public class JsonImageDetailsDecoderTest {
     for (String image : images) {
       final URL url = new URL(
         MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
-      final HttpClient client = HttpClient.create(url);
-      final HttpClient.Response response = client.connect();
-      JsonReader reader = Json.createReader(response.getContentReader());
-      assertDoesNotThrow(() -> JsonDecoder.decodeData(reader.readObject(),
+      assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
         value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
     }
   }

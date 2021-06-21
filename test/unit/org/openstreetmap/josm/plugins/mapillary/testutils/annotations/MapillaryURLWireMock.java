@@ -131,7 +131,8 @@ public @interface MapillaryURLWireMock {
 
       final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
       final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
-      wireMockConfiguration.extensions(new ResponseTemplateTransformer(true), fillerUrlReplacer);
+      wireMockConfiguration.extensions(new ResponseTemplateTransformer(true), new CollectionEndpoint(),
+        fillerUrlReplacer);
       wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
       final WireMockServer server = new WireMockServer(wireMockConfiguration);
       fillerUrlReplacer.server = server;
@@ -157,6 +158,13 @@ public @interface MapillaryURLWireMock {
         WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*?/detections")).withQueryParams(potentialParameters)
           .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}/detections.json")
             .withHeader("Content-Type", "application/json")));
+
+      final Map<String, StringValuePattern> imageIdsParameters = new HashMap<>(potentialParameters);
+      imageIdsParameters.put("image_ids", new AnythingPattern());
+
+      // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
+      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images")).withQueryParams(imageIdsParameters)
+        .willReturn(WireMock.aResponse()));
       context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
       // Only allow real Mapillary API calls in integration tests.
       if (context.getElement().isPresent()
@@ -176,6 +184,31 @@ public @interface MapillaryURLWireMock {
       }
     }
 
+    /**
+     * Account for collection endpoints
+     */
+    private static final class CollectionEndpoint extends ResponseTransformer {
+
+      @Override
+      public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
+        if (request.queryParameter("image_ids").isPresent()) {
+          // Not implemented currently since I don't know if I need to split on `,` or `%2C`
+          throw new UnsupportedOperationException("This needs to be implemented");
+          // We need to get the actual bytes prior to returning, so we need to read the files.
+          // return Response.Builder.like(response).but().body(new byte[] {}).build();
+        }
+        return response;
+      }
+
+      @Override
+      public String getName() {
+        return "collectionEndpoint";
+      }
+    }
+
+    /**
+     * Replace filler urls with wiremock URLs
+     */
     private static final class FillerUrlReplacer extends ResponseTransformer {
       private static final Pattern FILLER_URL_PATTERN = Pattern.compile("\"([a-zA-Z0-9_]*?)_filler_url\"");
 
@@ -205,12 +238,12 @@ public @interface MapillaryURLWireMock {
         try (
           JsonReader reader = Json.createReader(new ByteArrayInputStream(newBody.getBytes(StandardCharsets.UTF_8)))) {
           final JsonValue value = reader.readValue();
-          // Docs indicate that all data should be wrapped in an object in a "data" field
-          if (value instanceof JsonObject && ((JsonObject) value).containsKey("data")
-            && ((JsonObject) value).get("data") instanceof JsonObject
-            && ((JsonObject) value).getJsonObject("data").containsKey("id")) {
-            final String id = ((JsonObject) value).getJsonObject("data").getString("id");
-            newBody = FILLER_URL_PATTERN.matcher(newBody).replaceAll("\"" + server.baseUrl() + "/$1_" + id + "\"");
+          if (value instanceof JsonObject) {
+            final JsonValue data = ((JsonObject) value).containsKey("data") ? ((JsonObject) value).get("data") : value;
+            if (data instanceof JsonObject && ((JsonObject) data).containsKey("id")) {
+              final String id = ((JsonObject) data).getString("id");
+              newBody = FILLER_URL_PATTERN.matcher(newBody).replaceAll("\"" + server.baseUrl() + "/$1_" + id + "\"");
+            }
           }
         }
 
