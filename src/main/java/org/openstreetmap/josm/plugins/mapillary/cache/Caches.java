@@ -1,6 +1,7 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -55,6 +56,11 @@ public final class Caches {
   /** The cache for user profiles */
   public static final MapillaryCacheAccess<UserProfile> userProfileCache = new MapillaryCacheAccess<>(
     JCSCacheManager.getCache("mapillary:userProfile", 100, 1000, getCacheDirectory().getPath()));
+
+  /** The cache for non-street level images, AKA metadata images for users/organizations/etc. */
+  public static final MapillaryCacheAccess<BufferedImage> metaImages = new MapillaryCacheAccess<>(
+    JCSCacheManager.getCache("mapillary:metaImages", 5, 1000, getCacheDirectory().getPath()));
+
   /** The cache for metadata objects */
   public static final MapillaryCacheAccess<String> metaDataCache = new MapillaryCacheAccess<>(
     JCSCacheManager.getCache("mapillary:metadata", 100, 100000, getCacheDirectory().getPath()), string -> {

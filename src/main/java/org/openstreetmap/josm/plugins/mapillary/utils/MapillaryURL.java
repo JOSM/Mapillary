@@ -291,8 +291,9 @@ public final class MapillaryURL {
      * @param organization The key to get the avatar from
      * @return A URL to get data from
      */
-    public static URL retrieveOrganizationAvatar(String organization) {
-      return string2URL(baseUrl, "organizations/" + organization + "/avatar", queryString(null));
+    public static String retrieveOrganizationAvatar(String organization) {
+      return new StringBuilder(baseUrl).append("organizations/").append(organization).append("/avatar")
+        .append(queryString(null)).toString();
     }
 
     /**

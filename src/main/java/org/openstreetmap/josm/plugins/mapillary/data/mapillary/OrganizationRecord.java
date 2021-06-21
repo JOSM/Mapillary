@@ -1,22 +1,26 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.data.mapillary;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.io.CachedFile;
+import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.ListenerList;
@@ -58,13 +62,21 @@ public final class OrganizationRecord implements Serializable {
     if (avatar != null && !avatar.isEmpty()) {
       return ImageProvider.get(avatar, ImageProvider.ImageSizes.DEFAULT);
     } else if (organizationKey != null && !organizationKey.isEmpty()) {
-      try (CachedFile possibleAvatar = new CachedFile(
-        MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey).toExternalForm())) {
-        OAuthUtils.addAuthenticationHeader(possibleAvatar);
-        return ImageProvider.getIfAvailable(possibleAvatar.getFile().getAbsolutePath());
-      } catch (IOException e) {
-        Logging.error(e);
-      }
+      final String url = MapillaryURL.APIv3.retrieveOrganizationAvatar(organizationKey);
+      final BufferedImage avatarImage = Caches.metaImages.get(url, () -> {
+        try {
+          HttpClient client = HttpClient.create(new URL(url));
+          OAuthUtils.addAuthenticationHeader(client);
+          HttpClient.Response response = client.connect();
+          if (response.getResponseCode() >= 200 && response.getResponseCode() < 400) {
+            return ImageIO.read(response.getContent());
+          }
+        } catch (IOException e) {
+          Logging.error(e);
+        }
+        return null;
+      });
+      return avatarImage != null ? new ImageIcon(avatarImage) : ImageProvider.createBlankIcon(ImageSizes.DEFAULT);
     }
     return ImageProvider.getEmpty(ImageSizes.DEFAULT);
   }
