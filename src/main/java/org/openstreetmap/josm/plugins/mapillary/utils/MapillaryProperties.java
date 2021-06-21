@@ -14,7 +14,6 @@ public final class MapillaryProperties {
   public static final BooleanProperty HOVER_ENABLED = new BooleanProperty("mapillary.hover-enabled", true);
   public static final BooleanProperty DARK_MODE = new BooleanProperty("mapillary.dark-mode", true);
   public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
-  public static final BooleanProperty TIME_FORMAT_24 = new BooleanProperty("mapillary.format-24", true);
   public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(
     "mapillary.image-link-to-blur-editor", false);
   /**

@@ -33,6 +33,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
@@ -52,11 +53,16 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -592,8 +598,10 @@ public final class MapillaryMainDialog extends ToggleDialog
     if (!MapillaryUtils.getForkJoinPool().isShutdown()) {
       MapillaryUtils.getForkJoinPool().execute(() -> {
         MapillarySequenceUtils.getSequence(MapillaryImageUtils.getSequenceKey(image));
-        this.updateImage();
-        this.invalidate();
+        GuiHelper.runInEDT(() -> {
+          this.updateImage();
+          this.invalidate();
+        });
       });
     } else {
       this.updateImage();
@@ -646,8 +654,19 @@ public final class MapillaryMainDialog extends ToggleDialog
         if (organizationRecord != OrganizationRecord.NULL_RECORD) {
           title.append(MESSAGE_SEPARATOR).append(organizationRecord.getNiceName());
         }
-        if (mapillaryImage.hasKey(MapillaryKeys.CAPTURED_AT)) {
-          title.append(MESSAGE_SEPARATOR).append(mapillaryImage.get(MapillaryKeys.CAPTURED_AT));
+        if (!Instant.EPOCH.equals(MapillaryImageUtils.getDate(mapillaryImage))) {
+          final boolean showHour = Boolean.TRUE.equals(MapillaryProperties.DISPLAY_HOUR.get());
+          final Instant pictureTime = MapillaryImageUtils.getDate(mapillaryImage);
+          title.append(MESSAGE_SEPARATOR);
+          final DateFormat formatter;
+          if (showHour) {
+            formatter = DateUtils.getDateTimeFormat(DateFormat.DEFAULT, DateFormat.DEFAULT);
+          } else {
+            formatter = DateUtils.getDateFormat(DateFormat.DEFAULT);
+          }
+          // Use UTC, since mappers may be outside of "their" timezone, which would be even more confusing.
+          formatter.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
+          title.append(formatter.format(Date.from(pictureTime)));
         }
         setTitle(title.toString());
       } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {

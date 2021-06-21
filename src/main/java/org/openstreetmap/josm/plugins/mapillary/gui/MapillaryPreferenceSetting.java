@@ -50,9 +50,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox displayHour =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Display hour when the picture was taken"), MapillaryProperties.DISPLAY_HOUR.get());
-  private final JCheckBox format24 =
-    // i18n: Checkbox label in JOSM settings
-    new JCheckBox(I18n.tr("Use 24 hour format"), MapillaryProperties.TIME_FORMAT_24.get());
   private final JCheckBox moveTo =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Center view on new image when using the buttons to jump to another image"),
@@ -111,7 +108,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
     mainPanel.add(displayHour, GBC.eol());
-    mainPanel.add(format24, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
     mainPanel.add(darkMode, GBC.eol());
@@ -135,8 +131,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       developer.setVisible(true);
     }
-    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, format24, moveTo, hoverEnabled, darkMode,
-      cutOffSeq, imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
+    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, moveTo, hoverEnabled, darkMode, cutOffSeq,
+      imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     container.add(mainPanel, BorderLayout.CENTER);
@@ -187,7 +183,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   public boolean ok() {
     DeveloperToggleAction.getInstance().setDeveloper(developer.isSelected());
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
-    MapillaryProperties.TIME_FORMAT_24.put(format24.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
     MapillaryProperties.DARK_MODE.put(darkMode.isSelected());
@@ -195,7 +190,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
 
-    // Restart is never required
+    // Restart is never required (FIXME if we enable Mapillary computed layer switching)
     return false;
   }
 
