@@ -248,8 +248,8 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
     }
 
     final OrganizationRecord organizationRecord = MapillaryImageUtils.getOrganization(newImage);
-    usernameLabel.setEnabled(organizationRecord != null);
-    if (organizationRecord != null) {
+    usernameLabel.setEnabled(!OrganizationRecord.NULL_RECORD.equals(organizationRecord));
+    if (usernameLabel.isEnabled()) {
       usernameLabel.setText(organizationRecord.getNiceName());
       usernameLabel.setIcon(
         new ImageIcon(organizationRecord.getAvatar().getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
