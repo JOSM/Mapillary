@@ -1,49 +1,47 @@
 {
-  "data": {
-    "altitude": 1365.438,
-    "atomic_scale": 1,
-    "camera_parameters": [
-      0.85,
-      0,
-      0
-    ],
-    "camera_type": "perspective",
-    "captured_at": 1563721080184,
-    "compass_angle": 344.66,
-    "computed_altitude": 1399.4218842061,
-    "computed_compass_angle": 344.94472689299,
-    "computed_geometry": {
-      "type": "Point",
-      "coordinates": [
-        -108.57079697265,
-        39.069199998346
-      ]
-    },
-    "computed_rotation": [
-      1.5608887723115,
-      0.20627902216826,
-      -0.20625267065192
-    ],
-    "exif_orientation": 1,
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -108.57079697222,
-        39.0692
-      ]
-    },
-    "height": 3120,
-    "thumb_256_url": "thumb_256_filler_url",
-    "thumb_1024_url": "thumb_1024_filler_url",
-    "thumb_2048_url": "thumb_2048_filler_url",
-    "merge_cc": 3333799111398900000,
-    "quality_score": 0.91282894736842,
-    "sequence": "7nfcwfvjdtphz7yj6zat6a",
-    "sfm_cluster": {
-      "id": "155444533218101",
-      "url": "sfm_cluster_filler_url"
-    },
-    "width": 4160,
-    "id": "311681117131457"
-  }
+  "altitude": 1365.438,
+  "atomic_scale": 1,
+  "camera_parameters": [
+    0.85,
+    0,
+    0
+  ],
+  "camera_type": "perspective",
+  "captured_at": 1563721080184,
+  "compass_angle": 344.66,
+  "computed_altitude": 1399.4218842061,
+  "computed_compass_angle": 344.94472689299,
+  "computed_geometry": {
+    "type": "Point",
+    "coordinates": [
+      -108.57079697265,
+      39.069199998346
+    ]
+  },
+  "computed_rotation": [
+    1.5608887723115,
+    0.20627902216826,
+    -0.20625267065192
+  ],
+  "exif_orientation": 1,
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -108.57079697222,
+      39.0692
+    ]
+  },
+  "height": 3120,
+  "thumb_256_url": "thumb_256_filler_url",
+  "thumb_1024_url": "thumb_1024_filler_url",
+  "thumb_2048_url": "thumb_2048_filler_url",
+  "merge_cc": 3333799111398900000,
+  "quality_score": 0.91282894736842,
+  "sequence": "7nfcwfvjdtphz7yj6zat6a",
+  "sfm_cluster": {
+    "id": "155444533218101",
+    "url": "sfm_cluster_filler_url"
+  },
+  "width": 4160,
+  "id": "311681117131457"
 }
