@@ -2,36 +2,45 @@
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
+import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
-import org.openstreetmap.josm.plugins.mapillary.utils.JsonUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
+import org.openstreetmap.josm.testutils.JOSMTestRules;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.function.Function;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.assertDecodesToNull;
+import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.stringToJsonValue;
 
 @MapillaryURLWireMock
 class JsonSequencesDecoderTest {
+  @RegisterExtension
+  static JOSMTestRules rules = new JOSMTestRules().preferences().main();
 
   @Test
   void testDecodeSequences() throws IOException {
@@ -103,101 +112,58 @@ class JsonSequencesDecoderTest {
 
   @Test
   void testDecodeSequence() throws IOException {
-    try (InputStream stream = this.getClass().getResourceAsStream("/api/v3/responses/sequence.json");
-      JsonReader reader = Json.createReader(stream)) {
-      IWay<?> exampleSequence = JsonSequencesDecoder.decodeSequence(reader.readObject()).get(0);
-      assertEquals("cHBf9e8n0pG8O0ZVQHGFBQ", MapillarySequenceUtils.getKey(exampleSequence));
-      // 1_457_963_077_206L -> 2016-03-14T13:44:37.206 UTC
-      assertEquals(1_457_963_077_206L, MapillarySequenceUtils.getCreatedAt(exampleSequence).toEpochMilli());
-      assertEquals(2, exampleSequence.getNodes().size());
+    final JsonObject json = OAuthUtils
+      .getWithHeader(new URL(MapillaryURL.APIv4.getImagesBySequences("7nfcwfvjdtphz7yj6zat6a")));
+    final Collection<VectorWay> exampleSequences = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
+    assertEquals(1, exampleSequences.size());
+    final IWay<?> exampleSequence = exampleSequences.iterator().next();
+    // Check that the nodes/ids were correctly decoded
+    assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillarySequenceUtils.getKey(exampleSequence));
+    assertEquals("148137757289079", MapillaryImageUtils.getKey(exampleSequence.getNode(0)));
+    assertEquals("311799370533334", MapillaryImageUtils.getKey(exampleSequence.getNode(1)));
+    assertEquals("4235112816526838", MapillaryImageUtils.getKey(exampleSequence.getNode(2)));
+    assertEquals("464249047982277", MapillaryImageUtils.getKey(exampleSequence.getNode(3)));
+    assertEquals("308609047601518", MapillaryImageUtils.getKey(exampleSequence.getNode(4)));
+    assertEquals("135511895288847", MapillaryImageUtils.getKey(exampleSequence.getNode(5)));
+    assertEquals("311681117131457", MapillaryImageUtils.getKey(exampleSequence.getNode(6)));
+    assertEquals(7, exampleSequence.getNodesCount());
+    // 1_457_963_077_206L -> 2016-03-14T13:44:37.206 UTC
+    assertEquals(1_457_963_077_206L, MapillarySequenceUtils.getCreatedAt(exampleSequence).toEpochMilli());
+    assertEquals(2, exampleSequence.getNodes().size());
 
-      assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("76P0YUrlDD_lF6J7Od3yoA",
-        new LatLon(16.43279, 7.246085), 96.71454, false), exampleSequence.getNodes().get(0));
-      assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("Ap_8E0BwoAqqewhJaEbFyQ",
-        new LatLon(16.432799, 7.246082), 96.47705000000002, false), exampleSequence.getNodes().get(1));
-    }
+    assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("76P0YUrlDD_lF6J7Od3yoA",
+      new LatLon(16.43279, 7.246085), 96.71454, false), exampleSequence.getNodes().get(0));
+    assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("Ap_8E0BwoAqqewhJaEbFyQ",
+      new LatLon(16.432799, 7.246082), 96.47705000000002, false), exampleSequence.getNodes().get(1));
   }
 
-  @Test
-  void testDecodeSequenceInvalid() {
-    // null input
-    assertNull(JsonSequencesDecoder.decodeSequence(null));
-    // `properties` key is not set
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence, "{\"type\": \"Feature\"}");
-    // value for the key `key` in the properties is missing
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence, "{\"type\": \"Feature\", \"properties\": {}}");
-    // value for the key `user_key` in the properties is missing
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\"}}");
-    // value for the key `captured_at` in the properties is missing
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"user_key\": \"arbitraryUserKey\"}}");
-    // the date in `captured_at` has an unrecognized format
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"captured_at\": \"unrecognizedDateFormat\"}}");
-    // the `image_key` array and the `cas` array contain unexpected values (in this case `null`)
-    assertDecodesToNull(JsonSequencesDecoder::decodeSequence,
-      "{\"type\": \"Feature\", \"properties\": {\"key\": \"someKey\", \"user_key\": \"arbitraryUserKey\",",
-      "\"captured_at\": \"1970-01-01T00:00:00.000Z\",",
-      "\"coordinateProperties\": {\"cas\": [null, null, null, null, 1.0, 1.0, 1.0],",
-      "\"image_keys\": [null, null, \"key\", \"key\", null, null, \"key\"]}},",
-      "\"geometry\": {\"type\": \"LineString\", \"coordinates\": [null, [1,1], null, [1,1], null, [1,1], null]}}");
-  }
-
+  @ParameterizedTest
+  // null input
+  @NullSource
+  @ValueSource(strings = {
+    /* *** Start new graph API checks */
+    // Data is expected to be removed prior to the call. And this is an object
+    "{\"data\":[{\"id\":\"148137757289079\"}]}",
+    // ids should not be null
+    "[{\"id\":null}]",
+    // ids should not be dicts
+    "[{\"id\":{\"bad\":5}}]",
+    // ids should not be arrays
+    "[{\"id\":[\"bad\",5]}]",
+    // There should be an id...
+    "[{\"random\":\"dict\"}]",
+    // There should be dicts
+    "[null]",
+  /* *** End new graph API checks */
+  })
   /**
-   * Checks if an empty array is returned, if <code>null</code> is supplied to the method as the array.
+   * Check various strings that are not valid sequences.
    */
-  @Test
-  void testDecodeJsonArray() throws ReflectiveOperationException {
-    Method method = JsonSequencesDecoder.class.getDeclaredMethod("decodeJsonArray", JsonArray.class, Function.class,
-      Class.class);
-    method.setAccessible(true);
-    assertEquals(0,
-      ((String[]) method.invoke(null, null, (Function<JsonValue, String>) val -> null, String.class)).length);
-  }
-
-  @Test
-  void testDecodeCoordinateProperty() throws ReflectiveOperationException {
-    Method decodeCoordinateProperty = JsonSequencesDecoder.class.getDeclaredMethod("decodeCoordinateProperty",
-      JsonObject.class, String.class, Function.class, Class.class);
-    decodeCoordinateProperty.setAccessible(true);
-
-    assertEquals(0, ((String[]) decodeCoordinateProperty.invoke(null, null, "key",
-      (Function<JsonValue, String>) val -> "string", String.class)).length);
-
-    assertEquals(0,
-      ((String[]) decodeCoordinateProperty.invoke(null,
-        JsonUtil.string2jsonObject("{\"coordinateProperties\":{\"key\":0}}"), "key",
-        (Function<JsonValue, String>) val -> "string", String.class)).length);
-  }
-
-  @Test
-  void testDecodeLatLons() throws ReflectiveOperationException, IOException {
-    Method decodeLatLons = JsonSequencesDecoder.class.getDeclaredMethod("decodeLatLons", JsonObject.class);
-    decodeLatLons.setAccessible(true);
-
-    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, (JsonObject) null)).length);
-    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":0}"))).length);
-    assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, JsonUtil.string2jsonObject("{\"coordinates\":[]}"))).length);
-
-    try (
-      InputStream inputStream = new ByteArrayInputStream(
-        "{\"type\": \"Feature\", \"coordinates\": []}".getBytes(StandardCharsets.UTF_8));
-      JsonReader reader = Json.createReader(inputStream)) {
-      assertEquals(0, ((LatLon[]) decodeLatLons.invoke(null, reader.readObject())).length);
-    }
-
-    try (
-      InputStream inputStream = new ByteArrayInputStream(
-        "{\"type\": \"LineString\", \"coordinates\": [ [1,2,3], [\"a\", 2], [1, \"b\"] ]}"
-          .getBytes(StandardCharsets.UTF_8));
-      JsonReader reader = Json.createReader(inputStream)) {
-      LatLon[] example = (LatLon[]) decodeLatLons.invoke(null, reader.readObject());
-      assertEquals(3, example.length);
-      assertNull(example[0]);
-      assertNull(example[1]);
-      assertNull(example[2]);
-    }
+  void testDecodeSequenceInvalid(final String toCheck) {
+    final JsonValue json = toCheck != null ? stringToJsonValue(toCheck) : null;
+    final List<VectorWay> seq = JsonSequencesDecoder.decodeSequence(json);
+    assertTrue(seq.isEmpty(), seq.stream().map(VectorWay::getNodes).flatMap(Collection::stream)
+      .map(MapillaryImageUtils::getKey).collect(Collectors.joining(",")));
   }
 
   @Test

@@ -131,7 +131,7 @@ public @interface MapillaryURLWireMock {
 
       final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
       final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
-      wireMockConfiguration.extensions(new ResponseTemplateTransformer(true), new CollectionEndpoint(),
+      wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(true),
         fillerUrlReplacer);
       wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
       final WireMockServer server = new WireMockServer(wireMockConfiguration);
@@ -142,9 +142,9 @@ public @interface MapillaryURLWireMock {
       final Map<String, StringValuePattern> potentialParameters = new HashMap<>();
       potentialParameters.put("fields", new AnythingPattern());
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/image_ids.*"))
-        .withQueryParams(potentialParameters).withQueryParam("sequence_id", new AnythingPattern())
-        .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/image_ids/{{request.path.[4]}}.json")
-          .withHeader("Content-Type", "application/json")));
+        .withQueryParam("sequence_id", new AnythingPattern()).willReturn(
+          WireMock.aResponse().withBodyFile("api/v4/responses/graph/image_ids/{{request.query.sequence_id}}.json")
+            .withHeader("Content-Type", "application/json")));
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*")).withQueryParams(potentialParameters)
         .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}.json")
           .withHeader("Content-Type", "application/json")));

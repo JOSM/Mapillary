@@ -7,14 +7,18 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.tools.Logging;
 
 import javax.json.JsonArray;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -43,10 +47,15 @@ public final class JsonSequencesDecoder {
      * We just have the "data" value
      */
     if (!(json instanceof JsonArray)) {
-      throw new IllegalArgumentException("The sequence endpoint just returns an array of picture ids");
+      Logging.error("Mapillary: The sequence endpoint just returns an array of picture ids");
+      return Collections.emptyList();
     }
-    final List<String> imageIds = ((JsonArray) json).getValuesAs(JsonObject.class).stream()
-      .filter(image -> image.containsKey("id")).map(image -> image.getString("id")).collect(Collectors.toList());
+    final List<String> imageIds = ((JsonArray) json)
+      .getValuesAs(value -> value instanceof JsonObject ? (JsonObject) value : null).stream().filter(Objects::nonNull)
+      .filter(image -> image.containsKey("id")).map(image -> image.get("id"))
+      .filter(jsonObject -> jsonObject instanceof JsonString || jsonObject instanceof JsonNumber)
+      .map(value -> value instanceof JsonString ? ((JsonString) value).getString() : ((JsonNumber) value).toString())
+      .collect(Collectors.toList());
     final Collection<String> currentImageIds = MapillaryLayer.getInstance().getData().getNodes().stream()
       .map(MapillaryImageUtils::getKey).filter(imageIds::contains).collect(Collectors.toSet());
     MapillaryDownloader
@@ -55,7 +64,11 @@ public final class JsonSequencesDecoder {
       .filter(node -> imageIds.contains(MapillaryImageUtils.getKey(node)))
       .sorted(Comparator.comparingInt(node -> imageIds.indexOf(MapillaryImageUtils.getKey(node))))
       .collect(Collectors.toList());
-    VectorWay sequence = nodes.stream().map(MapillaryImageUtils::getSequence).filter(VectorWay.class::isInstance)
+    if (nodes.isEmpty()) {
+      Logging.error("Mapillary: The sequence does not have any nodes");
+      return Collections.emptyList();
+    }
+    final VectorWay sequence = nodes.stream().map(MapillaryImageUtils::getSequence).filter(VectorWay.class::isInstance)
       .map(VectorWay.class::cast).max(Comparator.comparingInt(IWay::getNodesCount))
       .orElseGet(() -> new VectorWay("mapillary-sequences"));
     synchronized (JsonSequencesDecoder.class) {
