@@ -519,7 +519,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       this.imageCache.cancelOutstandingTasks();
     this.imageCache = imageFullCache;
     try {
-      if (imageFullCache.get() == null)
+      if (imageFullCache.getUrl() != null && imageFullCache.get() == null)
         imageFullCache.submit(this, false);
     } catch (IOException e) {
       Logging.error(e);
