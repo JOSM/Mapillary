@@ -118,9 +118,10 @@ public @interface MapillaryURLWireMock {
       } finally {
         // We want to reset it all regardless for future tests
         server.resetAll();
+        List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
+        stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast)
+          .forEach(server::addStubMapping);
       }
-      List<?> stubs = context.getStore(namespace).get(StubMapping.class, List.class);
-      stubs.stream().filter(StubMapping.class::isInstance).map(StubMapping.class::cast).forEach(server::addStubMapping);
     }
 
     @Override

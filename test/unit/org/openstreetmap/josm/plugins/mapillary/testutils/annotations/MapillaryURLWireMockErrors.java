@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -28,7 +29,6 @@ public @interface MapillaryURLWireMockErrors {
   Type value() default Type.APPLICATION_REQUEST_LIMIT_REACHED;
 
   static class WireMockExtension implements BeforeEachCallback {
-
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
       final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(MapillaryURLWireMock.class);

@@ -87,7 +87,13 @@ public final class CacheUtils {
    */
   public static void submit(INode image, ICachedLoaderListener lis) {
     try {
-      new MapillaryCache(image).submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+      final MapillaryCache cache = new MapillaryCache(image);
+      if (cache.getUrl() != null) {
+        cache.submit(lis != null ? lis : IGNORE_DOWNLOAD, false);
+      } else {
+        Logging.error("Mapillary: {0} has no url. Maybe API limits have been reached?",
+          MapillaryImageUtils.getKey(image));
+      }
     } catch (IOException e) {
       Logging.error(e);
     }
