@@ -84,14 +84,6 @@ public final class TestUtil {
     }
   }
 
-  public static String getApiV3BaseUrl() {
-    return MapillaryURL.APIv3.baseUrl;
-  }
-
-  public static void setAPIv3BaseUrl(final String baseUrl) {
-    MapillaryURL.APIv3.baseUrl = baseUrl;
-  }
-
   public static String getMainWebsiteBaseUrl() {
     return MapillaryURL.MainWebsite.baseUrl;
   }
