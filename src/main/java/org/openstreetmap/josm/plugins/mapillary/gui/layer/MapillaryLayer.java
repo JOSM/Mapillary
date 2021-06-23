@@ -244,6 +244,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   @Override
   public synchronized void destroy() {
     if (!destroyed) {
+      synchronized (MapillaryLayer.class) {
+        instance = null;
+      }
       this.getData().clearSelection();
       clearInstance();
       if (MapillaryMainDialog.hasInstance()) {
@@ -251,8 +254,8 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
         MapillaryMainDialog.getInstance().updateImage();
       }
       UploadAction.unregisterUploadHook(this);
+      super.destroy();
     }
-    super.destroy();
     destroyed = true;
   }
 
@@ -263,7 +266,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (this.getData() == null) {
       return;
     }
-    this.getData().getNodes().parallelStream().filter(node -> MapillaryImageUtils.getKey(node) != null)
+    this.getData().getNodes().parallelStream().filter(MapillaryImageUtils.IS_IMAGE)
       .forEach(img -> img.setVisible(visible));
     if (MainApplication.getMap() != null) {
       MapillaryFilterDialog.getInstance().refresh();

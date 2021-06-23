@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.MessageFormat;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -35,6 +37,26 @@ class MapillaryLayerTest {
 
   private static Layer getDummyLayer() {
     return ImageryLayer.create(new ImageryInfo("dummy", "https://example.org"));
+  }
+
+  @BeforeEach
+  void setUp() {
+    if (MapillaryLayer.hasInstance()) {
+      try {
+        MapillaryLayer.getInstance().destroy();
+      } catch (IllegalArgumentException illegalArgumentException) {
+        // Some other test pollutes MapillaryLayer.getInstance, and LayerChangeAdaptor is cleaned up.
+        // This causes destroy() to fail on the first test.
+        if (!illegalArgumentException.getMessage().contains("Listener was not registered before")) {
+          throw illegalArgumentException;
+        }
+      }
+    }
+  }
+
+  @AfterEach
+  void tearDown() {
+    this.setUp();
   }
 
   @Test
