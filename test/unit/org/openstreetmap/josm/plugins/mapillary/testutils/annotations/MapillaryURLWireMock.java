@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.testutils.annotations;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.FileSource;
+import com.github.tomakehurst.wiremock.common.TextFile;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
@@ -132,7 +133,7 @@ public @interface MapillaryURLWireMock {
 
       final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration().dynamicPort();// .usingFilesUnderDirectory("test/resources/api/v4");
       final FillerUrlReplacer fillerUrlReplacer = new FillerUrlReplacer();
-      wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(true),
+      wireMockConfiguration.extensions(new CollectionEndpoint(), new ResponseTemplateTransformer(false),
         fillerUrlReplacer);
       wireMockConfiguration.withRootDirectory("test" + File.separatorChar + "resources");
       final WireMockServer server = new WireMockServer(wireMockConfiguration);
@@ -143,29 +144,35 @@ public @interface MapillaryURLWireMock {
       final Map<String, StringValuePattern> potentialParameters = new HashMap<>();
       potentialParameters.put("fields", new AnythingPattern());
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/image_ids.*"))
-        .withQueryParam("sequence_id", new AnythingPattern()).willReturn(
+        .withQueryParam("sequence_id", new AnythingPattern())
+        .willReturn(
           WireMock.aResponse().withBodyFile("api/v4/responses/graph/image_ids/{{request.query.sequence_id}}.json")
-            .withHeader("Content-Type", "application/json")));
+            .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+        .atPriority(0));
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*")).withQueryParams(potentialParameters)
         .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}.json")
-          .withHeader("Content-Type", "application/json")));
+          .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+        .atPriority(100));
       server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/coverageTiles/.*"))
         .withQueryParams(potentialParameters)
         .willReturn(WireMock.aResponse().withBodyFile(
           "api/v4/responses/coverageTiles/{{request.path.[3]}}/{{request.path.[4]}}/{{request.path.[5]}}/{{request.path.[6]}}/{{request.path.[7]}}/{{request.path.[8]}}.mvt")
           .withHeader("Content-Type", "application/vnd.mapbox-vector-tile", "application/vnd.google.protobuf",
-            "application/x-protobuf", "application/protobuf")));
+            "application/x-protobuf", "application/protobuf")
+          .withTransformers("response-template"))
+        .atPriority(0));
       server.stubFor(
         WireMock.get(WireMock.urlPathMatching("/api/v4/graph/.*?/detections")).withQueryParams(potentialParameters)
           .willReturn(WireMock.aResponse().withBodyFile("api/v4/responses/graph/{{request.path.[3]}}/detections.json")
-            .withHeader("Content-Type", "application/json")));
+            .withHeader("Content-Type", "application/json").withTransformers("response-template"))
+          .atPriority(0));
 
       final Map<String, StringValuePattern> imageIdsParameters = new HashMap<>(potentialParameters);
       imageIdsParameters.put("image_ids", new AnythingPattern());
 
       // This stub *MUST* be accounted for in the an extension (for example, the CollectionEndpoint extension)
-      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images")).withQueryParams(imageIdsParameters)
-        .willReturn(WireMock.aResponse()));
+      server.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v4/graph/images.*"))
+        .withQueryParams(imageIdsParameters).willReturn(WireMock.aResponse()).atPriority(0));
       context.getStore(namespace).put(StubMapping.class, server.getStubMappings());
       // Only allow real Mapillary API calls in integration tests.
       if (context.getElement().isPresent()
@@ -194,9 +201,15 @@ public @interface MapillaryURLWireMock {
       public Response transform(Request request, Response response, FileSource files, Parameters parameters) {
         if (request.queryParameter("image_ids").isPresent()) {
           // Not implemented currently since I don't know if I need to split on `,` or `%2C`
-          throw new UnsupportedOperationException("This needs to be implemented");
+          final List<String> imageIds = request.queryParameter("image_ids").values().stream()
+            .map(str -> str.split(",", -1)).flatMap(Stream::of).filter(Objects::nonNull).collect(Collectors.toList());
+          final List<TextFile> imageText = imageIds.stream()
+            .map(image -> files.getTextFileNamed("api/v4/responses/graph/" + image + ".json"))
+            .collect(Collectors.toList());
           // We need to get the actual bytes prior to returning, so we need to read the files.
-          // return Response.Builder.like(response).but().body(new byte[] {}).build();
+          final String body = imageText.stream().map(text -> text.readContentsAsString())
+            .collect(Collectors.joining(",", "{\"data\":[", "]}"));
+          return Response.Builder.like(response).but().body(body).build();
         }
         return response;
       }

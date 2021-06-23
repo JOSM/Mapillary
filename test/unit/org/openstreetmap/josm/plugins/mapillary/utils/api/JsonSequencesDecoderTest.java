@@ -11,9 +11,9 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
+import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryCaches;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.TestUtil;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
@@ -32,11 +32,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.stringToJsonValue;
 
 @MapillaryURLWireMock
+@MapillaryCaches
 class JsonSequencesDecoderTest {
   @RegisterExtension
   static JOSMTestRules rules = new JOSMTestRules().preferences().main();
@@ -49,7 +51,7 @@ class JsonSequencesDecoderTest {
   @Test
   void testDecodeSequencesInvalid() {
     // null input
-    assertEquals(0, JsonDecoder.decodeFeatureCollection(null, JsonSequencesDecoder::decodeSequence).size());
+    assertThrows(NullPointerException.class, () -> JsonDecoder.decodeData(null, JsonSequencesDecoder::decodeSequence));
     // empty object
     assertNumberOfDecodedSequences(0, "{}");
     // object without type=FeatureCollection
@@ -71,7 +73,7 @@ class JsonSequencesDecoderTest {
     try (InputStream stream = new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8));
       JsonReader reader = Json.createReader(stream)) {
       assertEquals(expectedNumberOfSequences,
-        JsonDecoder.decodeFeatureCollection(reader.readObject(), JsonSequencesDecoder::decodeSequence).size());
+        JsonDecoder.decodeData(reader.readObject(), JsonSequencesDecoder::decodeSequence).size());
     } catch (IOException e) {
       fail(jsonString, e);
     }
@@ -84,8 +86,11 @@ class JsonSequencesDecoderTest {
     final Collection<VectorWay> exampleSequences = JsonDecoder.decodeData(json, JsonSequencesDecoder::decodeSequence);
     assertEquals(1, exampleSequences.size());
     final IWay<?> exampleSequence = exampleSequences.iterator().next();
+    // Since the sequence key isn't returned in the API response, we have to rely upon the sequence key
+    // being present in the vector tiles. Therefore, we cannot test that the expected sequence id is in the
+    // vector way. We also cannot check anything _except_ that the sequence now has data.
+
     // Check that the nodes/ids were correctly decoded
-    assertEquals("7nfcwfvjdtphz7yj6zat6a", MapillarySequenceUtils.getKey(exampleSequence));
     assertEquals("148137757289079", MapillaryImageUtils.getKey(exampleSequence.getNode(0)));
     assertEquals("311799370533334", MapillaryImageUtils.getKey(exampleSequence.getNode(1)));
     assertEquals("4235112816526838", MapillaryImageUtils.getKey(exampleSequence.getNode(2)));
@@ -94,14 +99,6 @@ class JsonSequencesDecoderTest {
     assertEquals("135511895288847", MapillaryImageUtils.getKey(exampleSequence.getNode(5)));
     assertEquals("311681117131457", MapillaryImageUtils.getKey(exampleSequence.getNode(6)));
     assertEquals(7, exampleSequence.getNodesCount());
-    // 1_457_963_077_206L -> 2016-03-14T13:44:37.206 UTC
-    assertEquals(1_457_963_077_206L, MapillarySequenceUtils.getCreatedAt(exampleSequence).toEpochMilli());
-    assertEquals(2, exampleSequence.getNodes().size());
-
-    assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("76P0YUrlDD_lF6J7Od3yoA",
-      new LatLon(16.43279, 7.246085), 96.71454, false), exampleSequence.getNodes().get(0));
-    assertEquals(JsonImageDetailsDecoderTest.createDownloadedImage("Ap_8E0BwoAqqewhJaEbFyQ",
-      new LatLon(16.432799, 7.246082), 96.47705000000002, false), exampleSequence.getNodes().get(1));
   }
 
   @ParameterizedTest
