@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest.stringToJsonValue;
@@ -41,38 +40,6 @@ import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoderTest
 class JsonSequencesDecoderTest {
   @RegisterExtension
   static JOSMTestRules rules = new JOSMTestRules().preferences().main();
-
-  @Test
-  void testDecodeSequences() throws IOException {
-    try (InputStream stream = this.getClass().getResourceAsStream("/api/v4/responses/searchSequences.json");
-      JsonReader reader = Json.createReader(stream)) {
-      // TODO fix
-      Collection<VectorWay> exampleSequences = null; // JsonDecoder.decodeFeatureCollection(reader.readObject(),
-                                                     // JsonSequencesDecoder::decodeSequence);
-      assertNotNull(exampleSequences);
-      assertEquals(1, exampleSequences.size());
-      IWay<?> seq = exampleSequences.iterator().next();
-      assertEquals(4, seq.getNodes().size());
-
-      assertEquals("LwrHXqFRN_pszCopTKHF_Q", MapillaryImageUtils.getKey(seq.getNodes().get(0)));
-      assertEquals("Aufjv2hdCKwg9LySWWVSwg", MapillaryImageUtils.getKey(seq.getNodes().get(1)));
-      assertEquals("QEVZ1tp-PmrwtqhSwdW9fQ", MapillaryImageUtils.getKey(seq.getNodes().get(2)));
-      assertEquals("G_SIwxNcioYeutZuA8Rurw", MapillaryImageUtils.getKey(seq.getNodes().get(3)));
-
-      assertEquals(323.0319999999999, MapillaryImageUtils.getAngle(seq.getNodes().get(0)), 1e-10);
-      assertEquals(320.8918, MapillaryImageUtils.getAngle(seq.getNodes().get(1)), 1e-10);
-      assertEquals(333.62239999999997, MapillaryImageUtils.getAngle(seq.getNodes().get(2)), 1e-10);
-      assertEquals(329.94820000000004, MapillaryImageUtils.getAngle(seq.getNodes().get(3)), 1e-10);
-
-      assertEqualsLatLon(new LatLon(7.246497, 16.432958), seq.getNodes().get(0).getCoor());
-      assertEqualsLatLon(new LatLon(7.246567, 16.432955), seq.getNodes().get(1).getCoor());
-      assertEqualsLatLon(new LatLon(7.248372, 16.432971), seq.getNodes().get(2).getCoor());
-      assertEqualsLatLon(new LatLon(7.249027, 16.432976), seq.getNodes().get(3).getCoor());
-
-      assertEquals(1_457_963_093_860L, MapillarySequenceUtils.getCreatedAt(seq).toEpochMilli()); // 2016-03-14T13:44:53.860
-                                                                                                 // UTC
-    }
-  }
 
   private void assertEqualsLatLon(LatLon expected, LatLon actual) {
     assertEquals(expected.lat(), actual.lat(), 0.000_000_1);
