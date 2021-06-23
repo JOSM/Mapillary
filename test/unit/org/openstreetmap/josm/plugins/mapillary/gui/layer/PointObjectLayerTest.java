@@ -76,25 +76,6 @@ class PointObjectLayerTest {
   }
 
   @Test
-  void testScheduleDownload() throws URISyntaxException, IOException {
-    wmRule.addStubMapping(get(urlMatching("/map_features\\?.+"))
-      .withQueryParam("client_id", new EqualToPattern("UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"))
-      .withQueryParam("bbox", new EqualToPattern("1.0,1.0,1.0,1.0"))
-      .willReturn(aResponse().withStatus(200)
-        .withBody(Files.readAllBytes(
-          Paths.get(PointObjectLayerTest.class.getResource("/api/v3/responses/searchMapObjects.json").toURI()))))
-      .build());
-    wmRule.addStubMapping(get(urlMatching("/me\\?.+"))
-      .withQueryParam("client_id", new EqualToPattern("UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm"))
-      .willReturn(aResponse().withStatus(404)).build());
-
-    osm.getDataSet().addDataSource(new DataSource(new Bounds(1, 1, 1, 1), "1/1/1/1"));
-    // Wait for a maximum of 5 sec for a result
-    Awaitility.await().atMost(Durations.FIVE_SECONDS).until(() -> instance.getData().allPrimitives().size() != 0);
-    assertEquals(1, instance.getData().allPrimitives().size());
-  }
-
-  @Test
   void testGetIcon() {
     Icon i = instance.getIcon();
     assertEquals(ImageSizes.LAYER.getAdjustedHeight(), i.getIconHeight());
