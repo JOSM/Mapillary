@@ -654,8 +654,6 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       if (MainApplication.isDisplayingMapView()) {
         GuiHelper.runInEDT(this::updateRedBlueButtons);
       }
-      this.nearestImages.stream().filter(Objects::nonNull)
-        .forEach(image -> pool.execute(() -> CacheUtils.downloadPicture(image)));
     }
     this.invalidate();
   }
