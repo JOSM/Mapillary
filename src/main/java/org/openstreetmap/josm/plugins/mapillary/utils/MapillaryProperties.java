@@ -11,7 +11,6 @@ public final class MapillaryProperties {
   public static final BooleanProperty DELETE_AFTER_UPLOAD = new BooleanProperty("mapillary.delete-after-upload", true);
   public static final BooleanProperty DEVELOPER = new BooleanProperty("mapillary.developer", false);
   public static final BooleanProperty DISPLAY_HOUR = new BooleanProperty("mapillary.display-hour", true);
-  public static final BooleanProperty HOVER_ENABLED = new BooleanProperty("mapillary.hover-enabled", true);
   public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
   public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(
     "mapillary.image-link-to-blur-editor", false);
