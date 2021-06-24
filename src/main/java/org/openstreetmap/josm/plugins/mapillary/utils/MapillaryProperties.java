@@ -16,12 +16,7 @@ public final class MapillaryProperties {
   public static final BooleanProperty MOVE_TO_IMG = new BooleanProperty("mapillary.move-to-picture", true);
   public static final BooleanProperty IMAGE_LINK_TO_BLUR_EDITOR = new BooleanProperty(
     "mapillary.image-link-to-blur-editor", false);
-  /**
-   * If false, all sequences that cross the download bounds are put completely into the MapillaryData object.
-   * Otherwise only all images (!) inside the download bounds are added, the others are discarded.
-   */
-  public static final BooleanProperty CUT_OFF_SEQUENCES_AT_BOUNDS = new BooleanProperty(
-    "mapillary.cut-off-sequences-at-bounds", false);
+
   public static final IntegerProperty MAPOBJECT_ICON_SIZE = new IntegerProperty("mapillary.mapobjects.iconsize", 32);
   public static final IntegerProperty MAX_MAPOBJECTS = new IntegerProperty("mapillary.mapobjects.maximum-number", 200);
   public static final BooleanProperty SHOW_DETECTED_SIGNS = new BooleanProperty("mapillary.show-detected-signs", true);
