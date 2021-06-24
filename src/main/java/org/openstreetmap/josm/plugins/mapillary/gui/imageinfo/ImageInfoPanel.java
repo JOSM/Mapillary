@@ -11,6 +11,8 @@ import java.awt.Insets;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.VectorDataSelectionListener;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
+import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
@@ -303,6 +306,12 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
       ExtendedDialog abc = new ExtendedDialog(MainApplication.getMainFrame(), tr("Color Picker"));
       abc.setContent(new ImageColorPicker());
       abc.showDialog();
+      abc.addWindowFocusListener(new WindowAdapter() {
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+          MapillaryMainDialog.getInstance().setMode(MapillaryMainDialog.MODE.NORMAL);
+        }
+      });
     }
   }
 }
