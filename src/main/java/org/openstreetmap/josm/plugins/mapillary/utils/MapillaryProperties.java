@@ -75,6 +75,10 @@ public final class MapillaryProperties {
   public static final BooleanProperty COLOR_BY_CAPTURE_DATE = new BooleanProperty("mapillary.color_by_capture_date",
     false);
 
+  /** The maximum distance for us to automatically add Mapillary to the changeset source */
+  public static final DoubleProperty MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE = new DoubleProperty(
+    "mapillary.source.maxdistance", 30.0);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }

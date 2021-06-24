@@ -522,7 +522,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     DataSet ds = MainApplication.getLayerManager().getActiveDataSet();
     if (ds != null) {
       Collection<OsmPrimitive> primitives = ds.allModifiedPrimitives();
-      final double maxDistance = Config.getPref().getDouble("mapillary.source.maxdistance", 30.0);
+      final double maxDistance = MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE.get();
       Set<INode> imageViewedList = imageViewedMap.getOrDefault(ds, Collections.emptySet());
       synchronized (imageViewedList) {
         for (INode image : imageViewedList) {
