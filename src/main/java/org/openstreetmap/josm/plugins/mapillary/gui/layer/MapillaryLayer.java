@@ -52,6 +52,7 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.spi.preferences.Config;
+import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -75,6 +76,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -108,6 +110,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   private static final int IMG_MARKER_RADIUS = 7;
   /** The radius of the circular sector that indicates the camera angle */
   private static final int CA_INDICATOR_RADIUS = 15;
+
+  /** The color for really old imagery */
+  private static final Color REALLY_OLD_COLOR = ColorHelper.html2color("e17155");
+  /** The color for older imagery */
+  private static final Color OLD_COLOR = ColorHelper.html2color("fbc01b");
+
   /** Length of the edge of the small sign, which indicates that traffic signs have been found in an image. */
   private static final int TRAFFIC_SIGN_SIZE = (int) (ImageProvider.ImageSizes.MAP.getAdjustedWidth() / 1.5);
   /** The range to paint the full detection image at */
@@ -127,6 +135,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   /** The sprite to use for the currently selected image */
   private static final ImageIcon SELECTED_IMAGE = new ImageProvider(IMAGE_SPRITE_DIR, "current-ca")
     .setMaxWidth(ImageProvider.ImageSizes.MAP.getAdjustedHeight()).get();
+
+  /** The milliseconds in a year (approx) */
+  private static final long YEAR_MILLIS = 31_557_600_000L;
 
   /** Unique instance of the class. */
   private static MapillaryLayer instance;
@@ -350,16 +361,36 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (selected) {
       g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_SELECTED
         : MapillaryColorScheme.SEQ_SELECTED);
-    } else if (!selectedImage) {
-      g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
-        : MapillaryColorScheme.SEQ_UNSELECTED);
     } else {
-      g.setColor(!MapillarySequenceUtils.hasKey(sequence) ? MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED
-        : MapillaryColorScheme.SEQ_UNSELECTED);
-      g.setComposite(fadeComposite);
+      final Color color;
+      if (MapillarySequenceUtils.hasKey(sequence)) {
+        final INode toCheck = sequence.getNodes().stream()
+          .filter(inode -> !Instant.EPOCH.equals(MapillaryImageUtils.getDate(inode))).map(INode.class::cast).findFirst()
+          .orElse((INode) sequence.firstNode());
+        color = getAgedColor(toCheck, MapillaryColorScheme.SEQ_UNSELECTED);
+      } else {
+        color = MapillaryColorScheme.SEQ_IMPORTED_UNSELECTED;
+      }
+      g.setColor(color);
+      if (selectedImage) {
+        g.setComposite(fadeComposite);
+      }
     }
     g.draw(MapViewGeometryUtil.getSequencePath(mv, sequence));
     g.setComposite(AlphaComposite.SrcOver);
+  }
+
+  private static Color getAgedColor(final INode node, final Color defaultColor) {
+    if (Boolean.TRUE.equals(MapillaryProperties.COLOR_BY_CAPTURE_DATE.get())) {
+      final long timeDiff = Instant.now().toEpochMilli() - MapillaryImageUtils.getDate(node).toEpochMilli();
+      // ms per year is ~31_556_952_000 ms
+      if (timeDiff > 4 * YEAR_MILLIS) {
+        return REALLY_OLD_COLOR;
+      } else if (timeDiff > YEAR_MILLIS) {
+        return OLD_COLOR;
+      }
+    }
+    return defaultColor;
   }
 
   /**
@@ -398,8 +429,12 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       directionC = MapillaryColorScheme.SEQ_SELECTED_CA;
       i = ACTIVE_SEQUENCE_SPRITE.getImage();
     } else {
-      i = DEFAULT_SPRITE.getImage();
-      directionC = MapillaryColorScheme.SEQ_UNSELECTED_CA;
+      if (getData().getHighlighted().contains(img.getPrimitiveId())) {
+        i = DEFAULT_SPRITE.getImage();
+      } else {
+        i = null;
+      }
+      directionC = getAgedColor(img, MapillaryColorScheme.SEQ_UNSELECTED_CA);
     }
     // Paint direction indicator
     g.setColor(directionC);
@@ -411,17 +446,20 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       g.setComposite(currentComposite);
     }
 
-    // This _must_ be set after operations complete (see JOSM 19516 for more information)
-    AffineTransform backup = g.getTransform();
-    // convert the angle to radians from degrees
-    double angle = MapillaryImageUtils.getAngle(img);
+    g.fillOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
+    if (i != null) {
+      // This _must_ be set after operations complete (see JOSM 19516 for more information)
+      AffineTransform backup = g.getTransform();
+      // convert the angle to radians from degrees
+      double angle = MapillaryImageUtils.getAngle(img);
 
-    angle = Double.isNaN(angle) ? 0 : angle;
-    if (Objects.equals(selectedImg, img))
-      angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
-    g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
-    g.drawImage(i, p.x, p.y, null);
-    g.setTransform(backup);
+      angle = Double.isNaN(angle) ? 0 : angle;
+      if (Objects.equals(selectedImg, img))
+        angle += MapillaryMainDialog.getInstance().imageViewer.getRotation();
+      g.setTransform(getTransform(angle, p, getOriginalCentroid(i), backup));
+      g.drawImage(i, p.x, p.y, null);
+      g.setTransform(backup);
+    }
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlighted().contains(img.getPrimitiveId())

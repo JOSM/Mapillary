@@ -71,6 +71,9 @@ public final class MapillaryProperties {
   /** Use computed locations instead of the original locations */
   public static final BooleanProperty USE_COMPUTED_LOCATIONS = new BooleanProperty("mapillary.computed_locations",
     true);
+  /** Use capture date to color image sequences and locations */
+  public static final BooleanProperty COLOR_BY_CAPTURE_DATE = new BooleanProperty("mapillary.color_by_capture_date",
+    false);
 
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
