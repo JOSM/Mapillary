@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
@@ -64,13 +65,14 @@ public class OldVersionDialog {
    *
    * @return {@code true} if this is the latest Mapillary plugin version
    */
+  @Nullable
   static String latestMapillaryVersion() {
     try (CachedFile latestMapillary = new CachedFile("https://api.github.com/repos/JOSM/Mapillary/releases/latest");
       final JsonReader reader = Json.createReader(latestMapillary.getContentReader())) {
       latestMapillary.setMaxAge(60L * 15); // 15 minutes
       final JsonValue value = reader.read();
       final JsonObject object = value.asJsonObject();
-      return object.getString("tag_name");
+      return object.getString("tag_name", null);
     } catch (IOException | JsonException | IllegalStateException e) {
       Logging.error(e);
     }
