@@ -62,6 +62,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox colorImagesByCaptureDate = new JCheckBox(
     I18n.trc("Checkbox label in JOSM settings", "Color images by capture date"),
     MapillaryProperties.COLOR_BY_CAPTURE_DATE.get());
+
+  private final JCheckBox useComputedLocations = new JCheckBox(
+    I18n.trc("Checkbox label in JOSM settings", "Use computed location information"),
+    MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
+
   private final JPanel requiresLogin = new JPanel(new GridBagLayout());
   private final JCheckBox developer =
     // i18n: Checkbox label in JOSM settings
@@ -105,6 +110,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(imageLinkToBlurEditor, GBC.eol());
     mainPanel.add(colorImagesByCaptureDate, GBC.eol());
+    mainPanel.add(this.useComputedLocations, GBC.eol());
+    this.useComputedLocations.setToolTipText(I18n.tr("Requires JOSM restart"));
 
     final JPanel preFetchPanel = new JPanel();
     // i18n: Spinner label in JOSM settings
@@ -123,8 +130,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       developer.setVisible(true);
     }
-    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, moveTo, imageLinkToBlurEditor,
-      colorImagesByCaptureDate, developer, preFetchPanel, requiresLogin);
+    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, this.displayHour, this.moveTo, this.imageLinkToBlurEditor,
+      this.colorImagesByCaptureDate, this.useComputedLocations, this.developer, preFetchPanel, this.requiresLogin);
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     container.add(mainPanel, BorderLayout.CENTER);
@@ -180,8 +187,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.COLOR_BY_CAPTURE_DATE.put(colorImagesByCaptureDate.isSelected());
 
-    // Restart is never required (FIXME if we enable Mapillary computed layer switching)
-    return false;
+    // Restart is never required, unless we are toggling computed locations.
+    return MapillaryProperties.USE_COMPUTED_LOCATIONS.put(this.useComputedLocations.isSelected());
   }
 
   @Override
