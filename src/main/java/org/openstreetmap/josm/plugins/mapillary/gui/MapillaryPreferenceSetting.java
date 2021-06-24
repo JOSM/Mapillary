@@ -22,6 +22,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.josm.actions.ExpertToggleAction;
+import org.openstreetmap.josm.data.projection.datum.WGS84Datum;
 import org.openstreetmap.josm.gui.preferences.PreferenceTabbedPane;
 import org.openstreetmap.josm.gui.preferences.SubPreferenceSetting;
 import org.openstreetmap.josm.gui.preferences.TabPreferenceSetting;
@@ -66,6 +67,13 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox useComputedLocations = new JCheckBox(
     I18n.trc("Checkbox label in JOSM settings", "Use computed location information"),
     MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
+
+  private final SpinnerNumberModel maxDistanceForChangesetSource = new SpinnerNumberModel(
+    MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE.get().doubleValue(), 0.0,
+    2 * WGS84Datum.INSTANCE.getEllipsoid().a, 0.5);
+
+  private final SpinnerNumberModel maxForImagesToDraw = new SpinnerNumberModel(
+    MapillaryProperties.MAXIMUM_DRAW_IMAGES.get().intValue(), 0, Integer.MAX_VALUE, 10);
 
   private final JPanel requiresLogin = new JPanel(new GridBagLayout());
   private final JCheckBox developer =
@@ -116,12 +124,27 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     final JPanel preFetchPanel = new JPanel();
     // i18n: Spinner label in JOSM settings
     preFetchPanel.add(new JLabel(I18n.tr("Number of images to be pre-fetched (forwards and backwards)")));
-    final JSpinner spinner = new JSpinner(preFetchSize);
-    final JSpinner.DefaultEditor editor = new JSpinner.NumberEditor(spinner);
+    final JSpinner spinnerPreFetchSize = new JSpinner(preFetchSize);
+    final JSpinner.DefaultEditor editor = new JSpinner.NumberEditor(spinnerPreFetchSize);
     editor.getTextField().setColumns(3);
-    spinner.setEditor(editor);
-    preFetchPanel.add(spinner);
+    spinnerPreFetchSize.setEditor(editor);
+    preFetchPanel.add(spinnerPreFetchSize);
     mainPanel.add(preFetchPanel, GBC.eol());
+
+    final JSpinner spinnerChangesetSourceDistance = new JSpinner(this.maxDistanceForChangesetSource);
+    final JPanel changesetSourceDistancePanel = new JPanel();
+    changesetSourceDistancePanel
+      .add(new JLabel(I18n.tr("Maximum distance to consider for changeset source calculations")));
+    changesetSourceDistancePanel.add(spinnerChangesetSourceDistance);
+    mainPanel.add(changesetSourceDistancePanel, GBC.eol());
+    ExpertToggleAction.addVisibilitySwitcher(changesetSourceDistancePanel);
+
+    final JSpinner spinnerNumberOfImagesToDraw = new JSpinner(this.maxForImagesToDraw);
+    final JPanel numberOfImagesToDraw = new JPanel();
+    numberOfImagesToDraw.add(new JLabel(I18n.tr("Number of images to draw in the map view (affects performance)")));
+    numberOfImagesToDraw.add(spinnerNumberOfImagesToDraw);
+    mainPanel.add(numberOfImagesToDraw, GBC.eol());
+    ExpertToggleAction.addVisibilitySwitcher(numberOfImagesToDraw);
 
     developer.addActionListener(e -> DeveloperToggleAction.getInstance().actionPerformed(null));
 
@@ -131,7 +154,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
       developer.setVisible(true);
     }
     MapillaryColorScheme.styleAsDefaultPanel(mainPanel, this.displayHour, this.moveTo, this.imageLinkToBlurEditor,
-      this.colorImagesByCaptureDate, this.useComputedLocations, this.developer, preFetchPanel, this.requiresLogin);
+      this.colorImagesByCaptureDate, this.useComputedLocations, this.developer, preFetchPanel,
+      changesetSourceDistancePanel, numberOfImagesToDraw, this.requiresLogin);
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     container.add(mainPanel, BorderLayout.CENTER);
@@ -186,6 +210,12 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.COLOR_BY_CAPTURE_DATE.put(colorImagesByCaptureDate.isSelected());
+
+    if (ExpertToggleAction.isExpert()) {
+      MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE
+        .put(this.maxDistanceForChangesetSource.getNumber().doubleValue());
+      MapillaryProperties.MAXIMUM_DRAW_IMAGES.put(this.maxForImagesToDraw.getNumber().intValue());
+    }
 
     // Restart is never required, unless we are toggling computed locations.
     return MapillaryProperties.USE_COMPUTED_LOCATIONS.put(this.useComputedLocations.isSelected());
