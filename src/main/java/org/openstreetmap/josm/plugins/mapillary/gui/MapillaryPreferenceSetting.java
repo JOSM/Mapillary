@@ -57,9 +57,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
   private final JCheckBox hoverEnabled =
     // i18n: Checkbox label in JOSM settings
     new JCheckBox(I18n.tr("Preview images when hovering its icon"), MapillaryProperties.HOVER_ENABLED.get());
-  private final JCheckBox darkMode =
-    // i18n: Checkbox label in JOSM settings
-    new JCheckBox(I18n.tr("Dark mode for image display"), MapillaryProperties.DARK_MODE.get());
   private final JCheckBox imageLinkToBlurEditor = new JCheckBox(
     // i18n: Checkbox label in JOSM settings
     I18n.tr("When opening Mapillary image in web browser, show the blur editor instead of the image viewer"),
@@ -106,7 +103,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     mainPanel.add(displayHour, GBC.eol());
     mainPanel.add(moveTo, GBC.eol());
     mainPanel.add(hoverEnabled, GBC.eol());
-    mainPanel.add(darkMode, GBC.eol());
     mainPanel.add(imageLinkToBlurEditor, GBC.eol());
 
     final JPanel preFetchPanel = new JPanel();
@@ -126,8 +122,8 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     if (ExpertToggleAction.isExpert() || developer.isSelected()) {
       developer.setVisible(true);
     }
-    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, moveTo, hoverEnabled, darkMode,
-      imageLinkToBlurEditor, developer, preFetchPanel, requiresLogin);
+    MapillaryColorScheme.styleAsDefaultPanel(mainPanel, displayHour, moveTo, hoverEnabled, imageLinkToBlurEditor,
+      developer, preFetchPanel, requiresLogin);
     mainPanel.add(Box.createVerticalGlue(), GBC.eol().fill(GridBagConstraints.BOTH));
 
     container.add(mainPanel, BorderLayout.CENTER);
@@ -180,7 +176,6 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.DISPLAY_HOUR.put(displayHour.isSelected());
     MapillaryProperties.MOVE_TO_IMG.put(moveTo.isSelected());
     MapillaryProperties.HOVER_ENABLED.put(hoverEnabled.isSelected());
-    MapillaryProperties.DARK_MODE.put(darkMode.isSelected());
     MapillaryProperties.IMAGE_LINK_TO_BLUR_EDITOR.put(imageLinkToBlurEditor.isSelected());
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
 

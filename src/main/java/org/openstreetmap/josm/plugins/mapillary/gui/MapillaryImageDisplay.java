@@ -46,7 +46,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
@@ -415,7 +414,6 @@ public final class MapillaryImageDisplay extends JPanel {
     ImgDisplayMouseListener mouseListener = new ImgDisplayMouseListener();
     addMouseListener(mouseListener);
     setOpaque(true);
-    setDarkMode(MapillaryProperties.DARK_MODE.get());
     addMouseWheelListener(mouseListener);
     addMouseMotionListener(mouseListener);
     addComponentListener(new ComponentSizeListener());
@@ -441,12 +439,6 @@ public final class MapillaryImageDisplay extends JPanel {
 
     MapillaryProperties.SHOW_DETECTION_OUTLINES.addListener(it -> repaint());
     MapillaryProperties.SHOW_DETECTED_SIGNS.addListener(it -> repaint());
-    MapillaryProperties.DARK_MODE.addListener(it -> setDarkMode(it.getProperty().get()));
-  }
-
-  private void setDarkMode(final boolean darkMode) {
-    setBackground(darkMode ? MapillaryColorScheme.TOOLBAR_DARK_GREY : getBackground());
-    setForeground(darkMode ? Color.LIGHT_GRAY : getForeground());
   }
 
   /**
