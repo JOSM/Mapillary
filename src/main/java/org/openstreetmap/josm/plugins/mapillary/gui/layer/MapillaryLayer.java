@@ -51,7 +51,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
-import org.openstreetmap.josm.spi.preferences.Config;
 import org.openstreetmap.josm.tools.ColorHelper;
 import org.openstreetmap.josm.tools.Geometry;
 import org.openstreetmap.josm.tools.I18n;
@@ -335,7 +334,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
     final Collection<INode> images = this.getData().searchNodes(box.toBBox()).stream().distinct()
       .collect(Collectors.toList());
-    if (images.size() < Config.getPref().getInt("mapillary.images.max_draw", 1000)) {
+    if (images.size() < MapillaryProperties.MAXIMUM_DRAW_IMAGES.get()) {
       for (INode imageAbs : images) {
         if (imageAbs.isVisible()) {
           drawImageMarker(g, imageAbs);

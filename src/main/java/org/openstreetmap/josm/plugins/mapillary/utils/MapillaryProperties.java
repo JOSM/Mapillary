@@ -79,6 +79,11 @@ public final class MapillaryProperties {
   public static final DoubleProperty MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE = new DoubleProperty(
     "mapillary.source.maxdistance", 30.0);
 
+  /**
+   * The maximum number of images to show in the map view
+   */
+  public static final IntegerProperty MAXIMUM_DRAW_IMAGES = new IntegerProperty("mapillary.images.max_draw", 10_000);
+
   private MapillaryProperties() {
     // Private constructor to avoid instantiation
   }
