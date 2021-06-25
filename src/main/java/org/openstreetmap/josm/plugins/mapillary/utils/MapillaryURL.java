@@ -218,13 +218,11 @@ public final class MapillaryURL {
      * @return The default image properties to get
      */
     private static ImageProperties[] getDefaultImageInformation() {
-      final boolean getComputed = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
-      return new ImageProperties[] { ImageProperties.ID, ImageProperties.CAPTURED_AT,
-        getComputed ? ImageProperties.COMPUTED_ALTITUDE : ImageProperties.ALTITUDE,
-        getComputed ? ImageProperties.COMPUTED_COMPASS_ANGLE : ImageProperties.COMPASS_ANGLE,
-        getComputed ? ImageProperties.COMPUTED_GEOMETRY : ImageProperties.GEOMETRY,
-        getComputed ? ImageProperties.COMPUTED_ROTATION : ImageProperties.EXIF_ORIENTATION, ImageProperties.WORST_IMAGE,
-        ImageProperties.BEST_IMAGE, ImageProperties.QUALITY_SCORE, ImageProperties.SEQUENCE };
+      return new ImageProperties[] { ImageProperties.ID, ImageProperties.CAPTURED_AT, ImageProperties.COMPUTED_ALTITUDE,
+        ImageProperties.ALTITUDE, ImageProperties.COMPUTED_COMPASS_ANGLE, ImageProperties.COMPASS_ANGLE,
+        ImageProperties.COMPUTED_GEOMETRY, ImageProperties.GEOMETRY, ImageProperties.COMPUTED_ROTATION,
+        ImageProperties.EXIF_ORIENTATION, ImageProperties.WORST_IMAGE, ImageProperties.BEST_IMAGE,
+        ImageProperties.QUALITY_SCORE, ImageProperties.SEQUENCE };
     }
 
     /**
