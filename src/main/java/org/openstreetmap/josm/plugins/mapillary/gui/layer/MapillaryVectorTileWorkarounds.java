@@ -35,9 +35,9 @@ public interface MapillaryVectorTileWorkarounds {
   }
 
   /**
-   * Get the selected nodes.
+   * Get the selected nodes. {@link #setSelected} explains why this is necessary.
    *
-   * @see #setSelected for an explanation why this is necessary.
+   * @see #setSelected
    * @return The selected nodes.
    */
   Stream<INode> getSelected();

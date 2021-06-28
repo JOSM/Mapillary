@@ -8,6 +8,7 @@ import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.imagery.MVTLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryVectorTileWorkarounds;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -45,13 +46,14 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
         .collect(Collectors.toList());
       if (!nodes.isEmpty()) {
         // This is needed since Mapillary ids are only unique within a tile.
-        if (layer instanceof MapillaryLayer) {
-          ((MapillaryLayer) layer).setSelected(nodes);
-          if (nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
-            SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
-          }
+        if (layer instanceof MapillaryVectorTileWorkarounds) {
+          ((MapillaryVectorTileWorkarounds) layer).setSelected(nodes);
+        } else {
+          layer.getData().setSelected(nodes);
         }
-        layer.getData().setSelected(nodes);
+        if (layer instanceof MapillaryLayer && nodes.size() == 1 && MapillaryMainDialog.hasInstance()) {
+          SwingUtilities.invokeLater(() -> MapillaryMainDialog.getInstance().setImage(nodes.iterator().next()));
+        }
         continue;
       } else if (layer instanceof MapillaryLayer) {
         if (e.getClickCount() >= MapillaryProperties.DESELECT_CLICK_COUNT.get()) {
@@ -85,7 +87,9 @@ public class DataMouseListener extends MouseInputAdapter implements Destroyable 
       if (!ways.isEmpty()) {
         layer.getData().setHighlighted(ways.stream().map(IPrimitive::getPrimitiveId).collect(Collectors.toSet()));
         layer.invalidate();
+        continue;
       }
+      layer.getData().setHighlighted(Collections.emptyList());
     }
   }
 

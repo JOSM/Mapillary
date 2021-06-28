@@ -16,12 +16,14 @@ import org.openstreetmap.josm.data.osm.IRelation;
 import org.openstreetmap.josm.data.osm.IWay;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.PrimitiveId;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
 import org.openstreetmap.josm.data.osm.event.DataSetListenerAdapter.Listener;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.data.osm.visitor.PrimitiveVisitor;
 import org.openstreetmap.josm.data.osm.visitor.paint.AbstractMapRenderer;
+import org.openstreetmap.josm.data.osm.visitor.paint.MapPaintSettings;
 import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
@@ -128,7 +130,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
   private boolean showingPresetWindow;
   private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
-  private List<String> selected;
+  private List<String> selected = Collections.emptyList();
 
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
@@ -197,6 +199,24 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       }
     } else {
       this.displayedWindows.forEach((o, w) -> hideWindow(w));
+    }
+    // TODO remove when we can set the vector primitives as selected
+    if (mv.getDist100Pixel() < 50) {
+      g.setColor(MapPaintSettings.INSTANCE.getSelectedColor());
+      for (INode node : this.getSelected().collect(Collectors.toList())) {
+        final Point p = mv.getPoint(node.getCoor());
+        final ImageSizes size = ImageSizes.MAP;
+        g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
+          2 * size.getAdjustedHeight());
+      }
+      g.setColor(MapPaintSettings.INSTANCE.getHighlightColor());
+      for (INode node : this.getData().getPrimitivesById(this.getData().getHighlighted().toArray(new PrimitiveId[0]))
+        .filter(INode.class::isInstance).map(INode.class::cast).collect(Collectors.toList())) {
+        final Point p = mv.getPoint(node.getCoor());
+        final ImageSizes size = ImageSizes.MAP;
+        g.drawRect(p.x - size.getAdjustedWidth(), p.y - size.getAdjustedHeight(), 2 * size.getAdjustedWidth(),
+          2 * size.getAdjustedHeight());
+      }
     }
   }
 
@@ -267,7 +287,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
   @Override
   public Stream<INode> getSelected() {
-    return this.getData().getSelectedNodes().stream().map(INode.class::cast);
+    return this.getData().getSelectedNodes().stream()
+      .filter(n -> this.selected.contains(MapillaryMapFeatureUtils.getId(n))).map(INode.class::cast);
   }
 
   private class AdditionalActionPanel extends JPanel {
