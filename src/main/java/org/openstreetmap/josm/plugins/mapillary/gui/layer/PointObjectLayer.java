@@ -163,6 +163,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   @Override
   public void finishedLoading(MVTTile tile) {
     super.finishedLoading(tile);
+    // This is required for the mapcss to work properly
+    tile.getData().getAllPrimitives().forEach(primitive -> primitive.put("layer", primitive.getLayer()));
     this.listeners.fireEvent(listener -> listener.tileAdded(tile));
   }
 

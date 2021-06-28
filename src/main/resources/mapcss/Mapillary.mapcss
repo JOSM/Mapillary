@@ -49,10 +49,10 @@ node|z20-[setting("show_accuracy_circles")][accuracy <= 5]::mapillary_object_lay
     symbol-fill-color: green;
     symbol-stroke-color: green;
 }
-node[layer=trafficsigns] {
+node[layer=traffic_sign] {
     imagepath: "package_signs";
 }
-node[layer=points] {
+node[layer=point] {
     imagepath: "package_objects";
 }
 node|z18-[value][is_prop_set(imagepath)] {
