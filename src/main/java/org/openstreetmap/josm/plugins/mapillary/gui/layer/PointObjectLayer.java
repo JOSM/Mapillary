@@ -8,6 +8,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.imagery.ImageryInfo;
 import org.openstreetmap.josm.data.imagery.vectortile.mapbox.MVTTile;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.HighlightUpdateListener;
 import org.openstreetmap.josm.data.osm.INode;
@@ -113,6 +114,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -280,9 +282,24 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   }
 
   @Override
-  public <N extends INode> void setSelected(Collection<N> nodes) {
+  public <N extends INode> void setSelected(final Collection<N> nodes) {
     this.selected = nodes.stream().map(MapillaryMapFeatureUtils::getId).collect(Collectors.toList());
     this.getData().setSelected(nodes);
+    if (!nodes.isEmpty() && MapillaryLayer.hasInstance()) {
+      final BBox searchBBox = new BBox();
+      nodes.forEach(node -> searchBBox.addPrimitive(node, 0.005));
+      final Set<String> idArray = nodes.stream().map(MapillaryMapFeatureUtils::getImageIds)
+        .flatMapToLong(LongStream::of).distinct().mapToObj(Long::toString).collect(Collectors.toSet());
+      final List<VectorNode> potentialImages = MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream()
+        .distinct().filter(node -> !idArray.contains(MapillaryImageUtils.getKey(node))).collect(Collectors.toList());
+      final Map<VectorNode, Integer> imageCount = nodes.stream().map(image -> getBestImage(image, potentialImages))
+        .collect(Collectors.toMap(i -> i, e -> 1, Math::addExact));
+      final Optional<VectorNode> bestImage = imageCount.entrySet().stream()
+        .max(Comparator.comparingInt(Map.Entry::getValue)).map(Map.Entry::getKey);
+      if (bestImage.isPresent()) {
+        MapillaryLayer.getInstance().setSelected(bestImage.get());
+      }
+    }
   }
 
   @Override

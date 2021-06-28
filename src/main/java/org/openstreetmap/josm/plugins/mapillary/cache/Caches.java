@@ -15,13 +15,14 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import com.drew.lang.annotations.Nullable;
 import org.apache.commons.jcs3.access.CacheAccess;
 import org.apache.commons.jcs3.access.behavior.ICacheAccess;
 import org.apache.commons.jcs3.engine.behavior.IElementAttributes;
@@ -190,12 +191,32 @@ public final class Caches {
         if (returnObject != null && this.validators.stream().allMatch(p -> p.test(returnObject))) {
           this.cacheAccess.put(url, returnObject);
         } else if (returnObject != null) {
-          this.rateLimited = true;
+          final String message;
+          if (returnObject instanceof String) {
+            try (JsonReader reader = Json
+              .createReader(new ByteArrayInputStream(((String) returnObject).getBytes(StandardCharsets.UTF_8)))) {
+              final JsonValue jsonValue = reader.readValue();
+              if (jsonValue.getValueType() == JsonValue.ValueType.OBJECT
+                && jsonValue.asJsonObject().containsKey("error")
+                && jsonValue.asJsonObject().get("error").getValueType() == JsonValue.ValueType.OBJECT
+                && jsonValue.asJsonObject().getJsonObject("error").containsKey("message")) {
+                if ("Application request limit reached"
+                  .equals(jsonValue.asJsonObject().getJsonObject("error").getString("message"))) {
+                  this.rateLimited = true;
+                  message = "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n";
+                } else {
+                  message = "Unknown Mapillary exception.\n";
+                }
+              } else {
+                message = "Unknown Mapillary exception.\n";
+              }
+            }
+          } else {
+            message = "Unknown Mapillary exception.\n";
+          }
           GuiHelper.runInEDT(() -> {
             Notification notification = new Notification();
-            notification.setContent(
-              "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
-                + returnObject.toString());
+            notification.setContent(message + returnObject.toString());
             notification.setDuration(Notification.TIME_LONG);
             notification.setIcon(JOptionPane.ERROR_MESSAGE);
             notification.show();
