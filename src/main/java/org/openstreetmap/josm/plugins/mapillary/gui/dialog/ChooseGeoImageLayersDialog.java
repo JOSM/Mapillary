@@ -10,8 +10,8 @@ import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.plugins.mapillary.MapillaryPlugin;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageMetaDataUtil;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
@@ -97,9 +97,9 @@ public class ChooseGeoImageLayersDialog extends JDialog {
             } catch (IOException ex) {
               Logging.trace(ex);
             }
-            node.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
-            node.put(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString(), Long.toString(time.toEpochMilli()));
-            node.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+            node.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
+            node.put(MapillaryImageUtils.ImageProperties.CAPTURED_AT.toString(), Long.toString(time.toEpochMilli()));
+            node.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
               pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
             return node;
           } catch (IllegalArgumentException iae) {

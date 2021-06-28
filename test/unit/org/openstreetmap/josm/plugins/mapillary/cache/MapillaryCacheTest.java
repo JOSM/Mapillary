@@ -30,7 +30,6 @@ import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryU
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryTestRules;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -48,7 +47,7 @@ class MapillaryCacheTest {
     VectorDataSet vectorDataSet = new VectorDataSet();
     vectorDataSet.addPrimitive(image);
     // Use 135511895288847 since that is an image we have real information for
-    image.put(MapillaryURL.APIv4.ImageProperties.ID.toString(), "135511895288847");
+    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), "135511895288847");
     MapillaryCache cache = new MapillaryCache(image);
     assertNotNull(cache.getUrl());
     assertNotNull(cache.getCacheKey());
@@ -104,7 +103,7 @@ class MapillaryCacheTest {
     final VectorNode image1 = new VectorNode("mapillary-images");
     final VectorNode image2 = new VectorNode(image1.getLayer());
     final VectorNode image3 = new VectorNode(image1.getLayer());
-    final String idKey = MapillaryURL.APIv4.ImageProperties.ID.toString();
+    final String idKey = MapillaryImageUtils.ImageProperties.ID.toString();
     image1.put(idKey, "148137757289079");
     image2.put(idKey, "311799370533334");
     image3.put(idKey, "4235112816526838");

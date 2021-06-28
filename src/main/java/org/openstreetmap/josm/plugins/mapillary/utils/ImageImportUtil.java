@@ -118,7 +118,7 @@ public final class ImageImportUtil {
     boolean pano = ImageMetaDataUtil.isPanorama(f);
     VectorNode image = new VectorNode(MapillaryKeys.IMPORTED_LAYER);
     image.setCoor(latLon);
-    image.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
+    image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
     image.put(MapillaryImageUtils.IMPORTED_KEY, f.getAbsolutePath());
     image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     if (dateTime != null) {

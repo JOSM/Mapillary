@@ -10,7 +10,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
 import org.openstreetmap.josm.tools.Pair;
 import org.openstreetmap.josm.tools.Utils;
@@ -86,19 +85,19 @@ public final class JsonImageDetailsDecoder {
     @Nullable final VectorDataSet data) {
     if (json != null && data != null) {
       final boolean useComputedData = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
-      final String key = json.getString(MapillaryURL.APIv4.ImageProperties.ID.toString(), null);
+      final String key = json.getString(MapillaryImageUtils.ImageProperties.ID.toString(), null);
       if (key == null) {
         return null;
       }
       final LatLon coordinates = JsonDecoder.decodeLatLon(
-        json.getJsonObject(useComputedData ? MapillaryURL.APIv4.ImageProperties.COMPUTED_GEOMETRY.toString()
-          : MapillaryURL.APIv4.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
+        json.getJsonObject(useComputedData ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
+          : MapillaryImageUtils.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
       final BBox searchBBox = new BBox(coordinates);
       searchBBox.addLatLon(coordinates, 0.005);
       VectorNode image = data.searchNodes(searchBBox).stream()
         .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
           VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
-          for (final MapillaryURL.APIv4.ImageProperties property : MapillaryURL.APIv4.ImageProperties.values()) {
+          for (final MapillaryImageUtils.ImageProperties property : MapillaryImageUtils.ImageProperties.values()) {
             final String propertyKey = property.toString();
             if (json.containsKey(propertyKey)) {
               JsonValue value = json.get(propertyKey);

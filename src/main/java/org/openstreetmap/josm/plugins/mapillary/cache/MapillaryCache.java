@@ -23,7 +23,6 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
@@ -48,14 +47,14 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
    */
   public enum Type {
     /** Full quality image */
-    FULL_IMAGE(MapillaryURL.APIv4.ImageProperties.BEST_IMAGE),
+    FULL_IMAGE(MapillaryImageUtils.ImageProperties.BEST_IMAGE),
     /** Low quality image */
-    THUMBNAIL(MapillaryURL.APIv4.ImageProperties.WORST_IMAGE);
+    THUMBNAIL(MapillaryImageUtils.ImageProperties.WORST_IMAGE);
 
     private final int width;
     private final String imageUrl;
 
-    Type(final MapillaryURL.APIv4.ImageProperties properties) {
+    Type(final MapillaryImageUtils.ImageProperties properties) {
       this.imageUrl = properties.name().toLowerCase(Locale.ROOT);
       final Pattern pattern = Pattern.compile("thumb_([0-9]+)_url");
       final Matcher matcher = pattern.matcher(this.imageUrl);

@@ -56,7 +56,7 @@ public class JsonImageDetailsDecoderTest {
 
     for (String image : images) {
       final URL url = new URL(
-        MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
+        MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
       JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
         value -> JsonImageDetailsDecoder.decodeImageInfos(value, data));
     }
@@ -95,7 +95,7 @@ public class JsonImageDetailsDecoderTest {
 
     for (String image : images) {
       final URL url = new URL(
-        MapillaryURL.APIv4.getImageInformation(image, MapillaryURL.APIv4.ImageProperties.values()));
+        MapillaryURL.APIv4.getImageInformation(image, MapillaryImageUtils.ImageProperties.values()));
       assertDoesNotThrow(() -> JsonDecoder.decodeData(OAuthUtils.getWithHeader(url),
         value -> JsonImageDetailsDecoder.decodeImageInfos(value, data)));
     }
@@ -103,10 +103,10 @@ public class JsonImageDetailsDecoderTest {
 
   public static VectorNode createDownloadedImage(String key, LatLon latLon, double cameraAngle, boolean pano) {
     VectorNode image = new VectorNode("test");
-    image.put(MapillaryURL.APIv4.ImageProperties.ID.toString(), key);
+    image.put(MapillaryImageUtils.ImageProperties.ID.toString(), key);
     image.setCoor(latLon);
-    image.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
-    image.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+    image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+    image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
       pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     return image;
   }
@@ -115,8 +115,8 @@ public class JsonImageDetailsDecoderTest {
     VectorNode image = new VectorNode("test");
     image.put(MapillaryImageUtils.IMPORTED_KEY, file);
     image.setCoor(latLon);
-    image.put(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
-    image.put(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString(),
+    image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(cameraAngle));
+    image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
       pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     return image;
   }

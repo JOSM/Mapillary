@@ -15,7 +15,7 @@ import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMock;
 import org.openstreetmap.josm.plugins.mapillary.testutils.annotations.MapillaryURLWireMockErrors;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.testutils.JOSMTestRules;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -52,8 +52,8 @@ class MapillaryMainDialogTest {
   void testNonRegression21028() {
     final VectorNode testImage = new VectorNode("test");
     testImage.setCoor(new LatLon(39.065986975316, -108.57079091664));
-    testImage.put(MapillaryURL.APIv4.ImageProperties.ID.toString(), "311799370533334");
-    testImage.put(MapillaryURL.APIv4.ImageProperties.SEQUENCE_ID.toString(), "7nfcwfvjdtphz7yj6zat6a");
+    testImage.put(MapillaryImageUtils.ImageProperties.ID.toString(), "311799370533334");
+    testImage.put(MapillaryImageUtils.ImageProperties.SEQUENCE_ID.toString(), "7nfcwfvjdtphz7yj6zat6a");
     // We have a check for whether or not the image is downloaded, based off of number of tags
     IntStream.range(0, 20).forEach(i -> testImage.put(Integer.toString(i), Integer.toString(i)));
     MapillaryLayer.getInstance().getData().addPrimitive(testImage);

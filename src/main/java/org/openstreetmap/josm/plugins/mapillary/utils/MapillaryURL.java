@@ -47,100 +47,6 @@ public final class MapillaryURL {
     private static String baseTileUrl = "https://tiles.mapillary.com/maps/vtp/";
 
     /**
-     * Properties for images
-     */
-    public enum ImageProperties {
-      /** The identifier of the image */
-      ID,
-      /**
-       * Original altitude from EXIF
-       *
-       * @see #COMPUTED_ALTITUDE
-       */
-      ALTITUDE, ATOMIC_SCALE, CAMERA_PARAMETERS, CAMERA_TYPE,
-      /** Timestamp, original capture time */
-      CAPTURED_AT,
-      /**
-       * Original angle
-       *
-       * @see #COMPUTED_COMPASS_ANGLE
-       */
-      COMPASS_ANGLE,
-      /**
-       * Altitude after image processing
-       *
-       * @see #ALTITUDE
-       */
-      COMPUTED_ALTITUDE,
-      /**
-       * Compass angle after image processing
-       *
-       * @see #COMPASS_ANGLE
-       */
-      COMPUTED_COMPASS_ANGLE,
-      /**
-       * Geometry after image processing
-       *
-       * @see #GEOMETRY
-       */
-      COMPUTED_GEOMETRY,
-      /**
-       * Orientation of image after image processing
-       *
-       * @see #EXIF_ORIENTATION
-       */
-      COMPUTED_ROTATION,
-      /**
-       * Original orientation of the image
-       *
-       * @see #COMPUTED_ROTATION
-       */
-      EXIF_ORIENTATION,
-      /**
-       * Original geometry of the image
-       *
-       * @see #COMPUTED_GEOMETRY
-       */
-      GEOMETRY,
-      /** The original height of the image (int) */
-      HEIGHT,
-      /** 1 if the image is panoramic */
-      IS_PANO,
-      /** The id of the organization */
-      ORGANIZATION_ID,
-      /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */
-      THUMB_256_URL,
-      /** A 1024px image (max width) */
-      THUMB_1024_URL,
-      /** A 2048px image (max width). You should prefer {@link #BEST_IMAGE}. */
-      THUMB_2048_URL, MERGE_CC, MESH,
-      /**
-       * The quality score of the image (float)
-       */
-      QUALITY_SCORE,
-      /**
-       * @see #SEQUENCE_ID
-       */
-      SEQUENCE,
-      /**
-       * @see #SEQUENCE
-       */
-      SEQUENCE_ID, SFM_CLUSTER,
-      /** The original width of the image */
-      WIDTH;
-
-      /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
-      public static final ImageProperties BEST_IMAGE = THUMB_2048_URL;
-      /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
-      public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
-
-      @Override
-      public String toString() {
-        return super.toString().toLowerCase(Locale.ROOT);
-      }
-    }
-
-    /**
      * Get the Traffic Sign Tile URL
      *
      * @return A URL (String)
@@ -180,7 +86,7 @@ public final class MapillaryURL {
     public static String getImageInformation(String[] images) {
       if (images.length > 1) {
         Map<String, String> queryFields = new HashMap<>(2);
-        queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(ImageProperties::name)
+        queryFields.put("fields", Stream.of(getDefaultImageInformation()).map(MapillaryImageUtils.ImageProperties::name)
           .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")));
         queryFields.put("image_ids", Stream.of(images).collect(Collectors.joining(",")));
         return new StringBuilder(baseMetaDataUrl).append("images").append(queryString(queryFields)).toString();
@@ -198,16 +104,19 @@ public final class MapillaryURL {
      * @return A URL to get for more image information
      */
     @Nonnull
-    public static String getImageInformation(@Nonnull String image, @Nullable ImageProperties... properties) {
-      final ImageProperties[] imageProperties;
+    public static String getImageInformation(@Nonnull String image,
+      @Nullable MapillaryImageUtils.ImageProperties... properties) {
+      final MapillaryImageUtils.ImageProperties[] imageProperties;
       if (properties == null || properties.length == 0) {
         return getImageInformation(image, getDefaultImageInformation());
 
       } else {
         imageProperties = properties;
       }
-      return new StringBuilder(baseMetaDataUrl).append(image).append(queryString(Collections.singletonMap("fields",
-        Stream.of(imageProperties).map(ImageProperties::toString).collect(Collectors.joining(","))))).toString();
+      return new StringBuilder(baseMetaDataUrl).append(image)
+        .append(queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
+          .map(MapillaryImageUtils.ImageProperties::toString).collect(Collectors.joining(",")))))
+        .toString();
     }
 
     /**
@@ -215,12 +124,15 @@ public final class MapillaryURL {
      *
      * @return The default image properties to get
      */
-    private static ImageProperties[] getDefaultImageInformation() {
-      return new ImageProperties[] { ImageProperties.ID, ImageProperties.CAPTURED_AT, ImageProperties.COMPUTED_ALTITUDE,
-        ImageProperties.ALTITUDE, ImageProperties.COMPUTED_COMPASS_ANGLE, ImageProperties.COMPASS_ANGLE,
-        ImageProperties.COMPUTED_GEOMETRY, ImageProperties.GEOMETRY, ImageProperties.COMPUTED_ROTATION,
-        ImageProperties.EXIF_ORIENTATION, ImageProperties.WORST_IMAGE, ImageProperties.BEST_IMAGE,
-        ImageProperties.QUALITY_SCORE, ImageProperties.SEQUENCE };
+    private static MapillaryImageUtils.ImageProperties[] getDefaultImageInformation() {
+      return new MapillaryImageUtils.ImageProperties[] { MapillaryImageUtils.ImageProperties.ID,
+        MapillaryImageUtils.ImageProperties.CAPTURED_AT, MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
+        MapillaryImageUtils.ImageProperties.ALTITUDE, MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
+        MapillaryImageUtils.ImageProperties.COMPASS_ANGLE, MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,
+        MapillaryImageUtils.ImageProperties.GEOMETRY, MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
+        MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.WORST_IMAGE,
+        MapillaryImageUtils.ImageProperties.BEST_IMAGE, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
+        MapillaryImageUtils.ImageProperties.SEQUENCE };
     }
 
     /**

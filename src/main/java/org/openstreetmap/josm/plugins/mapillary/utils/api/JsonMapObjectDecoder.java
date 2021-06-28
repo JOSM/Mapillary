@@ -21,8 +21,8 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.INode;
 import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.data.vector.DataLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
  * Decodes the JSON returned by {@link APIv4} into Java objects.
@@ -130,11 +130,11 @@ public final class JsonMapObjectDecoder {
       }
       return parsedImages;
     } else if (value.getValueType() == JsonValue.ValueType.OBJECT
-      && value.asJsonObject().containsKey(MapillaryURL.APIv4.ImageProperties.ID.toString())) {
+      && value.asJsonObject().containsKey(MapillaryImageUtils.ImageProperties.ID.toString())) {
       // Technically, we could get/create the MapillaryLayer, and add the images if needed.
       // The image information also contains a geometry field (probably not computed)
       return Collections
-        .singletonList(value.asJsonObject().getString(MapillaryURL.APIv4.ImageProperties.ID.toString()));
+        .singletonList(value.asJsonObject().getString(MapillaryImageUtils.ImageProperties.ID.toString()));
     }
     return Collections.emptyList();
   }

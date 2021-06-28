@@ -27,6 +27,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -38,6 +39,100 @@ import java.util.stream.Stream;
  * Keys and utility methods for Mapillary Images
  */
 public final class MapillaryImageUtils {
+  /**
+   * Properties for images
+   */
+  public enum ImageProperties {
+    /** The identifier of the image */
+    ID,
+    /**
+     * Original altitude from EXIF
+     *
+     * @see #COMPUTED_ALTITUDE
+     */
+    ALTITUDE, ATOMIC_SCALE, CAMERA_PARAMETERS, CAMERA_TYPE,
+    /** Timestamp, original capture time */
+    CAPTURED_AT,
+    /**
+     * Original angle
+     *
+     * @see #COMPUTED_COMPASS_ANGLE
+     */
+    COMPASS_ANGLE,
+    /**
+     * Altitude after image processing
+     *
+     * @see #ALTITUDE
+     */
+    COMPUTED_ALTITUDE,
+    /**
+     * Compass angle after image processing
+     *
+     * @see #COMPASS_ANGLE
+     */
+    COMPUTED_COMPASS_ANGLE,
+    /**
+     * Geometry after image processing
+     *
+     * @see #GEOMETRY
+     */
+    COMPUTED_GEOMETRY,
+    /**
+     * Orientation of image after image processing
+     *
+     * @see #EXIF_ORIENTATION
+     */
+    COMPUTED_ROTATION,
+    /**
+     * Original orientation of the image
+     *
+     * @see #COMPUTED_ROTATION
+     */
+    EXIF_ORIENTATION,
+    /**
+     * Original geometry of the image
+     *
+     * @see #COMPUTED_GEOMETRY
+     */
+    GEOMETRY,
+    /** The original height of the image (int) */
+    HEIGHT,
+    /** 1 if the image is panoramic */
+    IS_PANO,
+    /** The id of the organization */
+    ORGANIZATION_ID,
+    /** A 256px image (max width). You should prefer {@link #WORST_IMAGE}. */
+    THUMB_256_URL,
+    /** A 1024px image (max width) */
+    THUMB_1024_URL,
+    /** A 2048px image (max width). You should prefer {@link #BEST_IMAGE}. */
+    THUMB_2048_URL, MERGE_CC, MESH,
+    /**
+     * The quality score of the image (float)
+     */
+    QUALITY_SCORE,
+    /**
+     * @see #SEQUENCE_ID
+     */
+    SEQUENCE,
+    /**
+     * @see #SEQUENCE
+     */
+    SEQUENCE_ID, SFM_CLUSTER,
+    /** The original width of the image */
+    WIDTH;
+
+    /** This is the highest quality image known to us at this time. Prefer this to {@link #THUMB_2048_URL}. */
+    public static final ImageProperties BEST_IMAGE = THUMB_2048_URL;
+    /** This is the lowest quality image known to us at this time. Prefer this to {@link #THUMB_256_URL}. */
+    public static final ImageProperties WORST_IMAGE = THUMB_256_URL;
+
+    @Override
+    public String toString() {
+      return super.toString().toLowerCase(Locale.ROOT);
+    }
+  }
+
   private MapillaryImageUtils() {
     /* No op */}
 
@@ -46,10 +141,10 @@ public final class MapillaryImageUtils {
   // Image specific
   /** Check if the node has one of the Mapillary keys */
   public static final Predicate<INode> IS_IMAGE = node -> node != null
-    && (node.hasKey(MapillaryURL.APIv4.ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
+    && (node.hasKey(ImageProperties.ID.toString()) || node.hasKey(MapillaryImageUtils.IMPORTED_KEY));
   /** Check if the node is for a panoramic image */
   public static final Predicate<INode> IS_PANORAMIC = node -> node != null
-    && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(MapillaryURL.APIv4.ImageProperties.IS_PANO.toString()));
+    && MapillaryKeys.PANORAMIC_TRUE.equals(node.get(ImageProperties.IS_PANO.toString()));
 
   public static final Predicate<INode> IS_DOWNLOADABLE = node -> node != null
     && node.getKeys().keySet().stream().anyMatch(key -> BASE_IMAGE_KEY.matcher(key).matches());
@@ -104,9 +199,9 @@ public final class MapillaryImageUtils {
    * @return The quality score (1, 2, 3, 4, 5, or {@link Float#MIN_VALUE})
    */
   public static float getQuality(@Nonnull INode img) {
-    if (img.hasKey(MapillaryURL.APIv4.ImageProperties.QUALITY_SCORE.toString())) {
+    if (img.hasKey(ImageProperties.QUALITY_SCORE.toString())) {
       try {
-        return Float.parseFloat(img.get(MapillaryURL.APIv4.ImageProperties.QUALITY_SCORE.toString()));
+        return Float.parseFloat(img.get(ImageProperties.QUALITY_SCORE.toString()));
       } catch (final NumberFormatException e) {
         Logging.error(e);
       }
@@ -122,12 +217,11 @@ public final class MapillaryImageUtils {
    */
   public static double getAngle(@Nonnull INode img) {
     if (Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get())
-      && img.hasKey(MapillaryURL.APIv4.ImageProperties.COMPUTED_COMPASS_ANGLE.toString())) {
-      return Math
-        .toRadians(Double.parseDouble(img.get(MapillaryURL.APIv4.ImageProperties.COMPUTED_COMPASS_ANGLE.toString())));
+      && img.hasKey(ImageProperties.COMPUTED_COMPASS_ANGLE.toString())) {
+      return Math.toRadians(Double.parseDouble(img.get(ImageProperties.COMPUTED_COMPASS_ANGLE.toString())));
     }
-    return img.hasKey(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString())
-      ? Math.toRadians(Double.parseDouble(img.get(MapillaryURL.APIv4.ImageProperties.COMPASS_ANGLE.toString())))
+    return img.hasKey(ImageProperties.COMPASS_ANGLE.toString())
+      ? Math.toRadians(Double.parseDouble(img.get(ImageProperties.COMPASS_ANGLE.toString())))
       : Double.NaN;
   }
 
@@ -180,8 +274,8 @@ public final class MapillaryImageUtils {
   @Nonnull
   private static Instant getCapturedAt(@Nonnull INode image) {
     String time = "";
-    if (image.hasKey(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString())) {
-      time = image.get(MapillaryURL.APIv4.ImageProperties.CAPTURED_AT.toString());
+    if (image.hasKey(ImageProperties.CAPTURED_AT.toString())) {
+      time = image.get(ImageProperties.CAPTURED_AT.toString());
     }
     if (NUMBERS.matcher(time).matches()) {
       return Instant.ofEpochMilli(Long.parseLong(time));
@@ -203,8 +297,8 @@ public final class MapillaryImageUtils {
    */
   @Nullable
   public static String getKey(@Nullable INode image) {
-    if (image != null && image.hasKey(MapillaryURL.APIv4.ImageProperties.ID.toString())) {
-      return image.get(MapillaryURL.APIv4.ImageProperties.ID.toString());
+    if (image != null && image.hasKey(ImageProperties.ID.toString())) {
+      return image.get(ImageProperties.ID.toString());
     }
     return null;
   }
@@ -218,10 +312,10 @@ public final class MapillaryImageUtils {
   @Nullable
   public static String getSequenceKey(@Nullable INode image) {
     if (image != null) {
-      if (image.hasKey(MapillaryURL.APIv4.ImageProperties.SEQUENCE.toString())) {
-        return image.get(MapillaryURL.APIv4.ImageProperties.SEQUENCE.toString());
-      } else if (image.hasKey(MapillaryURL.APIv4.ImageProperties.SEQUENCE_ID.toString())) {
-        return image.get(MapillaryURL.APIv4.ImageProperties.SEQUENCE_ID.toString());
+      if (image.hasKey(ImageProperties.SEQUENCE.toString())) {
+        return image.get(ImageProperties.SEQUENCE.toString());
+      } else if (image.hasKey(ImageProperties.SEQUENCE_ID.toString())) {
+        return image.get(ImageProperties.SEQUENCE_ID.toString());
       }
     }
     return null;
@@ -282,7 +376,7 @@ public final class MapillaryImageUtils {
   @Nonnull
   public static OrganizationRecord getOrganization(@Nullable INode img) {
     if (img != null) {
-      final String organizationKey = MapillaryURL.APIv4.ImageProperties.ORGANIZATION_ID.toString();
+      final String organizationKey = ImageProperties.ORGANIZATION_ID.toString();
       if (img.hasKey(organizationKey)) {
         return OrganizationRecord.getOrganization(img.get(organizationKey));
       }
