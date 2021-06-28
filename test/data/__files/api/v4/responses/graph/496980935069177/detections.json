@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "created_at": "2021-05-21T14:59:31+0000",
+      "geometry": "GjYKBm1weS1vchIWEgIAABgDIg4Jkia4HxpYAACMAVcADxoEdHlwZSIJCgdwb2x5Z29uKIAgeAE=",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41758216,
+            41.34124408
+          ]
+        },
+        "id": "828719391332432"
+      },
+      "value": "complementary--both-directions--g2",
+      "id": "835055007365537"
+    },
+    {
+      "created_at": "2021-05-21T14:59:31+0000",
+      "geometry": "GjYKBm1weS1vchIWEgIAABgDIg4JwiekHxpoAACeAWcADxoEdHlwZSIJCgdwb2x5Z29uKIAgeAE=",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41752502,
+            41.34126339
+          ]
+        },
+        "id": "133075088816573"
+      },
+      "value": "complementary--both-directions--g2",
+      "id": "139111688212913"
+    },
+    {
+      "created_at": "2021-05-21T14:59:31+0000",
+      "geometry": "GjUKBm1weS1vchIVEgIAABgDIg0JsCTkHxpSAAB8UQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41764319,
+            41.34124814
+          ]
+        },
+        "id": "512146709982392"
+      },
+      "value": "complementary--both-directions--g2",
+      "id": "518393049357758"
+    }
+  ]
+}

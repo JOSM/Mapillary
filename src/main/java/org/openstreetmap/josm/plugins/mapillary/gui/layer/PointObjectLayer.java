@@ -58,6 +58,7 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.GBC;
@@ -119,7 +120,7 @@ import static org.openstreetmap.josm.tools.I18n.trn;
  * Mapillary Point Object layer
  */
 public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpdateListener,
-  VectorDataSelectionListener, LayerChangeListener, TileAddEventSource<MVTTile> {
+  VectorDataSelectionListener, LayerChangeListener, MapillaryVectorTileWorkarounds, TileAddEventSource<MVTTile> {
   private final FilterEventListener tableModelListener;
   private static final String PAINT_STYLE_SOURCE = "resource://mapcss/Mapillary.mapcss";
   private static MapCSSStyleSource mapcss;
@@ -127,6 +128,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
 
   private boolean showingPresetWindow;
   private final ListenerList<TileAddListener<MVTTile>> listeners = ListenerList.create();
+  private List<String> selected;
 
   private static MapCSSStyleSource getMapCSSStyle() {
     List<MapCSSStyleSource> styles = MapPaintStyles.getStyles().getStyleSources().parallelStream()
@@ -255,6 +257,17 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       this.listeners.removeListener(listener);
     }
     return this.listeners.containsListener(listener);
+  }
+
+  @Override
+  public <N extends INode> void setSelected(Collection<N> nodes) {
+    this.selected = nodes.stream().map(MapillaryMapFeatureUtils::getId).collect(Collectors.toList());
+    this.getData().setSelected(nodes);
+  }
+
+  @Override
+  public Stream<INode> getSelected() {
+    return this.getData().getSelectedNodes().stream().map(INode.class::cast);
   }
 
   private class AdditionalActionPanel extends JPanel {

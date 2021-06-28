@@ -1,0 +1,48 @@
+{
+  "id": "496980935069177",
+  "first_seen_at": "2017-08-23T21:32:26+0000",
+  "last_seen_at": "2017-08-23T21:32:34+0000",
+  "object_value": "complementary--both-directions--g2",
+  "object_type": "trafficsign",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      41.341166490122,
+      -83.417193328459
+    ]
+  },
+  "images": {
+    "data": [
+      {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41758216,
+            41.34124408
+          ]
+        },
+        "id": "828719391332432"
+      },
+      {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41764319,
+            41.34124814
+          ]
+        },
+        "id": "512146709982392"
+      },
+      {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -83.41752502,
+            41.34126339
+          ]
+        },
+        "id": "133075088816573"
+      }
+    ]
+  }
+}

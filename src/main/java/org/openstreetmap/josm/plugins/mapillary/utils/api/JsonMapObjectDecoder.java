@@ -1,59 +1,141 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.json.JsonArray;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.vector.DataLayer;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 
 /**
- * Decodes the JSON returned by {@link APIv3} into Java objects.
+ * Decodes the JSON returned by {@link APIv4} into Java objects.
  * Takes a {@link JsonObject} and {@link #decodeMapObject(JsonObject)} tries to convert it to a {@link MapObject}.
  */
 public final class JsonMapObjectDecoder {
+  private static final String COORDINATES = "coordinates";
+
   private JsonMapObjectDecoder() {
     // Private constructor to avoid instantiation
   }
 
-  public static MapObject decodeMapObject(final JsonObject json) {
-    if (json == null || !"Feature".equals(json.getString("type", null))) {
-      return null;
+  @Nonnull
+  public static <T extends IPrimitive> Collection<T> decodeMapFeatureObject(@Nullable final JsonValue json,
+    @Nullable final T primitive) {
+    // We don't have a collection endpoint yet, so we should only be getting objects
+    if (json == null || primitive == null || json.getValueType() != JsonValue.ValueType.OBJECT) {
+      return Collections.emptyList();
     }
-
-    final JsonValue properties = json.get("properties");
-    final JsonValue geometry = json.get("geometry");
-    if (properties instanceof JsonObject && geometry instanceof JsonObject) {
-      final String key = ((JsonObject) properties).getString("key", null);
-      final String layer = ((JsonObject) properties).getString("layer", null);
-      final String value = ((JsonObject) properties).getString("value", null);
-      final Long firstSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("first_seen_at", null));
-      final Long lastSeenTime = JsonDecoder.decodeTimestamp(((JsonObject) properties).getString("last_seen_at", null));
-
-      final JsonValue coordVal = "Point".equals(((JsonObject) geometry).getString("type", null))
-        ? ((JsonObject) geometry).get("coordinates")
-        : null;
-      final LatLon coordinate = coordVal instanceof JsonArray ? JsonDecoder.decodeLatLon((JsonArray) coordVal) : null;
-
-      if (
-        key != null &&
-        layer != null &&
-        value != null &&
-        firstSeenTime != null &&
-        lastSeenTime != null &&
-        coordinate != null
-      ) {
-        return new MapObject(
-          coordinate,
-          key,
-          layer,
-          value,
-          firstSeenTime, lastSeenTime
-        );
+    final JsonObject jsonObject = json.asJsonObject();
+    final Map<String, String> tags = JsonTagMapDecoder.getTagMap(jsonObject);
+    // Remove duplicate tags -- specifically, remove the first/last seen at (ms since epoch -> timestamp in
+    // YYYY-mm-DDTHH:MM:SS)
+    for (MapillaryMapFeatureUtils.MapFeatureProperties entry : MapillaryMapFeatureUtils.MapFeatureProperties.values()) {
+      final String entryString = entry.toString();
+      if (tags.containsKey(entryString) && primitive.hasKey(entryString)) {
+        tags.remove(entryString);
       }
     }
-    return null;
+    // Update the layer if necessary
+    if (primitive instanceof DataLayer && ((DataLayer) primitive).getLayer() instanceof String
+      && tags.containsKey(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString())) {
+      ((DataLayer) primitive).setLayer(tags.get(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString()));
+      tags.remove(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_TYPE.toString());
+    }
+    // Update value (object_value and value seem to be equivalent)
+    if (jsonObject.containsKey(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_VALUE.toString())) {
+      final String value = tags.remove(MapillaryMapFeatureUtils.MapFeatureProperties.OBJECT_VALUE.toString());
+      primitive.put(MapillaryMapFeatureUtils.MapFeatureProperties.VALUE.toString(), value);
+    }
+
+    // Update geometry
+    updateGeometry(jsonObject, primitive, tags);
+    // Set image ids
+    updateImageKeys(jsonObject, tags);
+    // Add remaining tags to primitive
+    tags.entrySet().stream().forEach(entry -> primitive.put(entry.getKey(), entry.getValue()));
+    return Collections.singletonList(primitive);
+  }
+
+  /**
+   * Update the geometry of a primitive
+   *
+   * @param jsonObject The json with the updated coordinates
+   * @param primitive The primitive to update
+   * @param tags The tags to remove extraneous geometry information from
+   */
+  private static void updateGeometry(@Nonnull final JsonObject jsonObject, @Nonnull final IPrimitive primitive,
+    @Nonnull final Map<String, String> tags) {
+    if (jsonObject.containsKey(MapillaryMapFeatureUtils.MapFeatureProperties.GEOMETRY.toString())) {
+      tags.remove(MapillaryMapFeatureUtils.MapFeatureProperties.GEOMETRY.toString());
+      final JsonObject geometry = jsonObject
+        .getJsonObject(MapillaryMapFeatureUtils.MapFeatureProperties.GEOMETRY.toString());
+      if ("Point".equals(geometry.getString("type", null)) && primitive instanceof INode
+        && geometry.containsKey(COORDINATES) && geometry.get(COORDINATES).getValueType() == JsonValue.ValueType.ARRAY
+        && geometry.getJsonArray(COORDINATES).size() == 2
+        && geometry.getJsonArray(COORDINATES).stream().allMatch(JsonNumber.class::isInstance)) {
+        final JsonArray jsonArray = geometry.getJsonArray(COORDINATES);
+        ((INode) primitive)
+          .setCoor(new LatLon(jsonArray.getJsonNumber(0).doubleValue(), jsonArray.getJsonNumber(1).doubleValue()));
+      } else {
+        throw new IllegalArgumentException(
+          MessageFormat.format("Mapillary: Bad geometry for {0}: {1}", primitive.getClass().getSimpleName(), geometry));
+      }
+    }
+  }
+
+  /**
+   * Update the image keys
+   *
+   * @param jsonObject The json object with the image information
+   * @param tags The tag map to update
+   */
+  private static void updateImageKeys(@Nonnull final JsonObject jsonObject, @Nonnull final Map<String, String> tags) {
+    final String imagesKey = MapillaryMapFeatureUtils.MapFeatureProperties.IMAGES.toString();
+    if (jsonObject.containsKey(imagesKey) && jsonObject.get(imagesKey).getValueType() == JsonValue.ValueType.OBJECT) {
+      tags.remove(imagesKey);
+      tags.put(imagesKey, JsonDecoder.decodeData(jsonObject.getJsonObject(imagesKey), JsonMapObjectDecoder::parseImages)
+        .stream().collect(Collectors.joining(",")));
+    }
+  }
+
+  /**
+   * Parse images from a json value
+   *
+   * @param value The value to parse
+   * @return A collection of image ids
+   */
+  private static Collection<String> parseImages(final JsonValue value) {
+    if (value.getValueType() == JsonValue.ValueType.ARRAY) {
+      final List<String> parsedImages = new ArrayList<>(value.asJsonArray().size());
+      for (final JsonValue tValue : value.asJsonArray()) {
+        final Collection<String> tParsedImages = parseImages(tValue);
+        tParsedImages.stream().filter(Objects::nonNull).forEach(parsedImages::add);
+      }
+      return parsedImages;
+    } else if (value.getValueType() == JsonValue.ValueType.OBJECT
+      && value.asJsonObject().containsKey(MapillaryURL.APIv4.ImageProperties.ID.toString())) {
+      // Technically, we could get/create the MapillaryLayer, and add the images if needed.
+      // The image information also contains a geometry field (probably not computed)
+      return Collections
+        .singletonList(value.asJsonObject().getString(MapillaryURL.APIv4.ImageProperties.ID.toString()));
+    }
+    return Collections.emptyList();
   }
 }

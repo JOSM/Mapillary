@@ -102,8 +102,9 @@ import java.util.stream.Stream;
  *
  * @author nokutu
  */
-public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeListener, LayerChangeListener,
-  UploadHook, IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
+public final class MapillaryLayer extends MVTLayer
+  implements ActiveLayerChangeListener, LayerChangeListener, UploadHook, MapillaryVectorTileWorkarounds,
+  IDataSelectionListener<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> {
 
   /** The radius of the image marker */
   private static final int IMG_MARKER_RADIUS = 7;
@@ -304,7 +305,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       MapillaryProperties.UNSELECTED_OPACITY.get().floatValue());
 
     // Draw the blue and red line
-    final INode selectedImage = this.getSelectedImages().findFirst().orElse(null);
+    final INode selectedImage = this.getSelected().findFirst().orElse(null);
     synchronized (this) {
       for (int i = 0; i < this.nearestImages.size(); i++) {
         if (i % 2 == 0) {
@@ -347,7 +348,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     }
     // Paint selected images last. Not particularly worried about painting too much, since most people don't select
     // thousands of images.
-    for (INode imageAbs : this.getSelectedImages().collect(Collectors.toList())) {
+    for (INode imageAbs : this.getSelected().collect(Collectors.toList())) {
       if (imageAbs.isVisible() && mv != null && mv.contains(mv.getPoint(imageAbs.getCoor()))
         && this.selected.contains(MapillaryImageUtils.getKey(imageAbs))) {
         drawImageMarker(g, imageAbs);
@@ -403,9 +404,9 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
       Logging.warn("An image is not painted, because it is null or has no LatLon!");
       return;
     }
-    final INode selectedImg = this.getSelectedImages().findFirst().orElse(null);
+    final INode selectedImg = this.getSelected().findFirst().orElse(null);
     if (!IMAGE_CA_PAINT_RANGE.contains(MainApplication.getMap().mapView.getDist100Pixel()) && !img.equals(selectedImg)
-      && this.getSelectedImages().noneMatch(img::equals)
+      && this.getSelected().noneMatch(img::equals)
       && (selectedImg == null || (MapillaryImageUtils.getSequence(img) != null && !Objects
         .equals(MapillaryImageUtils.getSequenceKey(img), MapillaryImageUtils.getSequenceKey(selectedImg))))) {
       Logging.trace("An image was not painted due to a high zoom level, and not being the selected image/sequence");
@@ -420,7 +421,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     // Determine colors
     final Color directionC;
     final Image i;
-    if (selectedImg != null && this.getSelectedImages().anyMatch(img::equals)) {
+    if (selectedImg != null && this.getSelected().anyMatch(img::equals)) {
       i = SELECTED_IMAGE.getImage();
       directionC = MapillaryColorScheme.SEQ_HIGHLIGHTED_CA;
     } else if (MapillaryImageUtils.getSequenceKey(selectedImg) != null
@@ -462,7 +463,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
 
     // Paint highlight for selected or highlighted images
     if (getData().getHighlighted().contains(img.getPrimitiveId())
-      || (selectedImg != null && this.getSelectedImages().anyMatch(img::equals))) {
+      || (selectedImg != null && this.getSelected().anyMatch(img::equals))) {
       g.setColor(Color.WHITE);
       g.setStroke(new BasicStroke(2));
       g.drawOval(p.x - IMG_MARKER_RADIUS, p.y - IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS, 2 * IMG_MARKER_RADIUS);
@@ -678,7 +679,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
     if (MapillaryMainDialog.hasInstance()) {
       selected = MapillaryMainDialog.getInstance().getImage();
     } else {
-      selected = this.getSelectedImages().findFirst().orElse(null);
+      selected = this.getSelected().findFirst().orElse(null);
     }
     INode[] newNearestImages;
     if (MapillaryImageUtils.getKey(selected) != null) {
@@ -774,7 +775,7 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
    * arguable a spec violation,
    * depending upon how it is read).
    *
-   * @see #getSelectedImages()
+   * @see #getSelected()
    * @param <N> The node type
    * @param nodes The nodes that are actually selected.
    */
@@ -784,26 +785,14 @@ public final class MapillaryLayer extends MVTLayer implements ActiveLayerChangeL
   }
 
   /**
-   * Set the selected nodes. This is needed since Mapillary tile entities only have unique ids within a tile (this is
-   * arguable a spec violation,
-   * depending upon how it is read).
-   *
-   * @see #getSelectedImages()
-   * @param <N> The node type
-   * @param nodes The nodes that are actually selected.
-   */
-  public <N extends INode> void setSelected(N... nodes) {
-    this.setSelected(Arrays.asList(nodes));
-  }
-
-  /**
    * Get the selected images.
    *
    * @see #setSelected for an explanation why this is necessary.
    * @return The selected images.
    */
-  public Stream<VectorNode> getSelectedImages() {
-    return this.getData().getSelectedNodes().stream()
+  @Override
+  public Stream<INode> getSelected() {
+    return this.getData().getSelectedNodes().stream().map(INode.class::cast)
       .filter(node -> this.selected.contains(MapillaryImageUtils.getKey(node)));
   }
 

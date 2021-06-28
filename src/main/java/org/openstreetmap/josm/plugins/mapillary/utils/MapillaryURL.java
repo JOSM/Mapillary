@@ -206,10 +206,8 @@ public final class MapillaryURL {
       } else {
         imageProperties = properties;
       }
-      return new StringBuilder(baseMetaDataUrl)
-        .append(image).append(queryString(Collections.singletonMap("fields", Stream.of(imageProperties)
-          .map(ImageProperties::name).map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(",")))))
-        .toString();
+      return new StringBuilder(baseMetaDataUrl).append(image).append(queryString(Collections.singletonMap("fields",
+        Stream.of(imageProperties).map(ImageProperties::toString).collect(Collectors.joining(","))))).toString();
     }
 
     /**
@@ -234,6 +232,19 @@ public final class MapillaryURL {
     public static String getImagesBySequences(String key) {
       return new StringBuilder(baseMetaDataUrl).append("image_ids")
         .append(queryString(Collections.singletonMap("sequence_id", key))).toString();
+    }
+
+    /**
+     * Get additional map feature information
+     *
+     * @param id The id of the map feature
+     * @param properties The properties to get
+     * @return The URL to get additional information with
+     */
+    public static String getMapFeatureInformation(@Nonnull final String id,
+      @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
+      return new StringBuilder(baseMetaDataUrl).append(id).append(queryString(Collections.singletonMap("fields",
+        Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))))).toString();
     }
 
     /**

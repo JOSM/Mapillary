@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
@@ -44,7 +43,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.UVMapping;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.model.MapObject;
 import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -634,12 +632,13 @@ public final class MapillaryImageDisplay extends JPanel {
       final Shape shape = unit2CompTransform.createTransformedShape(d.getShape());
       g2d.setColor(d.getColor());
       g2d.draw(shape);
-      ImageIcon icon = MapObject.getIcon(d.getValue().getKey());
-      if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
-        final Rectangle bounds = shape.getBounds();
-        g2d.drawImage(MapObject.getIcon(d.getValue().getKey()).getImage(), bounds.x, bounds.y, bounds.width,
-          bounds.height, null);
-      }
+      // TODO get images to draw (we need to be able to draw the shape first anyway...)
+      // ImageIcon icon = MapObject.getIcon(d.getValue().getKey());
+      // if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
+      // final Rectangle bounds = shape.getBounds();
+      // g2d.drawImage(MapObject.getIcon(d.getValue().getKey()).getImage(), bounds.x, bounds.y, bounds.width,
+      // bounds.height, null);
+      // }
     }
   }
 
