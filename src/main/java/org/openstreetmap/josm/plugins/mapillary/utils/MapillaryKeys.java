@@ -53,9 +53,9 @@ public final class MapillaryKeys {
     // Set min/max zooms
     MAPILLARY_IMAGES.setDefaultMaxZoom(14);
     MAPILLARY_IMAGES.setDefaultMinZoom(12);
-    MAPILLARY_TRAFFIC_SIGNS.setDefaultMaxZoom(20);
+    MAPILLARY_TRAFFIC_SIGNS.setDefaultMaxZoom(14);
     MAPILLARY_TRAFFIC_SIGNS.setDefaultMinZoom(14);
-    MAPILLARY_POINT_OBJECTS.setDefaultMaxZoom(20);
+    MAPILLARY_POINT_OBJECTS.setDefaultMaxZoom(14);
     MAPILLARY_POINT_OBJECTS.setDefaultMinZoom(14);
   }
 }
