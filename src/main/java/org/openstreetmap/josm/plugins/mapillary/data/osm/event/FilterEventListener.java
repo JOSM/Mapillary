@@ -3,11 +3,13 @@ package org.openstreetmap.josm.plugins.mapillary.data.osm.event;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.osm.Filter;
 import org.openstreetmap.josm.data.osm.FilterMatcher;
 import org.openstreetmap.josm.data.osm.FilterWorker;
@@ -17,6 +19,7 @@ import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryExpertFilterDialog;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -53,7 +56,15 @@ public class FilterEventListener implements TableModelListener {
         }
       }
     }
-    FilterWorker.executeFilters(data.allPrimitives(), matcher);
+    // Work around JOSM #21043. Use r19_000, since it should be fixed by then.
+    if (Version.getInstance().getVersion() < 19_000 || Boolean.FALSE.equals(MapillaryProperties.DEVELOPER.get())) {
+      // This should just be allPrimitives.
+      FilterWorker.executeFilters(
+        data.allPrimitives().stream().filter(p -> p.getReferrers().isEmpty()).collect(Collectors.toList()), matcher);
+    } else {
+      throw new IllegalArgumentException(
+        "Has JOSM r21043 been fixed yet? If so, remove/update workaround, or update number.");
+    }
     SwingUtilities.invokeLater(layer::invalidate);
   }
 }
