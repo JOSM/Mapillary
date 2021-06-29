@@ -434,7 +434,7 @@ public final class MapillaryLayer extends MVTLayer
       } else {
         i = null;
       }
-      directionC = getAgedColor(img, MapillaryColorScheme.SEQ_UNSELECTED_CA);
+      directionC = getAgedColor(img, MapillaryColorScheme.SEQ_UNSELECTED);
     }
     // Paint direction indicator
     g.setColor(directionC);
