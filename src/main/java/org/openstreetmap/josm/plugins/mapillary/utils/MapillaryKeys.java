@@ -57,5 +57,10 @@ public final class MapillaryKeys {
     MAPILLARY_TRAFFIC_SIGNS.setDefaultMinZoom(14);
     MAPILLARY_POINT_OBJECTS.setDefaultMaxZoom(14);
     MAPILLARY_POINT_OBJECTS.setDefaultMinZoom(14);
+
+    // Set as overlays
+    MAPILLARY_IMAGES.setOverlay(true);
+    MAPILLARY_TRAFFIC_SIGNS.setOverlay(true);
+    MAPILLARY_POINT_OBJECTS.setOverlay(true);
   }
 }
