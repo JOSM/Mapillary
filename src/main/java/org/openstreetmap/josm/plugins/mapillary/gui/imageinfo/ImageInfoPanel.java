@@ -48,6 +48,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.ImageColorPicker;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.MapillaryButton;
 import org.openstreetmap.josm.plugins.mapillary.gui.boilerplate.SelectableLabel;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
@@ -205,10 +206,20 @@ public final class ImageInfoPanel extends ToggleDialog implements DataSelectionL
   @Override
   public synchronized void selectionChanged(
     final IDataSelectionListener.SelectionChangeEvent<VectorPrimitive, VectorNode, VectorWay, VectorRelation, VectorDataSet> selectionChanged) {
+    /*
+     * This predicate fixes JOSM #21049. Mapillary does not use unique primitive ids in vector tiles, so we have to keep
+     * track of what is selected through the image key, which is done in the MapillaryLayer instance.
+     */
+    final Predicate<INode> isSelected;
+    if (MapillaryLayer.hasInstance()) {
+      isSelected = node -> MapillaryLayer.getInstance().getSelected().anyMatch(node::equals);
+    } else {
+      isSelected = node -> true;
+    }
     final INode oldImage = Utils.filteredCollection(selectionChanged.getOldSelection(), VectorNode.class).stream()
       .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
     final INode newImage = Utils.filteredCollection(selectionChanged.getSelection(), VectorNode.class).stream()
-      .filter(MapillaryImageUtils.IS_IMAGE).findFirst().orElse(null);
+      .filter(MapillaryImageUtils.IS_IMAGE).filter(isSelected).findFirst().orElse(null);
     selectedImageChanged(oldImage, newImage);
   }
 
