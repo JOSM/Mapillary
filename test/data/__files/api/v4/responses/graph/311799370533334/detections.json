@@ -1,1 +1,52 @@
-{"data":[{"value":"information--general-directions--g1","created_at":"2021-05-20T19:34:30+0000","id":"313324430380828"},{"value":"regulatory--no-left-turn--g1","created_at":"2021-05-20T21:05:34+0000","id":"313366017043336"},{"value":"information--general-directions--g1","created_at":"2021-05-21T17:25:13+0000","id":"313943736985564"}]}
+{
+  "data": [
+    {
+      "created_at": "2021-05-20T19:34:30+0000",
+      "geometry": "GjUKBm1weS1vchIVEgIAABgDIg0Jhh2eLBpkAABiYwAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57079097222,
+            39.065986972222
+          ]
+        },
+        "id": "311799370533334"
+      },
+      "value": "information--general-directions--g1",
+      "id": "313324430380828"
+    },
+    {
+      "created_at": "2021-05-20T21:05:34+0000",
+      "geometry": "GjgKBm1weS1vchIYEgIAABgDIhAJ3gbKKxqkAQAA1gGjAQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57079097222,
+            39.065986972222
+          ]
+        },
+        "id": "311799370533334"
+      },
+      "value": "regulatory--no-left-turn--g1",
+      "id": "313366017043336"
+    },
+    {
+      "created_at": "2021-05-21T17:25:13+0000",
+      "geometry": "GjcKBm1weS1vchIXEgIAABgDIg8JtBuMLRrKAQAAWMkBAA8aBHR5cGUiCQoHcG9seWdvbiiAIHgB",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57079097222,
+            39.065986972222
+          ]
+        },
+        "id": "311799370533334"
+      },
+      "value": "information--general-directions--g1",
+      "id": "313943736985564"
+    }
+  ]
+}

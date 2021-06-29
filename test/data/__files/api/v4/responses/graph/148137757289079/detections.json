@@ -1,1 +1,84 @@
-{"data":[{"value":"information--general-directions--g1","created_at":"2021-05-20T20:21:14+0000","id":"149534623816059"},{"value":"information--general-directions--g1","created_at":"2021-05-20T22:26:15+0000","id":"149583247144530"},{"value":"information--general-directions--g1","created_at":"2021-05-21T17:25:13+0000","id":"150066420429546"},{"value":"object--support--utility-pole","created_at":"2021-05-22T08:38:30+0000","id":"150499680386220"},{"value":"object--support--utility-pole","created_at":"2021-05-22T18:48:26+0000","id":"150806497022205"}]}
+{
+  "data": [
+    {
+      "created_at": "2021-05-20T20:21:14+0000",
+      "geometry": "GjUKBm1weS1vchIVEgIAABgDIg0Jth6eLBpmAABeZQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57076997222,
+            39.065739
+          ]
+        },
+        "id": "148137757289079"
+      },
+      "value": "information--general-directions--g1",
+      "id": "149534623816059"
+    },
+    {
+      "created_at": "2021-05-20T22:26:15+0000",
+      "geometry": "GjcKBm1weS1vchIXEgIAABgDIg8JuBfILBqQAQAAXI8BAA8aBHR5cGUiCQoHcG9seWdvbiiAIHgB",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57076997222,
+            39.065739
+          ]
+        },
+        "id": "148137757289079"
+      },
+      "value": "information--general-directions--g1",
+      "id": "149583247144530"
+    },
+    {
+      "created_at": "2021-05-21T17:25:13+0000",
+      "geometry": "GjcKBm1weS1vchIXEgIAABgDIg8J+hzwLBqsAQAAaKsBAA8aBHR5cGUiCQoHcG9seWdvbiiAIHgB",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57076997222,
+            39.065739
+          ]
+        },
+        "id": "148137757289079"
+      },
+      "value": "information--general-directions--g1",
+      "id": "150066420429546"
+    },
+    {
+      "created_at": "2021-05-22T08:38:30+0000",
+      "geometry": "GrICeAIKBm1weS1vciiAIBKiAggBGAMimwIJ7jHsIZIIAAICCAAGAgYAAgIIBjQCCAAKAgQMaAQIBigCLAQKBkoCCgQGBgAITAgeBCYKwgESVAhcFGoAEgIGABYCBAAECGoQVghaCCwEBgYiBAgMYAgqDHoQSg7GAQciCx4RBCUEGwMXDQ03A00HTwtJCYcBDVMFTxFrDdUBD1UJVQklBy0NiQEPXwVbE1UJYws5CX0VpwEFWwcvCSMLcQ1DCckBEV0LcwcXCT0BOwlpDUsJdQ9RB3URhQELfQszC4UBBScHGwtlByUHEw1pE1UMKxodFAMqAAQEEAYGEgAKBhIIbA5mCqYBBioECAgqCF4WlgEIbhBIDIgBEFwGUhSCAQqMARBCDH4MNAxwEFgOqgEONAguCE4P",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57076997222,
+            39.065739
+          ]
+        },
+        "id": "148137757289079"
+      },
+      "value": "object--support--utility-pole",
+      "id": "150499680386220"
+    },
+    {
+      "created_at": "2021-05-22T18:48:26+0000",
+      "geometry": "GpsDeAIKBm1weS1vciiAIBKmAggBGAMinwIJ2gWiJ6oICj8G7QEMQwInAccBAxMPIQMAAAQLEhEMEw0JFwUpDzEADwpHBhUODwQADBEECxwlBEsIExcHAQcJDQEABQkDAAUHIwALBxMBDRcDERItDAgUABIHFAQODxAHDicOBwYABAYABgYGAhAGCBARAAcKGQYHDAUYABQMCAoKAgQGFAAQDAAMBAsKAwIFFAAIDgYuBgcMAwoQCAQEFAYOBAQABA0UFwAHBwUACwwRAA8REQgLCQUABwwDAAkOCQQNOAVOAlwEEAFeBToLKgMuA5wBCVwDSAGQAQtSBeIBC3YDsAENmgEDzgEFRAWqAQO8AgMUBw4DAAUICQIXAQsjADMI6wEMYQJpBlsEDwQxBrcBCFUGnwEILQQtDxIpCAIYAyIjCcgHyC9yBgkEAAgJAhwBOAMCAxAEegNMBRIFAgUPAG8IWQ8SOAgDGAMiMgnqBrYhqgEDAAMLBGMSBQIHBgMGCR4HBgAQFgQcAmYFWhEMDRMBDQcOCQYHPQcRAwAP",
+      "image": {
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -108.57076997222,
+            39.065739
+          ]
+        },
+        "id": "148137757289079"
+      },
+      "value": "object--support--utility-pole",
+      "id": "150806497022205"
+    }
+  ]
+}
