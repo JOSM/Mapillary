@@ -125,14 +125,14 @@ public final class MapillaryURL {
      * @return The default image properties to get
      */
     private static MapillaryImageUtils.ImageProperties[] getDefaultImageInformation() {
-      return new MapillaryImageUtils.ImageProperties[] { MapillaryImageUtils.ImageProperties.ID,
-        MapillaryImageUtils.ImageProperties.CAPTURED_AT, MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
-        MapillaryImageUtils.ImageProperties.ALTITUDE, MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
-        MapillaryImageUtils.ImageProperties.COMPASS_ANGLE, MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY,
-        MapillaryImageUtils.ImageProperties.GEOMETRY, MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
-        MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.WORST_IMAGE,
-        MapillaryImageUtils.ImageProperties.BEST_IMAGE, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
-        MapillaryImageUtils.ImageProperties.SEQUENCE };
+      return new MapillaryImageUtils.ImageProperties[] { MapillaryImageUtils.ImageProperties.ALTITUDE,
+        MapillaryImageUtils.ImageProperties.BEST_IMAGE, MapillaryImageUtils.ImageProperties.CAPTURED_AT,
+        MapillaryImageUtils.ImageProperties.COMPASS_ANGLE, MapillaryImageUtils.ImageProperties.COMPUTED_ALTITUDE,
+        MapillaryImageUtils.ImageProperties.COMPUTED_COMPASS_ANGLE,
+        MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY, MapillaryImageUtils.ImageProperties.COMPUTED_ROTATION,
+        MapillaryImageUtils.ImageProperties.EXIF_ORIENTATION, MapillaryImageUtils.ImageProperties.GEOMETRY,
+        MapillaryImageUtils.ImageProperties.ID, MapillaryImageUtils.ImageProperties.QUALITY_SCORE,
+        MapillaryImageUtils.ImageProperties.SEQUENCE, MapillaryImageUtils.ImageProperties.WORST_IMAGE };
     }
 
     /**

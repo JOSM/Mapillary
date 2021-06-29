@@ -13,8 +13,6 @@ import org.openstreetmap.josm.gui.layer.AbstractOsmDataLayer;
 import org.openstreetmap.josm.gui.layer.MainLayerManager;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.gui.widgets.DisableShortcutsOnFocusGainedTextField;
-import org.openstreetmap.josm.gui.widgets.JosmTextField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord.OrganizationRecordListener;
@@ -25,7 +23,6 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.widget.DisableShorcutsOnFocusGainedJSpinnerEditor;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 import org.openstreetmap.josm.tools.Destroyable;
@@ -52,8 +49,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.time.Instant;
@@ -133,7 +128,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     panel.add(imageLine, GBC.eol().anchor(GridBagConstraints.LINE_START));
     this.addTimeFilters(panel);
     this.addUserGroupFilters(panel);
-    this.addCameraMakeModelFilters(panel);
     this.addImageQualityFilters(panel);
     final JPanel signs = new JPanel();
     signs.add(onlySigns, GBC.std().anchor(GridBagConstraints.LINE_START));
@@ -180,69 +174,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
     };
     this.resetObjects.addListener(setFields);
     setFields.reset();
-  }
-
-  /**
-   * Add camera make/model filters
-   *
-   * @param panel The panel to add the filters to
-   */
-  private void addCameraMakeModelFilters(JPanel panel) {
-    JLabel cameraMakeLabel = new JLabel(tr("Camera Make"));
-    panel.add(cameraMakeLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
-    final JosmTextField cameraMake = new DisableShortcutsOnFocusGainedTextField();
-    panel.add(cameraMake, GBC.std().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
-    JLabel cameraModelLabel = new JLabel("Model");
-    panel.add(cameraModelLabel, GBC.std().anchor(GridBagConstraints.LINE_START));
-    final JosmTextField cameraModel = new DisableShortcutsOnFocusGainedTextField();
-    panel.add(cameraModel, GBC.eol().fill(GridBagConstraints.HORIZONTAL).anchor(GridBagConstraints.LINE_START));
-
-    cameraMake.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        // Do nothing
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        shouldHidePredicate.cameraMake = cameraMake.getText();
-      }
-    });
-
-    cameraModel.addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        // Do nothing
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        shouldHidePredicate.cameraModel = cameraModel.getText();
-      }
-    });
-    this.resetObjects.addListener(() -> cameraMake.setText(""));
-    this.resetObjects.addListener(() -> cameraModel.setText(""));
-
-    ResetListener setFields = () -> {
-      this.shouldHidePredicate.cameraMake = cameraMake.getText();
-      this.shouldHidePredicate.cameraModel = cameraModel.getText();
-    };
-    this.resetObjects.addListener(setFields);
-    setFields.reset();
-
-    ExpertToggleAction.addVisibilitySwitcher(cameraMakeLabel);
-    ExpertToggleAction.addVisibilitySwitcher(cameraMake);
-    ExpertToggleAction.addVisibilitySwitcher(cameraModelLabel);
-    ExpertToggleAction.addVisibilitySwitcher(cameraModel);
-    ExpertModeChangeListener expertModeChangeListener = l -> setFields.reset();
-    ExpertToggleAction.addExpertModeChangeListener(expertModeChangeListener);
-    this.destroyable.addListener(() -> ExpertToggleAction.removeExpertModeChangeListener(expertModeChangeListener));
-    this.destroyable.addListener(() -> {
-      ExpertToggleAction.removeVisibilitySwitcher(cameraMakeLabel);
-      ExpertToggleAction.removeVisibilitySwitcher(cameraMake);
-      ExpertToggleAction.removeVisibilitySwitcher(cameraModelLabel);
-      ExpertToggleAction.removeVisibilitySwitcher(cameraModel);
-    });
   }
 
   /**
@@ -495,8 +426,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
   }
 
   private static class ImageFilterPredicate implements Predicate<INode> {
-    String cameraModel;
-    String cameraMake;
     String time;
     Number dateRange;
     private boolean layerVisible;
@@ -521,7 +450,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
         return true;
       }
       MainLayerManager layerManager = MainApplication.getLayerManager();
-      if (this.smartAdd && img.hasKey(MapillaryKeys.KEY)
+      if (this.smartAdd && MapillaryImageUtils.getKey(img) != null
         && !layerManager.getLayersOfType(AbstractOsmDataLayer.class).isEmpty()) {
         Collection<IPrimitive> currentSelection = Stream
           .concat(layerManager.getLayersOfType(OsmDataLayer.class).stream().map(OsmDataLayer::getDataSet),
@@ -529,7 +458,7 @@ public final class MapillaryFilterDialog extends ToggleDialog
           .flatMap(ds -> ds.getAllSelected().stream()).collect(Collectors.toSet());
         Collection<String> keys = currentSelection.stream().map(MapillaryUtils::getImagesFromDetections)
           .flatMap(Collection::stream).collect(Collectors.toSet());
-        if (!keys.contains(img.get(MapillaryKeys.KEY))) {
+        if (!keys.contains(MapillaryImageUtils.getKey(img))) {
           return true;
         }
       }
@@ -537,10 +466,6 @@ public final class MapillaryFilterDialog extends ToggleDialog
         || (this.startDateRefresh != null && checkStartDate(img))
         || (!this.importedIsSelected && img.hasKey(MapillaryImageUtils.IMPORTED_KEY))
         || (this.onlyPanoIsSelected && !MapillaryImageUtils.IS_PANORAMIC.test(img))
-        || (this.cameraMake != null && !this.cameraMake.trim().isEmpty()
-          && !this.cameraMake.equals(img.get("camera_make")))
-        || (this.cameraModel != null && !this.cameraModel.trim().isEmpty()
-          && !this.cameraModel.equals(img.get("camera_model")))
         || (this.qualityScore != Float.MIN_VALUE && (MapillaryImageUtils.getQuality(img) < this.qualityScore
           // The following line is to ensure that any images that *don't* have a quality score are shown when low
           // quality is OK.
@@ -551,8 +476,8 @@ public final class MapillaryFilterDialog extends ToggleDialog
         if (!this.downloadedIsSelected) {
           return true;
         }
-        if (this.onlySignsIsSelected && (ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false).isEmpty()
-          || !checkSigns(ImageDetection.getDetections(img.get(MapillaryKeys.KEY), false)))) {
+        if (this.onlySignsIsSelected && (ImageDetection.getDetections(MapillaryImageUtils.getKey(img), false).isEmpty()
+          || !checkSigns(ImageDetection.getDetections(MapillaryImageUtils.getKey(img), false)))) {
           return true;
         }
         if (!OrganizationRecord.NULL_RECORD.equals(this.organization) && MapillaryImageUtils.getSequenceKey(img) != null
@@ -703,9 +628,10 @@ public final class MapillaryFilterDialog extends ToggleDialog
     if (!destroyed) {
       super.destroy();
       this.destroyable.fireEvent(Destroyable::destroy);
-      if (MainApplication.getMap() != null)
+      if (MainApplication.getMap() != null) {
         MainApplication.getMap().removeToggleDialog(this);
-      OrganizationRecord.removeOrganizationListener(this); // TODO uncomment when API for orgs is available
+      }
+      OrganizationRecord.removeOrganizationListener(this);
       destroyed = true;
     }
     destroyInstance();
