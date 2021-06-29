@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +49,6 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.gui.widgets.FilterField;
 import org.openstreetmap.josm.plugins.datepicker.IDatePicker;
-import org.openstreetmap.josm.plugins.mapillary.data.mapillary.DetectionType;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.DeveloperToggleAction;
 import org.openstreetmap.josm.plugins.mapillary.gui.ImageCheckBoxButton;
@@ -146,7 +146,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     add(showRelevantObjs, GBC.std().anchor(GridBagConstraints.WEST));
     add(toggleVisibleCheckbox, GBC.eol().anchor(GridBagConstraints.CENTER));
 
-    buttons = new ArrayList<>();
+    this.buttons = Collections.synchronizedList(new ArrayList<>());
     addButtons();
 
     add(pagination, GBC.eol().anchor(GridBagConstraints.WEST).fill(GridBagConstraints.HORIZONTAL));
@@ -211,7 +211,10 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
     if (detectionPage < 0) {
       detectionPage = 0;
     }
-    long visible = buttons.parallelStream().filter(b -> checkRelevant(b, filterField.getText())).count();
+    long visible;
+    synchronized (this.buttons) {
+      visible = this.buttons.parallelStream().filter(b -> checkRelevant(b, this.filterField.getText())).count();
+    }
     while ((long) detectionPage * showMaxNumberModel.getNumber().intValue() > visible) {
       detectionPage--;
     }
@@ -224,13 +227,17 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param model The model used to paginate the buttons.
    */
   private void updateShown(SpinnerNumberModel model) {
-    buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
-    buttons.stream().filter(i -> checkRelevant(i, filterField.getText()))
-      .skip(detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
-      .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
-    long notSelected = buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
-    long selected = buttons.parallelStream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
-      .count();
+    long notSelected;
+    long selected;
+    synchronized (this.buttons) {
+      this.buttons.parallelStream().forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(false)));
+      this.buttons.stream().filter(i -> checkRelevant(i, this.filterField.getText()))
+        .skip(this.detectionPage * model.getNumber().longValue()).limit(model.getNumber().longValue())
+        .forEach(i -> SwingUtilities.invokeLater(() -> i.setVisible(true)));
+      notSelected = this.buttons.parallelStream().filter(Component::isVisible).filter(i -> !i.isSelected()).count();
+      selected = this.buttons.parallelStream().filter(Component::isVisible).filter(ImageCheckBoxButton::isSelected)
+        .count();
+    }
     toggleVisibleCheckbox.setSelected(notSelected < selected);
     toggleVisibleCheckbox.invalidate();
   }
@@ -399,10 +406,12 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
         filterModel.resumeUpdates();
       }
     }
-    Collection<ImageCheckBoxButton> nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant)
-      .filter(button -> Stream.of(button.getDetections())
-        .allMatch(d -> !d.shouldBeAddable() || d.getTaggingPresets().isEmpty()))
-      .collect(Collectors.toList());
+    final Collection<ImageCheckBoxButton> nonAddable;
+    synchronized (this.buttons) {
+      nonAddable = this.buttons.stream().filter(ImageCheckBoxButton::isRelevant).filter(button -> Stream
+        .of(button.getDetections()).allMatch(d -> !d.shouldBeAddable() || d.getTaggingPresets().isEmpty()))
+        .collect(Collectors.toList());
+    }
     this.updateShownButtons();
     filterModel.pauseUpdates();
     List<Future<?>> futures = nonAddable.stream().map(b -> b.setSelected(this.smartEditMode)).filter(Objects::nonNull)
@@ -433,8 +442,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       return;
     }
     MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-    List<Future<?>> futures = buttons.stream().filter(ImageCheckBoxButton::isVisible).map(b -> b.setSelected(check))
-      .filter(Objects::nonNull).collect(Collectors.toList());
+    final List<Future<?>> futures;
+    synchronized (this.buttons) {
+      futures = this.buttons.stream().filter(ImageCheckBoxButton::isVisible).map(b -> b.setSelected(check))
+        .filter(Objects::nonNull).collect(Collectors.toList());
+    }
 
     for (Future<?> future : futures) {
       try {
@@ -461,7 +473,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
    * @param expr An expression to filter buttons with
    */
   private void filterButtons(String expr) {
-    SwingUtilities.invokeLater(() -> buttons.forEach(b -> b.setVisible(this.checkRelevant(b, expr))));
+    SwingUtilities.invokeLater(() -> {
+      synchronized (this.buttons) {
+        this.buttons.forEach(b -> b.setVisible(this.checkRelevant(b, expr)));
+      }
+    });
     SwingUtilities.invokeLater(this::invalidate);
   }
 
@@ -474,17 +490,8 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
       .filter(v -> v != ObjectDetections.UNKNOWN).collect(Collectors.groupingBy(ObjectDetections::getBaseKey));
     collected = new TreeMap<>(collected); // Create a sorted map
     for (Map.Entry<String, List<ObjectDetections>> entry : collected.entrySet()) {
-      final ImageIcon icon = entry.getValue().stream().map(detection -> {
-        for (DetectionType type : detection.getDetectionTypes()) {
-          if (type.getImageLocationString() == null)
-            continue;
-          ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), detection.getKey());
-          if (tIcon != null) {
-            return tIcon;
-          }
-        }
-        return null;
-      }).filter(Objects::nonNull).findFirst().orElse(ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP));
+      final ImageIcon icon = entry.getValue().stream().map(ObjectDetections::getIcon).findFirst()
+        .orElseGet(() -> ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP));
       GuiHelper.runInEDT(() -> {
         ImageCheckBoxButton button = new ImageCheckBoxButton(icon, entry.getKey(),
           entry.getValue().toArray(new ObjectDetections[0]));
@@ -499,7 +506,9 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   @Override
   public void destroy() {
     if (!destroyed) {
-      buttons.forEach(ImageCheckBoxButton::destroy);
+      synchronized (this.buttons) {
+        this.buttons.forEach(ImageCheckBoxButton::destroy);
+      }
       destroyed = true;
     }
   }
@@ -510,8 +519,11 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
   public void reset() {
     this.resetObjects.forEach(ResetListener::reset);
     MapillaryExpertFilterDialog.getInstance().getFilterModel().pauseUpdates();
-    List<Future<?>> futures = buttons.stream().map(b -> b.setSelected(false)).filter(Objects::nonNull)
-      .collect(Collectors.toList());
+    final List<Future<?>> futures;
+    synchronized (this.buttons) {
+      futures = this.buttons.stream().map(b -> b.setSelected(false)).filter(Objects::nonNull)
+        .collect(Collectors.toList());
+    }
     futures.add(MainApplication.worker.submit(() -> {
       while (!MapillaryExpertFilterDialog.getInstance().getFilterModel().getFilters().isEmpty()) {
         MapillaryExpertFilterDialog.getInstance().getFilterModel().removeFilter(0);

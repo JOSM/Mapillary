@@ -2,12 +2,11 @@
 package org.openstreetmap.josm.plugins.mapillary.model;
 
 import java.awt.Shape;
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 
-public class SpecialImageArea<T extends Shape & Serializable> extends KeyIndexedObject {
+public class SpecialImageArea<T extends Shape> extends KeyIndexedObject {
   private final String imageKey;
   private final T shape;
 

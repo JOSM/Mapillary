@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
@@ -38,6 +39,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
+import org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetections;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.gui.panorama.CameraPlane;
@@ -621,24 +623,22 @@ public final class MapillaryImageDisplay extends JPanel {
 
   private void paintNonPano(Graphics2D g2d, Rectangle visibleRect, List<PointObjectLayer> detectionLayers) {
     final Point upperLeft = img2compCoord(visibleRect, 0, 0);
-    final Point lowerRight = img2compCoord(visibleRect, getImage().getWidth(), getImage().getHeight());
+    final Point lowerRight = img2compCoord(visibleRect, this.getImage().getWidth(), this.getImage().getHeight());
     final AffineTransform unit2CompTransform = AffineTransform.getTranslateInstance(upperLeft.getX(), upperLeft.getY());
     unit2CompTransform.concatenate(
       AffineTransform.getScaleInstance(lowerRight.getX() - upperLeft.getX(), lowerRight.getY() - upperLeft.getY()));
 
-    for (final ImageDetection<?> d : detections) {
+    for (final ImageDetection<?> d : this.detections) {
       if (MapillaryUtils.checkIfDetectionIsFilteredBasic(detectionLayers, d))
         continue;
       final Shape shape = unit2CompTransform.createTransformedShape(d.getShape());
       g2d.setColor(d.getColor());
       g2d.draw(shape);
-      // TODO get images to draw (we need to be able to draw the shape first anyway...)
-      // ImageIcon icon = MapObject.getIcon(d.getValue().getKey());
-      // if (d.isTrafficSign() && icon != null && !icon.equals(MapObject.ICON_NULL_TYPE)) {
-      // final Rectangle bounds = shape.getBounds();
-      // g2d.drawImage(MapObject.getIcon(d.getValue().getKey()).getImage(), bounds.x, bounds.y, bounds.width,
-      // bounds.height, null);
-      // }
+      ImageIcon icon = d.getValue().getIcon();
+      if (d.isTrafficSign() && icon != null && !icon.equals(ObjectDetections.NO_ICON)) {
+        final Rectangle bounds = shape.getBounds();
+        g2d.drawImage(icon.getImage(), bounds.x, bounds.y, bounds.width, bounds.height, null);
+      }
     }
   }
 

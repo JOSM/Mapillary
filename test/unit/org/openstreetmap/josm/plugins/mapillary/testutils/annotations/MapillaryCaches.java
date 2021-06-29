@@ -6,9 +6,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.openstreetmap.josm.plugins.mapillary.cache.Caches;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 
+import org.apache.commons.jcs3.access.CacheAccess;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +34,10 @@ public @interface MapillaryCaches {
           rateLimited.setBoolean(mapillaryCacheAccess, false);
         }
       }
+      // Clear image detection cache
+      final Field imageDetectionCache = ImageDetection.class.getDeclaredField("DETECTION_CACHE");
+      imageDetectionCache.setAccessible(true);
+      ((CacheAccess<String, List<ImageDetection<?>>>) imageDetectionCache.get(null)).clear();
     }
 
     @Override

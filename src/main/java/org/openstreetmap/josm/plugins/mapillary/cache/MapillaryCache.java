@@ -124,8 +124,7 @@ public class MapillaryCache extends JCSCachedTileLoaderJob<String, BufferedImage
         nextImage = MapillarySequenceUtils.getNextOrPrevious(nextImage, MapillarySequenceUtils.NextOrPrevious.NEXT);
       }
       if (prevImage != null) {
-        if (MapillaryImageUtils.getKey(prevImage) != null
-          && (imageCache.get(MapillaryImageUtils.getKey(prevImage)) == null)) {
+        if (MapillaryImageUtils.getKey(prevImage) != null) {
           INode current = prevImage;
           pool.execute(() -> CacheUtils.downloadPicture(current, CacheUtils.PICTURE.THUMBNAIL));
         }

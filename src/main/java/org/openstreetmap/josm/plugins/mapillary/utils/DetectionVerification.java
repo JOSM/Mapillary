@@ -38,7 +38,11 @@ public final class DetectionVerification {
    * @return {@code true} if successful
    */
   public static boolean vote(ImageDetection<?> detection, TYPE type) {
-    HttpClient client = HttpClient.create(MapillaryURL.APIv3.vote(detection.getPackage(), detection.getKey()), "POST");
+    if (true) {
+      throw new UnsupportedOperationException("Mapillary: v4 API does not currently support voting");
+    }
+    HttpClient client = HttpClient.create(
+      MapillaryURL.APIv3.vote(detection.isTrafficSign() ? "traffic_sign" : "FIXME", detection.getKey()), "POST");
     client.setHeader("Content-Type", "application/json");
     JsonObjectBuilder builder = Json.createObjectBuilder();
     builder.add("change_type", type.toString());

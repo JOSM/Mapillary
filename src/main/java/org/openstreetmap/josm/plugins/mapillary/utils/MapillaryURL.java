@@ -65,6 +65,17 @@ public final class MapillaryURL {
     }
 
     /**
+     * Get all image/map feature detections
+     *
+     * @param image The object to get detections for
+     * @return The URL to get detections
+     */
+    public static String getDetectionInformation(String image) {
+      return new StringBuilder(baseMetaDataUrl).append(image).append("/detections")
+        .append(queryString(Collections.singletonMap("fields", "value,created_at,image,geometry"))).toString();
+    }
+
+    /**
      * Get the Sequence/Image Tile URL
      *
      * @return A URL (String)
@@ -157,18 +168,6 @@ public final class MapillaryURL {
       @Nonnull final MapillaryMapFeatureUtils.MapFeatureProperties... properties) {
       return new StringBuilder(baseMetaDataUrl).append(id).append(queryString(Collections.singletonMap("fields",
         Stream.of(properties).map(Object::toString).collect(Collectors.joining(","))))).toString();
-    }
-
-    /**
-     * Get all image detections
-     *
-     * @param image The image to get detections for
-     * @return The URL to get detections
-     */
-    private static String getImageDetections(String image) {
-      // TODO get the geometry?
-      return baseMetaDataUrl + image + "/detections"
-        + queryString(Collections.singletonMap("fields", "value,created_at"));
     }
 
     /**

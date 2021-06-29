@@ -1,23 +1,36 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
-import static org.openstreetmap.josm.plugins.mapillary.utils.api.JsonDecoder.decodeDoublePair;
-
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Feature;
+import org.openstreetmap.josm.data.imagery.vectortile.mapbox.Layer;
+import org.openstreetmap.josm.data.protobuf.ProtobufParser;
+import org.openstreetmap.josm.data.protobuf.ProtobufRecord;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv3;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
- * Decodes the JSON returned by {@link APIv3} into Java objects.
- * Takes a {@link JsonObject} and {@link #decodeImageDetection(JsonObject)} tries to convert it to a
+ * Decodes the JSON returned by {@link APIv4} into Java objects.
+ * Takes a {@link JsonValue} and {@link #decodeImageDetection(JsonValue)} tries to convert it to a
  * {@link ImageDetection}.
  */
 public final class JsonImageDetectionDecoder {
@@ -25,97 +38,131 @@ public final class JsonImageDetectionDecoder {
     // Private constructor to avoid instantiation
   }
 
-  public static ImageDetection<Path2D.Double> decodeImageDetection(final JsonObject json) {
-    return decodeImageDetection(json, null);
+  /**
+   * Convert a json value into a collection of image detections
+   *
+   * @param json The json to convert
+   * @return A collection of image detections
+   */
+  @Nonnull
+  public static Collection<ImageDetection<?>> decodeImageDetection(@Nullable final JsonValue json) {
+    if (json == null) {
+      return Collections.emptyList();
+    } else if (json.getValueType() == JsonValue.ValueType.ARRAY) {
+      final List<ImageDetection<?>> returnList = new ArrayList<>(json.asJsonArray().size());
+      for (JsonValue value : json.asJsonArray()) {
+        returnList.addAll(decodeImageDetection(value));
+      }
+      returnList.removeIf(Objects::isNull);
+      return returnList;
+    } else if (json.getValueType() != JsonValue.ValueType.OBJECT) {
+      return Collections.emptyList();
+    }
+    final JsonObject jsonObject = json.asJsonObject();
+
+    final String key = jsonObject.getString("id", null);
+    final String imageKey = decodeImageIds(jsonObject.get("image"));
+    final String value = jsonObject.getString("value", null);
+    final Shape shape = decodeShape(jsonObject.get("geometry"));
+    if (shape != null && imageKey != null && key != null && value != null) {
+      try {
+        return Collections.singletonList(new ImageDetection<>(shape, imageKey, key, value));
+      } catch (IllegalArgumentException e) {
+        if (e.getMessage().startsWith("Unknown detection")) {
+          Logging.error(e.getMessage());
+        } else {
+          throw e;
+        }
+      }
+    }
+    return Collections.emptyList();
   }
 
-  public static ImageDetection<Path2D.Double> decodeImageDetection(final JsonObject json, String layer) {
-    if (json == null || !"Feature".equals(json.getString("type", null))) {
-      return null;
+  /**
+   * Decode image ids (mostly so we can select the appropriate image)
+   *
+   * @param jsonValue The value to decode
+   * @return The image id
+   */
+  @Nullable
+  private static String decodeImageIds(@Nullable JsonValue jsonValue) {
+    if (jsonValue != null && jsonValue.getValueType() == JsonValue.ValueType.OBJECT) {
+      final JsonObject jsonObject = jsonValue.asJsonObject();
+      if (jsonObject.containsKey("id")) {
+        final JsonValue id = jsonObject.get("id");
+        if (id.getValueType() == JsonValue.ValueType.STRING) {
+          return ((JsonString) id).getString();
+        }
+      }
     }
+    return null;
+  }
 
-    final JsonValue properties = json.get("properties");
-    if (properties instanceof JsonObject) {
-      JsonObject jsonObject = (JsonObject) properties;
-      final String key = jsonObject.getString("key", null);
-      final String packag = jsonObject.getString("layer", layer);
-      final String imageKey = jsonObject.getString("image_key", null);
-      final String value = jsonObject.getString("value", null);
-      final JsonValue scoreVal = jsonObject.get("score");
-      final Double score = scoreVal instanceof JsonNumber ? ((JsonNumber) scoreVal).doubleValue() : null;
-      final Shape shape = decodeShape(jsonObject.get("shape"));
-      if (shape instanceof Path2D.Double && imageKey != null && key != null && score != null && packag != null
-        && value != null) {
-        try {
-          return new ImageDetection<>((Path2D.Double) shape, imageKey, key, score, packag, value);
-        } catch (IllegalArgumentException e) {
-          if (e.getMessage().startsWith("Unknown detection")) {
-            Logging.error(e.getMessage());
-          } else {
-            throw e;
+  /**
+   * Decode a shape from a json value
+   *
+   * @param json The json value (should be a {@link JsonString})
+   * @return The decoded shape or {@code null}
+   */
+  @Nullable
+  private static Shape decodeShape(@Nullable JsonValue json) {
+    if (json instanceof JsonString) {
+      // v4 API returns geometry base64 encoded
+      final byte[] base64Decode = Base64.getDecoder().decode(((JsonString) json).getString());
+      final Collection<Shape> shapes = getShapes(base64Decode);
+      if (shapes.size() == 1) {
+        return shapes.iterator().next();
+      } else if (!shapes.isEmpty()) {
+        final Path2D.Double path = new Path2D.Double();
+        for (Shape shape : shapes) {
+          path.append(shape, false);
+        }
+        return path;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get the shapes from a byte array
+   *
+   * @param base64Decode The decoded byte array
+   * @return The shapes from the vector tile (if there is only one feature)
+   */
+  @Nonnull
+  private static Collection<Shape> getShapes(@Nonnull final byte[] base64Decode) {
+    // The decoded bytes are further encoded in the Mapbox Vector Tile format
+    try (ProtobufParser parser = new ProtobufParser(base64Decode)) {
+      final Collection<ProtobufRecord> layerRecord = parser.allRecords();
+      // the layer field is 3
+      if (layerRecord.size() == 1 && layerRecord.iterator().next().getField() == 3) {
+        try (ProtobufParser layerParser = new ProtobufParser(layerRecord.iterator().next().getBytes())) {
+          final Layer layer = new Layer(layerParser.allRecords());
+          final Feature feature = layer.getFeatures().stream().findFirst().orElse(null);
+          if (layer.getFeatures().size() == 1 && feature != null) {
+            return resizeShapes(feature.getGeometryObject().getShapes(), layer.getExtent());
           }
         }
       }
+    } catch (IOException e) {
+      // This should never be hit -- the IOException should not occur when reading a byte array.
+      // So throw a runtime exception if it happens.
+      throw new JosmRuntimeException(e);
     }
-    return null;
-  }
-
-  private static Shape decodeShape(JsonValue json) {
-    if (json instanceof JsonObject) {
-      if (!"Polygon".equals(((JsonObject) json).getString("type", null))) {
-        Logging.warn(String.format("Image detections using shapes with type=%s are currently not supported!",
-          ((JsonObject) json).getString("type", "‹no type set›")));
-      } else {
-        final JsonValue coordinates = ((JsonObject) json).get("coordinates");
-        if (coordinates instanceof JsonArray && !((JsonArray) coordinates).isEmpty()) {
-          return decodePolygon((JsonArray) coordinates);
-        }
-      }
-    }
-    return null;
+    return Collections.emptyList();
   }
 
   /**
-   * Decodes a polygon (may be a multipolygon) from JSON
+   * Resize shapes such that only one scale instance needs to be created to draw in the image viewer
+   * (i.e., we don't need to pass the extent around)
    *
-   * @param json the json array to decode, must not be <code>null</code>
-   * @return the decoded polygon as {@link Path2D.Double}
+   * @param shapes The shapes to transform
+   * @param extent The extent of the vector tile
+   * @return The resized shapes
    */
-  private static Path2D.Double decodePolygon(final JsonArray json) {
-    final Path2D.Double shape = new Path2D.Double();
-    json.forEach(val -> {
-      final Shape part = val instanceof JsonArray ? decodeSimplePolygon((JsonArray) val) : null;
-      if (part != null) {
-        shape.append(part, false);
-      }
-    });
-    if (shape.getCurrentPoint() != null) {
-      return shape;
-    }
-    return null;
-  }
-
-  /**
-   * Decodes a simple polygon (consisting of only one continuous path) from JSON
-   *
-   * @param json the json array to decode, must not be <code>null</code>
-   * @return the decoded polygon as {@link Path2D.Double}
-   * @throws NullPointerException if parameter is <code>null</code>
-   */
-  private static Path2D.Double decodeSimplePolygon(final JsonArray json) {
-    final Path2D.Double shape = new Path2D.Double();
-    json.forEach(val -> {
-      double[] coord = decodeDoublePair(val instanceof JsonArray ? (JsonArray) val : null);
-      if (shape.getCurrentPoint() == null && coord != null) {
-        shape.moveTo(coord[0], coord[1]);
-      } else if (coord != null) {
-        shape.lineTo(coord[0], coord[1]);
-      }
-    });
-    if (shape.getCurrentPoint() != null) {
-      shape.closePath();
-      return shape;
-    }
-    return null;
+  @Nonnull
+  private static Collection<Shape> resizeShapes(@Nonnull final Collection<Shape> shapes, final int extent) {
+    final AffineTransform scale = AffineTransform.getScaleInstance(1d / extent, 1d / extent);
+    return shapes.stream().map(scale::createTransformedShape).collect(Collectors.toList());
   }
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -60,6 +61,7 @@ class ObjectDetectionsTest {
   @MethodSource("org.openstreetmap.josm.plugins.mapillary.data.mapillary.ObjectDetectionsTest#provideObjectDetections")
   void testGetTaggingPreset(ObjectDetections detection) {
     assertNotEquals(0, ObjectDetections.getTaggingPresetsFor(detection.getKey()).length);
+    assertEquals(detection.name().toLowerCase(Locale.ROOT).replace('_', '-'), detection.toString());
   }
 
   /**

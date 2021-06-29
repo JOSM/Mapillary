@@ -9,11 +9,14 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.swing.ImageIcon;
+
 import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPreset;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresetType;
 import org.openstreetmap.josm.gui.tagging.presets.TaggingPresets;
+import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
@@ -1745,20 +1748,22 @@ public enum ObjectDetections {
   VOID__STATIC(DetectionType.SEGMENTATION),
   // End segmentations
   // Begin otherwise non-documented features
-  COMPLEMENTARY__TEXTS_TWO_LINES__G1(),
-  COMPLEMENTARY__TEXTS_THREE_LINES__G1(),
-  GENERAL__TRAFFIC_SIGN__G1(),
+  COMPLEMENTARY__TEXTS_TWO_LINES__G1(DetectionType.TRAFFIC_SIGN),
+  COMPLEMENTARY__TEXTS_THREE_LINES__G1(DetectionType.TRAFFIC_SIGN),
+  GENERAL__TRAFFIC_SIGN__G1(DetectionType.TRAFFIC_SIGN),
   INFORMATION__CENTRAL_LANE__G1__OTHER(),
-  INFORMATION__GENERAL_DIRECTIONS__G1(),
+  INFORMATION__GENERAL_DIRECTIONS__G1(DetectionType.TRAFFIC_SIGN),
   REGULATORY__TEXT__G1(),
   REGULATORY__TEXT__G2(),
-  REGULATORY__TEXTS_ONE_LINE__G1(),
-  REGULATORY__TEXTS_TWO_LINES__G1(),
-  REGULATORY__TEXTS_THREE_LINES__G1(),
+  REGULATORY__TEXTS_ONE_LINE__G1(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__TEXTS_TWO_LINES__G1(DetectionType.TRAFFIC_SIGN),
+  REGULATORY__TEXTS_THREE_LINES__G1(DetectionType.TRAFFIC_SIGN),
   WARNING__CLIFF__G3(),
   /* For additional unknown features. Please log to console. */
   UNKNOWN();
   // End otherwise non-document features
+
+  public static final ImageIcon NO_ICON = ImageProvider.createBlankIcon(ImageProvider.ImageSizes.MAP);
 
   /**
    * Specific detections that are <i>not</i> of interest to OSM mappers.
@@ -1786,6 +1791,99 @@ public enum ObjectDetections {
     OBJECT__VEHICLE__OTHER_VEHICLE,
     OBJECT__VEHICLE__TRAILER,
     OBJECT__VEHICLE__WHEELED_SLOW));
+
+  /** Due to initialization ordering, this must be in its own class */
+  private static class ObjectsWithNoImages {
+    /**
+     * This is used soley for cleaning up log spam
+     */
+    private static final String[] OBJECTS_WITH_NO_IMAGES = new String[] {
+      "animal--bird",
+      "animal--ground-animal",
+      "complementary--texts-three-lines--g1",
+      "complementary--texts-two-lines--g1",
+      "construction--barrier--curb",
+      "construction--barrier--fence",
+      "construction--barrier--guard-rail",
+      "construction--barrier--other-barrier",
+      "construction--barrier--separator",
+      "construction--barrier--wall",
+      "construction--flat--bike-lane",
+      "construction--flat--curb-cut",
+      "construction--flat--parking",
+      "construction--flat--pedestrian-area",
+      "construction--flat--rail-track",
+      "construction--flat--road",
+      "construction--flat--road-shoulder",
+      "construction--flat--service-lane",
+      "construction--flat--sidewalk",
+      "construction--flat--traffic-island",
+      "construction--structure--bridge",
+      "construction--structure--building",
+      "construction--structure--garage",
+      "construction--structure--tunnel",
+      "general--traffic-sign--g1",
+      "human--person",
+      "human--rider--bicyclist",
+      "human--rider--motorcyclist",
+      "human--rider--other-rider",
+      "information--general-directions--g1",
+      "information--tsunami-evacuation-route--g1",
+      "marking--continuous--dashed",
+      "marking--continuous--solid",
+      "nature--beach",
+      "nature--desert",
+      "nature--mountain",
+      "nature--sand",
+      "nature--sky",
+      "nature--snow",
+      "nature--terrain",
+      "nature--vegetation",
+      "nature--water",
+      "object--billboard",
+      "object--pothole",
+      "object--ramp",
+      "object--traffic-light--general-horizontal-back",
+      "object--traffic-light--general-horizontal-front",
+      "object--traffic-light--general-horizontal-side",
+      "object--traffic-light--general-upright-back",
+      "object--traffic-light--general-upright-front",
+      "object--traffic-light--general-upright-side",
+      "object--traffic-light--other-traffic-light",
+      "object--traffic-light--temporary",
+      "object--traffic-sign--back",
+      "object--traffic-sign--direction-back",
+      "object--traffic-sign--direction-front",
+      "object--traffic-sign--front",
+      "object--traffic-sign--information-parking",
+      "object--traffic-sign--temporary-back",
+      "object--traffic-sign--temporary-front",
+      "object--vehicle--bicycle",
+      "object--vehicle--boat",
+      "object--vehicle--bus",
+      "object--vehicle--car",
+      "object--vehicle--caravan",
+      "object--vehicle--motorcycle",
+      "object--vehicle--on-rails",
+      "object--vehicle--other-vehicle",
+      "object--vehicle--trailer",
+      "object--vehicle--truck",
+      "object--vehicle--wheeled-slow",
+      "object--wire-group",
+      "regulatory--dual-lanes-cyclists-and-pedestrians--g1",
+      "regulatory--texts--g1",
+      "regulatory--texts--g2",
+      "regulatory--texts-one-line--g1",
+      "regulatory--texts-three-lines--g1",
+      "regulatory--texts-two-lines--g1",
+      "void--car-mount",
+      "void--dynamic",
+      "void--ego-vehicle",
+      "void--ground",
+      "void--static",
+      "warning--kangaroo-crossing--g1"
+    };
+  }
   // @formatter:on
 
   private final String key;
@@ -1794,6 +1892,7 @@ public enum ObjectDetections {
   private final Collection<TaggingPresetType> taggingPresetType;
   private final Supplier<AdditionalInstructions> additionalCommands;
   private final DataType dataType;
+  private final ImageIcon icon;
   // Not final just in case a preset change listener needs to be implemented
   private TaggingPreset[] presets = new TaggingPreset[0];
 
@@ -1870,6 +1969,7 @@ public enum ObjectDetections {
     this.taggingPresetType = taggingPresetType != null ? Arrays.asList(taggingPresetType) : null;
     this.additionalCommands = additionalCommands;
     this.dataType = dataType;
+    this.icon = this.getIcon();
     this.updateMappingPresets();
   }
 
@@ -2030,6 +2130,33 @@ public enum ObjectDetections {
       }
     }
     return UNKNOWN;
+  }
+
+  /**
+   * Get the icon for the detection
+   *
+   * @return The icon
+   */
+  public ImageIcon getIcon() {
+    if (this.icon != null) {
+      return this.icon;
+    }
+    if (Stream.of(ObjectsWithNoImages.OBJECTS_WITH_NO_IMAGES).noneMatch(this.key::equals)) {
+      for (DetectionType type : this.getDetectionTypes()) {
+        if (type.getImageLocationString() == null)
+          continue;
+        ImageIcon tIcon = ImageProvider.getIfAvailable(type.getImageLocationString(), this.getKey());
+        if (tIcon != null) {
+          return tIcon;
+        }
+      }
+    }
+    return NO_ICON;
+  }
+
+  @Override
+  public String toString() {
+    return this.key;
   }
 
   /**

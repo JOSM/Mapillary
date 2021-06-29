@@ -229,10 +229,8 @@ public final class MapillaryUtils {
    * @return {@code true} if the detection is filtered
    */
   public static boolean checkIfDetectionIsFilteredBasic(List<PointObjectLayer> detectionLayers, ImageDetection<?> d) {
-    if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get())
-      && !"trafficsigns".contains(d.getPackage()))
-      || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get())
-        && "trafficsigns".contains(d.getPackage())))
+    if ((Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTION_OUTLINES.get()) && !d.isTrafficSign())
+      || (Boolean.FALSE.equals(MapillaryProperties.SHOW_DETECTED_SIGNS.get()) && d.isTrafficSign()))
       return true;
     IPrimitive prim = detectionLayers.parallelStream().map(PointObjectLayer::getData)
       .flatMap(data -> data.allPrimitives().parallelStream())
