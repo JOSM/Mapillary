@@ -291,7 +291,7 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       final Set<String> idArray = nodes.stream().map(MapillaryMapFeatureUtils::getImageIds)
         .flatMapToLong(LongStream::of).distinct().mapToObj(Long::toString).collect(Collectors.toSet());
       final List<VectorNode> potentialImages = MapillaryLayer.getInstance().getData().searchNodes(searchBBox).stream()
-        .distinct().filter(node -> !idArray.contains(MapillaryImageUtils.getKey(node))).collect(Collectors.toList());
+        .distinct().filter(node -> idArray.contains(MapillaryImageUtils.getKey(node))).collect(Collectors.toList());
       final Map<VectorNode, Integer> imageCount = nodes.stream().map(image -> getBestImage(image, potentialImages))
         .collect(Collectors.toMap(i -> i, e -> 1, Math::addExact));
       final Optional<VectorNode> bestImage = imageCount.entrySet().stream()
