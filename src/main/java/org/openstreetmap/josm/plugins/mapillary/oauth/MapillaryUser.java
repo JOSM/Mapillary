@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.openstreetmap.josm.data.preferences.AbstractProperty;
 import org.openstreetmap.josm.plugins.mapillary.data.mapillary.OrganizationRecord;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
@@ -121,7 +123,10 @@ public final class MapillaryUser {
     organizations = null;
     uploadSession = null;
     isTokenValid = false;
-    MapillaryProperties.ACCESS_TOKEN.put(MapillaryProperties.ACCESS_TOKEN.getDefaultValue());
+    for (AbstractProperty<?> property : Arrays.asList(MapillaryProperties.ACCESS_TOKEN,
+      MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT, MapillaryProperties.ACCESS_TOKEN_REFRESH_IN)) {
+      property.remove();
+    }
     LISTENERS.fireEvent(MapillaryLoginListener::onLogout);
   }
 

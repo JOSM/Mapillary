@@ -8,12 +8,18 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
+import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
 
@@ -22,16 +28,13 @@ import org.openstreetmap.josm.tools.Logging;
  * back a simple reply.
  *
  * @author nokutu
- *
  */
 public class OAuthPortListener extends Thread {
   public static final int PORT = 8763;
 
   protected static final String RESPONSE = String.format(
-      "<!DOCTYPE html><html><head><meta charset=\"utf8\"><title>%s</title></head><body>%s</body></html>",
-      I18n.tr("Mapillary login"),
-      I18n.tr("Login successful, return to JOSM.")
-  );
+    "<!DOCTYPE html><html><head><meta charset=\"utf8\"><title>%s</title></head><body>%s</body></html>",
+    I18n.tr("Mapillary login"), I18n.tr("Login successful, return to JOSM."));
   private final MapillaryLoginListener callback;
 
   public OAuthPortListener(MapillaryLoginListener loginCallback) {
@@ -40,35 +43,49 @@ public class OAuthPortListener extends Thread {
 
   @Override
   public void run() {
-    try (
-      ServerSocket serverSocket = new ServerSocket(PORT);
+    try (ServerSocket serverSocket = new ServerSocket(PORT);
       Socket clientSocket = serverSocket.accept();
-      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8), true);
-      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8))
-    ) {
+      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8),
+        true);
+      Scanner in = new Scanner(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8))) {
       String s;
-      String accessToken = null;
+      String authorizationCode = null;
+      final Pattern codePattern = Pattern.compile("^.*[&?]code=([^& ]+).*$");
+      final Pattern errorPattern = Pattern.compile("^.*[&?]error=([^& ]+).*$");
       while (in.hasNextLine()) {
         s = in.nextLine();
-        Matcher tokenMatcher = Pattern.compile("^.*&access_token=([^&]+)&.*$").matcher('&'+s+'&');
+        final Matcher tokenMatcher = codePattern.matcher(s);
         if (tokenMatcher.matches()) {
-          accessToken = tokenMatcher.group(1);
+          authorizationCode = tokenMatcher.group(1);
           break;
         } else if (s.contains("keep-alive")) {
           break;
         }
+        final Matcher errorMatcher = errorPattern.matcher(s);
+        if (errorMatcher.matches()) {
+          writeContent(out, errorMatcher.group(1));
+          out.flush();
+          MapillaryUser.reset();
+          Logging.info("Unsuccessful login with Mapillary, reason: {0}", errorMatcher.group(1));
+          return;
+        }
       }
-
-      writeContent(out);
+      writeContent(out, RESPONSE);
       out.flush();
 
       MapillaryUser.reset();
 
-      Logging.info("Successful login with Mapillary, the access token is: {0}", accessToken);
-      // Saves the access token in preferences.
-      MapillaryUser.setTokenValid(true);
+      final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
+      client.setHeader("Authorization", "OAuth " + MapillaryURL.APIv4.CLIENT_SECRET);
+      client.setRequestBody(("grant_type=authorization_code&client_id=" + Long.toString(MapillaryURL.APIv4.CLIENT_ID)
+        + "&code=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
 
-      MapillaryProperties.ACCESS_TOKEN.put(accessToken);
+      final HttpClient.Response response = client.connect();
+      try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {
+        final JsonObject jsonObject = jsonReader.readObject();
+        OAuthUtils.updateAuthorization(jsonObject);
+      }
+
       String username = MapillaryUser.getUsername();
       Logging.info("The username is: {0}", username);
       if (callback != null) {
@@ -81,10 +98,16 @@ public class OAuthPortListener extends Thread {
     }
   }
 
-  private static void writeContent(PrintWriter out) {
+  /**
+   * Write content out to web page
+   *
+   * @param out The writer
+   * @param response The response to write
+   */
+  private static void writeContent(final PrintWriter out, final String response) {
     out.println("HTTP/1.1 200 OK");
-    out.println("Content-Length: " + RESPONSE.length());
+    out.println("Content-Length: " + response.length());
     out.println("Content-Type: text/html" + "\r\n\r\n");
-    out.println(RESPONSE);
+    out.println(response);
   }
 }

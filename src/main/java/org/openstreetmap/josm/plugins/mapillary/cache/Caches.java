@@ -1,6 +1,9 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.cache;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -96,6 +99,7 @@ public final class Caches {
    * @param <V> The value type
    */
   public static class MapillaryCacheAccess<V> {
+    private static final String UNKNOWN_MAPILLARY_EXCEPTION = marktr("Unknown Mapillary exception.\n{0}");
     @Nonnull
     private final CacheAccess<String, V> cacheAccess;
     @Nonnull
@@ -203,20 +207,22 @@ public final class Caches {
                 if ("Application request limit reached"
                   .equals(jsonValue.asJsonObject().getJsonObject("error").getString("message"))) {
                   this.rateLimited = true;
-                  message = "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n";
+                  message = marktr(
+                    "We have reached the Mapillary API limit. Disabling Mapillary networking until JOSM restart. Sorry.\n"
+                      + "Logging in after the rate limit subsides may help prevent this in the future.\n{0}");
                 } else {
-                  message = "Unknown Mapillary exception.\n";
+                  message = UNKNOWN_MAPILLARY_EXCEPTION;
                 }
               } else {
-                message = "Unknown Mapillary exception.\n";
+                message = UNKNOWN_MAPILLARY_EXCEPTION;
               }
             }
           } else {
-            message = "Unknown Mapillary exception.\n";
+            message = UNKNOWN_MAPILLARY_EXCEPTION;
           }
           GuiHelper.runInEDT(() -> {
             Notification notification = new Notification();
-            notification.setContent(message + returnObject.toString());
+            notification.setContent(tr(message, returnObject));
             notification.setDuration(Notification.TIME_LONG);
             notification.setIcon(JOptionPane.ERROR_MESSAGE);
             notification.show();

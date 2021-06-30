@@ -4,6 +4,7 @@ package org.openstreetmap.josm.plugins.mapillary.utils;
 import org.openstreetmap.josm.data.preferences.BooleanProperty;
 import org.openstreetmap.josm.data.preferences.DoubleProperty;
 import org.openstreetmap.josm.data.preferences.IntegerProperty;
+import org.openstreetmap.josm.data.preferences.LongProperty;
 import org.openstreetmap.josm.data.preferences.StringProperty;
 import org.openstreetmap.josm.plugins.mapillary.gui.imageinfo.ImageInfoPanel;
 
@@ -27,7 +28,14 @@ public final class MapillaryProperties {
   public static final IntegerProperty SEQUENCE_MAX_JUMP_DISTANCE = new IntegerProperty(
     "mapillary.sequence-max-jump-distance", 100);
 
+  /** The access token for authorization */
   public static final StringProperty ACCESS_TOKEN = new StringProperty("mapillary.access-token", null);
+  /** The time (in seconds since epoch) that the token expires at */
+  public static final LongProperty ACCESS_TOKEN_EXPIRES_AT = new LongProperty("mapillary.access-token.expires-at",
+    Long.MIN_VALUE);
+  /** The time (in seconds since epoch) that we should try to refresh the token after */
+  public static final LongProperty ACCESS_TOKEN_REFRESH_IN = new LongProperty("mapillary.access-token.refresh-in",
+    Long.MAX_VALUE);
   public static final StringProperty START_DIR = new StringProperty("mapillary.start-directory",
     System.getProperty("user.home"));
 

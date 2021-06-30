@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +37,15 @@ public final class MapillaryURL {
      * replacement). Please don't write to this, except in unit tests.
      */
     public static String ACCESS_ID = "MLY|4223665974375089|d62822dd792b6a823d0794ef26450398";
+    /**
+     * This is the client id for the application, used soley for authentication
+     */
+    public static final long CLIENT_ID = 4_280_585_711_960_869L;
+
+    /**
+     * This is the client secret for the application, used solely for authentication
+     */
+    public static final String CLIENT_SECRET = "CLIENT_SECRET_TO_REPLACE_ON_BUILD";
 
     private APIv4() {
       // Hide constructor
@@ -318,12 +328,19 @@ public final class MapillaryURL {
      * @return the URL that the user should visit to start the OAuth authentication
      */
     public static URL connect(String redirectURI) {
-      HashMap<String, String> parts = new HashMap<>();
+      // We need to ensure that redirectURI is last
+      HashMap<String, String> parts = new LinkedHashMap<>(4);
+      parts.put("client_id", Long.toString(APIv4.CLIENT_ID));
+      // Only code is supported
+      parts.put("response_type", "code");
+      // Scopes are read, write, upload
+      parts.put("scope", "read");
+      // TODO state should probably be added/generated sometime
+      // redirect URI should be added last
       if (redirectURI != null && redirectURI.length() >= 1) {
+        // Must be the same as the callback URL registered with Mapillary
         parts.put("redirect_uri", redirectURI);
       }
-      parts.put("response_type", "token");
-      parts.put("scope", "user:read public:upload public:write private:read");
       return string2URL(baseUrl, "connect", queryString(parts));
     }
 

@@ -1,12 +1,17 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.oauth;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
 import javax.json.Json;
@@ -14,13 +19,18 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonStructure;
+import javax.swing.JOptionPane;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 
+import org.openstreetmap.josm.gui.Notification;
+import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.JosmRuntimeException;
+import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
 
 /**
@@ -136,9 +146,82 @@ public final class OAuthUtils {
   }
 
   private static String getAuthorizationToken() {
-    if (MapillaryProperties.ACCESS_TOKEN.isSet()) {
-      return BEARER + MapillaryProperties.ACCESS_TOKEN.get();
+    if (MapillaryProperties.ACCESS_TOKEN.isSet() && MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.isSet()
+      && MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.isSet()) {
+      // Right now, the expires_in is ~60 days. If we refresh every 7 days, we should (hopefully) account for infrequent
+      // users.
+      if (Instant.now().isBefore(Instant.ofEpochSecond(MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.get())
+        .minus(Duration.ofSeconds(MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.get())))) {
+        return BEARER + MapillaryProperties.ACCESS_TOKEN.get();
+      } else {
+        refreshAuthorization(MapillaryProperties.ACCESS_TOKEN.get());
+        return getAuthorizationToken();
+      }
     }
     return BEARER + MapillaryURL.APIv4.ACCESS_ID;
+  }
+
+  private static void refreshAuthorization(final String authorizationCode) {
+    try {
+      final HttpClient client = HttpClient.create(new URL("https://graph.mapillary.com/token"), "POST");
+      client.setHeader(AUTHORIZATION, BEARER + MapillaryURL.APIv4.CLIENT_SECRET);
+      client.setRequestBody(("grant_type=refresh_token&client_id=" + Long.toString(MapillaryURL.APIv4.CLIENT_ID)
+        + "&refresh_token=" + authorizationCode).getBytes(StandardCharsets.UTF_8));
+
+      final HttpClient.Response response = client.connect();
+      try (JsonReader jsonReader = Json.createReader(response.getContentReader())) {
+        final JsonObject jsonObject = jsonReader.readObject();
+        OAuthUtils.updateAuthorization(jsonObject);
+      }
+    } catch (IOException e) {
+      MapillaryUser.reset();
+      GuiHelper.runInEDT(() -> {
+        Notification notification = new Notification();
+        notification.setIcon(JOptionPane.ERROR_MESSAGE);
+        notification.setDuration(Notification.TIME_DEFAULT);
+        notification.setContent(tr("Could not refresh Mapillary token. Logging out."));
+        notification.show();
+      });
+    }
+  }
+
+  /**
+   * Update authorization information from a JSON object
+   *
+   * @param jsonObject The json object to use
+   */
+  static final void updateAuthorization(final JsonObject jsonObject) {
+    // The actual access token we want to use
+    final String accessToken = jsonObject.getString("access_token");
+    // This is in seconds
+    final int expiresIn = jsonObject.getInt("expires_in");
+    // Will probably always be bearer
+    final String tokenType = jsonObject.getString("token_type");
+    if (!"bearer".equals(tokenType)) {
+      MapillaryUser.reset();
+      throw new JosmRuntimeException("Mapillary: Login failed due to unknown token type: " + tokenType);
+    }
+
+    MapillaryUser.setTokenValid(true);
+    MapillaryProperties.ACCESS_TOKEN.put(accessToken);
+    MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.put(Instant.now().getEpochSecond() + expiresIn);
+    final ChronoUnit expireUnit;
+    if (expiresIn > Duration.of(1, ChronoUnit.MONTHS).getSeconds()) {
+      expireUnit = ChronoUnit.WEEKS;
+    } else if (expiresIn > Duration.of(1, ChronoUnit.WEEKS).getSeconds()) {
+      expireUnit = ChronoUnit.DAYS;
+    } else if (expiresIn > Duration.of(1, ChronoUnit.DAYS).getSeconds()) {
+      expireUnit = ChronoUnit.HALF_DAYS;
+    } else if (expiresIn > Duration.of(2, ChronoUnit.HOURS).getSeconds()) {
+      expireUnit = ChronoUnit.HOURS;
+    } else {
+      // Hopefully we never hit this code path in production...
+      expireUnit = ChronoUnit.MINUTES;
+    }
+    MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.put(Duration.of(1, expireUnit).getSeconds());
+
+    Logging.info("Successful authentication with Mapillary, the access token is {0} expiring in {1} seconds",
+      accessToken, expiresIn);
+    // Saves the access token in preferences.
   }
 }
