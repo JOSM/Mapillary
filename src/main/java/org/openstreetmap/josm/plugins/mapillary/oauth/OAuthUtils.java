@@ -206,9 +206,9 @@ public final class OAuthUtils {
     MapillaryProperties.ACCESS_TOKEN.put(accessToken);
     MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.put(Instant.now().getEpochSecond() + expiresIn);
     final ChronoUnit expireUnit;
-    if (expiresIn > Duration.of(1, ChronoUnit.MONTHS).getSeconds()) {
+    if (expiresIn > Duration.of(30, ChronoUnit.DAYS).getSeconds()) {
       expireUnit = ChronoUnit.WEEKS;
-    } else if (expiresIn > Duration.of(1, ChronoUnit.WEEKS).getSeconds()) {
+    } else if (expiresIn > Duration.of(7, ChronoUnit.DAYS).getSeconds()) {
       expireUnit = ChronoUnit.DAYS;
     } else if (expiresIn > Duration.of(1, ChronoUnit.DAYS).getSeconds()) {
       expireUnit = ChronoUnit.HALF_DAYS;
