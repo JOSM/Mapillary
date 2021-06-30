@@ -25,6 +25,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.layer.PointObjectLayer;
 import org.openstreetmap.josm.plugins.mapillary.oauth.OAuthUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryColorScheme;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -226,8 +227,9 @@ public class ImageDetection<T extends Shape> extends SpecialImageArea<T> {
    */
   public Color getColor() {
     if (MainApplication.getLayerManager().getLayersOfType(PointObjectLayer.class).parallelStream()
-      .map(PointObjectLayer::getData).flatMap(ds -> ds.getSelected().parallelStream())
-      .filter(prim -> prim.hasKey(DETECTIONS)).anyMatch(prim -> prim.get(DETECTIONS).contains(getKey()))) {
+      .flatMap(PointObjectLayer::getSelected).map(MapillaryMapFeatureUtils::getId)
+      .flatMap(id -> ImageDetection.getDetections(id, false).stream()).filter(Objects::nonNull)
+      .anyMatch(id -> id.getKey().equals(this.getKey()))) {
       return isRejected() || Boolean.TRUE.equals(MapillaryProperties.SMART_EDIT.get()) ? Color.RED : Color.CYAN;
     }
     if (this.isTrafficSign())

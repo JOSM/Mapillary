@@ -59,6 +59,7 @@ import org.openstreetmap.josm.plugins.mapillary.gui.dialog.MapillaryFilterDialog
 import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddEventSource;
 import org.openstreetmap.josm.plugins.mapillary.io.download.TileAddListener;
+import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryMapFeatureUtils;
@@ -71,6 +72,7 @@ import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
+import javax.annotation.Nonnull;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
@@ -284,8 +286,12 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   @Override
   public <N extends INode> void setSelected(final Collection<N> nodes) {
     this.selected = nodes.stream().map(MapillaryMapFeatureUtils::getId).collect(Collectors.toList());
+    getMapFeatureDetections(this.selected);
     this.getData().setSelected(nodes);
-    if (!nodes.isEmpty() && MapillaryLayer.hasInstance()) {
+    if (!nodes.isEmpty() && MapillaryLayer.hasInstance()
+      && MapillaryLayer.getInstance().getSelected()
+        .noneMatch(image -> nodes.stream().map(MapillaryMapFeatureUtils::getImageIds).flatMapToLong(LongStream::of)
+          .distinct().mapToObj(Long::toString).anyMatch(id -> id.equals(MapillaryImageUtils.getKey(image))))) {
       final BBox searchBBox = new BBox();
       nodes.forEach(node -> searchBBox.addPrimitive(node, 0.005));
       final Set<String> idArray = nodes.stream().map(MapillaryMapFeatureUtils::getImageIds)
@@ -299,6 +305,24 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
       if (bestImage.isPresent()) {
         MapillaryLayer.getInstance().setSelected(bestImage.get());
       }
+    }
+  }
+
+  /**
+   * Get the image detections for the specified map features
+   *
+   * @param keys The key/id of the map feature
+   */
+  private static void getMapFeatureDetections(@Nonnull final Collection<String> keys) {
+    final Collection<String> finished = new ArrayList<>(keys.size());
+    for (String key : keys) {
+      // Repaint as we get features
+      ImageDetection.getDetections(key, (tKey, detections) -> {
+        finished.add(tKey);
+        if (finished.size() == keys.size()) {
+          MapillaryMainDialog.getInstance().imageViewer.invalidate();
+        }
+      });
     }
   }
 
@@ -608,15 +632,15 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   private static List<INode> getImagesForDetections(VectorDataSet data, List<Map<String, String>> detections) {
     List<String> keys = detections.stream().filter(m -> m.containsKey(MapillaryKeys.IMAGE_KEY))
       .map(m -> m.get(MapillaryKeys.IMAGE_KEY)).collect(Collectors.toList());
-    Set<String> keySet = data.getNodes().stream().filter(img -> img.hasKey(MapillaryKeys.KEY))
-      .map(img -> img.get(MapillaryKeys.KEY)).collect(Collectors.toSet());
+    Set<String> keySet = data.getNodes().stream().map(MapillaryImageUtils::getKey).filter(Objects::nonNull)
+      .collect(Collectors.toSet());
     String[] missing = keys.stream().filter(key -> !keySet.contains(key)).toArray(String[]::new);
     if (keys.isEmpty())
       MapillaryDownloader.downloadImages(missing);
     else
       MapillaryUtils.getForkJoinPool(MapillaryCache.class).execute(() -> MapillaryDownloader.downloadImages(missing));
-    Map<String, INode> nodeMap = data.getNodes().stream().filter(img -> img.hasKey(MapillaryKeys.KEY))
-      .collect(Collectors.toMap(i -> i.get(MapillaryKeys.KEY), i -> i));
+    Map<String, INode> nodeMap = data.getNodes().stream().filter(img -> MapillaryImageUtils.getKey(img) != null)
+      .collect(Collectors.toMap(MapillaryImageUtils::getKey, i -> i));
     return keys.stream().map(nodeMap::get).collect(Collectors.toList());
   }
 
