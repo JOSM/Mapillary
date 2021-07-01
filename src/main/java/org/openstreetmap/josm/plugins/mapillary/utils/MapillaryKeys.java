@@ -1,8 +1,8 @@
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import org.openstreetmap.josm.data.imagery.ImageryInfo;
-
 import static org.openstreetmap.josm.tools.I18n.tr;
+
+import org.openstreetmap.josm.data.imagery.ImageryInfo;
 
 /**
  * This class holds common keys for Mapillary objects
@@ -24,8 +24,8 @@ public final class MapillaryKeys {
   public static final String ORGANIZATION_KEY = "organization_key";
 
   // Misc
-  public static final String PANORAMIC_TRUE = "1";
-  public static final String PANORAMIC_FALSE = "0";
+  public static final String PANORAMIC_TRUE = Boolean.TRUE.toString();
+  public static final String PANORAMIC_FALSE = Boolean.FALSE.toString();
 
   // Detection specific
   public static final String DETECTIONS = "detections";

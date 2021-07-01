@@ -1,6 +1,45 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui;
 
+import static org.openstreetmap.josm.tools.I18n.marktr;
+import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trc;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
+
 import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.cache.BufferedImageCacheEntry;
 import org.openstreetmap.josm.data.cache.CacheEntry;
@@ -34,44 +73,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Shortcut;
 import org.openstreetmap.josm.tools.date.DateUtils;
-
-import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static org.openstreetmap.josm.tools.I18n.marktr;
-import static org.openstreetmap.josm.tools.I18n.tr;
-import static org.openstreetmap.josm.tools.I18n.trc;
 
 /**
  * Toggle dialog that shows an image and some buttons.
@@ -571,7 +572,7 @@ public final class MapillaryMainDialog extends ToggleDialog
               Logging.error(e);
             }
             return null;
-          }, detections, MapillaryKeys.PANORAMIC_TRUE.equals(image.get(MapillaryKeys.PANORAMIC)));
+          }, detections, MapillaryImageUtils.IS_PANORAMIC.test(image));
         }
       }
     }

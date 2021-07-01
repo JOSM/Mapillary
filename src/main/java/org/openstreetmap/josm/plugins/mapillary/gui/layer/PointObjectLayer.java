@@ -1,6 +1,57 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+import static org.openstreetmap.josm.tools.I18n.trn;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 import org.openstreetmap.josm.actions.RenameLayerAction;
 import org.openstreetmap.josm.command.AddPrimitivesCommand;
 import org.openstreetmap.josm.command.Command;
@@ -72,56 +123,6 @@ import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Pair;
 
-import javax.annotation.Nonnull;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParser.Event;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
-
-import static org.openstreetmap.josm.tools.I18n.tr;
-import static org.openstreetmap.josm.tools.I18n.trn;
-
 /**
  * Mapillary Point Object layer
  */
@@ -173,6 +174,8 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
     super.finishedLoading(tile);
     // This is required for the mapcss to work properly
     tile.getData().getAllPrimitives().forEach(primitive -> primitive.put("layer", primitive.getLayer()));
+    this.setNodeIds(MapillaryMapFeatureUtils.MapFeatureProperties.ID.toString(),
+      tile.getData().getAllPrimitives().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast));
     this.listeners.fireEvent(listener -> listener.tileAdded(tile));
   }
 

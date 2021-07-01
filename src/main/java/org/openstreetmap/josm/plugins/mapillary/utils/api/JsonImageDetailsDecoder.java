@@ -1,26 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils.api;
 
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.TagMap;
-import org.openstreetmap.josm.data.vector.VectorDataSet;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
-import org.openstreetmap.josm.tools.Pair;
-import org.openstreetmap.josm.tools.Utils;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,9 +8,30 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.TagMap;
+import org.openstreetmap.josm.data.vector.VectorDataSet;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
+import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryVectorTileWorkarounds;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
+import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryURL.APIv4;
+import org.openstreetmap.josm.tools.Pair;
+import org.openstreetmap.josm.tools.Utils;
+
 /**
  * Decodes the JSON returned by {@link APIv4} into Java objects. Takes a
- * {@link JsonObject} and {@link #decodeImageInfos(JsonObject, VectorDataSet)}
+ * {@link JsonValue} and {@link VectorDataSet}
  * tries to add the timestamps.
  */
 public final class JsonImageDetailsDecoder {
@@ -93,31 +94,21 @@ public final class JsonImageDetailsDecoder {
         json.getJsonObject(useComputedData ? MapillaryImageUtils.ImageProperties.COMPUTED_GEOMETRY.toString()
           : MapillaryImageUtils.ImageProperties.GEOMETRY.toString()).getJsonArray("coordinates"));
       final BBox searchBBox = new BBox(coordinates);
-      searchBBox.addLatLon(coordinates, 0.005);
+      searchBBox.addLatLon(coordinates, 0.001);
       VectorNode image = data.searchNodes(searchBBox).stream()
         .filter(node -> key.equals(MapillaryImageUtils.getKey(node))).findAny().orElseGet(() -> {
-          VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
-          for (final MapillaryImageUtils.ImageProperties property : MapillaryImageUtils.ImageProperties.values()) {
-            final String propertyKey = property.toString();
-            if (json.containsKey(propertyKey)) {
-              JsonValue value = json.get(propertyKey);
-              if (value.getValueType() == JsonValue.ValueType.NUMBER) {
-                tImage.put(propertyKey, ((JsonNumber) value).toString());
-              } else if (value.getValueType() == JsonValue.ValueType.STRING) {
-                tImage.put(propertyKey, ((JsonString) value).getString());
-              } else {
-                tImage.put(propertyKey, value.toString());
-              }
-            }
-          }
-          if (coordinates != null) {
-            tImage.setCoor(coordinates);
-          }
+          VectorNode tImage = createNewImage(json, coordinates);
           data.addPrimitive(tImage);
           return tImage;
         });
-      image.setCoor(coordinates);
-      image.setKeys(JsonTagMapDecoder.getTagMap(json));
+      if (coordinates != null) {
+        image.setCoor(coordinates);
+      }
+      for (Map.Entry<String, String> entry : JsonTagMapDecoder.getTagMap(json).entrySet()) {
+        if (!image.hasKey(entry.getKey())) {
+          image.put(entry.getKey(), entry.getValue());
+        }
+      }
       TagMap map = image.getKeys();
       // Clean up bad key value combinations
       image.setKeys(map
@@ -127,10 +118,43 @@ public final class JsonImageDetailsDecoder {
       final String sequence = MapillaryImageUtils.getSequenceKey(image);
       // Reset the instant
       image.setInstant(Instant.EPOCH);
-      // Recache the instant
+      // Re-cache the instant
       MapillaryImageUtils.getDate(image);
       return Pair.create(sequence, image);
     }
     return null;
+  }
+
+  /**
+   * Create a new image from a json
+   *
+   * @param json The json with the data
+   * @param coordinates The coordinates of the image
+   * @return A new image
+   */
+  @Nonnull
+  private static VectorNode createNewImage(@Nonnull final JsonObject json, @Nullable final LatLon coordinates) {
+    VectorNode tImage = new VectorNode(MapillaryKeys.IMAGE_LAYER);
+    for (final MapillaryImageUtils.ImageProperties property : MapillaryImageUtils.ImageProperties.values()) {
+      final String propertyKey = property.toString();
+      if (json.containsKey(propertyKey)) {
+        JsonValue value = json.get(propertyKey);
+        if (value.getValueType() == JsonValue.ValueType.NUMBER) {
+          tImage.put(propertyKey, value.toString());
+        } else if (value.getValueType() == JsonValue.ValueType.STRING) {
+          tImage.put(propertyKey, ((JsonString) value).getString());
+        } else {
+          tImage.put(propertyKey, value.toString());
+        }
+      }
+    }
+    if (coordinates != null) {
+      tImage.setCoor(coordinates);
+    }
+    final String id = MapillaryImageUtils.getKey(tImage);
+    if (id != null && MapillaryVectorTileWorkarounds.NUMBER_PATTERN.matcher(id).matches()) {
+      tImage.setOsmId(Long.parseLong(id), 1);
+    }
+    return tImage;
   }
 }

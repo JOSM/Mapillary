@@ -1,6 +1,43 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.layer;
 
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
+
 import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileXY;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileJob;
@@ -58,43 +95,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.ImageProvider.ImageSizes;
 import org.openstreetmap.josm.tools.ListenerList;
 import org.openstreetmap.josm.tools.Logging;
-
-import javax.annotation.Nonnull;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class represents the layer shown in JOSM. There can only exist one
@@ -674,7 +674,6 @@ public final class MapillaryLayer extends MVTLayer
   }
 
   private void updateNearestImages() {
-    ForkJoinPool pool = MapillaryUtils.getForkJoinPool();
     final INode selected;
     if (MapillaryMainDialog.hasInstance()) {
       selected = MapillaryMainDialog.getInstance().getImage();
@@ -755,6 +754,8 @@ public final class MapillaryLayer extends MVTLayer
   public void finishedLoading(final MVTTile tile) {
     super.finishedLoading(tile);
     this.tileListeners.fireEvent(l -> l.finishedLoading(tile));
+    this.setNodeIds(MapillaryImageUtils.ImageProperties.ID.toString(),
+      tile.getData().getAllPrimitives().stream().filter(VectorNode.class::isInstance).map(VectorNode.class::cast));
   }
 
   /**
