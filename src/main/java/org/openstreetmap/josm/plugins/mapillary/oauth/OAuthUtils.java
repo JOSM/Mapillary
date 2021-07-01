@@ -21,8 +21,6 @@ import javax.json.JsonReader;
 import javax.json.JsonStructure;
 import javax.swing.JOptionPane;
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import org.openstreetmap.josm.io.CachedFile;
@@ -32,6 +30,8 @@ import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.JosmRuntimeException;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.tools.Utils;
+
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 
 /**
  * A set of utilities related to OAuth.
@@ -205,20 +205,26 @@ public final class OAuthUtils {
     MapillaryUser.setTokenValid(true);
     MapillaryProperties.ACCESS_TOKEN.put(accessToken);
     MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.put(Instant.now().getEpochSecond() + expiresIn);
+    final int amount;
     final ChronoUnit expireUnit;
     if (expiresIn > Duration.of(30, ChronoUnit.DAYS).getSeconds()) {
-      expireUnit = ChronoUnit.WEEKS;
+      amount = 7;
+      expireUnit = ChronoUnit.DAYS;
     } else if (expiresIn > Duration.of(7, ChronoUnit.DAYS).getSeconds()) {
+      amount = 1;
       expireUnit = ChronoUnit.DAYS;
     } else if (expiresIn > Duration.of(1, ChronoUnit.DAYS).getSeconds()) {
+      amount = 1;
       expireUnit = ChronoUnit.HALF_DAYS;
     } else if (expiresIn > Duration.of(2, ChronoUnit.HOURS).getSeconds()) {
+      amount = 1;
       expireUnit = ChronoUnit.HOURS;
     } else {
       // Hopefully we never hit this code path in production...
+      amount = 10;
       expireUnit = ChronoUnit.MINUTES;
     }
-    MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.put(Duration.of(1, expireUnit).getSeconds());
+    MapillaryProperties.ACCESS_TOKEN_REFRESH_IN.put(Duration.of(amount, expireUnit).getSeconds());
 
     Logging.info("Successful authentication with Mapillary, the access token is {0} expiring in {1} seconds",
       accessToken, expiresIn);
