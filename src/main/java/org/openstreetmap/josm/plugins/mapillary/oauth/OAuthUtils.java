@@ -190,7 +190,7 @@ public final class OAuthUtils {
    *
    * @param jsonObject The json object to use
    */
-  static final void updateAuthorization(final JsonObject jsonObject) {
+  static void updateAuthorization(final JsonObject jsonObject) {
     // The actual access token we want to use
     final String accessToken = jsonObject.getString("access_token");
     // This is in seconds

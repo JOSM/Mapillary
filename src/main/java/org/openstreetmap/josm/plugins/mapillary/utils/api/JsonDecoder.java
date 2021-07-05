@@ -10,14 +10,17 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.tools.Logging;
-
 import javax.annotation.Nonnull;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.util.GuiHelper;
+import org.openstreetmap.josm.tools.Logging;
+import org.openstreetmap.josm.tools.bugreport.BugReport;
+import org.openstreetmap.josm.tools.bugreport.ReportedException;
 
 public final class JsonDecoder {
   private JsonDecoder() {
@@ -82,19 +85,22 @@ public final class JsonDecoder {
       Logging.error("Mapillary API error: {0}", json);
       return Collections.emptyList();
     }
-    if (json.containsKey("data")) {
-      final JsonValue data = json.get("data");
-      if (data.getValueType() != JsonValue.ValueType.ARRAY && data.getValueType() != JsonValue.ValueType.OBJECT) {
-        throw new IllegalArgumentException("Mapillary v4 json data objects must either be an object or an array.");
-      }
-      return Collections.unmodifiableCollection(featureDecoder.apply(data));
+    // This is deliberate -- we want to use the "data" value, if present
+    final JsonValue data = json.getOrDefault("data", json);
+    if (data.getValueType() != JsonValue.ValueType.ARRAY && data.getValueType() != JsonValue.ValueType.OBJECT) {
+      throw new IllegalArgumentException("Mapillary v4 json data objects must either be an object or an array.");
     }
-    return Collections.unmodifiableCollection(featureDecoder.apply(json));
-    /*
-     * Note: Apparently this is not the case. TODO remove once clarified.
-     * throw new IllegalArgumentException(
-     * "Mapillary v4 json must have a data object." + System.lineSeparator() + json.toString());
-     */
+    try {
+      return Collections.unmodifiableCollection(featureDecoder.apply(data));
+    } catch (Exception e) {
+      Logging.error(e);
+      GuiHelper.runInEDT(() -> {
+        final ReportedException bugReport = BugReport.intercept(e);
+        bugReport.put("json", json);
+        bugReport.warn();
+      });
+    }
+    return Collections.emptyList();
   }
 
   /**
