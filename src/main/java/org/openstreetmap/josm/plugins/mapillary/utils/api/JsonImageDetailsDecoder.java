@@ -17,6 +17,7 @@ import javax.json.JsonValue;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
+import org.openstreetmap.josm.data.osm.Tag;
 import org.openstreetmap.josm.data.osm.TagMap;
 import org.openstreetmap.josm.data.vector.VectorDataSet;
 import org.openstreetmap.josm.data.vector.VectorNode;
@@ -111,10 +112,14 @@ public final class JsonImageDetailsDecoder {
       }
       TagMap map = image.getKeys();
       // Clean up bad key value combinations
-      image.setKeys(map
-        .entrySet().stream().filter(entry -> entry.getKey() != null && entry.getValue() != null
-          && !Utils.isStripEmpty(entry.getKey()) && !Utils.isStripEmpty(entry.getValue()))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+      image.setKeys(null);
+      // Using for loop to (hopefully) fix JOSM #21070 and #21072
+      for (Tag tag : map.getTags()) {
+        if (tag.getKey() != null && tag.getValue() != null && !Utils.isStripEmpty(tag.getKey())
+          && !Utils.isStripEmpty(tag.getValue())) {
+          image.put(tag);
+        }
+      }
       final String sequence = MapillaryImageUtils.getSequenceKey(image);
       // Reset the instant
       image.setInstant(Instant.EPOCH);
