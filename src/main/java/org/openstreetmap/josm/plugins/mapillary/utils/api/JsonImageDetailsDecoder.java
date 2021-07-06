@@ -83,7 +83,7 @@ public final class JsonImageDetailsDecoder {
    * @return The MapillaryAbstractImage that was added/modified
    */
   @Nullable
-  private static Pair<String, VectorNode> decodeImageInfo(@Nullable final JsonObject json,
+  private static synchronized Pair<String, VectorNode> decodeImageInfo(@Nullable final JsonObject json,
     @Nullable final VectorDataSet data) {
     if (json != null && data != null) {
       final boolean useComputedData = Boolean.TRUE.equals(MapillaryProperties.USE_COMPUTED_LOCATIONS.get());
@@ -112,12 +112,11 @@ public final class JsonImageDetailsDecoder {
       }
       TagMap map = image.getKeys();
       // Clean up bad key value combinations
-      image.setKeys(null);
       // Using for loop to (hopefully) fix JOSM #21070 and #21072
       for (Tag tag : map.getTags()) {
-        if (tag.getKey() != null && tag.getValue() != null && !Utils.isStripEmpty(tag.getKey())
-          && !Utils.isStripEmpty(tag.getValue())) {
-          image.put(tag);
+        // Tag#getKey and Tag#getValue are never null. According to docs.
+        if (Utils.isStripEmpty(tag.getKey()) || Utils.isStripEmpty(tag.getValue())) {
+          image.put(tag.getKey(), null);
         }
       }
       final String sequence = MapillaryImageUtils.getSequenceKey(image);
