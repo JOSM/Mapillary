@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 class MapillaryURLTest {
 
-  private static final String CLIENT_ID_QUERY_PART = "client_id=UTZhSnNFdGpxSEFFREUwb01GYzlXZzpjNGViMzQxMTIzMjY0MjZm";
+  private static final String CLIENT_ID_QUERY_PART = "client_id=" + MapillaryURL.APIv4.CLIENT_ID;
   private static final String SORT_BY_KEY = "sort_by=key";
 
   // TODO Test APIv4 when actually available
@@ -35,8 +35,7 @@ class MapillaryURLTest {
   @Test
   void testConnectURL() {
     assertUrlEquals(MapillaryURL.MainWebsite.connect("http://redirect-host/ä"), "https://www.mapillary.com/connect",
-      CLIENT_ID_QUERY_PART, "scope=user%3Aread+public%3Aupload+public%3Awrite+private%3Aread", "response_type=token",
-      "redirect_uri=http%3A%2F%2Fredirect-host%2F%C3%A4");
+      CLIENT_ID_QUERY_PART, "scope=read", "response_type=code", "redirect_uri=http%3A%2F%2Fredirect-host%2F%C3%A4");
 
     assertUrlEquals(MapillaryURL.MainWebsite.connect(null), "https://www.mapillary.com/connect", CLIENT_ID_QUERY_PART,
       "scope=user%3Aread+public%3Aupload+public%3Awrite+private%3Aread", "response_type=token");

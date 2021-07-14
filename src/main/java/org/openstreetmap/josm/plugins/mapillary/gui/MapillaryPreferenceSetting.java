@@ -215,6 +215,10 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     MapillaryProperties.PRE_FETCH_IMAGE_COUNT.put(preFetchSize.getNumber().intValue());
     MapillaryProperties.COLOR_BY_CAPTURE_DATE.put(colorImagesByCaptureDate.isSelected());
 
+    MapillaryProperties.MAXIMUM_DRAW_IMAGES.put(maxForImagesToDraw.getNumber().intValue());
+    MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE
+      .put(maxDistanceForChangesetSource.getNumber().doubleValue());
+
     if (ExpertToggleAction.isExpert()) {
       MapillaryProperties.MAXIMUM_DISTANCE_FOR_CHANGESET_SOURCE
         .put(this.maxDistanceForChangesetSource.getNumber().doubleValue());
