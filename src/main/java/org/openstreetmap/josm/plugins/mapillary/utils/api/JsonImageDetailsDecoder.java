@@ -106,9 +106,7 @@ public final class JsonImageDetailsDecoder {
         image.setCoor(coordinates);
       }
       for (Map.Entry<String, String> entry : JsonTagMapDecoder.getTagMap(json).entrySet()) {
-        if (!image.hasKey(entry.getKey())) {
-          image.put(entry.getKey(), entry.getValue());
-        }
+        image.put(entry.getKey(), entry.getValue());
       }
       TagMap map = image.getKeys();
       // Clean up bad key value combinations
