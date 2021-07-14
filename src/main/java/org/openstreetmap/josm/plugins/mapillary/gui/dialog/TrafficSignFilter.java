@@ -346,7 +346,7 @@ public class TrafficSignFilter extends JPanel implements Destroyable, LayerChang
           dataSet.allNonDeletedPrimitives().stream().filter(p -> !p.hasKey(NEARBY_KEY)
             && osmEquivalentPossible.contains(ObjectDetections.valueOfMapillaryValue(p.get("value")))).forEach(p -> {
               TagMap tags = ObjectDetections.valueOfMapillaryValue(p.get("value")).getOsmKeys();
-              BBox searchBBox = p.getBBox();
+              BBox searchBBox = new BBox(p.getBBox());
               searchBBox.addPrimitive(p, distance / 111000); // convert meters to degrees (roughly)
               String nearby = MainApplication.getLayerManager().getLayersOfType(OsmDataLayer.class).stream()
                 .map(OsmDataLayer::getDataSet).flatMap(d -> d.searchPrimitives(searchBBox).stream())
