@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class MapillaryURLTest {
@@ -45,12 +46,14 @@ class MapillaryURLTest {
   }
 
   @Test
+  @Disabled("No current replacement exists in the v4 API documentation")
   void testUploadSecretsURL() throws MalformedURLException {
     assertEquals(new URL("https://a.mapillary.com/v3/me/uploads?" + CLIENT_ID_QUERY_PART),
       MapillaryURL.APIv3.uploadSecretsURL());
   }
 
   @Test
+  @Disabled("No current replacement exists in the v4 API documentation")
   void testUserURL() throws MalformedURLException {
     assertEquals(new URL("https://a.mapillary.com/v3/me?" + CLIENT_ID_QUERY_PART),
       MapillaryURL.APIv4.getUserInformation());
