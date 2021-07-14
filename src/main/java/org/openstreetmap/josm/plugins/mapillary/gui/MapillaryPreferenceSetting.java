@@ -167,7 +167,7 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
 
     SwingUtilities.invokeLater(() -> {
       String username = MapillaryUser.getUsername();
-      if (username != null) {
+      if (username != null || MapillaryUser.isTokenValid()) {
         SwingUtilities.invokeLater(() -> onLogin(MapillaryUser.getUsername()));
       }
     });
@@ -182,7 +182,11 @@ public class MapillaryPreferenceSetting implements SubPreferenceSetting, Mapilla
     requiresLogin.setVisible(true);
     loginPanel.remove(loginButton);
     loginPanel.add(logoutButton, 3);
-    loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
+    if (username != null) {
+      loginLabel.setText(I18n.tr("You are logged in as ''{0}''.", username));
+    } else {
+      loginLabel.setText(I18n.tr("You are logged in."));
+    }
     loginPanel.revalidate();
     loginPanel.repaint();
   }

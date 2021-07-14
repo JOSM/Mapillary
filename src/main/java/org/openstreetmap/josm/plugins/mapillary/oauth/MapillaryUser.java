@@ -3,6 +3,7 @@ package org.openstreetmap.josm.plugins.mapillary.oauth;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -130,6 +131,25 @@ public final class MapillaryUser {
     LISTENERS.fireEvent(MapillaryLoginListener::onLogout);
   }
 
+  /**
+   * Check if the token exists and is valid
+   *
+   * @return {@code true} if the token is valid (currently only checks that we haven't passed the expiration date)
+   */
+  public static synchronized boolean isTokenValid() {
+    if (!isTokenValid) {
+      final boolean valid = MapillaryProperties.ACCESS_TOKEN.isSet()
+        && Instant.now().getEpochSecond() < MapillaryProperties.ACCESS_TOKEN_EXPIRES_AT.get();
+      setTokenValid(valid);
+    }
+    return isTokenValid;
+  }
+
+  /**
+   * Set whether or not the token is valid
+   *
+   * @param value {@code true} if the token set is valid
+   */
   public static synchronized void setTokenValid(boolean value) {
     isTokenValid = value;
   }
