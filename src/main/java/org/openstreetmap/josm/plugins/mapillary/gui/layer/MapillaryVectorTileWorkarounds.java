@@ -60,9 +60,11 @@ public interface MapillaryVectorTileWorkarounds {
       if (NUMBER_PATTERN.matcher(id).matches()) {
         VectorDataSet dataSet = node.getDataSet();
         // Force reindexing
-        dataSet.removePrimitive(node);
-        node.setOsmId(Long.parseLong(id), 1);
-        dataSet.addPrimitive(node);
+        if (dataSet != null && dataSet.containsNode(node)) {
+          dataSet.removePrimitive(node);
+          node.setOsmId(Long.parseLong(id), 1);
+          dataSet.addPrimitive(node);
+        }
       }
     });
   }
