@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -185,7 +186,27 @@ public class PointObjectLayer extends MVTLayer implements Listener, HighlightUpd
   }
 
   @Override
-  public void paint(final Graphics2D g, final MapView mv, Bounds box) {
+  public void paint(final Graphics2D g, final MapView mv, final Bounds box) {
+    final Lock lock = this.getData().getReadLock();
+    try {
+      lock.lockInterruptibly();
+      this.paintWithLock(g, mv, box);
+    } catch (final InterruptedException e) {
+      Logging.error(e);
+      Thread.currentThread().interrupt();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Paint with dataset lock
+   *
+   * @param g The graphics to paint on
+   * @param mv The current map view
+   * @param box The box to consider
+   */
+  private void paintWithLock(final Graphics2D g, final MapView mv, final Bounds box) {
     boolean virtual = mv.isVirtualNodesEnabled();
 
     AbstractMapRenderer painter = MapRendererFactory.getInstance().createActiveRenderer(g, mv, false);
