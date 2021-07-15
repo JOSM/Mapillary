@@ -9,12 +9,12 @@ import org.openstreetmap.josm.gradle.plugin.task.MarkdownToHtml
 import java.net.URL
 
 plugins {
-  id("com.diffplug.spotless") version "5.11.1"
-  id("com.github.ben-manes.versions") version "0.38.0"
-  id("com.github.spotbugs") version "4.7.0"
-  id("net.ltgt.errorprone") version "2.0.1"
+  id("com.diffplug.spotless") version "5.14.1"
+  id("com.github.ben-manes.versions") version "0.39.0"
+  id("com.github.spotbugs") version "4.7.2"
+  id("net.ltgt.errorprone") version "2.0.2"
   id("org.openstreetmap.josm") version "0.7.1"
-  id("org.sonarqube") version "3.1.1"
+  id("org.sonarqube") version "3.3"
 
   eclipse
   jacoco
@@ -29,7 +29,7 @@ repositories {
 
 // Set up ErrorProne
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.3.4")
+  errorprone("com.google.errorprone:error_prone_core:2.7.0")
   if (!JavaVersion.current().isJava9Compatible) {
     errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
   }
@@ -57,11 +57,11 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 val versions = mapOf(
-  "awaitility" to "4.0.3",
+  "awaitility" to "4.1.0",
   "jdatepicker" to "1.3.4",
   "jmockit" to "1.49",
-  "junit" to "5.7.1",
-  "spotbugs" to "4.2.2",
+  "junit" to "5.7.2",
+  "spotbugs" to "4.3.0",
   "wiremock" to "2.27.2"
 )
 
@@ -73,7 +73,7 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions["junit"]}")
   // This can be removed once JOSM drops all JUnit4 support. Nothing remaining in Mapillary uses JUnit4.
   testImplementation("org.junit.vintage:junit-vintage-engine:${versions["junit"]}")
-  testCompile("org.junit.jupiter:junit-jupiter-params:${versions["junit"]}")
+  testImplementation("org.junit.jupiter:junit-jupiter-params:${versions["junit"]}")
 
   testImplementation("org.awaitility:awaitility:${versions["awaitility"]}")
   testImplementation("org.jmockit:jmockit:${versions["jmockit"]}")
