@@ -15,8 +15,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.layer.LayerManager;
 import org.openstreetmap.josm.plugins.mapillary.actions.MapillaryDownloadAction;
@@ -49,6 +46,9 @@ import org.openstreetmap.josm.plugins.mapillary.utils.ImageViewUtil;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
 
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+
 /**
  * This object is a responsible JComponent which lets you zoom and drag. It is
  * included in a {@link MapillaryMainDialog} object.
@@ -61,17 +61,6 @@ public final class MapillaryImageDisplay extends JPanel {
 
   private static final long serialVersionUID = 3369727203329307716L;
   static final double PANORAMA_FOV = Math.toRadians(110);
-
-  /**
-   * Interface for additional painters (really just a generic TriConsumer)
-   *
-   * @param <T> Typically a Graphics object
-   * @param <U> Typically a buffered image
-   * @param <V> Typically a rectangle
-   */
-  public interface Painter<T, U, V> {
-    void accept(T t, U u, V v);
-  }
 
   private final transient Collection<ImageDetection<?>> detections = Collections.synchronizedList(new ArrayList<>());
   private final transient Collection<Painter<Graphics, BufferedImage, Rectangle>> additionalPainters = Collections
@@ -107,7 +96,7 @@ public final class MapillaryImageDisplay extends JPanel {
    */
   transient CameraPlane cameraPlane;
 
-  protected class ImgDisplayMouseListener implements MouseListener, MouseWheelListener, MouseMotionListener {
+  protected class ImgDisplayMouseListener extends MouseAdapter implements MouseWheelListener, MouseMotionListener {
     private boolean mouseIsDragging;
     private long lastTimeForMousePoint;
     private Point mousePointInImg;
@@ -281,7 +270,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      if ((!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
         || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
@@ -324,7 +313,7 @@ public final class MapillaryImageDisplay extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if ((!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null)
+      if (!this.mouseIsDragging && MapillaryImageDisplay.this.selectedRect == null
         || !MapillaryImageDisplay.this.zoomPanEnabled)
         return;
       Image mouseImage;
@@ -374,21 +363,6 @@ public final class MapillaryImageDisplay extends JPanel {
         MapillaryImageDisplay.this.selectedRect = null;
         MapillaryImageDisplay.this.repaint();
       }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-      // Do nothing, method is enforced by MouseListener
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-      // Do nothing, method is enforced by MouseListener
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-      // Do nothing, method is enforced by MouseListener
     }
 
     private void checkPointInVisibleRect(Point p, Rectangle visibleRect) {
@@ -663,33 +637,6 @@ public final class MapillaryImageDisplay extends JPanel {
       new Rectangle(0, 0, getSize().width, getSize().height));
   }
 
-  /**
-   * Zooms to 1:1 and, if it is already in 1:1, to best fit.
-   */
-  public void zoomBestFitOrOne() {
-    Image zoomImage;
-    Rectangle zoomVisibleRect;
-    synchronized (this) {
-      zoomImage = this.image;
-      zoomVisibleRect = this.visibleRect;
-    }
-    if (zoomImage == null)
-      return;
-    if (zoomVisibleRect.width != zoomImage.getWidth(null) || zoomVisibleRect.height != zoomImage.getHeight(null)) {
-      // The display is not at best fit. => Zoom to best fit
-      zoomVisibleRect = new Rectangle(0, 0, zoomImage.getWidth(null), zoomImage.getHeight(null));
-    } else {
-      // The display is at best fit => zoom to 1:1
-      Point center = getCenterImgCoord(zoomVisibleRect);
-      zoomVisibleRect = new Rectangle(center.x - getWidth() / 2, center.y - getHeight() / 2, getWidth(), getHeight());
-      ImageViewUtil.checkVisibleRectPos(zoomImage, zoomVisibleRect);
-    }
-    synchronized (this) {
-      this.visibleRect = zoomVisibleRect;
-    }
-    repaint();
-  }
-
   protected static void checkVisibleRectSize(Image image, Rectangle visibleRect) {
     if (visibleRect.width > image.getWidth(null)) {
       visibleRect.width = image.getWidth(null);
@@ -782,4 +729,16 @@ public final class MapillaryImageDisplay extends JPanel {
     // Default to 0 for standard images
     return 0;
   }
+
+  /**
+   * Interface for additional painters (really just a generic TriConsumer)
+   *
+   * @param <T> Typically a Graphics object
+   * @param <U> Typically a buffered image
+   * @param <V> Typically a rectangle
+   */
+  public interface Painter<T, U, V> {
+    void accept(T t, U u, V v);
+  }
+
 }
