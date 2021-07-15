@@ -18,30 +18,16 @@ import org.openstreetmap.josm.tools.ListenerList;
  * Largely similar to {@link ExpertToggleAction}, which relies upon static fields.
  */
 public class DeveloperToggleAction extends ToggleAction {
-
-  /**
-   * This listener is notified whenever the developer mode setting changed.
-   */
-  @FunctionalInterface
-  public interface DeveloperModeChangeListener {
-    /**
-     * The developer mode changed.
-     *
-     * @param isDeveloper <code>true</code> if developer mode was enabled, false otherwise.
-     */
-    void developerChanged(boolean isDeveloper);
-  }
-
-  private static final ListenerList<DeveloperModeChangeListener> listeners = ListenerList.create();
-  private static final ListenerList<Component> visibilityToggleListeners = ListenerList.create();
+  private static final ListenerList<DeveloperModeChangeListener> LISTENER_LIST = ListenerList.create();
+  private static final ListenerList<Component> VISIBILITY_TOGGLE_LISTENERS = ListenerList.create();
 
   private static final BooleanProperty PREF_EXPERT = MapillaryProperties.DEVELOPER;
 
   private static final DeveloperToggleAction INSTANCE = new DeveloperToggleAction();
 
   private static synchronized void fireExpertModeChanged(boolean isDeveloper) {
-    listeners.fireEvent(listener -> listener.developerChanged(isDeveloper));
-    visibilityToggleListeners.fireEvent(c -> c.setVisible(isDeveloper));
+    LISTENER_LIST.fireEvent(listener -> listener.developerChanged(isDeveloper));
+    VISIBILITY_TOGGLE_LISTENERS.fireEvent(c -> c.setVisible(isDeveloper));
   }
 
   /**
@@ -63,7 +49,7 @@ public class DeveloperToggleAction extends ToggleAction {
     boolean fireWhenAdding) {
     if (listener == null)
       return;
-    listeners.addWeakListener(listener);
+    LISTENER_LIST.addWeakListener(listener);
     if (fireWhenAdding) {
       listener.developerChanged(isDeveloper());
     }
@@ -77,7 +63,7 @@ public class DeveloperToggleAction extends ToggleAction {
   public static synchronized void removeDeveloperModeChangeListener(DeveloperModeChangeListener listener) {
     if (listener == null)
       return;
-    listeners.removeListener(listener);
+    LISTENER_LIST.removeListener(listener);
   }
 
   /**
@@ -89,7 +75,7 @@ public class DeveloperToggleAction extends ToggleAction {
   public static synchronized void addVisibilitySwitcher(Component c) {
     if (c == null)
       return;
-    visibilityToggleListeners.addWeakListener(c);
+    VISIBILITY_TOGGLE_LISTENERS.addWeakListener(c);
     c.setVisible(isDeveloper());
   }
 
@@ -102,7 +88,7 @@ public class DeveloperToggleAction extends ToggleAction {
   public static synchronized void removeVisibilitySwitcher(Component c) {
     if (c == null)
       return;
-    visibilityToggleListeners.removeListener(c);
+    VISIBILITY_TOGGLE_LISTENERS.removeListener(c);
   }
 
   /**
@@ -115,7 +101,7 @@ public class DeveloperToggleAction extends ToggleAction {
   public static synchronized boolean hasVisibilitySwitcher(Component c) {
     if (c == null)
       return false;
-    return visibilityToggleListeners.containsListener(c);
+    return VISIBILITY_TOGGLE_LISTENERS.containsListener(c);
   }
 
   /**
@@ -174,5 +160,18 @@ public class DeveloperToggleAction extends ToggleAction {
    */
   public static boolean isDeveloper() {
     return INSTANCE.isSelected();
+  }
+
+  /**
+   * This listener is notified whenever the developer mode setting changed.
+   */
+  @FunctionalInterface
+  public interface DeveloperModeChangeListener {
+    /**
+     * The developer mode changed.
+     *
+     * @param isDeveloper <code>true</code> if developer mode was enabled, false otherwise.
+     */
+    void developerChanged(boolean isDeveloper);
   }
 }
