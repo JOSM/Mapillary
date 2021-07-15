@@ -1881,6 +1881,7 @@ public enum ObjectDetections {
       "void--ego-vehicle",
       "void--ground",
       "void--static",
+      "void--unlabeled",
       "warning--kangaroo-crossing--g1"
     };
   }
