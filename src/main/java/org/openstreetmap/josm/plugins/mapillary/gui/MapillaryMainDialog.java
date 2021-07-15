@@ -65,7 +65,6 @@ import org.openstreetmap.josm.plugins.mapillary.io.download.MapillaryDownloader;
 import org.openstreetmap.josm.plugins.mapillary.model.ImageDetection;
 import org.openstreetmap.josm.plugins.mapillary.utils.DetectionVerification;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryProperties;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryUtils;
@@ -667,7 +666,7 @@ public final class MapillaryMainDialog extends ToggleDialog
       } else if (this.image.hasKey(MapillaryImageUtils.IMPORTED_KEY)) {
         INode mapillaryImportedImage = this.image;
         title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.get(MapillaryImageUtils.IMPORTED_KEY));
-        title.append(MESSAGE_SEPARATOR).append(mapillaryImportedImage.get(MapillaryKeys.CAPTURED_AT));
+        title.append(MESSAGE_SEPARATOR).append(MapillaryImageUtils.getDate(mapillaryImportedImage));
         setTitle(title.toString());
       }
     }

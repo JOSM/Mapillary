@@ -1,6 +1,32 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.gui.dialog;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionListener;
+
 import org.openstreetmap.josm.data.vector.VectorNode;
 import org.openstreetmap.josm.data.vector.VectorWay;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -15,30 +41,6 @@ import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Logging;
-
-import javax.swing.AbstractListModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ChooseGeoImageLayersDialog extends JDialog {
   private static final long serialVersionUID = -1793622345412435234L;
@@ -112,9 +114,7 @@ public class ChooseGeoImageLayersDialog extends JDialog {
           }
         }).filter(Objects::nonNull)
           // order by capturedAt timestamp (ascending)
-          .sorted((o1, o2) -> (int) Math.signum(Double.parseDouble(o1.get(MapillaryKeys.CAPTURED_AT))
-            - Double.parseDouble(o2.get(MapillaryKeys.CAPTURED_AT))))
-          .collect(Collectors.toList()));
+          .sorted(Comparator.comparing(MapillaryImageUtils::getDate)).collect(Collectors.toList()));
         return seq;
       }).forEach(seq -> {
         seq.getNodes().forEach(img -> MapillaryLayer.getInstance().getData().addPrimitive(img));

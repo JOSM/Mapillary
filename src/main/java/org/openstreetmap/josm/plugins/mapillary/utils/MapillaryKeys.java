@@ -8,21 +8,6 @@ import org.openstreetmap.josm.data.imagery.ImageryInfo;
  * This class holds common keys for Mapillary objects
  */
 public final class MapillaryKeys {
-  private MapillaryKeys() {
-    // No-op
-  }
-
-  // Common
-  public static final String CAPTURED_AT = "captured_at";
-  @Deprecated
-  public static final String KEY = "key";
-  public static final String PANORAMIC = "pano";
-  public static final String USER_KEY = "userkey";
-
-  // Sequence specific
-  public static final String INITIAL_IMAGE = "ikey";
-  public static final String ORGANIZATION_KEY = "organization_key";
-
   // Misc
   public static final String PANORAMIC_TRUE = Boolean.TRUE.toString();
   public static final String PANORAMIC_FALSE = Boolean.FALSE.toString();
@@ -62,5 +47,9 @@ public final class MapillaryKeys {
     MAPILLARY_IMAGES.setOverlay(true);
     MAPILLARY_TRAFFIC_SIGNS.setOverlay(true);
     MAPILLARY_POINT_OBJECTS.setOverlay(true);
+  }
+
+  private MapillaryKeys() {
+    // No-op
   }
 }

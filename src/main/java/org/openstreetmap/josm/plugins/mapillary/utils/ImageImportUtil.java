@@ -1,22 +1,6 @@
 // License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.mapillary.utils;
 
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.ImageMetadata;
-import org.apache.commons.imaging.common.RationalNumber;
-import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
-import org.apache.commons.imaging.formats.tiff.TiffField;
-import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
-import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
-import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.INode;
-import org.openstreetmap.josm.data.vector.VectorNode;
-import org.openstreetmap.josm.tools.I18n;
-import org.openstreetmap.josm.tools.Logging;
-
-import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,6 +14,24 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.swing.filechooser.FileFilter;
+
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.INode;
+import org.openstreetmap.josm.data.vector.VectorNode;
+import org.openstreetmap.josm.tools.I18n;
+import org.openstreetmap.josm.tools.Logging;
+
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.common.RationalNumber;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.tiff.TiffField;
+import org.apache.commons.imaging.formats.tiff.constants.ExifTagConstants;
+import org.apache.commons.imaging.formats.tiff.constants.GpsTagConstants;
+import org.apache.commons.imaging.formats.tiff.taginfos.TagInfo;
 
 public final class ImageImportUtil {
   public static final FileFilter IMAGE_FILE_FILTER = new ImageFileFilter();
@@ -68,7 +70,7 @@ public final class ImageImportUtil {
       }
     }
     // Sort by time captured at prior to returning. This fixes #144 on JOSM/Mapillary GitHub.
-    return images.stream().sorted(Comparator.comparing(image -> image.get(MapillaryKeys.CAPTURED_AT)))
+    return images.stream().sorted(Comparator.comparing(image -> MapillaryImageUtils.getDate(image).toEpochMilli()))
       .collect(Collectors.toList());
   }
 
@@ -120,17 +122,20 @@ public final class ImageImportUtil {
     image.setCoor(latLon);
     image.put(MapillaryImageUtils.ImageProperties.COMPASS_ANGLE.toString(), Double.toString(ca));
     image.put(MapillaryImageUtils.IMPORTED_KEY, f.getAbsolutePath());
-    image.put(MapillaryKeys.PANORAMIC, pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
+    image.put(MapillaryImageUtils.ImageProperties.IS_PANO.toString(),
+      pano ? MapillaryKeys.PANORAMIC_TRUE : MapillaryKeys.PANORAMIC_FALSE);
     if (dateTime != null) {
       try {
-        image.put(MapillaryKeys.CAPTURED_AT,
+        image.put(MapillaryImageUtils.ImageProperties.CAPTURED_AT.toString(),
           new SimpleDateFormat("yyyy:MM:dd HH:mm:ss").parse(dateTime.toString()).toInstant().toString());
       } catch (ParseException e) {
         Logging.error(e);
-        image.put(MapillaryKeys.CAPTURED_AT, Long.toString(Instant.now().toEpochMilli()));
+        image.put(MapillaryImageUtils.ImageProperties.CAPTURED_AT.toString(),
+          Long.toString(Instant.now().toEpochMilli()));
       }
     } else {
-      image.put(MapillaryKeys.CAPTURED_AT, Long.toString(Instant.now().toEpochMilli()));
+      image.put(MapillaryImageUtils.ImageProperties.CAPTURED_AT.toString(),
+        Long.toString(Instant.now().toEpochMilli()));
     }
     return image;
   }

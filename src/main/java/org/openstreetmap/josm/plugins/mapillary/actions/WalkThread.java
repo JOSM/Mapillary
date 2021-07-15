@@ -17,7 +17,6 @@ import org.openstreetmap.josm.plugins.mapillary.cache.MapillaryCache;
 import org.openstreetmap.josm.plugins.mapillary.gui.MapillaryMainDialog;
 import org.openstreetmap.josm.plugins.mapillary.gui.layer.MapillaryLayer;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryImageUtils;
-import org.openstreetmap.josm.plugins.mapillary.utils.MapillaryKeys;
 import org.openstreetmap.josm.plugins.mapillary.utils.MapillarySequenceUtils;
 import org.openstreetmap.josm.tools.I18n;
 import org.openstreetmap.josm.tools.Logging;
@@ -131,7 +130,7 @@ public class WalkThread extends Thread implements Serializable, DataSelectionLis
     if (n >= 1 && startImage != null) {
       CacheUtils.downloadPicture(startImage, type);
       final INode nextImg = MapillarySequenceUtils.getNextOrPrevious(startImage, goForward);
-      if (nextImg != null && nextImg.hasKey(MapillaryKeys.KEY) && n > 1) {
+      if (MapillaryImageUtils.getKey(nextImg) != null && n > 1) {
         preDownloadImages(nextImg, n - 1, type, goForward);
       }
     }

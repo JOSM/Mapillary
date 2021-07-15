@@ -37,7 +37,7 @@ public interface MapillaryVectorTileWorkarounds {
    * @param nodes The nodes that are actually selected.
    */
   default <N extends INode> void setSelected(N... nodes) {
-    this.setSelected(Arrays.asList(nodes));
+    this.setSelected(Arrays.asList(nodes.clone()));
   }
 
   /**
