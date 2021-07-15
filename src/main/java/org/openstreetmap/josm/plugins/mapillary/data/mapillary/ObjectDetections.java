@@ -2002,7 +2002,10 @@ public enum ObjectDetections {
       pair.a = true;
       return pair;
     }
-    Logging.error("Unknown detection \"" + detection + "\"");
+    // Don't log void-- detections as unknown (we don't care about them)
+    if (!detection.startsWith("void--")) {
+      Logging.error("Unknown detection \"" + detection + "\"");
+    }
     String toFind = detection.replaceAll("--g[0-9]+$", "");
     return new Pair<>(false, Stream.of(ObjectDetections.values()).filter(d -> d.getKey().contains(toFind)).findFirst()
       .orElse(ObjectDetections.UNKNOWN));
