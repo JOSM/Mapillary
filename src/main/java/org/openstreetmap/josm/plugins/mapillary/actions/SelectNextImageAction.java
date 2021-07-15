@@ -7,7 +7,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.openstreetmap.josm.actions.JosmAction;
@@ -23,55 +22,6 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 public class SelectNextImageAction extends JosmAction {
-  private static final class SelectNextImageRememberAction extends SelectNextImageAction {
-    private INode previousImage;
-    private final ImageProvider originalIcon;
-    private final Supplier<INode> getPreviousImage = () -> this.previousImage;
-
-    private SelectNextImageRememberAction(String name, String description, ImageProvider icon, Shortcut sc,
-      SerializableSupplier<INode> destinationImgSupplier) {
-      super(name, description, icon, sc, destinationImgSupplier);
-      this.originalIcon = icon;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final INode current = MapillaryMainDialog.getInstance().getImage();
-      final INode expected = this.getDestinationImageSupplier().get();
-      super.actionPerformed(e);
-      if (!Objects.equals(current, expected)) {
-        this.previousImage = current;
-      } else {
-        this.previousImage = null;
-      }
-    }
-
-    @Override
-    public void updateEnabled(final Component component, final INode currentImage) {
-      super.updateEnabled(component, currentImage);
-      if (!Objects.equals(currentImage, this.previousImage)
-        && !Objects.equals(currentImage, super.getDestinationImageSupplier().get())) {
-        this.previousImage = null;
-      }
-      if (component.isEnabled()) {
-        if (!Objects.equals(this.getDestinationImageSupplier(), super.getDestinationImageSupplier())) {
-          // history or refresh
-          new ImageProvider("dialogs", "history").getResource().attachImageIcon(this, true);
-        } else {
-          this.originalIcon.getResource().attachImageIcon(this, true);
-        }
-      }
-    }
-
-    @Override
-    public Supplier<INode> getDestinationImageSupplier() {
-      if (this.previousImage != null) {
-        return this.getPreviousImage;
-      }
-      return super.getDestinationImageSupplier();
-    }
-
-  }
 
   private static final long serialVersionUID = -2106549590908822237L;
   private static final String MAPILLARY_PREF_PREFIX = marktr("Mapillary: {0}");
@@ -154,8 +104,8 @@ public class SelectNextImageAction extends JosmAction {
 
   private final SerializableSupplier<INode> destinationImgSupplier;
 
-  private SelectNextImageAction(final String name, final String description, final ImageProvider icon,
-    final Shortcut sc, final SerializableSupplier<INode> destinationImgSupplier) {
+  SelectNextImageAction(final String name, final String description, final ImageProvider icon, final Shortcut sc,
+    final SerializableSupplier<INode> destinationImgSupplier) {
     super(null, icon, description, sc, false, "mapillary:" + name.replace(" ", "_"), false);
     putValue(SHORT_DESCRIPTION, description);
     this.destinationImgSupplier = destinationImgSupplier;
@@ -198,6 +148,6 @@ public class SelectNextImageAction extends JosmAction {
   }
 
   @FunctionalInterface
-  private interface SerializableSupplier<T> extends Supplier<T>, Serializable {
+  interface SerializableSupplier<T> extends Supplier<T>, Serializable {
   }
 }
